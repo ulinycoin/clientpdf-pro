@@ -20,9 +20,9 @@ interface UploadedFile {
 
 export const FileUploadZone: React.FC<FileUploadZoneProps> = ({
   onFilesSelected,
-  acceptedTypes = ['.pdf', '.doc', '.docx', '.txt'],
+  acceptedTypes = ['.pdf', '.doc', '.docx', '.txt', '.png', '.jpg', '.jpeg', '.gif', '.bmp', '.webp'],
   maxSize = 50 * 1024 * 1024, // 50MB
-  maxFiles = 5,
+  maxFiles = 10,
   className,
 }) => {
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
@@ -79,6 +79,7 @@ export const FileUploadZone: React.FC<FileUploadZoneProps> = ({
       'application/msword': ['.doc'],
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
       'text/plain': ['.txt'],
+      'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.webp'],
     },
     maxSize,
     maxFiles,
@@ -103,6 +104,13 @@ export const FileUploadZone: React.FC<FileUploadZoneProps> = ({
         return '📝';
       case 'txt':
         return '📃';
+      case 'png':
+      case 'jpg':
+      case 'jpeg':
+      case 'gif':
+      case 'bmp':
+      case 'webp':
+        return '🖼️';
       default:
         return '📄';
     }
@@ -145,16 +153,16 @@ export const FileUploadZone: React.FC<FileUploadZoneProps> = ({
           ) : (
             <>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Upload PDF files
+                Upload Files
               </h3>
               <p className="text-gray-600 mb-4">
-                Drag and drop files here, or click to browse
+                Drag and drop PDF or image files here, or click to browse
               </p>
               <Button variant="primary" icon={Upload}>
                 Choose Files
               </Button>
               <p className="text-xs text-gray-500 mt-3">
-                Supports: {acceptedTypes.join(', ')} • Max {Math.round(maxSize / 1024 / 1024)}MB per file
+                Supports: PDF, Images (PNG, JPG, etc.) • Max {Math.round(maxSize / 1024 / 1024)}MB per file
               </p>
             </>
           )}
