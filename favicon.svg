@@ -5,10 +5,7 @@
       <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
     </linearGradient>
   </defs>
-  <!-- Document background -->
   <rect x="6" y="4" width="20" height="24" rx="2" ry="2" fill="url(#grad)" stroke="#1e40af" stroke-width="1"/>
-  <!-- Folded corner -->
   <path d="M20 4 L26 10 L20 10 Z" fill="#1e40af"/>
-  <!-- PDF text -->
   <text x="16" y="20" font-family="Arial, sans-serif" font-size="8" font-weight="bold" text-anchor="middle" fill="white">PDF</text>
 </svg>
