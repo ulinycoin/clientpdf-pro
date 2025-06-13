@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { clsx } from 'clsx';
 import { Scissors, Combine, Download, Settings, Play, Image, Minimize2 } from 'lucide-react';
@@ -5,6 +6,7 @@ import { Button } from '../atoms/Button';
 import { PDFDocument } from 'pdf-lib';
 import { saveAs } from 'file-saver';
 import jsPDF from 'jspdf';
+
 
 interface PDFProcessorProps {
   files: File[];

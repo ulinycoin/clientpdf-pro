@@ -28,7 +28,7 @@ function App() {
             <div className="flex items-center space-x-3">
               <FileText className="h-8 w-8 text-blue-600" />
               <h1 className="text-xl font-bold text-gray-900">
-                ClientPDF Pro
+                LocalPDF
               </h1>
             </div>
             <div className="flex items-center space-x-4">
@@ -44,11 +44,11 @@ function App() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
-            Modern PDF Converter
+            Local PDF Processing
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Convert, merge, split PDFs entirely in your browser. Privacy-first approach with client-side processing.
-          </p>
+		  <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+		    Process PDFs instantly in your browser. No uploads, no servers, your files never leave your device.
+		  </p>
         </div>
 
         {/* Feature Grid */}
