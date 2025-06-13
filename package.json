@@ -1,45 +1,67 @@
 {
   "name": "clientpdf-pro",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
+  "description": "🚀 Modern client-side PDF converter with interactive UI and atomic design system",
   "type": "module",
+  "homepage": "https://github.com/ulinycoin/clientpdf-pro#readme",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "type-check": "tsc --noEmit",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
-    "clsx": "^2.1.1",
+    "clsx": "^2.0.0",
     "file-saver": "^2.0.5",
-    "framer-motion": "^12.17.3",
+    "framer-motion": "^10.16.4",
     "html2canvas": "^1.4.1",
-    "jspdf": "^3.0.1",
-    "lucide-react": "^0.514.0",
+    "jspdf": "^2.5.1",
+    "lucide-react": "^0.263.1",
     "pdf-lib": "^1.17.1",
-    "pdfjs-dist": "^5.3.31",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-    "react-dropzone": "^14.3.8"
+    "pdfjs-dist": "^3.11.174",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-dropzone": "^14.2.3"
   },
   "devDependencies": {
-    "@eslint/js": "^9.25.0",
     "@tailwindcss/forms": "^0.5.10",
     "@tailwindcss/typography": "^0.5.16",
     "@types/file-saver": "^2.0.7",
-    "@types/react": "^19.1.2",
-    "@types/react-dom": "^19.1.2",
-    "@vitejs/plugin-react": "^4.4.1",
-    "autoprefixer": "^10.4.21",
-    "eslint": "^9.25.0",
-    "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-react-refresh": "^0.4.19",
-    "globals": "^16.0.0",
-    "postcss": "^8.5.5",
-    "tailwindcss": "^3.4.17",
-    "typescript": "~5.8.3",
-    "typescript-eslint": "^8.30.1",
-    "vite": "^6.3.5",
-    "vite-plugin-node-polyfills": "^0.23.0"
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "@vitejs/plugin-react": "^4.0.3",
+    "autoprefixer": "^10.4.14",
+    "eslint": "^8.45.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.3",
+    "gh-pages": "^6.3.0",
+    "postcss": "^8.4.27",
+    "tailwindcss": "^3.3.0",
+    "typescript": "^5.0.2",
+    "vite": "^4.4.5"
+  },
+  "keywords": [
+    "pdf",
+    "converter",
+    "client-side",
+    "privacy",
+    "react",
+    "typescript",
+    "atomic-design"
+  ],
+  "author": "ulinycoin",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ulinycoin/clientpdf-pro.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ulinycoin/clientpdf-pro/issues"
   }
 }
