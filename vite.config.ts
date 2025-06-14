@@ -7,5 +7,11 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: false,
+  },
+  optimizeDeps: {
+    include: ['pdfjs-dist']
+  },
+  worker: {
+    format: 'es'
   }
 })
