@@ -4,6 +4,7 @@ import { Button } from './components/atoms/Button';
 import { FileUploadZone } from './components/molecules/FileUploadZone';
 import { PDFPreview } from './components/molecules/PDFPreview';
 import { PDFProcessor } from './components/organisms/PDFProcessor';
+import { Footer } from './components/molecules/Footer'; // Добавляем импорт футера
 
 function App() {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
@@ -19,8 +20,9 @@ function App() {
       setCurrentPDF(firstPDF);
     }
   };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-gray-50 flex flex-col">
       {/* Header */}
       <header className="border-b border-gray-200 bg-white/80 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -41,14 +43,14 @@ function App() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
             Local PDF Processing
           </h2>
-		  <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-		    Process PDFs instantly in your browser. No uploads, no servers, your files never leave your device.
-		  </p>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Process PDFs instantly in your browser. No uploads, no servers, your files never leave your device.
+          </p>
         </div>
 
         {/* Feature Grid */}
@@ -130,6 +132,9 @@ function App() {
           </div>
         )}
       </main>
+
+      {/* Footer - добавляем в конец */}
+      <Footer />
     </div>
   );
 }
