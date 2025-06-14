@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { clsx } from 'clsx';
-import { FileText, ZoomIn, ZoomOut, RotateCw, Download } from 'lucide-react';
+import { FileText, ZoomIn, ZoomOut, RotateCw, AlertCircle } from 'lucide-react';
 import { Button } from '../atoms/Button';
 
 interface PDFPreviewProps {
@@ -26,24 +26,49 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({
   const [pageNumber, setPageNumber] = useState(1);
   const [scale, setScale] = useState(1.2);
   const [rotation, setRotation] = useState(0);
+  const [pdfjsLoaded, setPdfjsLoaded] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [pdfDoc, setPdfDoc] = useState<any>(null);
 
-  // Загружаем PDF.js
+  // Загружаем PDF.js с улучшенной обработкой ошибок
   useEffect(() => {
     const loadPDFJS = async () => {
-      if (!window.pdfjsLib) {
-        const script = document.createElement('script');
-        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
-        script.onload = () => {
+      try {
+        console.log('🔄 Starting PDF.js load...');
+        
+        if (window.pdfjsLib) {
+          console.log('✅ PDF.js already loaded');
+          setPdfjsLoaded(true);
+          return;
+        }
+
+        // Загружаем основную библиотеку
+        await new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+          script.onload = () => {
+            console.log('✅ PDF.js main library loaded');
+            resolve(true);
+          };
+          script.onerror = () => {
+            console.error('❌ Failed to load PDF.js');
+            reject(new Error('Failed to load PDF.js'));
+          };
+          document.head.appendChild(script);
+        });
+
+        // Настраиваем worker
+        if (window.pdfjsLib) {
           window.pdfjsLib.GlobalWorkerOptions.workerSrc = 
             'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-        };
-        document.head.appendChild(script);
-        
-        return new Promise((resolve) => {
-          script.onload = resolve;
-        });
+          
+          console.log('✅ PDF.js worker configured');
+          setPdfjsLoaded(true);
+        }
+      } catch (err) {
+        console.error('❌ Error loading PDF.js:', err);
+        setError('Failed to load PDF.js library');
+        setLoading(false);
       }
     };
 
@@ -53,14 +78,26 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({
   // Загружаем и отображаем PDF
   useEffect(() => {
     const loadPDF = async () => {
-      if (!file || !window.pdfjsLib) return;
+      if (!file || !pdfjsLoaded || !window.pdfjsLib) {
+        console.log('⏳ Waiting for PDF.js...', { file: !!file, pdfjsLoaded, pdfjsLib: !!window.pdfjsLib });
+        return;
+      }
 
       try {
+        console.log('🔄 Loading PDF file:', file.name);
         setLoading(true);
         setError(null);
 
         const arrayBuffer = await file.arrayBuffer();
-        const pdf = await window.pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+        console.log('✅ File read as ArrayBuffer, size:', arrayBuffer.byteLength);
+        
+        const loadingTask = window.pdfjsLib.getDocument({ 
+          data: arrayBuffer,
+          verbosity: 0 // Reduce console noise
+        });
+        
+        const pdf = await loadingTask.promise;
+        console.log('✅ PDF document loaded, pages:', pdf.numPages);
         
         setPdfDoc(pdf);
         setNumPages(pdf.numPages);
@@ -69,20 +106,25 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({
         await renderPage(pdf, pageNumber);
         setLoading(false);
       } catch (err) {
-        console.error('Error loading PDF:', err);
-        setError('Failed to load PDF. Please try a different file.');
+        console.error('❌ Error loading PDF:', err);
+        setError(`Failed to load PDF: ${err.message || 'Unknown error'}`);
         setLoading(false);
       }
     };
 
     loadPDF();
-  }, [file, onPagesLoaded]);
+  }, [file, pdfjsLoaded, pageNumber]);
 
   // Рендерим страницу
   const renderPage = async (pdf: any, pageNum: number) => {
-    if (!pdf || !canvasRef.current) return;
+    if (!pdf || !canvasRef.current) {
+      console.log('⏳ Cannot render: missing pdf or canvas');
+      return;
+    }
 
     try {
+      console.log('🔄 Rendering page:', pageNum);
+      
       const page = await pdf.getPage(pageNum);
       const canvas = canvasRef.current;
       const context = canvas.getContext('2d');
@@ -104,18 +146,19 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({
       };
 
       await page.render(renderContext).promise;
+      console.log('✅ Page rendered successfully');
     } catch (err) {
-      console.error('Error rendering page:', err);
-      setError('Error rendering PDF page');
+      console.error('❌ Error rendering page:', err);
+      setError(`Error rendering page: ${err.message}`);
     }
   };
 
   // Обновляем отображение при изменении параметров
   useEffect(() => {
-    if (pdfDoc) {
+    if (pdfDoc && pdfjsLoaded) {
       renderPage(pdfDoc, pageNumber);
     }
-  }, [pdfDoc, pageNumber, scale, rotation]);
+  }, [pdfDoc, pageNumber, scale, rotation, pdfjsLoaded]);
 
   const handleZoomIn = () => {
     setScale(prev => Math.min(prev + 0.2, 3));
@@ -146,6 +189,9 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({
         <div className="text-center">
           <div className="animate-spin h-8 w-8 border-2 border-blue-600 border-t-transparent rounded-full mx-auto mb-4"></div>
           <p className="text-gray-600">Loading PDF...</p>
+          <p className="text-xs text-gray-500 mt-2">
+            PDF.js loaded: {pdfjsLoaded ? '✅' : '⏳'} | File: {file.name}
+          </p>
         </div>
       </div>
     );
@@ -154,15 +200,23 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({
   if (error) {
     return (
       <div className={clsx(
-        'bg-red-50 rounded-lg flex items-center justify-center p-8',
+        'bg-red-50 rounded-lg p-6',
         className
       )}>
         <div className="text-center">
-          <FileText className="h-16 w-16 text-red-400 mx-auto mb-4" />
-          <p className="text-red-700 font-medium">{error}</p>
-          <p className="text-sm text-red-600 mt-2">
+          <AlertCircle className="h-16 w-16 text-red-400 mx-auto mb-4" />
+          <p className="text-red-700 font-medium mb-2">{error}</p>
+          <p className="text-sm text-red-600">
             {file.name} • {(file.size / 1024 / 1024).toFixed(2)} MB
           </p>
+          <Button 
+            variant="secondary" 
+            size="sm" 
+            className="mt-4"
+            onClick={() => window.location.reload()}
+          >
+            Try Reload Page
+          </Button>
         </div>
       </div>
     );
