@@ -20,6 +20,7 @@
     "npm": ">=8.0.0"
   },
   "dependencies": {
+    "@types/react-router-dom": "^5.3.3",
     "@vercel/analytics": "^1.5.0",
     "clsx": "^2.0.0",
     "file-saver": "^2.0.5",
@@ -31,7 +32,8 @@
     "pdfjs-dist": "^3.11.174",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-dropzone": "^14.2.3"
+    "react-dropzone": "^14.2.3",
+    "react-router-dom": "^7.6.2"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.10",

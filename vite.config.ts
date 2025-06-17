@@ -7,11 +7,18 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: false,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          router: ['react-router-dom'],
+          pdf: ['pdf-lib', 'jspdf', 'pdfjs-dist'],
+        }
+      }
+    }
   },
-  optimizeDeps: {
-    include: ['pdfjs-dist']
-  },
-  worker: {
-    format: 'es'
+  // Для SPA роутинга
+  server: {
+    historyApiFallback: true
   }
 })
