@@ -1,56 +1,40 @@
-export const robotsTxtContent = `User-agent: *
+User-agent: *
 Allow: /
-
-# Priority pages for crawling
-Allow: /merge-pdf/
-Allow: /split-pdf/
-Allow: /compress-pdf/
-Allow: /images-to-pdf/
-Allow: /blog/
-
-# Block unnecessary paths
-Disallow: /src/
-Disallow: /_next/static/
-Disallow: /api/
-Disallow: *.json$
 
 # Sitemap location
 Sitemap: https://localpdf.online/sitemap.xml
-Sitemap: https://localpdf.online/blog-sitemap.xml
 
-# Crawl delay to prevent overloading
+# Crawl delay
 Crawl-delay: 1
 
-# Specific bots
+# Allow main pages
+Allow: /merge-pdf
+Allow: /split-pdf
+Allow: /compress-pdf
+Allow: /images-to-pdf
+Allow: /faq
+Allow: /privacy
+Allow: /terms
+
+# Block assets and service files  
+Disallow: /assets/
+Disallow: /*.js$
+Disallow: /*.css$
+Disallow: /vite.svg
+Disallow: /404.html
+
+# Allow all major search engines
 User-agent: Googlebot
 Allow: /
-Crawl-delay: 0
 
 User-agent: Bingbot
 Allow: /
-Crawl-delay: 1
 
-User-agent: YandexBot
+User-agent: Slurp
 Allow: /
-Crawl-delay: 2`;
 
-// 6. Создать компонент для Page Speed оптимизации
-// src/components/organisms/LazyComponent.tsx
-import React, { Suspense, lazy } from 'react';
+User-agent: DuckDuckBot
+Allow: /
 
-const LazyPDFProcessor = lazy(() => 
-  import('./PDFProcessor').then(module => ({ default: module.PDFProcessor }))
-);
-
-export const OptimizedPDFProcessor: React.FC<any> = (props) => {
-  return (
-    <Suspense fallback={
-      <div className="flex items-center justify-center p-8">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-        <span className="ml-3 text-gray-600">Загружаем PDF инструменты...</span>
-      </div>
-    }>
-      <LazyPDFProcessor {...props} />
-    </Suspense>
-  );
-};
+User-agent: Baiduspider
+Allow: /

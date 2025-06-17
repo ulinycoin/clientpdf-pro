@@ -1,12 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Combine, ArrowLeft, Info } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '../components/atoms/Button';
 import { FileUploadZone } from '../components/molecules/FileUploadZone';
 import { PDFProcessor } from '../components/organisms/PDFProcessor';
+import { usePageSchema, toolSchemas } from '../hooks/usePageSchema';
 
 export const MergePDFPage: React.FC = () => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+
+  // Добавляем structured data для этой страницы
+  usePageSchema(toolSchemas.mergePdf, 'merge-pdf');
+
+  // Обновляем title и meta для SEO
+  useEffect(() => {
+    document.title = 'Merge PDF Files Online Free - LocalPDF';
+    
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', 
+        'Combine multiple PDF documents into a single file online. Free, secure, and works in your browser. No uploads to servers required.'
+      );
+    }
+  }, []);
 
   const handleFilesSelected = (files: File[]) => {
     setSelectedFiles(files);

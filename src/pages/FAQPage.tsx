@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronDown, ChevronUp, Shield, Zap, Globe, FileText } from 'lucide-react';
 import { clsx } from 'clsx';
 
@@ -82,6 +82,56 @@ const categories = [
 export const FAQPage: React.FC = () => {
   const [openItems, setOpenItems] = useState<Set<string>>(new Set());
   const [selectedCategory, setSelectedCategory] = useState<string>('general');
+
+  // Добавляем structured data для FAQ
+  useEffect(() => {
+    const faqSchema = {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": faqData.map(item => ({
+        "@type": "Question",
+        "name": item.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": item.answer
+        }
+      }))
+    };
+
+    // Удаляем существующий script если есть
+    const existingScript = document.querySelector('script[data-schema="faq"]');
+    if (existingScript) {
+      existingScript.remove();
+    }
+
+    // Добавляем новый script
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.setAttribute('data-schema', 'faq');
+    script.text = JSON.stringify(faqSchema);
+    document.head.appendChild(script);
+
+    // Cleanup при размонтировании
+    return () => {
+      const scriptToRemove = document.querySelector('script[data-schema="faq"]');
+      if (scriptToRemove) {
+        scriptToRemove.remove();
+      }
+    };
+  }, []);
+
+  // Обновляем title и meta для SEO
+  useEffect(() => {
+    document.title = 'FAQ - LocalPDF | Frequently Asked Questions';
+    
+    // Обновляем meta description
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', 
+        'Find answers to frequently asked questions about LocalPDF. Learn about our privacy-first PDF tools, supported formats, and how to use our browser-based PDF processing features.'
+      );
+    }
+  }, []);
 
   const toggleItem = (id: string) => {
     const newOpenItems = new Set(openItems);
