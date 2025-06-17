@@ -13,6 +13,9 @@
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://localpdf.online">
     
+    <!-- Google Search Console верификация (заменить на реальный код) -->
+    <meta name="google-site-verification" content="YkUCbfJ6xGMa-PzjFZD0W-73hS9BOG_udzm4HsbA8Yg" />
+    
     <!-- Language and Content -->
     <meta name="google" content="notranslate" />
     <meta http-equiv="Content-Language" content="en" />
@@ -43,7 +46,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <!-- <link rel="manifest" href="/site.webmanifest"> -->
+    <link rel="manifest" href="/site.webmanifest">
     <meta name="theme-color" content="#2563eb">
     <meta name="msapplication-TileColor" content="#2563eb">
 	
@@ -56,6 +59,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	
+	<!-- SPA routing script -->
 	<script type="text/javascript">
 	  (function(l) {
 	    if (l.search[1] === '/' ) {
@@ -114,7 +118,7 @@
     
     <!-- Security -->
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
-
+    <meta http-equiv="X-Frame-Options" content="DENY">
     <meta http-equiv="X-XSS-Protection" content="1; mode=block">
     <meta name="referrer" content="strict-origin-when-cross-origin">
   </head>
@@ -122,7 +126,7 @@
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
     
-	<!-- Замени GA_MEASUREMENT_ID на свой реальный ID -->
+	<!-- Google Analytics -->
 	<script async src="https://www.googletagmanager.com/gtag/js?id=G-MS36WTHPCZ"></script>
 	<script>
 	  window.dataLayer = window.dataLayer || [];
