@@ -1,28 +1,44 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Combine, ArrowLeft, Info } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '../components/atoms/Button';
 import { FileUploadZone } from '../components/molecules/FileUploadZone';
 import { PDFProcessor } from '../components/organisms/PDFProcessor';
-import { usePageSchema, toolSchemas } from '../hooks/usePageSchema';
+import { useSEO } from '../hooks/useSEO';
 
 export const MergePDFPage: React.FC = () => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
-  // Добавляем structured data для этой страницы
-  usePageSchema(toolSchemas.mergePdf, 'merge-pdf');
-
-  // Обновляем title и meta для SEO
-  useEffect(() => {
-    document.title = 'Merge PDF Files Online Free - LocalPDF';
-    
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', 
-        'Combine multiple PDF documents into a single file online. Free, secure, and works in your browser. No uploads to servers required.'
-      );
+  // SEO optimization for merge PDF page
+  useSEO({
+    title: 'Merge PDF Files Online Free - Combine Multiple PDFs | LocalPDF',
+    description: 'Merge multiple PDF files into one document for free. Fast, secure PDF merger that works in your browser. No file uploads, complete privacy guaranteed.',
+    keywords: 'merge pdf, combine pdf, join pdf files, merge pdf online, pdf merger, combine documents',
+    canonical: 'https://localpdf.online/merge-pdf',
+    ogImage: 'https://localpdf.online/og-image.png',
+    schemaData: {
+      '@context': 'https://schema.org',
+      '@type': 'WebApplication',
+      'name': 'PDF Merger - LocalPDF',
+      'description': 'Merge multiple PDF files into a single document',
+      'url': 'https://localpdf.online/merge-pdf',
+      'applicationCategory': 'Productivity',
+      'operatingSystem': 'Web Browser',
+      'isAccessibleForFree': true,
+      'offers': {
+        '@type': 'Offer',
+        'price': '0',
+        'priceCurrency': 'USD'
+      },
+      'featureList': [
+        'Merge up to 20 PDF files',
+        'Drag and drop interface',
+        'Custom page order',
+        'No file uploads required',
+        'Privacy-first processing'
+      ]
     }
-  }, []);
+  });
 
   const handleFilesSelected = (files: File[]) => {
     setSelectedFiles(files);
@@ -120,6 +136,22 @@ export const MergePDFPage: React.FC = () => {
           <li>Consolidating multiple forms or applications</li>
           <li>Creating comprehensive documentation packages</li>
         </ul>
+
+        <h3>How to Merge PDF Files Online</h3>
+        <ol>
+          <li><strong>Upload your PDFs:</strong> Click the upload area above or drag and drop your PDF files</li>
+          <li><strong>Arrange order:</strong> Files will be merged in the order they're uploaded</li>
+          <li><strong>Process files:</strong> Click merge to combine your PDFs</li>
+          <li><strong>Download result:</strong> Save your merged PDF file to your device</li>
+        </ol>
+
+        <h3>Why Use Browser-Based PDF Merging?</h3>
+        <p>
+          Unlike traditional online PDF tools that upload your files to remote servers, LocalPDF 
+          processes everything locally in your browser. This means your sensitive documents never 
+          leave your device, ensuring maximum privacy and security. Plus, it's faster since there's 
+          no upload or download time.
+        </p>
       </div>
 
       {/* Back to Home */}
