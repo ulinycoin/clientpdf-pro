@@ -8,6 +8,7 @@ import { SplitPDFPage } from './pages/SplitPDFPage';
 import { CompressPDFPage } from './pages/CompressPDFPage';
 import { ImagesToPDFPage } from './pages/ImagesToPDFPage';
 import { FAQPage } from './pages/FAQPage';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
             <Route path="/compress-pdf" element={<CompressPDFPage />} />
             <Route path="/images-to-pdf" element={<ImagesToPDFPage />} />
             <Route path="/faq" element={<FAQPage />} />
+			<Route path="/privacy" element={<PrivacyPolicy />} />
           </Routes>
         </Layout>
       </Router>
