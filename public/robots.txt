@@ -1,40 +1,23 @@
 User-agent: *
 Allow: /
 
-# Sitemap location
+# Important files
 Sitemap: https://localpdf.online/sitemap.xml
 
-# Crawl delay
+# Prevent crawling of unnecessary files
+Disallow: /src/
+Disallow: /node_modules/
+Disallow: /*.json$
+Disallow: /*.js.map$
+Disallow: /*.css.map$
+
+# Allow crawling of main application files
+Allow: /*.css$
+Allow: /*.js$
+Allow: /*.svg$
+Allow: /*.png$
+Allow: /*.jpg$
+Allow: /*.webp$
+
+# Crawl delay (optional, can help with server load)
 Crawl-delay: 1
-
-# Allow main pages
-Allow: /merge-pdf
-Allow: /split-pdf
-Allow: /compress-pdf
-Allow: /images-to-pdf
-Allow: /faq
-Allow: /privacy
-Allow: /terms
-
-# Block assets and service files  
-Disallow: /assets/
-Disallow: /*.js$
-Disallow: /*.css$
-Disallow: /vite.svg
-Disallow: /404.html
-
-# Allow all major search engines
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: Slurp
-Allow: /
-
-User-agent: DuckDuckBot
-Allow: /
-
-User-agent: Baiduspider
-Allow: /
