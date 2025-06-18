@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Shield, Lock, Eye, Server, Cookie, Github, Mail, FileCheck, UserCheck } from 'lucide-react';
+import { useSEO } from '../hooks/useSEO';
 
 interface PrivacyPolicyProps {
   companyName?: string;
@@ -13,6 +14,29 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({
   email = 'localpdfpro@gmail.com',
   lastUpdated = 'December 2024'
 }) => {
+  // SEO optimization for privacy policy page
+  useSEO({
+    title: 'Privacy Policy - LocalPDF | Data Protection & Security',
+    description: 'Learn about LocalPDF\'s privacy policy and data protection measures. We process files locally in your browser with no uploads to servers for complete privacy.',
+    keywords: 'privacy policy, data protection, PDF privacy, browser processing, GDPR compliance',
+    canonical: 'https://localpdf.online/privacy',
+    ogImage: 'https://localpdf.online/og-image.png',
+    schemaData: {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      'name': 'Privacy Policy - LocalPDF',
+      'description': 'LocalPDF privacy policy explaining our commitment to user privacy and data protection',
+      'url': 'https://localpdf.online/privacy',
+      'publisher': {
+        '@type': 'Organization',
+        'name': 'LocalPDF',
+        'url': 'https://localpdf.online'
+      },
+      'dateModified': '2024-12-01',
+      'inLanguage': 'en-US'
+    }
+  });
+
   const fadeIn = {
     initial: { opacity: 0, y: 20 },
     animate: { opacity: 1, y: 0 },
@@ -191,6 +215,53 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({
             </a>
           </div>
         </div>
+      </motion.div>
+
+      {/* SEO Content Section */}
+      <motion.div className="mb-12 prose prose-gray max-w-none" {...fadeIn}>
+        <h2>Our Privacy Commitment</h2>
+        <p>
+          LocalPDF is built with privacy by design. Unlike traditional online PDF tools that require 
+          uploading your files to remote servers, LocalPDF processes everything locally in your browser. 
+          This fundamental architectural choice ensures that your sensitive documents never leave your device.
+        </p>
+        
+        <h3>How Local Processing Protects Your Privacy</h3>
+        <p>
+          When you use LocalPDF, your files are loaded directly into your browser's memory and processed 
+          using client-side JavaScript libraries. This means:
+        </p>
+        <ul>
+          <li>No file uploads to external servers</li>
+          <li>No data transmission over the internet</li>
+          <li>No risk of data breaches or unauthorized access</li>
+          <li>Full compliance with GDPR and other privacy regulations</li>
+        </ul>
+
+        <h3>Data We Collect</h3>
+        <p>
+          LocalPDF collects minimal anonymous usage statistics to improve our service, including:
+        </p>
+        <ul>
+          <li>Which features are used most frequently</li>
+          <li>Browser type and version for compatibility</li>
+          <li>General performance metrics</li>
+        </ul>
+        <p>
+          We never collect file names, file contents, or any personally identifiable information.
+        </p>
+
+        <h3>Your Rights Under GDPR</h3>
+        <p>
+          As a user of LocalPDF, you have complete control over your data. Since we don't store your files 
+          or personal information on our servers, you can:
+        </p>
+        <ul>
+          <li>Use our service anonymously without creating an account</li>
+          <li>Clear your browser data to remove any local storage</li>
+          <li>Opt out of analytics using browser settings</li>
+          <li>Review our complete source code on GitHub</li>
+        </ul>
       </motion.div>
 
       {/* Quick Links */}
