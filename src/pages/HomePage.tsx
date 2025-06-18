@@ -5,11 +5,44 @@ import { Button } from '../components/atoms/Button';
 import { FileUploadZone } from '../components/molecules/FileUploadZone';
 import { PDFPreview } from '../components/molecules/PDFPreview';
 import { PDFProcessor } from '../components/organisms/PDFProcessor';
+import { useSEO } from '../hooks/useSEO';
 
 export const HomePage: React.FC = () => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [currentPDF, setCurrentPDF] = useState<File | null>(null);
   const uploadZoneRef = useRef<HTMLDivElement>(null);
+
+  // SEO optimization for homepage
+  useSEO({
+    title: 'LocalPDF - Free Online PDF Tools | Merge, Split, Compress PDFs',
+    description: 'Free online PDF tools that work entirely in your browser. Merge, split, compress PDF files and convert images to PDF. 100% private and secure - no files uploaded to servers.',
+    keywords: 'PDF tools, merge PDF, split PDF, compress PDF, PDF converter, online PDF, free PDF tools, privacy PDF, browser PDF, convert images to PDF',
+    canonical: 'https://localpdf.online/',
+    ogImage: 'https://localpdf.online/og-image.png',
+    schemaData: {
+      '@context': 'https://schema.org',
+      '@type': 'WebApplication',
+      'name': 'LocalPDF',
+      'description': 'Free online PDF tools that work entirely in your browser',
+      'url': 'https://localpdf.online/',
+      'applicationCategory': 'Productivity',
+      'operatingSystem': 'Web Browser',
+      'permissions': 'No data transmission required',
+      'offers': {
+        '@type': 'Offer',
+        'price': '0',
+        'priceCurrency': 'USD'
+      },
+      'featureList': [
+        'Merge PDF files',
+        'Split PDF documents',
+        'Compress PDF files',
+        'Convert images to PDF',
+        'Client-side processing',
+        'No data upload required'
+      ]
+    }
+  });
 
   const handleFilesSelected = (files: File[]) => {
     console.log('Selected files:', files);
