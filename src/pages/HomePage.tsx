@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { FileText, Upload, Download, Settings, ArrowRight } from 'lucide-react';
 import { Button } from '../components/atoms/Button';
@@ -9,6 +9,7 @@ import { PDFProcessor } from '../components/organisms/PDFProcessor';
 export const HomePage: React.FC = () => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [currentPDF, setCurrentPDF] = useState<File | null>(null);
+  const uploadZoneRef = useRef<HTMLDivElement>(null);
 
   const handleFilesSelected = (files: File[]) => {
     console.log('Selected files:', files);
@@ -21,34 +22,41 @@ export const HomePage: React.FC = () => {
     }
   };
 
+  const scrollToUpload = () => {
+    uploadZoneRef.current?.scrollIntoView({ 
+      behavior: 'smooth',
+      block: 'center'
+    });
+  };
+
   const tools = [
     {
       title: 'Merge PDF Files',
       description: 'Combine multiple PDF documents into a single file',
       icon: '🔗',
       href: '/merge-pdf',
-      color: 'blue'
+      colorClasses: 'hover:border-blue-300'
     },
     {
       title: 'Split PDF',
       description: 'Extract pages or split PDF into separate documents',
       icon: '✂️',
       href: '/split-pdf',
-      color: 'green'
+      colorClasses: 'hover:border-green-300'
     },
     {
       title: 'Compress PDF',
       description: 'Reduce PDF file size while maintaining quality',
       icon: '🗜️',
       href: '/compress-pdf',
-      color: 'orange'
+      colorClasses: 'hover:border-orange-300'
     },
     {
       title: 'Images to PDF',
       description: 'Convert JPG, PNG and other images to PDF format',
       icon: '🖼️',
       href: '/images-to-pdf',
-      color: 'purple'
+      colorClasses: 'hover:border-purple-300'
     }
   ];
 
@@ -57,7 +65,7 @@ export const HomePage: React.FC = () => {
       {/* Hero Section */}
       <div className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-          Local PDF Processing
+          LocalPDF - Free PDF Tools
         </h1>
         <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto mb-8">
           Process PDFs instantly in your browser. No uploads, no servers, your files never leave your device.
@@ -69,7 +77,7 @@ export const HomePage: React.FC = () => {
           <Button
             size="lg"
             icon={Upload}
-            onClick={() => document.getElementById('file-upload')?.click()}
+            onClick={scrollToUpload}
             className="px-8"
           >
             Start Processing Files
@@ -93,7 +101,7 @@ export const HomePage: React.FC = () => {
           <Link
             key={index}
             to={tool.href}
-            className={`group p-6 bg-white rounded-xl border-2 border-gray-200 hover:border-${tool.color}-300 hover:shadow-lg transition-all duration-200`}
+            className={`group p-6 bg-white rounded-xl border-2 border-gray-200 ${tool.colorClasses} hover:shadow-lg transition-all duration-200`}
           >
             <div className="text-4xl mb-4">{tool.icon}</div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
@@ -112,7 +120,7 @@ export const HomePage: React.FC = () => {
 
       {/* Feature Highlights */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-        <div className="card card-hover p-6">
+        <div className="bg-white rounded-xl p-6 border border-gray-200 hover:shadow-lg transition-all duration-200">
           <Upload className="h-12 w-12 text-blue-600 mb-4" />
           <h3 className="text-lg font-semibold text-gray-900 mb-2">
             Drag & Drop Upload
@@ -122,7 +130,7 @@ export const HomePage: React.FC = () => {
           </p>
         </div>
 
-        <div className="card card-hover p-6">
+        <div className="bg-white rounded-xl p-6 border border-gray-200 hover:shadow-lg transition-all duration-200">
           <FileText className="h-12 w-12 text-green-600 mb-4" />
           <h3 className="text-lg font-semibold text-gray-900 mb-2">
             Interactive Preview
@@ -132,7 +140,7 @@ export const HomePage: React.FC = () => {
           </p>
         </div>
 
-        <div className="card card-hover p-6">
+        <div className="bg-white rounded-xl p-6 border border-gray-200 hover:shadow-lg transition-all duration-200">
           <Download className="h-12 w-12 text-orange-600 mb-4" />
           <h3 className="text-lg font-semibold text-gray-900 mb-2">
             Instant Download
@@ -155,7 +163,7 @@ export const HomePage: React.FC = () => {
         </div>
 
         {/* Upload Zone */}
-        <div id="file-upload">
+        <div ref={uploadZoneRef}>
           <FileUploadZone 
             onFilesSelected={handleFilesSelected}
             className="max-w-2xl mx-auto"
