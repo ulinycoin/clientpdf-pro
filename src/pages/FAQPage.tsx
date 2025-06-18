@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronDown, ChevronUp, Shield, Zap, Globe, FileText } from 'lucide-react';
 import { clsx } from 'clsx';
+import { useSEO } from '../hooks/useSEO';
 
 interface FAQItem {
   id: string;
@@ -83,9 +84,14 @@ export const FAQPage: React.FC = () => {
   const [openItems, setOpenItems] = useState<Set<string>>(new Set());
   const [selectedCategory, setSelectedCategory] = useState<string>('general');
 
-  // Добавляем structured data для FAQ
-  useEffect(() => {
-    const faqSchema = {
+  // SEO optimization for FAQ page
+  useSEO({
+    title: 'FAQ - Frequently Asked Questions | LocalPDF',
+    description: 'Find answers to frequently asked questions about LocalPDF. Learn about our privacy-first PDF tools, supported formats, and how to use our browser-based PDF processing features.',
+    keywords: 'PDF tools FAQ, LocalPDF help, PDF processing questions, browser PDF tools, privacy PDF',
+    canonical: 'https://localpdf.online/faq',
+    ogImage: 'https://localpdf.online/og-image.png',
+    schemaData: {
       "@context": "https://schema.org",
       "@type": "FAQPage",
       "mainEntity": faqData.map(item => ({
@@ -96,42 +102,8 @@ export const FAQPage: React.FC = () => {
           "text": item.answer
         }
       }))
-    };
-
-    // Удаляем существующий script если есть
-    const existingScript = document.querySelector('script[data-schema="faq"]');
-    if (existingScript) {
-      existingScript.remove();
     }
-
-    // Добавляем новый script
-    const script = document.createElement('script');
-    script.type = 'application/ld+json';
-    script.setAttribute('data-schema', 'faq');
-    script.text = JSON.stringify(faqSchema);
-    document.head.appendChild(script);
-
-    // Cleanup при размонтировании
-    return () => {
-      const scriptToRemove = document.querySelector('script[data-schema="faq"]');
-      if (scriptToRemove) {
-        scriptToRemove.remove();
-      }
-    };
-  }, []);
-
-  // Обновляем title и meta для SEO
-  useEffect(() => {
-    document.title = 'FAQ - LocalPDF | Frequently Asked Questions';
-    
-    // Обновляем meta description
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', 
-        'Find answers to frequently asked questions about LocalPDF. Learn about our privacy-first PDF tools, supported formats, and how to use our browser-based PDF processing features.'
-      );
-    }
-  }, []);
+  });
 
   const toggleItem = (id: string) => {
     const newOpenItems = new Set(openItems);
@@ -267,6 +239,17 @@ export const FAQPage: React.FC = () => {
           When you upload a file, it's loaded into your browser's memory and processed using client-side code. 
           The processed file is then made available for download without any server communication.
         </p>
+
+        <h3>Common Questions About PDF Tools</h3>
+        <p>
+          Users often ask about the safety, reliability, and functionality of online PDF tools. LocalPDF addresses these concerns by:
+        </p>
+        <ul>
+          <li>Processing files entirely offline after the initial page load</li>
+          <li>Supporting all major browsers and operating systems</li>
+          <li>Maintaining original document quality and formatting</li>
+          <li>Providing unlimited usage without registration requirements</li>
+        </ul>
       </div>
     </div>
   );
