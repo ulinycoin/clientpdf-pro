@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: './',
+  base: process.env.GITHUB_ACTIONS ? '/clientpdf-pro/' : './',
   
   // Optimizations
   build: {
@@ -60,7 +60,7 @@ export default defineConfig({
       }
     },
     
-    // Используем terser для максимальной оптимизации (теперь установлен)
+    // Используем terser для максимальной оптимизации
     minify: 'terser',
     terserOptions: {
       compress: {
