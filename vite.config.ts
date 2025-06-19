@@ -36,8 +36,6 @@ export default defineConfig({
         
         // Именование chunks для лучшего кеширования
         chunkFileNames: (chunkInfo) => {
-          const facadeModuleId = chunkInfo.facadeModuleId ? 
-            chunkInfo.facadeModuleId.split('/').pop() : 'chunk';
           return `assets/[name]-[hash].js`;
         },
         
@@ -62,22 +60,8 @@ export default defineConfig({
       }
     },
     
-    // Минификация - используем esbuild как fallback если terser не работает
-    minify: process.env.NODE_ENV === 'production' ? 'terser' : 'esbuild',
-    
-    // Terser options (только если terser доступен)
-    ...(process.env.NODE_ENV === 'production' && {
-      terserOptions: {
-        compress: {
-          drop_console: true, // Убираем console.log в продакшене
-          drop_debugger: true,
-          pure_funcs: ['console.log', 'console.info'], // Убираем specific console methods
-        },
-        format: {
-          comments: false, // Убираем комментарии
-        },
-      }
-    }),
+    // Используем esbuild для minification (более надёжно)
+    minify: 'esbuild',
     
     // CSS минификация
     cssMinify: true,
@@ -119,6 +103,11 @@ export default defineConfig({
       'pdfjs-dist',
       'html2canvas'
     ]
+  },
+  
+  // esbuild configuration для лучшей оптимизации
+  esbuild: {
+    drop: process.env.NODE_ENV === 'production' ? ['console', 'debugger'] : [],
   },
   
   // Worker configuration для PDF Web Worker
