@@ -60,8 +60,22 @@ export default defineConfig({
       }
     },
     
-    // Используем esbuild для minification (более надёжно)
-    minify: 'esbuild',
+    // Используем terser для максимальной оптимизации (теперь установлен)
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true, // Убираем console.log в продакшене
+        drop_debugger: true,
+        pure_funcs: ['console.log', 'console.info'], // Убираем specific console methods
+        passes: 2, // Двойной проход для лучшей минификации
+      },
+      format: {
+        comments: false, // Убираем комментарии
+      },
+      mangle: {
+        safari10: true, // Поддержка Safari 10
+      },
+    },
     
     // CSS минификация
     cssMinify: true,
@@ -103,11 +117,6 @@ export default defineConfig({
       'pdfjs-dist',
       'html2canvas'
     ]
-  },
-  
-  // esbuild configuration для лучшей оптимизации
-  esbuild: {
-    drop: process.env.NODE_ENV === 'production' ? ['console', 'debugger'] : [],
   },
   
   // Worker configuration для PDF Web Worker
