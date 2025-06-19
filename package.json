@@ -52,11 +52,7 @@
     "gh-pages": "^6.3.0",
     "postcss": "^8.4.27",
     "tailwindcss": "^3.3.0",
-<<<<<<< Updated upstream
     "terser": "^5.36.0",
-=======
-    "terser": "^5.43.1",
->>>>>>> Stashed changes
     "typescript": "^5.0.2",
     "vite": "^6.3.5"
   },
