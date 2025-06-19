@@ -1,16 +1,39 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom';
-import { FileText, Upload, Download, Settings, ArrowRight, Shield, Zap, Lock } from 'lucide-react';
+import { FileText, Upload, Download, Settings, ArrowRight, Shield, Zap, Lock, Loader2 } from 'lucide-react';
 import { clsx } from 'clsx';
 import { Button } from '../components/atoms/Button';
 import { FileUploadZone } from '../components/molecules/FileUploadZone';
-import { PDFPreview } from '../components/molecules/PDFPreview';
-import { PDFProcessor } from '../components/organisms/PDFProcessor';
 import { InternalLinkSection } from '../components/molecules/InternalLinkSection';
+
+// Lazy loading PDF компонентов для уменьшения размера основного bundle
+const PDFPreview = lazy(() => 
+  import('../components/molecules/PDFPreview').then(module => ({
+    default: module.PDFPreview
+  }))
+);
+
+const PDFProcessor = lazy(() => 
+  import('../components/organisms/PDFProcessor').then(module => ({
+    default: module.PDFProcessor
+  }))
+);
+
+// Компонент загрузки для PDF функций
+const PDFLoadingFallback: React.FC<{ message?: string }> = ({ 
+  message = "Loading PDF tools..." 
+}) => (
+  <div className="flex flex-col items-center justify-center p-8 bg-gray-50 rounded-lg border border-gray-200">
+    <Loader2 className="h-8 w-8 animate-spin text-blue-500 mb-4" />
+    <p className="text-gray-600 font-medium">{message}</p>
+    <p className="text-sm text-gray-500 mt-1">First time may take a moment</p>
+  </div>
+);
 
 export const HomePage: React.FC = () => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [currentPDF, setCurrentPDF] = useState<File | null>(null);
+  const [showPDFTools, setShowPDFTools] = useState(false);
 
   useEffect(() => {
     document.title = 'LocalPDF - Free Online PDF Tools | Privacy-First PDF Processing';
@@ -24,6 +47,7 @@ export const HomePage: React.FC = () => {
     const firstPDF = files.find(file => file.type === 'application/pdf');
     if (firstPDF) {
       setCurrentPDF(firstPDF);
+      setShowPDFTools(true); // Активируем lazy loading PDF компонентов
     }
   };
 
@@ -146,7 +170,10 @@ export const HomePage: React.FC = () => {
                     key={index}
                     variant={currentPDF === file ? 'primary' : 'secondary'}
                     size="sm"
-                    onClick={() => setCurrentPDF(file)}
+                    onClick={() => {
+                      setCurrentPDF(file);
+                      setShowPDFTools(true);
+                    }}
                   >
                     {file.name.substring(0, 20)}...
                   </Button>
@@ -154,11 +181,20 @@ export const HomePage: React.FC = () => {
               </div>
             </div>
             
-            <PDFPreview
-              file={currentPDF}
-              className="h-96 lg:h-[600px]"
-              onPagesLoaded={(count) => console.log(`PDF loaded with ${count} pages`)}
-            />
+            {/* Lazy loaded PDF Preview */}
+            {showPDFTools && currentPDF && (
+              <Suspense 
+                fallback={
+                  <PDFLoadingFallback message="Loading PDF preview..." />
+                }
+              >
+                <PDFPreview
+                  file={currentPDF}
+                  className="h-96 lg:h-[600px]"
+                  onPagesLoaded={(count) => console.log(`PDF loaded with ${count} pages`)}
+                />
+              </Suspense>
+            )}
           </div>
         )}
       </div>
