@@ -62,18 +62,22 @@ export default defineConfig({
       }
     },
     
-    // Минификация
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true, // Убираем console.log в продакшене
-        drop_debugger: true,
-        pure_funcs: ['console.log', 'console.info'], // Убираем specific console methods
-      },
-      format: {
-        comments: false, // Убираем комментарии
-      },
-    },
+    // Минификация - используем esbuild как fallback если terser не работает
+    minify: process.env.NODE_ENV === 'production' ? 'terser' : 'esbuild',
+    
+    // Terser options (только если terser доступен)
+    ...(process.env.NODE_ENV === 'production' && {
+      terserOptions: {
+        compress: {
+          drop_console: true, // Убираем console.log в продакшене
+          drop_debugger: true,
+          pure_funcs: ['console.log', 'console.info'], // Убираем specific console methods
+        },
+        format: {
+          comments: false, // Убираем комментарии
+        },
+      }
+    }),
     
     // CSS минификация
     cssMinify: true,
@@ -115,18 +119,6 @@ export default defineConfig({
       'pdfjs-dist',
       'html2canvas'
     ]
-  },
-  
-  // Experimental features
-  experimental: {
-    // Включаем renderBuiltUrl для assets optimization
-    renderBuiltUrl(filename, { hostType }) {
-      if (hostType === 'js') {
-        // Для JS файлов используем relative paths
-        return { relative: true };
-      }
-      return { relative: true };
-    }
   },
   
   // Worker configuration для PDF Web Worker
