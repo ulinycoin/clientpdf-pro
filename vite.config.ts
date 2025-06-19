@@ -7,13 +7,9 @@ export default defineConfig({
   
   // Решение проблемы с eval в pdfjs-dist
   define: {
-    // Отключаем eval для production
     'process.env.NODE_ENV': JSON.stringify('production'),
     __APP_VERSION__: JSON.stringify(process.env.npm_package_version),
     __BUILD_TIME__: JSON.stringify(new Date().toISOString()),
-    // Заменяем eval на безопасную альтернативу
-    'globalThis.eval': 'undefined',
-    'window.eval': 'undefined',
   },
   
   build: {
@@ -21,7 +17,7 @@ export default defineConfig({
     sourcemap: false,
     target: 'es2020',
     
-    // Увеличиваем лимит warning и используем более агрессивное разделение
+    // Увеличиваем лимит warning
     chunkSizeWarningLimit: 1000,
     
     // Минификация с terser
@@ -32,14 +28,6 @@ export default defineConfig({
         drop_debugger: true,
         pure_funcs: ['console.log', 'console.info', 'console.warn'],
         passes: 2,
-        // Убираем eval из кода
-        unsafe_comps: true,
-        unsafe_Function: true,
-        unsafe_math: true,
-        unsafe_symbols: true,
-        unsafe_methods: true,
-        unsafe_proto: true,
-        unsafe_regexp: true,
       },
       format: {
         comments: false,
@@ -50,68 +38,73 @@ export default defineConfig({
     },
     
     rollupOptions: {
-      // Настройки для работы с eval в pdfjs-dist
-      external: [],
+      // Полностью исключаем PDF библиотеки из bundle
+      external: (id) => {
+        // Исключаем PDF библиотеки только если они не импортируются динамически
+        return false // Пока не исключаем external
+      },
       
       output: {
-        // Более детальное разделение для уменьшения размера чанков
+        // Стратегия разделения без PDF библиотек в основных чанках
         manualChunks: (id) => {
+          console.log('Processing module:', id) // Debug
+          
+          // ВАЖНО: PDF библиотеки НЕ должны попадать в manualChunks
+          // Они должны загружаться только через dynamic import()
+          
           // React ecosystem
-          if (id.includes('react') || id.includes('react-dom')) {
+          if (id.includes('node_modules/react/') || id.includes('node_modules/react-dom/')) {
             return 'react-vendor'
           }
           
           // Router
-          if (id.includes('react-router')) {
+          if (id.includes('node_modules/react-router')) {
             return 'router-vendor'
           }
           
-          // PDF.js - самый тяжелый
-          if (id.includes('pdfjs-dist')) {
-            if (id.includes('worker')) {
-              return 'pdf-worker'
-            }
-            return 'pdf-viewer'
-          }
-          
-          // PDF-lib
-          if (id.includes('pdf-lib')) {
-            return 'pdf-core'
-          }
-          
-          // jsPDF и html2canvas
-          if (id.includes('jspdf') || id.includes('html2canvas')) {
-            return 'pdf-generator'
-          }
-          
           // UI библиотеки
-          if (id.includes('framer-motion')) {
+          if (id.includes('node_modules/framer-motion')) {
             return 'ui-animations'
           }
           
-          if (id.includes('lucide-react')) {
+          if (id.includes('node_modules/lucide-react')) {
             return 'ui-icons'
           }
           
-          // Утилиты
-          if (id.includes('clsx') || id.includes('file-saver')) {
+          // Утилиты (небольшие)
+          if (id.includes('node_modules/clsx') || 
+              id.includes('node_modules/file-saver') ||
+              id.includes('node_modules/react-dropzone')) {
             return 'utils-vendor'
           }
           
-          // Dropzone
-          if (id.includes('react-dropzone')) {
-            return 'ui-dropzone'
-          }
-          
           // Vercel analytics
-          if (id.includes('@vercel/analytics')) {
+          if (id.includes('node_modules/@vercel/analytics')) {
             return 'analytics'
           }
           
-          // Остальные node_modules
-          if (id.includes('node_modules')) {
+          // DOMPurify
+          if (id.includes('node_modules/dompurify') || id.includes('node_modules/isomorphic-dompurify')) {
+            return 'purify-vendor'
+          }
+          
+          // PDF библиотеки - НЕ включаем в manualChunks!
+          // Они должны загружаться только через dynamic import
+          if (id.includes('pdfjs-dist') || 
+              id.includes('pdf-lib') || 
+              id.includes('jspdf') || 
+              id.includes('html2canvas')) {
+            // Возвращаем undefined - пусть Vite сам решает
+            return undefined
+          }
+          
+          // Остальные node_modules объединяем в vendor
+          if (id.includes('node_modules/')) {
             return 'vendor-other'
           }
+          
+          // Компоненты приложения
+          return undefined
         },
         
         // Динамическое именование чанков
@@ -119,7 +112,7 @@ export default defineConfig({
           const facadeModuleId = chunkInfo.facadeModuleId
           
           if (facadeModuleId) {
-            // Для страниц создаем отдельные чанки
+            // Для страниц
             if (facadeModuleId.includes('/pages/')) {
               const pageName = facadeModuleId.split('/').pop()?.replace('.tsx', '')
               return `pages/${pageName}-[hash].js`
@@ -129,6 +122,11 @@ export default defineConfig({
             if (facadeModuleId.includes('/components/')) {
               return `components/[name]-[hash].js`
             }
+          }
+          
+          // Для динамических импортов PDF библиотек
+          if (chunkInfo.name?.includes('pdf')) {
+            return `pdf/[name]-[hash].js`
           }
           
           return 'chunks/[name]-[hash].js'
@@ -157,7 +155,7 @@ export default defineConfig({
     assetsInlineLimit: 4096,
   },
   
-  // Настройка для работы с pdfjs-dist и решения проблемы eval
+  // КРИТИЧЕСКИ ВАЖНО: исключаем PDF библиотеки из optimizeDeps
   optimizeDeps: {
     include: [
       'react',
@@ -166,7 +164,11 @@ export default defineConfig({
       'lucide-react',
       'clsx',
       'framer-motion',
+      'file-saver',
+      'react-dropzone',
+      'dompurify'
     ],
+    // Полностью исключаем PDF библиотеки
     exclude: [
       'pdf-lib',
       'jspdf', 
@@ -175,7 +177,7 @@ export default defineConfig({
     ]
   },
   
-  // Настройка resolve для алиасов
+  // Настройка resolve
   resolve: {
     alias: {
       '@': '/src',
