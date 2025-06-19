@@ -1,4 +1,6 @@
-/**
+#!/bin/bash
+
+HEADER='/**
  * Copyright (c) 2024 LocalPDF Team
  * 
  * This file is part of LocalPDF.
@@ -11,5 +13,13 @@
  * For commercial licensing, contact: license@localpdf.online
  */
 
+'
 
-/// <reference types="vite/client" />
+for file in $(find src/ -name "*.ts" -o -name "*.tsx" | grep -v main.tsx | grep -v App.tsx); do
+    if ! grep -q "Copyright (c) 2024 LocalPDF Team" "$file"; then
+        echo "Adding header to $file"
+        echo "$HEADER" > temp_file
+        cat "$file" >> temp_file
+        mv temp_file "$file"
+    fi
+done
