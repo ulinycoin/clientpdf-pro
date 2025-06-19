@@ -13,7 +13,8 @@
     "type-check": "tsc --noEmit",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
-    "vercel-build": "npm run build"
+    "vercel-build": "npm run build",
+    "analyze": "npm run build && npx vite-bundle-analyzer dist"
   },
   "engines": {
     "node": ">=16.0.0",
@@ -51,6 +52,7 @@
     "gh-pages": "^6.3.0",
     "postcss": "^8.4.27",
     "tailwindcss": "^3.3.0",
+    "terser": "^5.36.0",
     "typescript": "^5.0.2",
     "vite": "^6.3.5"
   },
