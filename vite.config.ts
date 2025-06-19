@@ -38,17 +38,9 @@ export default defineConfig({
     },
     
     rollupOptions: {
-      // Полностью исключаем PDF библиотеки из bundle
-      external: (id) => {
-        // Исключаем PDF библиотеки только если они не импортируются динамически
-        return false // Пока не исключаем external
-      },
-      
       output: {
         // Стратегия разделения без PDF библиотек в основных чанках
         manualChunks: (id) => {
-          console.log('Processing module:', id) // Debug
-          
           // ВАЖНО: PDF библиотеки НЕ должны попадать в manualChunks
           // Они должны загружаться только через dynamic import()
           
