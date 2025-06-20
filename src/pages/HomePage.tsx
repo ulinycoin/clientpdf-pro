@@ -36,7 +36,7 @@ export const HomePage: React.FC = () => {
   const [showPDFTools, setShowPDFTools] = useState(false);
 
   useEffect(() => {
-    document.title = 'LocalPDF - Free Online PDF Tools | Privacy-First PDF Processing';
+    document.title = 'LocalPDF - Free Online PDF Tools | Privacy-First PDF Processing | 5 Tools Available';
   }, []);
 
   const handleFilesSelected = (files: File[]) => {
@@ -51,7 +51,7 @@ export const HomePage: React.FC = () => {
     }
   };
 
-  // 5 PDF tools including Password Protect feature (updated June 20, 2025)
+  // 🔥 NOW WITH 5 TOOLS INCLUDING PASSWORD PROTECTION! 🔥
   const tools = [
     {
       title: 'Merge PDF Files',
@@ -82,11 +82,12 @@ export const HomePage: React.FC = () => {
       color: 'purple'
     },
     {
-      title: 'Password Protect',
+      title: '🔐 Password Protect',
       description: 'Add password protection and set permissions for PDFs',
       icon: '🔐',
       href: '/protect-pdf',
-      color: 'red'
+      color: 'red',
+      isNew: true
     }
   ];
 
@@ -96,6 +97,7 @@ export const HomePage: React.FC = () => {
       <div className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
           Free Online PDF Tools
+          <span className="text-sm bg-red-100 text-red-600 px-2 py-1 rounded-full ml-2">NEW: Password Protection!</span>
         </h1>
         <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto mb-8">
           Process PDFs instantly in your browser. No uploads, no servers, your files never leave your device.
@@ -125,7 +127,7 @@ export const HomePage: React.FC = () => {
             key={tool.href}
             to={tool.href}
             className={clsx(
-              'block p-6 rounded-xl border-2 transition-all duration-200 hover:shadow-lg group',
+              'block p-6 rounded-xl border-2 transition-all duration-200 hover:shadow-lg group relative',
               tool.color === 'blue' && 'border-blue-200 hover:border-blue-300 hover:bg-blue-50',
               tool.color === 'green' && 'border-green-200 hover:border-green-300 hover:bg-green-50',
               tool.color === 'orange' && 'border-orange-200 hover:border-orange-300 hover:bg-orange-50',
@@ -133,6 +135,11 @@ export const HomePage: React.FC = () => {
               tool.color === 'red' && 'border-red-200 hover:border-red-300 hover:bg-red-50'
             )}
           >
+            {tool.isNew && (
+              <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+                NEW!
+              </div>
+            )}
             <div className="text-3xl mb-3">{tool.icon}</div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
               {tool.title}
