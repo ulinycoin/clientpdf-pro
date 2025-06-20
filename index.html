@@ -8,7 +8,7 @@
     <title>LocalPDF - Free Online PDF Tools | Merge, Split, Compress PDFs</title>
     <meta name="title" content="LocalPDF - Free Online PDF Tools | Merge, Split, Compress PDFs">
     <meta name="description" content="Free online PDF tools that work in your browser. Merge, split, compress PDFs and convert images to PDF. Privacy-first - your files never leave your device. No uploads required.">
-    <meta name="keywords" content="PDF tools, merge PDF, split PDF, compress PDF, PDF converter, online PDF, free PDF tools, privacy PDF, browser PDF, convert images to PDF">
+    <meta name="keywords" content="PDF tools, merge PDF, split PDF, compress PDF, PDF converter, online PDF, free PDF tools, privacy PDF, browser PDF, convert images to PDF, password protect PDF">
     <meta name="author" content="LocalPDF">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://localpdf.online">
@@ -114,14 +114,15 @@
         "Split PDF documents", 
         "Compress PDF files",
         "Convert images to PDF",
+        "Password protect PDFs",
         "Browser-based processing",
         "No file uploads required",
         "Privacy-first approach"
       ],
       "browserRequirements": "Modern web browser with JavaScript enabled",
-      "softwareVersion": "2.0",
+      "softwareVersion": "2.1",
       "datePublished": "2025-06-19",
-      "dateModified": "2025-06-19",
+      "dateModified": "2025-06-20",
       "inLanguage": "en-US"
     }
     </script>
@@ -174,8 +175,21 @@
       }
     </script>
     
-    <!-- Preload critical PDF.js worker -->
-    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js" as="script" crossorigin="anonymous">
+    <!-- Conditional PDF.js preload (only when needed) -->
+    <script>
+      // Preload PDF.js worker only if we're on a PDF-related page or likely to use it
+      const path = window.location.pathname;
+      const isPDFPage = path.includes('pdf') || path === '/' || path.includes('protect');
+      
+      if (isPDFPage) {
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.href = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        link.as = 'script';
+        link.crossOrigin = 'anonymous';
+        document.head.appendChild(link);
+      }
+    </script>
   </head>
   <body>
     <!-- App shell for fast initial paint -->
