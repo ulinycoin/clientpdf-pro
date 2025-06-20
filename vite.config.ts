@@ -85,7 +85,8 @@ export default defineConfig({
           if (id.includes('pdfjs-dist') || 
               id.includes('pdf-lib') || 
               id.includes('jspdf') || 
-              id.includes('html2canvas')) {
+              id.includes('html2canvas') ||
+              id.includes('pako')) { // Добавляем pako в исключения
             // Возвращаем undefined - пусть Vite сам решает
             return undefined
           }
@@ -147,7 +148,7 @@ export default defineConfig({
     assetsInlineLimit: 4096,
   },
   
-  // КРИТИЧЕСКИ ВАЖНО: исключаем PDF библиотеки из optimizeDeps
+  // КРИТИЧЕСКИ ВАЖНО: настройка optimizeDeps для решения проблемы с pako
   optimizeDeps: {
     include: [
       'react',
@@ -158,7 +159,8 @@ export default defineConfig({
       'framer-motion',
       'file-saver',
       'react-dropzone',
-      'dompurify'
+      'dompurify',
+      'pako' // Добавляем pako в include для правильной обработки
     ],
     // Полностью исключаем PDF библиотеки
     exclude: [
@@ -166,10 +168,16 @@ export default defineConfig({
       'jspdf', 
       'pdfjs-dist',
       'html2canvas'
-    ]
+    ],
+    // Форсируем обработку CommonJS модулей
+    esbuildOptions: {
+      define: {
+        global: 'globalThis'
+      }
+    }
   },
   
-  // Настройка resolve
+  // Настройка resolve с алиасом для pako
   resolve: {
     alias: {
       '@': '/src',
@@ -179,6 +187,8 @@ export default defineConfig({
       '@hooks': '/src/hooks',
       '@utils': '/src/utils',
       '@workers': '/src/workers',
+      // Добавляем алиас для pako если нужно
+      'pako': 'pako/dist/pako.esm.mjs'
     }
   },
   
