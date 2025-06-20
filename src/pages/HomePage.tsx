@@ -79,6 +79,13 @@ export const HomePage: React.FC = () => {
       icon: '🖼️',
       href: '/images-to-pdf',
       color: 'purple'
+    },
+    {
+      title: 'Password Protect',
+      description: 'Add password protection and set permissions for PDFs',
+      icon: '🔐',
+      href: '/protect-pdf',
+      color: 'red'
     }
   ];
 
@@ -111,7 +118,7 @@ export const HomePage: React.FC = () => {
       </div>
 
       {/* Tools Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-12">
         {tools.map((tool) => (
           <Link
             key={tool.href}
@@ -121,7 +128,8 @@ export const HomePage: React.FC = () => {
               tool.color === 'blue' && 'border-blue-200 hover:border-blue-300 hover:bg-blue-50',
               tool.color === 'green' && 'border-green-200 hover:border-green-300 hover:bg-green-50',
               tool.color === 'orange' && 'border-orange-200 hover:border-orange-300 hover:bg-orange-50',
-              tool.color === 'purple' && 'border-purple-200 hover:border-purple-300 hover:bg-purple-50'
+              tool.color === 'purple' && 'border-purple-200 hover:border-purple-300 hover:bg-purple-50',
+              tool.color === 'red' && 'border-red-200 hover:border-red-300 hover:bg-red-50'
             )}
           >
             <div className="text-3xl mb-3">{tool.icon}</div>
