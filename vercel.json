@@ -7,7 +7,8 @@
     "env": {
       "NODE_OPTIONS": "--max-old-space-size=4096",
       "NPM_CONFIG_FUND": "false",
-      "NPM_CONFIG_AUDIT": "false"
+      "NPM_CONFIG_AUDIT": "false",
+      "NODE_ENV": "production"
     }
   },
  
@@ -116,8 +117,5 @@
         }
       ]
     }
-  ],
-  "env": {
-    "NODE_ENV": "production"
-  }
+  ]
 }
