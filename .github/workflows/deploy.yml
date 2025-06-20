@@ -3,8 +3,6 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
   workflow_dispatch:  # Allows manual trigger
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
@@ -44,9 +42,14 @@ jobs:
     - name: Install dependencies
       run: npm ci
       
+    - name: Type check
+      run: npm run type-check
+      
     - name: Build application
       run: npm run build
-      
+      env:
+        NODE_ENV: production
+        
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3
       with:
@@ -63,15 +66,4 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
-  # Vercel deployment notification (if connected)
-  notify-vercel:
-    runs-on: ubuntu-latest
-    needs: build
-    if: always()
-    steps:
-      - name: Trigger Vercel Deploy
-        run: |
-          echo "Build completed at $(date)"
-          echo "Commit SHA: ${{ github.sha }}"
-          echo "If Vercel is connected, it should deploy automatically"
+        timeout-minutes: 10
