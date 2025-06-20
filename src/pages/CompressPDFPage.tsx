@@ -12,22 +12,37 @@
  */
 
 
-import React, { useState } from 'react';
-import { Archive, ArrowLeft, Info } from 'lucide-react';
+import React, { useState, lazy, Suspense } from 'react';
+import { Zap, ArrowLeft, Info, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '../components/atoms/Button';
 import { FileUploadZone } from '../components/molecules/FileUploadZone';
-import { PDFProcessor } from '../components/organisms/PDFProcessor';
 import { useSEO } from '../hooks/useSEO';
 
+// Lazy load PDF compress processor
+const PDFCompressProcessor = lazy(() => 
+  import('../components/organisms/PDFCompressProcessor').then(module => ({
+    default: module.PDFCompressProcessor
+  }))
+);
+
+// Loading fallback component
+const PDFProcessorLoading: React.FC = () => (
+  <div className="flex flex-col items-center justify-center p-8 bg-gray-50 rounded-lg border border-gray-200">
+    <Loader2 className="h-8 w-8 animate-spin text-orange-500 mb-4" />
+    <p className="text-gray-600 font-medium">Loading PDF processor...</p>
+    <p className="text-sm text-gray-500 mt-1">Initializing compression tools</p>
+  </div>
+);
+
 export const CompressPDFPage: React.FC = () => {
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   // SEO optimization for compress PDF page
   useSEO({
     title: 'Compress PDF Online Free - Reduce PDF File Size | LocalPDF',
-    description: 'Compress PDF files to reduce size while maintaining quality. Free PDF compressor with multiple quality options. No uploads, works in browser.',
-    keywords: 'compress pdf, reduce pdf size, optimize pdf, shrink pdf, pdf compressor, minimize pdf',
+    description: 'Compress PDF files to reduce file size without losing quality. Fast, secure PDF compression that works in your browser with complete privacy.',
+    keywords: 'compress pdf, reduce pdf size, pdf compressor, optimize pdf, shrink pdf file',
     canonical: 'https://localpdf.online/compress-pdf',
     ogImage: 'https://localpdf.online/og-image.png',
     schemaData: {
@@ -46,8 +61,8 @@ export const CompressPDFPage: React.FC = () => {
       },
       'featureList': [
         'Multiple compression levels',
-        'Maintain PDF quality',
-        'Reduce file size',
+        'Preserve document quality',
+        'Remove metadata',
         'No file uploads required',
         'Privacy-first processing'
       ]
@@ -55,7 +70,9 @@ export const CompressPDFPage: React.FC = () => {
   });
 
   const handleFilesSelected = (files: File[]) => {
-    setSelectedFiles(files);
+    if (files.length > 0) {
+      setSelectedFile(files[0]); // Only take the first file for compression
+    }
   };
 
   return (
@@ -70,14 +87,14 @@ export const CompressPDFPage: React.FC = () => {
       {/* Header */}
       <div className="text-center mb-8">
         <div className="inline-flex items-center justify-center w-16 h-16 bg-orange-100 rounded-full mb-4">
-          <Archive className="h-8 w-8 text-orange-600" />
+          <Zap className="h-8 w-8 text-orange-600" />
         </div>
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
           Compress PDF Files
         </h1>
         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          Reduce PDF file size while maintaining quality. Perfect for email attachments, 
-          web uploads, or saving storage space.
+          Reduce PDF file sizes while maintaining document quality. 
+          Perfect for email sharing, web uploads, and storage optimization.
         </p>
       </div>
 
@@ -89,9 +106,9 @@ export const CompressPDFPage: React.FC = () => {
             <h3 className="font-semibold text-orange-900 mb-2">How PDF Compression Works</h3>
             <div className="space-y-2 text-sm text-orange-800">
               <p>• Upload your PDF file using the upload zone below</p>
-              <p>• Choose compression level: Low, Medium, or High</p>
-              <p>• Our algorithm optimizes images and removes unnecessary data</p>
-              <p>• Download your compressed PDF with reduced file size</p>
+              <p>• Choose your compression level (low, medium, or high quality)</p>
+              <p>• Optionally remove metadata to save additional space</p>
+              <p>• Download your optimized PDF with reduced file size</p>
               <p>• Your files are processed locally - never uploaded to servers</p>
             </div>
           </div>
@@ -103,32 +120,35 @@ export const CompressPDFPage: React.FC = () => {
         onFilesSelected={handleFilesSelected}
         acceptedTypes={['.pdf']}
         className="mb-8"
+        maxFiles={1}
       />
 
       {/* Processor */}
-      {selectedFiles.length > 0 && (
-        <PDFProcessor files={selectedFiles} />
+      {selectedFile && (
+        <Suspense fallback={<PDFProcessorLoading />}>
+          <PDFCompressProcessor file={selectedFile} />
+        </Suspense>
       )}
 
       {/* Features */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
         <div className="bg-white p-6 rounded-lg border border-gray-200">
-          <h3 className="font-semibold text-gray-900 mb-3">🗜️ Compression Options</h3>
+          <h3 className="font-semibold text-gray-900 mb-3">⚡ Compression Features</h3>
           <ul className="space-y-2 text-sm text-gray-600">
-            <li>• <strong>Low:</strong> Minimal compression, best quality</li>
-            <li>• <strong>Medium:</strong> Balanced compression and quality</li>
-            <li>• <strong>High:</strong> Maximum compression, smaller file</li>
+            <li>• Multiple quality levels to choose from</li>
             <li>• Smart optimization algorithms</li>
+            <li>• Metadata removal option</li>
+            <li>• Maintain document readability</li>
           </ul>
         </div>
 
         <div className="bg-white p-6 rounded-lg border border-gray-200">
-          <h3 className="font-semibold text-gray-900 mb-3">⚡ Optimization Features</h3>
+          <h3 className="font-semibold text-gray-900 mb-3">📊 Compression Benefits</h3>
           <ul className="space-y-2 text-sm text-gray-600">
-            <li>• Image compression and optimization</li>
-            <li>• Remove unnecessary metadata</li>
-            <li>• Optimize fonts and resources</li>
-            <li>• Maintain document structure</li>
+            <li>• Faster email attachments</li>
+            <li>• Reduced storage requirements</li>
+            <li>• Quicker web page loading</li>
+            <li>• Better mobile device performance</li>
           </ul>
         </div>
       </div>
@@ -137,53 +157,42 @@ export const CompressPDFPage: React.FC = () => {
       <div className="mt-12 prose prose-gray max-w-none">
         <h2>About PDF Compression</h2>
         <p>
-          PDF compression reduces file size by optimizing images, removing unnecessary data, 
-          and using efficient encoding methods. This makes files easier to share via email, 
-          faster to upload to websites, and helps save storage space while maintaining 
-          document quality and readability.
+          PDF compression reduces file sizes by optimizing the internal structure, removing redundant data, 
+          and compressing embedded images. This process helps you create smaller files that are easier to 
+          share, upload, and store while maintaining the document's visual quality and functionality.
         </p>
         
-        <h3>When to Compress PDF Files</h3>
+        <h3>Why Compress PDF Files?</h3>
         <ul>
-          <li>Email attachments with size limits</li>
-          <li>Web uploads with bandwidth constraints</li>
-          <li>Archiving documents to save storage</li>
-          <li>Improving document load times</li>
-          <li>Meeting platform-specific file size requirements</li>
+          <li><strong>Email Limits:</strong> Many email providers limit attachment sizes to 25MB or less</li>
+          <li><strong>Upload Speed:</strong> Smaller files upload faster to cloud storage and websites</li>
+          <li><strong>Storage Space:</strong> Compressed PDFs take up less disk space</li>
+          <li><strong>Mobile Performance:</strong> Smaller files load faster on mobile devices</li>
+          <li><strong>Bandwidth Savings:</strong> Reduced data usage when sharing or downloading</li>
+        </ul>
+
+        <h3>Compression Quality Levels</h3>
+        <p>Choose the right compression level based on your needs:</p>
+        <ul>
+          <li><strong>Low Quality:</strong> Maximum compression for the smallest file size</li>
+          <li><strong>Medium Quality:</strong> Balanced compression and quality (recommended)</li>
+          <li><strong>High Quality:</strong> Minimal compression to preserve maximum quality</li>
         </ul>
 
         <h3>How to Compress PDF Files Online</h3>
         <ol>
-          <li><strong>Upload your PDF:</strong> Click the upload area above or drag and drop your PDF file</li>
-          <li><strong>Choose compression level:</strong> Select the balance between file size and quality</li>
-          <li><strong>Process file:</strong> Our algorithm optimizes your PDF</li>
-          <li><strong>Compare results:</strong> See the original vs compressed file size</li>
-          <li><strong>Download:</strong> Save your optimized PDF file</li>
+          <li><strong>Upload your PDF:</strong> Drag and drop or click to select your PDF file</li>
+          <li><strong>Choose settings:</strong> Select compression level and optimization options</li>
+          <li><strong>Process file:</strong> Click compress to optimize your PDF</li>
+          <li><strong>Download result:</strong> Save the compressed PDF to your device</li>
         </ol>
 
-        <h3>Compression vs Quality</h3>
+        <h3>Privacy and Security</h3>
         <p>
-          The key to effective PDF compression is finding the right balance between file size 
-          reduction and maintaining visual quality. Our compression levels offer different 
-          trade-offs:
+          LocalPDF processes your files entirely in your browser using client-side JavaScript. 
+          This means your PDF files never leave your device, ensuring complete privacy and security. 
+          No server uploads, no data storage, and no risk of unauthorized access to your documents.
         </p>
-        <ul>
-          <li><strong>Low compression:</strong> 10-30% size reduction, excellent quality</li>
-          <li><strong>Medium compression:</strong> 30-50% size reduction, good quality</li>
-          <li><strong>High compression:</strong> 50-70% size reduction, acceptable quality</li>
-        </ul>
-
-        <h3>Why Choose Browser-Based PDF Compression?</h3>
-        <p>
-          LocalPDF processes your files entirely in your browser, offering several advantages 
-          over traditional online compressors:
-        </p>
-        <ul>
-          <li><strong>Privacy:</strong> Files never leave your device</li>
-          <li><strong>Speed:</strong> No upload/download time</li>
-          <li><strong>Security:</strong> No risk of data interception</li>
-          <li><strong>Unlimited use:</strong> No file limits or restrictions</li>
-        </ul>
       </div>
 
       {/* Back to Home */}
