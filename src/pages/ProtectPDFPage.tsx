@@ -15,7 +15,7 @@ import React, { Suspense, lazy, useState, useEffect } from 'react';
 import { Shield, Lock, Unlock, FileText, AlertCircle, CheckCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Button } from '../components/atoms/Button';
-import { FileUpload } from '../components/molecules/FileUpload';
+import { FileUploadZone } from '../components/molecules/FileUploadZone';
 import { PageLoadingSpinner } from '../components/atoms/PageLoadingSpinner';
 import { fadeIn, staggerChildren } from '../utils/animations';
 
@@ -158,11 +158,11 @@ export const ProtectPDFPage: React.FC = () => {
         {/* Upload Area */}
         {files.length === 0 ? (
           <motion.div variants={fadeIn}>
-            <FileUpload
+            <FileUploadZone
               onFilesSelected={handleFilesSelected}
-              acceptedFileTypes=".pdf"
+              acceptedTypes={['.pdf']}
               maxFiles={mode === 'protect' ? 10 : 1}
-              maxFileSize={100 * 1024 * 1024} // 100MB
+              maxSize={100 * 1024 * 1024} // 100MB
               icon={Shield}
               title={mode === 'protect' ? "Drop PDFs to protect" : "Drop PDF to unlock"}
               description={mode === 'protect' 
