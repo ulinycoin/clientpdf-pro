@@ -12,16 +12,31 @@
  */
 
 
-import React, { useState } from 'react';
-import { Scissors, ArrowLeft, Info } from 'lucide-react';
+import React, { useState, lazy, Suspense } from 'react';
+import { Scissors, ArrowLeft, Info, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '../components/atoms/Button';
 import { FileUploadZone } from '../components/molecules/FileUploadZone';
-import { PDFProcessor } from '../components/organisms/PDFProcessor';
 import { useSEO } from '../hooks/useSEO';
 
+// Lazy load PDF split processor
+const PDFSplitProcessor = lazy(() => 
+  import('../components/organisms/PDFSplitProcessor').then(module => ({
+    default: module.PDFSplitProcessor
+  }))
+);
+
+// Loading fallback component
+const PDFProcessorLoading: React.FC = () => (
+  <div className="flex flex-col items-center justify-center p-8 bg-gray-50 rounded-lg border border-gray-200">
+    <Loader2 className="h-8 w-8 animate-spin text-green-500 mb-4" />
+    <p className="text-gray-600 font-medium">Loading PDF processor...</p>
+    <p className="text-sm text-gray-500 mt-1">Initializing split tools</p>
+  </div>
+);
+
 export const SplitPDFPage: React.FC = () => {
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   // SEO optimization for split PDF page
   useSEO({
@@ -55,7 +70,9 @@ export const SplitPDFPage: React.FC = () => {
   });
 
   const handleFilesSelected = (files: File[]) => {
-    setSelectedFiles(files);
+    if (files.length > 0) {
+      setSelectedFile(files[0]); // Only take the first file for splitting
+    }
   };
 
   return (
@@ -103,11 +120,14 @@ export const SplitPDFPage: React.FC = () => {
         onFilesSelected={handleFilesSelected}
         acceptedTypes={['.pdf']}
         className="mb-8"
+        maxFiles={1}
       />
 
       {/* Processor */}
-      {selectedFiles.length > 0 && (
-        <PDFProcessor files={selectedFiles} />
+      {selectedFile && (
+        <Suspense fallback={<PDFProcessorLoading />}>
+          <PDFSplitProcessor file={selectedFile} />
+        </Suspense>
       )}
 
       {/* Features */}
