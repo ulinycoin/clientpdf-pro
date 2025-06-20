@@ -12,7 +12,7 @@
  */
 
 import React, { useState, useCallback } from 'react';
-import { Clock, CheckCircle, AlertCircle, Combine, Download, Trash2, GripVertical, ArrowUp, ArrowDown } from 'lucide-react';
+import { Clock, CheckCircle, AlertCircle, Combine, Download, Trash2, GripVertical, ArrowUp, ArrowDown, FileText } from 'lucide-react';
 import { Button } from '../atoms/Button';
 import { clsx } from 'clsx';
 
@@ -199,4 +199,145 @@ export const PDFMergeProcessor: React.FC<PDFMergeProcessorProps> = ({
     <div className="space-y-6">
       {/* Files List */}
       <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-        <div className="px-6 py-
+        <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <FileText className="w-5 h-5 text-gray-500" />
+              <h3 className="text-lg font-medium text-gray-900">
+                PDF Files ({files.length})
+              </h3>
+            </div>
+            <div className="text-sm text-gray-600">
+              Total size: {formatFileSize(totalSize)}
+            </div>
+          </div>
+        </div>
+
+        <div className="divide-y divide-gray-200">
+          {fileStatuses.map((fileStatus, index) => (
+            <div key={index} className="p-4 flex items-center space-x-4">
+              {/* Drag handle */}
+              <div className="flex flex-col space-y-1">
+                <button
+                  onClick={() => moveFile(index, 'up')}
+                  disabled={index === 0}
+                  className="p-1 text-gray-400 hover:text-gray-600 disabled:opacity-30"
+                >
+                  <ArrowUp className="w-3 h-3" />
+                </button>
+                <GripVertical className="w-4 h-4 text-gray-400" />
+                <button
+                  onClick={() => moveFile(index, 'down')}
+                  disabled={index === files.length - 1}
+                  className="p-1 text-gray-400 hover:text-gray-600 disabled:opacity-30"
+                >
+                  <ArrowDown className="w-3 h-3" />
+                </button>
+              </div>
+
+              {/* File info */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center space-x-2">
+                  <p className="text-sm font-medium text-gray-900 truncate">
+                    {fileStatus.file.name}
+                  </p>
+                  {getStatusIcon(fileStatus.status)}
+                </div>
+                <p className="text-xs text-gray-500">
+                  {formatFileSize(fileStatus.file.size)}
+                </p>
+                {fileStatus.error && (
+                  <p className="text-xs text-red-600 mt-1">
+                    Error: {fileStatus.error}
+                  </p>
+                )}
+              </div>
+
+              {/* Remove button */}
+              <button
+                onClick={() => removeFile(index)}
+                className="p-2 text-gray-400 hover:text-red-500 transition-colors"
+                title="Remove file"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Merge Status */}
+      {mergeStatus !== 'idle' && (
+        <div className="bg-white rounded-lg border border-gray-200 p-6">
+          <div className="flex items-center space-x-3 mb-4">
+            <div className={clsx(
+              'flex-shrink-0',
+              mergeStatus === 'processing' && 'text-blue-600',
+              mergeStatus === 'success' && 'text-green-600',
+              mergeStatus === 'error' && 'text-red-600'
+            )}>
+              {mergeStatus === 'processing' && <Clock className="w-6 h-6 animate-spin" />}
+              {mergeStatus === 'success' && <CheckCircle className="w-6 h-6" />}
+              {mergeStatus === 'error' && <AlertCircle className="w-6 h-6" />}
+            </div>
+            <div className="flex-1">
+              <p className={clsx(
+                'font-medium',
+                mergeStatus === 'processing' && 'text-blue-900',
+                mergeStatus === 'success' && 'text-green-900',
+                mergeStatus === 'error' && 'text-red-900'
+              )}>
+                {mergeStatus === 'processing' && 'Merging PDFs...'}
+                {mergeStatus === 'success' && 'Merge Complete!'}
+                {mergeStatus === 'error' && 'Merge Failed'}
+              </p>
+              <p className="text-sm text-gray-600 mt-1">
+                {mergeMessage}
+              </p>
+            </div>
+          </div>
+
+          {mergeStatus === 'processing' && (
+            <div className="w-full bg-gray-200 rounded-full h-2">
+              <div
+                className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                style={{ width: `${mergeProgress}%` }}
+              />
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Merge Button */}
+      <div className="text-center">
+        <Button
+          onClick={mergePDFs}
+          disabled={!canMerge}
+          variant="primary"
+          size="lg"
+          icon={Combine}
+          className="px-8"
+        >
+          {mergeStatus === 'processing' ? 'Merging...' : `Merge ${files.length} PDFs`}
+        </Button>
+        
+        {!canMerge && files.length < 2 && (
+          <p className="text-sm text-gray-500 mt-2">
+            Add at least 2 PDF files to start merging
+          </p>
+        )}
+      </div>
+
+      {/* Merge Info */}
+      <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+        <h4 className="font-medium text-blue-900 mb-2">Merge Process</h4>
+        <ul className="text-sm text-blue-800 space-y-1">
+          <li>• Files will be merged in the order shown above</li>
+          <li>• All pages from each PDF will be included</li>
+          <li>• Original quality and formatting will be preserved</li>
+          <li>• The merged file will be downloaded automatically</li>
+        </ul>
+      </div>
+    </div>
+  );
+};
