@@ -19,10 +19,10 @@ import { Button } from '../components/atoms/Button';
 import { FileUploadZone } from '../components/molecules/FileUploadZone';
 import { useSEO } from '../hooks/useSEO';
 
-// Lazy load PDF processor to avoid including PDF libraries in main bundle
-const PDFProcessor = lazy(() => 
-  import('../components/organisms/PDFProcessor').then(module => ({
-    default: module.PDFProcessor
+// Lazy load PDF merge processor to avoid including PDF libraries in main bundle
+const PDFMergeProcessor = lazy(() => 
+  import('../components/organisms/PDFMergeProcessor').then(module => ({
+    default: module.PDFMergeProcessor
   }))
 );
 
@@ -70,6 +70,15 @@ export const MergePDFPage: React.FC = () => {
   });
 
   const handleFilesSelected = (files: File[]) => {
+    setSelectedFiles(files);
+  };
+
+  const handleRemoveFile = (index: number) => {
+    const newFiles = selectedFiles.filter((_, i) => i !== index);
+    setSelectedFiles(newFiles);
+  };
+
+  const handleReorderFiles = (files: File[]) => {
     setSelectedFiles(files);
   };
 
@@ -123,7 +132,11 @@ export const MergePDFPage: React.FC = () => {
       {/* Lazy-loaded Processor */}
       {selectedFiles.length > 0 && (
         <Suspense fallback={<PDFProcessorLoading />}>
-          <PDFProcessor files={selectedFiles} />
+          <PDFMergeProcessor 
+            files={selectedFiles} 
+            onRemoveFile={handleRemoveFile}
+            onReorderFiles={handleReorderFiles}
+          />
         </Suspense>
       )}
 
