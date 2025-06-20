@@ -1,0 +1,14 @@
+{
+  "version": "2025-06-20-14:42",
+  "commit": "Password Protect PDF added",
+  "tools": 5,
+  "features": [
+    "Merge PDF", 
+    "Split PDF", 
+    "Compress PDF", 
+    "Images to PDF", 
+    "Password Protect PDF"
+  ],
+  "deployed": true,
+  "timestamp": "2025-06-20T14:42:00Z"
+}

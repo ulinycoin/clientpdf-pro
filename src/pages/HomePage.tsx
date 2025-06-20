@@ -1,62 +1,43 @@
-/**
- * Copyright (c) 2024 LocalPDF Team
- * 
- * This file is part of LocalPDF.
- * 
- * LocalPDF is proprietary software: you may not copy, modify, distribute,
- * or use this software except as expressly permitted under the LocalPDF
- * Source Available License v1.0.
- * 
- * See the LICENSE file in the project root for license terms.
- * For commercial licensing, contact: license@localpdf.online
- */
-
-
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom';
-import { FileText, Upload, Download, Settings, ArrowRight } from 'lucide-react';
+import { FileText, Upload, Download, Settings, ArrowRight, Shield, Zap, Lock, Loader2 } from 'lucide-react';
+import { clsx } from 'clsx';
 import { Button } from '../components/atoms/Button';
 import { FileUploadZone } from '../components/molecules/FileUploadZone';
-import { PDFPreview } from '../components/molecules/PDFPreview';
-import { PDFProcessor } from '../components/organisms/PDFProcessor';
-import { useSEO } from '../hooks/useSEO';
+import { InternalLinkSection } from '../components/molecules/InternalLinkSection';
+
+// Lazy loading PDF компонентов для уменьшения размера основного bundle
+const PDFPreview = lazy(() => 
+  import('../components/molecules/PDFPreview').then(module => ({
+    default: module.PDFPreview
+  }))
+);
+
+const PDFProcessor = lazy(() => 
+  import('../components/organisms/PDFProcessor').then(module => ({
+    default: module.PDFProcessor
+  }))
+);
+
+// Компонент загрузки для PDF функций
+const PDFLoadingFallback: React.FC<{ message?: string }> = ({ 
+  message = "Loading PDF tools..." 
+}) => (
+  <div className="flex flex-col items-center justify-center p-8 bg-gray-50 rounded-lg border border-gray-200">
+    <Loader2 className="h-8 w-8 animate-spin text-blue-500 mb-4" />
+    <p className="text-gray-600 font-medium">{message}</p>
+    <p className="text-sm text-gray-500 mt-1">First time may take a moment</p>
+  </div>
+);
 
 export const HomePage: React.FC = () => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [currentPDF, setCurrentPDF] = useState<File | null>(null);
-  const uploadZoneRef = useRef<HTMLDivElement>(null);
+  const [showPDFTools, setShowPDFTools] = useState(false);
 
-  // SEO optimization for homepage
-  useSEO({
-    title: 'LocalPDF - Free Online PDF Tools | Merge, Split, Compress PDFs',
-    description: 'Free online PDF tools that work entirely in your browser. Merge, split, compress PDF files and convert images to PDF. 100% private and secure - no files uploaded to servers.',
-    keywords: 'PDF tools, merge PDF, split PDF, compress PDF, PDF converter, online PDF, free PDF tools, privacy PDF, browser PDF, convert images to PDF',
-    canonical: 'https://localpdf.online/',
-    ogImage: 'https://localpdf.online/og-image.png',
-    schemaData: {
-      '@context': 'https://schema.org',
-      '@type': 'WebApplication',
-      'name': 'LocalPDF',
-      'description': 'Free online PDF tools that work entirely in your browser',
-      'url': 'https://localpdf.online/',
-      'applicationCategory': 'Productivity',
-      'operatingSystem': 'Web Browser',
-      'permissions': 'No data transmission required',
-      'offers': {
-        '@type': 'Offer',
-        'price': '0',
-        'priceCurrency': 'USD'
-      },
-      'featureList': [
-        'Merge PDF files',
-        'Split PDF documents',
-        'Compress PDF files',
-        'Convert images to PDF',
-        'Client-side processing',
-        'No data upload required'
-      ]
-    }
-  });
+  useEffect(() => {
+    document.title = 'LocalPDF - Free Online PDF Tools | Privacy-First PDF Processing | 5 Tools Available';
+  }, []);
 
   const handleFilesSelected = (files: File[]) => {
     console.log('Selected files:', files);
@@ -66,44 +47,47 @@ export const HomePage: React.FC = () => {
     const firstPDF = files.find(file => file.type === 'application/pdf');
     if (firstPDF) {
       setCurrentPDF(firstPDF);
+      setShowPDFTools(true); // Активируем lazy loading PDF компонентов
     }
   };
 
-  const scrollToUpload = () => {
-    uploadZoneRef.current?.scrollIntoView({ 
-      behavior: 'smooth',
-      block: 'center'
-    });
-  };
-
+  // 🔥 NOW WITH 5 TOOLS INCLUDING PASSWORD PROTECTION! 🔥
   const tools = [
     {
       title: 'Merge PDF Files',
       description: 'Combine multiple PDF documents into a single file',
       icon: '🔗',
       href: '/merge-pdf',
-      colorClasses: 'hover:border-blue-300'
+      color: 'blue'
     },
     {
       title: 'Split PDF',
       description: 'Extract pages or split PDF into separate documents',
       icon: '✂️',
       href: '/split-pdf',
-      colorClasses: 'hover:border-green-300'
+      color: 'green'
     },
     {
       title: 'Compress PDF',
       description: 'Reduce PDF file size while maintaining quality',
       icon: '🗜️',
       href: '/compress-pdf',
-      colorClasses: 'hover:border-orange-300'
+      color: 'orange'
     },
     {
       title: 'Images to PDF',
       description: 'Convert JPG, PNG and other images to PDF format',
       icon: '🖼️',
       href: '/images-to-pdf',
-      colorClasses: 'hover:border-purple-300'
+      color: 'purple'
+    },
+    {
+      title: '🔐 Password Protect',
+      description: 'Add password protection and set permissions for PDFs',
+      icon: '🔐',
+      href: '/protect-pdf',
+      color: 'red',
+      isNew: true
     }
   ];
 
@@ -112,154 +96,127 @@ export const HomePage: React.FC = () => {
       {/* Hero Section */}
       <div className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-          LocalPDF - Free PDF Tools
+          Free Online PDF Tools
+          <span className="text-sm bg-red-100 text-red-600 px-2 py-1 rounded-full ml-2">NEW: Password Protection!</span>
         </h1>
         <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto mb-8">
           Process PDFs instantly in your browser. No uploads, no servers, your files never leave your device.
-          <br />
-          <span className="text-blue-600 font-medium">100% Privacy Guaranteed</span>
         </p>
         
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button
-            size="lg"
-            icon={Upload}
-            onClick={scrollToUpload}
-            className="px-8"
-          >
-            Start Processing Files
-          </Button>
-          <Link to="/faq">
-            <Button
-              variant="secondary"
-              size="lg"
-              icon={FileText}
-              className="px-8"
-            >
-              Learn More
-            </Button>
-          </Link>
+        {/* Trust Indicators */}
+        <div className="flex items-center justify-center space-x-6 text-sm text-gray-500 mb-8">
+          <div className="flex items-center">
+            <Shield className="h-4 w-4 mr-1 text-green-500" />
+            100% Private
+          </div>
+          <div className="flex items-center">
+            <Zap className="h-4 w-4 mr-1 text-blue-500" />
+            Instant Processing
+          </div>
+          <div className="flex items-center">
+            <Lock className="h-4 w-4 mr-1 text-purple-500" />
+            No Uploads
+          </div>
         </div>
       </div>
 
-      {/* Features Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-        {tools.map((tool, index) => (
+      {/* Tools Grid - Now featuring 5 tools including Password Protection */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-12">
+        {tools.map((tool) => (
           <Link
-            key={index}
+            key={tool.href}
             to={tool.href}
-            className={`group p-6 bg-white rounded-xl border-2 border-gray-200 ${tool.colorClasses} hover:shadow-lg transition-all duration-200`}
+            className={clsx(
+              'block p-6 rounded-xl border-2 transition-all duration-200 hover:shadow-lg group relative',
+              tool.color === 'blue' && 'border-blue-200 hover:border-blue-300 hover:bg-blue-50',
+              tool.color === 'green' && 'border-green-200 hover:border-green-300 hover:bg-green-50',
+              tool.color === 'orange' && 'border-orange-200 hover:border-orange-300 hover:bg-orange-50',
+              tool.color === 'purple' && 'border-purple-200 hover:border-purple-300 hover:bg-purple-50',
+              tool.color === 'red' && 'border-red-200 hover:border-red-300 hover:bg-red-50'
+            )}
           >
-            <div className="text-4xl mb-4">{tool.icon}</div>
+            {tool.isNew && (
+              <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+                NEW!
+              </div>
+            )}
+            <div className="text-3xl mb-3">{tool.icon}</div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
               {tool.title}
             </h3>
             <p className="text-gray-600 text-sm mb-4">
               {tool.description}
             </p>
-            <div className="flex items-center text-blue-600 text-sm font-medium">
-              <span>Try now</span>
+            <div className="flex items-center text-sm font-medium text-blue-600 group-hover:text-blue-700">
+              Get Started
               <ArrowRight className="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform" />
             </div>
           </Link>
         ))}
       </div>
 
-      {/* Feature Highlights */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-        <div className="bg-white rounded-xl p-6 border border-gray-200 hover:shadow-lg transition-all duration-200">
-          <Upload className="h-12 w-12 text-blue-600 mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            Drag & Drop Upload
-          </h3>
-          <p className="text-gray-600">
-            Simply drag and drop your files or click to browse. Supports multiple file formats.
-          </p>
-        </div>
-
-        <div className="bg-white rounded-xl p-6 border border-gray-200 hover:shadow-lg transition-all duration-200">
-          <FileText className="h-12 w-12 text-green-600 mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            Interactive Preview
-          </h3>
-          <p className="text-gray-600">
-            Preview your PDFs with interactive page thumbnails. Reorder, split, or merge with ease.
-          </p>
-        </div>
-
-        <div className="bg-white rounded-xl p-6 border border-gray-200 hover:shadow-lg transition-all duration-200">
-          <Download className="h-12 w-12 text-orange-600 mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            Instant Download
-          </h3>
-          <p className="text-gray-600">
-            Process and download your files instantly. No server uploads, complete privacy guaranteed.
-          </p>
-        </div>
-      </div>
-
       {/* Quick Start Section */}
-      <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-8 mb-12">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            Quick Start
+      <div className="bg-white rounded-2xl border border-gray-200 p-8 mb-12">
+        <div className="text-center mb-6">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            Try It Now
           </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            Upload your files below to get started, or choose a specific tool above for focused processing.
+          <p className="text-gray-600">
+            Upload a PDF or image file to get started with any tool
           </p>
         </div>
 
-        {/* Upload Zone */}
-        <div ref={uploadZoneRef}>
-          <FileUploadZone 
-            onFilesSelected={handleFilesSelected}
-            className="max-w-2xl mx-auto"
-          />
-        </div>
+        <FileUploadZone
+          onFilesSelected={handleFilesSelected}
+          acceptedTypes={['.pdf', '.jpg', '.jpeg', '.png', '.gif']}
+          maxFiles={5}
+          maxSize={100 * 1024 * 1024}
+          className="mb-6"
+        />
 
-        {/* PDF Operations */}
         {selectedFiles.length > 0 && (
-          <div className="mt-8">
-            <PDFProcessor files={selectedFiles} />
-          </div>
-        )}
-
-        {/* PDF Preview */}
-        {currentPDF && (
-          <div className="mt-8">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">
-                PDF Preview: {currentPDF.name}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                Uploaded Files ({selectedFiles.length})
               </h3>
-              {selectedFiles.length > 1 && (
-                <div className="flex space-x-2">
-                  {selectedFiles
-                    .filter(file => file.type === 'application/pdf')
-                    .map((file, index) => (
-                      <Button
-                        key={index}
-                        variant={file === currentPDF ? 'primary' : 'secondary'}
-                        size="sm"
-                        onClick={() => setCurrentPDF(file)}
-                      >
-                        {file.name.substring(0, 20)}...
-                      </Button>
-                    ))}
-                </div>
-              )}
+              <div className="space-y-2">
+                {selectedFiles.map((file, index) => (
+                  <Button
+                    key={index}
+                    variant={currentPDF === file ? 'primary' : 'secondary'}
+                    size="sm"
+                    onClick={() => {
+                      setCurrentPDF(file);
+                      setShowPDFTools(true);
+                    }}
+                  >
+                    {file.name.substring(0, 20)}...
+                  </Button>
+                ))}
+              </div>
             </div>
             
-            <PDFPreview
-              file={currentPDF}
-              className="h-96 lg:h-[600px]"
-              onPagesLoaded={(count) => console.log(`PDF loaded with ${count} pages`)}
-            />
+            {/* Lazy loaded PDF Preview */}
+            {showPDFTools && currentPDF && (
+              <Suspense 
+                fallback={
+                  <PDFLoadingFallback message="Loading PDF preview..." />
+                }
+              >
+                <PDFPreview
+                  file={currentPDF}
+                  className="h-96 lg:h-[600px]"
+                  onPagesLoaded={(count) => console.log(`PDF loaded with ${count} pages`)}
+                />
+              </Suspense>
+            )}
           </div>
         )}
       </div>
 
       {/* Privacy Section */}
-      <div className="bg-green-50 rounded-2xl p-8 border border-green-200">
+      <div className="bg-green-50 rounded-2xl p-8 border border-green-200 mb-12">
         <div className="text-center">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
             <Settings className="h-8 w-8 text-green-600" />
@@ -287,6 +244,9 @@ export const HomePage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Internal Links */}
+      <InternalLinkSection className="mb-8" />
     </div>
   );
 };

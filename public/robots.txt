@@ -1,23 +1,22 @@
 User-agent: *
 Allow: /
 
-# Important files
+# Sitemap location
 Sitemap: https://localpdf.online/sitemap.xml
 
-# Prevent crawling of unnecessary files
-Disallow: /src/
-Disallow: /node_modules/
-Disallow: /*.json$
-Disallow: /*.js.map$
-Disallow: /*.css.map$
+# Crawl-delay (optional, in seconds)
+Crawl-delay: 1
 
-# Allow crawling of main application files
-Allow: /*.css$
+# Disallow access to internal paths
+Disallow: /api/
+Disallow: /_next/
+Disallow: /assets/js/
+Disallow: /chunks/
+
+# Allow search engines to index everything else
 Allow: /*.js$
-Allow: /*.svg$
+Allow: /*.css$
 Allow: /*.png$
 Allow: /*.jpg$
+Allow: /*.svg$
 Allow: /*.webp$
-
-# Crawl delay (optional, can help with server load)
-Crawl-delay: 1

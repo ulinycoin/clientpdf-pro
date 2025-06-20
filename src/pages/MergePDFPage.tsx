@@ -12,13 +12,28 @@
  */
 
 
-import React, { useState } from 'react';
-import { Combine, ArrowLeft, Info } from 'lucide-react';
+import React, { useState, lazy, Suspense } from 'react';
+import { Combine, ArrowLeft, Info, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '../components/atoms/Button';
 import { FileUploadZone } from '../components/molecules/FileUploadZone';
-import { PDFProcessor } from '../components/organisms/PDFProcessor';
 import { useSEO } from '../hooks/useSEO';
+
+// Lazy load PDF processor to avoid including PDF libraries in main bundle
+const PDFProcessor = lazy(() => 
+  import('../components/organisms/PDFProcessor').then(module => ({
+    default: module.PDFProcessor
+  }))
+);
+
+// Loading fallback component
+const PDFProcessorLoading: React.FC = () => (
+  <div className="flex flex-col items-center justify-center p-8 bg-gray-50 rounded-lg border border-gray-200">
+    <Loader2 className="h-8 w-8 animate-spin text-blue-500 mb-4" />
+    <p className="text-gray-600 font-medium">Loading PDF processor...</p>
+    <p className="text-sm text-gray-500 mt-1">Initializing merge tools</p>
+  </div>
+);
 
 export const MergePDFPage: React.FC = () => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
@@ -105,9 +120,11 @@ export const MergePDFPage: React.FC = () => {
         className="mb-8"
       />
 
-      {/* Processor */}
+      {/* Lazy-loaded Processor */}
       {selectedFiles.length > 0 && (
-        <PDFProcessor files={selectedFiles} />
+        <Suspense fallback={<PDFProcessorLoading />}>
+          <PDFProcessor files={selectedFiles} />
+        </Suspense>
       )}
 
       {/* Features */}
