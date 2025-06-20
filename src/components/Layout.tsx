@@ -14,7 +14,7 @@
 
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { FileText, Menu, X, HelpCircle } from 'lucide-react';
+import { FileText, Menu, X, HelpCircle, Shield } from 'lucide-react';
 import { clsx } from 'clsx';
 
 interface LayoutProps {
@@ -31,7 +31,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
     { name: 'Split PDF', href: '/split-pdf' },
     { name: 'Compress PDF', href: '/compress-pdf' },
     { name: 'Images to PDF', href: '/images-to-pdf' },
-    { name: 'Protect PDF', href: '/protect-pdf' },
+    { name: 'Protect PDF', href: '/protect-pdf', icon: Shield },
     { name: 'FAQ', href: '/faq', icon: HelpCircle },
   ];
 
@@ -138,7 +138,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <li><Link to="/split-pdf" className="text-gray-600 hover:text-blue-600">Split PDF</Link></li>
                 <li><Link to="/compress-pdf" className="text-gray-600 hover:text-blue-600">Compress PDF</Link></li>
                 <li><Link to="/images-to-pdf" className="text-gray-600 hover:text-blue-600">Images to PDF</Link></li>
-                <li><Link to="/protect-pdf" className="text-gray-600 hover:text-blue-600">Protect PDF</Link></li>
+                <li><Link to="/protect-pdf" className="text-gray-600 hover:text-blue-600">🔐 Protect PDF</Link></li>
               </ul>
             </div>
 
