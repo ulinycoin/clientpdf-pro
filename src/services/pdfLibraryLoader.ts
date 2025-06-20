@@ -1,251 +1,229 @@
 /**
- * PDF Libraries Lazy Loader
+ * Copyright (c) 2024 LocalPDF Team
  * 
- * Динамически загружает PDF библиотеки только при необходимости.
- * Кеширует загруженные модули для повторного использования.
- * Предоставляет fallback и error recovery.
+ * This file is part of LocalPDF.
+ * 
+ * LocalPDF is proprietary software: you may not copy, modify, distribute,
+ * or use this software except as expressly permitted under the LocalPDF
+ * Source Available License v1.0.
+ * 
+ * See the LICENSE file in the project root for license terms.
+ * For commercial licensing, contact: license@localpdf.online
  */
 
-interface PDFLibraries {
-  pdfLib: typeof import('pdf-lib');
-  jsPDF: typeof import('jspdf');
-  pdfjsLib: typeof import('pdfjs-dist');
-}
+// src/services/pdfLibraryLoader.ts
 
-interface LoadingState {
-  isLoading: boolean;
-  error: string | null;
-  libraries: Partial<PDFLibraries>;
-}
+// Кэш для загруженных библиотек
+const libraryCache = new Map<string, any>();
 
-class PDFLibraryLoader {
-  private loadingState: LoadingState = {
-    isLoading: false,
-    error: null,
-    libraries: {}
-  };
+// Флаги состояния загрузки
+const loadingState = new Map<string, Promise<any>>();
 
-  private loadingPromise: Promise<PDFLibraries> | null = null;
-
-  /**
-   * Загружает все PDF библиотеки асинхронно
-   */
-  async loadAll(): Promise<PDFLibraries> {
-    // Если уже загружаем - возвращаем тот же промис
-    if (this.loadingPromise) {
-      return this.loadingPromise;
+/**
+ * Инициализация pako для pdf-lib
+ */
+async function initializePako() {
+  try {
+    // Проверяем, не загружен ли уже pako
+    if (typeof window !== 'undefined' && (window as any).pako) {
+      return (window as any).pako;
     }
 
-    // Если уже загружены - возвращаем кешированные
-    if (this.isAllLoaded()) {
-      return this.loadingState.libraries as PDFLibraries;
-    }
-
-    this.loadingPromise = this.performLoading();
-    return this.loadingPromise;
-  }
-
-  /**
-   * Загружает конкретную библиотеку
-   */
-  async loadLibrary<K extends keyof PDFLibraries>(
-    libraryName: K
-  ): Promise<PDFLibraries[K]> {
-    if (this.loadingState.libraries[libraryName]) {
-      return this.loadingState.libraries[libraryName] as PDFLibraries[K];
-    }
-
-    try {
-      const library = await this.importLibrary(libraryName);
-      this.loadingState.libraries[libraryName] = library;
-      return library;
-    } catch (error) {
-      const errorMessage = `Failed to load ${libraryName}: ${error instanceof Error ? error.message : 'Unknown error'}`;
-      this.loadingState.error = errorMessage;
-      throw new Error(errorMessage);
-    }
-  }
-
-  /**
-   * Проверяет статус загрузки
-   */
-  getLoadingState(): LoadingState {
-    return { ...this.loadingState };
-  }
-
-  /**
-   * Проверяет, доступна ли библиотека
-   */
-  isLibraryLoaded<K extends keyof PDFLibraries>(libraryName: K): boolean {
-    return !!this.loadingState.libraries[libraryName];
-  }
-
-  /**
-   * Предзагружает библиотеки в фоне
-   */
-  async preloadLibraries(): Promise<void> {
-    try {
-      await this.loadAll();
-    } catch (error) {
-      console.warn('PDF libraries preloading failed:', error);
-      // Не бросаем ошибку, так как это фоновая загрузка
-    }
-  }
-
-  /**
-   * Очищает кеш (для тестирования)
-   */
-  clearCache(): void {
-    this.loadingState = {
-      isLoading: false,
-      error: null,
-      libraries: {}
-    };
-    this.loadingPromise = null;
-  }
-
-  private async performLoading(): Promise<PDFLibraries> {
-    this.loadingState.isLoading = true;
-    this.loadingState.error = null;
-
-    try {
-      // Загружаем все библиотеки параллельно
-      const [pdfLib, jsPDF, pdfjsLib] = await Promise.all([
-        this.importLibrary('pdfLib'),
-        this.importLibrary('jsPDF'), 
-        this.importLibrary('pdfjsLib')
-      ]);
-
-      const libraries: PDFLibraries = { pdfLib, jsPDF, pdfjsLib };
-      
-      this.loadingState.libraries = libraries;
-      this.loadingState.isLoading = false;
-      
-      return libraries;
-    } catch (error) {
-      this.loadingState.isLoading = false;
-      this.loadingState.error = error instanceof Error ? error.message : 'Unknown error';
-      throw error;
-    }
-  }
-
-  private async importLibrary<K extends keyof PDFLibraries>(
-    libraryName: K
-  ): Promise<PDFLibraries[K]> {
-    const startTime = performance.now();
+    // Импортируем pako с правильной обработкой модулей
+    const pakoModule = await import('pako');
     
-    try {
-      let library: any;
-
-      switch (libraryName) {
-        case 'pdfLib':
-          library = await import('pdf-lib');
-          break;
-        case 'jsPDF':
-          library = await import('jspdf');
-          break;
-        case 'pdfjsLib':
-          library = await import('pdfjs-dist');
-          // Настраиваем worker для pdfjs
-          await this.configurePdfjsWorker(library);
-          break;
-        default:
-          throw new Error(`Unknown library: ${libraryName}`);
-      }
-
-      const loadTime = performance.now() - startTime;
-      console.log(`📚 Loaded ${libraryName} in ${loadTime.toFixed(2)}ms`);
-      
-      return library;
-    } catch (error) {
-      const loadTime = performance.now() - startTime;
-      console.error(`❌ Failed to load ${libraryName} after ${loadTime.toFixed(2)}ms:`, error);
-      throw error;
+    // Создаем объект со всеми необходимыми методами для pdf-lib
+    const pako = {
+      deflate: pakoModule.deflate || pakoModule.default?.deflate,
+      inflate: pakoModule.inflate || pakoModule.default?.inflate,
+      deflateRaw: pakoModule.deflateRaw || pakoModule.default?.deflateRaw,
+      inflateRaw: pakoModule.inflateRaw || pakoModule.default?.inflateRaw,
+      gzip: pakoModule.gzip || pakoModule.default?.gzip,
+      ungzip: pakoModule.ungzip || pakoModule.default?.ungzip,
+      Deflate: pakoModule.Deflate || pakoModule.default?.Deflate,
+      Inflate: pakoModule.Inflate || pakoModule.default?.Inflate,
+      constants: pakoModule.constants || pakoModule.default?.constants,
+    };
+    
+    // Делаем pako доступным глобально
+    if (typeof window !== 'undefined') {
+      (window as any).pako = pako;
     }
+    
+    return pako;
+  } catch (error) {
+    console.error('Failed to initialize pako:', error);
+    throw new Error('Failed to initialize compression library');
   }
+}
 
-  private async configurePdfjsWorker(pdfjsLib: any): Promise<void> {
+/**
+ * Загружает библиотеку pdf-lib с ленивой загрузкой
+ */
+export async function loadPDFLib() {
+  const cacheKey = 'pdf-lib';
+  
+  // Проверяем кэш
+  if (libraryCache.has(cacheKey)) {
+    return libraryCache.get(cacheKey);
+  }
+  
+  // Проверяем, не загружается ли уже
+  if (loadingState.has(cacheKey)) {
+    return loadingState.get(cacheKey);
+  }
+  
+  // Создаем промис загрузки
+  const loadingPromise = (async () => {
     try {
-      // Настраиваем worker URL для разных окружений
-      const isProduction = import.meta.env.PROD;
-      const workerUrl = isProduction 
-        ? 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'
-        : '/node_modules/pdfjs-dist/build/pdf.worker.mjs';
+      // Сначала инициализируем pako
+      await initializePako();
+      
+      // Затем загружаем pdf-lib
+      const pdfLib = await import('pdf-lib');
+      
+      // Кэшируем результат
+      libraryCache.set(cacheKey, pdfLib);
+      loadingState.delete(cacheKey);
+      
+      return pdfLib;
+    } catch (error) {
+      loadingState.delete(cacheKey);
+      console.error('Failed to load pdf-lib:', error);
+      throw new Error('Failed to load PDF processing library');
+    }
+  })();
+  
+  loadingState.set(cacheKey, loadingPromise);
+  return loadingPromise;
+}
 
+/**
+ * Загружает библиотеку jsPDF с ленивой загрузкой
+ */
+export async function loadJsPDF() {
+  const cacheKey = 'jspdf';
+  
+  if (libraryCache.has(cacheKey)) {
+    return libraryCache.get(cacheKey);
+  }
+  
+  if (loadingState.has(cacheKey)) {
+    return loadingState.get(cacheKey);
+  }
+  
+  const loadingPromise = (async () => {
+    try {
+      const jsPDFModule = await import('jspdf');
+      const jsPDF = jsPDFModule.jsPDF || jsPDFModule.default;
+      
+      libraryCache.set(cacheKey, { jsPDF });
+      loadingState.delete(cacheKey);
+      
+      return { jsPDF };
+    } catch (error) {
+      loadingState.delete(cacheKey);
+      console.error('Failed to load jsPDF:', error);
+      throw new Error('Failed to load PDF generation library');
+    }
+  })();
+  
+  loadingState.set(cacheKey, loadingPromise);
+  return loadingPromise;
+}
+
+/**
+ * Загружает библиотеку pdfjs-dist с ленивой загрузкой
+ */
+export async function loadPDFJS() {
+  const cacheKey = 'pdfjs';
+  
+  if (libraryCache.has(cacheKey)) {
+    return libraryCache.get(cacheKey);
+  }
+  
+  if (loadingState.has(cacheKey)) {
+    return loadingState.get(cacheKey);
+  }
+  
+  const loadingPromise = (async () => {
+    try {
+      // Динамический импорт с настройкой worker
+      const pdfjsLib = await import('pdfjs-dist');
+      
+      // Настройка worker для pdfjs
+      const workerUrl = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
       pdfjsLib.GlobalWorkerOptions.workerSrc = workerUrl;
       
-      console.log('🔧 PDF.js worker configured:', workerUrl);
+      libraryCache.set(cacheKey, pdfjsLib);
+      loadingState.delete(cacheKey);
+      
+      return pdfjsLib;
     } catch (error) {
-      console.warn('⚠️ PDF.js worker configuration failed:', error);
-      // Продолжаем без worker (fallback)
+      loadingState.delete(cacheKey);
+      console.error('Failed to load PDF.js:', error);
+      throw new Error('Failed to load PDF viewing library');
     }
-  }
+  })();
+  
+  loadingState.set(cacheKey, loadingPromise);
+  return loadingPromise;
+}
 
-  private isAllLoaded(): boolean {
-    return !!(
-      this.loadingState.libraries.pdfLib &&
-      this.loadingState.libraries.jsPDF &&
-      this.loadingState.libraries.pdfjsLib
-    );
+/**
+ * Загружает библиотеку html2canvas с ленивой загрузкой
+ */
+export async function loadHtml2Canvas() {
+  const cacheKey = 'html2canvas';
+  
+  if (libraryCache.has(cacheKey)) {
+    return libraryCache.get(cacheKey);
+  }
+  
+  if (loadingState.has(cacheKey)) {
+    return loadingState.get(cacheKey);
+  }
+  
+  const loadingPromise = (async () => {
+    try {
+      const html2canvasModule = await import('html2canvas');
+      const html2canvas = html2canvasModule.default || html2canvasModule;
+      
+      libraryCache.set(cacheKey, html2canvas);
+      loadingState.delete(cacheKey);
+      
+      return html2canvas;
+    } catch (error) {
+      loadingState.delete(cacheKey);
+      console.error('Failed to load html2canvas:', error);
+      throw new Error('Failed to load HTML to canvas library');
+    }
+  })();
+  
+  loadingState.set(cacheKey, loadingPromise);
+  return loadingPromise;
+}
+
+/**
+ * Предзагружает все PDF библиотеки
+ */
+export async function preloadAllLibraries() {
+  try {
+    await Promise.all([
+      loadPDFLib(),
+      loadJsPDF(),
+      loadPDFJS(),
+      loadHtml2Canvas()
+    ]);
+  } catch (error) {
+    console.error('Failed to preload PDF libraries:', error);
   }
 }
 
-// Singleton instance
-export const pdfLibraryLoader = new PDFLibraryLoader();
-
-// Export types for consumers
-export type { PDFLibraries, LoadingState };
-
-// Helper hooks for React components
-export const usePDFLibraries = () => {
-  const [state, setState] = React.useState<LoadingState>(
-    pdfLibraryLoader.getLoadingState()
-  );
-
-  const loadLibraries = React.useCallback(async () => {
-    try {
-      setState(prev => ({ ...prev, isLoading: true, error: null }));
-      await pdfLibraryLoader.loadAll();
-      setState(pdfLibraryLoader.getLoadingState());
-    } catch (error) {
-      setState(pdfLibraryLoader.getLoadingState());
-    }
-  }, []);
-
-  const loadSpecificLibrary = React.useCallback(async <K extends keyof PDFLibraries>(
-    libraryName: K
-  ) => {
-    try {
-      return await pdfLibraryLoader.loadLibrary(libraryName);
-    } catch (error) {
-      setState(pdfLibraryLoader.getLoadingState());
-      throw error;
-    }
-  }, []);
-
-  return {
-    ...state,
-    loadLibraries,
-    loadSpecificLibrary,
-    isLibraryLoaded: pdfLibraryLoader.isLibraryLoaded.bind(pdfLibraryLoader)
-  };
-};
-
-// Performance monitoring
-export const PDFLibraryMetrics = {
-  measureLoadTime: async <T>(operation: string, fn: () => Promise<T>): Promise<T> => {
-    const startTime = performance.now();
-    try {
-      const result = await fn();
-      const duration = performance.now() - startTime;
-      console.log(`⚡ ${operation} completed in ${duration.toFixed(2)}ms`);
-      return result;
-    } catch (error) {
-      const duration = performance.now() - startTime;
-      console.error(`💥 ${operation} failed after ${duration.toFixed(2)}ms:`, error);
-      throw error;
-    }
-  }
-};
-
-import React from 'react';
+/**
+ * Очищает кэш библиотек (для тестирования или при нехватке памяти)
+ */
+export function clearLibraryCache() {
+  libraryCache.clear();
+  loadingState.clear();
+}
