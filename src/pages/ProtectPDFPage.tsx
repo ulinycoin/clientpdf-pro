@@ -11,17 +11,9 @@
  * For commercial licensing, contact: license@localpdf.online
  */
 
-import React, { Suspense, lazy, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Shield, Lock, Unlock, FileText, AlertCircle, CheckCircle, Upload } from 'lucide-react';
 import { Button } from '../components/atoms/Button';
-import { PageLoadingSpinner } from '../components/atoms/PageLoadingSpinner';
-
-// Lazy load the PDF processor component
-const PDFPasswordProcessor = lazy(() => 
-  import('../components/organisms/PDFPasswordProcessor').then(module => ({
-    default: module.PDFPasswordProcessor
-  }))
-);
 
 export const ProtectPDFPage: React.FC = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -140,55 +132,76 @@ export const ProtectPDFPage: React.FC = () => {
         </div>
 
         {/* Upload Area */}
-        {files.length === 0 ? (
-          <div className="bg-white rounded-xl border-2 border-dashed border-gray-300 p-8 text-center mb-8">
-            <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
-              {mode === 'protect' ? "Drop PDFs to protect" : "Drop PDF to unlock"}
+        <div className="bg-white rounded-xl border-2 border-dashed border-gray-300 p-8 text-center mb-8">
+          <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-900 mb-2">
+            {mode === 'protect' ? "Drop PDFs to protect" : "Drop PDF to unlock"}
+          </h3>
+          <p className="text-gray-600 mb-4">
+            {mode === 'protect' 
+              ? "or click to browse. You can protect up to 10 PDFs at once."
+              : "or click to browse. Upload the password-protected PDF."
+            }
+          </p>
+          <input
+            type="file"
+            accept=".pdf"
+            multiple={mode === 'protect'}
+            onChange={handleFileInput}
+            className="hidden"
+            id="file-upload"
+          />
+          <label
+            htmlFor="file-upload"
+            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer transition-colors"
+          >
+            Choose Files
+          </label>
+        </div>
+
+        {/* Selected Files */}
+        {files.length > 0 && (
+          <div className="space-y-4 mb-8">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              Selected Files ({files.length})
             </h3>
-            <p className="text-gray-600 mb-4">
-              {mode === 'protect' 
-                ? "or click to browse. You can protect up to 10 PDFs at once."
-                : "or click to browse. Upload the password-protected PDF."
-              }
-            </p>
-            <input
-              type="file"
-              accept=".pdf"
-              multiple={mode === 'protect'}
-              onChange={handleFileInput}
-              className="hidden"
-              id="file-upload"
-            />
-            <label
-              htmlFor="file-upload"
-              className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer transition-colors"
-            >
-              Choose Files
-            </label>
-          </div>
-        ) : (
-          <Suspense fallback={<PageLoadingSpinner message="Loading security tools..." />}>
-            <div className="space-y-4">
-              {files.map((file, index) => (
-                <PDFPasswordProcessor
-                  key={`${file.name}-${index}`}
-                  file={file}
-                  onRemove={() => handleRemoveFile(index)}
-                  mode={mode}
-                />
-              ))}
-              <div className="text-center mt-6">
-                <Button
-                  onClick={() => setFiles([])}
-                  variant="secondary"
-                  size="md"
-                >
-                  {mode === 'protect' ? 'Protect More PDFs' : 'Unlock Another PDF'}
-                </Button>
+            {files.map((file, index) => (
+              <div key={index} className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="text-md font-medium text-gray-900">{file.name}</h4>
+                    <p className="text-sm text-gray-500">
+                      Size: {(file.size / 1024 / 1024).toFixed(2)} MB
+                    </p>
+                  </div>
+                  <Button
+                    onClick={() => handleRemoveFile(index)}
+                    variant="secondary"
+                    size="sm"
+                  >
+                    Remove
+                  </Button>
+                </div>
+                
+                <div className="mt-4 p-4 bg-yellow-50 rounded-lg">
+                  <p className="text-sm text-yellow-800">
+                    <strong>Feature Coming Soon:</strong> PDF password protection functionality is being implemented. 
+                    The file upload works, and the full encryption/decryption feature will be available shortly.
+                  </p>
+                </div>
               </div>
+            ))}
+            
+            <div className="text-center">
+              <Button
+                onClick={() => setFiles([])}
+                variant="secondary"
+                size="md"
+              >
+                {mode === 'protect' ? 'Protect More PDFs' : 'Unlock Another PDF'}
+              </Button>
             </div>
-          </Suspense>
+          </div>
         )}
 
         {/* Security Levels */}
