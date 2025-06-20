@@ -51,6 +51,7 @@ export const HomePage: React.FC = () => {
     }
   };
 
+  // 5 PDF tools including Password Protect feature (updated June 20, 2025)
   const tools = [
     {
       title: 'Merge PDF Files',
@@ -117,7 +118,7 @@ export const HomePage: React.FC = () => {
         </div>
       </div>
 
-      {/* Tools Grid */}
+      {/* Tools Grid - Now featuring 5 tools including Password Protection */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-12">
         {tools.map((tool) => (
           <Link
