@@ -12,12 +12,9 @@
  */
 
 import React, { Suspense, lazy, useState, useEffect } from 'react';
-import { Shield, Lock, Unlock, FileText, AlertCircle, CheckCircle } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Shield, Lock, Unlock, FileText, AlertCircle, CheckCircle, Upload } from 'lucide-react';
 import { Button } from '../components/atoms/Button';
-import { FileUploadZone } from '../components/molecules/FileUploadZone';
 import { PageLoadingSpinner } from '../components/atoms/PageLoadingSpinner';
-import { fadeIn, staggerChildren } from '../utils/animations';
 
 // Lazy load the PDF processor component
 const PDFPasswordProcessor = lazy(() => 
@@ -34,7 +31,8 @@ export const ProtectPDFPage: React.FC = () => {
     document.title = 'Password Protect PDF - Secure Your PDFs Online | LocalPDF';
   }, []);
 
-  const handleFilesSelected = (selectedFiles: File[]) => {
+  const handleFileInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFiles = Array.from(event.target.files || []);
     setFiles(selectedFiles);
   };
 
@@ -80,17 +78,9 @@ export const ProtectPDFPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-gray-50">
-      <motion.div
-        className="container mx-auto px-4 py-12 sm:py-16"
-        initial="hidden"
-        animate="visible"
-        variants={staggerChildren}
-      >
+      <div className="container mx-auto px-4 py-12 sm:py-16">
         {/* Header */}
-        <motion.div 
-          className="text-center mb-12"
-          variants={fadeIn}
-        >
+        <div className="text-center mb-12">
           <div className="inline-flex p-3 bg-blue-100 rounded-2xl mb-6">
             <Shield className="w-8 h-8 text-blue-600" />
           </div>
@@ -101,13 +91,10 @@ export const ProtectPDFPage: React.FC = () => {
             Add password protection and control permissions for your PDF files. 
             Everything happens in your browser - your files never leave your device.
           </p>
-        </motion.div>
+        </div>
 
         {/* Mode Toggle */}
-        <motion.div 
-          className="flex justify-center mb-8"
-          variants={fadeIn}
-        >
+        <div className="flex justify-center mb-8">
           <div className="inline-flex bg-gray-100 rounded-lg p-1">
             <button
               onClick={() => setMode('protect')}
@@ -132,13 +119,10 @@ export const ProtectPDFPage: React.FC = () => {
               Unlock PDF
             </button>
           </div>
-        </motion.div>
+        </div>
 
         {/* Features Grid */}
-        <motion.div 
-          className="grid md:grid-cols-3 gap-6 mb-12"
-          variants={fadeIn}
-        >
+        <div className="grid md:grid-cols-3 gap-6 mb-12">
           {features.map((feature, index) => (
             <div 
               key={index}
@@ -153,24 +137,36 @@ export const ProtectPDFPage: React.FC = () => {
               </p>
             </div>
           ))}
-        </motion.div>
+        </div>
 
         {/* Upload Area */}
         {files.length === 0 ? (
-          <motion.div variants={fadeIn}>
-            <FileUploadZone
-              onFilesSelected={handleFilesSelected}
-              acceptedTypes={['.pdf']}
-              maxFiles={mode === 'protect' ? 10 : 1}
-              maxSize={100 * 1024 * 1024} // 100MB
-              icon={Shield}
-              title={mode === 'protect' ? "Drop PDFs to protect" : "Drop PDF to unlock"}
-              description={mode === 'protect' 
+          <div className="bg-white rounded-xl border-2 border-dashed border-gray-300 p-8 text-center mb-8">
+            <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">
+              {mode === 'protect' ? "Drop PDFs to protect" : "Drop PDF to unlock"}
+            </h3>
+            <p className="text-gray-600 mb-4">
+              {mode === 'protect' 
                 ? "or click to browse. You can protect up to 10 PDFs at once."
                 : "or click to browse. Upload the password-protected PDF."
               }
+            </p>
+            <input
+              type="file"
+              accept=".pdf"
+              multiple={mode === 'protect'}
+              onChange={handleFileInput}
+              className="hidden"
+              id="file-upload"
             />
-          </motion.div>
+            <label
+              htmlFor="file-upload"
+              className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer transition-colors"
+            >
+              Choose Files
+            </label>
+          </div>
         ) : (
           <Suspense fallback={<PageLoadingSpinner message="Loading security tools..." />}>
             <div className="space-y-4">
@@ -197,10 +193,7 @@ export const ProtectPDFPage: React.FC = () => {
 
         {/* Security Levels */}
         {mode === 'protect' && files.length === 0 && (
-          <motion.div 
-            className="mt-16"
-            variants={fadeIn}
-          >
+          <div className="mt-16">
             <h2 className="text-2xl font-bold text-center text-gray-900 mb-8">
               Security Levels Available
             </h2>
@@ -227,14 +220,11 @@ export const ProtectPDFPage: React.FC = () => {
                 </div>
               ))}
             </div>
-          </motion.div>
+          </div>
         )}
 
         {/* Info Section */}
-        <motion.div 
-          className="mt-16 bg-blue-50 rounded-2xl p-8"
-          variants={fadeIn}
-        >
+        <div className="mt-16 bg-blue-50 rounded-2xl p-8">
           <div className="flex items-start">
             <AlertCircle className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
             <div className="ml-4">
@@ -249,8 +239,8 @@ export const ProtectPDFPage: React.FC = () => {
               </ul>
             </div>
           </div>
-        </motion.div>
-      </motion.div>
+        </div>
+      </div>
     </div>
   );
 };
