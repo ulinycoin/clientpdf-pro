@@ -11,7 +11,6 @@
  * For commercial licensing, contact: license@localpdf.online
  */
 
-
 // Константы для ограничений
 export const PDF_LIMITS = {
   MAX_FILE_SIZE: 100 * 1024 * 1024, // 100MB
@@ -214,77 +213,8 @@ export class PDFUtils {
       console.groupEnd();
     }
   }
-}
 
-// Константы для экспорта
-export const PDF_MIME_TYPE = 'application/pdf';
-export const IMAGE_MIME_TYPES = ACCEPTED_FILE_TYPES.IMAGES;
-
-// Типы для TypeScript
-export interface ProcessingOptions {
-  operation: 'merge' | 'split' | 'compress' | 'imageToPdf';
-  settings?: {
-    quality?: 'low' | 'medium' | 'high';
-    splitType?: 'pages' | 'range';
-    startPage?: number;
-    endPage?: number;
-    removeMetadata?: boolean;
-    optimizeImages?: boolean;
-  };
-}
-
-export interface ProcessingResult {
-  success: boolean;
-  message: string;
-  details?: string;
-  outputSize?: number;
-  compressionRatio?: number;
-  filesCreated?: number;
-}
-
-export interface FileValidation {
-  file: File;
-  isValid: boolean;
-  error?: string;
-  warnings?: string[];
-}
-
-// Утилита для дебага (только в development)
-export const DebugUtils = {
-  logFileInfo: (file: File) => {
-    if (process.env.NODE_ENV === 'development') {
-      console.log('File Info:', {
-        name: file.name,
-        type: file.type,
-        size: PDFUtils.formatFileSize(file.size),
-        lastModified: new Date(file.lastModified),
-      });
-    }
-  },
-
-  logPerformance: (label: string, startTime: number) => {
-    if (process.env.NODE_ENV === 'development') {
-      const endTime = performance.now();
-      console.log(`${label}: ${(endTime - startTime).toFixed(2)}ms`);
-    }
-  },
-
-  measureAsync: async <T>(label: string, fn: () => Promise<T>): Promise<T> => {
-    if (process.env.NODE_ENV === 'development') {
-      const startTime = performance.now();
-      try {
-        const result = await fn();
-        DebugUtils.logPerformance(label, startTime);
-        return result;
-      } catch (error) {
-        DebugUtils.logPerformance(`${label} (failed)`, startTime);
-        throw error;
-      }
-    } else {
-      return fn();
-    }
-  }
-};
+  /**
    * Читает файл как ArrayBuffer
    */
   static readFileAsArrayBuffer(file: File): Promise<ArrayBuffer> {
@@ -454,5 +384,74 @@ export const DebugUtils = {
   static generateFileId(): string {
     return Math.random().toString(36).substr(2, 9);
   }
+}
 
-  /**
+// Константы для экспорта
+export const PDF_MIME_TYPE = 'application/pdf';
+export const IMAGE_MIME_TYPES = ACCEPTED_FILE_TYPES.IMAGES;
+
+// Типы для TypeScript
+export interface ProcessingOptions {
+  operation: 'merge' | 'split' | 'compress' | 'imageToPdf';
+  settings?: {
+    quality?: 'low' | 'medium' | 'high';
+    splitType?: 'pages' | 'range';
+    startPage?: number;
+    endPage?: number;
+    removeMetadata?: boolean;
+    optimizeImages?: boolean;
+  };
+}
+
+export interface ProcessingResult {
+  success: boolean;
+  message: string;
+  details?: string;
+  outputSize?: number;
+  compressionRatio?: number;
+  filesCreated?: number;
+}
+
+export interface FileValidation {
+  file: File;
+  isValid: boolean;
+  error?: string;
+  warnings?: string[];
+}
+
+// Утилита для дебага (только в development)
+export const DebugUtils = {
+  logFileInfo: (file: File) => {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('File Info:', {
+        name: file.name,
+        type: file.type,
+        size: PDFUtils.formatFileSize(file.size),
+        lastModified: new Date(file.lastModified),
+      });
+    }
+  },
+
+  logPerformance: (label: string, startTime: number) => {
+    if (process.env.NODE_ENV === 'development') {
+      const endTime = performance.now();
+      console.log(`${label}: ${(endTime - startTime).toFixed(2)}ms`);
+    }
+  },
+
+  measureAsync: async <T>(label: string, fn: () => Promise<T>): Promise<T> => {
+    if (process.env.NODE_ENV === 'development') {
+      const startTime = performance.now();
+      try {
+        const result = await fn();
+        DebugUtils.logPerformance(label, startTime);
+        return result;
+      } catch (error) {
+        DebugUtils.logPerformance(`${label} (failed)`, startTime);
+        throw error;
+      }
+    } else {
+      return fn();
+    }
+  }
+};
