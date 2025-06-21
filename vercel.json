@@ -1,18 +1,14 @@
 {
-  "version": 2,
-  "name": "clientpdf-pro",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "installCommand": "npm install --legacy-peer-deps",
   "devCommand": "npm run dev",
   "framework": "vite",
   "regions": ["iad1"],
-  "functions": {},
-  "routes": [
+  "rewrites": [
     {
-      "src": "/[^.]+",
-      "dest": "/",
-      "status": 200
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ],
   "headers": [
@@ -39,14 +35,12 @@
         {
           "key": "X-XSS-Protection",
           "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
         }
       ]
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
     }
   ]
 }
