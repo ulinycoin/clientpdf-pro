@@ -56,6 +56,7 @@ export interface ProcessingProgress {
 class PDFWorkerManager {
   private worker: Worker | null = null;
   private isInitialized = false;
+  private initializationPromise: Promise<void> | null = null;
   private pendingOperations = new Map<string, {
     resolve: (value: any) => void;
     reject: (error: Error) => void;
@@ -66,11 +67,30 @@ class PDFWorkerManager {
    * Инициализирует worker
    */
   async initialize(): Promise<void> {
+    // Если уже инициализирован, возвращаем
     if (this.isInitialized && this.worker) {
       return;
     }
 
+    // Если уже инициализируется, ждем завершения
+    if (this.initializationPromise) {
+      return this.initializationPromise;
+    }
+
+    // Создаем промис инициализации
+    this.initializationPromise = this.doInitialization();
+    
     try {
+      await this.initializationPromise;
+    } finally {
+      this.initializationPromise = null;
+    }
+  }
+
+  private async doInitialization(): Promise<void> {
+    try {
+      console.log('🔄 Creating PDF Worker...');
+      
       // Создаем worker из отдельного файла
       this.worker = new Worker(
         new URL('../workers/pdfWorker.worker.ts', import.meta.url),
@@ -80,14 +100,21 @@ class PDFWorkerManager {
       this.worker.onmessage = this.handleWorkerMessage.bind(this);
       this.worker.onerror = this.handleWorkerError.bind(this);
 
-      // Проверяем готовность worker
+      // Проверяем готовность worker с увеличенным таймаутом
       await this.pingWorker();
       
       this.isInitialized = true;
-      console.log('🔧 PDF Worker initialized successfully');
+      console.log('✅ PDF Worker initialized successfully');
     } catch (error) {
       console.error('❌ Failed to initialize PDF Worker:', error);
-      throw new Error('PDF Worker initialization failed');
+      
+      // Очищаем неудачный worker
+      if (this.worker) {
+        this.worker.terminate();
+        this.worker = null;
+      }
+      
+      throw new Error(`PDF Worker initialization failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
@@ -98,8 +125,13 @@ class PDFWorkerManager {
     options: PDFProcessingOptions,
     onProgress?: (progress: ProcessingProgress) => void
   ): Promise<Blob> {
+    // Убеждаемся что worker инициализирован
     if (!this.isInitialized || !this.worker) {
       await this.initialize();
+    }
+
+    if (!this.worker) {
+      throw new Error('Worker not available after initialization');
     }
 
     const operationId = this.generateOperationId();
@@ -130,7 +162,11 @@ class PDFWorkerManager {
         type: 'CANCEL'
       } as WorkerMessage);
       
-      this.pendingOperations.delete(operationId);
+      const operation = this.pendingOperations.get(operationId);
+      if (operation) {
+        operation.reject(new Error('Operation cancelled'));
+        this.pendingOperations.delete(operationId);
+      }
     }
   }
 
@@ -142,7 +178,15 @@ class PDFWorkerManager {
       this.worker.terminate();
       this.worker = null;
       this.isInitialized = false;
+      this.initializationPromise = null;
+      
+      // Отклоняем все pending операции
+      this.pendingOperations.forEach((operation) => {
+        operation.reject(new Error('Worker terminated'));
+      });
       this.pendingOperations.clear();
+      
+      console.log('🛑 PDF Worker terminated');
     }
   }
 
@@ -160,9 +204,12 @@ class PDFWorkerManager {
 
     return new Promise((resolve, reject) => {
       const pingId = this.generateOperationId();
+      
+      // Увеличенный timeout для медленных устройств
       const timeout = setTimeout(() => {
-        reject(new Error('Worker ping timeout'));
-      }, 5000);
+        this.worker?.removeEventListener('message', handlePong);
+        reject(new Error('Worker ping timeout - worker may be busy loading libraries'));
+      }, 15000); // Увеличено до 15 секунд
 
       const handlePong = (event: MessageEvent<WorkerResponse>) => {
         if (event.data.id === pingId && event.data.type === 'PONG') {
@@ -173,6 +220,8 @@ class PDFWorkerManager {
       };
 
       this.worker.addEventListener('message', handlePong);
+      
+      // Отправляем ping
       this.worker.postMessage({
         id: pingId,
         type: 'PING'
@@ -185,7 +234,10 @@ class PDFWorkerManager {
     const operation = this.pendingOperations.get(id);
 
     if (!operation) {
-      console.warn('Received message for unknown operation:', id);
+      // Это может быть PONG ответ на ping - не выводим warning
+      if (type !== 'PONG') {
+        console.warn('Received message for unknown operation:', id, type);
+      }
       return;
     }
 
@@ -216,12 +268,18 @@ class PDFWorkerManager {
     
     // Отклоняем все pending операции
     this.pendingOperations.forEach((operation) => {
-      operation.reject(new Error('Worker crashed'));
+      operation.reject(new Error(`Worker crashed: ${error.message || 'Unknown error'}`));
     });
     this.pendingOperations.clear();
 
-    // Переинициализируем worker
-    this.terminate();
+    // Сбрасываем состояние worker
+    this.isInitialized = false;
+    this.initializationPromise = null;
+    
+    if (this.worker) {
+      this.worker.terminate();
+      this.worker = null;
+    }
   }
 
   private generateOperationId(): string {
