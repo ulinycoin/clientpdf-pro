@@ -12,6 +12,9 @@ let pdfLib: any = null;
 let jsPDF: any = null;
 let pdfjsLib: any = null;
 
+// Text encoding utilities
+let textEncoding: any = null;
+
 // Active operations для cancellation
 const activeOperations = new Map<string, { cancelled: boolean }>();
 
@@ -87,7 +90,7 @@ async function initializePako() {
  * Инициализирует PDF библиотеки с правильной обработкой модулей
  */
 async function initializePDFLibraries(): Promise<void> {
-  if (pdfLib && jsPDF && pdfjsLib) {
+  if (pdfLib && jsPDF && pdfjsLib && textEncoding) {
     return; // Уже инициализированы
   }
 
@@ -103,6 +106,41 @@ async function initializePDFLibraries(): Promise<void> {
       import('jspdf'),
       import('pdfjs-dist')
     ]);
+
+    // Загружаем утилиты для кодирования текста
+    try {
+      const textEncodingModule = await import('../utils/textEncoding');
+      textEncoding = textEncodingModule;
+      console.log('✅ Worker: Text encoding utilities loaded');
+    } catch (textError) {
+      console.warn('⚠️ Worker: Text encoding utilities not available, using fallbacks');
+      // Создаем fallback функции
+      textEncoding = {
+        createSafePDFText: (text: string) => text.replace(/[^\x00-\xFF]/g, '?'),
+        createProtectionInfoText: (password: string, fileName: string) => [
+          `This PDF has been protected with password: "${password}"`,
+          '',
+          'IMPORTANT NOTICE:',
+          'Due to browser limitations, this is a demonstration of password protection.',
+          'The original PDF content is preserved but not encrypted with industry-standard encryption.',
+          '',
+          'For production use, please consider:',
+          '• Adobe Acrobat Pro for full PDF encryption',
+          '• Server-side PDF processing with proper encryption libraries',
+          '• Desktop PDF tools with advanced security features',
+          '',
+          'This tool is designed for basic privacy protection and',
+          'educational purposes in a client-side environment.',
+          '',
+          `Original file: ${fileName}`,
+          `Protection applied: ${new Date().toLocaleString()}`,
+          `Password hint: ${password.length} characters`,
+        ],
+        SAFE_PDF_MESSAGES: {
+          PROTECTED_TITLE: 'PROTECTED - PASSWORD PROTECTED PDF'
+        }
+      };
+    }
 
     // PDF-lib
     pdfLib = pdfLibModule;
@@ -458,8 +496,9 @@ async function processProtect(
       const font = await protectedPdf.embedFont(pdfLib.StandardFonts.Helvetica);
       const boldFont = await protectedPdf.embedFont(pdfLib.StandardFonts.HelveticaBold);
       
-      // Заголовок (убираем эмодзи, заменяем на ASCII-совместимый текст)
-      page.drawText('[PROTECTED] PASSWORD PROTECTED PDF', {
+      // Заголовок (используем безопасный текст)
+      const safeTitle = textEncoding?.SAFE_PDF_MESSAGES?.PROTECTED_TITLE || 'PROTECTED - PASSWORD PROTECTED PDF';
+      page.drawText(safeTitle, {
         x: 50,
         y: height - 100,
         size: 24,
@@ -467,31 +506,35 @@ async function processProtect(
         color: pdfLib.rgb(0.8, 0.2, 0.2),
       });
       
-      // Информация о защите
-      const infoText = [
-        `This PDF has been protected with password: "${password}"`,
-        '',
-        'IMPORTANT NOTICE:',
-        'Due to browser limitations, this is a demonstration of password protection.',
-        'The original PDF content is preserved but not encrypted with industry-standard encryption.',
-        '',
-        'For production use, please consider:',
-        '• Adobe Acrobat Pro for full PDF encryption',
-        '• Server-side PDF processing with proper encryption libraries',
-        '• Desktop PDF tools with advanced security features',
-        '',
-        'This tool is designed for basic privacy protection and',
-        'educational purposes in a client-side environment.',
-        '',
-        `Original file: ${file.name}`,
-        `Protection applied: ${new Date().toLocaleString()}`,
-        `Password hint: ${password.length} characters`,
-      ];
+      // Информация о защите (используем безопасный текст)
+      const infoText = textEncoding?.createProtectionInfoText 
+        ? textEncoding.createProtectionInfoText(password, file.name)
+        : [
+            `This PDF has been protected with password: "${password}"`,
+            '',
+            'IMPORTANT NOTICE:',
+            'Due to browser limitations, this is a demonstration of password protection.',
+            'The original PDF content is preserved but not encrypted with industry-standard encryption.',
+            '',
+            'For production use, please consider:',
+            '• Adobe Acrobat Pro for full PDF encryption',
+            '• Server-side PDF processing with proper encryption libraries',
+            '• Desktop PDF tools with advanced security features',
+            '',
+            'This tool is designed for basic privacy protection and',
+            'educational purposes in a client-side environment.',
+            '',
+            `Original file: ${file.name}`,
+            `Protection applied: ${new Date().toLocaleString()}`,
+            `Password hint: ${password.length} characters`,
+          ];
       
       let yPosition = height - 150;
       infoText.forEach((line, index) => {
         const isHeader = line.startsWith('IMPORTANT') || line.startsWith('For production');
-        page.drawText(line, {
+        const safeText = textEncoding?.createSafePDFText ? textEncoding.createSafePDFText(line) : line;
+        
+        page.drawText(safeText, {
           x: 50,
           y: yPosition,
           size: isHeader ? 14 : 12,
