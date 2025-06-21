@@ -75,18 +75,13 @@ export default defineConfig({
             return 'analytics'
           }
           
-          // DOMPurify
-          if (id.includes('node_modules/dompurify') || id.includes('node_modules/isomorphic-dompurify')) {
-            return 'purify-vendor'
-          }
-          
           // PDF библиотеки - НЕ включаем в manualChunks!
           // Они должны загружаться только через dynamic import
           if (id.includes('pdfjs-dist') || 
               id.includes('pdf-lib') || 
               id.includes('jspdf') || 
               id.includes('html2canvas') ||
-              id.includes('pako')) { // Добавляем pako в исключения
+              id.includes('pako')) {
             // Возвращаем undefined - пусть Vite сам решает
             return undefined
           }
@@ -143,9 +138,6 @@ export default defineConfig({
         }
       }
     },
-    
-    cssMinify: true,
-    assetsInlineLimit: 4096,
   },
   
   // КРИТИЧЕСКИ ВАЖНО: настройка optimizeDeps для решения проблемы с pako
@@ -159,7 +151,6 @@ export default defineConfig({
       'framer-motion',
       'file-saver',
       'react-dropzone',
-      'dompurify',
       'pako' // Добавляем pako в include для правильной обработки
     ],
     // Полностью исключаем PDF библиотеки
@@ -177,7 +168,7 @@ export default defineConfig({
     }
   },
   
-  // Настройка resolve с алиасом для pako
+  // Настройка resolve с алиасом
   resolve: {
     alias: {
       '@': '/src',
@@ -186,9 +177,7 @@ export default defineConfig({
       '@services': '/src/services',
       '@hooks': '/src/hooks',
       '@utils': '/src/utils',
-      '@workers': '/src/workers',
-      // Добавляем алиас для pako если нужно
-      'pako': 'pako/dist/pako.esm.mjs'
+      '@workers': '/src/workers'
     }
   },
   
@@ -200,7 +189,6 @@ export default defineConfig({
   
   // Development server
   server: {
-    historyApiFallback: true,
     port: 3000,
     open: true,
   },
