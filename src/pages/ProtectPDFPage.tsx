@@ -12,7 +12,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { Shield, Lock, Unlock, FileText, AlertCircle, CheckCircle, Upload, Eye, EyeOff, Download, X, Settings } from 'lucide-react';
+import { Shield, Lock, Unlock, FileText, AlertCircle, CheckCircle, Upload, Eye, EyeOff, Download, X, Settings, Info } from 'lucide-react';
 import { Button } from '../components/atoms/Button';
 import { usePDFWorker } from '../hooks/usePDFWorker';
 
@@ -154,36 +154,36 @@ export const ProtectPDFPage: React.FC = () => {
   const features = [
     {
       icon: Lock,
-      title: 'Password Protection',
-      description: 'Add password security to prevent unauthorized access'
+      title: 'Password Information',
+      description: 'Add password information and document metadata protection'
     },
     {
       icon: Shield,
-      title: 'Permission Control',
-      description: 'Set permissions for printing, copying, and editing'
+      title: 'Educational Tool',
+      description: 'Learn about PDF security and browser limitations'
     },
     {
       icon: FileText,
       title: 'Client-Side Processing',
-      description: 'All encryption happens locally for maximum security'
+      description: 'All processing happens locally for maximum privacy'
     }
   ];
 
   const securityLevels = [
     {
       level: 'Basic',
-      description: 'Password required to open',
-      features: ['View protection', 'Basic encryption']
+      description: 'Information page with password record',
+      features: ['Password documentation', 'Original content preserved']
     },
     {
-      level: 'Standard',
-      description: 'Password + restricted permissions',
-      features: ['View protection', 'Print restrictions', 'Copy restrictions']
+      level: 'Educational',
+      description: 'Learn about PDF security limitations',
+      features: ['Browser constraint explanation', 'Security best practices', 'Alternative solutions']
     },
     {
-      level: 'Advanced',
-      description: 'Maximum security settings',
-      features: ['View protection', 'Edit restrictions', 'Print restrictions', 'Copy restrictions']
+      level: 'Professional',
+      description: 'For real encryption, use desktop tools',
+      features: ['Adobe Acrobat Pro', 'Server-side processing', 'Dedicated PDF security software']
     }
   ];
 
@@ -196,12 +196,33 @@ export const ProtectPDFPage: React.FC = () => {
             <Shield className="w-8 h-8 text-blue-600" />
           </div>
           <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
-            Password Protect PDF
+            PDF Protection Tool
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Add password protection and control permissions for your PDF files. 
-            Everything happens in your browser - your files never leave your device.
+            Educational PDF protection tool with information pages and unlock functionality. 
+            Learn about PDF security in a browser environment.
           </p>
+        </div>
+
+        {/* Important Notice */}
+        <div className="max-w-4xl mx-auto mb-8">
+          <div className="bg-amber-50 border border-amber-200 rounded-xl p-6">
+            <div className="flex items-start">
+              <Info className="w-6 h-6 text-amber-600 flex-shrink-0 mt-1" />
+              <div className="ml-4">
+                <h3 className="text-lg font-semibold text-amber-800 mb-2">
+                  Educational Tool - Browser Limitations
+                </h3>
+                <p className="text-amber-700 mb-3">
+                  This tool demonstrates PDF protection concepts but cannot create industry-standard encrypted PDFs due to browser security limitations.
+                </p>
+                <div className="text-sm text-amber-600">
+                  <strong>Protection mode:</strong> Creates an information page with your password and includes the original PDF content<br/>
+                  <strong>Unlock mode:</strong> Can unlock properly encrypted PDFs created by professional tools
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Mode Toggle */}
@@ -216,7 +237,7 @@ export const ProtectPDFPage: React.FC = () => {
               }`}
             >
               <Lock className="w-4 h-4 inline mr-2" />
-              Protect PDF
+              Add Protection Info
             </button>
             <button
               onClick={() => setMode('unlock')}
@@ -260,12 +281,12 @@ export const ProtectPDFPage: React.FC = () => {
               <div className="bg-white rounded-xl border-2 border-dashed border-gray-300 p-8 text-center mb-8">
                 <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  {mode === 'protect' ? "Drop PDF to protect" : "Drop PDF to unlock"}
+                  {mode === 'protect' ? "Drop PDF to add protection info" : "Drop PDF to unlock"}
                 </h3>
                 <p className="text-gray-600 mb-4">
                   {mode === 'protect' 
-                    ? "or click to browse. Choose a PDF file to add password protection."
-                    : "or click to browse. Upload the password-protected PDF to unlock."
+                    ? "or click to browse. Add an information page with password documentation."
+                    : "or click to browse. Upload a password-protected PDF to unlock."
                   }
                 </p>
                 <input
@@ -312,14 +333,14 @@ export const ProtectPDFPage: React.FC = () => {
               <div className="space-y-4 mb-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {mode === 'protect' ? 'New Password' : 'Current Password'}
+                    {mode === 'protect' ? 'Password for Documentation' : 'Current Password'}
                   </label>
                   <div className="relative">
                     <input
                       type={showPassword ? 'text' : 'password'}
                       value={password}
                       onChange={(e) => handlePasswordChange(e.target.value)}
-                      placeholder={mode === 'protect' ? 'Enter a strong password' : 'Enter the PDF password'}
+                      placeholder={mode === 'protect' ? 'Enter password to document' : 'Enter the PDF password'}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-12"
                       disabled={isProcessing}
                     />
@@ -351,6 +372,19 @@ export const ProtectPDFPage: React.FC = () => {
                 )}
               </div>
 
+              {/* Information for Protection Mode */}
+              {mode === 'protect' && (
+                <div className="mb-6 p-4 bg-blue-50 rounded-lg">
+                  <h4 className="text-sm font-medium text-blue-800 mb-2">What happens when you protect:</h4>
+                  <ul className="text-sm text-blue-700 space-y-1">
+                    <li>• Creates an information page with your password and protection details</li>
+                    <li>• Includes the original PDF content after the information page</li>
+                    <li>• Documents your security intent (educational purpose)</li>
+                    <li>• Does not create industry-standard encryption due to browser limitations</li>
+                  </ul>
+                </div>
+              )}
+
               {/* Advanced Settings for Protection Mode */}
               {mode === 'protect' && (
                 <div className="mb-6">
@@ -359,14 +393,14 @@ export const ProtectPDFPage: React.FC = () => {
                     className="flex items-center text-sm text-blue-600 hover:text-blue-700 mb-4"
                   >
                     <Settings className="w-4 h-4 mr-2" />
-                    Advanced Permission Settings
+                    Documentation Settings
                     {showAdvancedSettings ? ' (Hide)' : ' (Show)'}
                   </button>
 
                   {showAdvancedSettings && (
                     <div className="bg-gray-50 rounded-lg p-4 space-y-3">
                       <p className="text-sm text-gray-600 mb-3">
-                        Control what users can do with the protected PDF:
+                        These settings will be documented in the information page:
                       </p>
                       
                       {Object.entries(permissions).map(([key, value]) => (
@@ -379,12 +413,12 @@ export const ProtectPDFPage: React.FC = () => {
                             disabled={isProcessing}
                           />
                           <span className="ml-2 text-sm text-gray-700">
-                            {key === 'allowPrinting' && 'Allow printing'}
-                            {key === 'allowModifying' && 'Allow modifying content'}
-                            {key === 'allowCopying' && 'Allow copying text and images'}
-                            {key === 'allowAnnotating' && 'Allow adding annotations'}
-                            {key === 'allowFillingForms' && 'Allow filling forms'}
-                            {key === 'allowDocumentAssembly' && 'Allow document assembly'}
+                            Document intention to {key === 'allowPrinting' && 'allow printing'}
+                            {key === 'allowModifying' && 'allow modifying content'}
+                            {key === 'allowCopying' && 'allow copying text and images'}
+                            {key === 'allowAnnotating' && 'allow adding annotations'}
+                            {key === 'allowFillingForms' && 'allow filling forms'}
+                            {key === 'allowDocumentAssembly' && 'allow document assembly'}
                           </span>
                         </label>
                       ))}
@@ -431,11 +465,11 @@ export const ProtectPDFPage: React.FC = () => {
                     <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
                     <div className="ml-3 flex-1">
                       <h3 className="text-sm font-medium text-green-800">
-                        {mode === 'protect' ? 'PDF Protected Successfully!' : 'PDF Unlocked Successfully!'}
+                        {mode === 'protect' ? 'Protection Information Added!' : 'PDF Unlocked Successfully!'}
                       </h3>
                       <p className="text-sm text-green-700 mt-1">
                         {mode === 'protect' 
-                          ? 'Your PDF has been password protected with the specified permissions.'
+                          ? 'Your PDF now includes a protection information page with the original content.'
                           : 'The password has been removed from your PDF.'
                         }
                       </p>
@@ -472,7 +506,7 @@ export const ProtectPDFPage: React.FC = () => {
                       className="flex-1"
                       size="lg"
                     >
-                      {isProcessing ? 'Processing...' : (mode === 'protect' ? 'Protect PDF' : 'Unlock PDF')}
+                      {isProcessing ? 'Processing...' : (mode === 'protect' ? 'Add Protection Info' : 'Unlock PDF')}
                     </Button>
                     <Button
                       onClick={handleReset}
@@ -492,7 +526,7 @@ export const ProtectPDFPage: React.FC = () => {
           {mode === 'protect' && files.length === 0 && (
             <div className="mt-16">
               <h2 className="text-2xl font-bold text-center text-gray-900 mb-8">
-                Security Levels Available
+                Protection Levels Available
               </h2>
               <div className="grid md:grid-cols-3 gap-6">
                 {securityLevels.map((level, index) => (
@@ -526,14 +560,14 @@ export const ProtectPDFPage: React.FC = () => {
               <AlertCircle className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
               <div className="ml-4">
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  Important Security Information
+                  Understanding PDF Security in Browsers
                 </h3>
                 <ul className="space-y-2 text-gray-600">
-                  <li>• Strong passwords should be at least 8 characters with mixed case, numbers, and symbols</li>
-                  <li>• Keep your passwords secure - we cannot recover lost passwords</li>
-                  <li>• Password protection prevents casual access but isn't unbreakable with advanced tools</li>
-                  <li>• All encryption happens locally in your browser for maximum privacy</li>
-                  <li>• {mode === 'unlock' ? 'Original files are never stored or transmitted' : 'Permission settings control document functionality'}</li>
+                  <li>• Browser environments have security limitations that prevent true PDF encryption</li>
+                  <li>• This tool creates documentation and educational content about password protection</li>
+                  <li>• For real PDF encryption, use Adobe Acrobat Pro or server-side processing</li>
+                  <li>• The unlock feature can remove passwords from properly encrypted PDFs</li>
+                  <li>• All processing happens locally - no files are uploaded to servers</li>
                 </ul>
               </div>
             </div>
