@@ -36,7 +36,7 @@ export const HomePage: React.FC = () => {
   const [showPDFTools, setShowPDFTools] = useState(false);
 
   useEffect(() => {
-    document.title = 'LocalPDF - Free Online PDF Tools | Privacy-First PDF Processing | 5 Tools Available';
+    document.title = 'LocalPDF - Free Online PDF Tools | Privacy-First PDF Processing | 4 Essential Tools';
   }, []);
 
   const handleFilesSelected = (files: File[]) => {
@@ -51,7 +51,7 @@ export const HomePage: React.FC = () => {
     }
   };
 
-  // 🔥 NOW WITH 5 TOOLS INCLUDING PASSWORD PROTECTION! 🔥
+  // Core PDF tools - focused on working features only
   const tools = [
     {
       title: 'Merge PDF Files',
@@ -80,14 +80,6 @@ export const HomePage: React.FC = () => {
       icon: '🖼️',
       href: '/images-to-pdf',
       color: 'purple'
-    },
-    {
-      title: '🔐 Password Protect',
-      description: 'Add password protection and set permissions for PDFs',
-      icon: '🔐',
-      href: '/protect-pdf',
-      color: 'red',
-      isNew: true
     }
   ];
 
@@ -97,7 +89,7 @@ export const HomePage: React.FC = () => {
       <div className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
           Free Online PDF Tools
-          <span className="text-sm bg-red-100 text-red-600 px-2 py-1 rounded-full ml-2">NEW: Password Protection!</span>
+          <span className="text-sm bg-blue-100 text-blue-600 px-2 py-1 rounded-full ml-2">4 Essential Tools</span>
         </h1>
         <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto mb-8">
           Process PDFs instantly in your browser. No uploads, no servers, your files never leave your device.
@@ -120,26 +112,20 @@ export const HomePage: React.FC = () => {
         </div>
       </div>
 
-      {/* Tools Grid - Now featuring 5 tools including Password Protection */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-12">
+      {/* Tools Grid - Now featuring 4 essential working tools */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
         {tools.map((tool) => (
           <Link
             key={tool.href}
             to={tool.href}
             className={clsx(
-              'block p-6 rounded-xl border-2 transition-all duration-200 hover:shadow-lg group relative',
+              'block p-6 rounded-xl border-2 transition-all duration-200 hover:shadow-lg group',
               tool.color === 'blue' && 'border-blue-200 hover:border-blue-300 hover:bg-blue-50',
               tool.color === 'green' && 'border-green-200 hover:border-green-300 hover:bg-green-50',
               tool.color === 'orange' && 'border-orange-200 hover:border-orange-300 hover:bg-orange-50',
-              tool.color === 'purple' && 'border-purple-200 hover:border-purple-300 hover:bg-purple-50',
-              tool.color === 'red' && 'border-red-200 hover:border-red-300 hover:bg-red-50'
+              tool.color === 'purple' && 'border-purple-200 hover:border-purple-300 hover:bg-purple-50'
             )}
           >
-            {tool.isNew && (
-              <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
-                NEW!
-              </div>
-            )}
             <div className="text-3xl mb-3">{tool.icon}</div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
               {tool.title}
@@ -213,6 +199,41 @@ export const HomePage: React.FC = () => {
             )}
           </div>
         )}
+      </div>
+
+      {/* Features Section */}
+      <div className="bg-blue-50 rounded-2xl p-8 border border-blue-200 mb-12">
+        <div className="text-center mb-8">
+          <h2 className="text-2xl font-bold text-blue-900 mb-4">
+            Why Choose LocalPDF?
+          </h2>
+          <p className="text-blue-700 max-w-2xl mx-auto">
+            Professional-grade PDF processing with complete privacy and instant results
+          </p>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="bg-white p-6 rounded-lg border border-blue-200">
+            <div className="text-2xl mb-3">⚡</div>
+            <h3 className="font-semibold text-blue-900 mb-2">Lightning Fast</h3>
+            <p className="text-sm text-blue-700">Process files instantly without waiting for uploads or downloads</p>
+          </div>
+          <div className="bg-white p-6 rounded-lg border border-blue-200">
+            <div className="text-2xl mb-3">🔒</div>
+            <h3 className="font-semibold text-blue-900 mb-2">100% Private</h3>
+            <p className="text-sm text-blue-700">Your files never leave your device - complete privacy guaranteed</p>
+          </div>
+          <div className="bg-white p-6 rounded-lg border border-blue-200">
+            <div className="text-2xl mb-3">🎯</div>
+            <h3 className="font-semibold text-blue-900 mb-2">Professional Quality</h3>
+            <p className="text-sm text-blue-700">Industry-standard PDF processing with reliable results</p>
+          </div>
+          <div className="bg-white p-6 rounded-lg border border-blue-200">
+            <div className="text-2xl mb-3">🌐</div>
+            <h3 className="font-semibold text-blue-900 mb-2">Works Everywhere</h3>
+            <p className="text-sm text-blue-700">Compatible with all modern browsers and devices</p>
+          </div>
+        </div>
       </div>
 
       {/* Privacy Section */}
