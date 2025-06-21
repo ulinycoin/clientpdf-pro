@@ -39,8 +39,10 @@ jobs:
     - name: Setup Pages
       uses: actions/configure-pages@v4
       
-    - name: Install dependencies
-      run: npm ci
+    - name: Remove old lock file and install dependencies
+      run: |
+        rm -f package-lock.json
+        npm install --legacy-peer-deps
       
     - name: Type check
       run: npm run type-check
