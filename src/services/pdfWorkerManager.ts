@@ -23,7 +23,7 @@ export interface WorkerResponse {
 }
 
 export interface PDFProcessingOptions {
-  operation: 'merge' | 'split' | 'compress' | 'protect' | 'imagesToPdf';
+  operation: 'merge' | 'split' | 'compress' | 'imagesToPdf';
   files: File[];
   settings?: {
     // Common settings
@@ -31,18 +31,6 @@ export interface PDFProcessingOptions {
     removeMetadata?: boolean;
     pageRange?: { start: number; end: number };
     compressionLevel?: number;
-    
-    // Password protection settings
-    mode?: 'protect' | 'unlock';
-    password?: string;
-    permissions?: {
-      allowPrinting?: boolean;
-      allowModifying?: boolean;
-      allowCopying?: boolean;
-      allowAnnotating?: boolean;
-      allowFillingForms?: boolean;
-      allowDocumentAssembly?: boolean;
-    };
   };
 }
 
