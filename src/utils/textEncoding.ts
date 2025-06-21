@@ -47,52 +47,52 @@ export function sanitizeTextForPDF(text: string, options: {
 
   // Предустановленные замены для частых Unicode символов
   const commonReplacements: Record<string, string> = {
-    // Quotes
-    '"': '"',
-    '"': '"',
-    ''': "'",
-    ''': "'",
+    // Quotes - используем безопасные ASCII коды
+    '\u201C': '"', // "
+    '\u201D': '"', // "
+    '\u2018': "'", // '
+    '\u2019': "'", // '
     
     // Dashes
-    '—': '-',
-    '–': '-',
+    '\u2014': '-', // —
+    '\u2013': '-', // –
     
     // Common emojis и Unicode символы
-    '🔒': '[PROTECTED]',
-    '🔓': '[UNLOCKED]',
-    '📄': '[PDF]',
-    '✓': '[CHECK]',
-    '✗': '[X]',
-    '⚠️': '[WARNING]',
-    '🚫': '[BLOCKED]',
-    '💾': '[SAVE]',
-    '📁': '[FOLDER]',
-    '🔍': '[SEARCH]',
-    '⏱️': '[TIME]',
-    '📊': '[CHART]',
-    '🔧': '[TOOLS]',
-    '⚙️': '[SETTINGS]',
+    '\u1F512': '[PROTECTED]', // 🔒
+    '\u1F513': '[UNLOCKED]',  // 🔓
+    '\u1F4C4': '[PDF]',       // 📄
+    '\u2713': '[CHECK]',      // ✓
+    '\u2717': '[X]',          // ✗
+    '\u26A0': '[WARNING]',    // ⚠️
+    '\u1F6AB': '[BLOCKED]',   // 🚫
+    '\u1F4BE': '[SAVE]',      // 💾
+    '\u1F4C1': '[FOLDER]',    // 📁
+    '\u1F50D': '[SEARCH]',    // 🔍
+    '\u23F1': '[TIME]',       // ⏱️
+    '\u1F4CA': '[CHART]',     // 📊
+    '\u1F527': '[TOOLS]',     // 🔧
+    '\u2699': '[SETTINGS]',   // ⚙️
     
     // Mathematical symbols
-    '×': 'x',
-    '÷': '/',
-    '±': '+/-',
-    '≤': '<=',
-    '≥': '>=',
-    '≠': '!=',
+    '\u00D7': 'x',      // ×
+    '\u00F7': '/',      // ÷
+    '\u00B1': '+/-',    // ±
+    '\u2264': '<=',     // ≤
+    '\u2265': '>=',     // ≥
+    '\u2260': '!=',     // ≠
     
     // Arrows
-    '→': '->',
-    '←': '<-',
-    '↑': '^',
-    '↓': 'v',
+    '\u2192': '->',     // →
+    '\u2190': '<-',     // ←
+    '\u2191': '^',      // ↑
+    '\u2193': 'v',      // ↓
     
     // Other common symbols
-    '©': '(c)',
-    '®': '(R)',
-    '™': '(TM)',
-    '§': 'section',
-    '¶': 'paragraph',
+    '\u00A9': '(c)',        // ©
+    '\u00AE': '(R)',        // ®
+    '\u2122': '(TM)',       // ™
+    '\u00A7': 'section',    // §
+    '\u00B6': 'paragraph',  // ¶
   };
 
   // Применяем общие замены
@@ -150,9 +150,9 @@ function escapeRegExp(string: string): string {
 export function createSafePDFTitle(title: string): string {
   return sanitizeTextForPDF(title, {
     customReplacements: {
-      '🔒': 'PROTECTED',
-      '🔓': 'UNLOCKED',
-      '📄': 'PDF',
+      '\u1F512': 'PROTECTED', // 🔒
+      '\u1F513': 'UNLOCKED',  // 🔓
+      '\u1F4C4': 'PDF',       // 📄
     }
   });
 }
