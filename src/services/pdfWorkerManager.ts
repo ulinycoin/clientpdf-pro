@@ -23,13 +23,26 @@ export interface WorkerResponse {
 }
 
 export interface PDFProcessingOptions {
-  operation: 'merge' | 'split' | 'compress' | 'imagesToPdf';
+  operation: 'merge' | 'split' | 'compress' | 'protect' | 'imagesToPdf';
   files: File[];
   settings?: {
+    // Common settings
     quality?: 'low' | 'medium' | 'high';
     removeMetadata?: boolean;
     pageRange?: { start: number; end: number };
     compressionLevel?: number;
+    
+    // Password protection settings
+    mode?: 'protect' | 'unlock';
+    password?: string;
+    permissions?: {
+      allowPrinting?: boolean;
+      allowModifying?: boolean;
+      allowCopying?: boolean;
+      allowAnnotating?: boolean;
+      allowFillingForms?: boolean;
+      allowDocumentAssembly?: boolean;
+    };
   };
 }
 
@@ -60,7 +73,7 @@ class PDFWorkerManager {
     try {
       // Создаем worker из отдельного файла
       this.worker = new Worker(
-        new URL('./pdfWorker.worker.ts', import.meta.url),
+        new URL('../workers/pdfWorker.worker.ts', import.meta.url),
         { type: 'module' }
       );
 
@@ -219,68 +232,6 @@ class PDFWorkerManager {
 // Singleton instance
 export const pdfWorkerManager = new PDFWorkerManager();
 
-// React hook для использования в компонентах
-export const usePDFWorker = () => {
-  const [isReady, setIsReady] = React.useState(false);
-  const [isProcessing, setIsProcessing] = React.useState(false);
-  const [progress, setProgress] = React.useState<ProcessingProgress | null>(null);
-
-  React.useEffect(() => {
-    const initWorker = async () => {
-      try {
-        await pdfWorkerManager.initialize();
-        setIsReady(true);
-      } catch (error) {
-        console.error('Failed to initialize PDF worker:', error);
-      }
-    };
-
-    initWorker();
-
-    return () => {
-      pdfWorkerManager.terminate();
-    };
-  }, []);
-
-  const processFiles = React.useCallback(async (
-    options: PDFProcessingOptions
-  ): Promise<Blob> => {
-    setIsProcessing(true);
-    setProgress(null);
-
-    try {
-      const result = await pdfWorkerManager.processFiles(
-        options,
-        (progressData) => setProgress(progressData)
-      );
-      
-      setProgress({
-        percentage: 100,
-        message: 'Processing complete!',
-        status: 'complete'
-      });
-      
-      return result;
-    } catch (error) {
-      setProgress({
-        percentage: 0,
-        message: error instanceof Error ? error.message : 'Processing failed',
-        status: 'error'
-      });
-      throw error;
-    } finally {
-      setIsProcessing(false);
-    }
-  }, []);
-
-  return {
-    isReady,
-    isProcessing,
-    progress,
-    processFiles
-  };
-};
-
 // Утилиты для измерения производительности
 export const WorkerMetrics = {
   measureWorkerOperation: async <T>(
@@ -302,5 +253,3 @@ export const WorkerMetrics = {
     }
   }
 };
-
-import React from 'react';
