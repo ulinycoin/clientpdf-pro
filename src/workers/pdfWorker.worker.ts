@@ -458,8 +458,8 @@ async function processProtect(
       const font = await protectedPdf.embedFont(pdfLib.StandardFonts.Helvetica);
       const boldFont = await protectedPdf.embedFont(pdfLib.StandardFonts.HelveticaBold);
       
-      // Заголовок
-      page.drawText('🔒 PASSWORD PROTECTED PDF', {
+      // Заголовок (убираем эмодзи, заменяем на ASCII-совместимый текст)
+      page.drawText('[PROTECTED] PASSWORD PROTECTED PDF', {
         x: 50,
         y: height - 100,
         size: 24,
