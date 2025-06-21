@@ -59,6 +59,8 @@ export default defineConfig({
       'framer-motion',
       'file-saver',
       'react-dropzone',
+      // Include pako to fix module resolution
+      'pako'
     ],
     // Exclude heavy PDF libraries - load them dynamically
     exclude: [
@@ -67,6 +69,11 @@ export default defineConfig({
       'pdfjs-dist',
       'html2canvas'
     ]
+  },
+  
+  // SSR externals configuration for proper module handling
+  ssr: {
+    external: ['pako']
   },
   
   // Path resolution
