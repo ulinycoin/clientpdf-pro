@@ -11,7 +11,6 @@
  * For commercial licensing, contact: license@localpdf.online
  */
 
-
 import React from 'react';
 import { clsx } from 'clsx';
 import { type Icon } from 'lucide-react';
@@ -41,7 +40,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref
   ) => {
-    const baseClasses = 'btn-base';
+    const baseClasses = 'inline-flex items-center justify-center rounded-md font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none';
     
     const variantClasses = {
       primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 shadow-sm',
@@ -51,9 +50,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     };
 
     const sizeClasses = {
-      sm: 'btn-sm',
-      md: 'btn-md',
-      lg: 'btn-lg',
+      sm: 'h-8 px-3 text-sm',
+      md: 'h-10 px-4 py-2',
+      lg: 'h-12 px-6 text-lg',
     };
 
     const iconSizeMap = {

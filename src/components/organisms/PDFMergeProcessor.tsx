@@ -12,7 +12,7 @@
  */
 
 import React, { useState, useCallback } from 'react';
-import { Clock, CheckCircle, AlertCircle, Combine, Download, Trash2, GripVertical, ArrowUp, ArrowDown, FileText } from 'lucide-react';
+import { Clock, CheckCircle, AlertCircle, Combine, Download, Trash2, GripVertical, ArrowUp, ArrowDown, FileText, Plus } from 'lucide-react';
 import { Button } from '../atoms/Button';
 import { clsx } from 'clsx';
 
@@ -20,6 +20,7 @@ interface PDFMergeProcessorProps {
   files: File[];
   onRemoveFile?: (index: number) => void;
   onReorderFiles?: (files: File[]) => void;
+  onAddMoreFiles?: () => void;
 }
 
 interface FileStatus {
@@ -31,7 +32,8 @@ interface FileStatus {
 export const PDFMergeProcessor: React.FC<PDFMergeProcessorProps> = ({ 
   files, 
   onRemoveFile,
-  onReorderFiles 
+  onReorderFiles,
+  onAddMoreFiles
 }) => {
   const [fileStatuses, setFileStatuses] = useState<FileStatus[]>(
     files.map(file => ({ file, status: 'idle' }))
@@ -75,6 +77,16 @@ export const PDFMergeProcessor: React.FC<PDFMergeProcessorProps> = ({
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
+
+  // File upload handler for additional files
+  const handleFileInput = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const newFiles = Array.from(event.target.files || []);
+    if (newFiles.length > 0 && onReorderFiles) {
+      onReorderFiles([...files, ...newFiles]);
+    }
+    // Reset input
+    event.target.value = '';
+  }, [files, onReorderFiles]);
 
   const mergePDFs = async () => {
     try {
@@ -207,8 +219,29 @@ export const PDFMergeProcessor: React.FC<PDFMergeProcessorProps> = ({
                 PDF Files ({files.length})
               </h3>
             </div>
-            <div className="text-sm text-gray-600">
-              Total size: {formatFileSize(totalSize)}
+            <div className="flex items-center space-x-4">
+              <div className="text-sm text-gray-600">
+                Total size: {formatFileSize(totalSize)}
+              </div>
+              
+              {/* Add More Files Button */}
+              <div className="relative">
+                <input
+                  type="file"
+                  accept=".pdf"
+                  multiple
+                  onChange={handleFileInput}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                />
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  icon={Plus}
+                  className="relative"
+                >
+                  Add More
+                </Button>
+              </div>
             </div>
           </div>
         </div>

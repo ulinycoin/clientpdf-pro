@@ -11,7 +11,6 @@
  * For commercial licensing, contact: license@localpdf.online
  */
 
-
 import React, { useState, lazy, Suspense } from 'react';
 import { Combine, ArrowLeft, Info, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -122,12 +121,14 @@ export const MergePDFPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Upload Zone */}
-      <FileUploadZone 
-        onFilesSelected={handleFilesSelected}
-        acceptedTypes={['.pdf']}
-        className="mb-8"
-      />
+      {/* Upload Zone - only show if no files selected */}
+      {selectedFiles.length === 0 && (
+        <FileUploadZone 
+          onFilesSelected={handleFilesSelected}
+          acceptedTypes={['.pdf']}
+          className="mb-8"
+        />
+      )}
 
       {/* Lazy-loaded Processor */}
       {selectedFiles.length > 0 && (
