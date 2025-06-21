@@ -12,9 +12,6 @@ let pdfLib: any = null;
 let jsPDF: any = null;
 let pdfjsLib: any = null;
 
-// Text encoding utilities
-let textEncoding: any = null;
-
 // Active operations для cancellation
 const activeOperations = new Map<string, { cancelled: boolean }>();
 
@@ -90,7 +87,7 @@ async function initializePako() {
  * Инициализирует PDF библиотеки с правильной обработкой модулей
  */
 async function initializePDFLibraries(): Promise<void> {
-  if (pdfLib && jsPDF && pdfjsLib && textEncoding) {
+  if (pdfLib && jsPDF && pdfjsLib) {
     return; // Уже инициализированы
   }
 
@@ -106,41 +103,6 @@ async function initializePDFLibraries(): Promise<void> {
       import('jspdf'),
       import('pdfjs-dist')
     ]);
-
-    // Загружаем утилиты для кодирования текста
-    try {
-      const textEncodingModule = await import('../utils/textEncoding');
-      textEncoding = textEncodingModule;
-      console.log('✅ Worker: Text encoding utilities loaded');
-    } catch (textError) {
-      console.warn('⚠️ Worker: Text encoding utilities not available, using fallbacks');
-      // Создаем fallback функции
-      textEncoding = {
-        createSafePDFText: (text: string) => text.replace(/[^\x00-\xFF]/g, '?'),
-        createProtectionInfoText: (password: string, fileName: string) => [
-          `This PDF has been protected with password: "${password}"`,
-          '',
-          'IMPORTANT NOTICE:',
-          'Due to browser limitations, this is a demonstration of password protection.',
-          'The original PDF content is preserved but not encrypted with industry-standard encryption.',
-          '',
-          'For production use, please consider:',
-          '• Adobe Acrobat Pro for full PDF encryption',
-          '• Server-side PDF processing with proper encryption libraries',
-          '• Desktop PDF tools with advanced security features',
-          '',
-          'This tool is designed for basic privacy protection and',
-          'educational purposes in a client-side environment.',
-          '',
-          `Original file: ${fileName}`,
-          `Protection applied: ${new Date().toLocaleString()}`,
-          `Password hint: ${password.length} characters`,
-        ],
-        SAFE_PDF_MESSAGES: {
-          PROTECTED_TITLE: 'PROTECTED - PASSWORD PROTECTED PDF'
-        }
-      };
-    }
 
     // PDF-lib
     pdfLib = pdfLibModule;
@@ -413,171 +375,6 @@ async function processSplit(
 }
 
 /**
- * Обрабатывает protect/unlock операцию
- */
-async function processProtect(
-  operationId: string,
-  files: File[],
-  settings: any = {}
-): Promise<Blob> {
-  if (files.length !== 1) {
-    throw new Error('Password protection requires exactly one file');
-  }
-
-  const file = files[0];
-  const { mode, password, permissions = {} } = settings;
-
-  reportProgress(operationId, {
-    percentage: 10,
-    message: `${mode === 'protect' ? 'Loading PDF for protection' : 'Loading protected PDF'}...`,
-    status: 'loading'
-  });
-
-  if (!password) {
-    throw new Error('Password is required');
-  }
-
-  const arrayBuffer = await readFileAsArrayBuffer(file, operationId);
-  
-  reportProgress(operationId, {
-    percentage: 30,
-    message: `${mode === 'protect' ? 'Analyzing PDF structure' : 'Verifying password'}...`,
-    status: 'processing'
-  });
-
-  try {
-    let pdf;
-    
-    if (mode === 'unlock') {
-      // Попытка загрузить защищенный PDF с паролем
-      try {
-        pdf = await pdfLib.PDFDocument.load(arrayBuffer, { 
-          password: password 
-        });
-      } catch (loadError) {
-        console.error('Failed to load PDF with password:', loadError);
-        throw new Error('Incorrect password or the PDF is not password protected');
-      }
-      
-      reportProgress(operationId, {
-        percentage: 80,
-        message: 'Password verified, removing protection...',
-        status: 'processing'
-      });
-      
-      // Сохраняем PDF без защиты
-      const unprotectedBytes = await pdf.save();
-      
-      reportProgress(operationId, {
-        percentage: 100,
-        message: 'PDF unlocked successfully!',
-        status: 'complete'
-      });
-
-      return new Blob([unprotectedBytes], { type: 'application/pdf' });
-      
-    } else {
-      // Режим защиты - создаем информационный PDF с объяснением
-      reportProgress(operationId, {
-        percentage: 50,
-        message: 'Creating password protection information...',
-        status: 'processing'
-      });
-
-      // Загружаем оригинальный PDF
-      pdf = await pdfLib.PDFDocument.load(arrayBuffer);
-      
-      // Создаем новый PDF с информацией о защите
-      const protectedPdf = await pdfLib.PDFDocument.create();
-      
-      // Добавляем информационную страницу
-      const page = protectedPdf.addPage([612, 792]); // Letter size
-      const { width, height } = page.getSize();
-      const font = await protectedPdf.embedFont(pdfLib.StandardFonts.Helvetica);
-      const boldFont = await protectedPdf.embedFont(pdfLib.StandardFonts.HelveticaBold);
-      
-      // Заголовок (используем безопасный текст)
-      const safeTitle = textEncoding?.SAFE_PDF_MESSAGES?.PROTECTED_TITLE || 'PROTECTED - PASSWORD PROTECTED PDF';
-      page.drawText(safeTitle, {
-        x: 50,
-        y: height - 100,
-        size: 24,
-        font: boldFont,
-        color: pdfLib.rgb(0.8, 0.2, 0.2),
-      });
-      
-      // Информация о защите (используем безопасный текст)
-      const infoText = textEncoding?.createProtectionInfoText 
-        ? textEncoding.createProtectionInfoText(password, file.name)
-        : [
-            `This PDF has been protected with password: "${password}"`,
-            '',
-            'IMPORTANT NOTICE:',
-            'Due to browser limitations, this is a demonstration of password protection.',
-            'The original PDF content is preserved but not encrypted with industry-standard encryption.',
-            '',
-            'For production use, please consider:',
-            '• Adobe Acrobat Pro for full PDF encryption',
-            '• Server-side PDF processing with proper encryption libraries',
-            '• Desktop PDF tools with advanced security features',
-            '',
-            'This tool is designed for basic privacy protection and',
-            'educational purposes in a client-side environment.',
-            '',
-            `Original file: ${file.name}`,
-            `Protection applied: ${new Date().toLocaleString()}`,
-            `Password hint: ${password.length} characters`,
-          ];
-      
-      let yPosition = height - 150;
-      infoText.forEach((line, index) => {
-        const isHeader = line.startsWith('IMPORTANT') || line.startsWith('For production');
-        const safeText = textEncoding?.createSafePDFText ? textEncoding.createSafePDFText(line) : line;
-        
-        page.drawText(safeText, {
-          x: 50,
-          y: yPosition,
-          size: isHeader ? 14 : 12,
-          font: isHeader ? boldFont : font,
-          color: isHeader ? pdfLib.rgb(0.6, 0.1, 0.1) : pdfLib.rgb(0, 0, 0),
-        });
-        yPosition -= 20;
-      });
-      
-      // Копируем страницы оригинального PDF
-      const originalPages = await protectedPdf.copyPages(pdf, pdf.getPageIndices());
-      originalPages.forEach((originalPage) => protectedPdf.addPage(originalPage));
-      
-      reportProgress(operationId, {
-        percentage: 90,
-        message: 'Finalizing protected PDF...',
-        status: 'processing'
-      });
-
-      // Сохраняем PDF с информацией
-      const protectedBytes = await protectedPdf.save();
-
-      reportProgress(operationId, {
-        percentage: 100,
-        message: 'PDF protected with information page! (Note: This is a demonstration)',
-        status: 'complete'
-      });
-
-      return new Blob([protectedBytes], { type: 'application/pdf' });
-    }
-    
-  } catch (error) {
-    console.error(`Error ${mode}ing PDF:`, error);
-    
-    if (error.message?.includes('password') || error.message?.includes('encrypted') || error.message?.includes('Incorrect password')) {
-      throw error; // Re-throw password errors as-is
-    }
-    
-    throw new Error(`Failed to ${mode} PDF: ${error instanceof Error ? error.message : 'Unknown error'}`);
-  }
-}
-
-/**
  * Обрабатывает images to PDF операцию
  */
 async function processImagesToPdf(
@@ -714,9 +511,6 @@ async function processOperation(
         break;
       case 'split':
         result = await processSplit(operationId, options.files, options.settings);
-        break;
-      case 'protect':
-        result = await processProtect(operationId, options.files, options.settings);
         break;
       case 'imagesToPdf':
         result = await processImagesToPdf(operationId, options.files, options.settings);
