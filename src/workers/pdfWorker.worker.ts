@@ -365,6 +365,122 @@ async function processSplit(
 }
 
 /**
+ * Обрабатывает protect/unlock операцию
+ */
+async function processProtect(
+  operationId: string,
+  files: File[],
+  settings: any = {}
+): Promise<Blob> {
+  if (files.length !== 1) {
+    throw new Error('Password protection requires exactly one file');
+  }
+
+  const file = files[0];
+  const { mode, password, permissions = {} } = settings;
+
+  reportProgress(operationId, {
+    percentage: 10,
+    message: `${mode === 'protect' ? 'Loading PDF for protection' : 'Loading protected PDF'}...`,
+    status: 'loading'
+  });
+
+  if (!password) {
+    throw new Error('Password is required');
+  }
+
+  const arrayBuffer = await readFileAsArrayBuffer(file, operationId);
+  
+  reportProgress(operationId, {
+    percentage: 30,
+    message: `${mode === 'protect' ? 'Applying password protection' : 'Removing password protection'}...`,
+    status: 'processing'
+  });
+
+  try {
+    let pdf;
+    
+    if (mode === 'unlock') {
+      // Попытка загрузить защищенный PDF с паролем
+      pdf = await pdfLib.PDFDocument.load(arrayBuffer, { 
+        password: password 
+      });
+      
+      reportProgress(operationId, {
+        percentage: 80,
+        message: 'Password verified, removing protection...',
+        status: 'processing'
+      });
+      
+      // Сохраняем PDF без защиты
+      const unprotectedBytes = await pdf.save();
+      
+      reportProgress(operationId, {
+        percentage: 100,
+        message: 'PDF unlocked successfully!',
+        status: 'complete'
+      });
+
+      return new Blob([unprotectedBytes], { type: 'application/pdf' });
+      
+    } else {
+      // Режим защиты
+      pdf = await pdfLib.PDFDocument.load(arrayBuffer);
+      
+      reportProgress(operationId, {
+        percentage: 60,
+        message: 'Setting up encryption...',
+        status: 'processing'
+      });
+
+      // Настройки безопасности
+      const securityOptions: any = {
+        userPassword: password,
+        ownerPassword: password + '_owner', // Создаем owner password
+        permissions: {
+          printing: permissions.allowPrinting !== false ? 'highResolution' : 'none',
+          modifying: permissions.allowModifying !== false,
+          copying: permissions.allowCopying !== false,
+          annotating: permissions.allowAnnotating !== false,
+          fillingForms: permissions.allowFillingForms !== false,
+          contentAccessibility: true, // Всегда разрешаем для accessibility
+          documentAssembly: permissions.allowDocumentAssembly !== false
+        }
+      };
+
+      reportProgress(operationId, {
+        percentage: 80,
+        message: 'Applying encryption...',
+        status: 'processing'
+      });
+
+      // Сохраняем с защитой
+      const protectedBytes = await pdf.save({
+        ...securityOptions,
+        useObjectStreams: false
+      });
+
+      reportProgress(operationId, {
+        percentage: 100,
+        message: 'PDF protected successfully!',
+        status: 'complete'
+      });
+
+      return new Blob([protectedBytes], { type: 'application/pdf' });
+    }
+    
+  } catch (error) {
+    console.error(`Error ${mode}ing PDF:`, error);
+    
+    if (error.message?.includes('password') || error.message?.includes('encrypted')) {
+      throw new Error(`Incorrect password. Please check your password and try again.`);
+    }
+    
+    throw new Error(`Failed to ${mode} PDF: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
+}
+
+/**
  * Обрабатывает images to PDF операцию
  */
 async function processImagesToPdf(
@@ -501,6 +617,9 @@ async function processOperation(
         break;
       case 'split':
         result = await processSplit(operationId, options.files, options.settings);
+        break;
+      case 'protect':
+        result = await processProtect(operationId, options.files, options.settings);
         break;
       case 'imagesToPdf':
         result = await processImagesToPdf(operationId, options.files, options.settings);
