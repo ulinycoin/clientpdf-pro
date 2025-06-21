@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>LocalPDF - PDF Tools Blog</title>
+    <description>Free online PDF tools news, tips and tutorials. Learn how to merge, split, compress PDFs and convert images to PDF with privacy-first approach.</description>
+    <link>https://localpdf.online</link>
+    <atom:link href="https://localpdf.online/feed.xml" rel="self" type="application/rss+xml"/>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 21 Jun 2025 15:20:00 GMT</lastBuildDate>
+    <pubDate>Sat, 21 Jun 2025 15:20:00 GMT</pubDate>
+    <ttl>1440</ttl>
+    <managingEditor>hello@localpdf.online (LocalPDF Team)</managingEditor>
+    <webMaster>hello@localpdf.online (LocalPDF Team)</webMaster>
+    <category>Technology</category>
+    <category>PDF Tools</category>
+    <category>Privacy</category>
+    
+    <image>
+      <url>https://localpdf.online/og-image.png</url>
+      <title>LocalPDF</title>
+      <link>https://localpdf.online</link>
+      <width>1200</width>
+      <height>630</height>
+    </image>
+
+    <!-- Initial blog post about launch -->
+    <item>
+      <title>LocalPDF 2.1 Released - Enhanced Privacy and Performance</title>
+      <description><![CDATA[
+        We're excited to announce LocalPDF 2.1 with improved PDF processing capabilities, enhanced privacy features, and better performance. All your PDF operations now happen entirely in your browser - no server uploads required.
+        
+        New features include:
+        • Faster PDF compression algorithms
+        • Enhanced security for password protection
+        • Improved mobile experience
+        • Better error handling and user feedback
+        
+        Your privacy remains our top priority. LocalPDF continues to process all files locally in your browser, ensuring your documents never leave your device.
+      ]]></description>
+      <link>https://localpdf.online/</link>
+      <guid>https://localpdf.online/news/localpdf-2-1-released</guid>
+      <pubDate>Sat, 21 Jun 2025 15:20:00 GMT</pubDate>
+      <category>Release</category>
+      <category>Privacy</category>
+    </item>
+
+    <item>
+      <title>Why Privacy-First PDF Tools Matter in 2025</title>
+      <description><![CDATA[
+        In an age where data privacy is paramount, choosing the right PDF tools is crucial for protecting your sensitive documents. Learn why browser-based PDF processing is the future and how LocalPDF keeps your data secure.
+        
+        Key benefits of privacy-first PDF tools:
+        • No file uploads to third-party servers
+        • Complete control over your documents
+        • Compliance with GDPR and privacy regulations
+        • Protection against data breaches
+        
+        Discover how LocalPDF's client-side processing ensures your confidential documents remain private while providing professional-grade PDF manipulation tools.
+      ]]></description>
+      <link>https://localpdf.online/faq</link>
+      <guid>https://localpdf.online/news/privacy-first-pdf-tools</guid>
+      <pubDate>Fri, 20 Jun 2025 10:00:00 GMT</pubDate>
+      <category>Privacy</category>
+      <category>Security</category>
+    </item>
+
+    <item>
+      <title>5 Essential PDF Operations Every Professional Needs</title>
+      <description><![CDATA[
+        Master the most important PDF operations that can streamline your workflow and boost productivity. From merging contracts to compressing large documents, these five essential PDF skills are must-haves for any professional.
+        
+        Essential PDF operations covered:
+        1. Merging multiple PDFs into one document
+        2. Splitting large PDFs into individual pages
+        3. Compressing PDFs for email and storage
+        4. Converting images to professional PDFs
+        5. Password protecting sensitive documents
+        
+        Learn best practices and pro tips for each operation using LocalPDF's privacy-first tools.
+      ]]></description>
+      <link>https://localpdf.online/merge-pdf</link>
+      <guid>https://localpdf.online/news/essential-pdf-operations</guid>
+      <pubDate>Thu, 19 Jun 2025 14:30:00 GMT</pubDate>
+      <category>Tutorial</category>
+      <category>Productivity</category>
+    </item>
+
+  </channel>
+</rss>
