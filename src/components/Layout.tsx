@@ -14,7 +14,7 @@
 
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { FileText, Menu, X, HelpCircle } from 'lucide-react';
+import { FileText, Menu, X, HelpCircle, Shield, Gavel, Mail, Heart } from 'lucide-react';
 import { clsx } from 'clsx';
 
 interface LayoutProps {
@@ -116,44 +116,153 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
         {children}
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-gray-200 bg-white mt-16">
+      {/* Enhanced Footer */}
+      <footer className="border-t border-gray-200 bg-gradient-to-r from-gray-50 to-white mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            {/* Brand Section */}
             <div className="md:col-span-2">
               <div className="flex items-center space-x-3 mb-4">
-                <FileText className="h-8 w-8 text-blue-600" />
+                <div className="bg-blue-100 p-2 rounded-lg">
+                  <FileText className="h-8 w-8 text-blue-600" />
+                </div>
                 <span className="text-xl font-bold text-gray-900">LocalPDF</span>
               </div>
-              <p className="text-gray-600 mb-4">
+              <p className="text-gray-600 mb-6 leading-relaxed">
                 Free online PDF tools that work in your browser. Privacy-first - your files never leave your device.
+                Process PDFs instantly with professional-grade tools designed for security and performance.
               </p>
+              
+              {/* Trust Indicators */}
+              <div className="flex flex-wrap gap-4 text-sm">
+                <div className="flex items-center text-green-600">
+                  <Shield className="h-4 w-4 mr-1" />
+                  <span className="font-medium">100% Private</span>
+                </div>
+                <div className="flex items-center text-blue-600">
+                  <Heart className="h-4 w-4 mr-1" />
+                  <span className="font-medium">Always Free</span>
+                </div>
+              </div>
             </div>
 
+            {/* Tools Section */}
             <div>
-              <h3 className="text-sm font-semibold text-gray-900 mb-4">Tools</h3>
-              <ul className="space-y-2">
-                <li><Link to="/merge-pdf" className="text-gray-600 hover:text-blue-600">Merge PDF</Link></li>
-                <li><Link to="/split-pdf" className="text-gray-600 hover:text-blue-600">Split PDF</Link></li>
-                <li><Link to="/compress-pdf" className="text-gray-600 hover:text-blue-600">Compress PDF</Link></li>
-                <li><Link to="/images-to-pdf" className="text-gray-600 hover:text-blue-600">Images to PDF</Link></li>
+              <h3 className="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wide">
+                PDF Tools
+              </h3>
+              <ul className="space-y-3">
+                <li>
+                  <Link 
+                    to="/merge-pdf" 
+                    className="text-gray-600 hover:text-blue-600 transition-colors duration-200 flex items-center group"
+                  >
+                    <span className="group-hover:translate-x-1 transition-transform duration-200">
+                      Merge PDF
+                    </span>
+                  </Link>
+                </li>
+                <li>
+                  <Link 
+                    to="/split-pdf" 
+                    className="text-gray-600 hover:text-blue-600 transition-colors duration-200 flex items-center group"
+                  >
+                    <span className="group-hover:translate-x-1 transition-transform duration-200">
+                      Split PDF
+                    </span>
+                  </Link>
+                </li>
+                <li>
+                  <Link 
+                    to="/compress-pdf" 
+                    className="text-gray-600 hover:text-blue-600 transition-colors duration-200 flex items-center group"
+                  >
+                    <span className="group-hover:translate-x-1 transition-transform duration-200">
+                      Compress PDF
+                    </span>
+                  </Link>
+                </li>
+                <li>
+                  <Link 
+                    to="/images-to-pdf" 
+                    className="text-gray-600 hover:text-blue-600 transition-colors duration-200 flex items-center group"
+                  >
+                    <span className="group-hover:translate-x-1 transition-transform duration-200">
+                      Images to PDF
+                    </span>
+                  </Link>
+                </li>
               </ul>
             </div>
 
+            {/* Support Section */}
             <div>
-              <h3 className="text-sm font-semibold text-gray-900 mb-4">Support</h3>
-              <ul className="space-y-2">
-                <li><Link to="/faq" className="text-gray-600 hover:text-blue-600">FAQ</Link></li>
-                <li><a href="mailto:localpdfpro@gmail.com" className="text-gray-600 hover:text-blue-600">Contact</a></li>
-                <li><Link to="/privacy" className="text-gray-600 hover:text-blue-600">Privacy Policy</Link></li>
+              <h3 className="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wide">
+                Support & Legal
+              </h3>
+              <ul className="space-y-3">
+                <li>
+                  <Link 
+                    to="/faq" 
+                    className="text-gray-600 hover:text-blue-600 transition-colors duration-200 flex items-center group"
+                  >
+                    <HelpCircle className="h-4 w-4 mr-2 text-gray-400 group-hover:text-blue-500" />
+                    <span className="group-hover:translate-x-1 transition-transform duration-200">
+                      FAQ & Help
+                    </span>
+                  </Link>
+                </li>
+                <li>
+                  <a 
+                    href="mailto:localpdfpro@gmail.com" 
+                    className="text-gray-600 hover:text-blue-600 transition-colors duration-200 flex items-center group"
+                  >
+                    <Mail className="h-4 w-4 mr-2 text-gray-400 group-hover:text-blue-500" />
+                    <span className="group-hover:translate-x-1 transition-transform duration-200">
+                      Contact
+                    </span>
+                  </a>
+                </li>
+                <li>
+                  <Link 
+                    to="/privacy" 
+                    className="text-gray-600 hover:text-blue-600 transition-colors duration-200 flex items-center group"
+                  >
+                    <Shield className="h-4 w-4 mr-2 text-gray-400 group-hover:text-blue-500" />
+                    <span className="group-hover:translate-x-1 transition-transform duration-200">
+                      Privacy Policy
+                    </span>
+                  </Link>
+                </li>
+                <li>
+                  <Link 
+                    to="/terms" 
+                    className="text-gray-600 hover:text-blue-600 transition-colors duration-200 flex items-center group"
+                  >
+                    <Gavel className="h-4 w-4 mr-2 text-gray-400 group-hover:text-blue-500" />
+                    <span className="group-hover:translate-x-1 transition-transform duration-200">
+                      Terms of Service
+                    </span>
+                  </Link>
+                </li>
               </ul>
             </div>
           </div>
           
+          {/* Bottom Section */}
           <div className="border-t border-gray-200 pt-8 mt-8">
-            <p className="text-center text-gray-500 text-sm">
-              © 2025 LocalPDF. All rights reserved. Your files are processed locally in your browser.
-            </p>
+            <div className="flex flex-col md:flex-row justify-between items-center">
+              <p className="text-gray-500 text-sm mb-4 md:mb-0">
+                © 2025 LocalPDF. All rights reserved. Your files are processed locally in your browser.
+              </p>
+              <div className="flex items-center space-x-4 text-sm text-gray-500">
+                <span className="flex items-center">
+                  <span className="w-2 h-2 bg-green-400 rounded-full mr-2"></span>
+                  All systems operational
+                </span>
+                <span>Made with ❤️ for privacy</span>
+              </div>
+            </div>
           </div>
         </div>
       </footer>
