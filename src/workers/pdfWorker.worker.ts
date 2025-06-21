@@ -41,7 +41,50 @@ function isOperationCancelled(id: string): boolean {
 }
 
 /**
- * Инициализирует PDF библиотеки
+ * Инициализирует pako для pdf-lib в worker окружении
+ */
+async function initializePako() {
+  try {
+    const pakoModule = await import('pako');
+    
+    // Создаем правильный объект pako
+    let pako;
+    if (pakoModule.default && typeof pakoModule.default === 'object') {
+      pako = pakoModule.default;
+    } else if (pakoModule.deflate) {
+      pako = pakoModule;
+    } else {
+      pako = {
+        deflate: pakoModule.deflate || pakoModule.default?.deflate,
+        inflate: pakoModule.inflate || pakoModule.default?.inflate,
+        deflateRaw: pakoModule.deflateRaw || pakoModule.default?.deflateRaw,
+        inflateRaw: pakoModule.inflateRaw || pakoModule.default?.inflateRaw,
+        gzip: pakoModule.gzip || pakoModule.default?.gzip,
+        ungzip: pakoModule.ungzip || pakoModule.default?.ungzip,
+        Deflate: pakoModule.Deflate || pakoModule.default?.Deflate,
+        Inflate: pakoModule.Inflate || pakoModule.default?.Inflate,
+        constants: pakoModule.constants || pakoModule.default?.constants,
+      };
+    }
+    
+    // Проверяем, что pako правильно загружен
+    if (!pako || !pako.deflate) {
+      throw new Error('Pako library loaded but deflate method not found');
+    }
+    
+    // Делаем pako доступным глобально для pdf-lib
+    (self as any).pako = pako;
+    
+    console.log('✅ Worker: Pako initialized successfully');
+    return pako;
+  } catch (error) {
+    console.error('❌ Worker: Failed to initialize pako:', error);
+    throw new Error(`Failed to initialize compression library: ${error.message}`);
+  }
+}
+
+/**
+ * Инициализирует PDF библиотеки с правильной обработкой модулей
  */
 async function initializePDFLibraries(): Promise<void> {
   if (pdfLib && jsPDF && pdfjsLib) {
@@ -49,24 +92,43 @@ async function initializePDFLibraries(): Promise<void> {
   }
 
   try {
-    // Загружаем библиотеки динамически
+    console.log('📦 Worker: Loading PDF libraries...');
+    
+    // Сначала инициализируем pako
+    await initializePako();
+
+    // Загружаем библиотеки динамически с правильной обработкой модулей
     const [pdfLibModule, jsPDFModule, pdfjsModule] = await Promise.all([
       import('pdf-lib'),
       import('jspdf'),
       import('pdfjs-dist')
     ]);
 
+    // PDF-lib
     pdfLib = pdfLibModule;
-    jsPDF = jsPDFModule.jsPDF;
+    if (!pdfLib.PDFDocument) {
+      throw new Error('PDF-lib loaded but PDFDocument not found');
+    }
+
+    // jsPDF - правильно получаем конструктор
+    if (jsPDFModule.jsPDF) {
+      jsPDF = jsPDFModule.jsPDF;
+    } else if (jsPDFModule.default) {
+      jsPDF = jsPDFModule.default;
+    } else {
+      throw new Error('jsPDF constructor not found in module');
+    }
+
+    // PDF.js
     pdfjsLib = pdfjsModule;
 
     // Настраиваем PDF.js worker
     pdfjsLib.GlobalWorkerOptions.workerSrc = 
       'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-    console.log('📚 PDF libraries loaded in worker');
+    console.log('✅ Worker: PDF libraries loaded successfully');
   } catch (error) {
-    console.error('❌ Failed to load PDF libraries in worker:', error);
+    console.error('❌ Worker: Failed to load PDF libraries:', error);
     throw error;
   }
 }
