@@ -49,48 +49,41 @@ export const InternalLinkSection: React.FC<InternalLinkSectionProps> = ({
   const relatedTools = allTools.filter(tool => tool.href !== currentTool);
 
   return (
-    <div className={`bg-gray-50 rounded-lg p-6 ${className}`}>
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">
-        More PDF Tools
-      </h3>
+    <div className={`bg-gradient-to-r from-gray-50 to-blue-50/30 rounded-xl p-6 border border-gray-200 ${className}`}>
+      <div className="text-center mb-6">
+        <h3 className="text-xl font-bold text-gray-900 mb-2">
+          Explore More PDF Tools
+        </h3>
+        <p className="text-gray-600 text-sm">
+          All tools work locally in your browser - your files never leave your device
+        </p>
+      </div>
+      
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {relatedTools.map((tool) => (
           <Link 
             key={tool.href}
             to={tool.href}
-            className="block p-4 bg-white border border-gray-200 rounded-lg hover:border-blue-300 hover:shadow-md transition-all group"
+            className="block p-5 bg-white border border-gray-200 rounded-xl hover:border-blue-300 hover:shadow-lg transition-all duration-200 group"
           >
             <div className="flex items-start justify-between">
               <div className="flex-1">
-                <div className="flex items-center mb-2">
-                  <span className="text-lg mr-2">{tool.icon}</span>
-                  <h4 className="font-medium text-gray-900 group-hover:text-blue-600">
+                <div className="flex items-center mb-3">
+                  <div className="text-2xl mr-3 group-hover:scale-110 transition-transform duration-200">
+                    {tool.icon}
+                  </div>
+                  <h4 className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
                     {tool.title}
                   </h4>
                 </div>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 leading-relaxed">
                   {tool.description}
                 </p>
               </div>
-              <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-blue-600 transition-colors ml-2" />
+              <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all duration-200 ml-3 mt-1" />
             </div>
           </Link>
         ))}
-      </div>
-      
-      {/* Support Links */}
-      <div className="mt-6 pt-4 border-t border-gray-200">
-        <div className="flex flex-wrap gap-4 text-sm">
-          <Link to="/faq" className="text-gray-600 hover:text-blue-600 transition-colors">
-            📚 FAQ & Help
-          </Link>
-          <Link to="/privacy" className="text-gray-600 hover:text-blue-600 transition-colors">
-            🔒 Privacy Policy
-          </Link>
-          <Link to="/terms" className="text-gray-600 hover:text-blue-600 transition-colors">
-            📜 Terms of Service
-          </Link>
-        </div>
       </div>
     </div>
   );
