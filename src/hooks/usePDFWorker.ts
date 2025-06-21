@@ -11,7 +11,7 @@
  * For commercial licensing, contact: license@localpdf.online
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { pdfWorkerManager, type PDFProcessingOptions, type ProcessingProgress } from '../services/pdfWorkerManager';
 
 export interface UsePDFWorkerReturn {
@@ -36,18 +36,55 @@ export const usePDFWorker = (): UsePDFWorkerReturn => {
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<Blob | null>(null);
   const [currentOperationId, setCurrentOperationId] = useState<string | null>(null);
+  
+  // Предотвращаем множественную инициализацию
+  const initializationRef = useRef<Promise<void> | null>(null);
+  const isMountedRef = useRef(true);
 
   // Инициализируем worker при монтировании
   useEffect(() => {
+    isMountedRef.current = true;
+
     const initWorker = async () => {
+      // Если уже инициализируется, ждем завершения
+      if (initializationRef.current) {
+        try {
+          await initializationRef.current;
+          if (isMountedRef.current) {
+            setIsReady(true);
+          }
+        } catch (error) {
+          if (isMountedRef.current) {
+            console.error('❌ Worker initialization failed:', error);
+            setError('Failed to initialize PDF processing. Please refresh the page.');
+          }
+        }
+        return;
+      }
+
+      // Создаем новый промис инициализации
+      initializationRef.current = (async () => {
+        try {
+          console.log('🔄 Initializing PDF Worker...');
+          await pdfWorkerManager.initialize();
+          
+          if (isMountedRef.current) {
+            setIsReady(true);
+            console.log('✅ PDF Worker ready');
+          }
+        } catch (error) {
+          if (isMountedRef.current) {
+            console.error('❌ Failed to initialize PDF worker:', error);
+            setError('Failed to initialize PDF processing. Please refresh the page.');
+          }
+          throw error;
+        }
+      })();
+
       try {
-        console.log('🔄 Initializing PDF Worker...');
-        await pdfWorkerManager.initialize();
-        setIsReady(true);
-        console.log('✅ PDF Worker ready');
+        await initializationRef.current;
       } catch (error) {
-        console.error('❌ Failed to initialize PDF worker:', error);
-        setError('Failed to initialize PDF processing. Please refresh the page.');
+        // Ошибка уже обработана выше
       }
     };
 
@@ -55,10 +92,11 @@ export const usePDFWorker = (): UsePDFWorkerReturn => {
 
     // Cleanup при размонтировании
     return () => {
+      isMountedRef.current = false;
       if (currentOperationId) {
         pdfWorkerManager.cancelOperation(currentOperationId);
       }
-      pdfWorkerManager.terminate();
+      // НЕ завершаем worker при размонтировании - он может быть нужен другим компонентам
     };
   }, [currentOperationId]);
 
@@ -66,6 +104,7 @@ export const usePDFWorker = (): UsePDFWorkerReturn => {
    * Сброс состояния (очистка ошибок, результатов, прогресса)
    */
   const resetState = useCallback(() => {
+    if (!isMountedRef.current) return;
     setError(null);
     setResult(null);
     setProgress(null);
@@ -75,6 +114,8 @@ export const usePDFWorker = (): UsePDFWorkerReturn => {
    * Отмена текущей операции
    */
   const cancelOperation = useCallback(() => {
+    if (!isMountedRef.current) return;
+    
     if (currentOperationId) {
       pdfWorkerManager.cancelOperation(currentOperationId);
       setCurrentOperationId(null);
@@ -92,6 +133,8 @@ export const usePDFWorker = (): UsePDFWorkerReturn => {
     operation: PDFProcessingOptions['operation'],
     settings?: PDFProcessingOptions['settings']
   ): Promise<void> => {
+    if (!isMountedRef.current) return;
+
     // Валидация входных данных
     if (!files || files.length === 0) {
       setError('No files selected');
@@ -118,6 +161,7 @@ export const usePDFWorker = (): UsePDFWorkerReturn => {
 
       // Обработчик прогресса
       const handleProgress = (progressData: ProcessingProgress) => {
+        if (!isMountedRef.current) return;
         setProgress(progressData);
         console.log(`📊 Progress: ${progressData.percentage.toFixed(1)}% - ${progressData.message}`);
       };
@@ -127,6 +171,8 @@ export const usePDFWorker = (): UsePDFWorkerReturn => {
       setCurrentOperationId(operationId);
 
       const resultBlob = await pdfWorkerManager.processFiles(options, handleProgress);
+
+      if (!isMountedRef.current) return;
 
       // Успешное завершение
       setResult(resultBlob);
@@ -139,6 +185,8 @@ export const usePDFWorker = (): UsePDFWorkerReturn => {
       console.log(`✅ ${operation} operation completed successfully`);
 
     } catch (err) {
+      if (!isMountedRef.current) return;
+
       const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
       console.error(`❌ ${operation} operation failed:`, errorMessage);
       
@@ -149,8 +197,10 @@ export const usePDFWorker = (): UsePDFWorkerReturn => {
         status: 'error'
       });
     } finally {
-      setIsProcessing(false);
-      setCurrentOperationId(null);
+      if (isMountedRef.current) {
+        setIsProcessing(false);
+        setCurrentOperationId(null);
+      }
     }
   }, [isReady, resetState]);
 
