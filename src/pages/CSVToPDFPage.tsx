@@ -151,7 +151,7 @@ export const CSVToPDFPage: React.FC = () => {
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-        <div className="container mx-auto px-4 py-8">
+        <div className="container-modern py-8">
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -159,7 +159,7 @@ export const CSVToPDFPage: React.FC = () => {
             className="text-center mb-8"
           >
             <div className="flex items-center justify-center mb-4">
-              <FileSpreadsheet className="w-12 h-12 text-blue-600 mr-3" />
+              <FileSpreadsheet className="w-12 h-12 text-blue-600 mr-3 float-animation" />
               <h1 className="text-4xl font-bold text-gray-900">CSV to PDF Converter</h1>
             </div>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
@@ -210,7 +210,7 @@ export const CSVToPDFPage: React.FC = () => {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.3 }}
               >
-                <Card className="p-8">
+                <Card className="p-8 glass-card hover-lift">
                   <div
                     {...getRootProps()}
                     className={`
@@ -264,7 +264,7 @@ export const CSVToPDFPage: React.FC = () => {
                 className="space-y-6"
               >
                 {/* File Info */}
-                <Card className="p-6">
+                <Card className="p-6 glass-card">
                   <h3 className="text-lg font-semibold mb-4 flex items-center">
                     <Eye className="w-5 h-5 mr-2" />
                     Data Preview
@@ -288,36 +288,28 @@ export const CSVToPDFPage: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Fixed Table Preview */}
-                  <div className="w-full">
-                    <div className="overflow-x-auto border rounded-lg bg-white">
+                  {/* Enhanced Table Preview with CSS Classes */}
+                  <div className="csv-table-container">
+                    <div className="csv-table-wrapper">
                       <div className="min-w-full inline-block align-middle">
-                        <table className="min-w-full table-fixed divide-y divide-gray-200">
-                          <thead className="bg-gray-50">
+                        <table className="csv-table">
+                          <thead>
                             <tr>
                               {parseResult.headers.map((header, index) => (
-                                <th
-                                  key={index}
-                                  className="w-40 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 last:border-r-0"
-                                  style={{ minWidth: '160px' }}
-                                >
-                                  <div className="truncate" title={header}>
+                                <th key={index}>
+                                  <div className="csv-cell-content" title={header}>
                                     {header}
                                   </div>
                                 </th>
                               ))}
                             </tr>
                           </thead>
-                          <tbody className="bg-white divide-y divide-gray-200">
+                          <tbody>
                             {parseResult.data.slice(0, 5).map((row, rowIndex) => (
-                              <tr key={rowIndex} className={rowIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                              <tr key={rowIndex}>
                                 {parseResult.headers.map((header, colIndex) => (
-                                  <td
-                                    key={colIndex}
-                                    className="w-40 px-4 py-3 text-sm text-gray-900 border-r border-gray-200 last:border-r-0"
-                                    style={{ minWidth: '160px' }}
-                                  >
-                                    <div className="truncate" title={String(row[header] || '')}>
+                                  <td key={colIndex}>
+                                    <div className="csv-cell-content" title={String(row[header] || '')}>
                                       {String(row[header] || '')}
                                     </div>
                                   </td>
@@ -337,10 +329,10 @@ export const CSVToPDFPage: React.FC = () => {
                   )}
 
                   <div className="flex justify-between mt-6">
-                    <Button variant="secondary" onClick={resetConverter}>
+                    <Button variant="secondary" onClick={resetConverter} className="btn-secondary-modern">
                       Upload Different File
                     </Button>
-                    <Button onClick={() => setCurrentStep('options')}>
+                    <Button onClick={() => setCurrentStep('options')} className="btn-primary-modern">
                       Configure PDF Options
                     </Button>
                   </div>
@@ -354,7 +346,7 @@ export const CSVToPDFPage: React.FC = () => {
                 animate={{ opacity: 1, x: 0 }}
                 className="space-y-6"
               >
-                <Card className="p-6">
+                <Card className="p-6 glass-card">
                   <h3 className="text-lg font-semibold mb-4 flex items-center">
                     <Settings className="w-5 h-5 mr-2" />
                     PDF Configuration
@@ -372,7 +364,7 @@ export const CSVToPDFPage: React.FC = () => {
                           ...prev,
                           orientation: e.target.value as 'portrait' | 'landscape'
                         }))}
-                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="modern-input"
                       >
                         <option value="landscape">Landscape (Recommended for tables)</option>
                         <option value="portrait">Portrait</option>
@@ -389,7 +381,7 @@ export const CSVToPDFPage: React.FC = () => {
                           ...prev,
                           pageSize: e.target.value as any
                         }))}
-                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="modern-input"
                       >
                         <option value="a4">A4</option>
                         <option value="a3">A3</option>
@@ -409,7 +401,7 @@ export const CSVToPDFPage: React.FC = () => {
                           ...prev,
                           tableStyle: e.target.value as any
                         }))}
-                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="modern-input"
                       >
                         <option value="grid">Grid (with borders)</option>
                         <option value="striped">Striped rows</option>
@@ -448,7 +440,7 @@ export const CSVToPDFPage: React.FC = () => {
                           title: e.target.value || undefined
                         }))}
                         placeholder="Enter a title for your PDF document"
-                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="modern-input"
                       />
                     </div>
 
@@ -472,13 +464,13 @@ export const CSVToPDFPage: React.FC = () => {
                   </div>
 
                   <div className="flex justify-between mt-6">
-                    <Button variant="secondary" onClick={() => setCurrentStep('preview')}>
+                    <Button variant="secondary" onClick={() => setCurrentStep('preview')} className="btn-secondary-modern">
                       Back to Preview
                     </Button>
                     <Button 
                       onClick={handleConvert}
                       disabled={isConverting}
-                      className="flex items-center"
+                      className="btn-primary-modern flex items-center"
                     >
                       {isConverting ? (
                         <>
@@ -515,7 +507,7 @@ export const CSVToPDFPage: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-              <Card className="p-6 text-center">
+              <Card className="p-6 text-center glass-card hover-lift">
                 <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
                   <FileSpreadsheet className="w-6 h-6 text-blue-600" />
                 </div>
@@ -525,7 +517,7 @@ export const CSVToPDFPage: React.FC = () => {
                 </p>
               </Card>
 
-              <Card className="p-6 text-center">
+              <Card className="p-6 text-center glass-card hover-lift">
                 <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4">
                   <Settings className="w-6 h-6 text-green-600" />
                 </div>
@@ -535,7 +527,7 @@ export const CSVToPDFPage: React.FC = () => {
                 </p>
               </Card>
 
-              <Card className="p-6 text-center">
+              <Card className="p-6 text-center glass-card hover-lift">
                 <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
                   <AlertCircle className="w-6 h-6 text-purple-600" />
                 </div>
@@ -554,7 +546,7 @@ export const CSVToPDFPage: React.FC = () => {
             transition={{ delay: 0.6 }}
             className="mt-16 max-w-4xl mx-auto"
           >
-            <Card className="p-8">
+            <Card className="p-8 glass-card">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">
                 Professional CSV to PDF Conversion
               </h2>
