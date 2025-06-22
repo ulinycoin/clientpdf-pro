@@ -5,8 +5,45 @@ import 'jspdf-autotable';
 // Расширяем типы jsPDF для autoTable
 declare module 'jspdf' {
   interface jsPDF {
-    autoTable: (options: any) => jsPDF;
+    autoTable: (options: AutoTableOptions) => jsPDF;
   }
+}
+
+// Типы для autoTable
+interface AutoTableOptions {
+  head?: any[][];
+  body?: any[][];
+  startY?: number;
+  margin?: {
+    top?: number;
+    bottom?: number;
+    left?: number;
+    right?: number;
+  };
+  styles?: {
+    fontSize?: number;
+    cellPadding?: number;
+    overflow?: 'linebreak' | 'ellipsize' | 'visible' | 'hidden';
+    halign?: 'left' | 'center' | 'right';
+    valign?: 'top' | 'middle' | 'bottom';
+  };
+  headStyles?: {
+    fillColor?: number[] | string;
+    textColor?: number[] | string;
+    fontStyle?: 'normal' | 'bold' | 'italic' | 'bolditalic';
+  };
+  bodyStyles?: {
+    fillColor?: number[] | string;
+    textColor?: number[] | string;
+  };
+  alternateRowStyles?: {
+    fillColor?: number[] | string;
+  };
+  tableLineColor?: number[] | string;
+  tableLineWidth?: number;
+  showHead?: boolean;
+  showFoot?: boolean;
+  didDrawPage?: (data: any) => void;
 }
 
 export interface CsvToPdfOptions {
@@ -25,7 +62,7 @@ export interface CsvToPdfOptions {
 }
 
 export interface CsvParseResult {
-  data: any[];
+  data: Record<string, any>[];
   headers: string[];
   rowCount: number;
   columnCount: number;
@@ -68,8 +105,8 @@ export class CsvToPdfConverter {
             ).filter(Boolean);
 
             // Очистка данных от undefined значений
-            const cleanData = results.data.map((row: any) => {
-              const cleanRow: any = {};
+            const cleanData = (results.data as Record<string, any>[]).map((row: any) => {
+              const cleanRow: Record<string, any> = {};
               cleanHeaders.forEach(header => {
                 cleanRow[header] = row[header] !== undefined ? 
                   String(row[header]).trim() : '';
@@ -174,22 +211,22 @@ export class CsvToPdfConverter {
         showFoot: false,
         didDrawPage: (data: any) => {
           // Добавление номеров страниц
-          const pageNumber = pdf.internal.getCurrentPageInfo().pageNumber;
-          const totalPages = pdf.internal.pages.length - 1;
+          const pageNumber = (pdf as any).internal.getCurrentPageInfo().pageNumber;
+          const totalPages = (pdf as any).internal.pages.length - 1;
           
           pdf.setFontSize(8);
           pdf.setFont('helvetica', 'normal');
           pdf.text(
             `Page ${pageNumber} of ${totalPages}`,
             data.settings.margin.left,
-            pdf.internal.pageSize.height - 10
+            (pdf as any).internal.pageSize.height - 10
           );
           
           // Добавление информации о файле
           pdf.text(
             `Rows: ${parseResult.rowCount} | Columns: ${parseResult.columnCount}`,
-            pdf.internal.pageSize.width - 50,
-            pdf.internal.pageSize.height - 10
+            (pdf as any).internal.pageSize.width - 50,
+            (pdf as any).internal.pageSize.height - 10
           );
         },
       });
@@ -219,7 +256,7 @@ export class CsvToPdfConverter {
           headerStyles: {
             fillColor: [41, 128, 185],
             textColor: [255, 255, 255],
-            fontStyle: 'bold',
+            fontStyle: 'bold' as const,
           },
           bodyStyles: {
             fillColor: [255, 255, 255],
@@ -237,7 +274,7 @@ export class CsvToPdfConverter {
           headerStyles: {
             fillColor: [52, 73, 94],
             textColor: [255, 255, 255],
-            fontStyle: 'bold',
+            fontStyle: 'bold' as const,
           },
           bodyStyles: {
             fillColor: [255, 255, 255],
@@ -255,7 +292,7 @@ export class CsvToPdfConverter {
           headerStyles: {
             fillColor: [255, 255, 255],
             textColor: [0, 0, 0],
-            fontStyle: 'bold',
+            fontStyle: 'bold' as const,
           },
           bodyStyles: {
             fillColor: [255, 255, 255],
@@ -275,7 +312,7 @@ export class CsvToPdfConverter {
           headerStyles: {
             fillColor: [255, 255, 255],
             textColor: [0, 0, 0],
-            fontStyle: 'bold',
+            fontStyle: 'bold' as const,
           },
           bodyStyles: {
             fillColor: [255, 255, 255],
