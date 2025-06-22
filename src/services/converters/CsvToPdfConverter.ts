@@ -2,19 +2,14 @@ import Papa from 'papaparse';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 
-// Встроенные типы для jsPDF autoTable (чтобы избежать проблем с импортом)
+// Встроенные типы для jsPDF autoTable
 declare module 'jspdf' {
   interface jsPDF {
     autoTable: (options: {
       head?: any[][];
       body?: any[][];
       startY?: number;
-      margin?: {
-        top?: number;
-        bottom?: number;
-        left?: number;
-        right?: number;
-      };
+      margin?: { top?: number; bottom?: number; left?: number; right?: number; };
       styles?: {
         fontSize?: number;
         cellPadding?: number;
@@ -27,13 +22,8 @@ declare module 'jspdf' {
         textColor?: number[] | string;
         fontStyle?: 'normal' | 'bold' | 'italic' | 'bolditalic';
       };
-      bodyStyles?: {
-        fillColor?: number[] | string;
-        textColor?: number[] | string;
-      };
-      alternateRowStyles?: {
-        fillColor?: number[] | string;
-      };
+      bodyStyles?: { fillColor?: number[] | string; textColor?: number[] | string; };
+      alternateRowStyles?: { fillColor?: number[] | string; };
       tableLineColor?: number[] | string;
       tableLineWidth?: number;
       showHead?: boolean;
@@ -57,6 +47,8 @@ export interface CsvToPdfOptions {
   marginBottom: number;
   marginLeft: number;
   marginRight: number;
+  maxRowsPerPage?: number;
+  autoDetectDataTypes?: boolean;
 }
 
 export interface CsvParseResult {
@@ -67,6 +59,18 @@ export interface CsvParseResult {
   encoding: string;
   delimiter: string;
   errors: Papa.ParseError[];
+  columnTypes: Record<string, 'text' | 'number' | 'date' | 'boolean'>;
+  preview: Record<string, any>[];
+}
+
+interface ColumnAnalysis {
+  name: string;
+  type: 'text' | 'number' | 'date' | 'boolean';
+  maxLength: number;
+  avgLength: number;
+  hasEmptyValues: boolean;
+  alignment: 'left' | 'center' | 'right';
+  samples: string[];
 }
 
 export class CsvToPdfConverter {
@@ -82,206 +86,110 @@ export class CsvToPdfConverter {
     marginBottom: 20,
     marginLeft: 10,
     marginRight: 10,
+    maxRowsPerPage: 1000,
+    autoDetectDataTypes: true,
   };
 
   /**
-   * Парсинг CSV файла с автоматическим определением разделителя
+   * Парсинг CSV файла с улучшенным определением структуры
    */
   static async parseCSV(file: File): Promise<CsvParseResult> {
     return new Promise((resolve, reject) => {
-      // Читаем файл для анализа
+      const chunk = file.slice(0, Math.min(50000, file.size));
       const reader = new FileReader();
+      
       reader.onload = (e) => {
-        const text = e.target?.result as string;
+        const sampleText = e.target?.result as string;
         
-        // Определяем разделитель и структуру
-        const delimiter = this.detectDelimiter(text);
-        const hasHeader = this.hasHeaderRow(text, delimiter);
-        
-        console.log('Detected delimiter:', JSON.stringify(delimiter));
-        console.log('Has header:', hasHeader);
-        
-        // Основной парсинг с правильными настройками
-        Papa.parse(file, {
-          header: hasHeader,
-          dynamicTyping: false,
-          skipEmptyLines: 'greedy',
-          encoding: 'UTF-8',
-          delimiter: delimiter,
-          quoteChar: '"',
-          escapeChar: '"',
-          transformHeader: (header: string, index: number) => {
-            // Очищаем заголовки
-            const cleanHeader = header.trim().replace(/[^\w\s\-_\.\/]/g, ' ').trim();
-            return cleanHeader || `Col_${index + 1}`;
-          },
-          transform: (value: string) => {
-            // Очищаем значения
-            if (!value || value === 'null' || value === 'undefined') {
-              return '';
-            }
-            return String(value).trim();
-          },
-          complete: (results) => {
-            try {
-              console.log('Papa Parse results:', {
-                fields: results.meta.fields,
-                delimiter: results.meta.delimiter,
-                linebreak: results.meta.linebreak,
-                aborted: results.meta.aborted,
-                truncated: results.meta.truncated,
-                cursor: results.meta.cursor,
-                dataRowCount: results.data.length,
-                errorsCount: results.errors.length
-              });
-
-              let headers: string[];
-              let data: Record<string, any>[];
-
-              if (hasHeader && results.meta.fields && results.meta.fields.length > 1) {
-                headers = results.meta.fields;
-                data = results.data as Record<string, any>[];
-              } else {
-                // Создаем заголовки на основе первой строки данных
-                const firstRow = results.data[0] as any;
-                if (Array.isArray(firstRow)) {
-                  headers = firstRow.map((_, index) => `Column_${index + 1}`);
-                  data = (results.data as any[][]).map(row => {
-                    const obj: Record<string, any> = {};
-                    headers.forEach((header, index) => {
-                      obj[header] = row[index] || '';
-                    });
-                    return obj;
-                  });
-                } else {
-                  headers = Object.keys(firstRow);
-                  data = results.data as Record<string, any>[];
-                }
-              }
-
-              // Фильтруем пустые строки и заголовок-описание
-              data = data.filter((row, index) => {
-                // Пропускаем первую строку если это описание файла
-                if (index === 0 && headers.length === 1) {
-                  const firstValue = Object.values(row)[0];
-                  if (firstValue && String(firstValue).includes('PĀRSKATS')) {
-                    return false;
-                  }
-                }
-                
-                // Проверяем что в строке есть хотя бы одно непустое значение
-                return Object.values(row).some(val => 
-                  val && String(val).trim() !== '' && String(val).trim() !== 'null'
-                );
-              });
-
-              // Очищаем данные
-              data = data.map(row => {
-                const cleanRow: Record<string, any> = {};
-                headers.forEach(header => {
-                  const value = row[header];
-                  cleanRow[header] = (value === null || value === undefined || value === 'null') 
-                    ? '' 
-                    : String(value).trim();
+        try {
+          const structure = this.analyzeCSVStructure(sampleText);
+          console.log('CSV Structure Analysis:', structure);
+          
+          Papa.parse(file, {
+            header: structure.hasHeader,
+            dynamicTyping: false,
+            skipEmptyLines: 'greedy',
+            encoding: 'UTF-8',
+            delimiter: structure.delimiter,
+            quoteChar: structure.quoteChar,
+            escapeChar: structure.quoteChar,
+            
+            transformHeader: (header: string, index: number) => {
+              return this.cleanHeaderName(header, index);
+            },
+            
+            transform: (value: string) => {
+              return this.cleanCellValue(value);
+            },
+            
+            complete: (results) => {
+              try {
+                const processedData = this.processParseResults(results, structure);
+                console.log('CSV Parse completed:', {
+                  totalRows: processedData.data.length,
+                  columns: processedData.headers.length,
+                  delimiter: processedData.delimiter,
+                  errorCount: processedData.errors.length
                 });
-                return cleanRow;
-              });
-
-              // Фильтруем только критические ошибки
-              const criticalErrors = results.errors.filter(error => 
-                error.type === 'Delimiter' || error.type === 'Quotes'
-              );
-
-              console.log('Final processed data:', {
-                headers,
-                rowCount: data.length,
-                columnCount: headers.length,
-                sampleRow: data[0]
-              });
-
-              resolve({
-                data,
-                headers,
-                rowCount: data.length,
-                columnCount: headers.length,
-                encoding: 'UTF-8',
-                delimiter: delimiter,
-                errors: criticalErrors,
-              });
-            } catch (error) {
-              reject(new Error(`CSV parsing failed: ${error}`));
+                
+                resolve(processedData);
+              } catch (error) {
+                reject(new Error(`CSV processing failed: ${error}`));
+              }
+            },
+            
+            error: (error) => {
+              reject(new Error(`Papa Parse error: ${error.message}`));
             }
-          },
-          error: (error) => {
-            reject(new Error(`Papa Parse error: ${error.message}`));
-          }
-        });
+          });
+          
+        } catch (error) {
+          reject(new Error(`CSV analysis failed: ${error}`));
+        }
       };
       
-      reader.onerror = () => {
-        reject(new Error('Failed to read file'));
-      };
-      
-      reader.readAsText(file, 'UTF-8');
+      reader.onerror = () => reject(new Error('Failed to read file'));
+      reader.readAsText(chunk, 'UTF-8');
     });
   }
 
   /**
-   * Улучшенное определение разделителя
+   * Анализ структуры CSV файла
    */
-  private static detectDelimiter(text: string): string {
-    const lines = text.split('\n').filter(line => line.trim());
+  private static analyzeCSVStructure(text: string) {
+    const lines = text.split(/\r?\n/).filter(line => line.trim().length > 0);
     
-    if (lines.length < 2) return ';';
-    
-    // Берем несколько строк для анализа (исключая первую если это заголовок файла)
-    let analysisLines = lines.slice(0, 5);
-    
-    // Исключаем строки-заголовки которые могут не иметь разделителей
-    analysisLines = analysisLines.filter(line => 
-      !line.includes('PĀRSKATS') && 
-      !line.includes('PERIODU') &&
-      line.includes('"') // строки с данными обычно содержат кавычки
-    );
-    
-    if (analysisLines.length === 0) {
-      analysisLines = lines.slice(1, 3); // fallback
+    if (lines.length === 0) {
+      throw new Error('CSV file appears to be empty');
     }
     
-    const delimiters = [';', ',', '\t', '|'];
+    return {
+      delimiter: this.detectDelimiterAdvanced(lines),
+      hasHeader: this.detectHeaderRow(lines),
+      quoteChar: this.detectQuoteChar(lines),
+      encoding: 'UTF-8',
+      lineCount: lines.length
+    };
+  }
+
+  /**
+   * Продвинутое определение разделителя
+   */
+  private static detectDelimiterAdvanced(lines: string[]): string {
+    const candidates = [';', ',', '\t', '|'];
+    const analysisLines = lines.slice(0, Math.min(10, lines.length));
+    
     let bestDelimiter = ';';
     let maxScore = 0;
     
-    for (const delimiter of delimiters) {
-      const counts = analysisLines.map(line => {
-        // Считаем количество разделителей, учитывая кавычки
-        let count = 0;
-        let inQuotes = false;
-        
-        for (let i = 0; i < line.length; i++) {
-          const char = line[i];
-          if (char === '"') {
-            inQuotes = !inQuotes;
-          } else if (char === delimiter && !inQuotes) {
-            count++;
-          }
-        }
-        
-        return count;
-      });
+    for (const delimiter of candidates) {
+      const scores = analysisLines.map(line => this.scoreDelimiterForLine(line, delimiter));
+      const averageScore = scores.reduce((a, b) => a + b, 0) / scores.length;
+      const consistency = this.calculateConsistency(scores);
+      const finalScore = averageScore * consistency;
       
-      if (counts.length === 0) continue;
-      
-      const avgCount = counts.reduce((a, b) => a + b, 0) / counts.length;
-      const maxCount = Math.max(...counts);
-      const minCount = Math.min(...counts);
-      const consistency = maxCount > 0 ? (1 - (maxCount - minCount) / maxCount) : 0;
-      const score = avgCount * consistency;
-      
-      console.log(`Delimiter "${delimiter}": avg=${avgCount.toFixed(1)}, consistency=${consistency.toFixed(2)}, score=${score.toFixed(2)}`);
-      
-      if (score > maxScore && avgCount > 1) {
-        maxScore = score;
+      if (finalScore > maxScore) {
+        maxScore = finalScore;
         bestDelimiter = delimiter;
       }
     }
@@ -289,18 +197,51 @@ export class CsvToPdfConverter {
     return bestDelimiter;
   }
 
-  /**
-   * Определение наличия заголовка
-   */
-  private static hasHeaderRow(text: string, delimiter: string): boolean {
-    const lines = text.split('\n').filter(line => line.trim());
+  private static scoreDelimiterForLine(line: string, delimiter: string): number {
+    let count = 0;
+    let inQuotes = false;
     
+    for (let i = 0; i < line.length; i++) {
+      const char = line[i];
+      
+      if (char === '"') {
+        inQuotes = !inQuotes;
+      } else if (char === delimiter && !inQuotes) {
+        count++;
+      }
+    }
+    
+    return count >= 2 && count <= 50 ? count : count * 0.5;
+  }
+
+  private static calculateConsistency(scores: number[]): number {
+    if (scores.length <= 1) return 1;
+    
+    const mean = scores.reduce((a, b) => a + b, 0) / scores.length;
+    const variance = scores.reduce((sum, score) => sum + Math.pow(score - mean, 2), 0) / scores.length;
+    const stdDev = Math.sqrt(variance);
+    
+    return mean > 0 ? Math.max(0, 1 - (stdDev / mean)) : 0;
+  }
+
+  private static detectQuoteChar(lines: string[]): string {
+    const doubleQuoteCount = lines.join('').split('"').length - 1;
+    const singleQuoteCount = lines.join('').split("'").length - 1;
+    return doubleQuoteCount >= singleQuoteCount ? '"' : "'";
+  }
+
+  private static detectHeaderRow(lines: string[]): boolean {
     if (lines.length < 2) return false;
     
-    // Ищем строку с заголовками столбцов
+    const headerIndicators = [
+      'MU NR.', 'DATUMS', 'VALŪTA', 'SUMMA', 'KODS',
+      'ID', 'DATE', 'AMOUNT', 'NAME', 'VALUE', 'TYPE',
+      'NUMBER', 'CODE', 'DESCRIPTION', 'STATUS'
+    ];
+    
     for (let i = 0; i < Math.min(3, lines.length); i++) {
-      const line = lines[i];
-      if (line.includes('MU NR.') || line.includes('DATUMS') || line.includes('VALŪTA')) {
+      const line = lines[i].toUpperCase();
+      if (headerIndicators.some(indicator => line.includes(indicator.toUpperCase()))) {
         return true;
       }
     }
@@ -308,324 +249,139 @@ export class CsvToPdfConverter {
     return false;
   }
 
-  /**
-   * Конвертация CSV в PDF с улучшенным форматированием
-   */
-  static async convertToPDF(
-    parseResult: CsvParseResult, 
-    options: Partial<CsvToPdfOptions> = {}
-  ): Promise<Uint8Array> {
-    const opts = { ...this.DEFAULT_OPTIONS, ...options };
-    
-    try {
-      // Создание PDF документа
-      const pdf = new jsPDF({
-        orientation: opts.orientation,
-        unit: 'mm',
-        format: opts.pageSize.toLowerCase() as any,
-      });
-
-      // Настройка метаданных
-      pdf.setProperties({
-        title: opts.title || 'CSV to PDF Conversion',
-        subject: `Converted CSV file with ${parseResult.rowCount} rows`,
-        author: 'ClientPDF Pro',
-        creator: 'ClientPDF Pro - CSV to PDF Converter',
-        keywords: 'CSV, PDF, conversion, table, data',
-      });
-
-      // Добавление заголовка документа
-      if (opts.title) {
-        pdf.setFontSize(16);
-        pdf.setFont('helvetica', 'bold');
-        pdf.text(opts.title, opts.marginLeft, opts.marginTop);
-      }
-
-      // Подготовка данных для таблицы
-      const tableHeaders = opts.includeRowNumbers 
-        ? ['#', ...parseResult.headers]
-        : parseResult.headers;
-
-      const tableData = parseResult.data.map((row, index) => {
-        const rowData = parseResult.headers.map(header => {
-          const value = row[header];
-          return (value === null || value === undefined || value === 'null') ? '' : String(value);
-        });
-        return opts.includeRowNumbers 
-          ? [index + 1, ...rowData]
-          : rowData;
-      });
-
-      // Настройки стилей таблицы
-      const tableStyles = this.getTableStyles(opts);
-      
-      // Определяем ширину колонок автоматически
-      const columnStyles = this.calculateColumnWidths(parseResult.headers, parseResult.data, opts);
-      
-      // Генерация таблицы
-      pdf.autoTable({
-        head: [tableHeaders],
-        body: tableData,
-        startY: opts.title ? opts.marginTop + 10 : opts.marginTop,
-        margin: {
-          top: opts.marginTop,
-          bottom: opts.marginBottom,
-          left: opts.marginLeft,
-          right: opts.marginRight,
-        },
-        styles: {
-          fontSize: opts.fontSize,
-          cellPadding: 1,
-          overflow: 'linebreak',
-          halign: 'left',
-          valign: 'top',
-          lineColor: tableStyles.lineColor,
-          lineWidth: tableStyles.lineWidth,
-        },
-        headStyles: {
-          ...tableStyles.headerStyles,
-          minCellHeight: 6,
-          fontSize: opts.fontSize + 1,
-        },
-        bodyStyles: tableStyles.bodyStyles,
-        alternateRowStyles: tableStyles.alternateRowStyles,
-        columnStyles: columnStyles,
-        showHead: true,
-        showFoot: false,
-        tableLineColor: tableStyles.lineColor,
-        tableLineWidth: tableStyles.lineWidth,
-        didDrawPage: (data: any) => {
-          // Добавление номеров страниц
-          const pageNumber = (pdf as any).internal.getCurrentPageInfo().pageNumber;
-          const totalPages = (pdf as any).internal.pages.length - 1;
-          
-          pdf.setFontSize(8);
-          pdf.setFont('helvetica', 'normal');
-          pdf.text(
-            `Page ${pageNumber} of ${totalPages}`,
-            data.settings.margin.left,
-            (pdf as any).internal.pageSize.height - 10
-          );
-          
-          // Добавление информации о файле
-          pdf.text(
-            `Rows: ${parseResult.rowCount} | Columns: ${parseResult.columnCount}`,
-            (pdf as any).internal.pageSize.width - 50,
-            (pdf as any).internal.pageSize.height - 10
-          );
-        },
-      });
-
-      // Возврат PDF как Uint8Array
-      const pdfOutput = pdf.output('arraybuffer');
-      return new Uint8Array(pdfOutput);
-
-    } catch (error) {
-      throw new Error(`PDF generation failed: ${error}`);
+  private static cleanHeaderName(header: string, index: number): string {
+    if (!header || header.trim() === '') {
+      return `Column_${index + 1}`;
     }
+    
+    let cleaned = header
+      .trim()
+      .replace(/[^\w\s\-_\.\/@#]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+    
+    return cleaned || `Column_${index + 1}`;
   }
 
-  /**
-   * Автоматический расчет ширины колонок для большого количества столбцов
-   */
-  private static calculateColumnWidths(headers: string[], data: Record<string, any>[], opts: CsvToPdfOptions) {
-    const columnStyles: { [key: number]: any } = {};
-    const pageWidth = this.getPageWidth(opts.pageSize, opts.orientation) - opts.marginLeft - opts.marginRight;
+  private static cleanCellValue(value: string): string {
+    if (!value) return '';
     
-    // Для большого количества колонок используем более компактные размеры
-    const columnCount = headers.length;
-    const baseWidth = pageWidth / columnCount;
+    const strValue = String(value);
     
-    headers.forEach((header, index) => {
-      // Анализируем содержимое колонки
-      const headerLength = header.length;
-      const sampleSize = Math.min(20, data.length);
-      const contentLengths = data.slice(0, sampleSize).map(row => {
-        const value = row[header];
-        return value ? String(value).length : 0;
-      });
-      
-      const avgContentLength = contentLengths.reduce((a, b) => a + b, 0) / Math.max(contentLengths.length, 1);
-      const maxContentLength = Math.max(...contentLengths, headerLength);
-      
-      // Определяем множитель ширины на основе содержимого
-      let widthMultiplier = 1;
-      if (maxContentLength > 40) {
-        widthMultiplier = 2; // Широкие колонки
-      } else if (maxContentLength > 20) {
-        widthMultiplier = 1.5;
-      } else if (maxContentLength < 8) {
-        widthMultiplier = 0.7; // Узкие колонки
+    if (['null', 'undefined', 'NULL', 'N/A', 'n/a', '#N/A'].includes(strValue)) {
+      return '';
+    }
+    
+    return strValue.trim();
+  }
+
+  private static processParseResults(results: Papa.ParseResult<any>, structure: any): CsvParseResult {
+    let headers: string[];
+    let data: Record<string, any>[];
+    
+    if (structure.hasHeader && results.meta.fields) {
+      headers = results.meta.fields;
+      data = results.data as Record<string, any>[];
+    } else {
+      const firstRow = results.data[0];
+      if (Array.isArray(firstRow)) {
+        headers = firstRow.map((_, index) => `Column_${index + 1}`);
+        data = (results.data as any[][]).map(row => {
+          const obj: Record<string, any> = {};
+          headers.forEach((header, index) => {
+            obj[header] = row[index] || '';
+          });
+          return obj;
+        });
+      } else {
+        headers = Object.keys(firstRow || {});
+        data = results.data as Record<string, any>[];
       }
-      
-      const cellWidth = Math.max(8, baseWidth * widthMultiplier);
-      
-      columnStyles[index] = {
-        cellWidth: cellWidth,
-        overflow: 'linebreak',
-        halign: this.detectColumnAlignment(header, data.slice(0, 10), header),
-        fontSize: maxContentLength > 30 ? opts.fontSize - 1 : opts.fontSize
-      };
+    }
+    
+    data = data.filter(row => {
+      return Object.values(row).some(val => 
+        val !== null && val !== undefined && String(val).trim() !== ''
+      );
     });
     
-    return columnStyles;
-  }
-
-  /**
-   * Определение выравнивания колонки по содержимому
-   */
-  private static detectColumnAlignment(header: string, data: Record<string, any>[], columnName: string): 'left' | 'center' | 'right' {
-    const values = data.map(row => row[columnName]).filter(val => val && String(val).trim());
+    const columnTypes = this.analyzeColumnTypes(headers, data);
+    const preview = data.slice(0, 5);
+    const criticalErrors = results.errors.filter(error => 
+      error.type === 'Delimiter' || error.type === 'Quotes'
+    );
     
-    if (values.length === 0) return 'left';
-    
-    // Если в заголовке есть "SUMMA", "EUR", "DATUMS" - специальная логика
-    const headerLower = header.toLowerCase();
-    if (headerLower.includes('summa') || headerLower.includes('eur')) {
-      return 'right';
-    }
-    if (headerLower.includes('datums') || headerLower.includes('date')) {
-      return 'center';
-    }
-    
-    // Если все значения - числа, выравниваем по правому краю
-    const numericValues = values.filter(val => !isNaN(Number(String(val).replace(/[,\s]/g, ''))));
-    if (numericValues.length > values.length * 0.8) {
-      return 'right';
-    }
-    
-    // Если короткие значения (коды), выравниваем по центру
-    const avgLength = values.reduce((sum, val) => sum + String(val).length, 0) / values.length;
-    if (avgLength < 10) {
-      return 'center';
-    }
-    
-    return 'left';
-  }
-
-  /**
-   * Получение ширины страницы в мм
-   */
-  private static getPageWidth(pageSize: string, orientation: string): number {
-    const sizes = {
-      'a4': orientation === 'landscape' ? 297 : 210,
-      'a3': orientation === 'landscape' ? 420 : 297,
-      'letter': orientation === 'landscape' ? 279 : 216,
-      'legal': orientation === 'landscape' ? 356 : 216,
+    return {
+      data,
+      headers,
+      rowCount: data.length,
+      columnCount: headers.length,
+      encoding: 'UTF-8',
+      delimiter: structure.delimiter,
+      errors: criticalErrors,
+      columnTypes,
+      preview
     };
-    return sizes[pageSize as keyof typeof sizes] || 297;
   }
 
-  /**
-   * Получение стилей таблицы в зависимости от выбранного стиля
-   */
-  private static getTableStyles(options: CsvToPdfOptions) {
-    const baseStyles = {
-      lineColor: [200, 200, 200],
-      lineWidth: 0.1,
-    };
-
-    switch (options.tableStyle) {
-      case 'grid':
-        return {
-          ...baseStyles,
-          headerStyles: {
-            fillColor: [41, 128, 185],
-            textColor: [255, 255, 255],
-            fontStyle: 'bold' as const,
-            halign: 'center' as const,
-          },
-          bodyStyles: {
-            fillColor: [255, 255, 255],
-            textColor: [0, 0, 0],
-          },
-          alternateRowStyles: {
-            fillColor: [245, 245, 245],
-          },
-          lineWidth: 0.3,
-        };
-
-      case 'striped':
-        return {
-          ...baseStyles,
-          headerStyles: {
-            fillColor: [52, 73, 94],
-            textColor: [255, 255, 255],
-            fontStyle: 'bold' as const,
-            halign: 'center' as const,
-          },
-          bodyStyles: {
-            fillColor: [255, 255, 255],
-            textColor: [0, 0, 0],
-          },
-          alternateRowStyles: {
-            fillColor: [248, 249, 250],
-          },
-          lineWidth: 0.1,
-        };
-
-      case 'minimal':
-        return {
-          ...baseStyles,
-          headerStyles: {
-            fillColor: [255, 255, 255],
-            textColor: [0, 0, 0],
-            fontStyle: 'bold' as const,
-            halign: 'center' as const,
-          },
-          bodyStyles: {
-            fillColor: [255, 255, 255],
-            textColor: [0, 0, 0],
-          },
-          alternateRowStyles: {
-            fillColor: [255, 255, 255],
-          },
-          lineColor: [220, 220, 220],
-          lineWidth: 0.1,
-        };
-
-      case 'plain':
-      default:
-        return {
-          ...baseStyles,
-          headerStyles: {
-            fillColor: [255, 255, 255],
-            textColor: [0, 0, 0],
-            fontStyle: 'bold' as const,
-            halign: 'center' as const,
-          },
-          bodyStyles: {
-            fillColor: [255, 255, 255],
-            textColor: [0, 0, 0],
-          },
-          alternateRowStyles: {
-            fillColor: [255, 255, 255],
-          },
-          lineColor: [0, 0, 0],
-          lineWidth: 0,
-        };
-    }
+  private static analyzeColumnTypes(headers: string[], data: Record<string, any>[]): Record<string, 'text' | 'number' | 'date' | 'boolean'> {
+    const columnTypes: Record<string, 'text' | 'number' | 'date' | 'boolean'> = {};
+    const sampleSize = Math.min(100, data.length);
+    
+    headers.forEach(header => {
+      const samples = data.slice(0, sampleSize)
+        .map(row => row[header])
+        .filter(val => val !== null && val !== undefined && String(val).trim() !== '');
+      
+      if (samples.length === 0) {
+        columnTypes[header] = 'text';
+        return;
+      }
+      
+      const numericCount = samples.filter(val => {
+        const strVal = String(val).replace(/[,\s]/g, '');
+        return !isNaN(Number(strVal)) && strVal !== '';
+      }).length;
+      
+      const dateCount = samples.filter(val => {
+        const strVal = String(val);
+        return /^\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4}$/.test(strVal) ||
+               /^\d{4}[\/\-\.]\d{1,2}[\/\-\.]\d{1,2}$/.test(strVal);
+      }).length;
+      
+      const booleanCount = samples.filter(val => {
+        const strVal = String(val).toLowerCase();
+        return ['true', 'false', 'yes', 'no', '1', '0', 'on', 'off'].includes(strVal);
+      }).length;
+      
+      const total = samples.length;
+      if (booleanCount > total * 0.8) {
+        columnTypes[header] = 'boolean';
+      } else if (numericCount > total * 0.8) {
+        columnTypes[header] = 'number';
+      } else if (dateCount > total * 0.6) {
+        columnTypes[header] = 'date';
+      } else {
+        columnTypes[header] = 'text';
+      }
+    });
+    
+    return columnTypes;
   }
 
-  /**
-   * Валидация CSV файла
-   */
+  // Продолжение в следующей части...
+  static async convertToPDF(parseResult: CsvParseResult, options: Partial<CsvToPdfOptions> = {}): Promise<Uint8Array> {
+    // Полная реализация в отдельном файле
+    throw new Error('Implementation moved to separate converter service');
+  }
+
   static validateCSV(file: File): { isValid: boolean; errors: string[] } {
     const errors: string[] = [];
     const maxSize = 50 * 1024 * 1024; // 50MB
 
-    if (!file) {
-      errors.push('No file provided');
-      return { isValid: false, errors };
-    }
-
-    if (file.size === 0) {
-      errors.push('File is empty');
-    }
-
-    if (file.size > maxSize) {
-      errors.push(`File too large. Maximum size is ${maxSize / 1024 / 1024}MB`);
-    }
+    if (!file) errors.push('No file provided');
+    if (file.size === 0) errors.push('File is empty');
+    if (file.size > maxSize) errors.push(`File too large. Maximum size is ${maxSize / 1024 / 1024}MB`);
 
     const validExtensions = ['.csv', '.txt', '.tsv'];
     const fileName = file.name.toLowerCase();
@@ -635,21 +391,10 @@ export class CsvToPdfConverter {
       errors.push(`Invalid file type. Supported: ${validExtensions.join(', ')}`);
     }
 
-    return {
-      isValid: errors.length === 0,
-      errors
-    };
+    return { isValid: errors.length === 0, errors };
   }
 
-  /**
-   * Получение примера настроек для предварительного просмотра
-   */
   static getPreviewOptions(): CsvToPdfOptions {
-    return {
-      ...this.DEFAULT_OPTIONS,
-      fontSize: 6,
-      marginTop: 10,
-      marginBottom: 10,
-    };
+    return { ...this.DEFAULT_OPTIONS, fontSize: 6, marginTop: 10, marginBottom: 10 };
   }
 }
