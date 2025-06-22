@@ -288,37 +288,46 @@ export const CSVToPDFPage: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Table Preview */}
-                  <div className="overflow-x-auto border rounded-lg">
-                    <table className="min-w-full divide-y divide-gray-200">
-                      <thead className="bg-gray-50">
-                        <tr>
-                          {parseResult.headers.map((header, index) => (
-                            <th
-                              key={index}
-                              className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                            >
-                              {header}
-                            </th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody className="bg-white divide-y divide-gray-200">
-                        {parseResult.data.slice(0, 5).map((row, rowIndex) => (
-                          <tr key={rowIndex} className={rowIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                            {parseResult.headers.map((header, colIndex) => (
-                              <td
-                                key={colIndex}
-                                className="px-4 py-3 text-sm text-gray-900 max-w-xs truncate"
-                                title={row[header]}
-                              >
-                                {row[header]}
-                              </td>
+                  {/* Fixed Table Preview */}
+                  <div className="w-full">
+                    <div className="overflow-x-auto border rounded-lg bg-white">
+                      <div className="min-w-full inline-block align-middle">
+                        <table className="min-w-full table-fixed divide-y divide-gray-200">
+                          <thead className="bg-gray-50">
+                            <tr>
+                              {parseResult.headers.map((header, index) => (
+                                <th
+                                  key={index}
+                                  className="w-40 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 last:border-r-0"
+                                  style={{ minWidth: '160px' }}
+                                >
+                                  <div className="truncate" title={header}>
+                                    {header}
+                                  </div>
+                                </th>
+                              ))}
+                            </tr>
+                          </thead>
+                          <tbody className="bg-white divide-y divide-gray-200">
+                            {parseResult.data.slice(0, 5).map((row, rowIndex) => (
+                              <tr key={rowIndex} className={rowIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                                {parseResult.headers.map((header, colIndex) => (
+                                  <td
+                                    key={colIndex}
+                                    className="w-40 px-4 py-3 text-sm text-gray-900 border-r border-gray-200 last:border-r-0"
+                                    style={{ minWidth: '160px' }}
+                                  >
+                                    <div className="truncate" title={String(row[header] || '')}>
+                                      {String(row[header] || '')}
+                                    </div>
+                                  </td>
+                                ))}
+                              </tr>
                             ))}
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
                   </div>
                   
                   {parseResult.rowCount > 5 && (
