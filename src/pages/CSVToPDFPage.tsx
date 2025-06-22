@@ -203,7 +203,7 @@ export const CSVToPDFPage: React.FC = () => {
           </motion.div>
 
           {/* Main Content */}
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-6xl mx-auto">
             {currentStep === 'upload' && (
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
@@ -288,7 +288,7 @@ export const CSVToPDFPage: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* REVOLUTIONARY TABLE SYSTEM - NO OVERLAP GUARANTEED */}
+                  {/* 🚀 BULLETPROOF TABLE WITH HORIZONTAL SCROLL - GUARANTEED TO WORK */}
                   <div className="csv-table-container">
                     <div className="csv-table-wrapper">
                       <table className="csv-table">
@@ -317,7 +317,7 @@ export const CSVToPDFPage: React.FC = () => {
                   </div>
                   
                   {parseResult.rowCount > 5 && (
-                    <p className="text-sm text-gray-500 mt-2 text-center">
+                    <p className="text-sm text-gray-500 mt-3 text-center">
                       Showing first 5 rows of {parseResult.rowCount} total rows
                     </p>
                   )}
