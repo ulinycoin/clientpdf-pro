@@ -33,70 +33,98 @@ html {
   @apply transition-all duration-200 hover:shadow-md hover:border-gray-300;
 }
 
-/* CSV Table Preview Styles - FIXED VERSION */
+/* COMPLETELY NEW CSV Table System - NO OVERLAP GUARANTEED */
 .csv-table-container {
   @apply w-full;
   position: relative;
+  /* Add visual indicator for scroll */
+}
+
+.csv-table-container::after {
+  content: '← Scroll to see more columns →';
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  color: #6b7280;
+  white-space: nowrap;
 }
 
 .csv-table-wrapper {
-  @apply border rounded-lg bg-white;
+  @apply border rounded-lg bg-white shadow-sm;
   overflow-x: auto;
   overflow-y: hidden;
-  max-width: 100%;
-  /* Ensure consistent scrolling behavior */
+  /* Force horizontal scrolling */
+  width: 100%;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
   scrollbar-color: #cbd5e0 #f7fafc;
 }
 
 .csv-table-wrapper::-webkit-scrollbar {
-  height: 8px;
+  height: 12px;
 }
 
 .csv-table-wrapper::-webkit-scrollbar-track {
-  @apply bg-gray-100 rounded;
+  @apply bg-gray-100 rounded-b-lg;
 }
 
 .csv-table-wrapper::-webkit-scrollbar-thumb {
-  @apply bg-gray-400 rounded;
+  @apply bg-blue-400 rounded;
+  border: 2px solid #f7fafc;
 }
 
 .csv-table-wrapper::-webkit-scrollbar-thumb:hover {
-  @apply bg-gray-500;
+  @apply bg-blue-500;
 }
 
+/* CRITICAL: Force table to be wide enough for all content */
 .csv-table {
-  width: max-content;
-  min-width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  display: table;
+  width: auto;
+  min-width: 100%;
+  /* FORCE minimum width based on content */
+  white-space: nowrap;
+}
+
+/* CRITICAL: Each column gets enough space */
+.csv-table th,
+.csv-table td {
+  padding: 12px 16px;
+  border-right: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+  vertical-align: top;
+  
+  /* CRITICAL: Dynamic width based on content */
+  width: auto;
+  min-width: 150px;
+  max-width: 250px;
+  
+  /* CRITICAL: No wrapping, force scrolling instead */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  
+  /* Ensure text doesn't break */
+  word-break: keep-all;
+  hyphens: none;
 }
 
 .csv-table th {
-  @apply px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50;
-  min-width: 120px;
-  max-width: 200px;
-  white-space: nowrap;
-  border-right: 1px solid #e5e7eb;
-  position: relative;
-  vertical-align: top;
-}
-
-.csv-table th:last-child {
-  border-right: none;
+  @apply bg-gray-50 font-semibold text-gray-700 text-xs uppercase tracking-wider;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .csv-table td {
-  @apply px-3 py-2 text-sm text-gray-900 bg-white;
-  min-width: 120px;
-  max-width: 200px;
-  border-right: 1px solid #e5e7eb;
-  vertical-align: top;
-  position: relative;
+  @apply bg-white text-gray-900 text-sm;
 }
 
+.csv-table th:last-child,
 .csv-table td:last-child {
   border-right: none;
 }
@@ -110,55 +138,49 @@ html {
   transition: background-color 0.15s ease-in-out;
 }
 
-/* Cell content styling - CRITICAL FIX */
-.csv-cell-content {
-  display: block;
-  width: 100%;
-  max-width: 180px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  line-height: 1.4;
-  word-break: break-all;
+/* CRITICAL: Force cells to show full content on hover */
+.csv-table th:hover,
+.csv-table td:hover {
+  position: relative;
+  z-index: 20;
+  background: #dbeafe !important;
+  
+  /* Show tooltip on hover */
+  overflow: visible;
 }
 
-.csv-table th .csv-cell-content {
-  font-weight: 600;
-  color: #374151;
-}
-
-/* Alternative table layout for very wide tables */
-.csv-table-responsive {
-  display: block;
-  width: 100%;
-  overflow-x: auto;
-  white-space: nowrap;
-}
-
-.csv-table-responsive table {
-  width: auto;
-  min-width: 100%;
-}
-
-.csv-table-responsive th,
-.csv-table-responsive td {
-  white-space: nowrap;
+.csv-table th:hover::after,
+.csv-table td:hover::after {
+  content: attr(title);
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #1f2937;
+  color: white;
   padding: 8px 12px;
-  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 30;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  max-width: 300px;
+  word-wrap: break-word;
+  white-space: normal;
 }
 
-/* Responsive table behavior */
+/* Alternative: Compact table for mobile */
 @media (max-width: 768px) {
   .csv-table th,
   .csv-table td {
     min-width: 100px;
-    max-width: 150px;
-    padding: 6px 8px;
+    max-width: 180px;
+    padding: 8px 10px;
     font-size: 11px;
   }
   
-  .csv-cell-content {
-    max-width: 130px;
+  .csv-table-container::after {
+    font-size: 10px;
+    bottom: -16px;
   }
 }
 
@@ -166,13 +188,9 @@ html {
   .csv-table th,
   .csv-table td {
     min-width: 80px;
-    max-width: 120px;
-    padding: 4px 6px;
+    max-width: 140px;
+    padding: 6px 8px;
     font-size: 10px;
-  }
-  
-  .csv-cell-content {
-    max-width: 100px;
   }
 }
 
