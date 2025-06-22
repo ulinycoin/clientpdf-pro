@@ -33,33 +33,46 @@ html {
   @apply transition-all duration-200 hover:shadow-md hover:border-gray-300;
 }
 
-/* COMPLETELY NEW CSV Table System - NO OVERLAP GUARANTEED */
+/* 🔥 BULLETPROOF CSV Table System - GUARANTEED to stay within viewport */
 .csv-table-container {
   @apply w-full;
   position: relative;
-  /* Add visual indicator for scroll */
+  /* CRITICAL: Ensure container never exceeds viewport */
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .csv-table-container::after {
-  content: '← Scroll to see more columns →';
+  content: '← Scroll horizontally to see more columns →';
   position: absolute;
-  bottom: -20px;
+  bottom: -24px;
   left: 50%;
   transform: translateX(-50%);
   font-size: 12px;
   color: #6b7280;
   white-space: nowrap;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid #e5e7eb;
 }
 
 .csv-table-wrapper {
   @apply border rounded-lg bg-white shadow-sm;
+  /* CRITICAL: Force horizontal scroll without breaking layout */
   overflow-x: auto;
   overflow-y: hidden;
-  /* Force horizontal scrolling */
   width: 100%;
+  max-width: 100%;
+  /* CRITICAL: Prevent flex shrinking */
+  flex-shrink: 0;
+  /* Smooth scrolling on mobile */
   -webkit-overflow-scrolling: touch;
+  /* Custom scrollbar */
   scrollbar-width: thin;
   scrollbar-color: #cbd5e0 #f7fafc;
+  /* CRITICAL: Ensure the wrapper stays in bounds */
+  box-sizing: border-box;
 }
 
 .csv-table-wrapper::-webkit-scrollbar {
@@ -79,17 +92,20 @@ html {
   @apply bg-blue-500;
 }
 
-/* CRITICAL: Force table to be wide enough for all content */
+/* 🎯 CRITICAL: Table configuration for proper horizontal scrolling */
 .csv-table {
   border-collapse: separate;
   border-spacing: 0;
-  width: auto;
+  /* CRITICAL: Force table to be as wide as needed for content */
+  width: max-content;
   min-width: 100%;
-  /* FORCE minimum width based on content */
+  /* CRITICAL: Prevent text wrapping to force horizontal scroll */
   white-space: nowrap;
+  /* CRITICAL: Ensure table never shrinks smaller than content */
+  table-layout: fixed;
 }
 
-/* CRITICAL: Each column gets enough space */
+/* 🎯 CRITICAL: Column width management */
 .csv-table th,
 .csv-table td {
   padding: 12px 16px;
@@ -97,21 +113,25 @@ html {
   border-bottom: 1px solid #e5e7eb;
   vertical-align: top;
   
-  /* CRITICAL: Dynamic width based on content */
-  width: auto;
+  /* CRITICAL: Fixed width to ensure consistent layout */
+  width: 180px;
   min-width: 150px;
   max-width: 250px;
   
-  /* CRITICAL: No wrapping, force scrolling instead */
+  /* CRITICAL: No text wrapping - forces horizontal scroll */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   
-  /* Ensure text doesn't break */
+  /* CRITICAL: Prevent word breaking */
   word-break: keep-all;
   hyphens: none;
+  
+  /* CRITICAL: Prevent flex shrinking */
+  flex-shrink: 0;
 }
 
+/* Header styling */
 .csv-table th {
   @apply bg-gray-50 font-semibold text-gray-700 text-xs uppercase tracking-wider;
   position: sticky;
@@ -120,37 +140,39 @@ html {
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
+/* Cell styling */
 .csv-table td {
   @apply bg-white text-gray-900 text-sm;
 }
 
+/* Remove border from last column */
 .csv-table th:last-child,
 .csv-table td:last-child {
   border-right: none;
 }
 
+/* Zebra striping */
 .csv-table tr:nth-child(even) td {
   @apply bg-gray-50;
 }
 
+/* Hover effects */
 .csv-table tr:hover td {
   @apply bg-blue-50;
   transition: background-color 0.15s ease-in-out;
 }
 
-/* CRITICAL: Force cells to show full content on hover */
+/* 🔍 Enhanced tooltip system for truncated content */
 .csv-table th:hover,
 .csv-table td:hover {
   position: relative;
   z-index: 20;
   background: #dbeafe !important;
-  
-  /* Show tooltip on hover */
-  overflow: visible;
+  cursor: pointer;
 }
 
-.csv-table th:hover::after,
-.csv-table td:hover::after {
+.csv-table th[title]:hover::after,
+.csv-table td[title]:hover::after {
   content: attr(title);
   position: absolute;
   top: 100%;
@@ -160,18 +182,26 @@ html {
   padding: 8px 12px;
   border-radius: 6px;
   font-size: 12px;
-  white-space: nowrap;
+  white-space: normal;
   z-index: 30;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   max-width: 300px;
   word-wrap: break-word;
-  white-space: normal;
+  /* Ensure tooltip doesn't overflow */
+  transform: translateX(-20%);
 }
 
-/* Alternative: Compact table for mobile */
+/* 📱 Responsive adjustments */
 @media (max-width: 768px) {
+  .csv-table-container {
+    margin: 0 -1rem;
+    width: calc(100% + 2rem);
+    max-width: calc(100vw - 2rem);
+  }
+  
   .csv-table th,
   .csv-table td {
+    width: 120px;
     min-width: 100px;
     max-width: 180px;
     padding: 8px 10px;
@@ -180,13 +210,20 @@ html {
   
   .csv-table-container::after {
     font-size: 10px;
-    bottom: -16px;
+    bottom: -20px;
   }
 }
 
 @media (max-width: 480px) {
+  .csv-table-container {
+    margin: 0 -0.75rem;
+    width: calc(100% + 1.5rem);
+    max-width: calc(100vw - 1.5rem);
+  }
+  
   .csv-table th,
   .csv-table td {
+    width: 100px;
     min-width: 80px;
     max-width: 140px;
     padding: 6px 8px;
