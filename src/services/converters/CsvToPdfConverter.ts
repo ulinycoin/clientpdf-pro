@@ -243,23 +243,100 @@ export class CsvToPdfConverter {
     return doubleQuoteCount >= singleQuoteCount ? '"' : "'";
   }
 
+  /**
+   * УЛУЧШЕННОЕ определение строки заголовков для сложных CSV файлов
+   */
   private static detectHeaderRow(lines: string[]): boolean {
     if (lines.length < 2) return false;
     
     const headerIndicators = [
       'MU NR.', 'DATUMS', 'VALŪTA', 'SUMMA', 'KODS',
       'ID', 'DATE', 'AMOUNT', 'NAME', 'VALUE', 'TYPE',
-      'NUMBER', 'CODE', 'DESCRIPTION', 'STATUS'
+      'NUMBER', 'CODE', 'DESCRIPTION', 'STATUS',
+      'MAKSĀJUMA', 'PARTNERA', 'TRANSAKCIJAS', 'REFERENCE'
     ];
     
-    for (let i = 0; i < Math.min(3, lines.length); i++) {
+    // Ищем строку с наибольшим количеством заголовков-индикаторов
+    let bestHeaderLineIndex = -1;
+    let maxIndicatorCount = 0;
+    
+    for (let i = 0; i < Math.min(5, lines.length); i++) {
       const line = lines[i].toUpperCase();
-      if (headerIndicators.some(indicator => line.includes(indicator.toUpperCase()))) {
-        return true;
+      const indicatorCount = headerIndicators.filter(indicator => 
+        line.includes(indicator.toUpperCase())
+      ).length;
+      
+      console.log(`Line ${i + 1}: ${indicatorCount} indicators found`);
+      
+      if (indicatorCount > maxIndicatorCount) {
+        maxIndicatorCount = indicatorCount;
+        bestHeaderLineIndex = i;
+      }
+    }
+    
+    // Если нашли строку с заголовками, проверяем что это не первая строка
+    if (bestHeaderLineIndex > 0 && maxIndicatorCount >= 2) {
+      console.log(`Header row detected at line ${bestHeaderLineIndex + 1} with ${maxIndicatorCount} indicators`);
+      return true;
+    }
+    
+    // Если первая строка содержит много индикаторов, это тоже заголовок
+    if (bestHeaderLineIndex === 0 && maxIndicatorCount >= 3) {
+      console.log(`Header row detected at line 1 with ${maxIndicatorCount} indicators`);
+      return true;
+    }
+    
+    // Дополнительная проверка - сравниваем структуру строк
+    if (lines.length >= 3) {
+      const delimiter = this.detectDelimiterAdvanced(lines);
+      
+      // Анализируем первые 3 строки
+      const lineParts = lines.slice(0, 3).map(line => this.splitCSVLine(line, delimiter));
+      
+      // Если вторая строка имеет больше всего столбцов и содержит текстовые заголовки
+      if (lineParts[1] && lineParts[1].length > lineParts[0].length && lineParts[1].length >= lineParts[2]?.length) {
+        const secondLineHasTextHeaders = lineParts[1].some(field => 
+          field.trim().length > 3 && isNaN(Number(field.trim().replace(/[^\d.-]/g, '')))
+        );
+        
+        if (secondLineHasTextHeaders) {
+          console.log('Header row detected at line 2 based on structure analysis');
+          return true;
+        }
       }
     }
     
     return false;
+  }
+
+  /**
+   * Разделение CSV строки с учетом кавычек
+   */
+  private static splitCSVLine(line: string, delimiter: string): string[] {
+    const fields: string[] = [];
+    let currentField = '';
+    let inQuotes = false;
+    
+    for (let i = 0; i < line.length; i++) {
+      const char = line[i];
+      
+      if (char === '"') {
+        if (inQuotes && i + 1 < line.length && line[i + 1] === '"') {
+          currentField += '"';
+          i++; // Пропускаем следующую кавычку
+        } else {
+          inQuotes = !inQuotes;
+        }
+      } else if (char === delimiter && !inQuotes) {
+        fields.push(currentField.trim());
+        currentField = '';
+      } else {
+        currentField += char;
+      }
+    }
+    
+    fields.push(currentField.trim());
+    return fields;
   }
 
   private static cleanHeaderName(header: string, index: number): string {
@@ -288,14 +365,25 @@ export class CsvToPdfConverter {
     return strValue.trim();
   }
 
+  /**
+   * УЛУЧШЕННАЯ обработка результатов парсинга для сложных CSV файлов
+   */
   private static processParseResults(results: Papa.ParseResult<any>, structure: any): CsvParseResult {
     let headers: string[];
     let data: Record<string, any>[];
+    
+    console.log('Processing parse results:', {
+      dataLength: results.data.length,
+      hasHeader: structure.hasHeader,
+      fields: results.meta.fields,
+      firstRowSample: results.data[0]
+    });
     
     if (structure.hasHeader && results.meta.fields) {
       headers = results.meta.fields;
       data = results.data as Record<string, any>[];
     } else {
+      // Для файлов без заголовков или с неправильно определенными заголовками
       const firstRow = results.data[0];
       if (Array.isArray(firstRow)) {
         headers = firstRow.map((_, index) => `Column_${index + 1}`);
@@ -312,8 +400,21 @@ export class CsvToPdfConverter {
       }
     }
     
-    data = data.filter(row => {
-      return Object.values(row).some(val => 
+    // Фильтрация пустых строк и строк-заголовков отчета
+    data = data.filter((row, index) => {
+      // Пропускаем строки которые выглядят как заголовки отчета
+      const values = Object.values(row);
+      const firstValue = String(values[0] || '').trim();
+      
+      // Пропускаем строки заголовков отчета
+      if (firstValue.includes('PĀRSKATS') || firstValue.includes('KONTAA') || 
+          firstValue.includes('PERIODU') || firstValue.length > 100) {
+        console.log(`Skipping report header row ${index}: ${firstValue.substring(0, 50)}...`);
+        return false;
+      }
+      
+      // Проверяем что в строке есть хотя бы одно непустое значение
+      return values.some(val => 
         val !== null && val !== undefined && String(val).trim() !== ''
       );
     });
@@ -323,6 +424,12 @@ export class CsvToPdfConverter {
     const criticalErrors = results.errors.filter(error => 
       error.type === 'Delimiter' || error.type === 'Quotes'
     );
+    
+    console.log('Final processed result:', {
+      headers: headers.length,
+      dataRows: data.length,
+      sampleRow: data[0]
+    });
     
     return {
       data,
