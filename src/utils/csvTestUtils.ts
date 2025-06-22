@@ -179,6 +179,19 @@ if (import.meta.env.DEV) {
 }
 
 // Экспорт для ручного запуска
+declare global {
+  interface Window {
+    csvTests: {
+      runCSVTests: typeof runCSVTests;
+      downloadTestPDF: typeof downloadTestPDF;
+      simpleCSV: string;
+      complexCSV: string;
+      tsvData: string;
+    };
+  }
+}
+
+// Экспорт для ручного запуска
 (window as any).csvTests = {
   runCSVTests,
   downloadTestPDF,
