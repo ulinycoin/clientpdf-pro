@@ -32,3 +32,231 @@ html {
 .card-hover {
   @apply transition-all duration-200 hover:shadow-md hover:border-gray-300;
 }
+
+/* CSV Table Preview Styles - Fix for text alignment */
+.csv-table-container {
+  @apply w-full;
+}
+
+.csv-table-wrapper {
+  @apply overflow-x-auto border rounded-lg bg-white;
+  /* Ensure consistent scrolling behavior */
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e0 #f7fafc;
+}
+
+.csv-table-wrapper::-webkit-scrollbar {
+  height: 8px;
+}
+
+.csv-table-wrapper::-webkit-scrollbar-track {
+  @apply bg-gray-100 rounded;
+}
+
+.csv-table-wrapper::-webkit-scrollbar-thumb {
+  @apply bg-gray-400 rounded;
+}
+
+.csv-table-wrapper::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-500;
+}
+
+.csv-table {
+  @apply min-w-full table-fixed divide-y divide-gray-200;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.csv-table th {
+  @apply px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50;
+  min-width: 160px;
+  width: 160px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-right: 1px solid #e5e7eb;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.csv-table th:last-child {
+  border-right: none;
+}
+
+.csv-table td {
+  @apply px-4 py-3 text-sm text-gray-900 bg-white;
+  min-width: 160px;
+  width: 160px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-right: 1px solid #e5e7eb;
+  vertical-align: top;
+}
+
+.csv-table td:last-child {
+  border-right: none;
+}
+
+.csv-table tr:nth-child(even) td {
+  @apply bg-gray-50;
+}
+
+.csv-table tr:hover td {
+  @apply bg-blue-50;
+  transition: background-color 0.15s ease-in-out;
+}
+
+/* Cell content styling */
+.csv-cell-content {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Responsive table behavior */
+@media (max-width: 768px) {
+  .csv-table th,
+  .csv-table td {
+    min-width: 120px;
+    width: 120px;
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+}
+
+/* Loading and error states */
+.table-loading {
+  @apply flex items-center justify-center p-8 bg-gray-50 rounded-lg;
+}
+
+.table-error {
+  @apply flex items-center justify-center p-8 bg-red-50 border border-red-200 rounded-lg text-red-700;
+}
+
+/* Modern glassmorphism effects for enhanced UI */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+/* Modern gradient backgrounds */
+.gradient-blue {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.gradient-purple {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.gradient-teal {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+/* Enhanced animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.float-animation {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Interactive hover effects */
+.hover-lift {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* Progress indicators */
+.progress-bar {
+  @apply w-full bg-gray-200 rounded-full h-2;
+  overflow: hidden;
+}
+
+.progress-fill {
+  @apply h-full bg-blue-600 rounded-full transition-all duration-300 ease-out;
+  background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%);
+}
+
+/* Modern input styles */
+.modern-input {
+  @apply w-full border border-gray-300 rounded-lg px-4 py-3 text-sm;
+  @apply focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+  @apply transition-all duration-200;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.modern-input:focus {
+  background: rgba(255, 255, 255, 1);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+}
+
+/* Enhanced button styles */
+.btn-modern {
+  @apply inline-flex items-center justify-center px-6 py-3 rounded-lg font-semibold;
+  @apply transition-all duration-200 transform hover:scale-105;
+  @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
+}
+
+.btn-primary-modern {
+  @apply btn-modern bg-gradient-to-r from-blue-600 to-indigo-600 text-white;
+  @apply hover:from-blue-700 hover:to-indigo-700;
+  @apply focus:ring-blue-500;
+  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.39);
+}
+
+.btn-secondary-modern {
+  @apply btn-modern bg-white text-gray-700 border border-gray-300;
+  @apply hover:bg-gray-50 hover:border-gray-400;
+  @apply focus:ring-gray-500;
+}
+
+/* Toast notification enhancements */
+.toast-modern {
+  @apply rounded-lg shadow-lg border;
+  backdrop-filter: blur(12px);
+}
+
+.toast-success {
+  @apply toast-modern bg-green-50 border-green-200 text-green-800;
+}
+
+.toast-error {
+  @apply toast-modern bg-red-50 border-red-200 text-red-800;
+}
+
+.toast-info {
+  @apply toast-modern bg-blue-50 border-blue-200 text-blue-800;
+}
+
+/* Utility classes for spacing and layout */
+.container-modern {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.section-spacing {
+  @apply py-16 lg:py-24;
+}
+
+.content-spacing {
+  @apply space-y-8 lg:space-y-12;
+}
