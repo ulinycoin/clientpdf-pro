@@ -125,10 +125,8 @@ export class CsvToPdfGenerator {
         showFoot: false,
         tableLineColor: tableStyles.lineColor,
         tableLineWidth: tableStyles.lineWidth,
-        // 🔥 КРИТИЧЕСКИ ВАЖНО: Принудительное подгоняние под страницу
+        // 🔥 КРИТИЧНО: НЕ используем горизонтальное разбиение - все колонки на одной странице
         tableWidth: 'wrap',
-        horizontalPageBreak: true,
-        horizontalPageBreakRepeat: 0,
         didDrawPage: (data: any) => {
           // Номера страниц
           const pageNumber = (pdf as any).internal.getCurrentPageInfo().pageNumber;
@@ -250,7 +248,7 @@ export class CsvToPdfGenerator {
   }
 
   /**
-   * 🔥 REVOLUTIONIZED: Bulletproof column width calculation with GUARANTEED page fitting
+   * 🔥 ULTRA-COMPACT: Экстремально компактный расчет для множества колонок
    */
   private static calculateOptimalColumnWidths(
     columnAnalysis: ColumnAnalysis[], 
@@ -263,155 +261,85 @@ export class CsvToPdfGenerator {
     const pageWidth = this.getPageWidth(opts.pageSize, opts.orientation);
     const availableWidth = pageWidth - opts.marginLeft - opts.marginRight;
     
-    console.log(`📏 Page calculations: ${pageWidth}mm total, ${availableWidth}mm available for table`);
+    console.log(`📏 Available width for table: ${availableWidth}mm`);
     
     // 🎯 КРИТИЧНО: Всего колонок включая номера строк
     const totalColumns = columnAnalysis.length + (includeRowNumbers ? 1 : 0);
     
-    // 🎯 КРИТИЧНО: Абсолютные пределы для предотвращения переполнения
-    const absoluteMinWidth = 8; // Минимальная ширина в мм
-    const absoluteMaxWidth = Math.floor(availableWidth / 3); // Максимум 1/3 от страницы
+    console.log(`📊 Total columns to fit: ${totalColumns}`);
     
-    // 🎯 АДАПТИВНАЯ ЛОГИКА: чем больше колонок, тем компактнее
-    let targetMinWidth: number;
-    let targetMaxWidth: number;
-    let adaptiveFontSize = opts.fontSize;
+    // 🔥 ЭКСТРЕМАЛЬНАЯ КОМПАКТНОСТЬ для большого количества колонок
+    let maxWidth: number;
+    let minWidth: number;
+    let fontSize = opts.fontSize;
     
-    if (totalColumns <= 5) {
-      targetMinWidth = 25;
-      targetMaxWidth = 60;
-    } else if (totalColumns <= 10) {
-      targetMinWidth = 20;
-      targetMaxWidth = 45;
-      adaptiveFontSize = Math.max(opts.fontSize - 0.5, 6);
-    } else if (totalColumns <= 15) {
-      targetMinWidth = 15;
-      targetMaxWidth = 35;
-      adaptiveFontSize = Math.max(opts.fontSize - 1, 6);
-    } else {
+    if (totalColumns >= 15) {
       // Экстремально много колонок - максимальная компактность
-      targetMinWidth = 12;
-      targetMaxWidth = 25;
-      adaptiveFontSize = Math.max(opts.fontSize - 1.5, 5);
-    }
-    
-    // 🔥 BULLETPROOF: Применяем абсолютные ограничения
-    targetMinWidth = Math.max(targetMinWidth, absoluteMinWidth);
-    targetMaxWidth = Math.min(targetMaxWidth, absoluteMaxWidth);
-    
-    console.log(`📊 Column strategy: ${totalColumns} columns, width range ${targetMinWidth}-${targetMaxWidth}mm, font ${adaptiveFontSize}pt`);
-    
-    // 🎯 ФАЗА 1: Расчет желаемых ширин на основе контента
-    const desiredWidths: number[] = [];
-    let totalDesiredWidth = 0;
-    
-    // Номер строки (если включен)
-    if (includeRowNumbers) {
-      const rowNumberWidth = Math.min(15, targetMinWidth * 1.2);
-      desiredWidths.push(rowNumberWidth);
-      totalDesiredWidth += rowNumberWidth;
-    }
-    
-    // Анализ контента для каждой колонки
-    columnAnalysis.forEach((column) => {
-      // Базовая ширина на основе содержимого
-      const headerLength = column.name.length;
-      const contentLength = Math.max(column.avgLength, column.maxLength * 0.7);
-      const effectiveLength = Math.max(headerLength, contentLength);
-      
-      // Приблизительная ширина: 1 символ ≈ 1.5мм при fontSize=7
-      const charWidthMm = (adaptiveFontSize / 7) * 1.5;
-      let desiredWidth = effectiveLength * charWidthMm + 4; // +4мм padding
-      
-      // Корректировки по типу данных
-      switch (column.type) {
-        case 'number':
-          desiredWidth = Math.max(desiredWidth, targetMinWidth);
-          break;
-        case 'date':
-          desiredWidth = Math.max(desiredWidth, 22);
-          break;
-        case 'boolean':
-          desiredWidth = Math.max(desiredWidth, 15);
-          break;
-        default:
-          // Для текста ограничиваем экстремально длинные значения
-          if (column.avgLength > 50) {
-            desiredWidth = Math.min(desiredWidth, targetMaxWidth);
-          }
-      }
-      
-      // Применяем ограничения
-      desiredWidth = Math.max(targetMinWidth, Math.min(desiredWidth, targetMaxWidth));
-      
-      desiredWidths.push(desiredWidth);
-      totalDesiredWidth += desiredWidth;
-    });
-    
-    console.log(`💡 Desired total width: ${totalDesiredWidth.toFixed(1)}mm (available: ${availableWidth.toFixed(1)}mm)`);
-    
-    // 🎯 ФАЗА 2: КРИТИЧЕСКОЕ МАСШТАБИРОВАНИЕ для подгонки под страницу
-    let finalWidths: number[];
-    
-    if (totalDesiredWidth > availableWidth) {
-      // 🔥 Принудительное масштабирование - все колонки пропорционально уменьшаются
-      const scaleFactor = availableWidth / totalDesiredWidth;
-      console.log(`🔧 Scaling down by factor: ${scaleFactor.toFixed(3)}`);
-      
-      finalWidths = desiredWidths.map(width => {
-        const scaledWidth = width * scaleFactor;
-        // КРИТИЧНО: даже после масштабирования соблюдаем минимум
-        return Math.max(scaledWidth, absoluteMinWidth);
-      });
-      
-      // Перепроверка после применения минимумов
-      const recalculatedTotal = finalWidths.reduce((sum, w) => sum + w, 0);
-      if (recalculatedTotal > availableWidth) {
-        // Экстремальная ситуация - пропорционально урезаем ВСЕ колонки до минимума
-        const excessWidth = recalculatedTotal - availableWidth;
-        const reductionPerColumn = excessWidth / finalWidths.length;
-        
-        finalWidths = finalWidths.map(width => 
-          Math.max(width - reductionPerColumn, absoluteMinWidth)
-        );
-      }
+      maxWidth = 20;
+      minWidth = 8;
+      fontSize = Math.max(opts.fontSize - 2, 4);
+      console.log('🚨 Ultra-compact mode activated for 15+ columns');
+    } else if (totalColumns >= 10) {
+      // Много колонок - высокая компактность
+      maxWidth = 25;
+      minWidth = 10;
+      fontSize = Math.max(opts.fontSize - 1, 5);
+      console.log('⚡ High-compact mode for 10+ columns');
+    } else if (totalColumns >= 7) {
+      // Средняя компактность
+      maxWidth = 35;
+      minWidth = 15;
+      fontSize = Math.max(opts.fontSize - 0.5, 6);
+      console.log('📦 Compact mode for 7+ columns');
     } else {
-      // Есть лишнее место - можем немного расширить
-      const extraSpace = availableWidth - totalDesiredWidth;
-      const bonusPerColumn = extraSpace / desiredWidths.length;
-      
-      finalWidths = desiredWidths.map(width => 
-        Math.min(width + bonusPerColumn, targetMaxWidth)
-      );
+      // Обычный режим
+      maxWidth = 50;
+      minWidth = 20;
+      console.log('📝 Normal mode for few columns');
     }
     
-    const finalTotalWidth = finalWidths.reduce((sum, w) => sum + w, 0);
-    console.log(`✅ Final total width: ${finalTotalWidth.toFixed(1)}mm (fit: ${finalTotalWidth <= availableWidth})`);
+    // 🎯 РАВНОМЕРНОЕ РАСПРЕДЕЛЕНИЕ: Каждая колонка получает равную долю
+    const targetWidth = Math.min(availableWidth / totalColumns, maxWidth);
+    const actualWidth = Math.max(targetWidth, minWidth);
     
-    // 🎯 ФАЗА 3: Применение стилей к колонкам
-    finalWidths.forEach((width, index) => {
-      const column = index === 0 && includeRowNumbers ? null : columnAnalysis[includeRowNumbers ? index - 1 : index];
+    console.log(`🎯 Target width per column: ${targetWidth.toFixed(1)}mm`);
+    console.log(`📐 Actual width per column: ${actualWidth.toFixed(1)}mm`);
+    
+    // Проверяем, поместится ли таблица
+    const totalTableWidth = actualWidth * totalColumns;
+    console.log(`📏 Total table width: ${totalTableWidth.toFixed(1)}mm (available: ${availableWidth}mm)`);
+    
+    // 🔥 ПРИНУДИТЕЛЬНАЯ КОРРЕКТИРОВКА если не помещается
+    let finalWidth = actualWidth;
+    if (totalTableWidth > availableWidth) {
+      finalWidth = (availableWidth - 2) / totalColumns; // -2мм буфер
+      console.log(`🚨 Emergency width reduction to: ${finalWidth.toFixed(1)}mm per column`);
       
-      columnStyles[index] = {
-        cellWidth: width,
+      // Экстремальная ситуация - еще больше уменьшаем шрифт
+      if (finalWidth < 8) {
+        fontSize = Math.max(fontSize - 1, 3);
+        console.log(`🆘 Emergency font size reduction to: ${fontSize}pt`);
+      }
+    }
+    
+    // 🎯 ПРИМЕНЕНИЕ одинаковой ширины ко всем колонкам
+    for (let i = 0; i < totalColumns; i++) {
+      const isRowNumber = includeRowNumbers && i === 0;
+      const columnIndex = isRowNumber ? i : (includeRowNumbers ? i - 1 : i);
+      const column = isRowNumber ? null : columnAnalysis[columnIndex];
+      
+      columnStyles[i] = {
+        cellWidth: finalWidth,
         overflow: 'linebreak',
         halign: column ? column.alignment : 'center',
-        fontSize: adaptiveFontSize,
+        fontSize: fontSize,
         valign: 'top',
-        minCellHeight: 4,
+        minCellHeight: 3,
+        cellPadding: 1,
       };
-    });
-    
-    // 🔥 ДОПОЛНИТЕЛЬНОЕ ПРИНУЖДЕНИЕ: autoTable настройки для гарантированной подгонки
-    if (finalTotalWidth > availableWidth * 0.98) { // 2% буфер
-      console.log('🚨 Applying emergency table constraints');
-      
-      // Принудительно уменьшаем шрифт для всех колонок
-      Object.keys(columnStyles).forEach(key => {
-        columnStyles[parseInt(key)].fontSize = Math.max(adaptiveFontSize - 1, 5);
-        columnStyles[parseInt(key)].cellPadding = 1;
-      });
     }
+    
+    console.log(`✅ Applied uniform width of ${finalWidth.toFixed(1)}mm to all ${totalColumns} columns`);
     
     return columnStyles;
   }
