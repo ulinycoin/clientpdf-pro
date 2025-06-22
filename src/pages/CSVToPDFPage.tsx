@@ -131,7 +131,7 @@ export const CSVToPDFPage: React.FC = () => {
     setIsParsing(false);
   };
 
-  // 🔥 КРИТИЧЕСКИ ВАЖНЫЕ ИНЛАЙН СТИЛИ для гарантированной работы прокрутки
+  // 🔥 КРИТИЧЕСКИ ВАЖНЫЕ ИНЛАЙН СТИЛИ для горизонтальной И вертикальной прокрутки
   const tableContainerStyle: React.CSSProperties = {
     width: '100%',
     maxWidth: '100%',
@@ -144,8 +144,10 @@ export const CSVToPDFPage: React.FC = () => {
   const tableWrapperStyle: React.CSSProperties = {
     width: '100%',
     maxWidth: '100%',
+    // 🎯 КЛЮЧЕВОЕ ИЗМЕНЕНИЕ: Добавляем вертикальную прокрутку
     overflowX: 'auto',
-    overflowY: 'hidden',
+    overflowY: 'auto',
+    maxHeight: '500px', // Максимальная высота таблицы
     border: '1px solid #e5e7eb',
     borderRadius: '8px',
     backgroundColor: 'white',
@@ -186,12 +188,14 @@ export const CSVToPDFPage: React.FC = () => {
     letterSpacing: '0.05em',
     position: 'sticky',
     top: 0,
-    zIndex: 10
+    zIndex: 10,
+    // 🎯 ВАЖНО: Убираем box-shadow чтобы не конфликтовало с прокруткой
+    boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
   };
 
   const scrollIndicatorStyle: React.CSSProperties = {
     position: 'absolute',
-    bottom: '-24px',
+    bottom: '-30px',
     left: '50%',
     transform: 'translateX(-50%)',
     fontSize: '12px',
@@ -200,8 +204,12 @@ export const CSVToPDFPage: React.FC = () => {
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
     padding: '4px 8px',
     borderRadius: '4px',
-    border: '1px solid #e5e7eb'
+    border: '1px solid #e5e7eb',
+    textAlign: 'center'
   };
+
+  // Показываем больше строк если их много
+  const previewRowCount = parseResult ? Math.min(parseResult.rowCount, 20) : 5;
 
   return (
     <>
@@ -360,7 +368,7 @@ export const CSVToPDFPage: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* 🚨 BULLETPROOF TABLE WITH INLINE STYLES - АБСОЛЮТНО ГАРАНТИРОВАННАЯ ПРОКРУТКА */}
+                  {/* 🚨 BULLETPROOF TABLE WITH HORIZONTAL & VERTICAL SCROLL */}
                   <div style={tableContainerStyle}>
                     <div style={tableWrapperStyle}>
                       <table style={tableStyle}>
@@ -381,7 +389,7 @@ export const CSVToPDFPage: React.FC = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {parseResult.data.slice(0, 5).map((row, rowIndex) => (
+                          {parseResult.data.slice(0, previewRowCount).map((row, rowIndex) => (
                             <tr key={rowIndex} style={{ backgroundColor: rowIndex % 2 === 0 ? 'white' : '#f9fafb' }}>
                               {parseResult.headers.map((header, colIndex) => (
                                 <td 
@@ -401,13 +409,13 @@ export const CSVToPDFPage: React.FC = () => {
                       </table>
                     </div>
                     <div style={scrollIndicatorStyle}>
-                      ← Scroll horizontally to see more columns →
+                      ← Scroll horizontally and vertically to see all data →
                     </div>
                   </div>
                   
-                  {parseResult.rowCount > 5 && (
+                  {parseResult.rowCount > previewRowCount && (
                     <p className="text-sm text-gray-500 mt-6 text-center">
-                      Showing first 5 rows of {parseResult.rowCount} total rows
+                      Showing first {previewRowCount} rows of {parseResult.rowCount} total rows
                     </p>
                   )}
 
