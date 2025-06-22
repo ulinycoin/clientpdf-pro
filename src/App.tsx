@@ -29,7 +29,12 @@ import { TermsOfService } from './pages/TermsOfService';
 function App() {
   return (
     <ErrorBoundary>
-      <Router>
+      <Router
+        future={{
+          v7_startTransition: true,
+          v7_relativeSplatPath: true
+        }}
+      >
         <ScrollToTop />
         <Layout>
           <Routes>
@@ -40,8 +45,8 @@ function App() {
             <Route path="/images-to-pdf" element={<ImagesToPDFPage />} />
             <Route path="/csv-to-pdf" element={<CSVToPDFPage />} />
             <Route path="/faq" element={<FAQPage />} />
-			<Route path="/privacy" element={<PrivacyPolicy />} />
-			<Route path="/terms" element={<TermsOfService />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<TermsOfService />} />
           </Routes>
         </Layout>
       </Router>
