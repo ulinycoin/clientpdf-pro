@@ -12,7 +12,7 @@ export class CsvToPdfGenerator {
   ): Promise<Uint8Array> {
     const opts = { 
       orientation: 'landscape' as const,
-      pageSize: 'a4' as const,
+      pageSize: 'legal' as const, // 🔥 CHANGED: Legal as default (356mm landscape vs A4 297mm)
       fontSize: 7,
       tableStyle: 'grid' as const,
       headerStyle: 'bold' as const,
@@ -29,9 +29,12 @@ export class CsvToPdfGenerator {
     
     // 🔥 AUTO-UPGRADE: Автоматически переключаемся на A3 для экстремально широких таблиц
     const totalColumns = parseResult.columnCount + (opts.includeRowNumbers ? 1 : 0);
-    if (totalColumns >= 20 && opts.pageSize === 'a4') {
+    if (totalColumns >= 25 && opts.pageSize === 'legal') {
       opts.pageSize = 'a3';
-      console.log(`🚀 Auto-upgraded to A3 format for ${totalColumns} columns`);
+      console.log(`🚀 Auto-upgraded to A3 format for ${totalColumns} columns (from Legal)`);
+    } else if (totalColumns >= 20 && opts.pageSize === 'a4') {
+      opts.pageSize = 'legal';
+      console.log(`🚀 Auto-upgraded to Legal format for ${totalColumns} columns`);
     }
     
     try {
@@ -378,9 +381,9 @@ export class CsvToPdfGenerator {
       'a4': orientation === 'landscape' ? 297 : 210,
       'a3': orientation === 'landscape' ? 420 : 297,
       'letter': orientation === 'landscape' ? 279 : 216,
-      'legal': orientation === 'landscape' ? 356 : 216,
+      'legal': orientation === 'landscape' ? 356 : 216, // 🔥 Legal landscape: 356mm
     };
-    return sizes[pageSize as keyof typeof sizes] || 297;
+    return sizes[pageSize as keyof typeof sizes] || 356; // 🔥 Default to Legal width
   }
 
   /**
