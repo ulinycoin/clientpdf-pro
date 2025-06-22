@@ -27,6 +27,13 @@ export class CsvToPdfGenerator {
       ...options
     };
     
+    // 🔥 AUTO-UPGRADE: Автоматически переключаемся на A3 для экстремально широких таблиц
+    const totalColumns = parseResult.columnCount + (opts.includeRowNumbers ? 1 : 0);
+    if (totalColumns >= 20 && opts.pageSize === 'a4') {
+      opts.pageSize = 'a3';
+      console.log(`🚀 Auto-upgraded to A3 format for ${totalColumns} columns`);
+    }
+    
     try {
       // Анализ столбцов для оптимизации
       const columnAnalysis = this.analyzeColumns(parseResult.headers, parseResult.data, parseResult.columnTypes);
@@ -248,7 +255,7 @@ export class CsvToPdfGenerator {
   }
 
   /**
-   * 🔥 ULTRA-COMPACT: Экстремально компактный расчет для множества колонок
+   * 🔥 REVOLUTIONARY: Extreme column fitting algorithm for 25+ columns
    */
   private static calculateOptimalColumnWidths(
     columnAnalysis: ColumnAnalysis[], 
@@ -261,64 +268,81 @@ export class CsvToPdfGenerator {
     const pageWidth = this.getPageWidth(opts.pageSize, opts.orientation);
     const availableWidth = pageWidth - opts.marginLeft - opts.marginRight;
     
-    console.log(`📏 Available width for table: ${availableWidth}mm`);
+    console.log(`📏 Page: ${opts.pageSize.toUpperCase()}, Available width: ${availableWidth}mm`);
     
     // 🎯 КРИТИЧНО: Всего колонок включая номера строк
     const totalColumns = columnAnalysis.length + (includeRowNumbers ? 1 : 0);
     
     console.log(`📊 Total columns to fit: ${totalColumns}`);
     
-    // 🔥 ЭКСТРЕМАЛЬНАЯ КОМПАКТНОСТЬ для большого количества колонок
+    // 🔥 EXTREME MODES: Экстремальные режимы для очень широких таблиц
     let maxWidth: number;
     let minWidth: number;
     let fontSize = opts.fontSize;
+    let cellPadding = 1.5;
     
-    if (totalColumns >= 15) {
-      // Экстремально много колонок - максимальная компактность
-      maxWidth = 20;
+    if (totalColumns >= 25) {
+      // 🆘 SURVIVAL MODE: 25+ колонок
+      maxWidth = 12;
+      minWidth = 6;
+      fontSize = Math.max(opts.fontSize - 3, 3);
+      cellPadding = 0.5;
+      console.log('🆘 SURVIVAL MODE: 25+ columns - extreme compression');
+    } else if (totalColumns >= 20) {
+      // 🔥 EXTREME MODE: 20+ колонок
+      maxWidth = 15;
+      minWidth = 7;
+      fontSize = Math.max(opts.fontSize - 2.5, 3.5);
+      cellPadding = 0.8;
+      console.log('🔥 EXTREME MODE: 20+ columns');
+    } else if (totalColumns >= 15) {
+      // 🚨 ULTRA-COMPACT: 15+ колонок
+      maxWidth = 18;
       minWidth = 8;
       fontSize = Math.max(opts.fontSize - 2, 4);
-      console.log('🚨 Ultra-compact mode activated for 15+ columns');
+      cellPadding = 1;
+      console.log('🚨 ULTRA-COMPACT MODE: 15+ columns');
     } else if (totalColumns >= 10) {
-      // Много колонок - высокая компактность
+      // ⚡ HIGH-COMPACT: 10+ колонок
       maxWidth = 25;
       minWidth = 10;
       fontSize = Math.max(opts.fontSize - 1, 5);
-      console.log('⚡ High-compact mode for 10+ columns');
+      cellPadding = 1.2;
+      console.log('⚡ HIGH-COMPACT MODE: 10+ columns');
     } else if (totalColumns >= 7) {
-      // Средняя компактность
+      // 📦 COMPACT: 7+ колонок
       maxWidth = 35;
       minWidth = 15;
       fontSize = Math.max(opts.fontSize - 0.5, 6);
-      console.log('📦 Compact mode for 7+ columns');
+      console.log('📦 COMPACT MODE: 7+ columns');
     } else {
-      // Обычный режим
+      // 📝 NORMAL: мало колонок
       maxWidth = 50;
       minWidth = 20;
-      console.log('📝 Normal mode for few columns');
+      console.log('📝 NORMAL MODE: few columns');
     }
     
-    // 🎯 РАВНОМЕРНОЕ РАСПРЕДЕЛЕНИЕ: Каждая колонка получает равную долю
-    const targetWidth = Math.min(availableWidth / totalColumns, maxWidth);
-    const actualWidth = Math.max(targetWidth, minWidth);
+    // 🎯 CRITICAL: Равномерное распределение с учетом минимумов
+    const idealWidth = availableWidth / totalColumns;
+    let targetWidth = Math.min(idealWidth, maxWidth);
+    targetWidth = Math.max(targetWidth, minWidth);
     
-    console.log(`🎯 Target width per column: ${targetWidth.toFixed(1)}mm`);
-    console.log(`📐 Actual width per column: ${actualWidth.toFixed(1)}mm`);
+    console.log(`🎯 Ideal: ${idealWidth.toFixed(1)}mm, Target: ${targetWidth.toFixed(1)}mm per column`);
     
-    // Проверяем, поместится ли таблица
-    const totalTableWidth = actualWidth * totalColumns;
-    console.log(`📏 Total table width: ${totalTableWidth.toFixed(1)}mm (available: ${availableWidth}mm)`);
+    // 🔥 FINAL CHECK: Проверяем поместится ли
+    const totalRequiredWidth = targetWidth * totalColumns;
+    let finalWidth = targetWidth;
     
-    // 🔥 ПРИНУДИТЕЛЬНАЯ КОРРЕКТИРОВКА если не помещается
-    let finalWidth = actualWidth;
-    if (totalTableWidth > availableWidth) {
-      finalWidth = (availableWidth - 2) / totalColumns; // -2мм буфер
-      console.log(`🚨 Emergency width reduction to: ${finalWidth.toFixed(1)}mm per column`);
+    if (totalRequiredWidth > availableWidth) {
+      // 🆘 EMERGENCY: Принудительное уменьшение
+      finalWidth = (availableWidth - 1) / totalColumns; // -1мм аварийный буфер
+      console.log(`🆘 EMERGENCY: Forced reduction to ${finalWidth.toFixed(1)}mm per column`);
       
-      // Экстремальная ситуация - еще больше уменьшаем шрифт
-      if (finalWidth < 8) {
-        fontSize = Math.max(fontSize - 1, 3);
-        console.log(`🆘 Emergency font size reduction to: ${fontSize}pt`);
+      // Если слишком мало - дополнительное уменьшение шрифта
+      if (finalWidth < 6) {
+        fontSize = Math.max(fontSize - 1, 2);
+        cellPadding = 0.3;
+        console.log(`🆘 CRITICAL: Font reduced to ${fontSize}pt, padding to ${cellPadding}mm`);
       }
     }
     
@@ -334,12 +358,14 @@ export class CsvToPdfGenerator {
         halign: column ? column.alignment : 'center',
         fontSize: fontSize,
         valign: 'top',
-        minCellHeight: 3,
-        cellPadding: 1,
+        minCellHeight: Math.max(2, fontSize * 0.5),
+        cellPadding: cellPadding,
       };
     }
     
-    console.log(`✅ Applied uniform width of ${finalWidth.toFixed(1)}mm to all ${totalColumns} columns`);
+    const finalTotalWidth = finalWidth * totalColumns;
+    console.log(`✅ Final: ${finalWidth.toFixed(1)}mm × ${totalColumns} = ${finalTotalWidth.toFixed(1)}mm (available: ${availableWidth}mm)`);
+    console.log(`📝 Font: ${fontSize}pt, Padding: ${cellPadding}mm`);
     
     return columnStyles;
   }
