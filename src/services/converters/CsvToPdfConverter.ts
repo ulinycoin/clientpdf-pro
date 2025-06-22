@@ -1,6 +1,7 @@
 import Papa from 'papaparse';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
+import { CsvToPdfGenerator } from './CsvToPdfGenerator';
 
 // Встроенные типы для jsPDF autoTable
 declare module 'jspdf' {
@@ -63,7 +64,7 @@ export interface CsvParseResult {
   preview: Record<string, any>[];
 }
 
-interface ColumnAnalysis {
+export interface ColumnAnalysis {
   name: string;
   type: 'text' | 'number' | 'date' | 'boolean';
   maxLength: number;
@@ -154,6 +155,16 @@ export class CsvToPdfConverter {
   }
 
   /**
+   * Конвертация CSV в PDF с использованием нового генератора
+   */
+  static async convertToPDF(
+    parseResult: CsvParseResult, 
+    options: Partial<CsvToPdfOptions> = {}
+  ): Promise<Uint8Array> {
+    return CsvToPdfGenerator.convertToPDF(parseResult, options);
+  }
+
+  /**
    * Анализ структуры CSV файла
    */
   private static analyzeCSVStructure(text: string) {
@@ -173,7 +184,7 @@ export class CsvToPdfConverter {
   }
 
   /**
-   * Продвинутое определение разделителя
+   * Продвинутое определение разделителя с множественной эвристикой
    */
   private static detectDelimiterAdvanced(lines: string[]): string {
     const candidates = [';', ',', '\t', '|'];
@@ -187,6 +198,8 @@ export class CsvToPdfConverter {
       const averageScore = scores.reduce((a, b) => a + b, 0) / scores.length;
       const consistency = this.calculateConsistency(scores);
       const finalScore = averageScore * consistency;
+      
+      console.log(`Delimiter "${delimiter}": avg=${averageScore.toFixed(2)}, consistency=${consistency.toFixed(2)}, final=${finalScore.toFixed(2)}`);
       
       if (finalScore > maxScore) {
         maxScore = finalScore;
@@ -369,12 +382,9 @@ export class CsvToPdfConverter {
     return columnTypes;
   }
 
-  // Продолжение в следующей части...
-  static async convertToPDF(parseResult: CsvParseResult, options: Partial<CsvToPdfOptions> = {}): Promise<Uint8Array> {
-    // Полная реализация в отдельном файле
-    throw new Error('Implementation moved to separate converter service');
-  }
-
+  /**
+   * Валидация CSV файла
+   */
   static validateCSV(file: File): { isValid: boolean; errors: string[] } {
     const errors: string[] = [];
     const maxSize = 50 * 1024 * 1024; // 50MB
@@ -394,7 +404,15 @@ export class CsvToPdfConverter {
     return { isValid: errors.length === 0, errors };
   }
 
+  /**
+   * Получение примера настроек для предварительного просмотра
+   */
   static getPreviewOptions(): CsvToPdfOptions {
-    return { ...this.DEFAULT_OPTIONS, fontSize: 6, marginTop: 10, marginBottom: 10 };
+    return { 
+      ...this.DEFAULT_OPTIONS, 
+      fontSize: 6, 
+      marginTop: 10, 
+      marginBottom: 10 
+    };
   }
 }
