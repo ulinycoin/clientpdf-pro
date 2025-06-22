@@ -30,8 +30,14 @@
       "@services/*": ["src/services/*"],
       "@hooks/*": ["src/hooks/*"],
       "@utils/*": ["src/utils/*"],
-      "@workers/*": ["src/workers/*"]
+      "@workers/*": ["src/workers/*"],
+      "@types/*": ["src/types/*"]
     }
   },
-  "include": ["src", "src/**/*.ts", "src/**/*.tsx"]
+  "include": [
+    "src", 
+    "src/**/*.ts", 
+    "src/**/*.tsx", 
+    "src/types/**/*.d.ts"
+  ]
 }
