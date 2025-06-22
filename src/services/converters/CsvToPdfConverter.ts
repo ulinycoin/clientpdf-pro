@@ -1,7 +1,7 @@
 import Papa from 'papaparse';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
-import '../types/jspdf-autotable';
+import '../../types/jspdf-autotable';
 
 export interface CsvToPdfOptions {
   orientation: 'portrait' | 'landscape';
