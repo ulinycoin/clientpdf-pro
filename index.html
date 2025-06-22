@@ -117,6 +117,7 @@
         "Split PDF documents", 
         "Compress PDF files",
         "Convert images to PDF",
+        "Convert CSV to PDF",
         "Password protect PDFs",
         "Browser-based processing",
         "No file uploads required",
@@ -125,7 +126,7 @@
       "browserRequirements": "Modern web browser with JavaScript enabled",
       "softwareVersion": "2.1",
       "datePublished": "2025-06-19",
-      "dateModified": "2025-06-21",
+      "dateModified": "2025-06-22",
       "inLanguage": "en-US"
     }
     </script>
@@ -178,13 +179,14 @@
       }
     </script>
     
-    <!-- Conditional PDF.js preload (only when needed) -->
+    <!-- Smart PDF.js preload (only when actually needed) -->
     <script>
-      // Preload PDF.js worker only if we're on a PDF-related page or likely to use it
+      // Preload PDF.js worker only for pages that actually need PDF.js (not jsPDF)
       const path = window.location.pathname;
-      const isPDFPage = path.includes('pdf') || path === '/' || path.includes('protect');
+      const needsPDFJS = path.includes('split') || path.includes('merge') || path.includes('protect') || path.includes('compress');
       
-      if (isPDFPage) {
+      if (needsPDFJS) {
+        // Only preload when we know we'll need PDF.js for reading PDFs
         const link = document.createElement('link');
         link.rel = 'preload';
         link.href = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
