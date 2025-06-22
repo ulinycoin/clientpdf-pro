@@ -88,7 +88,7 @@ interface DataSizeAnalysis {
 export class CsvToPdfConverter {
   private static readonly DEFAULT_OPTIONS: CsvToPdfOptions = {
     orientation: 'landscape',
-    pageSize: 'a4',
+    pageSize: 'legal', // 🔥 CHANGED: Legal as default (356mm landscape vs A4 297mm)
     fontSize: 7,
     tableStyle: 'grid',
     headerStyle: 'bold',
@@ -381,7 +381,7 @@ export class CsvToPdfConverter {
     
     let cleaned = header
       .trim()
-      .replace(/[^\w\s\-_\.\/@#\/]/g, ' ')
+      .replace(/[^\w\s\-_\./@#\/]/g, ' ')
       .replace(/\s+/g, ' ')
       .trim();
     
