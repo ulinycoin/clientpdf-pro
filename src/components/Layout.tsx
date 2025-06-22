@@ -16,6 +16,7 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FileText, Menu, X, HelpCircle, Shield, Gavel, Mail, Heart } from 'lucide-react';
 import { clsx } from 'clsx';
+import { Toaster } from 'react-hot-toast';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -31,6 +32,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
     { name: 'Split PDF', href: '/split-pdf' },
     { name: 'Compress PDF', href: '/compress-pdf' },
     { name: 'Images to PDF', href: '/images-to-pdf' },
+    { name: 'CSV to PDF', href: '/csv-to-pdf' },
     { name: 'FAQ', href: '/faq', icon: HelpCircle },
   ];
 
@@ -192,6 +194,16 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                     </span>
                   </Link>
                 </li>
+                <li>
+                  <Link 
+                    to="/csv-to-pdf" 
+                    className="text-gray-600 hover:text-blue-600 transition-colors duration-200 flex items-center group"
+                  >
+                    <span className="group-hover:translate-x-1 transition-transform duration-200">
+                      CSV to PDF
+                    </span>
+                  </Link>
+                </li>
               </ul>
             </div>
 
@@ -266,6 +278,30 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
           </div>
         </div>
       </footer>
+
+      {/* Toast Notifications */}
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 4000,
+          style: {
+            background: '#363636',
+            color: '#fff',
+          },
+          success: {
+            duration: 3000,
+            style: {
+              background: '#10B981',
+            },
+          },
+          error: {
+            duration: 5000,
+            style: {
+              background: '#EF4444',
+            },
+          },
+        }}
+      />
     </div>
   );
 };
