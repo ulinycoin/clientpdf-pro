@@ -2,6 +2,7 @@ import Papa from 'papaparse';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 import { CsvToPdfGenerator } from './CsvToPdfGenerator';
+import { CsvToPdfGeneratorOptimized, LargeDataOptions } from './CsvToPdfGeneratorOptimized';
 import { CsvPreprocessor } from './CsvPreprocessor';
 
 // Встроенные типы для jsPDF autoTable
@@ -76,6 +77,14 @@ export interface ColumnAnalysis {
   samples: string[];
 }
 
+interface DataSizeAnalysis {
+  isLarge: boolean;
+  estimatedSize: string;
+  recommendedApproach: 'standard' | 'optimized' | 'split';
+  estimatedMemory: number;
+  warnings: string[];
+}
+
 export class CsvToPdfConverter {
   private static readonly DEFAULT_OPTIONS: CsvToPdfOptions = {
     orientation: 'landscape',
@@ -91,6 +100,14 @@ export class CsvToPdfConverter {
     marginRight: 10,
     maxRowsPerPage: 1000,
     autoDetectDataTypes: true,
+  };
+
+  // Пороги для определения размера данных
+  private static readonly LARGE_DATA_THRESHOLD = {
+    ROWS: 2000,
+    COLUMNS: 20,
+    MEMORY_MB: 50,
+    FILE_SIZE_MB: 10
   };
 
   /**
@@ -170,18 +187,191 @@ export class CsvToPdfConverter {
   }
 
   /**
-   * Конвертация CSV в PDF с использованием нового генератора
+   * Анализ размера данных для выбора оптимального подхода
+   */
+  static analyzeDataSize(parseResult: CsvParseResult, file?: File): DataSizeAnalysis {
+    const { rowCount, columnCount } = parseResult;
+    const estimatedMemory = this.estimateMemoryUsage(parseResult);
+    const fileSize = file ? file.size / (1024 * 1024) : 0; // MB
+    
+    const warnings: string[] = [];
+    let recommendedApproach: 'standard' | 'optimized' | 'split' = 'standard';
+    let isLarge = false;
+
+    // Проверяем различные критерии
+    if (rowCount > this.LARGE_DATA_THRESHOLD.ROWS) {
+      isLarge = true;
+      warnings.push(`Large dataset: ${rowCount.toLocaleString()} rows`);
+      recommendedApproach = rowCount > 10000 ? 'split' : 'optimized';
+    }
+
+    if (columnCount > this.LARGE_DATA_THRESHOLD.COLUMNS) {
+      isLarge = true;
+      warnings.push(`Wide table: ${columnCount} columns`);
+      recommendedApproach = 'optimized';
+    }
+
+    if (estimatedMemory > this.LARGE_DATA_THRESHOLD.MEMORY_MB * 1024 * 1024) {
+      isLarge = true;
+      warnings.push(`High memory usage: ~${(estimatedMemory / 1024 / 1024).toFixed(1)}MB`);
+      recommendedApproach = 'split';
+    }
+
+    if (fileSize > this.LARGE_DATA_THRESHOLD.FILE_SIZE_MB) {
+      isLarge = true;
+      warnings.push(`Large file: ${fileSize.toFixed(1)}MB`);
+      if (fileSize > 25) recommendedApproach = 'split';
+    }
+
+    // Специальные случаи
+    if (rowCount > 50000 || (rowCount > 20000 && columnCount > 15)) {
+      recommendedApproach = 'split';
+      warnings.push('Recommended: Split into multiple PDF files');
+    }
+
+    return {
+      isLarge,
+      estimatedSize: `${rowCount.toLocaleString()} rows × ${columnCount} columns`,
+      recommendedApproach,
+      estimatedMemory,
+      warnings
+    };
+  }
+
+  /**
+   * Оценка использования памяти
+   */
+  private static estimateMemoryUsage(parseResult: CsvParseResult): number {
+    const { rowCount, columnCount } = parseResult;
+    
+    // Анализируем средний размер ячейки
+    const sampleSize = Math.min(100, parseResult.data.length);
+    let totalCellSize = 0;
+    let cellCount = 0;
+
+    for (let i = 0; i < sampleSize; i++) {
+      const row = parseResult.data[i];
+      for (const header of parseResult.headers) {
+        const value = row[header];
+        if (value !== null && value !== undefined) {
+          totalCellSize += String(value).length;
+          cellCount++;
+        }
+      }
+    }
+
+    const avgCellSize = cellCount > 0 ? totalCellSize / cellCount : 20;
+    const estimatedCellMemory = Math.max(avgCellSize * 2, 30); // Минимум 30 байт на ячейку
+    
+    // Базовое использование памяти + данные + накладные расходы
+    const baseMemory = 20 * 1024 * 1024; // 20MB
+    const dataMemory = rowCount * columnCount * estimatedCellMemory;
+    const overhead = dataMemory * 0.5; // 50% накладных расходов
+    
+    return baseMemory + dataMemory + overhead;
+  }
+
+  /**
+   * Умная конвертация с выбором оптимального подхода
    */
   static async convertToPDF(
     parseResult: CsvParseResult, 
-    options: Partial<CsvToPdfOptions> = {}
-  ): Promise<Uint8Array> {
-    // Если есть заголовок отчета и не указан title, используем его
+    options: Partial<CsvToPdfOptions> = {},
+    onProgress?: (progress: number, status: string) => void
+  ): Promise<Uint8Array | Uint8Array[]> {
+    // Автоматически определяем заголовок если есть
     if (parseResult.reportTitle && !options.title) {
       options.title = parseResult.reportTitle;
     }
+
+    // Анализируем размер данных
+    const sizeAnalysis = this.analyzeDataSize(parseResult);
     
-    return CsvToPdfGenerator.convertToPDF(parseResult, options);
+    console.log('Data size analysis:', sizeAnalysis);
+    
+    onProgress?.(5, 'Analyzing data size...');
+
+    // Выбираем подход на основе анализа
+    if (sizeAnalysis.recommendedApproach === 'split' || sizeAnalysis.isLarge) {
+      onProgress?.(10, 'Using optimized generator for large data...');
+      
+      // Используем оптимизированный генератор
+      const optimizedOptions: Partial<LargeDataOptions> = {
+        ...options,
+        maxRowsPerPdf: options.maxRowsPerPage || (sizeAnalysis.recommendedApproach === 'split' ? 5000 : 10000),
+        createMultiplePdfs: sizeAnalysis.recommendedApproach === 'split',
+        memoryOptimization: true,
+        compressionLevel: 'medium'
+      };
+
+      const result = await CsvToPdfGeneratorOptimized.convertLargeToPDF(
+        parseResult, 
+        optimizedOptions,
+        onProgress
+      );
+
+      return result.length === 1 ? result[0] : result;
+      
+    } else {
+      onProgress?.(10, 'Using standard generator...');
+      
+      // Используем стандартный генератор для небольших данных
+      const result = await CsvToPdfGenerator.convertToPDF(parseResult, options);
+      onProgress?.(100, 'PDF created successfully!');
+      
+      return result;
+    }
+  }
+
+  /**
+   * Получение рекомендаций по оптимизации для больших данных
+   */
+  static getOptimizationRecommendations(parseResult: CsvParseResult): {
+    recommendations: string[];
+    estimatedProcessingTime: string;
+    estimatedFileSize: string;
+  } {
+    const sizeAnalysis = this.analyzeDataSize(parseResult);
+    const recommendations: string[] = [];
+
+    if (sizeAnalysis.isLarge) {
+      recommendations.push('✅ Automatically using optimized processing');
+      
+      if (parseResult.rowCount > 10000) {
+        recommendations.push('📄 Data will be split into multiple PDF files');
+        recommendations.push('💾 Each file will be optimized for smaller size');
+      }
+      
+      if (parseResult.columnCount > 20) {
+        recommendations.push('📏 Using compact column layout');
+        recommendations.push('🔤 Smaller font size for better fit');
+      }
+      
+      if (sizeAnalysis.estimatedMemory > 100 * 1024 * 1024) {
+        recommendations.push('🧠 Memory optimization enabled');
+        recommendations.push('⚡ Chunked processing to prevent freezing');
+      }
+    } else {
+      recommendations.push('✅ Standard processing - optimal for this data size');
+    }
+
+    // Оценка времени обработки
+    const processingTime = Math.max(2, Math.ceil(parseResult.rowCount / 2000));
+    const estimatedTime = processingTime < 60 
+      ? `~${processingTime} seconds`
+      : `~${Math.ceil(processingTime / 60)} minutes`;
+
+    // Оценка размера файла
+    const estimatedSizeKB = (parseResult.rowCount * parseResult.columnCount * 0.1) + 500;
+    const estimatedSize = estimatedSizeKB > 1024 
+      ? `~${(estimatedSizeKB / 1024).toFixed(1)}MB`
+      : `~${Math.ceil(estimatedSizeKB)}KB`;
+
+    return {
+      recommendations,
+      estimatedProcessingTime: estimatedTime,
+      estimatedFileSize: estimatedSize
+    };
   }
 
   private static cleanHeaderName(header: string, index: number): string {
@@ -210,9 +400,6 @@ export class CsvToPdfConverter {
     return strValue.trim();
   }
 
-  /**
-   * Обработка результатов парсинга
-   */
   private static processParseResults(
     results: Papa.ParseResult<any>, 
     structure: any,
@@ -232,7 +419,6 @@ export class CsvToPdfConverter {
       headers = results.meta.fields;
       data = results.data as Record<string, any>[];
     } else {
-      // Создаем заголовки для данных без заголовков
       const firstRow = results.data[0];
       if (Array.isArray(firstRow)) {
         headers = firstRow.map((_, index) => `Column_${index + 1}`);
@@ -249,7 +435,6 @@ export class CsvToPdfConverter {
       }
     }
     
-    // Фильтрация пустых строк
     data = data.filter(row => {
       return Object.values(row).some(val => 
         val !== null && val !== undefined && String(val).trim() !== ''
@@ -290,7 +475,6 @@ export class CsvToPdfConverter {
         return;
       }
       
-      // Специальная логика для финансовых данных
       const headerLower = header.toLowerCase();
       if (headerLower.includes('summa') || headerLower.includes('amount')) {
         columnTypes[header] = 'number';
@@ -333,12 +517,9 @@ export class CsvToPdfConverter {
     return columnTypes;
   }
 
-  /**
-   * Валидация CSV файла
-   */
   static validateCSV(file: File): { isValid: boolean; errors: string[] } {
     const errors: string[] = [];
-    const maxSize = 50 * 1024 * 1024; // 50MB
+    const maxSize = 100 * 1024 * 1024; // Увеличено до 100MB
 
     if (!file) errors.push('No file provided');
     if (file.size === 0) errors.push('File is empty');
@@ -355,9 +536,6 @@ export class CsvToPdfConverter {
     return { isValid: errors.length === 0, errors };
   }
 
-  /**
-   * Получение примера настроек для предварительного просмотра
-   */
   static getPreviewOptions(): CsvToPdfOptions {
     return { 
       ...this.DEFAULT_OPTIONS, 
