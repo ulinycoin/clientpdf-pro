@@ -131,6 +131,78 @@ export const CSVToPDFPage: React.FC = () => {
     setIsParsing(false);
   };
 
+  // 🔥 КРИТИЧЕСКИ ВАЖНЫЕ ИНЛАЙН СТИЛИ для гарантированной работы прокрутки
+  const tableContainerStyle: React.CSSProperties = {
+    width: '100%',
+    maxWidth: '100%',
+    overflow: 'hidden',
+    position: 'relative',
+    marginTop: '1rem',
+    marginBottom: '1rem'
+  };
+
+  const tableWrapperStyle: React.CSSProperties = {
+    width: '100%',
+    maxWidth: '100%',
+    overflowX: 'auto',
+    overflowY: 'hidden',
+    border: '1px solid #e5e7eb',
+    borderRadius: '8px',
+    backgroundColor: 'white',
+    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+    WebkitOverflowScrolling: 'touch'
+  };
+
+  const tableStyle: React.CSSProperties = {
+    width: 'max-content',
+    minWidth: '100%',
+    borderCollapse: 'separate',
+    borderSpacing: 0,
+    whiteSpace: 'nowrap',
+    fontSize: '14px'
+  };
+
+  const cellStyle: React.CSSProperties = {
+    padding: '12px 16px',
+    borderRight: '1px solid #e5e7eb',
+    borderBottom: '1px solid #e5e7eb',
+    verticalAlign: 'top',
+    width: '180px',
+    minWidth: '150px',
+    maxWidth: '250px',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    wordBreak: 'keep-all'
+  };
+
+  const headerStyle: React.CSSProperties = {
+    ...cellStyle,
+    backgroundColor: '#f9fafb',
+    fontWeight: '600',
+    color: '#374151',
+    fontSize: '12px',
+    textTransform: 'uppercase',
+    letterSpacing: '0.05em',
+    position: 'sticky',
+    top: 0,
+    zIndex: 10
+  };
+
+  const scrollIndicatorStyle: React.CSSProperties = {
+    position: 'absolute',
+    bottom: '-24px',
+    left: '50%',
+    transform: 'translateX(-50%)',
+    fontSize: '12px',
+    color: '#6b7280',
+    whiteSpace: 'nowrap',
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    padding: '4px 8px',
+    borderRadius: '4px',
+    border: '1px solid #e5e7eb'
+  };
+
   return (
     <>
       <Helmet>
@@ -288,14 +360,21 @@ export const CSVToPDFPage: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* 🚀 BULLETPROOF TABLE WITH HORIZONTAL SCROLL - GUARANTEED TO WORK */}
-                  <div className="csv-table-container">
-                    <div className="csv-table-wrapper">
-                      <table className="csv-table">
+                  {/* 🚨 BULLETPROOF TABLE WITH INLINE STYLES - АБСОЛЮТНО ГАРАНТИРОВАННАЯ ПРОКРУТКА */}
+                  <div style={tableContainerStyle}>
+                    <div style={tableWrapperStyle}>
+                      <table style={tableStyle}>
                         <thead>
                           <tr>
                             {parseResult.headers.map((header, index) => (
-                              <th key={index} title={header}>
+                              <th 
+                                key={index} 
+                                title={header}
+                                style={{
+                                  ...headerStyle,
+                                  borderRight: index === parseResult.headers.length - 1 ? 'none' : '1px solid #e5e7eb'
+                                }}
+                              >
                                 {header}
                               </th>
                             ))}
@@ -303,9 +382,16 @@ export const CSVToPDFPage: React.FC = () => {
                         </thead>
                         <tbody>
                           {parseResult.data.slice(0, 5).map((row, rowIndex) => (
-                            <tr key={rowIndex}>
+                            <tr key={rowIndex} style={{ backgroundColor: rowIndex % 2 === 0 ? 'white' : '#f9fafb' }}>
                               {parseResult.headers.map((header, colIndex) => (
-                                <td key={colIndex} title={String(row[header] || '')}>
+                                <td 
+                                  key={colIndex} 
+                                  title={String(row[header] || '')}
+                                  style={{
+                                    ...cellStyle,
+                                    borderRight: colIndex === parseResult.headers.length - 1 ? 'none' : '1px solid #e5e7eb'
+                                  }}
+                                >
                                   {String(row[header] || '')}
                                 </td>
                               ))}
@@ -314,10 +400,13 @@ export const CSVToPDFPage: React.FC = () => {
                         </tbody>
                       </table>
                     </div>
+                    <div style={scrollIndicatorStyle}>
+                      ← Scroll horizontally to see more columns →
+                    </div>
                   </div>
                   
                   {parseResult.rowCount > 5 && (
-                    <p className="text-sm text-gray-500 mt-3 text-center">
+                    <p className="text-sm text-gray-500 mt-6 text-center">
                       Showing first 5 rows of {parseResult.rowCount} total rows
                     </p>
                   )}
