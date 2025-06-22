@@ -21,6 +21,7 @@ import { MergePDFPage } from './pages/MergePDFPage';
 import { SplitPDFPage } from './pages/SplitPDFPage';
 import { CompressPDFPage } from './pages/CompressPDFPage';
 import { ImagesToPDFPage } from './pages/ImagesToPDFPage';
+import { CSVToPDFPage } from './pages/CSVToPDFPage';
 import { FAQPage } from './pages/FAQPage';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import { TermsOfService } from './pages/TermsOfService';
@@ -37,6 +38,7 @@ function App() {
             <Route path="/split-pdf" element={<SplitPDFPage />} />
             <Route path="/compress-pdf" element={<CompressPDFPage />} />
             <Route path="/images-to-pdf" element={<ImagesToPDFPage />} />
+            <Route path="/csv-to-pdf" element={<CSVToPDFPage />} />
             <Route path="/faq" element={<FAQPage />} />
 			<Route path="/privacy" element={<PrivacyPolicy />} />
 			<Route path="/terms" element={<TermsOfService />} />
