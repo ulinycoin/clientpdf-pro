@@ -25,7 +25,7 @@ export const CSVToPDFPage: React.FC = () => {
   const [isParsing, setIsParsing] = useState(false);
   const [conversionOptions, setConversionOptions] = useState<CsvToPdfOptions>({
     orientation: 'landscape',
-    pageSize: 'a4',
+    pageSize: 'legal', // 🎯 ИЗМЕНЕНО: установлен Legal как дефолт для лучших результатов
     fontSize: 8,
     tableStyle: 'grid',
     headerStyle: 'bold',
@@ -477,7 +477,7 @@ export const CSVToPDFPage: React.FC = () => {
                         <option value="a4">A4</option>
                         <option value="a3">A3</option>
                         <option value="letter">Letter</option>
-                        <option value="legal">Legal</option>
+                        <option value="legal">Legal (Default - Best for CSV tables)</option>
                       </select>
                     </div>
 
