@@ -328,7 +328,7 @@ export const CSVToPDFPage: React.FC = () => {
                   )}
 
                   <div className="flex justify-between mt-6">
-                    <Button variant="outline" onClick={resetConverter}>
+                    <Button variant="secondary" onClick={resetConverter}>
                       Upload Different File
                     </Button>
                     <Button onClick={() => setCurrentStep('options')}>
@@ -463,7 +463,7 @@ export const CSVToPDFPage: React.FC = () => {
                   </div>
 
                   <div className="flex justify-between mt-6">
-                    <Button variant="outline" onClick={() => setCurrentStep('preview')}>
+                    <Button variant="secondary" onClick={() => setCurrentStep('preview')}>
                       Back to Preview
                     </Button>
                     <Button 
