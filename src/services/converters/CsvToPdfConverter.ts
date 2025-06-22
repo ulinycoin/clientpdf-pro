@@ -88,47 +88,134 @@ export class CsvToPdfConverter {
    */
   static async parseCSV(file: File): Promise<CsvParseResult> {
     return new Promise((resolve, reject) => {
-      Papa.parse(file, {
-        header: true,
-        dynamicTyping: true,
-        skipEmptyLines: true,
-        encoding: 'UTF-8',
-        delimitersToGuess: [',', '\t', '|', ';', ':', '~'],
-        complete: (results) => {
-          try {
-            const headers = results.meta.fields || [];
-            const cleanHeaders = headers.map(header => 
-              header?.toString().trim() || ''
-            ).filter(Boolean);
+      // Сначала читаем небольшую часть файла для анализа структуры
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const text = e.target?.result as string;
+        const firstLines = text.split('\n').slice(0, 10).join('\n');
+        
+        // Определяем разделитель и структуру
+        const delimiter = this.detectDelimiter(firstLines);
+        const hasHeaders = this.detectHeaders(firstLines, delimiter);
+        
+        // Основной парсинг с правильными настройками
+        Papa.parse(file, {
+          header: hasHeaders,
+          dynamicTyping: false, // Отключаем автотипизацию для избежания ошибок
+          skipEmptyLines: 'greedy', // Пропускаем пустые строки более агрессивно
+          encoding: 'UTF-8',
+          delimiter: delimiter,
+          transformHeader: (header) => {
+            // Очищаем заголовки от лишних символов
+            return header.trim().replace(/[^\w\s\-_]/g, '').trim() || `Column ${Math.random().toString(36).substr(2, 9)}`;
+          },
+          transform: (value) => {
+            // Очищаем значения
+            if (value === null || value === undefined || value === 'null') {
+              return '';
+            }
+            return String(value).trim();
+          },
+          complete: (results) => {
+            try {
+              let headers: string[];
+              let data: Record<string, any>[];
+              
+              if (hasHeaders && results.meta.fields) {
+                headers = results.meta.fields;
+                data = results.data as Record<string, any>[];
+              } else {
+                // Создаем заголовки если их нет
+                const firstRow = results.data[0] as any[];
+                headers = firstRow ? firstRow.map((_, index) => `Column ${index + 1}`) : ['Data'];
+                data = (results.data as any[][]).map(row => {
+                  const obj: Record<string, any> = {};
+                  headers.forEach((header, index) => {
+                    obj[header] = row[index] || '';
+                  });
+                  return obj;
+                });
+              }
 
-            // Очистка данных от undefined значений
-            const cleanData = (results.data as Record<string, any>[]).map((row: any) => {
-              const cleanRow: Record<string, any> = {};
-              cleanHeaders.forEach(header => {
-                cleanRow[header] = row[header] !== undefined ? 
-                  String(row[header]).trim() : '';
+              // Фильтруем пустые строки
+              const cleanData = data.filter(row => 
+                Object.values(row).some(val => val && String(val).trim() !== '')
+              );
+
+              // Фильтруем ошибки парсинга - оставляем только критические
+              const criticalErrors = results.errors.filter(error => 
+                error.type === 'Delimiter' || error.type === 'Quotes'
+              );
+
+              resolve({
+                data: cleanData,
+                headers,
+                rowCount: cleanData.length,
+                columnCount: headers.length,
+                encoding: 'UTF-8',
+                delimiter: delimiter,
+                errors: criticalErrors, // Возвращаем только критические ошибки
               });
-              return cleanRow;
-            }).filter(row => Object.values(row).some(val => val !== ''));
-
-            resolve({
-              data: cleanData,
-              headers: cleanHeaders,
-              rowCount: cleanData.length,
-              columnCount: cleanHeaders.length,
-              encoding: 'UTF-8',
-              delimiter: results.meta.delimiter || ',',
-              errors: results.errors || [],
-            });
-          } catch (error) {
-            reject(new Error(`CSV parsing failed: ${error}`));
+            } catch (error) {
+              reject(new Error(`CSV parsing failed: ${error}`));
+            }
+          },
+          error: (error) => {
+            reject(new Error(`Papa Parse error: ${error.message}`));
           }
-        },
-        error: (error) => {
-          reject(new Error(`Papa Parse error: ${error.message}`));
-        }
-      });
+        });
+      };
+      
+      reader.onerror = () => {
+        reject(new Error('Failed to read file'));
+      };
+      
+      reader.readAsText(file, 'UTF-8');
     });
+  }
+
+  /**
+   * Определение разделителя в CSV файле
+   */
+  private static detectDelimiter(sample: string): string {
+    const delimiters = [',', ';', '\t', '|', ':'];
+    const lines = sample.split('\n').filter(line => line.trim());
+    
+    if (lines.length < 2) return ',';
+    
+    let bestDelimiter = ',';
+    let maxScore = 0;
+    
+    for (const delimiter of delimiters) {
+      const counts = lines.map(line => (line.match(new RegExp(delimiter, 'g')) || []).length);
+      const avgCount = counts.reduce((a, b) => a + b, 0) / counts.length;
+      const consistency = counts.filter(count => count === counts[0]).length / counts.length;
+      const score = avgCount * consistency;
+      
+      if (score > maxScore && avgCount > 0) {
+        maxScore = score;
+        bestDelimiter = delimiter;
+      }
+    }
+    
+    return bestDelimiter;
+  }
+
+  /**
+   * Определение наличия заголовков
+   */
+  private static detectHeaders(sample: string, delimiter: string): boolean {
+    const lines = sample.split('\n').filter(line => line.trim());
+    if (lines.length < 2) return false;
+    
+    const firstRow = lines[0].split(delimiter);
+    const secondRow = lines[1].split(delimiter);
+    
+    // Если первая строка содержит только текст, а вторая - числа, то первая строка - заголовки
+    const firstRowHasText = firstRow.some(cell => isNaN(Number(cell.trim())));
+    const secondRowHasNumbers = secondRow.some(cell => !isNaN(Number(cell.trim())));
+    
+    return firstRowHasText && secondRowHasNumbers;
   }
 
   /**
@@ -170,9 +257,10 @@ export class CsvToPdfConverter {
         : parseResult.headers;
 
       const tableData = parseResult.data.map((row, index) => {
-        const rowData = parseResult.headers.map(header => 
-          row[header] || ''
-        );
+        const rowData = parseResult.headers.map(header => {
+          const value = row[header];
+          return (value === null || value === undefined || value === 'null') ? '' : String(value);
+        });
         return opts.includeRowNumbers 
           ? [index + 1, ...rowData]
           : rowData;
