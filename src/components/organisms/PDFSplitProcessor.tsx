@@ -11,7 +11,7 @@
  * For commercial licensing, contact: license@localpdf.online
  */
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Clock, CheckCircle, AlertCircle, Scissors, Download, Eye, FileText } from 'lucide-react';
 import { Button } from '../atoms/Button';
 import { clsx } from 'clsx';
@@ -64,7 +64,7 @@ export const PDFSplitProcessor: React.FC<PDFSplitProcessorProps> = ({ file }) =>
   };
 
   // Initialize PDF and load pages
-  React.useEffect(() => {
+  useEffect(() => {
     loadPDFPages();
   }, [file]);
 
@@ -72,52 +72,117 @@ export const PDFSplitProcessor: React.FC<PDFSplitProcessorProps> = ({ file }) =>
     try {
       setIsInitializing(true);
       setSplitStatus('loading');
-      setSplitMessage('Loading PDF...');
+      setSplitMessage('Initializing PDF viewer...');
+      setSplitProgress(5);
 
-      // Dynamically import PDF.js
+      // Dynamically import PDF.js with proper error handling
       const pdfjsLib = await import('pdfjs-dist');
-      pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+      
+      // Ensure GlobalWorkerOptions exists before setting workerSrc
+      if (!pdfjsLib.GlobalWorkerOptions) {
+        throw new Error('PDF.js GlobalWorkerOptions not available');
+      }
+
+      setSplitMessage('Loading PDF worker...');
+      setSplitProgress(10);
+
+      // Set worker source with fallback for different environments
+      const pdfjsVersion = pdfjsLib.version || '3.11.174';
+      const workerSrc = import.meta.env.DEV 
+        ? `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsVersion}/pdf.worker.min.js`
+        : `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsVersion}/pdf.worker.min.js`;
+
+      pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc;
+
+      setSplitMessage('Reading PDF file...');
+      setSplitProgress(20);
 
       const arrayBuffer = await readFileAsArrayBuffer(file);
-      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      
+      setSplitMessage('Parsing PDF document...');
+      setSplitProgress(30);
+
+      const pdf = await pdfjsLib.getDocument({ 
+        data: arrayBuffer,
+        // Add error handling options
+        verbosity: 0, // Reduce console output
+        isEvalSupported: false,
+        disableFontFace: false,
+        useSystemFonts: true
+      }).promise;
 
       setSplitMessage(`Found ${pdf.numPages} pages. Generating previews...`);
+      setSplitProgress(40);
 
       const pageInfos: PageInfo[] = [];
+      const progressPerPage = 50 / pdf.numPages; // 50% of progress for thumbnails
       
       for (let i = 1; i <= pdf.numPages; i++) {
-        const page = await pdf.getPage(i);
-        const viewport = page.getViewport({ scale: 0.3 });
-        
-        const canvas = document.createElement('canvas');
-        const context = canvas.getContext('2d')!;
-        canvas.height = viewport.height;
-        canvas.width = viewport.width;
-        
-        await page.render({
-          canvasContext: context,
-          viewport: viewport
-        }).promise;
-        
-        const thumbnail = canvas.toDataURL('image/jpeg', 0.8);
-        
-        pageInfos.push({
-          pageNumber: i,
-          selected: false,
-          thumbnail
-        });
+        try {
+          setSplitMessage(`Generating preview ${i} of ${pdf.numPages}...`);
+          
+          const page = await pdf.getPage(i);
+          const viewport = page.getViewport({ scale: 0.3 });
+          
+          const canvas = document.createElement('canvas');
+          const context = canvas.getContext('2d');
+          
+          if (!context) {
+            throw new Error('Cannot get canvas context');
+          }
+          
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
+          
+          await page.render({
+            canvasContext: context,
+            viewport: viewport
+          }).promise;
+          
+          const thumbnail = canvas.toDataURL('image/jpeg', 0.8);
+          
+          pageInfos.push({
+            pageNumber: i,
+            selected: false,
+            thumbnail
+          });
 
-        setSplitMessage(`Generating preview ${i} of ${pdf.numPages}...`);
+          setSplitProgress(40 + (i * progressPerPage));
+        } catch (pageError) {
+          console.warn(`Error rendering page ${i}:`, pageError);
+          // Add page without thumbnail
+          pageInfos.push({
+            pageNumber: i,
+            selected: false,
+            thumbnail: undefined
+          });
+        }
       }
 
       setPages(pageInfos);
       setPageRange({ start: 1, end: pdf.numPages });
       setSplitStatus('ready');
       setSplitMessage(`Ready to split ${pdf.numPages} pages`);
+      setSplitProgress(100);
+      
     } catch (error: any) {
       console.error('Error loading PDF:', error);
       setSplitStatus('error');
-      setSplitMessage(`Error loading PDF: ${error.message}`);
+      setSplitProgress(0);
+      
+      // Provide more helpful error messages
+      let errorMessage = 'Failed to load PDF';
+      if (error.message?.includes('Invalid PDF')) {
+        errorMessage = 'This file appears to be corrupted or not a valid PDF';
+      } else if (error.message?.includes('Worker')) {
+        errorMessage = 'PDF worker failed to load. Please check your internet connection';
+      } else if (error.message?.includes('GlobalWorkerOptions')) {
+        errorMessage = 'PDF viewer initialization failed. Please try refreshing the page';
+      } else if (error.message) {
+        errorMessage = `Error: ${error.message}`;
+      }
+      
+      setSplitMessage(errorMessage);
     } finally {
       setIsInitializing(false);
     }
@@ -393,12 +458,16 @@ export const PDFSplitProcessor: React.FC<PDFSplitProcessorProps> = ({ file }) =>
                 )}
                 onClick={() => togglePageSelection(page.pageNumber)}
               >
-                {page.thumbnail && (
+                {page.thumbnail ? (
                   <img
                     src={page.thumbnail}
                     alt={`Page ${page.pageNumber}`}
                     className="w-full rounded-md"
                   />
+                ) : (
+                  <div className="w-full h-32 bg-gray-100 rounded-md flex items-center justify-center">
+                    <FileText className="w-8 h-8 text-gray-400" />
+                  </div>
                 )}
                 <div className="absolute top-2 right-2">
                   <div className={clsx(
@@ -442,6 +511,20 @@ export const PDFSplitProcessor: React.FC<PDFSplitProcessorProps> = ({ file }) =>
               Select at least one page to extract
             </p>
           )}
+        </div>
+      )}
+
+      {/* Error Recovery */}
+      {splitStatus === 'error' && (
+        <div className="text-center">
+          <Button
+            onClick={loadPDFPages}
+            variant="secondary"
+            size="lg"
+            className="px-8"
+          >
+            Try Again
+          </Button>
         </div>
       )}
     </div>
