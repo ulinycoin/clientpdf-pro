@@ -1,6 +1,5 @@
 /**
- * PDF.js Test Component
- * Used to debug and test different PDF.js initialization approaches
+ * Enhanced PDF.js Test Component with deep module inspection
  */
 
 import React, { useState } from 'react';
@@ -23,130 +22,157 @@ export const PDFTestComponent: React.FC = () => {
     setTestResults([]);
   };
 
+  const inspectObject = (obj: any, path = ''): string => {
+    const results: string[] = [];
+    
+    try {
+      if (obj && typeof obj === 'object') {
+        const keys = Object.keys(obj);
+        results.push(`${path} keys: [${keys.join(', ')}]`);
+        
+        keys.forEach(key => {
+          const value = obj[key];
+          const currentPath = path ? `${path}.${key}` : key;
+          
+          if (typeof value === 'function') {
+            results.push(`${currentPath}: [Function]`);
+          } else if (typeof value === 'object' && value !== null) {
+            results.push(`${currentPath}: [Object]`);
+            if (key === 'default' || key === 'pdfjsLib') {
+              // Recursively inspect important nested objects
+              results.push(inspectObject(value, currentPath));
+            }
+          } else {
+            results.push(`${currentPath}: ${value}`);
+          }
+        });
+      }
+    } catch (error) {
+      results.push(`Error inspecting ${path}: ${error}`);
+    }
+    
+    return results.join('\n');
+  };
+
   const testPDFJS = async () => {
     clearResults();
 
-    // Test 1: Direct PDF.js import with detailed inspection
-    addResult('Direct import', 'testing', 'Testing direct PDF.js import...');
+    // Test 1: Deep module inspection
+    addResult('Deep Module Inspection', 'testing', 'Analyzing PDF.js module structure...');
     try {
       const pdfjs = await import('pdfjs-dist');
       
-      // Inspect the imported module structure
-      const moduleKeys = Object.keys(pdfjs);
-      const hasDefault = 'default' in pdfjs;
-      const hasGetDocument = typeof pdfjs.getDocument === 'function';
-      const defaultHasGetDocument = hasDefault && typeof (pdfjs as any).default?.getDocument === 'function';
+      const moduleStructure = inspectObject(pdfjs, 'pdfjs');
+      
+      // Test various access patterns
+      const tests = {
+        'direct getDocument': typeof pdfjs.getDocument === 'function',
+        'direct version': pdfjs.version,
+        'has default': 'default' in pdfjs,
+        'default getDocument': pdfjs.default && typeof pdfjs.default.getDocument === 'function',
+        'default version': pdfjs.default && pdfjs.default.version,
+        'pdfjsLib exists': !!(pdfjs as any).pdfjsLib,
+        'pdfjsLib getDocument': (pdfjs as any).pdfjsLib && typeof (pdfjs as any).pdfjsLib.getDocument === 'function',
+      };
+      
+      const testResults = Object.entries(tests).map(([key, value]) => `${key}: ${value}`).join('\n');
       
       const details = `
-Module keys: ${moduleKeys.join(', ')}
-Has default: ${hasDefault}
-Direct getDocument: ${hasGetDocument}
-Default.getDocument: ${defaultHasGetDocument}
-Version: ${pdfjs.version || 'unknown'}
-GlobalWorkerOptions: ${pdfjs.GlobalWorkerOptions ? 'available' : 'missing'}
+MODULE STRUCTURE:
+${moduleStructure}
+
+ACCESS PATTERN TESTS:
+${testResults}
       `.trim();
       
-      if (hasGetDocument || defaultHasGetDocument) {
-        addResult('Direct import', 'success', 'PDF.js loaded with getDocument function', details);
+      addResult('Deep Module Inspection', 'success', 'Module structure analyzed', details);
+    } catch (error) {
+      addResult('Deep Module Inspection', 'error', `Failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+
+    // Test 2: Try different import methods
+    addResult('Alternative Import', 'testing', 'Testing namespace import...');
+    try {
+      const pdfjsNamespace = await import('pdfjs-dist/build/pdf');
+      
+      const details = inspectObject(pdfjsNamespace, 'pdfjsNamespace');
+      
+      addResult('Alternative Import', 'success', 'Namespace import successful', details);
+    } catch (error) {
+      addResult('Alternative Import', 'error', `Failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+
+    // Test 3: Try legacy import
+    addResult('Legacy Import', 'testing', 'Testing legacy import pattern...');
+    try {
+      const pdfjsLegacy = await import('pdfjs-dist/legacy/build/pdf');
+      
+      const details = inspectObject(pdfjsLegacy, 'pdfjsLegacy');
+      
+      addResult('Legacy Import', 'success', 'Legacy import successful', details);
+    } catch (error) {
+      addResult('Legacy Import', 'error', `Failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+
+    // Test 4: Manual construction
+    addResult('Manual Construction', 'testing', 'Testing manual PDF.js construction...');
+    try {
+      const pdfjs = await import('pdfjs-dist');
+      
+      // Try to manually construct getDocument if it exists anywhere
+      let foundGetDocument = null;
+      let foundVersion = null;
+      
+      const searchForGetDocument = (obj: any, path: string[] = []): void => {
+        if (obj && typeof obj === 'object') {
+          Object.keys(obj).forEach(key => {
+            const value = obj[key];
+            const currentPath = [...path, key];
+            
+            if (key === 'getDocument' && typeof value === 'function') {
+              foundGetDocument = { path: currentPath.join('.'), func: value };
+            }
+            
+            if (key === 'version' && typeof value === 'string') {
+              foundVersion = { path: currentPath.join('.'), value };
+            }
+            
+            if (typeof value === 'object' && value !== null && currentPath.length < 3) {
+              searchForGetDocument(value, currentPath);
+            }
+          });
+        }
+      };
+      
+      searchForGetDocument(pdfjs);
+      
+      const details = `
+Found getDocument: ${foundGetDocument ? `${foundGetDocument.path} [Function]` : 'Not found'}
+Found version: ${foundVersion ? `${foundVersion.path} = ${foundVersion.value}` : 'Not found'}
+      `.trim();
+      
+      if (foundGetDocument) {
+        addResult('Manual Construction', 'success', 'getDocument function located!', details);
       } else {
-        addResult('Direct import', 'error', 'PDF.js loaded but getDocument not found', details);
+        addResult('Manual Construction', 'error', 'getDocument function not found anywhere', details);
       }
     } catch (error) {
-      addResult('Direct import', 'error', `Failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      addResult('Manual Construction', 'error', `Failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
 
-    // Test 2: Our main utils
-    addResult('Main PDF utils', 'testing', 'Testing main PDF utilities...');
-    try {
-      const { initializePDFJS } = await import('../../utils/pdfUtils');
-      const pdfjsLib = await initializePDFJS();
-      
-      const hasGetDocument = typeof pdfjsLib.getDocument === 'function';
-      const version = pdfjsLib.version || 'unknown';
-      const hasGlobalWorkerOptions = pdfjsLib.GlobalWorkerOptions ? 'available' : 'missing';
-      
-      const details = `
-getDocument: ${hasGetDocument}
-Version: ${version}
-GlobalWorkerOptions: ${hasGlobalWorkerOptions}
-      `.trim();
-      
-      addResult('Main PDF utils', 'success', 'Main PDF utilities initialized successfully', details);
-    } catch (error) {
-      addResult('Main PDF utils', 'error', `Failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
-    }
-
-    // Test 3: Simple PDF utils
-    addResult('Simple PDF utils', 'testing', 'Testing simple PDF utilities...');
-    try {
-      const { initSimplePDFJS } = await import('../../utils/simplePdfUtils');
-      const pdfjs = await initSimplePDFJS();
-      
-      const hasGetDocument = typeof pdfjs.getDocument === 'function';
-      const version = pdfjs.version || 'unknown';
-      
-      const details = `
-getDocument: ${hasGetDocument}
-Version: ${version}
-      `.trim();
-      
-      addResult('Simple PDF utils', 'success', 'Simple PDF utilities initialized successfully', details);
-    } catch (error) {
-      addResult('Simple PDF utils', 'error', `Failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
-    }
-
-    // Test 4: Manual worker setup with getDocument test
-    addResult('Manual worker', 'testing', 'Testing manual worker setup...');
-    try {
-      const pdfjs = await import('pdfjs-dist');
-      
-      // Get the correct module
-      const pdfjsLib = pdfjs.default || pdfjs;
-      
-      if (typeof pdfjsLib.getDocument !== 'function') {
-        throw new Error('getDocument function not found');
-      }
-      
-      // Try to create a dummy document to test worker
-      const workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version || '3.11.174'}/pdf.worker.min.js`;
-      
-      // Create a minimal PDF buffer for testing
-      const testArrayBuffer = new ArrayBuffer(8);
-      
-      try {
-        const loadingTask = pdfjsLib.getDocument({
-          data: testArrayBuffer,
-          workerSrc: workerSrc
-        });
-        
-        // This will likely fail but should test worker loading
-        await loadingTask.promise.catch(() => {
-          // Expected to fail with invalid PDF, but worker should load
-        });
-        
-        addResult('Manual worker', 'success', 'Manual worker setup successful (getDocument callable)');
-      } catch (workerError) {
-        addResult('Manual worker', 'error', `Worker test failed: ${workerError instanceof Error ? workerError.message : 'Unknown error'}`);
-      }
-    } catch (error) {
-      addResult('Manual worker', 'error', `Failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
-    }
-
-    // Test 5: Environment and dependency check
-    addResult('Environment', 'testing', 'Checking environment...');
+    // Test 5: Package info
+    addResult('Package Info', 'testing', 'Checking package information...');
     try {
       const details = `
+Current URL: ${window.location.href}
 User Agent: ${navigator.userAgent}
-URL: ${window.location.href}
 Environment: ${import.meta.env.MODE}
-Node modules available: ${typeof require !== 'undefined' ? 'yes' : 'no'}
-Module system: ES modules
-Vite version: ${import.meta.env.VITE_VERSION || 'unknown'}
+Base URL: ${import.meta.env.BASE_URL}
       `.trim();
       
-      addResult('Environment', 'success', 'Environment check complete', details);
+      addResult('Package Info', 'success', 'Package info collected', details);
     } catch (error) {
-      addResult('Environment', 'error', `Environment check failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      addResult('Package Info', 'error', `Failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
 
@@ -162,15 +188,15 @@ Vite version: ${import.meta.env.VITE_VERSION || 'unknown'}
   };
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4">PDF.js Initialization Test</h2>
+    <div className="p-6 max-w-6xl mx-auto">
+      <h2 className="text-2xl font-bold mb-4">Enhanced PDF.js Deep Inspection</h2>
       <p className="text-gray-600 mb-6">
-        This component tests different PDF.js initialization approaches to help debug issues.
+        Deep analysis of PDF.js module structure to find the correct access pattern.
       </p>
 
       <div className="space-y-4 mb-6">
         <Button onClick={testPDFJS} variant="primary">
-          Run PDF.js Tests
+          Run Deep Analysis
         </Button>
         <Button onClick={clearResults} variant="secondary">
           Clear Results
@@ -201,7 +227,7 @@ Vite version: ${import.meta.env.VITE_VERSION || 'unknown'}
                     <summary className="text-xs text-gray-500 cursor-pointer hover:text-gray-700">
                       Show details
                     </summary>
-                    <pre className="text-xs text-gray-600 mt-1 bg-gray-50 p-2 rounded overflow-x-auto">
+                    <pre className="text-xs text-gray-600 mt-1 bg-gray-50 p-2 rounded overflow-x-auto whitespace-pre-wrap">
                       {result.details}
                     </pre>
                   </details>
@@ -211,26 +237,6 @@ Vite version: ${import.meta.env.VITE_VERSION || 'unknown'}
           </div>
         ))}
       </div>
-
-      {testResults.length > 0 && (
-        <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-          <h3 className="font-medium mb-2">Recommendations</h3>
-          <div className="text-sm text-gray-600 space-y-2">
-            {testResults.some(r => r.method === 'Direct import' && r.status === 'success') && (
-              <div className="text-green-600">✅ Direct import works - PDF.js is loading correctly</div>
-            )}
-            {testResults.some(r => r.method === 'Main PDF utils' && r.status === 'success') && (
-              <div className="text-green-600">✅ Main PDF utils work - use pdfUtils.ts</div>
-            )}
-            {testResults.some(r => r.method === 'Simple PDF utils' && r.status === 'success') && (
-              <div className="text-green-600">✅ Simple PDF utils work - use simplePdfUtils.ts as fallback</div>
-            )}
-            {testResults.some(r => r.message.includes('getDocument') && r.status === 'error') && (
-              <div className="text-red-600">❌ getDocument issues detected - check module import pattern</div>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   );
 };
