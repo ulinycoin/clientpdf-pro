@@ -71,6 +71,11 @@ export default defineConfig({
     ]
   },
   
+  // Worker configuration for PDF.js
+  worker: {
+    format: 'es'
+  },
+  
   // SSR externals configuration for proper module handling
   ssr: {
     external: ['pako']
@@ -93,11 +98,21 @@ export default defineConfig({
   server: {
     port: 3000,
     open: true,
+    // Add headers for proper PDF worker loading
+    headers: {
+      'Cross-Origin-Embedder-Policy': 'credentialless',
+      'Cross-Origin-Opener-Policy': 'same-origin'
+    }
   },
   
   // Preview server
   preview: {
     port: 4173,
-    host: true
+    host: true,
+    // Add headers for proper PDF worker loading
+    headers: {
+      'Cross-Origin-Embedder-Policy': 'credentialless',
+      'Cross-Origin-Opener-Policy': 'same-origin'
+    }
   }
 })
