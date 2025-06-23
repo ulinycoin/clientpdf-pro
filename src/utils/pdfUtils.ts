@@ -21,9 +21,29 @@ export async function initializePDFJS(): Promise<typeof pdfjsLib> {
     // Dynamically import PDF.js
     pdfJSLib = await import('pdfjs-dist');
     
-    // Ensure GlobalWorkerOptions exists
-    if (!pdfJSLib.GlobalWorkerOptions) {
-      throw new Error('PDF.js GlobalWorkerOptions not available');
+    // Wait a bit for the module to fully initialize
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    // Try multiple approaches to ensure GlobalWorkerOptions is available
+    let globalWorkerOptions = pdfJSLib.GlobalWorkerOptions;
+    
+    if (!globalWorkerOptions) {
+      // Alternative access patterns for different build environments
+      globalWorkerOptions = (pdfJSLib as any)?.default?.GlobalWorkerOptions;
+    }
+    
+    if (!globalWorkerOptions) {
+      // Last resort: try to access via window object (for some bundlers)
+      globalWorkerOptions = (window as any)?.pdfjsLib?.GlobalWorkerOptions;
+    }
+    
+    if (!globalWorkerOptions) {
+      console.warn('GlobalWorkerOptions not found, attempting manual setup...');
+      // Create a minimal GlobalWorkerOptions if not available
+      if (!pdfJSLib.GlobalWorkerOptions) {
+        (pdfJSLib as any).GlobalWorkerOptions = {};
+      }
+      globalWorkerOptions = pdfJSLib.GlobalWorkerOptions;
     }
 
     // Set worker source with fallback for different environments
@@ -31,8 +51,9 @@ export async function initializePDFJS(): Promise<typeof pdfjsLib> {
     const workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsVersion}/pdf.worker.min.js`;
 
     // Only set if not already set
-    if (!pdfJSLib.GlobalWorkerOptions.workerSrc) {
-      pdfJSLib.GlobalWorkerOptions.workerSrc = workerSrc;
+    if (!globalWorkerOptions.workerSrc) {
+      globalWorkerOptions.workerSrc = workerSrc;
+      console.log('PDF.js worker configured:', workerSrc);
     }
 
     pdfJSInitialized = true;
