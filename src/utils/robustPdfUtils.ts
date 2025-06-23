@@ -1,6 +1,6 @@
 /**
- * Robust PDF.js utilities with multiple compatibility approaches
- * Handles various PDF.js import patterns across different build systems
+ * Robust PDF.js utilities optimized for Vite + TypeScript
+ * Uses the working approach from simplePdfUtils as the primary method
  */
 
 // Type definitions for better TypeScript support
@@ -25,7 +25,7 @@ let pdfJSModule: PDFJSModule | null = null;
 let initializationAttempted = false;
 
 /**
- * Robust PDF.js initialization with multiple fallback strategies
+ * Vite-optimized PDF.js initialization using the proven working method
  */
 async function initializePDFJSRobust(): Promise<PDFJSModule> {
   if (pdfJSModule && initializationAttempted) {
@@ -35,58 +35,38 @@ async function initializePDFJSRobust(): Promise<PDFJSModule> {
   initializationAttempted = true;
 
   try {
-    console.log('🔄 Initializing PDF.js...');
+    console.log('🔄 Initializing PDF.js (Vite-optimized approach)...');
     
-    // Import the module
+    // Import the module using the approach that works in your environment
     const importedModule = await import('pdfjs-dist');
     
-    // Try multiple access patterns to find getDocument
+    // Based on your debug results, use the pattern that works
     let pdfjsLib: any = null;
     
-    // Pattern 1: Direct access
-    if (typeof importedModule.getDocument === 'function') {
-      pdfjsLib = importedModule;
-      console.log('✅ PDF.js found via direct access');
-    }
-    // Pattern 2: Default export
-    else if (importedModule.default && typeof importedModule.default.getDocument === 'function') {
-      pdfjsLib = importedModule.default;
-      console.log('✅ PDF.js found via default export');
-    }
-    // Pattern 3: Named export
-    else if ((importedModule as any).pdfjsLib && typeof (importedModule as any).pdfjsLib.getDocument === 'function') {
-      pdfjsLib = (importedModule as any).pdfjsLib;
-      console.log('✅ PDF.js found via named export');
-    }
-    // Pattern 4: Nested in default
-    else if (importedModule.default && (importedModule.default as any).pdfjsLib) {
-      pdfjsLib = (importedModule.default as any).pdfjsLib;
-      console.log('✅ PDF.js found via nested default');
+    // The working pattern from simplePdfUtils
+    pdfjsLib = importedModule.default || importedModule;
+    
+    // If still no getDocument, try alternative patterns
+    if (!pdfjsLib || typeof pdfjsLib.getDocument !== 'function') {
+      pdfjsLib = (importedModule as any).pdfjsLib || importedModule;
     }
     
+    // Final validation
     if (!pdfjsLib || typeof pdfjsLib.getDocument !== 'function') {
-      // Log available properties for debugging
-      console.error('❌ PDF.js getDocument not found. Available properties:', Object.keys(importedModule));
-      throw new Error('PDF.js getDocument function not found in any export pattern');
+      // Log detailed debug info
+      console.error('❌ Available properties:', Object.keys(importedModule));
+      console.error('❌ Default export:', importedModule.default ? Object.keys(importedModule.default) : 'none');
+      throw new Error('PDF.js getDocument function not accessible');
     }
 
-    // Set up worker (optional, will use inline if this fails)
-    try {
-      const version = pdfjsLib.version || '3.11.174';
-      const workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${version}/pdf.worker.min.js`;
-      
-      if (pdfjsLib.GlobalWorkerOptions) {
-        pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc;
-        console.log('✅ PDF.js worker configured:', workerSrc);
-      } else {
-        console.warn('⚠️ GlobalWorkerOptions not available, will use inline worker');
-      }
-    } catch (workerError) {
-      console.warn('⚠️ Worker setup failed, will use inline worker:', workerError);
-    }
+    console.log('✅ PDF.js getDocument found');
+
+    // Don't rely on GlobalWorkerOptions - use inline worker approach
+    const version = pdfjsLib.version || '3.11.174';
+    console.log(`✅ PDF.js version: ${version}`);
 
     pdfJSModule = pdfjsLib;
-    console.log('🎉 PDF.js initialization complete');
+    console.log('🎉 PDF.js initialization complete (using inline worker approach)');
     return pdfjsLib;
 
   } catch (error) {
@@ -96,7 +76,7 @@ async function initializePDFJSRobust(): Promise<PDFJSModule> {
 }
 
 /**
- * Load a PDF document with automatic worker fallback
+ * Load a PDF document using inline worker (the proven working approach)
  */
 export async function loadPDFDocument(source: ArrayBuffer | Uint8Array): Promise<PDFDocumentProxy> {
   const pdfjsLib = await initializePDFJSRobust();
@@ -104,28 +84,16 @@ export async function loadPDFDocument(source: ArrayBuffer | Uint8Array): Promise
   const version = pdfjsLib.version || '3.11.174';
   const workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${version}/pdf.worker.min.js`;
 
-  // Try with GlobalWorkerOptions first, then fallback to inline worker
-  try {
-    return await pdfjsLib.getDocument({
-      data: source,
-      verbosity: 0,
-      isEvalSupported: false,
-      disableFontFace: false,
-      useSystemFonts: true
-    }).promise;
-  } catch (workerError) {
-    console.warn('⚠️ PDF loading with GlobalWorkerOptions failed, trying inline worker:', workerError);
-    
-    // Fallback: use inline worker
-    return await pdfjsLib.getDocument({
-      data: source,
-      verbosity: 0,
-      isEvalSupported: false,
-      disableFontFace: false,
-      useSystemFonts: true,
-      workerSrc: workerSrc
-    }).promise;
-  }
+  // Use the approach that works - inline worker specification
+  return pdfjsLib.getDocument({
+    data: source,
+    verbosity: 0,
+    isEvalSupported: false,
+    disableFontFace: false,
+    useSystemFonts: true,
+    // Always specify worker inline (this is what works in your environment)
+    workerSrc: workerSrc
+  }).promise;
 }
 
 /**
@@ -185,14 +153,18 @@ export async function generatePDFThumbnails(
   const { scale = 0.3, maxPages = Infinity, onProgress } = options;
   
   try {
+    console.log('📄 Starting PDF thumbnail generation...');
     const arrayBuffer = await fileToArrayBuffer(file);
+    console.log('📄 File read, loading PDF document...');
     const pdf = await loadPDFDocument(arrayBuffer);
+    console.log(`📄 PDF loaded, ${pdf.numPages} pages found`);
     
     const thumbnails: Array<{ pageNumber: number; thumbnail: string }> = [];
     const totalPages = Math.min(pdf.numPages, maxPages);
     
     for (let i = 1; i <= totalPages; i++) {
       try {
+        console.log(`📄 Rendering page ${i}...`);
         const page = await pdf.getPage(i);
         const thumbnail = await renderPDFPage(page, scale);
         
@@ -214,6 +186,7 @@ export async function generatePDFThumbnails(
       }
     }
     
+    console.log(`✅ Generated ${thumbnails.length} thumbnails`);
     return thumbnails;
   } catch (error) {
     console.error('❌ Error generating PDF thumbnails:', error);
@@ -226,6 +199,8 @@ export async function generatePDFThumbnails(
  */
 export async function validatePDFFile(file: File): Promise<{ valid: boolean; error?: string }> {
   try {
+    console.log('🔍 Validating PDF file...');
+    
     // Check file type
     if (!file.type.includes('pdf') && !file.name.toLowerCase().endsWith('.pdf')) {
       return { valid: false, error: 'File is not a PDF' };
@@ -240,8 +215,10 @@ export async function validatePDFFile(file: File): Promise<{ valid: boolean; err
       return { valid: false, error: 'PDF has no pages' };
     }
     
+    console.log(`✅ PDF validation successful: ${pdf.numPages} pages`);
     return { valid: true };
   } catch (error) {
+    console.error('❌ PDF validation failed:', error);
     return { 
       valid: false, 
       error: error instanceof Error ? error.message : 'Invalid PDF file'
