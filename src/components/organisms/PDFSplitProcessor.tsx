@@ -22,7 +22,7 @@ import {
   formatFileSize,
   getPDFErrorMessage,
   validatePDFFile
-} from '../../utils/robustPdfUtils';
+} from '../../utils/staticPdfUtils';
 
 interface PDFSplitProcessorProps {
   file: File;
@@ -53,6 +53,8 @@ export const PDFSplitProcessor: React.FC<PDFSplitProcessorProps> = ({ file }) =>
       setSplitMessage('Initializing PDF viewer...');
       setSplitProgress(5);
 
+      console.log('🚀 Starting PDF split processor with STATIC imports...');
+
       // Validate PDF file first
       const validation = await validatePDFFile(file);
       if (!validation.valid) {
@@ -82,11 +84,13 @@ export const PDFSplitProcessor: React.FC<PDFSplitProcessorProps> = ({ file }) =>
       setPages(pageInfos);
       setPageRange({ start: 1, end: pageInfos.length });
       setSplitStatus('ready');
-      setSplitMessage(`Ready to split ${pageInfos.length} pages`);
+      setSplitMessage(`✅ Ready to split ${pageInfos.length} pages`);
       setSplitProgress(100);
       
+      console.log(`🎉 PDF split processor ready: ${pageInfos.length} pages loaded`);
+      
     } catch (error: unknown) {
-      console.error('❌ Error loading PDF:', error);
+      console.error('❌ Error loading PDF in split processor:', error);
       setSplitStatus('error');
       setSplitProgress(0);
       setSplitMessage(getPDFErrorMessage(error));
@@ -115,6 +119,8 @@ export const PDFSplitProcessor: React.FC<PDFSplitProcessorProps> = ({ file }) =>
       setSplitProgress(10);
       setSplitMessage('Preparing for PDF split...');
 
+      console.log('🔄 Starting PDF split operation...');
+
       // Get pages to extract based on split mode
       let pagesToExtract: number[] = [];
       
@@ -134,6 +140,8 @@ export const PDFSplitProcessor: React.FC<PDFSplitProcessorProps> = ({ file }) =>
         throw new Error('No pages selected for extraction');
       }
 
+      console.log(`📄 Extracting ${pagesToExtract.length} pages: ${pagesToExtract.join(', ')}`);
+
       // Dynamically import PDF-lib
       const { PDFDocument } = await import('pdf-lib');
       
@@ -144,16 +152,21 @@ export const PDFSplitProcessor: React.FC<PDFSplitProcessorProps> = ({ file }) =>
       const arrayBuffer = await fileToArrayBuffer(file);
       const originalPdf = await PDFDocument.load(arrayBuffer);
 
+      console.log(`📄 Original PDF loaded: ${originalPdf.getPageCount()} pages`);
+
       setSplitProgress(30);
 
       if (splitMode === 'all' && pagesToExtract.length > 1) {
         // Split into individual pages
         setSplitMessage('Creating individual page files...');
+        console.log('📄 Splitting into individual pages...');
         
         for (let i = 0; i < pagesToExtract.length; i++) {
           const pageNum = pagesToExtract[i];
           setSplitMessage(`Creating page ${pageNum}...`);
           setSplitProgress(30 + (i / pagesToExtract.length) * 60);
+
+          console.log(`📄 Creating individual page ${pageNum}...`);
 
           const newPdf = await PDFDocument.create();
           const [copiedPage] = await newPdf.copyPages(originalPdf, [pageNum - 1]);
@@ -165,6 +178,8 @@ export const PDFSplitProcessor: React.FC<PDFSplitProcessorProps> = ({ file }) =>
           const fileName = `${file.name.replace('.pdf', '')}-page-${pageNum}.pdf`;
           downloadBlob(blob, fileName);
           
+          console.log(`✅ Page ${pageNum} saved as ${fileName}`);
+          
           // Small delay to prevent browser freezing
           if (i % 5 === 0) {
             await new Promise(resolve => setTimeout(resolve, 10));
@@ -174,6 +189,8 @@ export const PDFSplitProcessor: React.FC<PDFSplitProcessorProps> = ({ file }) =>
         // Create single PDF with selected pages
         setSplitMessage('Creating extracted PDF...');
         setSplitProgress(50);
+
+        console.log('📄 Creating single PDF with selected pages...');
 
         const newPdf = await PDFDocument.create();
         const pageIndices = pagesToExtract.map(p => p - 1);
@@ -192,11 +209,14 @@ export const PDFSplitProcessor: React.FC<PDFSplitProcessorProps> = ({ file }) =>
           : `${file.name.replace('.pdf', '')}-extracted.pdf`;
         
         downloadBlob(blob, fileName);
+        console.log(`✅ PDF saved as ${fileName}`);
       }
 
       setSplitProgress(100);
       setSplitStatus('success');
       setSplitMessage(`🎉 Successfully extracted ${pagesToExtract.length} pages!`);
+      
+      console.log(`🎉 PDF split operation completed successfully!`);
       
     } catch (error: unknown) {
       console.error('❌ Error splitting PDF:', error);
@@ -430,7 +450,7 @@ export const PDFSplitProcessor: React.FC<PDFSplitProcessorProps> = ({ file }) =>
       {splitStatus === 'error' && (
         <div className="text-center space-y-4">
           <div className="text-sm text-gray-600">
-            Having trouble? Try using a different PDF file or check the console for detailed error information.
+            Check the browser console for detailed error information.
           </div>
           <div className="space-x-4">
             <Button
