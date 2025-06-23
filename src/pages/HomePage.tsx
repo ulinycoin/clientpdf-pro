@@ -120,36 +120,47 @@ export const HomePage: React.FC = () => {
         </div>
       </div>
 
-      {/* Tools Grid - Now featuring 5 essential tools */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-12">
+      {/* Tools Grid - Square Design */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6 mb-12">
         {tools.map((tool) => (
           <Link
             key={tool.href}
             to={tool.href}
             className={clsx(
-              'block p-6 rounded-xl border-2 transition-all duration-200 hover:shadow-lg group relative',
-              tool.color === 'blue' && 'border-blue-200 hover:border-blue-300 hover:bg-blue-50',
-              tool.color === 'green' && 'border-green-200 hover:border-green-300 hover:bg-green-50',
-              tool.color === 'orange' && 'border-orange-200 hover:border-orange-300 hover:bg-orange-50',
-              tool.color === 'purple' && 'border-purple-200 hover:border-purple-300 hover:bg-purple-50',
-              tool.color === 'cyan' && 'border-cyan-200 hover:border-cyan-300 hover:bg-cyan-50'
+              'group relative block aspect-square p-4 md:p-6 rounded-2xl border-2 transition-all duration-300 hover:scale-105 hover:shadow-xl transform-gpu',
+              'flex flex-col items-center justify-center text-center',
+              tool.color === 'blue' && 'border-blue-200 hover:border-blue-300 bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200',
+              tool.color === 'green' && 'border-green-200 hover:border-green-300 bg-gradient-to-br from-green-50 to-green-100 hover:from-green-100 hover:to-green-200',
+              tool.color === 'orange' && 'border-orange-200 hover:border-orange-300 bg-gradient-to-br from-orange-50 to-orange-100 hover:from-orange-100 hover:to-orange-200',
+              tool.color === 'purple' && 'border-purple-200 hover:border-purple-300 bg-gradient-to-br from-purple-50 to-purple-100 hover:from-purple-100 hover:to-purple-200',
+              tool.color === 'cyan' && 'border-cyan-200 hover:border-cyan-300 bg-gradient-to-br from-cyan-50 to-cyan-100 hover:from-cyan-100 hover:to-cyan-200'
             )}
           >
             {tool.isNew && (
-              <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-medium">
+              <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-medium z-10">
                 NEW
               </div>
             )}
-            <div className="text-3xl mb-3">{tool.icon}</div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+            
+            {/* Icon */}
+            <div className="text-4xl md:text-5xl mb-2 md:mb-3 transform group-hover:scale-110 transition-transform duration-300">
+              {tool.icon}
+            </div>
+            
+            {/* Title */}
+            <h3 className="text-sm md:text-base font-bold text-gray-900 mb-1 md:mb-2 group-hover:text-blue-600 transition-colors line-clamp-2">
               {tool.title}
             </h3>
-            <p className="text-gray-600 text-sm mb-4">
+            
+            {/* Description - Hidden on mobile, shown on larger screens */}
+            <p className="hidden md:block text-xs text-gray-600 mb-2 md:mb-3 line-clamp-2 px-1">
               {tool.description}
             </p>
-            <div className="flex items-center text-sm font-medium text-blue-600 group-hover:text-blue-700">
-              Get Started
-              <ArrowRight className="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform" />
+            
+            {/* Action indicator */}
+            <div className="flex items-center justify-center text-xs font-medium text-blue-600 group-hover:text-blue-700 mt-auto">
+              <span className="hidden md:inline">Get Started</span>
+              <ArrowRight className="h-3 w-3 md:h-4 md:w-4 md:ml-1 group-hover:translate-x-1 transition-transform" />
             </div>
           </Link>
         ))}
