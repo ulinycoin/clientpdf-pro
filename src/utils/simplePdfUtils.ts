@@ -25,12 +25,23 @@ export async function initSimplePDFJS(): Promise<any> {
   }
 
   try {
-    // Import PDF.js
-    const pdfjs = await import('pdfjs-dist');
+    // Import PDF.js with proper module handling
+    const importedModule = await import('pdfjs-dist');
     
-    // For development, we'll use the CDN worker directly in getDocument calls
+    // Handle different module export patterns
+    pdfjsModule = importedModule.default || importedModule;
+    
+    // Ensure we have the getDocument function
+    if (!pdfjsModule || typeof pdfjsModule.getDocument !== 'function') {
+      // Try alternative access patterns
+      pdfjsModule = (importedModule as any).pdfjsLib || importedModule;
+      
+      if (!pdfjsModule || typeof pdfjsModule.getDocument !== 'function') {
+        throw new Error('PDF.js getDocument function not found in simple utils');
+      }
+    }
+    
     console.log('PDF.js loaded successfully');
-    pdfjsModule = pdfjs;
     
     return pdfjsModule;
   } catch (error) {
@@ -44,6 +55,11 @@ export async function initSimplePDFJS(): Promise<any> {
  */
 export async function loadSimplePDFDocument(arrayBuffer: ArrayBuffer): Promise<SimplePDFDocument> {
   const pdfjs = await initSimplePDFJS();
+  
+  // Ensure getDocument is available
+  if (typeof pdfjs.getDocument !== 'function') {
+    throw new Error('PDF.js getDocument function is not available');
+  }
   
   // Use inline worker to avoid GlobalWorkerOptions issues
   const loadingTask = pdfjs.getDocument({
