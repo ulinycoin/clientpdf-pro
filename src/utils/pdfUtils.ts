@@ -18,8 +18,21 @@ export async function initializePDFJS(): Promise<typeof pdfjsLib> {
   }
 
   try {
-    // Dynamically import PDF.js
-    pdfJSLib = await import('pdfjs-dist');
+    // Dynamically import PDF.js with proper module handling
+    const pdfjsModule = await import('pdfjs-dist');
+    
+    // Handle different module export patterns
+    pdfJSLib = pdfjsModule.default || pdfjsModule;
+    
+    // Ensure we have the getDocument function
+    if (!pdfJSLib || typeof pdfJSLib.getDocument !== 'function') {
+      // Try alternative access patterns
+      pdfJSLib = (pdfjsModule as any).pdfjsLib || pdfjsModule;
+      
+      if (!pdfJSLib || typeof pdfJSLib.getDocument !== 'function') {
+        throw new Error('PDF.js getDocument function not found');
+      }
+    }
     
     // Wait a bit for the module to fully initialize
     await new Promise(resolve => setTimeout(resolve, 100));
@@ -69,6 +82,11 @@ export async function initializePDFJS(): Promise<typeof pdfjsLib> {
  */
 export async function loadPDFDocument(source: ArrayBuffer | Uint8Array | string): Promise<pdfjsLib.PDFDocumentProxy> {
   const pdfjsLib = await initializePDFJS();
+  
+  // Ensure getDocument is available
+  if (typeof pdfjsLib.getDocument !== 'function') {
+    throw new Error('PDF.js getDocument function is not available');
+  }
   
   return pdfjsLib.getDocument({
     data: source,
@@ -276,6 +294,10 @@ export function getPDFErrorMessage(error: unknown): string {
   
   if (message.includes('globalworkeroptions')) {
     return 'PDF viewer initialization failed. Please try refreshing the page';
+  }
+  
+  if (message.includes('getdocument') || message.includes('not a function')) {
+    return 'PDF library loading failed. Please refresh the page and try again';
   }
   
   if (message.includes('network')) {
