@@ -1,10 +1,9 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
-import { Link } from 'react-router-dom';
-import { FileText, Upload, Download, Settings, ArrowRight, Shield, Zap, Lock, Loader2 } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { FileText, Upload, Download, Settings, ArrowRight, Shield, Zap, Lock, Loader2, Play, Scissors, Archive, ImageIcon, BarChart3 } from 'lucide-react';
 import { clsx } from 'clsx';
 import { Button } from '../components/atoms/Button';
 import { FileUploadZone } from '../components/molecules/FileUploadZone';
-import { InternalLinkSection } from '../components/molecules/InternalLinkSection';
 
 // Lazy loading PDF компонентов для уменьшения размера основного bundle
 const PDFPreview = lazy(() => 
@@ -34,6 +33,7 @@ export const HomePage: React.FC = () => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [currentPDF, setCurrentPDF] = useState<File | null>(null);
   const [showPDFTools, setShowPDFTools] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     document.title = 'LocalPDF - Free Online PDF Tools | Privacy-First PDF Processing | 5 Essential Tools';
@@ -49,6 +49,31 @@ export const HomePage: React.FC = () => {
       setCurrentPDF(firstPDF);
       setShowPDFTools(true); // Активируем lazy loading PDF компонентов
     }
+  };
+
+  // Функция для определения лучшего инструмента для файла
+  const getBestToolForFile = (file: File) => {
+    const extension = file.name.split('.').pop()?.toLowerCase();
+    const isImage = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'].includes(extension || '');
+    const isCSV = ['csv', 'tsv', 'txt'].includes(extension || '');
+    
+    if (isImage) return '/images-to-pdf';
+    if (isCSV) return '/csv-to-pdf';
+    if (file.type === 'application/pdf') return '/merge-pdf'; // Для PDF предлагаем merge как самый популярный
+    return '/merge-pdf'; // По умолчанию
+  };
+
+  // Функция для перехода к обработке файла
+  const handleProcessFile = (file: File) => {
+    const bestTool = getBestToolForFile(file);
+    // Сохраняем файл в sessionStorage для передачи на страницу инструмента
+    sessionStorage.setItem('pendingFile', JSON.stringify({
+      name: file.name,
+      size: file.size,
+      type: file.type,
+      lastModified: file.lastModified
+    }));
+    navigate(bestTool);
   };
 
   // Core PDF tools - including CSV to PDF
@@ -166,14 +191,14 @@ export const HomePage: React.FC = () => {
         ))}
       </div>
 
-      {/* Quick Start Section */}
+      {/* Quick Start Section - Improved with actionable buttons */}
       <div className="bg-white rounded-2xl border border-gray-200 p-8 mb-12">
         <div className="text-center mb-6">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            Try It Now
+            Quick Start - Upload & Process
           </h2>
           <p className="text-gray-600">
-            Upload a PDF, image, or CSV file to get started with any tool
+            Upload your files and we'll suggest the best tool for processing
           </p>
         </div>
 
@@ -189,22 +214,70 @@ export const HomePage: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div>
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                Uploaded Files ({selectedFiles.length})
+                Ready to Process ({selectedFiles.length} files)
               </h3>
-              <div className="space-y-2">
-                {selectedFiles.map((file, index) => (
-                  <Button
-                    key={index}
-                    variant={currentPDF === file ? 'primary' : 'secondary'}
-                    size="sm"
-                    onClick={() => {
-                      setCurrentPDF(file);
-                      setShowPDFTools(true);
-                    }}
-                  >
-                    {file.name.substring(0, 20)}...
-                  </Button>
-                ))}
+              <div className="space-y-3">
+                {selectedFiles.map((file, index) => {
+                  const extension = file.name.split('.').pop()?.toLowerCase();
+                  const isImage = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'].includes(extension || '');
+                  const isCSV = ['csv', 'tsv', 'txt'].includes(extension || '');
+                  const isPDF = file.type === 'application/pdf';
+                  
+                  let recommendedAction = 'Process';
+                  let icon = <Play className="h-4 w-4" />;
+                  
+                  if (isImage) {
+                    recommendedAction = 'Convert to PDF';
+                    icon = <ImageIcon className="h-4 w-4" />;
+                  } else if (isCSV) {
+                    recommendedAction = 'Convert to PDF';
+                    icon = <BarChart3 className="h-4 w-4" />;
+                  } else if (isPDF) {
+                    recommendedAction = 'Edit PDF';
+                    icon = <Scissors className="h-4 w-4" />;
+                  }
+                  
+                  return (
+                    <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border">
+                      <div className="flex items-center min-w-0 flex-1">
+                        <div className="text-2xl mr-3">
+                          {isPDF ? '📄' : isImage ? '🖼️' : isCSV ? '📊' : '📄'}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm font-medium text-gray-900 truncate">
+                            {file.name}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            {(file.size / 1024 / 1024).toFixed(1)} MB
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center space-x-2 ml-4">
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          onClick={() => {
+                            setCurrentPDF(file);
+                            setShowPDFTools(true);
+                          }}
+                          className="text-xs"
+                        >
+                          Preview
+                        </Button>
+                        <Button
+                          variant="primary"
+                          size="sm"
+                          icon={icon}
+                          onClick={() => handleProcessFile(file)}
+                          className="text-xs"
+                        >
+                          {recommendedAction}
+                        </Button>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
             
@@ -212,14 +285,35 @@ export const HomePage: React.FC = () => {
             {showPDFTools && currentPDF && (
               <Suspense 
                 fallback={
-                  <PDFLoadingFallback message="Loading PDF preview..." />
+                  <PDFLoadingFallback message="Loading file preview..." />
                 }
               >
-                <PDFPreview
-                  file={currentPDF}
-                  className="h-96 lg:h-[600px]"
-                  onPagesLoaded={(count) => console.log(`PDF loaded with ${count} pages`)}
-                />
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                    File Preview
+                  </h3>
+                  {currentPDF.type === 'application/pdf' ? (
+                    <PDFPreview
+                      file={currentPDF}
+                      className="h-96 lg:h-[500px] rounded-lg border"
+                      onPagesLoaded={(count) => console.log(`PDF loaded with ${count} pages`)}
+                    />
+                  ) : (
+                    <div className="h-96 lg:h-[500px] rounded-lg border bg-gray-100 flex items-center justify-center">
+                      <div className="text-center">
+                        <div className="text-4xl mb-4">
+                          {currentPDF.name.match(/\.(jpg|jpeg|png|gif|bmp|webp)$/i) ? '🖼️' : '📄'}
+                        </div>
+                        <p className="text-gray-600 font-medium">{currentPDF.name}</p>
+                        <p className="text-sm text-gray-500 mt-1">
+                          {currentPDF.name.match(/\.(jpg|jpeg|png|gif|bmp|webp)$/i) 
+                            ? 'Image file ready for PDF conversion' 
+                            : 'File ready for processing'}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </Suspense>
             )}
           </div>
@@ -333,9 +427,6 @@ export const HomePage: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {/* Internal Links */}
-      <InternalLinkSection className="mb-8" />
     </div>
   );
 };
