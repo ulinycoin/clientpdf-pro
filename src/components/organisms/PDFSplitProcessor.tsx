@@ -22,7 +22,7 @@ import {
   formatFileSize,
   getPDFErrorMessage,
   validatePDFFile
-} from '../../utils/staticPdfUtils';
+} from '../../utils/cdnPdfUtils';
 
 interface PDFSplitProcessorProps {
   file: File;
@@ -53,7 +53,7 @@ export const PDFSplitProcessor: React.FC<PDFSplitProcessorProps> = ({ file }) =>
       setSplitMessage('Initializing PDF viewer...');
       setSplitProgress(5);
 
-      console.log('🚀 Starting PDF split processor with STATIC imports...');
+      console.log('🚀 Starting PDF split processor with CDN PDF.js...');
 
       // Validate PDF file first
       const validation = await validatePDFFile(file);
@@ -87,7 +87,7 @@ export const PDFSplitProcessor: React.FC<PDFSplitProcessorProps> = ({ file }) =>
       setSplitMessage(`✅ Ready to split ${pageInfos.length} pages`);
       setSplitProgress(100);
       
-      console.log(`🎉 PDF split processor ready: ${pageInfos.length} pages loaded`);
+      console.log(`🎉 PDF split processor ready: ${pageInfos.length} pages loaded with CDN`);
       
     } catch (error: unknown) {
       console.error('❌ Error loading PDF in split processor:', error);
@@ -119,7 +119,7 @@ export const PDFSplitProcessor: React.FC<PDFSplitProcessorProps> = ({ file }) =>
       setSplitProgress(10);
       setSplitMessage('Preparing for PDF split...');
 
-      console.log('🔄 Starting PDF split operation...');
+      console.log('🔄 Starting PDF split operation with CDN...');
 
       // Get pages to extract based on split mode
       let pagesToExtract: number[] = [];
@@ -216,7 +216,7 @@ export const PDFSplitProcessor: React.FC<PDFSplitProcessorProps> = ({ file }) =>
       setSplitStatus('success');
       setSplitMessage(`🎉 Successfully extracted ${pagesToExtract.length} pages!`);
       
-      console.log(`🎉 PDF split operation completed successfully!`);
+      console.log(`🎉 PDF split operation completed successfully with CDN!`);
       
     } catch (error: unknown) {
       console.error('❌ Error splitting PDF:', error);
@@ -450,7 +450,7 @@ export const PDFSplitProcessor: React.FC<PDFSplitProcessorProps> = ({ file }) =>
       {splitStatus === 'error' && (
         <div className="text-center space-y-4">
           <div className="text-sm text-gray-600">
-            Check the browser console for detailed error information.
+            Having trouble? Check your internet connection and try again.
           </div>
           <div className="space-x-4">
             <Button
