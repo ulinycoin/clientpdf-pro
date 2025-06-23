@@ -12,7 +12,7 @@
  */
 
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FileText, Menu, X, HelpCircle, Shield, Gavel, Mail, Heart } from 'lucide-react';
 import { clsx } from 'clsx';
@@ -25,6 +25,11 @@ interface LayoutProps {
 export const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Close mobile menu when route changes
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
 
   const navigation = [
     { name: 'Home', href: '/', icon: FileText },
@@ -75,6 +80,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
             <button 
               className="md:hidden p-2 text-gray-500 hover:text-gray-700"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
             >
               {mobileMenuOpen ? (
                 <X className="h-5 w-5" />
