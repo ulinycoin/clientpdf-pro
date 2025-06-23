@@ -22,11 +22,7 @@ import {
   formatFileSize,
   getPDFErrorMessage,
   validatePDFFile
-} from '../../utils/pdfUtils';
-import {
-  generateSimplePDFThumbnails,
-  validateSimplePDFFile
-} from '../../utils/simplePdfUtils';
+} from '../../utils/robustPdfUtils';
 
 interface PDFSplitProcessorProps {
   file: File;
@@ -54,64 +50,27 @@ export const PDFSplitProcessor: React.FC<PDFSplitProcessorProps> = ({ file }) =>
   const loadPDFPages = async () => {
     try {
       setSplitStatus('loading');
-      setSplitMessage('Validating PDF file...');
+      setSplitMessage('Initializing PDF viewer...');
       setSplitProgress(5);
 
-      let thumbnails: Array<{ pageNumber: number; thumbnail: string }> = [];
-      let isValid = false;
-
-      // Try the main PDF utils first
-      try {
-        const validation = await validatePDFFile(file);
-        if (!validation.valid) {
-          throw new Error(validation.error || 'Invalid PDF file');
-        }
-        isValid = true;
-
-        setSplitMessage('Loading PDF pages...');
-        setSplitProgress(10);
-
-        // Generate thumbnails with progress tracking
-        thumbnails = await generatePDFThumbnails(file, {
-          scale: 0.3,
-          onProgress: (current, total) => {
-            const progress = 10 + (current / total) * 80; // 10-90% for thumbnails
-            setSplitProgress(progress);
-            setSplitMessage(`Generating preview ${current} of ${total}...`);
-          }
-        });
-      } catch (mainError) {
-        console.warn('Main PDF utils failed, trying simple approach:', mainError);
-        
-        // Fallback to simple PDF utils
-        try {
-          setSplitMessage('Using fallback PDF loader...');
-          const simpleValidation = await validateSimplePDFFile(file);
-          if (!simpleValidation.valid) {
-            throw new Error(simpleValidation.error || 'Invalid PDF file');
-          }
-          isValid = true;
-
-          setSplitMessage('Loading PDF with fallback method...');
-          setSplitProgress(20);
-
-          thumbnails = await generateSimplePDFThumbnails(file, {
-            scale: 0.3,
-            onProgress: (current, total) => {
-              const progress = 20 + (current / total) * 70; // 20-90% for thumbnails
-              setSplitProgress(progress);
-              setSplitMessage(`Generating preview ${current} of ${total} (fallback)...`);
-            }
-          });
-        } catch (fallbackError) {
-          console.error('Both PDF loading methods failed:', fallbackError);
-          throw fallbackError;
-        }
+      // Validate PDF file first
+      const validation = await validatePDFFile(file);
+      if (!validation.valid) {
+        throw new Error(validation.error || 'Invalid PDF file');
       }
 
-      if (!isValid || thumbnails.length === 0) {
-        throw new Error('Failed to load PDF pages');
-      }
+      setSplitMessage('Loading PDF pages...');
+      setSplitProgress(10);
+
+      // Generate thumbnails with progress tracking
+      const thumbnails = await generatePDFThumbnails(file, {
+        scale: 0.3,
+        onProgress: (current, total) => {
+          const progress = 10 + (current / total) * 80; // 10-90% for thumbnails
+          setSplitProgress(progress);
+          setSplitMessage(`Generating preview ${current} of ${total}...`);
+        }
+      });
 
       // Convert to PageInfo format
       const pageInfos: PageInfo[] = thumbnails.map(({ pageNumber, thumbnail }) => ({
@@ -127,7 +86,7 @@ export const PDFSplitProcessor: React.FC<PDFSplitProcessorProps> = ({ file }) =>
       setSplitProgress(100);
       
     } catch (error: unknown) {
-      console.error('Error loading PDF:', error);
+      console.error('❌ Error loading PDF:', error);
       setSplitStatus('error');
       setSplitProgress(0);
       setSplitMessage(getPDFErrorMessage(error));
@@ -237,10 +196,10 @@ export const PDFSplitProcessor: React.FC<PDFSplitProcessorProps> = ({ file }) =>
 
       setSplitProgress(100);
       setSplitStatus('success');
-      setSplitMessage(`Successfully extracted ${pagesToExtract.length} pages!`);
+      setSplitMessage(`🎉 Successfully extracted ${pagesToExtract.length} pages!`);
       
     } catch (error: unknown) {
-      console.error('Error splitting PDF:', error);
+      console.error('❌ Error splitting PDF:', error);
       setSplitStatus('error');
       setSplitProgress(0);
       setSplitMessage(getPDFErrorMessage(error));
@@ -471,16 +430,28 @@ export const PDFSplitProcessor: React.FC<PDFSplitProcessorProps> = ({ file }) =>
       {splitStatus === 'error' && (
         <div className="text-center space-y-4">
           <div className="text-sm text-gray-600">
-            If you're experiencing issues, try refreshing the page or using a different PDF file.
+            Having trouble? Try using a different PDF file or check the console for detailed error information.
           </div>
-          <Button
-            onClick={loadPDFPages}
-            variant="secondary"
-            size="lg"
-            className="px-8"
-          >
-            Try Again
-          </Button>
+          <div className="space-x-4">
+            <Button
+              onClick={loadPDFPages}
+              variant="primary"
+              size="lg"
+              className="px-8"
+            >
+              Try Again
+            </Button>
+            {import.meta.env.DEV && (
+              <Button
+                onClick={() => window.open('/debug-pdf', '_blank')}
+                variant="secondary"
+                size="lg"
+                className="px-4"
+              >
+                Debug Tools
+              </Button>
+            )}
+          </div>
         </div>
       )}
     </div>
