@@ -4,6 +4,7 @@ import { FileText, Upload, Download, Settings, ArrowRight, Shield, Zap, Lock, Lo
 import { clsx } from 'clsx';
 import { Button } from '../components/atoms/Button';
 import { FileUploadZone } from '../components/molecules/FileUploadZone';
+import { usePendingFile, useFileQuickActions, useFileRecommendations } from '../hooks/useFileTransfer';
 
 // Lazy loading PDF компонентов для уменьшения размера основного bundle
 const PDFPreview = lazy(() => 
@@ -33,7 +34,11 @@ export const HomePage: React.FC = () => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [currentPDF, setCurrentPDF] = useState<File | null>(null);
   const [showPDFTools, setShowPDFTools] = useState(false);
+  
   const navigate = useNavigate();
+  const { setPendingFile } = usePendingFile();
+  const { getQuickActionForFile, getFileIcon, formatFileSize } = useFileQuickActions();
+  const { getRecommendationsForFiles } = useFileRecommendations();
 
   useEffect(() => {
     document.title = 'LocalPDF - Free Online PDF Tools | Privacy-First PDF Processing | 5 Essential Tools';
@@ -51,29 +56,11 @@ export const HomePage: React.FC = () => {
     }
   };
 
-  // Функция для определения лучшего инструмента для файла
-  const getBestToolForFile = (file: File) => {
-    const extension = file.name.split('.').pop()?.toLowerCase();
-    const isImage = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'].includes(extension || '');
-    const isCSV = ['csv', 'tsv', 'txt'].includes(extension || '');
-    
-    if (isImage) return '/images-to-pdf';
-    if (isCSV) return '/csv-to-pdf';
-    if (file.type === 'application/pdf') return '/merge-pdf'; // Для PDF предлагаем merge как самый популярный
-    return '/merge-pdf'; // По умолчанию
-  };
-
   // Функция для перехода к обработке файла
   const handleProcessFile = (file: File) => {
-    const bestTool = getBestToolForFile(file);
-    // Сохраняем файл в sessionStorage для передачи на страницу инструмента
-    sessionStorage.setItem('pendingFile', JSON.stringify({
-      name: file.name,
-      size: file.size,
-      type: file.type,
-      lastModified: file.lastModified
-    }));
-    navigate(bestTool);
+    const quickAction = getQuickActionForFile(file);
+    setPendingFile(file);
+    navigate(quickAction.route);
   };
 
   // Core PDF tools - including CSV to PDF
@@ -115,6 +102,9 @@ export const HomePage: React.FC = () => {
       isNew: true
     }
   ];
+
+  // Get recommendations for uploaded files
+  const recommendations = selectedFiles.length > 0 ? getRecommendationsForFiles(selectedFiles) : [];
 
   return (
     <div>
@@ -210,6 +200,31 @@ export const HomePage: React.FC = () => {
           className="mb-6"
         />
 
+        {/* Smart Recommendations */}
+        {recommendations.length > 0 && (
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              💡 Smart Recommendations
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {recommendations.map((rec, index) => (
+                <Link
+                  key={index}
+                  to={rec.route}
+                  className="p-4 bg-blue-50 border border-blue-200 rounded-lg hover:border-blue-300 hover:shadow-md transition-all duration-200 group"
+                >
+                  <h4 className="font-semibold text-blue-900 mb-2 group-hover:text-blue-700">
+                    {rec.title}
+                  </h4>
+                  <p className="text-sm text-blue-700">
+                    {rec.description}
+                  </p>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+
         {selectedFiles.length > 0 && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div>
@@ -218,37 +233,21 @@ export const HomePage: React.FC = () => {
               </h3>
               <div className="space-y-3">
                 {selectedFiles.map((file, index) => {
-                  const extension = file.name.split('.').pop()?.toLowerCase();
-                  const isImage = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'].includes(extension || '');
-                  const isCSV = ['csv', 'tsv', 'txt'].includes(extension || '');
-                  const isPDF = file.type === 'application/pdf';
-                  
-                  let recommendedAction = 'Process';
-                  let icon = <Play className="h-4 w-4" />;
-                  
-                  if (isImage) {
-                    recommendedAction = 'Convert to PDF';
-                    icon = <ImageIcon className="h-4 w-4" />;
-                  } else if (isCSV) {
-                    recommendedAction = 'Convert to PDF';
-                    icon = <BarChart3 className="h-4 w-4" />;
-                  } else if (isPDF) {
-                    recommendedAction = 'Edit PDF';
-                    icon = <Scissors className="h-4 w-4" />;
-                  }
+                  const quickAction = getQuickActionForFile(file);
+                  const fileIcon = getFileIcon(file);
                   
                   return (
                     <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border">
                       <div className="flex items-center min-w-0 flex-1">
                         <div className="text-2xl mr-3">
-                          {isPDF ? '📄' : isImage ? '🖼️' : isCSV ? '📊' : '📄'}
+                          {fileIcon}
                         </div>
                         <div className="min-w-0 flex-1">
                           <p className="text-sm font-medium text-gray-900 truncate">
                             {file.name}
                           </p>
                           <p className="text-xs text-gray-500">
-                            {(file.size / 1024 / 1024).toFixed(1)} MB
+                            {formatFileSize(file.size)}
                           </p>
                         </div>
                       </div>
@@ -268,11 +267,13 @@ export const HomePage: React.FC = () => {
                         <Button
                           variant="primary"
                           size="sm"
-                          icon={icon}
+                          icon={quickAction.icon === 'ImageIcon' ? ImageIcon : 
+                                quickAction.icon === 'BarChart3' ? BarChart3 : 
+                                quickAction.icon === 'Scissors' ? Scissors : Play}
                           onClick={() => handleProcessFile(file)}
                           className="text-xs"
                         >
-                          {recommendedAction}
+                          {quickAction.action}
                         </Button>
                       </div>
                     </div>
@@ -281,7 +282,7 @@ export const HomePage: React.FC = () => {
               </div>
             </div>
             
-            {/* Lazy loaded PDF Preview */}
+            {/* Lazy loaded file preview */}
             {showPDFTools && currentPDF && (
               <Suspense 
                 fallback={
@@ -302,13 +303,16 @@ export const HomePage: React.FC = () => {
                     <div className="h-96 lg:h-[500px] rounded-lg border bg-gray-100 flex items-center justify-center">
                       <div className="text-center">
                         <div className="text-4xl mb-4">
-                          {currentPDF.name.match(/\.(jpg|jpeg|png|gif|bmp|webp)$/i) ? '🖼️' : '📄'}
+                          {getFileIcon(currentPDF)}
                         </div>
                         <p className="text-gray-600 font-medium">{currentPDF.name}</p>
                         <p className="text-sm text-gray-500 mt-1">
                           {currentPDF.name.match(/\.(jpg|jpeg|png|gif|bmp|webp)$/i) 
                             ? 'Image file ready for PDF conversion' 
                             : 'File ready for processing'}
+                        </p>
+                        <p className="text-xs text-gray-400 mt-2">
+                          {formatFileSize(currentPDF.size)}
                         </p>
                       </div>
                     </div>
