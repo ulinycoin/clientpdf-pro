@@ -11,12 +11,13 @@
  * For commercial licensing, contact: license@localpdf.online
  */
 
-import React, { useState, lazy, Suspense } from 'react';
-import { Combine, ArrowLeft, Info, Loader2 } from 'lucide-react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
+import { Combine, ArrowLeft, Info, Loader2, Upload, AlertCircle, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '../components/atoms/Button';
 import { FileUploadZone } from '../components/molecules/FileUploadZone';
 import { useSEO } from '../hooks/useSEO';
+import { usePendingFile, useFileQuickActions } from '../hooks/useFileTransfer';
 
 // Lazy load PDF merge processor to avoid including PDF libraries in main bundle
 const PDFMergeProcessor = lazy(() => 
@@ -36,6 +37,10 @@ const PDFProcessorLoading: React.FC = () => (
 
 export const MergePDFPage: React.FC = () => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [showWelcomeMessage, setShowWelcomeMessage] = useState(false);
+
+  const { pendingFile, clearPendingFile, hasPendingFile } = usePendingFile();
+  const { formatFileSize } = useFileQuickActions();
 
   // SEO optimization for merge PDF page
   useSEO({
@@ -68,8 +73,18 @@ export const MergePDFPage: React.FC = () => {
     }
   });
 
+  // Handle pending file from homepage navigation
+  useEffect(() => {
+    if (pendingFile && pendingFile.type === 'application/pdf') {
+      // Note: We can't recreate the actual File object from sessionStorage
+      // So we show a welcome message instead
+      setShowWelcomeMessage(true);
+    }
+  }, [pendingFile]);
+
   const handleFilesSelected = (files: File[]) => {
     setSelectedFiles(files);
+    setShowWelcomeMessage(false);
   };
 
   const handleRemoveFile = (index: number) => {
@@ -79,6 +94,11 @@ export const MergePDFPage: React.FC = () => {
 
   const handleReorderFiles = (files: File[]) => {
     setSelectedFiles(files);
+  };
+
+  const handleDismissWelcome = () => {
+    setShowWelcomeMessage(false);
+    clearPendingFile();
   };
 
   return (
@@ -103,6 +123,36 @@ export const MergePDFPage: React.FC = () => {
           while organizing your documents efficiently.
         </p>
       </div>
+
+      {/* Welcome message for files from homepage */}
+      {showWelcomeMessage && pendingFile && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+          <div className="flex items-start justify-between">
+            <div className="flex items-start space-x-3">
+              <div className="flex-shrink-0">
+                <Upload className="h-5 w-5 text-blue-600 mt-0.5" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-sm font-medium text-blue-900">
+                  Ready to merge your PDF file!
+                </h3>
+                <div className="mt-2 text-sm text-blue-700">
+                  <p>You brought a file from the homepage: <strong>{pendingFile.name}</strong></p>
+                  <p className="text-xs text-blue-600 mt-1">
+                    {formatFileSize(pendingFile.size)} • Please upload it again along with other PDFs you want to merge
+                  </p>
+                </div>
+              </div>
+            </div>
+            <button
+              onClick={handleDismissWelcome}
+              className="flex-shrink-0 text-blue-400 hover:text-blue-600"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* How it works */}
       <div className="bg-blue-50 rounded-lg p-6 mb-8 border border-blue-200">
