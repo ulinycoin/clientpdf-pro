@@ -1,457 +1,273 @@
 /**
- * Copyright (c) 2024 LocalPDF Team
- * 
- * This file is part of LocalPDF.
- * 
- * LocalPDF is proprietary software: you may not copy, modify, distribute,
- * or use this software except as expressly permitted under the LocalPDF
- * Source Available License v1.0.
- * 
- * See the LICENSE file in the project root for license terms.
- * For commercial licensing, contact: license@localpdf.online
+ * PDF.js Utility Functions
+ * Handles proper initialization and configuration of PDF.js library
  */
 
-// Константы для ограничений
-export const PDF_LIMITS = {
-  MAX_FILE_SIZE: 100 * 1024 * 1024, // 100MB
-  MAX_PAGES_SPLIT: 100,
-  MAX_FILES_MERGE: 20,
-  MAX_IMAGES_CONVERT: 50,
-  MIN_FILE_SIZE: 1024, // 1KB
-  MAX_PAGES_PREVIEW: 20,
-} as const;
+import type * as pdfjsLib from 'pdfjs-dist';
 
-// Типы файлов
-export const ACCEPTED_FILE_TYPES = {
-  PDF: 'application/pdf',
-  IMAGES: [
-    'image/jpeg',
-    'image/jpg', 
-    'image/png',
-    'image/gif',
-    'image/webp',
-    'image/bmp'
-  ]
-} as const;
+let pdfJSInitialized = false;
+let pdfJSLib: typeof pdfjsLib | null = null;
 
-// Утилиты для работы с файлами
-export class PDFUtils {
-  /**
-   * Проверяет лимиты для операций
-   */
-  static checkOperationLimits(operation: string, files: File[]): { valid: boolean; message?: string } {
-    const pdfFiles = files.filter(file => this.isPDFFile(file));
-    const imageFiles = files.filter(file => this.isImageFile(file));
-
-    switch (operation) {
-      case 'merge':
-        if (pdfFiles.length < 2) {
-          return { valid: false, message: 'Need at least 2 PDF files to merge' };
-        }
-        if (pdfFiles.length > PDF_LIMITS.MAX_FILES_MERGE) {
-          return { valid: false, message: `Too many files. Maximum ${PDF_LIMITS.MAX_FILES_MERGE} allowed` };
-        }
-        break;
-
-      case 'split':
-        if (pdfFiles.length === 0) {
-          return { valid: false, message: 'Need a PDF file to split' };
-        }
-        break;
-
-      case 'compress':
-        if (pdfFiles.length === 0) {
-          return { valid: false, message: 'Need a PDF file to compress' };
-        }
-        break;
-
-      case 'imageToPdf':
-        if (imageFiles.length === 0) {
-          return { valid: false, message: 'Need at least 1 image file to convert' };
-        }
-        if (imageFiles.length > PDF_LIMITS.MAX_IMAGES_CONVERT) {
-          return { valid: false, message: `Too many images. Maximum ${PDF_LIMITS.MAX_IMAGES_CONVERT} allowed` };
-        }
-        break;
-
-      default:
-        return { valid: false, message: 'Unknown operation' };
-    }
-
-    // Проверяем размеры файлов
-    for (const file of files) {
-      if (!this.isFileSizeValid(file)) {
-        return { 
-          valid: false, 
-          message: `File "${file.name}" is too large. Maximum size is ${this.formatFileSize(PDF_LIMITS.MAX_FILE_SIZE)}` 
-        };
-      }
-    }
-
-    return { valid: true };
+/**
+ * Initialize PDF.js library with proper worker configuration
+ * This should be called before any PDF operations
+ */
+export async function initializePDFJS(): Promise<typeof pdfjsLib> {
+  if (pdfJSInitialized && pdfJSLib) {
+    return pdfJSLib;
   }
 
-  /**
-   * Создает объект ошибки с дополнительной информацией
-   */
-  static createError(message: string, code?: string, details?: any): Error {
-    const error = new Error(message);
-    (error as any).code = code;
-    (error as any).details = details;
-    return error;
-  }
-
-  /**
-   * Определяет тип ошибки PDF
-   */
-  static getPDFErrorType(error: Error): 'corrupted' | 'password' | 'memory' | 'size' | 'unknown' {
-    const message = error.message.toLowerCase();
+  try {
+    // Dynamically import PDF.js
+    pdfJSLib = await import('pdfjs-dist');
     
-    if (message.includes('password') || message.includes('encrypted')) {
-      return 'password';
-    }
-    if (message.includes('invalid pdf') || message.includes('corrupted')) {
-      return 'corrupted';
-    }
-    if (message.includes('memory') || message.includes('out of memory')) {
-      return 'memory';
-    }
-    if (message.includes('too large') || message.includes('size')) {
-      return 'size';
-    }
-    
-    return 'unknown';
-  }
-
-  /**
-   * Получает пользовательское сообщение об ошибке
-   */
-  static getUserFriendlyErrorMessage(error: Error): string {
-    const errorType = this.getPDFErrorType(error);
-    
-    switch (errorType) {
-      case 'password':
-        return 'This PDF is password protected and cannot be processed. Please remove the password first.';
-      case 'corrupted':
-        return 'The PDF file appears to be corrupted or invalid. Please try a different file.';
-      case 'memory':
-        return 'The PDF is too complex to process. Try reducing the file size or number of pages.';
-      case 'size':
-        return `File is too large. Maximum size allowed is ${this.formatFileSize(PDF_LIMITS.MAX_FILE_SIZE)}.`;
-      default:
-        return 'An error occurred while processing the PDF. Please try again or use a different file.';
-    }
-  }
-
-  /**
-   * Создает download blob и сохраняет файл
-   */
-  static downloadFile(data: Uint8Array | Blob, fileName: string, mimeType: string = 'application/pdf'): void {
-    try {
-      const blob = data instanceof Blob ? data : new Blob([data], { type: mimeType });
-      
-      // Проверяем размер результирующего файла
-      if (blob.size === 0) {
-        throw new Error('Generated file is empty');
-      }
-
-      // Создаем безопасное имя файла
-      const safeFileName = this.sanitizeFileName(fileName);
-      
-      // Сохраняем файл
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = safeFileName;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      
-      // Освобождаем память
-      setTimeout(() => URL.revokeObjectURL(link.href), 1000);
-      
-    } catch (error) {
-      console.error('Download error:', error);
-      throw new Error('Failed to download file');
-    }
-  }
-
-  /**
-   * Проверяет поддержку браузера
-   */
-  static checkBrowserSupport(): { supported: boolean; missing: string[] } {
-    const missing: string[] = [];
-    
-    if (typeof FileReader === 'undefined') {
-      missing.push('FileReader API');
-    }
-    if (typeof Blob === 'undefined') {
-      missing.push('Blob API');
-    }
-    if (typeof URL === 'undefined' || typeof URL.createObjectURL === 'undefined') {
-      missing.push('URL API');
-    }
-    if (typeof Worker === 'undefined') {
-      missing.push('Web Workers');
+    // Ensure GlobalWorkerOptions exists
+    if (!pdfJSLib.GlobalWorkerOptions) {
+      throw new Error('PDF.js GlobalWorkerOptions not available');
     }
 
-    return {
-      supported: missing.length === 0,
-      missing
-    };
-  }
+    // Set worker source with fallback for different environments
+    const pdfjsVersion = pdfJSLib.version || '3.11.174';
+    const workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsVersion}/pdf.worker.min.js`;
 
-  /**
-   * Логирует информацию об обработке файла
-   */
-  static logProcessing(operation: string, files: File[], result?: any): void {
-    if (process.env.NODE_ENV === 'development') {
-      console.group(`PDF Processing: ${operation}`);
-      console.log('Files:', files.map(f => ({ name: f.name, size: this.formatFileSize(f.size) })));
-      if (result) {
-        console.log('Result:', result);
-      }
-      console.groupEnd();
+    // Only set if not already set
+    if (!pdfJSLib.GlobalWorkerOptions.workerSrc) {
+      pdfJSLib.GlobalWorkerOptions.workerSrc = workerSrc;
     }
-  }
 
-  /**
-   * Читает файл как ArrayBuffer
-   */
-  static readFileAsArrayBuffer(file: File): Promise<ArrayBuffer> {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result as ArrayBuffer);
-      reader.onerror = () => reject(new Error(`Failed to read file: ${file.name}`));
-      reader.readAsArrayBuffer(file);
-    });
-  }
-
-  /**
-   * Читает изображение как Data URL
-   */
-  static readImageAsDataURL(file: File): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = (e) => resolve(e.target?.result as string);
-      reader.onerror = () => reject(new Error(`Failed to read image: ${file.name}`));
-      reader.readAsDataURL(file);
-    });
-  }
-
-  /**
-   * Получает размеры изображения
-   */
-  static getImageDimensions(dataURL: string): Promise<{ width: number; height: number }> {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      img.onload = () => resolve({ width: img.width, height: img.height });
-      img.onerror = () => reject(new Error('Failed to load image'));
-      img.src = dataURL;
-    });
-  }
-
-  /**
-   * Форматирует размер файла в читаемый вид
-   */
-  static formatFileSize(bytes: number): string {
-    if (bytes === 0) return '0 Bytes';
-    
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  }
-
-  /**
-   * Проверяет, является ли файл PDF
-   */
-  static isPDFFile(file: File): boolean {
-    return file.type === ACCEPTED_FILE_TYPES.PDF;
-  }
-
-  /**
-   * Проверяет, является ли файл изображением
-   */
-  static isImageFile(file: File): boolean {
-    return ACCEPTED_FILE_TYPES.IMAGES.includes(file.type as any);
-  }
-
-  /**
-   * Проверяет размер файла
-   */
-  static isFileSizeValid(file: File): boolean {
-    return file.size >= PDF_LIMITS.MIN_FILE_SIZE && file.size <= PDF_LIMITS.MAX_FILE_SIZE;
-  }
-
-  /**
-   * Генерирует безопасное имя файла
-   */
-  static sanitizeFileName(fileName: string): string {
-    // Удаляем потенциально опасные символы
-    return fileName
-      .replace(/[<>:"/\\|?*]/g, '')
-      .replace(/\s+/g, '_')
-      .toLowerCase();
-  }
-
-  /**
-   * Создает имя для обработанного файла
-   */
-  static createProcessedFileName(originalName: string, operation: string, suffix?: string): string {
-    const baseName = originalName.replace(/\.pdf$/i, '');
-    const sanitizedBase = this.sanitizeFileName(baseName);
-    
-    let processedName = `${sanitizedBase}-${operation}`;
-    if (suffix) {
-      processedName += `-${suffix}`;
-    }
-    
-    return `${processedName}.pdf`;
-  }
-
-  /**
-   * Проверяет заголовок PDF файла
-   */
-  static async validatePDFHeader(file: File): Promise<boolean> {
-    try {
-      const arrayBuffer = await this.readFileAsArrayBuffer(file);
-      const uint8Array = new Uint8Array(arrayBuffer);
-      const header = String.fromCharCode(...uint8Array.slice(0, 5));
-      return header === '%PDF-';
-    } catch {
-      return false;
-    }
-  }
-
-  /**
-   * Вычисляет процент сжатия
-   */
-  static calculateCompressionRatio(originalSize: number, compressedSize: number): number {
-    if (originalSize === 0) return 0;
-    return Math.round(((originalSize - compressedSize) / originalSize) * 100);
-  }
-
-  /**
-   * Создает превью текст для операции
-   */
-  static getOperationPreview(operation: string, fileCount: number, settings?: any): string {
-    switch (operation) {
-      case 'merge':
-        return `Merge ${fileCount} PDF files into one document`;
-      case 'split':
-        return settings?.splitType === 'pages' 
-          ? 'Split PDF into individual pages'
-          : `Extract pages ${settings?.startPage}-${settings?.endPage}`;
-      case 'compress':
-        return `Compress PDF with ${settings?.quality || 'medium'} quality`;
-      case 'imageToPdf':
-        return `Convert ${fileCount} images to PDF`;
-      default:
-        return 'Process files';
-    }
-  }
-
-  /**
-   * Получает иконку для типа файла
-   */
-  static getFileIcon(fileName: string): string {
-    const extension = fileName.split('.').pop()?.toLowerCase();
-    
-    switch (extension) {
-      case 'pdf':
-        return '📄';
-      case 'doc':
-      case 'docx':
-        return '📝';
-      case 'txt':
-        return '📃';
-      case 'png':
-      case 'jpg':
-      case 'jpeg':
-      case 'gif':
-      case 'bmp':
-      case 'webp':
-        return '🖼️';
-      default:
-        return '📄';
-    }
-  }
-
-  /**
-   * Создает уникальный ID для файла
-   */
-  static generateFileId(): string {
-    return Math.random().toString(36).substr(2, 9);
+    pdfJSInitialized = true;
+    return pdfJSLib;
+  } catch (error) {
+    console.error('Failed to initialize PDF.js:', error);
+    throw new Error(`PDF.js initialization failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }
 
-// Константы для экспорта
-export const PDF_MIME_TYPE = 'application/pdf';
-export const IMAGE_MIME_TYPES = ACCEPTED_FILE_TYPES.IMAGES;
+/**
+ * Load a PDF document with proper error handling
+ */
+export async function loadPDFDocument(source: ArrayBuffer | Uint8Array | string): Promise<pdfjsLib.PDFDocumentProxy> {
+  const pdfjsLib = await initializePDFJS();
+  
+  return pdfjsLib.getDocument({
+    data: source,
+    verbosity: 0, // Reduce console output
+    isEvalSupported: false,
+    disableFontFace: false,
+    useSystemFonts: true,
+    // Additional options for better compatibility
+    cMapUrl: `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/cmaps/`,
+    cMapPacked: true,
+  }).promise;
+}
 
-// Типы для TypeScript
-export interface ProcessingOptions {
-  operation: 'merge' | 'split' | 'compress' | 'imageToPdf';
-  settings?: {
-    quality?: 'low' | 'medium' | 'high';
-    splitType?: 'pages' | 'range';
-    startPage?: number;
-    endPage?: number;
-    removeMetadata?: boolean;
-    optimizeImages?: boolean;
+/**
+ * Render a PDF page to canvas with proper error handling
+ */
+export async function renderPDFPage(
+  page: pdfjsLib.PDFPageProxy,
+  scale: number = 1.0
+): Promise<string> {
+  const viewport = page.getViewport({ scale });
+  
+  const canvas = document.createElement('canvas');
+  const context = canvas.getContext('2d');
+  
+  if (!context) {
+    throw new Error('Cannot get canvas 2D context');
+  }
+  
+  canvas.height = viewport.height;
+  canvas.width = viewport.width;
+  
+  await page.render({
+    canvasContext: context,
+    viewport: viewport
+  }).promise;
+  
+  return canvas.toDataURL('image/jpeg', 0.8);
+}
+
+/**
+ * Convert File to ArrayBuffer
+ */
+export function fileToArrayBuffer(file: File): Promise<ArrayBuffer> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const result = e.target?.result;
+      if (result instanceof ArrayBuffer) {
+        resolve(result);
+      } else {
+        reject(new Error('Failed to read file as ArrayBuffer'));
+      }
+    };
+    reader.onerror = () => reject(new Error('File reading failed'));
+    reader.readAsArrayBuffer(file);
+  });
+}
+
+/**
+ * Get PDF metadata and page count
+ */
+export async function getPDFInfo(file: File): Promise<{
+  pageCount: number;
+  title?: string;
+  author?: string;
+  subject?: string;
+  creator?: string;
+  producer?: string;
+  creationDate?: Date;
+  modificationDate?: Date;
+}> {
+  const arrayBuffer = await fileToArrayBuffer(file);
+  const pdf = await loadPDFDocument(arrayBuffer);
+  
+  const metadata = await pdf.getMetadata();
+  
+  return {
+    pageCount: pdf.numPages,
+    title: metadata.info?.Title || undefined,
+    author: metadata.info?.Author || undefined,
+    subject: metadata.info?.Subject || undefined,
+    creator: metadata.info?.Creator || undefined,
+    producer: metadata.info?.Producer || undefined,
+    creationDate: metadata.info?.CreationDate ? new Date(metadata.info.CreationDate) : undefined,
+    modificationDate: metadata.info?.ModDate ? new Date(metadata.info.ModDate) : undefined,
   };
 }
 
-export interface ProcessingResult {
-  success: boolean;
-  message: string;
-  details?: string;
-  outputSize?: number;
-  compressionRatio?: number;
-  filesCreated?: number;
-}
-
-export interface FileValidation {
-  file: File;
-  isValid: boolean;
-  error?: string;
-  warnings?: string[];
-}
-
-// Утилита для дебага (только в development)
-export const DebugUtils = {
-  logFileInfo: (file: File) => {
-    if (process.env.NODE_ENV === 'development') {
-      console.log('File Info:', {
-        name: file.name,
-        type: file.type,
-        size: PDFUtils.formatFileSize(file.size),
-        lastModified: new Date(file.lastModified),
+/**
+ * Generate thumbnails for PDF pages
+ */
+export async function generatePDFThumbnails(
+  file: File,
+  options: {
+    scale?: number;
+    maxPages?: number;
+    onProgress?: (current: number, total: number) => void;
+  } = {}
+): Promise<Array<{ pageNumber: number; thumbnail: string }>> {
+  const { scale = 0.3, maxPages = Infinity, onProgress } = options;
+  
+  const arrayBuffer = await fileToArrayBuffer(file);
+  const pdf = await loadPDFDocument(arrayBuffer);
+  
+  const thumbnails: Array<{ pageNumber: number; thumbnail: string }> = [];
+  const totalPages = Math.min(pdf.numPages, maxPages);
+  
+  for (let i = 1; i <= totalPages; i++) {
+    try {
+      const page = await pdf.getPage(i);
+      const thumbnail = await renderPDFPage(page, scale);
+      
+      thumbnails.push({
+        pageNumber: i,
+        thumbnail
+      });
+      
+      if (onProgress) {
+        onProgress(i, totalPages);
+      }
+    } catch (error) {
+      console.warn(`Failed to generate thumbnail for page ${i}:`, error);
+      // Add placeholder for failed pages
+      thumbnails.push({
+        pageNumber: i,
+        thumbnail: ''
       });
     }
-  },
-
-  logPerformance: (label: string, startTime: number) => {
-    if (process.env.NODE_ENV === 'development') {
-      const endTime = performance.now();
-      console.log(`${label}: ${(endTime - startTime).toFixed(2)}ms`);
-    }
-  },
-
-  measureAsync: async <T>(label: string, fn: () => Promise<T>): Promise<T> => {
-    if (process.env.NODE_ENV === 'development') {
-      const startTime = performance.now();
-      try {
-        const result = await fn();
-        DebugUtils.logPerformance(label, startTime);
-        return result;
-      } catch (error) {
-        DebugUtils.logPerformance(`${label} (failed)`, startTime);
-        throw error;
-      }
-    } else {
-      return fn();
-    }
   }
-};
+  
+  return thumbnails;
+}
+
+/**
+ * Check if a file is a valid PDF
+ */
+export async function validatePDFFile(file: File): Promise<{ valid: boolean; error?: string }> {
+  try {
+    // Check file type
+    if (!file.type.includes('pdf') && !file.name.toLowerCase().endsWith('.pdf')) {
+      return { valid: false, error: 'File is not a PDF' };
+    }
+    
+    // Try to load the PDF
+    const arrayBuffer = await fileToArrayBuffer(file);
+    const pdf = await loadPDFDocument(arrayBuffer);
+    
+    // Check if it has pages
+    if (pdf.numPages === 0) {
+      return { valid: false, error: 'PDF has no pages' };
+    }
+    
+    return { valid: true };
+  } catch (error) {
+    return { 
+      valid: false, 
+      error: error instanceof Error ? error.message : 'Invalid PDF file'
+    };
+  }
+}
+
+/**
+ * Download blob as file
+ */
+export function downloadBlob(blob: Blob, filename: string): void {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+/**
+ * Format file size in human readable format
+ */
+export function formatFileSize(bytes: number): string {
+  if (bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+/**
+ * Get user-friendly error message for PDF operations
+ */
+export function getPDFErrorMessage(error: unknown): string {
+  if (!(error instanceof Error)) {
+    return 'An unknown error occurred';
+  }
+  
+  const message = error.message.toLowerCase();
+  
+  if (message.includes('invalid pdf')) {
+    return 'This file appears to be corrupted or not a valid PDF';
+  }
+  
+  if (message.includes('worker')) {
+    return 'PDF worker failed to load. Please check your internet connection';
+  }
+  
+  if (message.includes('globalworkeroptions')) {
+    return 'PDF viewer initialization failed. Please try refreshing the page';
+  }
+  
+  if (message.includes('network')) {
+    return 'Network error. Please check your internet connection';
+  }
+  
+  if (message.includes('memory')) {
+    return 'Not enough memory to process this PDF. Try with a smaller file';
+  }
+  
+  if (message.includes('password') || message.includes('encrypted')) {
+    return 'This PDF is password protected. Please unlock it first';
+  }
+  
+  return `Error: ${error.message}`;
+}
