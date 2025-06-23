@@ -98,21 +98,15 @@ export default defineConfig({
   server: {
     port: 3000,
     open: true,
-    // Add headers for proper PDF worker loading
-    headers: {
-      'Cross-Origin-Embedder-Policy': 'credentialless',
-      'Cross-Origin-Opener-Policy': 'same-origin'
+    // Allow external worker loading
+    fs: {
+      allow: ['..']
     }
   },
   
   // Preview server
   preview: {
     port: 4173,
-    host: true,
-    // Add headers for proper PDF worker loading
-    headers: {
-      'Cross-Origin-Embedder-Policy': 'credentialless',
-      'Cross-Origin-Opener-Policy': 'same-origin'
-    }
+    host: true
   }
 })
