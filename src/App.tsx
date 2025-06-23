@@ -25,6 +25,7 @@ import { CSVToPDFPage } from './pages/CSVToPDFPage';
 import { FAQPage } from './pages/FAQPage';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import { TermsOfService } from './pages/TermsOfService';
+import { PDFTestComponent } from './components/organisms/PDFTestComponent';
 
 function App() {
   return (
@@ -47,6 +48,10 @@ function App() {
             <Route path="/faq" element={<FAQPage />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<TermsOfService />} />
+            {/* Debug route - only available in development */}
+            {import.meta.env.DEV && (
+              <Route path="/debug-pdf" element={<PDFTestComponent />} />
+            )}
           </Routes>
         </Layout>
       </Router>
