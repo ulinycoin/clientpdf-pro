@@ -1,10 +1,11 @@
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 import { CsvParseResult, CsvToPdfOptions, ColumnAnalysis } from './CsvToPdfConverter';
+import { FontManager } from '../FontManager';
 
 export class CsvToPdfGenerator {
   /**
-   * Конвертация CSV в PDF с улучшенным форматированием
+   * Конвертация CSV в PDF с улучшенным форматированием и поддержкой Unicode
    */
   static async convertToPDF(
     parseResult: CsvParseResult, 
@@ -12,7 +13,7 @@ export class CsvToPdfGenerator {
   ): Promise<Uint8Array> {
     const opts = { 
       orientation: 'landscape' as const,
-      pageSize: 'legal' as const, // 🔥 CHANGED: Legal as default (356mm landscape vs A4 297mm)
+      pageSize: 'legal' as const,
       fontSize: 7,
       tableStyle: 'grid' as const,
       headerStyle: 'bold' as const,
@@ -24,23 +25,21 @@ export class CsvToPdfGenerator {
       marginRight: 10,
       maxRowsPerPage: 1000,
       autoDetectDataTypes: true,
+      fontFamily: 'auto', // 🆕 Автоматический выбор шрифта
       ...options
     };
     
-    // 🔥 AUTO-UPGRADE: Автоматически переключаемся на A3 для экстремально широких таблиц
+    // Автоматическое увеличение размера страницы для широких таблиц
     const totalColumns = parseResult.columnCount + (opts.includeRowNumbers ? 1 : 0);
     if (totalColumns >= 25 && opts.pageSize === 'legal') {
       opts.pageSize = 'a3';
-      console.log(`🚀 Auto-upgraded to A3 format for ${totalColumns} columns (from Legal)`);
+      console.log(`🚀 Auto-upgraded to A3 format for ${totalColumns} columns`);
     } else if (totalColumns >= 20 && opts.pageSize === 'a4') {
       opts.pageSize = 'legal';
       console.log(`🚀 Auto-upgraded to Legal format for ${totalColumns} columns`);
     }
     
     try {
-      // Анализ столбцов для оптимизации
-      const columnAnalysis = this.analyzeColumns(parseResult.headers, parseResult.data, parseResult.columnTypes);
-      
       // Создание PDF документа
       const pdf = new jsPDF({
         orientation: opts.orientation,
@@ -48,32 +47,35 @@ export class CsvToPdfGenerator {
         format: opts.pageSize.toLowerCase() as any,
       });
 
+      // 🎯 НОВАЯ ФУНКЦИЯ: Настройка Unicode шрифтов
+      const selectedFont = await this.setupUnicodeFonts(pdf, parseResult, opts);
+      
+      // Анализ столбцов для оптимизации
+      const columnAnalysis = this.analyzeColumns(parseResult.headers, parseResult.data, parseResult.columnTypes);
+      
       // Настройка метаданных
       pdf.setProperties({
         title: opts.title || 'CSV Data Export',
         subject: `Data table with ${parseResult.rowCount} rows and ${parseResult.columnCount} columns`,
         author: 'ClientPDF Pro',
-        creator: 'ClientPDF Pro - CSV to PDF Converter',
-        keywords: 'CSV, PDF, data, table, export',
+        creator: 'ClientPDF Pro - CSV to PDF Converter with Unicode Support',
+        keywords: 'CSV, PDF, data, table, export, unicode, cyrillic',
       });
 
       // Добавление заголовка документа
       let currentY = opts.marginTop;
       if (opts.title) {
         pdf.setFontSize(16);
-        pdf.setFont('helvetica', 'bold');
+        pdf.setFont(selectedFont, 'bold');
         pdf.text(opts.title, opts.marginLeft, currentY);
         currentY += 10;
       }
 
-      // Информация о данных
+      // Информация о данных с Unicode поддержкой
       pdf.setFontSize(8);
-      pdf.setFont('helvetica', 'normal');
-      pdf.text(
-        `Data: ${parseResult.rowCount} rows × ${parseResult.columnCount} columns | Delimiter: "${parseResult.delimiter}"`,
-        opts.marginLeft,
-        currentY
-      );
+      pdf.setFont(selectedFont, 'normal');
+      const infoText = `Data: ${parseResult.rowCount} rows × ${parseResult.columnCount} columns | Delimiter: "${parseResult.delimiter}" | Font: ${selectedFont}`;
+      pdf.text(infoText, opts.marginLeft, currentY);
       currentY += 5;
 
       // Подготовка данных для таблицы
@@ -81,7 +83,6 @@ export class CsvToPdfGenerator {
         ? ['#', ...parseResult.headers]
         : parseResult.headers;
 
-      // Ограничиваем количество строк для предотвращения проблем с памятью
       const maxRows = opts.maxRowsPerPage || 1000;
       const dataToProcess = parseResult.data.slice(0, maxRows);
 
@@ -95,17 +96,17 @@ export class CsvToPdfGenerator {
           : rowData;
       });
 
-      // 🔥 КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ: Рассчитываем ширины колонок с гарантией подгонки под страницу
+      // Расчет оптимальных ширин колонок
       const columnStyles = this.calculateOptimalColumnWidths(
         columnAnalysis, 
         opts, 
         opts.includeRowNumbers
       );
       
-      // Настройки стилей таблицы
-      const tableStyles = this.getTableStyles(opts);
+      // Настройки стилей таблицы с Unicode шрифтом
+      const tableStyles = this.getTableStyles(opts, selectedFont);
       
-      // Генерация таблицы
+      // Генерация таблицы с Unicode поддержкой
       pdf.autoTable({
         head: [tableHeaders],
         body: tableData,
@@ -122,37 +123,43 @@ export class CsvToPdfGenerator {
           overflow: 'linebreak',
           halign: 'left',
           valign: 'top',
+          font: selectedFont, // 🎯 Используем Unicode шрифт
         },
         headStyles: {
           ...tableStyles.headerStyles,
           minCellHeight: 6,
           fontSize: Math.max(opts.fontSize, 7),
+          font: selectedFont,
+          fontStyle: 'bold',
         },
-        bodyStyles: tableStyles.bodyStyles,
-        alternateRowStyles: tableStyles.alternateRowStyles,
+        bodyStyles: {
+          ...tableStyles.bodyStyles,
+          font: selectedFont,
+        },
+        alternateRowStyles: {
+          ...tableStyles.alternateRowStyles,
+          font: selectedFont,
+        },
         columnStyles: columnStyles,
         showHead: true,
         showFoot: false,
         tableLineColor: tableStyles.lineColor,
         tableLineWidth: tableStyles.lineWidth,
-        // 🔥 КРИТИЧНО: НЕ используем горизонтальное разбиение - все колонки на одной странице
         tableWidth: 'wrap',
         didDrawPage: (data: any) => {
-          // Номера страниц
+          // Номера страниц с Unicode шрифтом
           const pageNumber = (pdf as any).internal.getCurrentPageInfo().pageNumber;
           const totalPages = (pdf as any).internal.getNumberOfPages();
           
           pdf.setFontSize(8);
-          pdf.setFont('helvetica', 'normal');
+          pdf.setFont(selectedFont, 'normal');
           
-          // Номер страницы
           pdf.text(
             `Page ${pageNumber} of ${totalPages}`,
             opts.marginLeft,
             (pdf as any).internal.pageSize.height - 10
           );
           
-          // Информация о данных
           const pageWidth = (pdf as any).internal.pageSize.width;
           pdf.text(
             `${parseResult.rowCount} rows | ${parseResult.columnCount} columns`,
@@ -166,7 +173,7 @@ export class CsvToPdfGenerator {
       if (parseResult.rowCount > maxRows) {
         const finalY = (pdf as any).lastAutoTable.finalY || currentY + 50;
         pdf.setFontSize(8);
-        pdf.setFont('helvetica', 'italic');
+        pdf.setFont(selectedFont, 'italic');
         pdf.text(
           `Note: Only first ${maxRows} of ${parseResult.rowCount} rows are displayed`,
           opts.marginLeft,
@@ -180,6 +187,79 @@ export class CsvToPdfGenerator {
 
     } catch (error) {
       throw new Error(`PDF generation failed: ${error}`);
+    }
+  }
+
+  /**
+   * 🆕 НОВАЯ ФУНКЦИЯ: Настройка Unicode шрифтов для данных
+   */
+  private static async setupUnicodeFonts(
+    pdf: jsPDF, 
+    parseResult: CsvParseResult, 
+    options: CsvToPdfOptions
+  ): Promise<string> {
+    try {
+      // Собираем весь текст для анализа
+      const allTexts: string[] = [];
+      
+      // Добавляем заголовки
+      allTexts.push(...parseResult.headers);
+      
+      // Добавляем заголовок документа
+      if (options.title) {
+        allTexts.push(options.title);
+      }
+      
+      // Добавляем образцы данных (первые 10 строк)
+      const sampleSize = Math.min(10, parseResult.data.length);
+      for (let i = 0; i < sampleSize; i++) {
+        const row = parseResult.data[i];
+        parseResult.headers.forEach(header => {
+          const value = row[header];
+          if (value && typeof value === 'string') {
+            allTexts.push(value);
+          }
+        });
+      }
+
+      console.log('🔍 Analyzing fonts for CSV data...');
+      
+      // Если указан конкретный шрифт
+      if (options.fontFamily && options.fontFamily !== 'auto') {
+        try {
+          const result = await FontManager.loadFont(pdf, options.fontFamily);
+          if (result.success) {
+            console.log(`✅ Using specified font: ${options.fontFamily}`);
+            return options.fontFamily;
+          }
+        } catch (error) {
+          console.warn(`⚠️ Failed to load specified font ${options.fontFamily}, falling back to auto`);
+        }
+      }
+
+      // Автоматический выбор шрифта
+      const selectedFont = await FontManager.setupFontsForText(pdf, allTexts);
+      
+      // Тестируем поддержку Unicode
+      const testResult = FontManager.testUnicodeSupport(allTexts.join(' '));
+      if (testResult.unicodeRanges.length > 0) {
+        console.log(`🌍 Unicode ranges detected: ${testResult.unicodeRanges.join(', ')}`);
+        console.log(`🔤 Recommended fonts: ${testResult.recommendedFonts.join(', ')}`);
+      }
+      
+      return selectedFont;
+      
+    } catch (error) {
+      console.error('❌ Font setup failed, using fallback:', error);
+      
+      // Fallback к Times (лучше поддерживает Unicode чем Helvetica)
+      try {
+        pdf.setFont('times', 'normal');
+        return 'times';
+      } catch {
+        pdf.setFont('helvetica', 'normal');
+        return 'helvetica';
+      }
     }
   }
 
@@ -381,15 +461,15 @@ export class CsvToPdfGenerator {
       'a4': orientation === 'landscape' ? 297 : 210,
       'a3': orientation === 'landscape' ? 420 : 297,
       'letter': orientation === 'landscape' ? 279 : 216,
-      'legal': orientation === 'landscape' ? 356 : 216, // 🔥 Legal landscape: 356mm
+      'legal': orientation === 'landscape' ? 356 : 216,
     };
-    return sizes[pageSize as keyof typeof sizes] || 356; // 🔥 Default to Legal width
+    return sizes[pageSize as keyof typeof sizes] || 356;
   }
 
   /**
-   * Получение стилей таблицы в зависимости от выбранного стиля
+   * Получение стилей таблицы в зависимости от выбранного стиля с поддержкой Unicode шрифтов
    */
-  private static getTableStyles(options: CsvToPdfOptions) {
+  private static getTableStyles(options: CsvToPdfOptions, selectedFont: string) {
     const baseStyles = {
       lineColor: [200, 200, 200],
       lineWidth: 0.1,
@@ -404,13 +484,16 @@ export class CsvToPdfGenerator {
             textColor: [255, 255, 255],
             fontStyle: 'bold' as const,
             halign: 'center' as const,
+            font: selectedFont,
           },
           bodyStyles: {
             fillColor: [255, 255, 255],
             textColor: [0, 0, 0],
+            font: selectedFont,
           },
           alternateRowStyles: {
             fillColor: [245, 245, 245],
+            font: selectedFont,
           },
           lineWidth: 0.3,
         };
@@ -423,13 +506,16 @@ export class CsvToPdfGenerator {
             textColor: [255, 255, 255],
             fontStyle: 'bold' as const,
             halign: 'center' as const,
+            font: selectedFont,
           },
           bodyStyles: {
             fillColor: [255, 255, 255],
             textColor: [0, 0, 0],
+            font: selectedFont,
           },
           alternateRowStyles: {
             fillColor: [248, 249, 250],
+            font: selectedFont,
           },
           lineWidth: 0.1,
         };
@@ -442,13 +528,16 @@ export class CsvToPdfGenerator {
             textColor: [0, 0, 0],
             fontStyle: 'bold' as const,
             halign: 'center' as const,
+            font: selectedFont,
           },
           bodyStyles: {
             fillColor: [255, 255, 255],
             textColor: [0, 0, 0],
+            font: selectedFont,
           },
           alternateRowStyles: {
             fillColor: [255, 255, 255],
+            font: selectedFont,
           },
           lineColor: [220, 220, 220],
           lineWidth: 0.1,
@@ -463,13 +552,16 @@ export class CsvToPdfGenerator {
             textColor: [0, 0, 0],
             fontStyle: 'bold' as const,
             halign: 'center' as const,
+            font: selectedFont,
           },
           bodyStyles: {
             fillColor: [255, 255, 255],
             textColor: [0, 0, 0],
+            font: selectedFont,
           },
           alternateRowStyles: {
             fillColor: [255, 255, 255],
+            font: selectedFont,
           },
           lineColor: [0, 0, 0],
           lineWidth: 0,
