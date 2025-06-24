@@ -98,7 +98,7 @@ export default defineConfig(({ mode }) => {
             'analytics': ['@vercel/analytics'],
           },
           
-          // FIXED: CSS and assets in root assets folder
+          // CSS and assets in root assets folder
           chunkFileNames: (chunkInfo) => {
             // Create descriptive names for better debugging
             if (chunkInfo.name?.includes('pdf')) {
@@ -111,10 +111,9 @@ export default defineConfig(({ mode }) => {
           },
           entryFileNames: 'assets/main-[hash].js',
           assetFileNames: (assetInfo) => {
-            // CRITICAL FIX: Put CSS files in root assets folder
             const name = assetInfo.name || ''
             if (name.endsWith('.css')) {
-              return 'assets/[name]-[hash].[ext]'  // NOT in styles subfolder!
+              return 'assets/[name]-[hash].[ext]'
             }
             if (name.match(/\.(png|jpe?g|svg|gif|webp|avif)$/)) {
               return 'assets/images/[name]-[hash].[ext]'
@@ -202,14 +201,10 @@ export default defineConfig(({ mode }) => {
       cors: true
     },
     
-    // CSS optimization
+    // CSS optimization - FIXED
     css: {
       devSourcemap: !isProduction,
-      postcss: {
-        plugins: [
-          // Additional PostCSS plugins can be added here
-        ]
-      }
+      // Remove custom PostCSS config here, let it use postcss.config.cjs
     }
   }
 })
