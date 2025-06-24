@@ -1,5 +1,6 @@
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
+import path from 'path'
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
@@ -11,6 +12,8 @@ export default defineConfig(({ mode }) => {
     react({
       // React Fast Refresh optimizations
       fastRefresh: !isProduction,
+      // Fix for CSS imports in JSX
+      include: "**/*.{jsx,tsx}",
     })
   ]
 
@@ -45,13 +48,14 @@ export default defineConfig(({ mode }) => {
     
     build: {
       outDir: 'dist',
-      sourcemap: !isProduction, // Source maps only in development
+      sourcemap: !isProduction,
       target: 'es2020',
+      assetsDir: 'assets',
       
       // Chunk size warning limit
       chunkSizeWarningLimit: 1000,
       
-      // Advanced minification with terser
+      // Advanced minification
       minify: 'terser',
       terserOptions: {
         compress: {
@@ -66,59 +70,33 @@ export default defineConfig(({ mode }) => {
       
       rollupOptions: {
         output: {
-          // Aggressive code splitting strategy
+          // Code splitting strategy
           manualChunks: {
-            // Core React libraries
             'react-core': ['react', 'react-dom'],
-            
-            // Routing
             'router': ['react-router-dom'],
-            
-            // UI & Animation libraries
             'ui-libs': ['lucide-react', 'framer-motion', 'react-hot-toast'],
-            
-            // File handling utilities
             'file-utils': ['file-saver', 'react-dropzone'],
-            
-            // Utility libraries
             'utils': ['clsx', 'tailwind-merge'],
-            
-            // Heavy PDF libraries (dynamically loaded)
             'pdf-heavy': ['pdf-lib'],
             'pdf-render': ['pdfjs-dist'],
             'pdf-generate': ['jspdf', 'jspdf-autotable'],
-            
-            // Data processing
             'data-processing': ['papaparse', 'pako'],
-            
-            // Canvas & Image processing
             'canvas': ['html2canvas'],
-            
-            // Analytics (separate chunk)
             'analytics': ['@vercel/analytics'],
           },
           
-          // CSS and assets in root assets folder
-          chunkFileNames: (chunkInfo) => {
-            // Create descriptive names for better debugging
-            if (chunkInfo.name?.includes('pdf')) {
-              return 'assets/pdf-[name]-[hash].js'
-            }
-            if (chunkInfo.name?.includes('react')) {
-              return 'assets/react-[name]-[hash].js'
-            }
-            return 'assets/[name]-[hash].js'
-          },
-          entryFileNames: 'assets/main-[hash].js',
+          chunkFileNames: 'assets/js/[name]-[hash].js',
+          entryFileNames: 'assets/js/[name]-[hash].js',
           assetFileNames: (assetInfo) => {
-            const name = assetInfo.name || ''
-            if (name.endsWith('.css')) {
-              return 'assets/[name]-[hash].[ext]'
+            const info = assetInfo.name.split('.')
+            const ext = info[info.length - 1]
+            if (/\.(css)$/.test(assetInfo.name)) {
+              return 'assets/css/[name]-[hash].[ext]'
             }
-            if (name.match(/\.(png|jpe?g|svg|gif|webp|avif)$/)) {
+            if (/\.(png|jpe?g|svg|gif|webp|avif)$/i.test(assetInfo.name)) {
               return 'assets/images/[name]-[hash].[ext]'
             }
-            if (name.match(/\.(woff2?|ttf|eot)$/)) {
+            if (/\.(woff2?|ttf|eot)$/i.test(assetInfo.name)) {
               return 'assets/fonts/[name]-[hash].[ext]'
             }
             return 'assets/[name]-[hash].[ext]'
@@ -142,7 +120,6 @@ export default defineConfig(({ mode }) => {
         'react-hot-toast',
         'react-helmet-async',
       ],
-      // Exclude heavy PDF libraries - load them dynamically
       exclude: [
         'pdf-lib',
         'jspdf', 
@@ -155,8 +132,8 @@ export default defineConfig(({ mode }) => {
     // Development server configuration
     server: {
       port: 3000,
-      open: !process.env.CI,
-      host: 'localhost', // Changed from true to localhost
+      host: 'localhost',
+      open: false,
       cors: true,
       strictPort: false,
       fs: {
@@ -170,31 +147,41 @@ export default defineConfig(({ mode }) => {
     // Preview server
     preview: {
       port: 4173,
-      host: true,
+      host: 'localhost',
+      open: false,
       cors: true
     },
     
-    // CSS optimization with proper handling
+    // CSS configuration
     css: {
       devSourcemap: !isProduction,
       modules: {
         localsConvention: 'camelCase'
+      },
+      postcss: {
+        plugins: []
       }
     },
     
     // Path resolution
     resolve: {
       alias: {
-        '@': '/src',
-        '@components': '/src/components',
-        '@pages': '/src/pages',
-        '@services': '/src/services',
-        '@hooks': '/src/hooks',
-        '@utils': '/src/utils',
-        '@workers': '/src/workers',
-        '@assets': '/src/assets',
-        '@types': '/src/types'
+        '@': path.resolve(__dirname, './src'),
+        '@components': path.resolve(__dirname, './src/components'),
+        '@pages': path.resolve(__dirname, './src/pages'),
+        '@services': path.resolve(__dirname, './src/services'),
+        '@hooks': path.resolve(__dirname, './src/hooks'),
+        '@utils': path.resolve(__dirname, './src/utils'),
+        '@workers': path.resolve(__dirname, './src/workers'),
+        '@assets': path.resolve(__dirname, './src/assets'),
+        '@types': path.resolve(__dirname, './src/types')
       }
+    },
+    
+    // Fix for CommonJS modules
+    esbuild: {
+      target: 'es2020',
+      format: 'esm'
     }
   }
 })
