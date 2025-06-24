@@ -1,0 +1,28 @@
+name: 🚀 Simple Deploy
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    name: ✅ Build & Test
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Install
+        run: npm ci --legacy-peer-deps
+      
+      - name: Build
+        run: npm run build
+      
+      - name: Success
+        run: echo "✅ LocalPDF build successful!"
