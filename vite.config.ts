@@ -98,7 +98,7 @@ export default defineConfig(({ mode }) => {
             'analytics': ['@vercel/analytics'],
           },
           
-          // Optimized file naming for better caching
+          // FIXED: CSS and assets in root assets folder
           chunkFileNames: (chunkInfo) => {
             // Create descriptive names for better debugging
             if (chunkInfo.name?.includes('pdf')) {
@@ -111,10 +111,10 @@ export default defineConfig(({ mode }) => {
           },
           entryFileNames: 'assets/main-[hash].js',
           assetFileNames: (assetInfo) => {
-            // Organize assets by type
+            // CRITICAL FIX: Put CSS files in root assets folder
             const name = assetInfo.name || ''
             if (name.endsWith('.css')) {
-              return 'assets/styles/[name]-[hash].[ext]'
+              return 'assets/[name]-[hash].[ext]'  // NOT in styles subfolder!
             }
             if (name.match(/\.(png|jpe?g|svg|gif|webp|avif)$/)) {
               return 'assets/images/[name]-[hash].[ext]'
