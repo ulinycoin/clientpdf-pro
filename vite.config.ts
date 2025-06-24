@@ -1,29 +1,38 @@
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
-import { visualizer } from 'rollup-plugin-visualizer'
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   const isProduction = mode === 'production'
   const isAnalyze = mode === 'analyze'
 
-  return {
-    plugins: [
-      react({
-        // React Fast Refresh optimizations
-        fastRefresh: !isProduction,
-      }),
-      
-      // Bundle analyzer plugin (only in analyze mode)
-      ...(isAnalyze ? [
+  // Dynamic import for bundle analyzer (optional)
+  const plugins = [
+    react({
+      // React Fast Refresh optimizations
+      fastRefresh: !isProduction,
+    })
+  ]
+
+  // Add visualizer plugin only if available and in analyze mode
+  if (isAnalyze) {
+    try {
+      const { visualizer } = require('rollup-plugin-visualizer')
+      plugins.push(
         visualizer({
           filename: 'dist/bundle-analysis.html',
           open: true,
           gzipSize: true,
           brotliSize: true,
         })
-      ] : []),
-    ],
+      )
+    } catch (error) {
+      console.warn('rollup-plugin-visualizer not available, skipping bundle analysis')
+    }
+  }
+
+  return {
+    plugins,
     
     base: '/',
     
@@ -201,30 +210,6 @@ export default defineConfig(({ mode }) => {
           // Additional PostCSS plugins can be added here
         ]
       }
-    },
-    
-    // Enable experimental features for better performance
-    experimental: {
-      renderBuiltUrl(filename, { hostType }) {
-        // Optimize asset loading
-        return { relative: true }
-      }
-    },
-    
-    // Environment-specific configurations
-    ...(isProduction && {
-      // Production-only optimizations
-      build: {
-        ...this.build,
-        reportCompressedSize: false, // Disable to speed up build
-        rollupOptions: {
-          ...this.build?.rollupOptions,
-          treeshake: {
-            preset: 'recommended',
-            moduleSideEffects: false
-          }
-        }
-      }
-    })
+    }
   }
 })
