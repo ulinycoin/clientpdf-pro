@@ -16,6 +16,7 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { clsx } from 'clsx';
 import { FileText, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, RotateCw } from 'lucide-react';
 import { Button } from '../atoms/Button';
+import { createPDFDocument, getPDFJSStatus } from '../../utils/pdfjs-initializer';
 
 interface PDFPreviewProps {
   file: File;
@@ -49,69 +50,18 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({
     };
   }, []);
 
-  // Загрузка PDF.js и инициализация
+  // Загрузка PDF с использованием утилиты
   useEffect(() => {
     let mounted = true;
     
-    const loadPDFJS = async () => {
+    const loadPDF = async () => {
       try {
-        console.log('🔄 Starting PDF.js load...');
+        console.log('🔄 Starting PDF load with utility...');
         setIsLoading(true);
         setError('');
 
-        // Динамическая загрузка PDF.js - используем разные стратегии
-        let pdfjs: any;
-        
-        try {
-          // Стратегия 1: Стандартный импорт
-          pdfjs = await import('pdfjs-dist');
-          console.log('✅ PDF.js loaded via standard import');
-        } catch (importError) {
-          console.warn('⚠️ Standard import failed:', importError);
-          
-          // Стратегия 2: Глобальный объект
-          if ((window as any).pdfjsLib) {
-            pdfjs = (window as any).pdfjsLib;
-            console.log('✅ PDF.js loaded from global object');
-          } else {
-            throw new Error('PDF.js library not available');
-          }
-        }
-        
-        if (!mounted || !isMountedRef.current) {
-          console.log('❌ Component unmounted during PDF.js load');
-          return;
-        }
-
-        // Настройка worker - несколько стратегий
-        try {
-          // Стратегия 1: GlobalWorkerOptions (новые версии)
-          if (pdfjs.GlobalWorkerOptions) {
-            pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.js';
-            console.log('✅ Worker configured via GlobalWorkerOptions');
-          } 
-          // Стратегия 2: Прямое присваивание (старые версии)
-          else if (pdfjs.getDocument && !pdfjs.workerSrc) {
-            (pdfjs as any).workerSrc = '/pdf.worker.js';
-            console.log('✅ Worker configured via direct assignment');
-          }
-          // Стратегия 3: CDN fallback
-          else {
-            const workerUrl = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-            if (pdfjs.GlobalWorkerOptions) {
-              pdfjs.GlobalWorkerOptions.workerSrc = workerUrl;
-            } else {
-              (pdfjs as any).workerSrc = workerUrl;
-            }
-            console.log('✅ Worker configured via CDN fallback');
-          }
-        } catch (workerError) {
-          console.warn('⚠️ Worker configuration failed:', workerError);
-          // Продолжаем без worker - может работать в некоторых случаях
-        }
-        
         // Чтение файла
-        console.log('🔄 Loading PDF file:', file.name);
+        console.log('🔄 Reading file:', file.name);
         const arrayBuffer = await file.arrayBuffer();
         
         if (!mounted || !isMountedRef.current) {
@@ -119,26 +69,21 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({
           return;
         }
         
-        console.log('✅ File read as ArrayBuffer, size:', arrayBuffer.byteLength);
+        console.log('✅ File read, size:', arrayBuffer.byteLength);
 
-        // Загрузка PDF документа с дополнительными параметрами
-        const loadingTask = pdfjs.getDocument({
-          data: arrayBuffer,
-          cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/',
-          cMapPacked: true,
-          standardFontDataUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/standard_fonts/',
-          // Отключаем worker если он недоступен
-          disableWorker: !pdfjs.GlobalWorkerOptions && !(pdfjs as any).workerSrc,
-        });
-        
-        const pdf = await loadingTask.promise;
+        // Создание PDF документа через утилиту
+        const pdf = await createPDFDocument(arrayBuffer);
         
         if (!mounted || !isMountedRef.current) {
-          console.log('❌ Component unmounted during PDF load');
+          console.log('❌ Component unmounted during PDF creation');
           return;
         }
         
-        console.log('✅ PDF document loaded, pages:', pdf.numPages);
+        console.log('✅ PDF document created, pages:', pdf.numPages);
+        
+        // Логируем статус PDF.js
+        const status = getPDFJSStatus();
+        console.log('📊 PDF.js status:', status);
         
         setPdfDocument(pdf);
         setTotalPages(pdf.numPages);
@@ -161,10 +106,12 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({
           // Более дружественные сообщения для пользователей
           if (errorMessage.includes('worker') || errorMessage.includes('Worker')) {
             errorMessage = 'PDF viewer initialization failed. Please try refreshing the page.';
-          } else if (errorMessage.includes('Invalid PDF')) {
+          } else if (errorMessage.includes('Invalid PDF') || errorMessage.includes('PDF header')) {
             errorMessage = 'This file appears to be corrupted or is not a valid PDF.';
           } else if (errorMessage.includes('network') || errorMessage.includes('fetch')) {
             errorMessage = 'Network error. Please check your internet connection.';
+          } else if (errorMessage.includes('password') || errorMessage.includes('encrypted')) {
+            errorMessage = 'This PDF is password protected. Password-protected PDFs are not supported for preview.';
           }
           
           setError(`Failed to load PDF: ${errorMessage}`);
@@ -173,7 +120,7 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({
       }
     };
 
-    loadPDFJS();
+    loadPDF();
     
     return () => {
       mounted = false;
