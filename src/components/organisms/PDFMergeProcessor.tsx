@@ -1,17 +1,9 @@
 /**
- * Copyright (c) 2024 LocalPDF Team
- * 
- * This file is part of LocalPDF.
- * 
- * LocalPDF is proprietary software: you may not copy, modify, distribute,
- * or use this software except as expressly permitted under the LocalPDF
- * Source Available License v1.0.
- * 
- * See the LICENSE file in the project root for license terms.
- * For commercial licensing, contact: license@localpdf.online
+ * LocalPDF - PDF Merge Processor Component
+ * Handles merging multiple PDF files with drag-and-drop reordering
  */
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { Clock, CheckCircle, AlertCircle, Combine, Download, Trash2, GripVertical, ArrowUp, ArrowDown, FileText, Plus } from 'lucide-react';
 import { Button } from '../atoms/Button';
 import { clsx } from 'clsx';
@@ -20,7 +12,6 @@ interface PDFMergeProcessorProps {
   files: File[];
   onRemoveFile?: (index: number) => void;
   onReorderFiles?: (files: File[]) => void;
-  onAddMoreFiles?: () => void;
 }
 
 interface FileStatus {
@@ -32,9 +23,9 @@ interface FileStatus {
 export const PDFMergeProcessor: React.FC<PDFMergeProcessorProps> = ({ 
   files, 
   onRemoveFile,
-  onReorderFiles,
-  onAddMoreFiles
+  onReorderFiles
 }) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [fileStatuses, setFileStatuses] = useState<FileStatus[]>(
     files.map(file => ({ file, status: 'idle' }))
   );
@@ -78,11 +69,20 @@ export const PDFMergeProcessor: React.FC<PDFMergeProcessorProps> = ({
     URL.revokeObjectURL(url);
   };
 
+  // Handle Add More Files button click
+  const handleAddMoreClick = useCallback(() => {
+    fileInputRef.current?.click();
+  }, []);
+
   // File upload handler for additional files
   const handleFileInput = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const newFiles = Array.from(event.target.files || []);
     if (newFiles.length > 0 && onReorderFiles) {
-      onReorderFiles([...files, ...newFiles]);
+      // Filter only PDF files
+      const pdfFiles = newFiles.filter(file => file.type === 'application/pdf');
+      if (pdfFiles.length > 0) {
+        onReorderFiles([...files, ...pdfFiles]);
+      }
     }
     // Reset input
     event.target.value = '';
@@ -209,6 +209,16 @@ export const PDFMergeProcessor: React.FC<PDFMergeProcessorProps> = ({
 
   return (
     <div className="space-y-6">
+      {/* Hidden file input */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".pdf"
+        multiple
+        onChange={handleFileInput}
+        className="hidden"
+      />
+
       {/* Files List */}
       <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
@@ -225,23 +235,15 @@ export const PDFMergeProcessor: React.FC<PDFMergeProcessorProps> = ({
               </div>
               
               {/* Add More Files Button */}
-              <div className="relative">
-                <input
-                  type="file"
-                  accept=".pdf"
-                  multiple
-                  onChange={handleFileInput}
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                />
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  icon={Plus}
-                  className="relative"
-                >
-                  Add More
-                </Button>
-              </div>
+              <Button
+                onClick={handleAddMoreClick}
+                variant="secondary"
+                size="sm"
+                icon={Plus}
+                disabled={mergeStatus === 'processing'}
+              >
+                Add More
+              </Button>
             </div>
           </div>
         </div>
@@ -291,6 +293,7 @@ export const PDFMergeProcessor: React.FC<PDFMergeProcessorProps> = ({
                 onClick={() => removeFile(index)}
                 className="p-2 text-gray-400 hover:text-red-500 transition-colors"
                 title="Remove file"
+                disabled={mergeStatus === 'processing'}
               >
                 <Trash2 className="w-4 h-4" />
               </button>
@@ -369,6 +372,7 @@ export const PDFMergeProcessor: React.FC<PDFMergeProcessorProps> = ({
           <li>• All pages from each PDF will be included</li>
           <li>• Original quality and formatting will be preserved</li>
           <li>• The merged file will be downloaded automatically</li>
+          <li>• Click "Add More" to include additional PDF files</li>
         </ul>
       </div>
     </div>
