@@ -4,7 +4,12 @@
   "installCommand": "npm install --legacy-peer-deps",
   "devCommand": "npm run dev",
   "framework": "vite",
-  "regions": ["iad1"],
+  "regions": ["iad1", "cdg1", "sin1"],
+  "functions": {
+    "app/api/**/*.js": {
+      "runtime": "nodejs18.x"
+    }
+  },
   "rewrites": [
     {
       "source": "/(.*)",
@@ -18,6 +23,15 @@
         {
           "key": "Cache-Control",
           "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
         }
       ]
     },
@@ -39,8 +53,36 @@
         {
           "key": "Referrer-Policy",
           "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://vercel.live; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://www.google-analytics.com; connect-src 'self' https://www.google-analytics.com https://vitals.vercel-analytics.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self';"
         }
       ]
     }
-  ]
+  ],
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/home",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/tools",
+      "destination": "/",
+      "permanent": true
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production",
+    "VITE_APP_VERSION": "@vercel-env-app-version",
+    "VITE_VERCEL_URL": "@vercel-url",
+    "VITE_VERCEL_GIT_COMMIT_SHA": "@vercel-git-commit-sha"
+  }
 }
