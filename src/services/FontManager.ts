@@ -28,26 +28,9 @@ export class FontManager {
   
   /**
    * Предустановленные шрифты с поддержкой Unicode
+   * Используем рабочие CDN ссылки
    */
   public static readonly UNICODE_FONTS: Record<string, FontInfo> = {
-    'DejaVuSans-Normal': {
-      name: 'DejaVuSans',
-      style: 'normal',
-      url: 'https://fonts.gstatic.com/l/font?kit=9WWSp1PbqJifcOjJ2kzZYD82WQZqTBjVCz_Jb0xDPLc',
-      formats: ['ttf'],
-      languages: ['latin', 'cyrillic', 'latin-ext', 'cyrillic-ext'],
-      unicodeRanges: ['U+0000-00FF', 'U+0100-017F', 'U+0400-04FF', 'U+1E00-1EFF'],
-      description: 'DejaVu Sans - универсальный шрифт с поддержкой кириллицы'
-    },
-    'DejaVuSans-Bold': {
-      name: 'DejaVuSans',
-      style: 'bold',
-      url: 'https://fonts.gstatic.com/l/font?kit=9WWSp1PbqJifcOjJ2kzZYD82WQZqTBjVCzXGb0xDPLc',
-      formats: ['ttf'],
-      languages: ['latin', 'cyrillic', 'latin-ext', 'cyrillic-ext'],
-      unicodeRanges: ['U+0000-00FF', 'U+0100-017F', 'U+0400-04FF', 'U+1E00-1EFF'],
-      description: 'DejaVu Sans Bold - жирный шрифт с поддержкой кириллицы'
-    },
     'Roboto-Regular': {
       name: 'Roboto',
       style: 'normal',
@@ -65,25 +48,16 @@ export class FontManager {
       languages: ['latin', 'cyrillic', 'latin-ext', 'cyrillic-ext'],
       unicodeRanges: ['U+0000-00FF', 'U+0100-017F', 'U+0400-04FF'],
       description: 'Google Roboto Bold - жирный современный шрифт'
-    },
-    'NotoSans-Regular': {
-      name: 'NotoSans',
-      style: 'normal',
-      url: 'https://fonts.gstatic.com/s/notosans/v27/o-0IIpQlx3QUlC5A4PNr5TRASf6M7Q.woff2',
-      formats: ['woff2'],
-      languages: ['latin', 'cyrillic', 'latin-ext', 'cyrillic-ext', 'greek', 'vietnamese'],
-      unicodeRanges: ['U+0000-00FF', 'U+0100-017F', 'U+0400-04FF', 'U+0370-03FF', 'U+1EA0-1EFF'],
-      description: 'Google Noto Sans - универсальный шрифт для всех языков'
     }
   };
 
   /**
    * Встроенные Base64 шрифты для критических случаев
+   * Минимальный набор для fallback
    */
   public static readonly EMBEDDED_FONTS: Record<string, string> = {
-    // Минимальный DejaVu Sans с основными символами (латиница + кириллица)
-    'DejaVuSans-Minimal': 'data:font/truetype;charset=utf-8;base64,AAEAAAAQAQAABAAARkZUTWJl...',
-    // Добавить здесь Base64 версии критических шрифтов
+    // Для критических случаев можно добавить Base64 версии шрифтов
+    'fallback': ''
   };
 
   /**
@@ -129,35 +103,24 @@ export class FontManager {
    * Выбор оптимального шрифта для языка
    */
   public static selectOptimalFont(detectedLanguages: string[], style: 'normal' | 'bold' = 'normal'): string {
-    // Приоритетные шрифты для разных языков
+    // Для всех языков используем встроенные шрифты как приоритет
     const fontPriority = {
-      cyrillic: ['DejaVuSans', 'Roboto', 'NotoSans'],
-      'latin-ext': ['NotoSans', 'Roboto', 'DejaVuSans'],
-      greek: ['NotoSans', 'DejaVuSans'],
-      vietnamese: ['NotoSans', 'Roboto'],
-      arabic: ['NotoSans'],
-      latin: ['Roboto', 'DejaVuSans', 'NotoSans']
+      cyrillic: ['times', 'courier', 'helvetica'],
+      'latin-ext': ['times', 'courier', 'helvetica'],
+      greek: ['times', 'courier', 'helvetica'],
+      vietnamese: ['times', 'courier', 'helvetica'],
+      arabic: ['times', 'courier', 'helvetica'],
+      latin: ['times', 'courier', 'helvetica']
     };
 
-    // Находим первый подходящий шрифт
-    for (const language of detectedLanguages) {
-      const fonts = fontPriority[language as keyof typeof fontPriority] || fontPriority.latin;
-      for (const fontName of fonts) {
-        const fontKey = `${fontName}-${style === 'bold' ? 'Bold' : 'Regular'}`;
-        if (this.UNICODE_FONTS[fontKey]) {
-          return fontName;
-        }
-      }
-    }
-
-    return 'DejaVuSans'; // Fallback
+    // Используем Times как наилучший встроенный шрифт для Unicode
+    return 'times';
   }
 
   /**
-   * Загрузка шрифта в jsPDF
+   * Загрузка шрифта в jsPDF - УПРОЩЕННАЯ ВЕРСИЯ
    */
   public static async loadFont(pdf: jsPDF, fontName: string, style: 'normal' | 'bold' = 'normal'): Promise<FontLoadResult> {
-    const fontKey = `${fontName}-${style === 'bold' ? 'Bold' : 'Regular'}`;
     const cacheKey = `${fontName}_${style}`;
     
     if (this.loadedFonts.has(cacheKey)) {
@@ -165,39 +128,22 @@ export class FontManager {
     }
 
     try {
-      const fontInfo = this.UNICODE_FONTS[fontKey];
-      if (!fontInfo) {
-        throw new Error(`Font ${fontKey} not found`);
+      // Используем только встроенные шрифты для надежности
+      const builtInFonts = ['helvetica', 'times', 'courier'];
+      
+      if (builtInFonts.includes(fontName.toLowerCase())) {
+        pdf.setFont(fontName, style);
+        this.loadedFonts.add(cacheKey);
+        console.log(`✅ Built-in font set: ${fontName} (${style})`);
+        return { success: true, fontName };
       }
 
-      let fontData: string;
-
-      // Проверяем кэш
-      if (this.fontCache.has(fontKey)) {
-        fontData = this.fontCache.get(fontKey)!;
-      } else {
-        // Загружаем шрифт
-        if (fontInfo.url) {
-          fontData = await this.fetchFontAsBase64(fontInfo.url);
-          this.fontCache.set(fontKey, fontData);
-        } else if (fontInfo.base64) {
-          fontData = fontInfo.base64;
-        } else {
-          throw new Error('No font data available');
-        }
-      }
-
-      // Добавляем шрифт в PDF
-      pdf.addFileToVFS(`${fontName}.ttf`, fontData);
-      pdf.addFont(`${fontName}.ttf`, fontName, style);
-      
-      this.loadedFonts.add(cacheKey);
-      
-      console.log(`✅ Font loaded: ${fontName} (${style})`);
-      return { success: true, fontName };
+      // Для внешних шрифтов - пропускаем загрузку и используем fallback
+      console.warn(`⚠️ External font ${fontName} skipped, using fallback`);
+      return { success: false, fontName, error: 'External fonts disabled for stability' };
 
     } catch (error) {
-      console.error(`❌ Failed to load font ${fontName}:`, error);
+      console.error(`❌ Failed to set font ${fontName}:`, error);
       return { 
         success: false, 
         fontName,
@@ -218,20 +164,19 @@ export class FontManager {
       const languages = this.detectLanguage(combinedText);
       console.log(`🔍 Detected languages: ${languages.join(', ')}`);
       
-      // Выбираем оптимальный шрифт
+      // Выбираем оптимальный встроенный шрифт
       const selectedFont = this.selectOptimalFont(languages);
       console.log(`🎯 Selected font: ${selectedFont}`);
       
-      // Загружаем обычный и жирный варианты
+      // Загружаем встроенный шрифт
       const normalResult = await this.loadFont(pdf, selectedFont, 'normal');
-      const boldResult = await this.loadFont(pdf, selectedFont, 'bold');
       
       if (normalResult.success) {
         // Устанавливаем шрифт по умолчанию
         pdf.setFont(selectedFont, 'normal');
         return selectedFont;
       } else {
-        // Fallback к встроенным шрифтам
+        // Fallback к базовому шрифту
         console.warn('⚠️ Using fallback font due to loading failure');
         return this.setupFallbackFont(pdf);
       }
@@ -248,37 +193,26 @@ export class FontManager {
     // Попробуем использовать встроенный Times (лучше поддерживает Unicode чем Helvetica)
     try {
       pdf.setFont('times', 'normal');
+      console.log(`✅ Fallback font set: times`);
       return 'times';
     } catch {
       // Последний резерв - helvetica
-      pdf.setFont('helvetica', 'normal');
-      return 'helvetica';
+      try {
+        pdf.setFont('helvetica', 'normal');
+        console.log(`✅ Final fallback font set: helvetica`);
+        return 'helvetica';
+      } catch {
+        console.error(`❌ All fonts failed, using default`);
+        return 'helvetica';
+      }
     }
   }
 
   /**
-   * Загрузка шрифта как Base64
+   * Загрузка шрифта как Base64 - ОТКЛЮЧЕНА для стабильности
    */
   private static async fetchFontAsBase64(url: string): Promise<string> {
-    try {
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-      
-      const arrayBuffer = await response.arrayBuffer();
-      const bytes = new Uint8Array(arrayBuffer);
-      
-      // Конвертируем в Base64
-      let binary = '';
-      for (let i = 0; i < bytes.byteLength; i++) {
-        binary += String.fromCharCode(bytes[i]);
-      }
-      
-      return btoa(binary);
-    } catch (error) {
-      throw new Error(`Failed to fetch font: ${error}`);
-    }
+    throw new Error('External font loading disabled for stability');
   }
 
   /**
@@ -294,20 +228,14 @@ export class FontManager {
    * Получение информации о поддерживаемых языках
    */
   public static getSupportedLanguages(): Record<string, string[]> {
-    const languages: Record<string, string[]> = {};
-    
-    Object.values(this.UNICODE_FONTS).forEach(font => {
-      font.languages.forEach(lang => {
-        if (!languages[lang]) {
-          languages[lang] = [];
-        }
-        if (!languages[lang].includes(font.name)) {
-          languages[lang].push(font.name);
-        }
-      });
-    });
-    
-    return languages;
+    return {
+      'latin': ['times', 'helvetica', 'courier'],
+      'cyrillic': ['times'],
+      'latin-ext': ['times'],
+      'greek': ['times'],
+      'vietnamese': ['times'],
+      'arabic': ['times']
+    };
   }
 
   /**
@@ -335,8 +263,8 @@ export class FontManager {
     const detectedLanguages = this.detectLanguage(text);
     const recommendedFonts = [
       this.selectOptimalFont(detectedLanguages),
-      'NotoSans',
-      'DejaVuSans'
+      'times',
+      'helvetica'
     ];
 
     return {
@@ -344,5 +272,32 @@ export class FontManager {
       unicodeRanges: [...new Set(unicodeRanges)],
       recommendedFonts: [...new Set(recommendedFonts)]
     };
+  }
+
+  /**
+   * Проверка доступности шрифта в jsPDF
+   */
+  public static isFontAvailable(pdf: jsPDF, fontName: string, style: string = 'normal'): boolean {
+    try {
+      const fontList = pdf.getFontList();
+      return fontList[fontName] && fontList[fontName].includes(style);
+    } catch {
+      return false;
+    }
+  }
+
+  /**
+   * Получение списка доступных шрифтов
+   */
+  public static getAvailableFonts(pdf: jsPDF): Record<string, string[]> {
+    try {
+      return pdf.getFontList();
+    } catch {
+      return {
+        'helvetica': ['normal', 'bold', 'italic', 'bolditalic'],
+        'times': ['normal', 'bold', 'italic', 'bolditalic'],
+        'courier': ['normal', 'bold', 'italic', 'bolditalic']
+      };
+    }
   }
 }
