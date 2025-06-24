@@ -1,4 +1,4 @@
-import React, { useState, useEffect, lazy, Suspense } from 'react';
+import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FileText, Upload, Download, Settings, ArrowRight, Shield, Zap, Lock, Loader2, Play, Scissors, Archive, ImageIcon, BarChart3 } from 'lucide-react';
 import { clsx } from 'clsx';
@@ -34,6 +34,10 @@ export const HomePage: React.FC = () => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [currentPDF, setCurrentPDF] = useState<File | null>(null);
   const [showPDFTools, setShowPDFTools] = useState(false);
+  const [showQuickStart, setShowQuickStart] = useState(false);
+  
+  // Ref for hidden file input
+  const hiddenFileInputRef = useRef<HTMLInputElement>(null);
   
   const navigate = useNavigate();
   const { setPendingFile } = usePendingFile();
@@ -43,6 +47,22 @@ export const HomePage: React.FC = () => {
   useEffect(() => {
     document.title = 'LocalPDF - Free Online PDF Tools | Privacy-First PDF Processing | 5 Essential Tools';
   }, []);
+
+  // Instant file selection handler
+  const handleInstantFileSelection = () => {
+    hiddenFileInputRef.current?.click();
+  };
+
+  // Handle file selection from system dialog
+  const handleSystemFileSelection = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files || []);
+    if (files.length > 0) {
+      handleFilesSelected(files);
+      setShowQuickStart(true); // Show the file processing section
+    }
+    // Reset input to allow selecting the same file again
+    event.target.value = '';
+  };
 
   const handleFilesSelected = (files: File[]) => {
     console.log('Selected files:', files);
@@ -118,6 +138,32 @@ export const HomePage: React.FC = () => {
           Process PDFs and convert documents instantly in your browser. No uploads, no servers, your files never leave your device.
         </p>
         
+        {/* Instant File Selection Button */}
+        <div className="mb-8">
+          <Button
+            variant="primary"
+            size="lg"
+            icon={Upload}
+            onClick={handleInstantFileSelection}
+            className="shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 font-semibold px-8 py-4 text-lg"
+          >
+            Choose Files
+          </Button>
+          <p className="text-sm text-gray-500 mt-3">
+            Click to select PDF, images, or CSV files from your device
+          </p>
+          
+          {/* Hidden file input for system dialog */}
+          <input
+            type="file"
+            ref={hiddenFileInputRef}
+            onChange={handleSystemFileSelection}
+            accept=".pdf,.jpg,.jpeg,.png,.gif,.bmp,.webp,.csv,.txt,.tsv"
+            multiple
+            className="hidden"
+          />
+        </div>
+        
         {/* Trust Indicators */}
         <div className="flex items-center justify-center space-x-6 text-sm text-gray-500 mb-8">
           <div className="flex items-center">
@@ -135,101 +181,47 @@ export const HomePage: React.FC = () => {
         </div>
       </div>
 
-      {/* Tools Grid - Square Design */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6 mb-12">
-        {tools.map((tool) => (
-          <Link
-            key={tool.href}
-            to={tool.href}
-            className={clsx(
-              'group relative block aspect-square p-4 md:p-6 rounded-2xl border-2 transition-all duration-300 hover:scale-105 hover:shadow-xl transform-gpu',
-              'flex flex-col items-center justify-center text-center',
-              tool.color === 'blue' && 'border-blue-200 hover:border-blue-300 bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200',
-              tool.color === 'green' && 'border-green-200 hover:border-green-300 bg-gradient-to-br from-green-50 to-green-100 hover:from-green-100 hover:to-green-200',
-              tool.color === 'orange' && 'border-orange-200 hover:border-orange-300 bg-gradient-to-br from-orange-50 to-orange-100 hover:from-orange-100 hover:to-orange-200',
-              tool.color === 'purple' && 'border-purple-200 hover:border-purple-300 bg-gradient-to-br from-purple-50 to-purple-100 hover:from-purple-100 hover:to-purple-200',
-              tool.color === 'cyan' && 'border-cyan-200 hover:border-cyan-300 bg-gradient-to-br from-cyan-50 to-cyan-100 hover:from-cyan-100 hover:to-cyan-200'
-            )}
-          >
-            {tool.isNew && (
-              <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-medium z-10">
-                NEW
-              </div>
-            )}
-            
-            {/* Icon */}
-            <div className="text-4xl md:text-5xl mb-2 md:mb-3 transform group-hover:scale-110 transition-transform duration-300">
-              {tool.icon}
-            </div>
-            
-            {/* Title */}
-            <h3 className="text-sm md:text-base font-bold text-gray-900 mb-1 md:mb-2 group-hover:text-blue-600 transition-colors line-clamp-2">
-              {tool.title}
-            </h3>
-            
-            {/* Description - Hidden on mobile, shown on larger screens */}
-            <p className="hidden md:block text-xs text-gray-600 mb-2 md:mb-3 line-clamp-2 px-1">
-              {tool.description}
+      {/* Quick Start Section - Only show when files are selected */}
+      {showQuickStart && selectedFiles.length > 0 && (
+        <div className="bg-white rounded-2xl border border-gray-200 p-8 mb-12 shadow-sm">
+          <div className="text-center mb-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              🎯 Ready to Process Your Files
+            </h2>
+            <p className="text-gray-600">
+              {selectedFiles.length} file{selectedFiles.length > 1 ? 's' : ''} selected • Choose an action below
             </p>
-            
-            {/* Action indicator */}
-            <div className="flex items-center justify-center text-xs font-medium text-blue-600 group-hover:text-blue-700 mt-auto">
-              <span className="hidden md:inline">Get Started</span>
-              <ArrowRight className="h-3 w-3 md:h-4 md:w-4 md:ml-1 group-hover:translate-x-1 transition-transform" />
-            </div>
-          </Link>
-        ))}
-      </div>
-
-      {/* Quick Start Section - Improved with actionable buttons */}
-      <div className="bg-white rounded-2xl border border-gray-200 p-8 mb-12">
-        <div className="text-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            Quick Start - Upload & Process
-          </h2>
-          <p className="text-gray-600">
-            Upload your files and we'll suggest the best tool for processing
-          </p>
-        </div>
-
-        <FileUploadZone
-          onFilesSelected={handleFilesSelected}
-          acceptedTypes={['.pdf', '.jpg', '.jpeg', '.png', '.gif', '.csv', '.txt', '.tsv']}
-          maxFiles={5}
-          maxSize={100 * 1024 * 1024}
-          className="mb-6"
-        />
-
-        {/* Smart Recommendations */}
-        {recommendations.length > 0 && (
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              💡 Smart Recommendations
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {recommendations.map((rec, index) => (
-                <Link
-                  key={index}
-                  to={rec.route}
-                  className="p-4 bg-blue-50 border border-blue-200 rounded-lg hover:border-blue-300 hover:shadow-md transition-all duration-200 group"
-                >
-                  <h4 className="font-semibold text-blue-900 mb-2 group-hover:text-blue-700">
-                    {rec.title}
-                  </h4>
-                  <p className="text-sm text-blue-700">
-                    {rec.description}
-                  </p>
-                </Link>
-              ))}
-            </div>
           </div>
-        )}
 
-        {selectedFiles.length > 0 && (
+          {/* Smart Recommendations */}
+          {recommendations.length > 0 && (
+            <div className="mb-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                💡 Recommended Actions
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {recommendations.map((rec, index) => (
+                  <button
+                    key={index}
+                    onClick={() => navigate(rec.route)}
+                    className="p-4 bg-blue-50 border border-blue-200 rounded-lg hover:border-blue-300 hover:shadow-md transition-all duration-200 group text-left"
+                  >
+                    <h4 className="font-semibold text-blue-900 mb-2 group-hover:text-blue-700">
+                      {rec.title}
+                    </h4>
+                    <p className="text-sm text-blue-700">
+                      {rec.description}
+                    </p>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div>
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                Ready to Process ({selectedFiles.length} files)
+                Selected Files ({selectedFiles.length})
               </h3>
               <div className="space-y-3">
                 {selectedFiles.map((file, index) => {
@@ -321,8 +313,102 @@ export const HomePage: React.FC = () => {
               </Suspense>
             )}
           </div>
-        )}
+
+          {/* Action to add more files */}
+          <div className="text-center mt-6 pt-6 border-t border-gray-200">
+            <Button
+              variant="ghost"
+              icon={Upload}
+              onClick={handleInstantFileSelection}
+              className="mr-4"
+            >
+              Add More Files
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setSelectedFiles([]);
+                setCurrentPDF(null);
+                setShowPDFTools(false);
+                setShowQuickStart(false);
+              }}
+            >
+              Clear All
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Tools Grid - Square Design */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6 mb-12">
+        {tools.map((tool) => (
+          <Link
+            key={tool.href}
+            to={tool.href}
+            className={clsx(
+              'group relative block aspect-square p-4 md:p-6 rounded-2xl border-2 transition-all duration-300 hover:scale-105 hover:shadow-xl transform-gpu',
+              'flex flex-col items-center justify-center text-center',
+              tool.color === 'blue' && 'border-blue-200 hover:border-blue-300 bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200',
+              tool.color === 'green' && 'border-green-200 hover:border-green-300 bg-gradient-to-br from-green-50 to-green-100 hover:from-green-100 hover:to-green-200',
+              tool.color === 'orange' && 'border-orange-200 hover:border-orange-300 bg-gradient-to-br from-orange-50 to-orange-100 hover:from-orange-100 hover:to-orange-200',
+              tool.color === 'purple' && 'border-purple-200 hover:border-purple-300 bg-gradient-to-br from-purple-50 to-purple-100 hover:from-purple-100 hover:to-purple-200',
+              tool.color === 'cyan' && 'border-cyan-200 hover:border-cyan-300 bg-gradient-to-br from-cyan-50 to-cyan-100 hover:from-cyan-100 hover:to-cyan-200'
+            )}
+          >
+            {tool.isNew && (
+              <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-medium z-10">
+                NEW
+              </div>
+            )}
+            
+            {/* Icon */}
+            <div className="text-4xl md:text-5xl mb-2 md:mb-3 transform group-hover:scale-110 transition-transform duration-300">
+              {tool.icon}
+            </div>
+            
+            {/* Title */}
+            <h3 className="text-sm md:text-base font-bold text-gray-900 mb-1 md:mb-2 group-hover:text-blue-600 transition-colors line-clamp-2">
+              {tool.title}
+            </h3>
+            
+            {/* Description - Hidden on mobile, shown on larger screens */}
+            <p className="hidden md:block text-xs text-gray-600 mb-2 md:mb-3 line-clamp-2 px-1">
+              {tool.description}
+            </p>
+            
+            {/* Action indicator */}
+            <div className="flex items-center justify-center text-xs font-medium text-blue-600 group-hover:text-blue-700 mt-auto">
+              <span className="hidden md:inline">Get Started</span>
+              <ArrowRight className="h-3 w-3 md:h-4 md:w-4 md:ml-1 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </Link>
+        ))}
       </div>
+
+      {/* Alternative Upload Zone - Only show when no files selected */}
+      {!showQuickStart && (
+        <div className="bg-white rounded-2xl border border-gray-200 p-8 mb-12">
+          <div className="text-center mb-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              Alternative: Drag & Drop Files
+            </h2>
+            <p className="text-gray-600">
+              Or drag and drop multiple files here for batch processing
+            </p>
+          </div>
+
+          <FileUploadZone
+            onFilesSelected={(files) => {
+              handleFilesSelected(files);
+              setShowQuickStart(true);
+            }}
+            acceptedTypes={['.pdf', '.jpg', '.jpeg', '.png', '.gif', '.csv', '.txt', '.tsv']}
+            maxFiles={5}
+            maxSize={100 * 1024 * 1024}
+            className="mb-6"
+          />
+        </div>
+      )}
 
       {/* Features Section */}
       <div className="bg-blue-50 rounded-2xl p-8 border border-blue-200 mb-12">
