@@ -1,14 +1,12 @@
 /**
- * Copyright (c) 2024 LocalPDF Team
+ * ClientPDF Pro - Client-side PDF processing application
  * 
- * This file is part of LocalPDF.
+ * Modern React application for privacy-focused PDF operations.
+ * All processing happens locally in the browser - no server uploads.
  * 
- * LocalPDF is proprietary software: you may not copy, modify, distribute,
- * or use this software except as expressly permitted under the LocalPDF
- * Source Available License v1.0.
- * 
- * See the LICENSE file in the project root for license terms.
- * For commercial licensing, contact: license@localpdf.online
+ * @license MIT
+ * @author ulinycoin
+ * @version 0.1.0
  */
 
 import React from 'react';
