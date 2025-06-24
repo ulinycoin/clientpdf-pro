@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FileText, Upload, Download, Settings, ArrowRight, Shield, Zap, Lock, Loader2, Play, Scissors, Archive, ImageIcon, BarChart3 } from 'lucide-react';
 import { clsx } from 'clsx';
 import { Button } from '../components/atoms/Button';
 import { FileUploadZone } from '../components/molecules/FileUploadZone';
 import { usePendingFile, useFileQuickActions, useFileRecommendations } from '../hooks/useFileTransfer';
+import { useInstantFileSelection } from '../hooks/useInstantFileSelection';
 
 // Lazy loading PDF компонентов для уменьшения размера основного bundle
 const PDFPreview = lazy(() => 
@@ -35,34 +36,33 @@ export const HomePage: React.FC = () => {
   const [currentPDF, setCurrentPDF] = useState<File | null>(null);
   const [showPDFTools, setShowPDFTools] = useState(false);
   const [showQuickStart, setShowQuickStart] = useState(false);
-  
-  // Ref for hidden file input
-  const hiddenFileInputRef = useRef<HTMLInputElement>(null);
+  const [error, setError] = useState<string>('');
   
   const navigate = useNavigate();
   const { setPendingFile } = usePendingFile();
   const { getQuickActionForFile, getFileIcon, formatFileSize } = useFileQuickActions();
   const { getRecommendationsForFiles } = useFileRecommendations();
 
+  // Instant file selection hook
+  const { openFileDialog, isSupported, supportedFormats } = useInstantFileSelection({
+    acceptedTypes: ['.pdf', '.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', '.csv', '.txt', '.tsv'],
+    multiple: true,
+    maxSize: 100 * 1024 * 1024, // 100MB
+    maxFiles: 10,
+    onFilesSelected: (files) => {
+      handleFilesSelected(files);
+      setShowQuickStart(true);
+      setError(''); // Clear any previous errors
+    },
+    onError: (errorMessage) => {
+      setError(errorMessage);
+      setTimeout(() => setError(''), 5000); // Clear error after 5 seconds
+    }
+  });
+
   useEffect(() => {
     document.title = 'LocalPDF - Free Online PDF Tools | Privacy-First PDF Processing | 5 Essential Tools';
   }, []);
-
-  // Instant file selection handler
-  const handleInstantFileSelection = () => {
-    hiddenFileInputRef.current?.click();
-  };
-
-  // Handle file selection from system dialog
-  const handleSystemFileSelection = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(event.target.files || []);
-    if (files.length > 0) {
-      handleFilesSelected(files);
-      setShowQuickStart(true); // Show the file processing section
-    }
-    // Reset input to allow selecting the same file again
-    event.target.value = '';
-  };
 
   const handleFilesSelected = (files: File[]) => {
     console.log('Selected files:', files);
@@ -144,24 +144,25 @@ export const HomePage: React.FC = () => {
             variant="primary"
             size="lg"
             icon={Upload}
-            onClick={handleInstantFileSelection}
+            onClick={openFileDialog}
+            disabled={!isSupported}
             className="shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 font-semibold px-8 py-4 text-lg"
           >
             Choose Files
           </Button>
           <p className="text-sm text-gray-500 mt-3">
-            Click to select PDF, images, or CSV files from your device
+            {isSupported 
+              ? `Click to select files: ${supportedFormats.slice(0, 4).join(', ')}${supportedFormats.length > 4 ? ' and more' : ''}`
+              : 'File selection not supported in this browser'
+            }
           </p>
           
-          {/* Hidden file input for system dialog */}
-          <input
-            type="file"
-            ref={hiddenFileInputRef}
-            onChange={handleSystemFileSelection}
-            accept=".pdf,.jpg,.jpeg,.png,.gif,.bmp,.webp,.csv,.txt,.tsv"
-            multiple
-            className="hidden"
-          />
+          {/* Error Display */}
+          {error && (
+            <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md max-w-lg mx-auto">
+              <p className="text-red-700 text-sm">{error}</p>
+            </div>
+          )}
         </div>
         
         {/* Trust Indicators */}
@@ -183,7 +184,7 @@ export const HomePage: React.FC = () => {
 
       {/* Quick Start Section - Only show when files are selected */}
       {showQuickStart && selectedFiles.length > 0 && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-8 mb-12 shadow-sm">
+        <div className="bg-white rounded-2xl border border-gray-200 p-8 mb-12 shadow-sm animate-in slide-in-from-top duration-300">
           <div className="text-center mb-6">
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
               🎯 Ready to Process Your Files
@@ -229,7 +230,7 @@ export const HomePage: React.FC = () => {
                   const fileIcon = getFileIcon(file);
                   
                   return (
-                    <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border">
+                    <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border hover:bg-gray-100 transition-colors">
                       <div className="flex items-center min-w-0 flex-1">
                         <div className="text-2xl mr-3">
                           {fileIcon}
@@ -319,7 +320,7 @@ export const HomePage: React.FC = () => {
             <Button
               variant="ghost"
               icon={Upload}
-              onClick={handleInstantFileSelection}
+              onClick={openFileDialog}
               className="mr-4"
             >
               Add More Files
@@ -331,6 +332,7 @@ export const HomePage: React.FC = () => {
                 setCurrentPDF(null);
                 setShowPDFTools(false);
                 setShowQuickStart(false);
+                setError('');
               }}
             >
               Clear All
