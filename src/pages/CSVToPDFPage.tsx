@@ -211,6 +211,13 @@ export const CSVToPDFPage: React.FC = () => {
   // Показываем больше строк если их много
   const previewRowCount = parseResult ? Math.min(parseResult.rowCount, 20) : 5;
 
+  // Improved animation variants
+  const pageVariants = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -20 }
+  };
+
   return (
     <>
       <Helmet>
@@ -282,13 +289,16 @@ export const CSVToPDFPage: React.FC = () => {
             </div>
           </motion.div>
 
-          {/* Main Content */}
+          {/* Main Content with proper positioning */}
           <div className="max-w-6xl mx-auto">
             {currentStep === 'upload' && (
               <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.3 }}
+                key="upload"
+                variants={pageVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={{ duration: 0.3 }}
               >
                 <Card className="p-8 glass-card hover-lift">
                   <div
@@ -339,8 +349,12 @@ export const CSVToPDFPage: React.FC = () => {
 
             {currentStep === 'preview' && parseResult && (
               <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
+                key="preview"
+                variants={pageVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={{ duration: 0.3 }}
                 className="space-y-6"
               >
                 {/* File Info */}
@@ -433,12 +447,17 @@ export const CSVToPDFPage: React.FC = () => {
 
             {currentStep === 'options' && (
               <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
+                key="options"
+                variants={pageVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={{ duration: 0.3 }}
                 className="space-y-6"
+                style={{ position: 'relative', zIndex: 1 }} // Fix positioning
               >
-                <Card className="p-6 glass-card">
-                  <h3 className="text-lg font-semibold mb-4 flex items-center">
+                <Card className="p-6 glass-card" style={{ position: 'relative' }}>
+                  <h3 className="text-lg font-semibold mb-6 flex items-center">
                     <Settings className="w-5 h-5 mr-2" />
                     PDF Configuration
                   </h3>
@@ -514,8 +533,13 @@ export const CSVToPDFPage: React.FC = () => {
                           ...prev,
                           fontSize: parseInt(e.target.value)
                         }))}
-                        className="w-full"
+                        className="slider w-full"
                       />
+                      <div className="flex justify-between text-xs text-gray-500 mt-1">
+                        <span>6pt</span>
+                        <span>11pt</span>
+                        <span>16pt</span>
+                      </div>
                     </div>
 
                     {/* Title */}
@@ -554,7 +578,7 @@ export const CSVToPDFPage: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="flex justify-between mt-6">
+                  <div className="flex justify-between mt-8 pt-6 border-t border-gray-200">
                     <Button variant="secondary" onClick={() => setCurrentStep('preview')} className="btn-secondary-modern">
                       Back to Preview
                     </Button>
