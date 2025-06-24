@@ -33,6 +33,65 @@ html {
   @apply transition-all duration-200 hover:shadow-md hover:border-gray-300;
 }
 
+/* Range Slider Styles */
+.slider {
+  @apply h-2 bg-gray-200 rounded-lg outline-none transition-all duration-200;
+  appearance: none;
+  background: linear-gradient(to right, #3b82f6 0%, #3b82f6 var(--value, 0%), #e5e7eb var(--value, 0%), #e5e7eb 100%);
+}
+
+.slider:hover {
+  @apply bg-gray-300;
+}
+
+.slider:focus {
+  @apply ring-2 ring-blue-500 ring-offset-2;
+}
+
+.slider::-webkit-slider-thumb {
+  @apply w-5 h-5 bg-blue-600 border-2 border-white rounded-full cursor-pointer;
+  appearance: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+}
+
+.slider::-webkit-slider-thumb:hover {
+  @apply bg-blue-700 transform scale-110;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.slider::-webkit-slider-thumb:active {
+  @apply bg-blue-800 transform scale-105;
+}
+
+.slider::-moz-range-thumb {
+  @apply w-5 h-5 bg-blue-600 border-2 border-white rounded-full cursor-pointer;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+}
+
+.slider::-moz-range-thumb:hover {
+  @apply bg-blue-700 transform scale-110;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.slider::-moz-range-track {
+  @apply w-full h-2 bg-gray-200 rounded-lg;
+}
+
+.slider:disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+
+.slider:disabled::-webkit-slider-thumb {
+  @apply cursor-not-allowed;
+}
+
+.slider:disabled::-moz-range-thumb {
+  @apply cursor-not-allowed;
+}
+
 /* 🔥 BULLETPROOF CSV Table System - GUARANTEED to stay within viewport */
 .csv-table-container {
   @apply w-full;
