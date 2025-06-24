@@ -3,7 +3,6 @@ module.exports = {
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
-    "./src/**/*.{html,js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
@@ -31,33 +30,4 @@ module.exports = {
     require('@tailwindcss/forms'),
     require('@tailwindcss/typography'),
   ],
-  // Force include all utilities for production
-  safelist: [
-    'container',
-    'flex',
-    'grid',
-    'text-center',
-    'justify-center',
-    'items-center',
-    'space-y-4',
-    'space-y-6',
-    'space-y-8',
-    'py-16',
-    'py-8',
-    'px-4',
-    'px-6',
-    'bg-white',
-    'bg-gray-50',
-    'text-gray-600',
-    'text-gray-800',
-    'text-blue-600',
-    'rounded-lg',
-    'shadow',
-    'shadow-lg',
-    'border',
-    'btn',
-    'btn-primary',
-    'card',
-    'hero',
-  ]
 }
