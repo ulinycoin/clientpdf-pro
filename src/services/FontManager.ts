@@ -1,6 +1,6 @@
 /**
- * FontManager.ts - Менеджер шрифтов для поддержки Unicode символов
- * Поддерживает кириллицу, латышский, и другие языки
+ * FontManager.ts - УЛУЧШЕННЫЙ менеджер шрифтов с Unicode поддержкой
+ * Версия 2.0 - с лучшей обработкой символов и кодировок
  */
 
 import { jsPDF } from 'jspdf';
@@ -8,11 +8,8 @@ import { jsPDF } from 'jspdf';
 export interface FontInfo {
   name: string;
   style: 'normal' | 'bold' | 'italic' | 'bolditalic';
-  url?: string;
-  base64?: string;
-  formats: string[];
-  languages: string[];
-  unicodeRanges: string[];
+  unicodeSupport: string[];
+  fallbackChars: Record<string, string>;
   description: string;
 }
 
@@ -24,40 +21,109 @@ export interface FontLoadResult {
 
 export class FontManager {
   private static loadedFonts = new Set<string>();
-  private static fontCache = new Map<string, string>();
   
   /**
-   * Предустановленные шрифты с поддержкой Unicode
-   * Используем рабочие CDN ссылки
+   * Карта замещения символов для проблемных Unicode символов
    */
-  public static readonly UNICODE_FONTS: Record<string, FontInfo> = {
-    'Roboto-Regular': {
-      name: 'Roboto',
-      style: 'normal',
-      url: 'https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxKKTU1Kg.woff2',
-      formats: ['woff2'],
-      languages: ['latin', 'cyrillic', 'latin-ext', 'cyrillic-ext'],
-      unicodeRanges: ['U+0000-00FF', 'U+0100-017F', 'U+0400-04FF'],
-      description: 'Google Roboto - современный шрифт с поддержкой кириллицы'
-    },
-    'Roboto-Bold': {
-      name: 'Roboto',
-      style: 'bold',
-      url: 'https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmWUlfBBc4AMP6lQ.woff2',
-      formats: ['woff2'],
-      languages: ['latin', 'cyrillic', 'latin-ext', 'cyrillic-ext'],
-      unicodeRanges: ['U+0000-00FF', 'U+0100-017F', 'U+0400-04FF'],
-      description: 'Google Roboto Bold - жирный современный шрифт'
-    }
+  private static readonly CHAR_REPLACEMENTS: Record<string, string> = {
+    // Латышские символы → ближайшие латинские
+    'ā': 'a', 'Ā': 'A',
+    'č': 'c', 'Č': 'C', 
+    'ē': 'e', 'Ē': 'E',
+    'ģ': 'g', 'Ģ': 'G',
+    'ī': 'i', 'Ī': 'I',
+    'ķ': 'k', 'Ķ': 'K',
+    'ļ': 'l', 'Ļ': 'L',
+    'ņ': 'n', 'Ņ': 'N',
+    'š': 's', 'Š': 'S',
+    'ū': 'u', 'Ū': 'U',
+    'ž': 'z', 'Ž': 'Z',
+    
+    // Литовские символы
+    'ą': 'a', 'Ą': 'A',
+    'ę': 'e', 'Ę': 'E',
+    'ė': 'e', 'Ė': 'E',
+    'į': 'i', 'Į': 'I',
+    'ų': 'u', 'Ų': 'U',
+    
+    // Польские символы
+    'ć': 'c', 'Ć': 'C',
+    'ł': 'l', 'Ł': 'L',
+    'ń': 'n', 'Ń': 'N',
+    'ó': 'o', 'Ó': 'O',
+    'ś': 's', 'Ś': 'S',
+    'ź': 'z', 'Ź': 'Z',
+    'ż': 'z', 'Ż': 'Z',
+    
+    // Греческие символы → латинские эквиваленты
+    'α': 'a', 'Α': 'A',
+    'β': 'b', 'Β': 'B', 
+    'γ': 'g', 'Γ': 'G',
+    'δ': 'd', 'Δ': 'D',
+    'ε': 'e', 'Ε': 'E',
+    'ζ': 'z', 'Ζ': 'Z',
+    'η': 'h', 'Η': 'H',
+    'θ': 'th', 'Θ': 'TH',
+    'ι': 'i', 'Ι': 'I',
+    'κ': 'k', 'Κ': 'K',
+    'λ': 'l', 'Λ': 'L',
+    'μ': 'm', 'Μ': 'M',
+    'ν': 'n', 'Ν': 'N',
+    'ξ': 'x', 'Ξ': 'X',
+    'ο': 'o', 'Ο': 'O',
+    'π': 'p', 'Π': 'P',
+    'ρ': 'r', 'Ρ': 'R',
+    'σ': 's', 'Σ': 'S',
+    'ς': 's',
+    'τ': 't', 'Τ': 'T',
+    'υ': 'y', 'Υ': 'Y',
+    'φ': 'f', 'Φ': 'F',
+    'χ': 'ch', 'Χ': 'CH',
+    'ψ': 'ps', 'Ψ': 'PS',
+    'ω': 'o', 'Ω': 'O',
+    
+    // Специальные символы валют
+    '₽': 'RUB',
+    '€': 'EUR',
+    '£': 'GBP',
+    '$': 'USD',
+    
+    // Другие проблемные символы
+    '–': '-',
+    '—': '-',
+    ''': "'",
+    ''': "'",
+    '"': '"',
+    '"': '"',
+    '…': '...',
+    '№': 'No.',
   };
 
   /**
-   * Встроенные Base64 шрифты для критических случаев
-   * Минимальный набор для fallback
+   * Поддерживаемые шрифты с информацией о Unicode поддержке
    */
-  public static readonly EMBEDDED_FONTS: Record<string, string> = {
-    // Для критических случаев можно добавить Base64 версии шрифтов
-    'fallback': ''
+  public static readonly SUPPORTED_FONTS: Record<string, FontInfo> = {
+    'courier': {
+      name: 'courier',
+      style: 'normal',
+      unicodeSupport: ['latin', 'limited-cyrillic'],
+      fallbackChars: {},
+      description: 'Courier - моноширинный шрифт с ограниченной Unicode поддержкой'
+    },
+    'helvetica': {
+      name: 'helvetica',
+      style: 'normal', 
+      unicodeSupport: ['latin', 'limited-cyrillic'],
+      fallbackChars: {},
+      description: 'Helvetica - базовый шрифт с минимальной Unicode поддержкой'
+    },
+    'times': {
+      name: 'times',
+      style: 'normal',
+      unicodeSupport: ['latin', 'cyrillic', 'partial-greek'],
+      fallbackChars: {},
+      description: 'Times Roman - лучший встроенный шрифт для Unicode'
+    }
   };
 
   /**
@@ -66,33 +132,23 @@ export class FontManager {
   public static detectLanguage(text: string): string[] {
     const languages: string[] = [];
     
-    // Кириллица
+    // Кириллица (в основном поддерживается Times)
     if (/[\u0400-\u04FF]/.test(text)) {
       languages.push('cyrillic');
     }
     
-    // Латинские расширения (включая латышский ā, č, ē, ģ, ī, ķ, ļ, ņ, š, ū, ž)
+    // Латинские расширения (плохо поддерживаются встроенными шрифтами)
     if (/[\u0100-\u017F]/.test(text)) {
       languages.push('latin-ext');
     }
     
-    // Греческий
+    // Греческий (частично поддерживается Times)
     if (/[\u0370-\u03FF]/.test(text)) {
       languages.push('greek');
     }
     
-    // Вьетнамский
-    if (/[\u1EA0-\u1EFF]/.test(text)) {
-      languages.push('vietnamese');
-    }
-    
-    // Арабский
-    if (/[\u0600-\u06FF]/.test(text)) {
-      languages.push('arabic');
-    }
-    
-    // Базовая латиница всегда присутствует
-    if (/[A-Za-z]/.test(text) && languages.length === 0) {
+    // Базовая латиница (хорошо поддерживается всеми)
+    if (/[A-Za-z]/.test(text)) {
       languages.push('latin');
     }
     
@@ -102,23 +158,50 @@ export class FontManager {
   /**
    * Выбор оптимального шрифта для языка
    */
-  public static selectOptimalFont(detectedLanguages: string[], style: 'normal' | 'bold' = 'normal'): string {
-    // Для всех языков используем встроенные шрифты как приоритет
-    const fontPriority = {
-      cyrillic: ['times', 'courier', 'helvetica'],
-      'latin-ext': ['times', 'courier', 'helvetica'],
-      greek: ['times', 'courier', 'helvetica'],
-      vietnamese: ['times', 'courier', 'helvetica'],
-      arabic: ['times', 'courier', 'helvetica'],
-      latin: ['times', 'courier', 'helvetica']
-    };
-
-    // Используем Times как наилучший встроенный шрифт для Unicode
-    return 'times';
+  public static selectOptimalFont(detectedLanguages: string[]): string {
+    // Для всех языков используем Courier как наиболее стабильный
+    // Times имеет проблемы с кодировкой, Helvetica - ограниченную поддержку
+    if (detectedLanguages.includes('cyrillic')) {
+      return 'courier'; // Courier лучше обрабатывает кириллицу чем Times
+    }
+    
+    if (detectedLanguages.includes('latin-ext') || detectedLanguages.includes('greek')) {
+      return 'courier'; // Courier + замещение символов
+    }
+    
+    return 'courier'; // Courier как универсальный выбор
   }
 
   /**
-   * Загрузка шрифта в jsPDF - УПРОЩЕННАЯ ВЕРСИЯ
+   * Очистка и нормализация текста для PDF
+   */
+  public static sanitizeTextForPDF(text: string): string {
+    if (!text || typeof text !== 'string') {
+      return '';
+    }
+
+    let cleanText = text;
+    
+    // Применяем замещения символов
+    Object.entries(this.CHAR_REPLACEMENTS).forEach(([unicode, replacement]) => {
+      cleanText = cleanText.replace(new RegExp(unicode, 'g'), replacement);
+    });
+    
+    // Удаляем или заменяем оставшиеся проблемные символы
+    cleanText = cleanText
+      // Заменяем невидимые символы
+      .replace(/[\u200B-\u200D\uFEFF]/g, '')
+      // Заменяем символы, которые могут вызвать проблемы
+      .replace(/[^\x20-\x7E\u00A0-\u00FF\u0100-\u017F\u0400-\u04FF]/g, '?')
+      // Нормализуем пробелы
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    return cleanText;
+  }
+
+  /**
+   * Загрузка шрифта в jsPDF
    */
   public static async loadFont(pdf: jsPDF, fontName: string, style: 'normal' | 'bold' = 'normal'): Promise<FontLoadResult> {
     const cacheKey = `${fontName}_${style}`;
@@ -128,19 +211,17 @@ export class FontManager {
     }
 
     try {
-      // Используем только встроенные шрифты для надежности
-      const builtInFonts = ['helvetica', 'times', 'courier'];
-      
-      if (builtInFonts.includes(fontName.toLowerCase())) {
-        pdf.setFont(fontName, style);
-        this.loadedFonts.add(cacheKey);
-        console.log(`✅ Built-in font set: ${fontName} (${style})`);
-        return { success: true, fontName };
+      // Проверяем доступность шрифта
+      if (!this.SUPPORTED_FONTS[fontName]) {
+        throw new Error(`Font ${fontName} not supported`);
       }
 
-      // Для внешних шрифтов - пропускаем загрузку и используем fallback
-      console.warn(`⚠️ External font ${fontName} skipped, using fallback`);
-      return { success: false, fontName, error: 'External fonts disabled for stability' };
+      // Устанавливаем шрифт
+      pdf.setFont(fontName, style);
+      this.loadedFonts.add(cacheKey);
+      
+      console.log(`✅ Font set: ${fontName} (${style})`);
+      return { success: true, fontName };
 
     } catch (error) {
       console.error(`❌ Failed to set font ${fontName}:`, error);
@@ -153,31 +234,29 @@ export class FontManager {
   }
 
   /**
-   * Загрузка и автоматическая настройка шрифтов для текста
+   * Настройка шрифтов для текста с автоматической очисткой
    */
   public static async setupFontsForText(pdf: jsPDF, texts: string[]): Promise<string> {
     try {
-      // Объединяем весь текст для анализа
-      const combinedText = texts.join(' ');
+      // Очищаем и объединяем весь текст
+      const cleanTexts = texts.map(text => this.sanitizeTextForPDF(text));
+      const combinedText = cleanTexts.join(' ');
       
       // Определяем языки
       const languages = this.detectLanguage(combinedText);
       console.log(`🔍 Detected languages: ${languages.join(', ')}`);
       
-      // Выбираем оптимальный встроенный шрифт
+      // Выбираем шрифт
       const selectedFont = this.selectOptimalFont(languages);
       console.log(`🎯 Selected font: ${selectedFont}`);
       
-      // Загружаем встроенный шрифт
-      const normalResult = await this.loadFont(pdf, selectedFont, 'normal');
+      // Загружаем шрифт
+      const result = await this.loadFont(pdf, selectedFont, 'normal');
       
-      if (normalResult.success) {
-        // Устанавливаем шрифт по умолчанию
+      if (result.success) {
         pdf.setFont(selectedFont, 'normal');
         return selectedFont;
       } else {
-        // Fallback к базовому шрифту
-        console.warn('⚠️ Using fallback font due to loading failure');
         return this.setupFallbackFont(pdf);
       }
     } catch (error) {
@@ -190,29 +269,20 @@ export class FontManager {
    * Настройка fallback шрифта
    */
   private static setupFallbackFont(pdf: jsPDF): string {
-    // Попробуем использовать встроенный Times (лучше поддерживает Unicode чем Helvetica)
     try {
-      pdf.setFont('times', 'normal');
-      console.log(`✅ Fallback font set: times`);
-      return 'times';
+      pdf.setFont('courier', 'normal');
+      console.log(`✅ Fallback font set: courier`);
+      return 'courier';
     } catch {
-      // Последний резерв - helvetica
       try {
         pdf.setFont('helvetica', 'normal');
         console.log(`✅ Final fallback font set: helvetica`);
         return 'helvetica';
       } catch {
-        console.error(`❌ All fonts failed, using default`);
+        console.error(`❌ All fonts failed`);
         return 'helvetica';
       }
     }
-  }
-
-  /**
-   * Загрузка шрифта как Base64 - ОТКЛЮЧЕНА для стабильности
-   */
-  private static async fetchFontAsBase64(url: string): Promise<string> {
-    throw new Error('External font loading disabled for stability');
   }
 
   /**
@@ -220,7 +290,6 @@ export class FontManager {
    */
   public static clearCache(): void {
     this.loadedFonts.clear();
-    this.fontCache.clear();
     console.log('🧹 Font cache cleared');
   }
 
@@ -229,75 +298,57 @@ export class FontManager {
    */
   public static getSupportedLanguages(): Record<string, string[]> {
     return {
-      'latin': ['times', 'helvetica', 'courier'],
-      'cyrillic': ['times'],
-      'latin-ext': ['times'],
-      'greek': ['times'],
-      'vietnamese': ['times'],
-      'arabic': ['times']
+      'latin': ['courier', 'helvetica', 'times'],
+      'cyrillic': ['courier', 'times'],
+      'latin-ext': ['courier'], // с заменой символов
+      'greek': ['courier'], // с заменой символов
     };
   }
 
   /**
-   * Тестирование отображения символов
+   * Тестирование текста и предложение исправлений
    */
-  public static testUnicodeSupport(text: string): {
-    characters: string[];
-    unicodeRanges: string[];
-    recommendedFonts: string[];
+  public static analyzeAndFixText(text: string): {
+    original: string;
+    cleaned: string;
+    replacements: Array<{from: string, to: string}>;
+    recommendedFont: string;
+    issues: string[];
   } {
-    const characters = [...new Set(text.split(''))];
-    const unicodeRanges: string[] = [];
+    const original = text;
+    const cleaned = this.sanitizeTextForPDF(text);
+    const languages = this.detectLanguage(text);
+    const recommendedFont = this.selectOptimalFont(languages);
     
-    characters.forEach(char => {
-      const code = char.codePointAt(0);
-      if (code) {
-        if (code >= 0x0400 && code <= 0x04FF) unicodeRanges.push('Cyrillic');
-        if (code >= 0x0100 && code <= 0x017F) unicodeRanges.push('Latin Extended-A');
-        if (code >= 0x0180 && code <= 0x024F) unicodeRanges.push('Latin Extended-B');
-        if (code >= 0x0370 && code <= 0x03FF) unicodeRanges.push('Greek');
-        if (code >= 0x1EA0 && code <= 0x1EFF) unicodeRanges.push('Vietnamese');
+    // Находим замещения
+    const replacements: Array<{from: string, to: string}> = [];
+    Object.entries(this.CHAR_REPLACEMENTS).forEach(([from, to]) => {
+      if (original.includes(from)) {
+        replacements.push({ from, to });
       }
     });
 
-    const detectedLanguages = this.detectLanguage(text);
-    const recommendedFonts = [
-      this.selectOptimalFont(detectedLanguages),
-      'times',
-      'helvetica'
-    ];
+    // Анализируем проблемы
+    const issues: string[] = [];
+    if (languages.includes('latin-ext')) {
+      issues.push('Латинские расширения заменены на базовые символы');
+    }
+    if (languages.includes('greek')) {
+      issues.push('Греческие символы заменены на латинские эквиваленты');
+    }
+    if (languages.includes('cyrillic')) {
+      issues.push('Кириллица может отображаться неправильно в некоторых шрифтах');
+    }
+    if (original !== cleaned) {
+      issues.push('Текст был очищен от проблемных символов');
+    }
 
     return {
-      characters: characters.slice(0, 20), // Первые 20 уникальных символов
-      unicodeRanges: [...new Set(unicodeRanges)],
-      recommendedFonts: [...new Set(recommendedFonts)]
+      original,
+      cleaned,
+      replacements,
+      recommendedFont,
+      issues
     };
-  }
-
-  /**
-   * Проверка доступности шрифта в jsPDF
-   */
-  public static isFontAvailable(pdf: jsPDF, fontName: string, style: string = 'normal'): boolean {
-    try {
-      const fontList = pdf.getFontList();
-      return fontList[fontName] && fontList[fontName].includes(style);
-    } catch {
-      return false;
-    }
-  }
-
-  /**
-   * Получение списка доступных шрифтов
-   */
-  public static getAvailableFonts(pdf: jsPDF): Record<string, string[]> {
-    try {
-      return pdf.getFontList();
-    } catch {
-      return {
-        'helvetica': ['normal', 'bold', 'italic', 'bolditalic'],
-        'times': ['normal', 'bold', 'italic', 'bolditalic'],
-        'courier': ['normal', 'bold', 'italic', 'bolditalic']
-      };
-    }
   }
 }
