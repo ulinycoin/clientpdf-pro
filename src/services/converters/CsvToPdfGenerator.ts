@@ -1,7 +1,7 @@
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 import { CsvParseResult, CsvToPdfOptions, ColumnAnalysis } from './CsvToPdfConverter';
-import { FontManager } from '../FontManager';
+import { FontManagerEnhanced } from '../FontManagerEnhanced';
 
 export class CsvToPdfGenerator {
   /**
@@ -47,19 +47,19 @@ export class CsvToPdfGenerator {
         format: opts.pageSize.toLowerCase() as any,
       });
 
-      // 🎯 УЛУЧШЕННАЯ ФУНКЦИЯ: Настройка шрифтов с очисткой текста
+      // 🎯 ИСПОЛЬЗУЕМ НОВЫЙ FontManagerEnhanced
       const selectedFont = await this.setupUnicodeFonts(pdf, parseResult, opts);
       
       // Анализ столбцов для оптимизации
       const columnAnalysis = this.analyzeColumns(parseResult.headers, parseResult.data, parseResult.columnTypes);
       
-      // Настройка метаданных
-      const cleanTitle = opts.title ? FontManager.sanitizeTextForPDF(opts.title) : 'CSV Data Export';
+      // Настройка метаданных (без очистки, так как кастомные шрифты поддерживают Unicode)
+      const title = opts.title || 'CSV Data Export';
       pdf.setProperties({
-        title: cleanTitle,
+        title: title,
         subject: `Data table with ${parseResult.rowCount} rows and ${parseResult.columnCount} columns`,
         author: 'ClientPDF Pro',
-        creator: 'ClientPDF Pro - CSV to PDF Converter with Unicode Support v2.0',
+        creator: 'ClientPDF Pro - CSV to PDF Converter with Full Unicode Support v3.0',
         keywords: 'CSV, PDF, data, table, export, unicode, cyrillic, multilingual',
       });
 
@@ -67,36 +67,35 @@ export class CsvToPdfGenerator {
       let currentY = opts.marginTop;
       if (opts.title) {
         pdf.setFontSize(16);
-        pdf.setFont(selectedFont, 'bold');
-        pdf.text(cleanTitle, opts.marginLeft, currentY);
+        try {
+          pdf.setFont(selectedFont, 'bold');
+        } catch {
+          pdf.setFont(selectedFont, 'normal');
+        }
+        pdf.text(title, opts.marginLeft, currentY);
         currentY += 10;
       }
 
-      // Информация о данных с Unicode поддержкой
+      // Информация о данных
       pdf.setFontSize(8);
       pdf.setFont(selectedFont, 'normal');
       const infoText = `Data: ${parseResult.rowCount} rows × ${parseResult.columnCount} columns | Delimiter: "${parseResult.delimiter}" | Font: ${selectedFont}`;
-      pdf.text(FontManager.sanitizeTextForPDF(infoText), opts.marginLeft, currentY);
+      pdf.text(infoText, opts.marginLeft, currentY);
       currentY += 5;
 
-      // 🎯 КРИТИЧНО: Очистка заголовков таблицы
-      const cleanHeaders = parseResult.headers.map(header => 
-        FontManager.sanitizeTextForPDF(header)
-      );
-      
+      // Заголовки таблицы (без очистки для кастомных шрифтов)
       const tableHeaders = opts.includeRowNumbers 
-        ? ['#', ...cleanHeaders]
-        : cleanHeaders;
+        ? ['#', ...parseResult.headers]
+        : parseResult.headers;
 
       const maxRows = opts.maxRowsPerPage || 1000;
       const dataToProcess = parseResult.data.slice(0, maxRows);
 
-      // 🎯 КРИТИЧНО: Очистка данных таблицы
+      // Данные таблицы (без очистки для кастомных шрифтов)
       const tableData = dataToProcess.map((row, index) => {
         const rowData = parseResult.headers.map(header => {
           const value = row[header];
-          const formattedValue = this.formatCellValue(value, parseResult.columnTypes[header]);
-          return FontManager.sanitizeTextForPDF(formattedValue);
+          return this.formatCellValue(value, parseResult.columnTypes[header]);
         });
         return opts.includeRowNumbers 
           ? [String(index + 1), ...rowData]
@@ -113,7 +112,7 @@ export class CsvToPdfGenerator {
       // Настройки стилей таблицы
       const tableStyles = this.getTableStyles(opts);
       
-      // Генерация таблицы с очищенными данными
+      // Генерация таблицы
       pdf.autoTable({
         head: [tableHeaders],
         body: tableData,
@@ -130,15 +129,19 @@ export class CsvToPdfGenerator {
           overflow: 'linebreak',
           halign: 'left',
           valign: 'top',
+          font: selectedFont, // Используем выбранный шрифт
+          fontStyle: 'normal',
         },
         headStyles: {
           ...tableStyles.headerStyles,
           minCellHeight: 6,
           fontSize: Math.max(opts.fontSize, 7),
           fontStyle: 'bold',
+          font: selectedFont,
         },
         bodyStyles: {
           ...tableStyles.bodyStyles,
+          font: selectedFont,
         },
         alternateRowStyles: {
           ...tableStyles.alternateRowStyles,
@@ -150,7 +153,7 @@ export class CsvToPdfGenerator {
         tableLineWidth: tableStyles.lineWidth,
         tableWidth: 'wrap',
         didDrawPage: (data: any) => {
-          // Номера страниц с очищенным текстом
+          // Номера страниц
           const pageNumber = (pdf as any).internal.getCurrentPageInfo().pageNumber;
           const totalPages = (pdf as any).internal.getNumberOfPages();
           
@@ -175,7 +178,11 @@ export class CsvToPdfGenerator {
         },
         willDrawCell: (data: any) => {
           if (data.section === 'head') {
-            pdf.setFont(selectedFont, 'bold');
+            try {
+              pdf.setFont(selectedFont, 'bold');
+            } catch {
+              pdf.setFont(selectedFont, 'normal');
+            }
           } else {
             pdf.setFont(selectedFont, 'normal');
           }
@@ -186,13 +193,9 @@ export class CsvToPdfGenerator {
       if (parseResult.rowCount > maxRows) {
         const finalY = (pdf as any).lastAutoTable.finalY || currentY + 50;
         pdf.setFontSize(8);
-        pdf.setFont(selectedFont, 'italic');
+        pdf.setFont(selectedFont, 'normal');
         const warningText = `Note: Only first ${maxRows} of ${parseResult.rowCount} rows are displayed`;
-        pdf.text(
-          FontManager.sanitizeTextForPDF(warningText),
-          opts.marginLeft,
-          finalY + 10
-        );
+        pdf.text(warningText, opts.marginLeft, finalY + 10);
       }
 
       // Возврат PDF как Uint8Array
@@ -205,7 +208,7 @@ export class CsvToPdfGenerator {
   }
 
   /**
-   * 🆕 УЛУЧШЕННАЯ ФУНКЦИЯ: Настройка шрифтов с анализом и очисткой данных
+   * 🆕 УЛУЧШЕННАЯ ФУНКЦИЯ: Настройка шрифтов с поддержкой кастомных Unicode шрифтов
    */
   private static async setupUnicodeFonts(
     pdf: jsPDF, 
@@ -238,25 +241,31 @@ export class CsvToPdfGenerator {
 
       console.log('🔍 Analyzing fonts for CSV data...');
       
-      // Анализируем проблемные символы
-      const sampleText = allTexts.join(' ');
-      const analysis = FontManager.analyzeAndFixText(sampleText);
-      
-      if (analysis.issues.length > 0) {
-        console.log('⚠️ Text issues found:', analysis.issues);
+      // Определяем предпочитаемый шрифт
+      let preferredFont: string | undefined;
+      if (options.fontFamily && options.fontFamily !== 'auto') {
+        preferredFont = options.fontFamily;
       }
       
-      if (analysis.replacements.length > 0) {
-        console.log('🔄 Character replacements:', analysis.replacements.length);
-        analysis.replacements.slice(0, 5).forEach(replacement => {
-          console.log(`  ${replacement.from} → ${replacement.to}`);
-        });
-      }
-      
-      // Автоматический выбор шрифта
-      const selectedFont = await FontManager.setupFontsForText(pdf, allTexts);
+      // Используем FontManagerEnhanced для настройки шрифтов
+      const selectedFont = await FontManagerEnhanced.setupFontsForText(
+        pdf, 
+        allTexts,
+        preferredFont
+      );
       
       console.log(`✅ Font setup completed: ${selectedFont}`);
+      
+      // Проверяем поддержку текста выбранным шрифтом
+      const validation = FontManagerEnhanced.validateTextSupport(
+        allTexts.join(' '), 
+        selectedFont
+      );
+      
+      if (!validation.supported && validation.recommendation) {
+        console.log(`⚠️ Font recommendation: ${validation.recommendation}`);
+      }
+      
       return selectedFont;
       
     } catch (error) {
@@ -264,11 +273,11 @@ export class CsvToPdfGenerator {
       
       // Fallback к встроенным шрифтам
       try {
-        pdf.setFont('courier', 'normal');
-        return 'courier';
-      } catch {
         pdf.setFont('helvetica', 'normal');
         return 'helvetica';
+      } catch {
+        pdf.setFont('courier', 'normal');
+        return 'courier';
       }
     }
   }
@@ -312,7 +321,7 @@ export class CsvToPdfGenerator {
   }
 
   /**
-   * Форматирование значения ячейки по типу с очисткой
+   * Форматирование значения ячейки по типу
    */
   private static formatCellValue(value: any, type: string): string {
     if (value === null || value === undefined || value === '') {
