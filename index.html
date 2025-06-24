@@ -16,15 +16,20 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     
+    <!-- Google Fonts - SEPARATE LINK -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <!-- COMPREHENSIVE CRITICAL CSS -->
     <style>
-      /* Reset and base styles */
+      /* Reset and base styles - NO @import here */
       *, *::before, *::after { box-sizing: border-box; }
       * { margin: 0; }
       body { 
         line-height: 1.5; 
         -webkit-font-smoothing: antialiased;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
         background-color: #ffffff;
         color: #111827;
       }
@@ -32,10 +37,7 @@
       input, button, textarea, select { font: inherit; }
       p, h1, h2, h3, h4, h5, h6 { overflow-wrap: break-word; }
       
-      /* Import Google Fonts */
-      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-      
-      /* Font family */
+      /* Font family applied everywhere */
       html, body, * { 
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
       }
