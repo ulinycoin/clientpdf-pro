@@ -152,22 +152,18 @@ export default defineConfig(({ mode }) => {
       ]
     },
     
-    // Development server with MIME fix
+    // Development server configuration
     server: {
       port: 3000,
       open: !process.env.CI,
       host: true,
       cors: true,
+      strictPort: false,
       fs: {
         allow: ['..']
       },
       hmr: {
         overlay: true
-      },
-      // Fix MIME type issues
-      middlewareMode: false,
-      headers: {
-        'Content-Type': 'application/javascript'
       }
     },
     
