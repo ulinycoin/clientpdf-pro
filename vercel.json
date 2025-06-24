@@ -4,12 +4,6 @@
   "installCommand": "npm install --legacy-peer-deps",
   "devCommand": "npm run dev",
   "framework": "vite",
-  "regions": ["iad1", "cdg1", "sin1"],
-  "functions": {
-    "app/api/**/*.js": {
-      "runtime": "nodejs18.x"
-    }
-  },
   "rewrites": [
     {
       "source": "/(.*)",
@@ -78,11 +72,5 @@
       "destination": "/",
       "permanent": true
     }
-  ],
-  "env": {
-    "NODE_ENV": "production",
-    "VITE_APP_VERSION": "@vercel-env-app-version",
-    "VITE_VERCEL_URL": "@vercel-url",
-    "VITE_VERCEL_GIT_COMMIT_SHA": "@vercel-git-commit-sha"
-  }
+  ]
 }
