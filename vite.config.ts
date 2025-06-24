@@ -156,7 +156,7 @@ export default defineConfig(({ mode }) => {
     server: {
       port: 3000,
       open: !process.env.CI,
-      host: true,
+      host: 'localhost', // Changed from true to localhost
       cors: true,
       strictPort: false,
       fs: {
