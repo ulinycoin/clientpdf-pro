@@ -5,7 +5,7 @@ import { FontManager } from '../FontManager';
 
 export class CsvToPdfGenerator {
   /**
-   * Конвертация CSV в PDF с улучшенным форматированием и поддержкой Unicode
+   * Конвертация CSV в PDF с улучшенным форматированием и Unicode поддержкой
    */
   static async convertToPDF(
     parseResult: CsvParseResult, 
@@ -25,7 +25,7 @@ export class CsvToPdfGenerator {
       marginRight: 10,
       maxRowsPerPage: 1000,
       autoDetectDataTypes: true,
-      fontFamily: 'auto', // 🆕 Автоматический выбор шрифта
+      fontFamily: 'auto',
       ...options
     };
     
@@ -47,19 +47,20 @@ export class CsvToPdfGenerator {
         format: opts.pageSize.toLowerCase() as any,
       });
 
-      // 🎯 НОВАЯ ФУНКЦИЯ: Настройка Unicode шрифтов
+      // 🎯 УЛУЧШЕННАЯ ФУНКЦИЯ: Настройка шрифтов с очисткой текста
       const selectedFont = await this.setupUnicodeFonts(pdf, parseResult, opts);
       
       // Анализ столбцов для оптимизации
       const columnAnalysis = this.analyzeColumns(parseResult.headers, parseResult.data, parseResult.columnTypes);
       
       // Настройка метаданных
+      const cleanTitle = opts.title ? FontManager.sanitizeTextForPDF(opts.title) : 'CSV Data Export';
       pdf.setProperties({
-        title: opts.title || 'CSV Data Export',
+        title: cleanTitle,
         subject: `Data table with ${parseResult.rowCount} rows and ${parseResult.columnCount} columns`,
         author: 'ClientPDF Pro',
-        creator: 'ClientPDF Pro - CSV to PDF Converter with Unicode Support',
-        keywords: 'CSV, PDF, data, table, export, unicode, cyrillic',
+        creator: 'ClientPDF Pro - CSV to PDF Converter with Unicode Support v2.0',
+        keywords: 'CSV, PDF, data, table, export, unicode, cyrillic, multilingual',
       });
 
       // Добавление заголовка документа
@@ -67,7 +68,7 @@ export class CsvToPdfGenerator {
       if (opts.title) {
         pdf.setFontSize(16);
         pdf.setFont(selectedFont, 'bold');
-        pdf.text(opts.title, opts.marginLeft, currentY);
+        pdf.text(cleanTitle, opts.marginLeft, currentY);
         currentY += 10;
       }
 
@@ -75,21 +76,27 @@ export class CsvToPdfGenerator {
       pdf.setFontSize(8);
       pdf.setFont(selectedFont, 'normal');
       const infoText = `Data: ${parseResult.rowCount} rows × ${parseResult.columnCount} columns | Delimiter: "${parseResult.delimiter}" | Font: ${selectedFont}`;
-      pdf.text(infoText, opts.marginLeft, currentY);
+      pdf.text(FontManager.sanitizeTextForPDF(infoText), opts.marginLeft, currentY);
       currentY += 5;
 
-      // Подготовка данных для таблицы
+      // 🎯 КРИТИЧНО: Очистка заголовков таблицы
+      const cleanHeaders = parseResult.headers.map(header => 
+        FontManager.sanitizeTextForPDF(header)
+      );
+      
       const tableHeaders = opts.includeRowNumbers 
-        ? ['#', ...parseResult.headers]
-        : parseResult.headers;
+        ? ['#', ...cleanHeaders]
+        : cleanHeaders;
 
       const maxRows = opts.maxRowsPerPage || 1000;
       const dataToProcess = parseResult.data.slice(0, maxRows);
 
+      // 🎯 КРИТИЧНО: Очистка данных таблицы
       const tableData = dataToProcess.map((row, index) => {
         const rowData = parseResult.headers.map(header => {
           const value = row[header];
-          return this.formatCellValue(value, parseResult.columnTypes[header]);
+          const formattedValue = this.formatCellValue(value, parseResult.columnTypes[header]);
+          return FontManager.sanitizeTextForPDF(formattedValue);
         });
         return opts.includeRowNumbers 
           ? [String(index + 1), ...rowData]
@@ -103,10 +110,10 @@ export class CsvToPdfGenerator {
         opts.includeRowNumbers
       );
       
-      // Настройки стилей таблицы БЕЗ font свойства
+      // Настройки стилей таблицы
       const tableStyles = this.getTableStyles(opts);
       
-      // Генерация таблицы с правильными настройками шрифта
+      // Генерация таблицы с очищенными данными
       pdf.autoTable({
         head: [tableHeaders],
         body: tableData,
@@ -123,22 +130,18 @@ export class CsvToPdfGenerator {
           overflow: 'linebreak',
           halign: 'left',
           valign: 'top',
-          // НЕ используем font здесь - это вызывает ошибки
         },
         headStyles: {
           ...tableStyles.headerStyles,
           minCellHeight: 6,
           fontSize: Math.max(opts.fontSize, 7),
           fontStyle: 'bold',
-          // НЕ используем font здесь
         },
         bodyStyles: {
           ...tableStyles.bodyStyles,
-          // НЕ используем font здесь
         },
         alternateRowStyles: {
           ...tableStyles.alternateRowStyles,
-          // НЕ используем font здесь
         },
         columnStyles: columnStyles,
         showHead: true,
@@ -147,7 +150,7 @@ export class CsvToPdfGenerator {
         tableLineWidth: tableStyles.lineWidth,
         tableWidth: 'wrap',
         didDrawPage: (data: any) => {
-          // Номера страниц с правильным шрифтом
+          // Номера страниц с очищенным текстом
           const pageNumber = (pdf as any).internal.getCurrentPageInfo().pageNumber;
           const totalPages = (pdf as any).internal.getNumberOfPages();
           
@@ -167,12 +170,10 @@ export class CsvToPdfGenerator {
             (pdf as any).internal.pageSize.height - 10
           );
         },
-        // ВАЖНО: Устанавливаем шрифт перед отрисовкой таблицы
         willDrawPage: () => {
           pdf.setFont(selectedFont, 'normal');
         },
         willDrawCell: (data: any) => {
-          // Устанавливаем шрифт для каждой ячейки
           if (data.section === 'head') {
             pdf.setFont(selectedFont, 'bold');
           } else {
@@ -186,8 +187,9 @@ export class CsvToPdfGenerator {
         const finalY = (pdf as any).lastAutoTable.finalY || currentY + 50;
         pdf.setFontSize(8);
         pdf.setFont(selectedFont, 'italic');
+        const warningText = `Note: Only first ${maxRows} of ${parseResult.rowCount} rows are displayed`;
         pdf.text(
-          `Note: Only first ${maxRows} of ${parseResult.rowCount} rows are displayed`,
+          FontManager.sanitizeTextForPDF(warningText),
           opts.marginLeft,
           finalY + 10
         );
@@ -203,7 +205,7 @@ export class CsvToPdfGenerator {
   }
 
   /**
-   * 🆕 НОВАЯ ФУНКЦИЯ: Настройка Unicode шрифтов для данных
+   * 🆕 УЛУЧШЕННАЯ ФУНКЦИЯ: Настройка шрифтов с анализом и очисткой данных
    */
   private static async setupUnicodeFonts(
     pdf: jsPDF, 
@@ -236,16 +238,25 @@ export class CsvToPdfGenerator {
 
       console.log('🔍 Analyzing fonts for CSV data...');
       
+      // Анализируем проблемные символы
+      const sampleText = allTexts.join(' ');
+      const analysis = FontManager.analyzeAndFixText(sampleText);
+      
+      if (analysis.issues.length > 0) {
+        console.log('⚠️ Text issues found:', analysis.issues);
+      }
+      
+      if (analysis.replacements.length > 0) {
+        console.log('🔄 Character replacements:', analysis.replacements.length);
+        analysis.replacements.slice(0, 5).forEach(replacement => {
+          console.log(`  ${replacement.from} → ${replacement.to}`);
+        });
+      }
+      
       // Автоматический выбор шрифта
       const selectedFont = await FontManager.setupFontsForText(pdf, allTexts);
       
-      // Тестируем поддержку Unicode
-      const testResult = FontManager.testUnicodeSupport(allTexts.join(' '));
-      if (testResult.unicodeRanges.length > 0) {
-        console.log(`🌍 Unicode ranges detected: ${testResult.unicodeRanges.join(', ')}`);
-        console.log(`🔤 Recommended fonts: ${testResult.recommendedFonts.join(', ')}`);
-      }
-      
+      console.log(`✅ Font setup completed: ${selectedFont}`);
       return selectedFont;
       
     } catch (error) {
@@ -253,8 +264,8 @@ export class CsvToPdfGenerator {
       
       // Fallback к встроенным шрифтам
       try {
-        pdf.setFont('times', 'normal');
-        return 'times';
+        pdf.setFont('courier', 'normal');
+        return 'courier';
       } catch {
         pdf.setFont('helvetica', 'normal');
         return 'helvetica';
@@ -301,7 +312,7 @@ export class CsvToPdfGenerator {
   }
 
   /**
-   * Форматирование значения ячейки по типу
+   * Форматирование значения ячейки по типу с очисткой
    */
   private static formatCellValue(value: any, type: string): string {
     if (value === null || value === undefined || value === '') {
@@ -337,7 +348,7 @@ export class CsvToPdfGenerator {
   }
 
   /**
-   * 🔥 REVOLUTIONARY: Extreme column fitting algorithm for 25+ columns
+   * Расчет оптимальных ширин колонок
    */
   private static calculateOptimalColumnWidths(
     columnAnalysis: ColumnAnalysis[], 
@@ -346,81 +357,70 @@ export class CsvToPdfGenerator {
   ): { [key: number]: any } {
     const columnStyles: { [key: number]: any } = {};
     
-    // 🎯 КРИТИЧНО: Точный расчет доступной ширины
     const pageWidth = this.getPageWidth(opts.pageSize, opts.orientation);
     const availableWidth = pageWidth - opts.marginLeft - opts.marginRight;
     
     console.log(`📏 Page: ${opts.pageSize.toUpperCase()}, Available width: ${availableWidth}mm`);
     
-    // 🎯 КРИТИЧНО: Всего колонок включая номера строк
     const totalColumns = columnAnalysis.length + (includeRowNumbers ? 1 : 0);
-    
     console.log(`📊 Total columns to fit: ${totalColumns}`);
     
-    // 🔥 EXTREME MODES: Экстремальные режимы для очень широких таблиц
+    // Экстремальные режимы для очень широких таблиц
     let maxWidth: number;
     let minWidth: number;
     let fontSize = opts.fontSize;
     let cellPadding = 1.5;
     
     if (totalColumns >= 25) {
-      // 🆘 SURVIVAL MODE: 25+ колонок
       maxWidth = 12;
       minWidth = 6;
       fontSize = Math.max(opts.fontSize - 3, 3);
       cellPadding = 0.5;
       console.log('🆘 SURVIVAL MODE: 25+ columns - extreme compression');
     } else if (totalColumns >= 20) {
-      // 🔥 EXTREME MODE: 20+ колонок
       maxWidth = 15;
       minWidth = 7;
       fontSize = Math.max(opts.fontSize - 2.5, 3.5);
       cellPadding = 0.8;
       console.log('🔥 EXTREME MODE: 20+ columns');
     } else if (totalColumns >= 15) {
-      // 🚨 ULTRA-COMPACT: 15+ колонок
       maxWidth = 18;
       minWidth = 8;
       fontSize = Math.max(opts.fontSize - 2, 4);
       cellPadding = 1;
       console.log('🚨 ULTRA-COMPACT MODE: 15+ columns');
     } else if (totalColumns >= 10) {
-      // ⚡ HIGH-COMPACT: 10+ колонок
       maxWidth = 25;
       minWidth = 10;
       fontSize = Math.max(opts.fontSize - 1, 5);
       cellPadding = 1.2;
       console.log('⚡ HIGH-COMPACT MODE: 10+ columns');
     } else if (totalColumns >= 7) {
-      // 📦 COMPACT: 7+ колонок
       maxWidth = 35;
       minWidth = 15;
       fontSize = Math.max(opts.fontSize - 0.5, 6);
       console.log('📦 COMPACT MODE: 7+ columns');
     } else {
-      // 📝 NORMAL: мало колонок
       maxWidth = 50;
       minWidth = 20;
       console.log('📝 NORMAL MODE: few columns');
     }
     
-    // 🎯 CRITICAL: Равномерное распределение с учетом минимумов
+    // Равномерное распределение с учетом минимумов
     const idealWidth = availableWidth / totalColumns;
     let targetWidth = Math.min(idealWidth, maxWidth);
     targetWidth = Math.max(targetWidth, minWidth);
     
     console.log(`🎯 Ideal: ${idealWidth.toFixed(1)}mm, Target: ${targetWidth.toFixed(1)}mm per column`);
     
-    // 🔥 FINAL CHECK: Проверяем поместится ли
+    // Проверяем поместится ли
     const totalRequiredWidth = targetWidth * totalColumns;
     let finalWidth = targetWidth;
     
     if (totalRequiredWidth > availableWidth) {
-      // 🆘 EMERGENCY: Принудительное уменьшение
-      finalWidth = (availableWidth - 1) / totalColumns; // -1мм аварийный буфер
+      finalWidth = (availableWidth - 1) / totalColumns;
       console.log(`🆘 EMERGENCY: Forced reduction to ${finalWidth.toFixed(1)}mm per column`);
       
-      // Если слишком мало - дополнительное уменьшение шрифта
       if (finalWidth < 6) {
         fontSize = Math.max(fontSize - 1, 2);
         cellPadding = 0.3;
@@ -428,7 +428,7 @@ export class CsvToPdfGenerator {
       }
     }
     
-    // 🎯 ПРИМЕНЕНИЕ одинаковой ширины ко всем колонкам
+    // Применение одинаковой ширины ко всем колонкам
     for (let i = 0; i < totalColumns; i++) {
       const isRowNumber = includeRowNumbers && i === 0;
       const columnIndex = isRowNumber ? i : (includeRowNumbers ? i - 1 : i);
@@ -466,7 +466,7 @@ export class CsvToPdfGenerator {
   }
 
   /**
-   * Получение стилей таблицы БЕЗ font свойства для совместимости с autoTable
+   * Получение стилей таблицы
    */
   private static getTableStyles(options: CsvToPdfOptions) {
     const baseStyles = {
@@ -483,16 +483,13 @@ export class CsvToPdfGenerator {
             textColor: [255, 255, 255],
             fontStyle: 'bold' as const,
             halign: 'center' as const,
-            // НЕ используем font здесь
           },
           bodyStyles: {
             fillColor: [255, 255, 255],
             textColor: [0, 0, 0],
-            // НЕ используем font здесь
           },
           alternateRowStyles: {
             fillColor: [245, 245, 245],
-            // НЕ используем font здесь
           },
           lineWidth: 0.3,
         };
