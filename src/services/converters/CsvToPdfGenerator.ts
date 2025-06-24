@@ -103,10 +103,10 @@ export class CsvToPdfGenerator {
         opts.includeRowNumbers
       );
       
-      // Настройки стилей таблицы с Unicode шрифтом
-      const tableStyles = this.getTableStyles(opts, selectedFont);
+      // Настройки стилей таблицы БЕЗ font свойства
+      const tableStyles = this.getTableStyles(opts);
       
-      // Генерация таблицы с Unicode поддержкой
+      // Генерация таблицы с правильными настройками шрифта
       pdf.autoTable({
         head: [tableHeaders],
         body: tableData,
@@ -123,22 +123,22 @@ export class CsvToPdfGenerator {
           overflow: 'linebreak',
           halign: 'left',
           valign: 'top',
-          font: selectedFont, // 🎯 Используем Unicode шрифт
+          // НЕ используем font здесь - это вызывает ошибки
         },
         headStyles: {
           ...tableStyles.headerStyles,
           minCellHeight: 6,
           fontSize: Math.max(opts.fontSize, 7),
-          font: selectedFont,
           fontStyle: 'bold',
+          // НЕ используем font здесь
         },
         bodyStyles: {
           ...tableStyles.bodyStyles,
-          font: selectedFont,
+          // НЕ используем font здесь
         },
         alternateRowStyles: {
           ...tableStyles.alternateRowStyles,
-          font: selectedFont,
+          // НЕ используем font здесь
         },
         columnStyles: columnStyles,
         showHead: true,
@@ -147,7 +147,7 @@ export class CsvToPdfGenerator {
         tableLineWidth: tableStyles.lineWidth,
         tableWidth: 'wrap',
         didDrawPage: (data: any) => {
-          // Номера страниц с Unicode шрифтом
+          // Номера страниц с правильным шрифтом
           const pageNumber = (pdf as any).internal.getCurrentPageInfo().pageNumber;
           const totalPages = (pdf as any).internal.getNumberOfPages();
           
@@ -167,6 +167,18 @@ export class CsvToPdfGenerator {
             (pdf as any).internal.pageSize.height - 10
           );
         },
+        // ВАЖНО: Устанавливаем шрифт перед отрисовкой таблицы
+        willDrawPage: () => {
+          pdf.setFont(selectedFont, 'normal');
+        },
+        willDrawCell: (data: any) => {
+          // Устанавливаем шрифт для каждой ячейки
+          if (data.section === 'head') {
+            pdf.setFont(selectedFont, 'bold');
+          } else {
+            pdf.setFont(selectedFont, 'normal');
+          }
+        }
       });
 
       // Добавление предупреждения об ограничении строк
@@ -224,19 +236,6 @@ export class CsvToPdfGenerator {
 
       console.log('🔍 Analyzing fonts for CSV data...');
       
-      // Если указан конкретный шрифт
-      if (options.fontFamily && options.fontFamily !== 'auto') {
-        try {
-          const result = await FontManager.loadFont(pdf, options.fontFamily);
-          if (result.success) {
-            console.log(`✅ Using specified font: ${options.fontFamily}`);
-            return options.fontFamily;
-          }
-        } catch (error) {
-          console.warn(`⚠️ Failed to load specified font ${options.fontFamily}, falling back to auto`);
-        }
-      }
-
       // Автоматический выбор шрифта
       const selectedFont = await FontManager.setupFontsForText(pdf, allTexts);
       
@@ -252,7 +251,7 @@ export class CsvToPdfGenerator {
     } catch (error) {
       console.error('❌ Font setup failed, using fallback:', error);
       
-      // Fallback к Times (лучше поддерживает Unicode чем Helvetica)
+      // Fallback к встроенным шрифтам
       try {
         pdf.setFont('times', 'normal');
         return 'times';
@@ -467,9 +466,9 @@ export class CsvToPdfGenerator {
   }
 
   /**
-   * Получение стилей таблицы в зависимости от выбранного стиля с поддержкой Unicode шрифтов
+   * Получение стилей таблицы БЕЗ font свойства для совместимости с autoTable
    */
-  private static getTableStyles(options: CsvToPdfOptions, selectedFont: string) {
+  private static getTableStyles(options: CsvToPdfOptions) {
     const baseStyles = {
       lineColor: [200, 200, 200],
       lineWidth: 0.1,
@@ -484,16 +483,16 @@ export class CsvToPdfGenerator {
             textColor: [255, 255, 255],
             fontStyle: 'bold' as const,
             halign: 'center' as const,
-            font: selectedFont,
+            // НЕ используем font здесь
           },
           bodyStyles: {
             fillColor: [255, 255, 255],
             textColor: [0, 0, 0],
-            font: selectedFont,
+            // НЕ используем font здесь
           },
           alternateRowStyles: {
             fillColor: [245, 245, 245],
-            font: selectedFont,
+            // НЕ используем font здесь
           },
           lineWidth: 0.3,
         };
@@ -506,16 +505,13 @@ export class CsvToPdfGenerator {
             textColor: [255, 255, 255],
             fontStyle: 'bold' as const,
             halign: 'center' as const,
-            font: selectedFont,
           },
           bodyStyles: {
             fillColor: [255, 255, 255],
             textColor: [0, 0, 0],
-            font: selectedFont,
           },
           alternateRowStyles: {
             fillColor: [248, 249, 250],
-            font: selectedFont,
           },
           lineWidth: 0.1,
         };
@@ -528,16 +524,13 @@ export class CsvToPdfGenerator {
             textColor: [0, 0, 0],
             fontStyle: 'bold' as const,
             halign: 'center' as const,
-            font: selectedFont,
           },
           bodyStyles: {
             fillColor: [255, 255, 255],
             textColor: [0, 0, 0],
-            font: selectedFont,
           },
           alternateRowStyles: {
             fillColor: [255, 255, 255],
-            font: selectedFont,
           },
           lineColor: [220, 220, 220],
           lineWidth: 0.1,
@@ -552,16 +545,13 @@ export class CsvToPdfGenerator {
             textColor: [0, 0, 0],
             fontStyle: 'bold' as const,
             halign: 'center' as const,
-            font: selectedFont,
           },
           bodyStyles: {
             fillColor: [255, 255, 255],
             textColor: [0, 0, 0],
-            font: selectedFont,
           },
           alternateRowStyles: {
             fillColor: [255, 255, 255],
-            font: selectedFont,
           },
           lineColor: [0, 0, 0],
           lineWidth: 0,
