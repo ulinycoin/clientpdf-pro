@@ -141,7 +141,6 @@ export default defineConfig(({ mode }) => {
         'react-dropzone',
         'react-hot-toast',
         'react-helmet-async',
-        'pako', // Include pako to fix module resolution
       ],
       // Exclude heavy PDF libraries - load them dynamically
       exclude: [
@@ -153,14 +152,38 @@ export default defineConfig(({ mode }) => {
       ]
     },
     
-    // Worker configuration for PDF.js
-    worker: {
-      format: 'es'
+    // Development server with MIME fix
+    server: {
+      port: 3000,
+      open: !process.env.CI,
+      host: true,
+      cors: true,
+      fs: {
+        allow: ['..']
+      },
+      hmr: {
+        overlay: true
+      },
+      // Fix MIME type issues
+      middlewareMode: false,
+      headers: {
+        'Content-Type': 'application/javascript'
+      }
     },
     
-    // SSR externals configuration for proper module handling
-    ssr: {
-      external: ['pako']
+    // Preview server
+    preview: {
+      port: 4173,
+      host: true,
+      cors: true
+    },
+    
+    // CSS optimization with proper handling
+    css: {
+      devSourcemap: !isProduction,
+      modules: {
+        localsConvention: 'camelCase'
+      }
     },
     
     // Path resolution
@@ -176,35 +199,6 @@ export default defineConfig(({ mode }) => {
         '@assets': '/src/assets',
         '@types': '/src/types'
       }
-    },
-    
-    // Development server
-    server: {
-      port: 3000,
-      open: !process.env.CI, // Don't auto-open in CI
-      host: true, // Allow external connections
-      cors: true,
-      // Allow external worker loading
-      fs: {
-        allow: ['..']
-      },
-      // Better error handling in development
-      hmr: {
-        overlay: true
-      }
-    },
-    
-    // Preview server
-    preview: {
-      port: 4173,
-      host: true,
-      cors: true
-    },
-    
-    // CSS optimization - FIXED
-    css: {
-      devSourcemap: !isProduction,
-      // Remove custom PostCSS config here, let it use postcss.config.cjs
     }
   }
 })
