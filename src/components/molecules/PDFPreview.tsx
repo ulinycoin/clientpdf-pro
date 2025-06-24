@@ -23,11 +23,6 @@ interface PDFPreviewProps {
   onPagesLoaded?: (numPages: number) => void;
 }
 
-interface PDFJSLib {
-  getDocument: (src: { data: ArrayBuffer }) => { promise: Promise<any> };
-  GlobalWorkerOptions: { workerSrc: string };
-}
-
 export const PDFPreview: React.FC<PDFPreviewProps> = ({ 
   file, 
   className,
@@ -64,30 +59,55 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({
         setIsLoading(true);
         setError('');
 
-        // Динамическая загрузка PDF.js
-        const pdfjs: PDFJSLib = await import('pdfjs-dist');
+        // Динамическая загрузка PDF.js - используем разные стратегии
+        let pdfjs: any;
+        
+        try {
+          // Стратегия 1: Стандартный импорт
+          pdfjs = await import('pdfjs-dist');
+          console.log('✅ PDF.js loaded via standard import');
+        } catch (importError) {
+          console.warn('⚠️ Standard import failed:', importError);
+          
+          // Стратегия 2: Глобальный объект
+          if ((window as any).pdfjsLib) {
+            pdfjs = (window as any).pdfjsLib;
+            console.log('✅ PDF.js loaded from global object');
+          } else {
+            throw new Error('PDF.js library not available');
+          }
+        }
         
         if (!mounted || !isMountedRef.current) {
           console.log('❌ Component unmounted during PDF.js load');
           return;
         }
-        
-        console.log('✅ PDF.js main library loaded');
 
-        // Проверяем что GlobalWorkerOptions доступен
-        if (!pdfjs.GlobalWorkerOptions) {
-          throw new Error('PDF.js GlobalWorkerOptions not available');
-        }
-
-        // Пробуем использовать локальный worker, с fallback на CDN
+        // Настройка worker - несколько стратегий
         try {
-          pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.js';
-          console.log('✅ PDF.js worker configured locally');
+          // Стратегия 1: GlobalWorkerOptions (новые версии)
+          if (pdfjs.GlobalWorkerOptions) {
+            pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.js';
+            console.log('✅ Worker configured via GlobalWorkerOptions');
+          } 
+          // Стратегия 2: Прямое присваивание (старые версии)
+          else if (pdfjs.getDocument && !pdfjs.workerSrc) {
+            (pdfjs as any).workerSrc = '/pdf.worker.js';
+            console.log('✅ Worker configured via direct assignment');
+          }
+          // Стратегия 3: CDN fallback
+          else {
+            const workerUrl = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+            if (pdfjs.GlobalWorkerOptions) {
+              pdfjs.GlobalWorkerOptions.workerSrc = workerUrl;
+            } else {
+              (pdfjs as any).workerSrc = workerUrl;
+            }
+            console.log('✅ Worker configured via CDN fallback');
+          }
         } catch (workerError) {
-          console.warn('⚠️ Local worker failed, falling back to CDN:', workerError);
-          // Fallback на CDN версию
-          pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
-          console.log('✅ PDF.js worker configured from CDN');
+          console.warn('⚠️ Worker configuration failed:', workerError);
+          // Продолжаем без worker - может работать в некоторых случаях
         }
         
         // Чтение файла
@@ -101,8 +121,16 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({
         
         console.log('✅ File read as ArrayBuffer, size:', arrayBuffer.byteLength);
 
-        // Загрузка PDF документа
-        const loadingTask = pdfjs.getDocument({ data: arrayBuffer });
+        // Загрузка PDF документа с дополнительными параметрами
+        const loadingTask = pdfjs.getDocument({
+          data: arrayBuffer,
+          cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/',
+          cMapPacked: true,
+          standardFontDataUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/standard_fonts/',
+          // Отключаем worker если он недоступен
+          disableWorker: !pdfjs.GlobalWorkerOptions && !(pdfjs as any).workerSrc,
+        });
+        
         const pdf = await loadingTask.promise;
         
         if (!mounted || !isMountedRef.current) {
@@ -122,7 +150,23 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({
       } catch (err: any) {
         console.error('❌ Error loading PDF:', err);
         if (mounted && isMountedRef.current) {
-          const errorMessage = err?.message || 'Unknown error occurred';
+          let errorMessage = 'Unknown error occurred';
+          
+          if (err?.message) {
+            errorMessage = err.message;
+          } else if (typeof err === 'string') {
+            errorMessage = err;
+          }
+          
+          // Более дружественные сообщения для пользователей
+          if (errorMessage.includes('worker') || errorMessage.includes('Worker')) {
+            errorMessage = 'PDF viewer initialization failed. Please try refreshing the page.';
+          } else if (errorMessage.includes('Invalid PDF')) {
+            errorMessage = 'This file appears to be corrupted or is not a valid PDF.';
+          } else if (errorMessage.includes('network') || errorMessage.includes('fetch')) {
+            errorMessage = 'Network error. Please check your internet connection.';
+          }
+          
           setError(`Failed to load PDF: ${errorMessage}`);
           setIsLoading(false);
         }
