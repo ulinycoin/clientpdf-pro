@@ -46,9 +46,9 @@ export const ImagesToPDFProcessor: React.FC<ImagesToPDFProcessorProps> = ({
   const [conversionProgress, setConversionProgress] = useState(0);
   const [conversionStatus, setConversionStatus] = useState<'idle' | 'processing' | 'success' | 'error'>('idle');
   const [conversionMessage, setConversionMessage] = useState('');
-  const [showSettings, setShowSettings] = useState(false);
+  const [showSettings, setShowSettings] = useState(true); // Show settings by default
   const [settings, setSettings] = useState<ConversionSettings>({
-    pageSize: 'auto',
+    pageSize: 'a4', // Changed from 'auto' to 'a4' by default
     orientation: 'portrait',
     margin: 20,
     quality: 'medium',
@@ -400,7 +400,7 @@ export const ImagesToPDFProcessor: React.FC<ImagesToPDFProcessorProps> = ({
         </div>
       </div>
 
-      {/* Settings */}
+      {/* Settings - Always visible */}
       <div className="bg-white rounded-lg border border-gray-200 p-6">
         <div className="flex items-center justify-between mb-4">
           <h4 className="font-medium text-gray-900">Conversion Settings</h4>
@@ -426,7 +426,7 @@ export const ImagesToPDFProcessor: React.FC<ImagesToPDFProcessorProps> = ({
                     ...prev, 
                     pageSize: e.target.value as ConversionSettings['pageSize'] 
                   }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   <option value="auto">Auto (image size)</option>
                   <option value="a4">A4</option>
@@ -445,12 +445,17 @@ export const ImagesToPDFProcessor: React.FC<ImagesToPDFProcessorProps> = ({
                     ...prev, 
                     orientation: e.target.value as 'portrait' | 'landscape' 
                   }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   disabled={settings.pageSize === 'auto'}
                 >
                   <option value="portrait">Portrait</option>
                   <option value="landscape">Landscape</option>
                 </select>
+                {settings.pageSize === 'auto' && (
+                  <p className="text-xs text-gray-500 mt-1">
+                    Orientation follows image dimensions when using Auto page size
+                  </p>
+                )}
               </div>
             </div>
 
@@ -463,29 +468,45 @@ export const ImagesToPDFProcessor: React.FC<ImagesToPDFProcessorProps> = ({
                     ...prev, 
                     fitToPage: e.target.checked 
                   }))}
-                  className="rounded border-gray-300 text-blue-600"
+                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                   disabled={settings.pageSize === 'auto'}
                 />
                 <span className="ml-2 text-sm text-gray-700">Fit images to page</span>
               </label>
+              {settings.pageSize === 'auto' && (
+                <p className="text-xs text-gray-500">
+                  Not applicable with Auto page size
+                </p>
+              )}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 Margin: {settings.margin}px
               </label>
               <input
                 type="range"
                 min="0"
                 max="50"
+                step="5"
                 value={settings.margin}
                 onChange={(e) => setSettings(prev => ({ 
                   ...prev, 
                   margin: parseInt(e.target.value) 
                 }))}
-                className="w-full"
+                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
                 disabled={settings.pageSize === 'auto'}
               />
+              <div className="flex justify-between text-xs text-gray-500 mt-1">
+                <span>0px</span>
+                <span>25px</span>
+                <span>50px</span>
+              </div>
+              {settings.pageSize === 'auto' && (
+                <p className="text-xs text-gray-500 mt-1">
+                  Margins don't apply with Auto page size
+                </p>
+              )}
             </div>
           </div>
         )}
@@ -561,6 +582,7 @@ export const ImagesToPDFProcessor: React.FC<ImagesToPDFProcessorProps> = ({
           <li>• Each image becomes a separate page in the PDF</li>
           <li>• Images are arranged in the order shown above</li>
           <li>• Original image quality is preserved</li>
+          <li>• Settings apply to all images in the PDF</li>
         </ul>
       </div>
     </div>
