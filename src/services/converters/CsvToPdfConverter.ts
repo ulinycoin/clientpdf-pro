@@ -52,6 +52,7 @@ export interface CsvToPdfOptions {
   marginRight: number;
   maxRowsPerPage?: number;
   autoDetectDataTypes?: boolean;
+  fontFamily?: 'auto' | 'DejaVuSans' | 'Roboto' | 'NotoSans' | 'times' | 'helvetica'; // 🆕 Поддержка шрифтов
 }
 
 export interface CsvParseResult {
@@ -88,7 +89,7 @@ interface DataSizeAnalysis {
 export class CsvToPdfConverter {
   private static readonly DEFAULT_OPTIONS: CsvToPdfOptions = {
     orientation: 'landscape',
-    pageSize: 'legal', // 🔥 CHANGED: Legal as default (356mm landscape vs A4 297mm)
+    pageSize: 'legal',
     fontSize: 7,
     tableStyle: 'grid',
     headerStyle: 'bold',
@@ -100,6 +101,7 @@ export class CsvToPdfConverter {
     marginRight: 10,
     maxRowsPerPage: 1000,
     autoDetectDataTypes: true,
+    fontFamily: 'auto', // 🆕 Автоматический выбор шрифта по умолчанию
   };
 
   // Пороги для определения размера данных
