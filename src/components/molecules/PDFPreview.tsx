@@ -74,10 +74,21 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({
         
         console.log('✅ PDF.js main library loaded');
 
-        // Используем локальный worker файл
-        pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.js';
-        
-        console.log('✅ PDF.js worker configured locally');
+        // Проверяем что GlobalWorkerOptions доступен
+        if (!pdfjs.GlobalWorkerOptions) {
+          throw new Error('PDF.js GlobalWorkerOptions not available');
+        }
+
+        // Пробуем использовать локальный worker, с fallback на CDN
+        try {
+          pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.js';
+          console.log('✅ PDF.js worker configured locally');
+        } catch (workerError) {
+          console.warn('⚠️ Local worker failed, falling back to CDN:', workerError);
+          // Fallback на CDN версию
+          pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
+          console.log('✅ PDF.js worker configured from CDN');
+        }
         
         // Чтение файла
         console.log('🔄 Loading PDF file:', file.name);
@@ -108,10 +119,11 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({
         
         onPagesLoaded?.(pdf.numPages);
         
-      } catch (err) {
+      } catch (err: any) {
         console.error('❌ Error loading PDF:', err);
         if (mounted && isMountedRef.current) {
-          setError(`Failed to load PDF: ${err.message || 'Unknown error'}`);
+          const errorMessage = err?.message || 'Unknown error occurred';
+          setError(`Failed to load PDF: ${errorMessage}`);
           setIsLoading(false);
         }
       }
@@ -192,10 +204,10 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({
         console.log('✅ Page rendered successfully');
       }
       
-    } catch (err) {
+    } catch (err: any) {
       console.error('❌ Error rendering page:', err);
       if (isMountedRef.current) {
-        setError(`Failed to render page ${pageNumber}: ${err.message}`);
+        setError(`Failed to render page ${pageNumber}: ${err.message || 'Unknown error'}`);
       }
     } finally {
       renderingRef.current = false;
@@ -244,6 +256,15 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({
     setRotation(prev => (prev + 90) % 360);
   }, []);
 
+  // Функция повторной попытки
+  const retryLoad = useCallback(() => {
+    setError('');
+    setIsLoading(true);
+    setPdfDocument(null);
+    setCurrentPage(1);
+    setTotalPages(0);
+  }, []);
+
   // Обработка ошибок загрузки
   if (error) {
     return (
@@ -254,16 +275,18 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({
         <div className="text-center">
           <FileText className="h-16 w-16 text-red-400 mx-auto mb-4" />
           <p className="text-red-700 font-medium mb-2">Error loading PDF</p>
-          <p className="text-sm text-red-600">{error}</p>
-          <button 
-            onClick={() => {
-              setError('');
-              setIsLoading(true);
-            }}
-            className="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-          >
-            Try Again
-          </button>
+          <p className="text-sm text-red-600 mb-4">{error}</p>
+          <div className="space-y-2">
+            <button 
+              onClick={retryLoad}
+              className="block w-full px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+            >
+              Try Again
+            </button>
+            <p className="text-xs text-red-500">
+              If the problem persists, try refreshing the page or using a different PDF file.
+            </p>
+          </div>
         </div>
       </div>
     );
