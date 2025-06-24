@@ -1,0 +1,79 @@
+{
+  "ci": {
+    "collect": {
+      "url": [
+        "http://localhost:4173",
+        "http://localhost:4173/merge-pdf",
+        "http://localhost:4173/split-pdf",
+        "http://localhost:4173/compress-pdf",
+        "http://localhost:4173/images-to-pdf",
+        "http://localhost:4173/csv-to-pdf"
+      ],
+      "startServerCommand": "npm run preview",
+      "startServerReadyPattern": "Local:.*:4173",
+      "startServerReadyTimeout": 30000,
+      "numberOfRuns": 3,
+      "settings": {
+        "preset": "desktop",
+        "chromeFlags": "--no-sandbox --disable-dev-shm-usage --disable-gpu --no-first-run"
+      }
+    },
+    "assert": {
+      "assertions": {
+        "categories:performance": ["warn", { "minScore": 0.85 }],
+        "categories:accessibility": ["error", { "minScore": 0.9 }],
+        "categories:best-practices": ["warn", { "minScore": 0.85 }],
+        "categories:seo": ["warn", { "minScore": 0.9 }],
+        "categories:pwa": ["warn", { "minScore": 0.7 }],
+        
+        "first-contentful-paint": ["warn", { "maxNumericValue": 2000 }],
+        "largest-contentful-paint": ["error", { "maxNumericValue": 2500 }],
+        "first-input-delay": ["error", { "maxNumericValue": 100 }],
+        "cumulative-layout-shift": ["error", { "maxNumericValue": 0.1 }],
+        "speed-index": ["warn", { "maxNumericValue": 3000 }],
+        "total-blocking-time": ["warn", { "maxNumericValue": 300 }],
+        
+        "unused-javascript": ["warn", { "maxNumericValue": 40000 }],
+        "unused-css-rules": ["warn", { "maxNumericValue": 20000 }],
+        "render-blocking-resources": ["warn", { "maxNumericValue": 500 }],
+        "unminified-css": "off",
+        "unminified-javascript": "off",
+        
+        "uses-responsive-images": ["warn", { "maxNumericValue": 50000 }],
+        "uses-optimized-images": ["warn", { "maxNumericValue": 50000 }],
+        "modern-image-formats": ["warn", { "maxNumericValue": 50000 }],
+        
+        "uses-text-compression": "error",
+        "uses-rel-preconnect": "warn",
+        "uses-rel-preload": "warn",
+        "efficient-animated-content": "warn",
+        
+        "dom-size": ["warn", { "maxNumericValue": 800 }],
+        "mainthread-work-breakdown": ["warn", { "maxNumericValue": 2000 }],
+        "bootup-time": ["warn", { "maxNumericValue": 1000 }],
+        
+        "network-requests": "off",
+        "network-rtt": "off",
+        "network-server-latency": "off",
+        
+        "interactive": ["warn", { "maxNumericValue": 3500 }],
+        "max-potential-fid": ["warn", { "maxNumericValue": 130 }]
+      }
+    },
+    "upload": {
+      "target": "temporary-public-storage",
+      "githubAppToken": "${LHCI_GITHUB_APP_TOKEN}"
+    },
+    "server": {
+      "port": 9001,
+      "storage": {
+        "storageMethod": "sql",
+        "sqlDialect": "sqlite",
+        "sqlDatabasePath": "./lhci.db"
+      }
+    },
+    "wizard": {
+      "preset": "desktop"
+    }
+  }
+}
