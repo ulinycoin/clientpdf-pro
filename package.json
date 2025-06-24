@@ -6,7 +6,7 @@
   "type": "module",
   "homepage": "https://github.com/ulinycoin/clientpdf-pro#readme",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host localhost",
     "build": "tsc --noEmit && vite build",
     "build:analyze": "tsc --noEmit && vite build --mode analyze",
     "preview": "vite preview",
@@ -20,7 +20,7 @@
     "analyze:bundle": "npm run build && npx vite-bundle-analyzer dist",
     "test": "echo \"Tests coming soon\" && exit 0",
     "test:type": "npm run type-check",
-    "clean": "rm -rf dist node_modules/.vite",
+    "clean": "rm -rf dist node_modules/.vite node_modules/.tmp",
     "postinstall": "echo \"✅ Dependencies installed successfully. Run 'npm run dev' to start development.\""
   },
   "engines": {
@@ -52,6 +52,7 @@
     "@tailwindcss/forms": "^0.5.10",
     "@tailwindcss/typography": "^0.5.16",
     "@types/file-saver": "^2.0.7",
+    "@types/node": "^20.0.0",
     "@types/papaparse": "^5.3.16",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
