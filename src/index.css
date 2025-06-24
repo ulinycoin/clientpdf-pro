@@ -1,13 +1,102 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @tailwind base;
-@tailwind components;
+@tailwind components; 
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* Force include critical classes */
 html {
   font-family: 'Inter', system-ui, sans-serif;
 }
 
-/* Button Component Styles */
+/* Ensure these classes are never purged */
+.container,
+.flex,
+.grid,
+.text-center,
+.justify-center,
+.items-center,
+.space-y-4,
+.space-y-6, 
+.space-y-8,
+.py-16,
+.py-8,
+.px-4,
+.px-6,
+.bg-white,
+.bg-gray-50,
+.text-gray-600,
+.text-gray-800,
+.text-blue-600,
+.rounded-lg,
+.shadow,
+.shadow-lg,
+.border,
+.btn,
+.btn-primary,
+.card,
+.hero {
+  /* Classes exist - don't purge */
+}
+
+/* Critical component styles */
+.btn {
+  @apply inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none;
+}
+
+.btn-primary {
+  @apply bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500;
+}
+
+.card {
+  @apply bg-white rounded-lg shadow-sm border border-gray-200 p-6;
+}
+
+.card:hover {
+  @apply shadow-md border-gray-300;
+}
+
+/* Hero section */
+.hero {
+  @apply py-16 text-center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Feature items */
+.feature-item {
+  @apply flex items-start gap-4 p-6 bg-white rounded-lg shadow-sm border border-gray-200;
+}
+
+.feature-item:hover {
+  @apply shadow-md transform -translate-y-1;
+}
+
+/* Navigation */
+.nav-link {
+  @apply text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium;
+}
+
+/* Logo */
+.logo {
+  @apply text-xl font-bold text-blue-600;
+}
+
+/* Responsive utilities */
+@media (max-width: 768px) {
+  .container {
+    @apply px-4;
+  }
+  
+  .hero {
+    @apply py-12;
+  }
+  
+  .card {
+    @apply p-4;
+  }
+}
+
+/* Additional component styles from original */
 .btn-base {
   @apply inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none;
 }
@@ -24,282 +113,7 @@ html {
   @apply h-12 px-6 text-base;
 }
 
-/* Card Component Styles */
-.card {
-  @apply bg-white rounded-lg shadow-sm border border-gray-200;
-}
-
-.card-hover {
-  @apply transition-all duration-200 hover:shadow-md hover:border-gray-300;
-}
-
-/* Range Slider Styles */
-.slider {
-  @apply h-2 bg-gray-200 rounded-lg outline-none transition-all duration-200;
-  appearance: none;
-  background: linear-gradient(to right, #3b82f6 0%, #3b82f6 var(--value, 0%), #e5e7eb var(--value, 0%), #e5e7eb 100%);
-}
-
-.slider:hover {
-  @apply bg-gray-300;
-}
-
-.slider:focus {
-  @apply ring-2 ring-blue-500 ring-offset-2;
-}
-
-.slider::-webkit-slider-thumb {
-  @apply w-5 h-5 bg-blue-600 border-2 border-white rounded-full cursor-pointer;
-  appearance: none;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  transition: all 0.2s ease;
-}
-
-.slider::-webkit-slider-thumb:hover {
-  @apply bg-blue-700 transform scale-110;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-.slider::-webkit-slider-thumb:active {
-  @apply bg-blue-800 transform scale-105;
-}
-
-.slider::-moz-range-thumb {
-  @apply w-5 h-5 bg-blue-600 border-2 border-white rounded-full cursor-pointer;
-  border: 2px solid white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  transition: all 0.2s ease;
-}
-
-.slider::-moz-range-thumb:hover {
-  @apply bg-blue-700 transform scale-110;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-.slider::-moz-range-track {
-  @apply w-full h-2 bg-gray-200 rounded-lg;
-}
-
-.slider:disabled {
-  @apply opacity-50 cursor-not-allowed;
-}
-
-.slider:disabled::-webkit-slider-thumb {
-  @apply cursor-not-allowed;
-}
-
-.slider:disabled::-moz-range-thumb {
-  @apply cursor-not-allowed;
-}
-
-/* 🔥 BULLETPROOF CSV Table System - GUARANTEED to stay within viewport */
-.csv-table-container {
-  @apply w-full;
-  position: relative;
-  /* CRITICAL: Ensure container never exceeds viewport */
-  max-width: 100%;
-  overflow: hidden;
-}
-
-.csv-table-container::after {
-  content: '← Scroll horizontally to see more columns →';
-  position: absolute;
-  bottom: -24px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 12px;
-  color: #6b7280;
-  white-space: nowrap;
-  background: rgba(255, 255, 255, 0.9);
-  padding: 4px 8px;
-  border-radius: 4px;
-  border: 1px solid #e5e7eb;
-}
-
-.csv-table-wrapper {
-  @apply border rounded-lg bg-white shadow-sm;
-  /* CRITICAL: Force horizontal scroll without breaking layout */
-  overflow-x: auto;
-  overflow-y: hidden;
-  width: 100%;
-  max-width: 100%;
-  /* CRITICAL: Prevent flex shrinking */
-  flex-shrink: 0;
-  /* Smooth scrolling on mobile */
-  -webkit-overflow-scrolling: touch;
-  /* Custom scrollbar */
-  scrollbar-width: thin;
-  scrollbar-color: #cbd5e0 #f7fafc;
-  /* CRITICAL: Ensure the wrapper stays in bounds */
-  box-sizing: border-box;
-}
-
-.csv-table-wrapper::-webkit-scrollbar {
-  height: 12px;
-}
-
-.csv-table-wrapper::-webkit-scrollbar-track {
-  @apply bg-gray-100 rounded-b-lg;
-}
-
-.csv-table-wrapper::-webkit-scrollbar-thumb {
-  @apply bg-blue-400 rounded;
-  border: 2px solid #f7fafc;
-}
-
-.csv-table-wrapper::-webkit-scrollbar-thumb:hover {
-  @apply bg-blue-500;
-}
-
-/* 🎯 CRITICAL: Table configuration for proper horizontal scrolling */
-.csv-table {
-  border-collapse: separate;
-  border-spacing: 0;
-  /* CRITICAL: Force table to be as wide as needed for content */
-  width: max-content;
-  min-width: 100%;
-  /* CRITICAL: Prevent text wrapping to force horizontal scroll */
-  white-space: nowrap;
-  /* CRITICAL: Ensure table never shrinks smaller than content */
-  table-layout: fixed;
-}
-
-/* 🎯 CRITICAL: Column width management */
-.csv-table th,
-.csv-table td {
-  padding: 12px 16px;
-  border-right: 1px solid #e5e7eb;
-  border-bottom: 1px solid #e5e7eb;
-  vertical-align: top;
-  
-  /* CRITICAL: Fixed width to ensure consistent layout */
-  width: 180px;
-  min-width: 150px;
-  max-width: 250px;
-  
-  /* CRITICAL: No text wrapping - forces horizontal scroll */
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  
-  /* CRITICAL: Prevent word breaking */
-  word-break: keep-all;
-  hyphens: none;
-  
-  /* CRITICAL: Prevent flex shrinking */
-  flex-shrink: 0;
-}
-
-/* Header styling */
-.csv-table th {
-  @apply bg-gray-50 font-semibold text-gray-700 text-xs uppercase tracking-wider;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-/* Cell styling */
-.csv-table td {
-  @apply bg-white text-gray-900 text-sm;
-}
-
-/* Remove border from last column */
-.csv-table th:last-child,
-.csv-table td:last-child {
-  border-right: none;
-}
-
-/* Zebra striping */
-.csv-table tr:nth-child(even) td {
-  @apply bg-gray-50;
-}
-
-/* Hover effects */
-.csv-table tr:hover td {
-  @apply bg-blue-50;
-  transition: background-color 0.15s ease-in-out;
-}
-
-/* 🔍 Enhanced tooltip system for truncated content */
-.csv-table th:hover,
-.csv-table td:hover {
-  position: relative;
-  z-index: 20;
-  background: #dbeafe !important;
-  cursor: pointer;
-}
-
-.csv-table th[title]:hover::after,
-.csv-table td[title]:hover::after {
-  content: attr(title);
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background: #1f2937;
-  color: white;
-  padding: 8px 12px;
-  border-radius: 6px;
-  font-size: 12px;
-  white-space: normal;
-  z-index: 30;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  max-width: 300px;
-  word-wrap: break-word;
-  /* Ensure tooltip doesn't overflow */
-  transform: translateX(-20%);
-}
-
-/* 📱 Responsive adjustments */
-@media (max-width: 768px) {
-  .csv-table-container {
-    margin: 0 -1rem;
-    width: calc(100% + 2rem);
-    max-width: calc(100vw - 2rem);
-  }
-  
-  .csv-table th,
-  .csv-table td {
-    width: 120px;
-    min-width: 100px;
-    max-width: 180px;
-    padding: 8px 10px;
-    font-size: 11px;
-  }
-  
-  .csv-table-container::after {
-    font-size: 10px;
-    bottom: -20px;
-  }
-}
-
-@media (max-width: 480px) {
-  .csv-table-container {
-    margin: 0 -0.75rem;
-    width: calc(100% + 1.5rem);
-    max-width: calc(100vw - 1.5rem);
-  }
-  
-  .csv-table th,
-  .csv-table td {
-    width: 100px;
-    min-width: 80px;
-    max-width: 140px;
-    padding: 6px 8px;
-    font-size: 10px;
-  }
-}
-
-/* Loading and error states */
-.table-loading {
-  @apply flex items-center justify-center p-8 bg-gray-50 rounded-lg;
-}
-
-.table-error {
-  @apply flex items-center justify-center p-8 bg-red-50 border border-red-200 rounded-lg text-red-700;
-}
-
-/* Modern glassmorphism effects for enhanced UI */
+/* Modern glassmorphism effects */
 .glass-effect {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
@@ -313,20 +127,7 @@ html {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
-/* Modern gradient backgrounds */
-.gradient-blue {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.gradient-purple {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-}
-
-.gradient-teal {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-}
-
-/* Enhanced animations */
+/* Animations */
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-10px); }
@@ -346,17 +147,6 @@ html {
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
 }
 
-/* Progress indicators */
-.progress-bar {
-  @apply w-full bg-gray-200 rounded-full h-2;
-  overflow: hidden;
-}
-
-.progress-fill {
-  @apply h-full bg-blue-600 rounded-full transition-all duration-300 ease-out;
-  background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%);
-}
-
 /* Modern input styles */
 .modern-input {
   @apply w-full border border-gray-300 rounded-lg px-4 py-3 text-sm;
@@ -369,55 +159,4 @@ html {
   background: rgba(255, 255, 255, 1);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
-}
-
-/* Enhanced button styles */
-.btn-modern {
-  @apply inline-flex items-center justify-center px-6 py-3 rounded-lg font-semibold;
-  @apply transition-all duration-200 transform hover:scale-105;
-  @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
-}
-
-.btn-primary-modern {
-  @apply btn-modern bg-gradient-to-r from-blue-600 to-indigo-600 text-white;
-  @apply hover:from-blue-700 hover:to-indigo-700;
-  @apply focus:ring-blue-500;
-  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.39);
-}
-
-.btn-secondary-modern {
-  @apply btn-modern bg-white text-gray-700 border border-gray-300;
-  @apply hover:bg-gray-50 hover:border-gray-400;
-  @apply focus:ring-gray-500;
-}
-
-/* Toast notification enhancements */
-.toast-modern {
-  @apply rounded-lg shadow-lg border;
-  backdrop-filter: blur(12px);
-}
-
-.toast-success {
-  @apply toast-modern bg-green-50 border-green-200 text-green-800;
-}
-
-.toast-error {
-  @apply toast-modern bg-red-50 border-red-200 text-red-800;
-}
-
-.toast-info {
-  @apply toast-modern bg-blue-50 border-blue-200 text-blue-800;
-}
-
-/* Utility classes for spacing and layout */
-.container-modern {
-  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
-}
-
-.section-spacing {
-  @apply py-16 lg:py-24;
-}
-
-.content-spacing {
-  @apply space-y-8 lg:space-y-12;
 }
