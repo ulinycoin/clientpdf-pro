@@ -44,41 +44,6 @@ export class EnhancedUnicodeFontService {
   private static isInitialized = false;
 
   /**
-   * Инициализация сервиса с регистрацией всех доступных шрифтов
-   */
-  public static initialize(): void {
-    if (this.isInitialized) return;
-
-    // Регистрируем доступные шрифты с их характеристиками
-    this.fontMetrics.set('helvetica', {
-      name: 'helvetica',
-      unicodeSupport: false,
-      supportedLanguages: ['en', 'basic-latin'],
-      fallbackRequired: true,
-      quality: 'poor'
-    });
-
-    this.fontMetrics.set('times', {
-      name: 'times',
-      unicodeSupport: true,
-      supportedLanguages: ['en', 'ru', 'lv', 'lt', 'pl', 'de', 'fr'],
-      fallbackRequired: false,
-      quality: 'good'
-    });
-
-    this.fontMetrics.set('courier', {
-      name: 'courier',
-      unicodeSupport: true,
-      supportedLanguages: ['en', 'ru', 'lv', 'basic-unicode'],
-      fallbackRequired: false,
-      quality: 'basic'
-    });
-
-    this.isInitialized = true;
-    console.log('✅ Enhanced Unicode Font Service initialized');
-  }
-
-  /**
    * Расширенная карта символьных замен для различных языков
    */
   private static readonly UNICODE_REPLACEMENTS = new Map<string, string>([
@@ -195,6 +160,41 @@ export class EnhancedUnicodeFontService {
   ]);
 
   /**
+   * Инициализация сервиса с регистрацией всех доступных шрифтов
+   */
+  public static initialize(): void {
+    if (this.isInitialized) return;
+
+    // Регистрируем доступные шрифты с их характеристиками
+    this.fontMetrics.set('helvetica', {
+      name: 'helvetica',
+      unicodeSupport: false,
+      supportedLanguages: ['en', 'basic-latin'],
+      fallbackRequired: true,
+      quality: 'poor'
+    });
+
+    this.fontMetrics.set('times', {
+      name: 'times',
+      unicodeSupport: true,
+      supportedLanguages: ['en', 'ru', 'lv', 'lt', 'pl', 'de', 'fr'],
+      fallbackRequired: false,
+      quality: 'good'
+    });
+
+    this.fontMetrics.set('courier', {
+      name: 'courier',
+      unicodeSupport: true,
+      supportedLanguages: ['en', 'ru', 'lv', 'basic-unicode'],
+      fallbackRequired: false,
+      quality: 'basic'
+    });
+
+    this.isInitialized = true;
+    console.log('✅ Enhanced Unicode Font Service initialized');
+  }
+
+  /**
    * Анализ текста для определения языков и проблемных символов
    */
   public static analyzeText(text: string): TextAnalysis {
@@ -221,7 +221,7 @@ export class EnhancedUnicodeFontService {
     };
 
     // Проверяем расширенную латиницу (диакритики)
-    if (/[À-ÿĀ-žА-я]/.test(text)) {
+    if (/[À-ÿĀ-ž]/.test(text)) {
       analysis.hasLatinExtended = true;
     }
 
