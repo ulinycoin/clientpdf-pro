@@ -1,7 +1,7 @@
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 import { CsvParseResult, CsvToPdfOptions, ColumnAnalysis } from './CsvToPdfConverter';
-import { FontManagerEnhanced } from '../FontManagerEnhanced';
+import { FontService } from '../FontService';
 
 export class CsvToPdfGenerator {
   /**
@@ -47,13 +47,13 @@ export class CsvToPdfGenerator {
         format: opts.pageSize.toLowerCase() as any,
       });
 
-      // 🎯 ИСПОЛЬЗУЕМ НОВЫЙ FontManagerEnhanced
+      // 🎯 ИСПОЛЬЗУЕМ FontService для загрузки Unicode шрифтов
       const selectedFont = await this.setupUnicodeFonts(pdf, parseResult, opts);
       
       // Анализ столбцов для оптимизации
       const columnAnalysis = this.analyzeColumns(parseResult.headers, parseResult.data, parseResult.columnTypes);
       
-      // Настройка метаданных (без очистки, так как кастомные шрифты поддерживают Unicode)
+      // Настройка метаданных
       const title = opts.title || 'CSV Data Export';
       pdf.setProperties({
         title: title,
@@ -83,7 +83,7 @@ export class CsvToPdfGenerator {
       pdf.text(infoText, opts.marginLeft, currentY);
       currentY += 5;
 
-      // Заголовки таблицы (без очистки для кастомных шрифтов)
+      // Заголовки таблицы
       const tableHeaders = opts.includeRowNumbers 
         ? ['#', ...parseResult.headers]
         : parseResult.headers;
@@ -91,7 +91,7 @@ export class CsvToPdfGenerator {
       const maxRows = opts.maxRowsPerPage || 1000;
       const dataToProcess = parseResult.data.slice(0, maxRows);
 
-      // Данные таблицы (без очистки для кастомных шрифтов)
+      // Данные таблицы
       const tableData = dataToProcess.map((row, index) => {
         const rowData = parseResult.headers.map(header => {
           const value = row[header];
@@ -129,7 +129,7 @@ export class CsvToPdfGenerator {
           overflow: 'linebreak',
           halign: 'left',
           valign: 'top',
-          font: selectedFont, // Используем выбранный шрифт
+          font: selectedFont,
           fontStyle: 'normal',
         },
         headStyles: {
@@ -153,7 +153,6 @@ export class CsvToPdfGenerator {
         tableLineWidth: tableStyles.lineWidth,
         tableWidth: 'wrap',
         didDrawPage: (data: any) => {
-          // Номера страниц
           const pageNumber = (pdf as any).internal.getCurrentPageInfo().pageNumber;
           const totalPages = (pdf as any).internal.getNumberOfPages();
           
@@ -208,7 +207,7 @@ export class CsvToPdfGenerator {
   }
 
   /**
-   * 🆕 УЛУЧШЕННАЯ ФУНКЦИЯ: Настройка шрифтов с поддержкой кастомных Unicode шрифтов
+   * 🆕 Настройка шрифтов с использованием FontService
    */
   private static async setupUnicodeFonts(
     pdf: jsPDF, 
@@ -239,31 +238,36 @@ export class CsvToPdfGenerator {
         });
       }
 
-      console.log('🔍 Analyzing fonts for CSV data...');
+      console.log('🔍 Analyzing text for font selection...');
+      
+      const combinedText = allTexts.join(' ');
       
       // Определяем предпочитаемый шрифт
       let preferredFont: string | undefined;
       if (options.fontFamily && options.fontFamily !== 'auto') {
-        preferredFont = options.fontFamily;
+        // Преобразуем имена шрифтов в поддерживаемые
+        const fontMap: Record<string, string> = {
+          'DejaVuSans': 'NotoSans',
+          'Roboto': 'OpenSans',
+          'NotoSans': 'NotoSans',
+          'OpenSans': 'OpenSans'
+        };
+        preferredFont = fontMap[options.fontFamily] || 'NotoSans';
       }
       
-      // Используем FontManagerEnhanced для настройки шрифтов
-      const selectedFont = await FontManagerEnhanced.setupFontsForText(
+      // Пробуем загрузить подходящий Unicode шрифт
+      const selectedFont = await FontService.loadBestFontForText(
         pdf, 
-        allTexts,
+        combinedText,
         preferredFont
       );
       
-      console.log(`✅ Font setup completed: ${selectedFont}`);
+      console.log(`✅ Font loaded: ${selectedFont}`);
       
-      // Проверяем поддержку текста выбранным шрифтом
-      const validation = FontManagerEnhanced.validateTextSupport(
-        allTexts.join(' '), 
-        selectedFont
-      );
-      
-      if (!validation.supported && validation.recommendation) {
-        console.log(`⚠️ Font recommendation: ${validation.recommendation}`);
+      // Проверяем поддержку языков
+      const languageSupport = FontService.checkLanguageSupport(selectedFont, combinedText);
+      if (!languageSupport.supported) {
+        console.warn(`⚠️ Font ${selectedFont} may not support: ${languageSupport.unsupportedRanges.join(', ')}`);
       }
       
       return selectedFont;
