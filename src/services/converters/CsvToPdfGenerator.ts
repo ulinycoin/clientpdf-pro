@@ -1,11 +1,11 @@
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 import { CsvParseResult, CsvToPdfOptions, ColumnAnalysis } from './CsvToPdfConverter';
-import { FontServiceLocal } from '../FontServiceLocal';
+import { EnhancedUnicodeFontService } from '../EnhancedUnicodeFontService';
 
 export class CsvToPdfGenerator {
   /**
-   * Конвертация CSV в PDF с улучшенным форматированием и транслитерацией
+   * Конвертация CSV в PDF с улучшенным форматированием и Unicode поддержкой
    */
   static async convertToPDF(
     parseResult: CsvParseResult, 
@@ -47,41 +47,78 @@ export class CsvToPdfGenerator {
         format: opts.pageSize.toLowerCase() as any,
       });
 
-      // Настройка базовой поддержки Unicode
-      const selectedFont = FontServiceLocal.setupUnicodeSupport(pdf);
+      // 🆕 УЛУЧШЕННАЯ НАСТРОЙКА ШРИФТОВ
+      // Собираем образцы текста для анализа
+      const sampleTexts = [
+        // Заголовки
+        ...parseResult.headers,
+        // Образцы данных
+        ...parseResult.data.slice(0, 10).flatMap(row => 
+          parseResult.headers.map(header => String(row[header] || ''))
+        ),
+        // Заголовок документа
+        opts.title || ''
+      ].filter(text => text.trim() !== '');
+
+      // Настройка шрифтов с новым сервисом
+      const fontSetup = EnhancedUnicodeFontService.setupPDFFont(pdf, sampleTexts);
       
+      if (!fontSetup.success) {
+        console.error('❌ Font setup failed:', fontSetup.warnings);
+        throw new Error(`Font setup failed: ${fontSetup.warnings.join(', ')}`);
+      }
+
+      console.log('✅ Font setup successful:', {
+        selectedFont: fontSetup.selectedFont,
+        warnings: fontSetup.warnings,
+        transliterations: fontSetup.appliedTransliterations
+      });
+
       // Анализ столбцов для оптимизации
       const columnAnalysis = this.analyzeColumns(parseResult.headers, parseResult.data, parseResult.columnTypes);
       
-      // Настройка метаданных с очисткой
-      const title = opts.title ? FontServiceLocal.smartCleanText(opts.title) : 'CSV Data Export';
+      // Настройка метаданных с очисткой через новый сервис
+      const title = opts.title ? 
+        EnhancedUnicodeFontService.smartCleanText(opts.title) : 
+        'CSV Data Export';
+      
       pdf.setProperties({
         title: title,
         subject: `Data table with ${parseResult.rowCount} rows and ${parseResult.columnCount} columns`,
         author: 'ClientPDF Pro',
-        creator: 'ClientPDF Pro - CSV to PDF Converter with Transliteration v4.0',
-        keywords: 'CSV, PDF, data, table, export, unicode, transliteration',
+        creator: 'ClientPDF Pro - CSV to PDF Converter with Enhanced Unicode Support v5.0',
+        keywords: 'CSV, PDF, data, table, export, unicode, multilingual, font-rendering',
       });
 
       // Добавление заголовка документа
       let currentY = opts.marginTop;
       if (opts.title) {
         pdf.setFontSize(16);
-        pdf.setFont(selectedFont, 'bold');
+        pdf.setFont(fontSetup.selectedFont, 'bold');
         pdf.text(title, opts.marginLeft, currentY);
         currentY += 10;
       }
 
-      // Информация о данных
+      // Информация о данных и кодировке
       pdf.setFontSize(8);
-      pdf.setFont(selectedFont, 'normal');
-      const infoText = `Data: ${parseResult.rowCount} rows × ${parseResult.columnCount} columns | Delimiter: "${parseResult.delimiter}"`;
+      pdf.setFont(fontSetup.selectedFont, 'normal');
+      
+      const infoText = `Data: ${parseResult.rowCount} rows × ${parseResult.columnCount} columns | Font: ${fontSetup.selectedFont}`;
       pdf.text(infoText, opts.marginLeft, currentY);
       currentY += 5;
 
-      // Очистка заголовков таблицы
+      // Предупреждения о транслитерации
+      if (fontSetup.appliedTransliterations > 0) {
+        pdf.setFontSize(7);
+        pdf.setFont(fontSetup.selectedFont, 'italic');
+        const warningText = `Note: ${fontSetup.appliedTransliterations} special characters have been transliterated for compatibility`;
+        pdf.text(warningText, opts.marginLeft, currentY);
+        currentY += 5;
+      }
+
+      // 🆕 УЛУЧШЕННАЯ ОЧИСТКА ЗАГОЛОВКОВ
       const cleanHeaders = parseResult.headers.map(header => 
-        FontServiceLocal.smartCleanText(header)
+        EnhancedUnicodeFontService.smartCleanText(header)
       );
       
       const tableHeaders = opts.includeRowNumbers 
@@ -91,12 +128,12 @@ export class CsvToPdfGenerator {
       const maxRows = opts.maxRowsPerPage || 1000;
       const dataToProcess = parseResult.data.slice(0, maxRows);
 
-      // Очистка данных таблицы
+      // 🆕 УЛУЧШЕННАЯ ОЧИСТКА ДАННЫХ
       const tableData = dataToProcess.map((row, index) => {
         const rowData = parseResult.headers.map(header => {
           const value = row[header];
           const formattedValue = this.formatCellValue(value, parseResult.columnTypes[header]);
-          return FontServiceLocal.smartCleanText(formattedValue);
+          return EnhancedUnicodeFontService.smartCleanText(formattedValue);
         });
         return opts.includeRowNumbers 
           ? [String(index + 1), ...rowData]
@@ -113,7 +150,7 @@ export class CsvToPdfGenerator {
       // Настройки стилей таблицы
       const tableStyles = this.getTableStyles(opts);
       
-      // Генерация таблицы
+      // Генерация таблицы с улучшенными настройками шрифтов
       pdf.autoTable({
         head: [tableHeaders],
         body: tableData,
@@ -130,18 +167,22 @@ export class CsvToPdfGenerator {
           overflow: 'linebreak',
           halign: 'left',
           valign: 'top',
+          font: fontSetup.selectedFont, // 🆕 Явно указываем шрифт
         },
         headStyles: {
           ...tableStyles.headerStyles,
           minCellHeight: 6,
           fontSize: Math.max(opts.fontSize, 7),
           fontStyle: 'bold',
+          font: fontSetup.selectedFont, // 🆕 Явно указываем шрифт
         },
         bodyStyles: {
           ...tableStyles.bodyStyles,
+          font: fontSetup.selectedFont, // 🆕 Явно указываем шрифт
         },
         alternateRowStyles: {
           ...tableStyles.alternateRowStyles,
+          font: fontSetup.selectedFont, // 🆕 Явно указываем шрифт
         },
         columnStyles: columnStyles,
         showHead: true,
@@ -149,12 +190,14 @@ export class CsvToPdfGenerator {
         tableLineColor: tableStyles.lineColor,
         tableLineWidth: tableStyles.lineWidth,
         tableWidth: 'wrap',
+        
+        // 🆕 УЛУЧШЕННЫЕ КОЛБЭКИ С КОНТРОЛЕМ ШРИФТОВ
         didDrawPage: (data: any) => {
           const pageNumber = (pdf as any).internal.getCurrentPageInfo().pageNumber;
           const totalPages = (pdf as any).internal.getNumberOfPages();
           
           pdf.setFontSize(8);
-          pdf.setFont(selectedFont, 'normal');
+          pdf.setFont(fontSetup.selectedFont, 'normal');
           
           pdf.text(
             `Page ${pageNumber} of ${totalPages}`,
@@ -164,19 +207,23 @@ export class CsvToPdfGenerator {
           
           const pageWidth = (pdf as any).internal.pageSize.width;
           pdf.text(
-            `${parseResult.rowCount} rows | ${parseResult.columnCount} columns`,
-            pageWidth - 50,
+            `${parseResult.rowCount} rows | ${parseResult.columnCount} columns | Font: ${fontSetup.selectedFont}`,
+            pageWidth - 80,
             (pdf as any).internal.pageSize.height - 10
           );
         },
+        
         willDrawPage: () => {
-          pdf.setFont(selectedFont, 'normal');
+          // Убеждаемся что шрифт установлен перед рисованием каждой страницы
+          pdf.setFont(fontSetup.selectedFont, 'normal');
         },
+        
         willDrawCell: (data: any) => {
+          // Устанавливаем правильный шрифт для каждой ячейки
           if (data.section === 'head') {
-            pdf.setFont(selectedFont, 'bold');
+            pdf.setFont(fontSetup.selectedFont, 'bold');
           } else {
-            pdf.setFont(selectedFont, 'normal');
+            pdf.setFont(fontSetup.selectedFont, 'normal');
           }
         }
       });
@@ -185,19 +232,28 @@ export class CsvToPdfGenerator {
       if (parseResult.rowCount > maxRows) {
         const finalY = (pdf as any).lastAutoTable.finalY || currentY + 50;
         pdf.setFontSize(8);
-        pdf.setFont(selectedFont, 'normal');
+        pdf.setFont(fontSetup.selectedFont, 'normal');
         const warningText = `Note: Only first ${maxRows} of ${parseResult.rowCount} rows are displayed`;
         pdf.text(warningText, opts.marginLeft, finalY + 10);
       }
 
-      // Добавление информации о транслитерации
+      // 🆕 УЛУЧШЕННАЯ ИНФОРМАЦИЯ О ТРАНСЛИТЕРАЦИИ
       const needsTransliteration = this.checkIfNeedsTransliteration(parseResult);
-      if (needsTransliteration) {
+      if (needsTransliteration || fontSetup.appliedTransliterations > 0) {
         const finalY = (pdf as any).lastAutoTable.finalY || currentY + 50;
         pdf.setFontSize(6);
-        pdf.setFont(selectedFont, 'italic');
-        const noteText = 'Note: Non-Latin characters have been transliterated for compatibility';
-        pdf.text(noteText, opts.marginLeft, finalY + 15);
+        pdf.setFont(fontSetup.selectedFont, 'italic');
+        
+        const noteLines = [
+          'Font Rendering Information:',
+          `• Selected font: ${fontSetup.selectedFont}`,
+          `• Characters transliterated: ${fontSetup.appliedTransliterations}`,
+          '• Non-Latin characters converted for better compatibility'
+        ];
+        
+        noteLines.forEach((line, index) => {
+          pdf.text(line, opts.marginLeft, finalY + 15 + (index * 4));
+        });
       }
 
       // Возврат PDF как Uint8Array
@@ -210,24 +266,26 @@ export class CsvToPdfGenerator {
   }
 
   /**
-   * Проверка нужна ли транслитерация
+   * Проверка нужна ли транслитерация (теперь использует новый сервис)
    */
   private static checkIfNeedsTransliteration(parseResult: CsvParseResult): boolean {
-    // Проверяем заголовки
-    for (const header of parseResult.headers) {
-      if (/[^\x00-\x7F]/.test(header)) {
-        return true;
-      }
+    // Анализируем заголовки
+    const headerAnalysis = EnhancedUnicodeFontService.analyzeText(parseResult.headers.join(' '));
+    if (headerAnalysis.needsTransliteration) {
+      return true;
     }
     
-    // Проверяем образец данных
+    // Анализируем образец данных
     const sampleSize = Math.min(10, parseResult.data.length);
     for (let i = 0; i < sampleSize; i++) {
       const row = parseResult.data[i];
       for (const header of parseResult.headers) {
         const value = row[header];
-        if (value && typeof value === 'string' && /[^\x00-\x7F]/.test(value)) {
-          return true;
+        if (value && typeof value === 'string') {
+          const analysis = EnhancedUnicodeFontService.analyzeText(value);
+          if (analysis.needsTransliteration) {
+            return true;
+          }
         }
       }
     }
