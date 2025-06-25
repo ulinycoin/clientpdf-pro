@@ -36,6 +36,7 @@ export interface FontSetupResult {
   selectedFont: string;
   warnings: string[];
   appliedTransliterations: number;
+  preservesCyrillic?: boolean;
 }
 
 export class EnhancedUnicodeFontService {
@@ -386,7 +387,8 @@ export class EnhancedUnicodeFontService {
       success: false,
       selectedFont: 'helvetica',
       warnings: [],
-      appliedTransliterations: 0
+      appliedTransliterations: 0,
+      preservesCyrillic: false
     };
 
     try {
@@ -408,7 +410,24 @@ export class EnhancedUnicodeFontService {
       if (needsCyrillic) {
         console.log('🔤 Attempting to preserve Cyrillic characters...');
         
-        // Попытка 1: Внешний шрифт с кириллицей (ИСПРАВЛЕНО: DejaVu вместо Roboto)
+        // Попытка 1: Встроенный кириллический шрифт
+        try {
+          const { CyrillicFontEmbedded } = await import('./CyrillicFontEmbedded');
+          const embeddedResult = CyrillicFontEmbedded.addEmbeddedCyrillicFont(pdf, 'DejaVu-Cyrillic');
+          
+          if (embeddedResult.success) {
+            result.success = true;
+            result.selectedFont = embeddedResult.fontName;
+            result.preservesCyrillic = true;
+            result.warnings.push('Using embedded Cyrillic font: ' + embeddedResult.fontName);
+            console.log(`✅ Embedded Cyrillic font loaded: ${embeddedResult.fontName}`);
+            return result;
+          }
+        } catch (error) {
+          console.warn('⚠️ Embedded font loading failed:', error);
+        }
+
+        // Попытка 2: Внешний шрифт с кириллицей
         try {
           const { ExternalFontLoader } = await import('./ExternalFontLoader');
           const fontResult = await ExternalFontLoader.setupPDFWithCyrillicFont(pdf, 'DejaVu');
@@ -416,6 +435,7 @@ export class EnhancedUnicodeFontService {
           if (fontResult.success) {
             result.success = true;
             result.selectedFont = fontResult.fontName;
+            result.preservesCyrillic = true;
             result.warnings.push('Using external Cyrillic font: ' + fontResult.fontName);
             console.log(`✅ External Cyrillic font loaded: ${fontResult.fontName}`);
             return result;
@@ -424,7 +444,7 @@ export class EnhancedUnicodeFontService {
           console.warn('⚠️ External font loading failed:', error);
         }
 
-        // Попытка 2: Встроенная поддержка кириллицы
+        // Попытка 3: Улучшенная встроенная поддержка кириллицы
         try {
           const { CyrillicFontService } = await import('./CyrillicFontService');
           const cyrillicResult = CyrillicFontService.setupCyrillicSupport(pdf);
@@ -432,8 +452,9 @@ export class EnhancedUnicodeFontService {
           if (cyrillicResult.success) {
             result.success = true;
             result.selectedFont = cyrillicResult.selectedFont;
-            result.warnings.push('Using built-in Cyrillic support');
-            console.log(`✅ Built-in Cyrillic support enabled`);
+            result.preservesCyrillic = cyrillicResult.preservesCyrillic;
+            result.warnings.push(`Using ${cyrillicResult.method}`);
+            console.log(`✅ Cyrillic support enabled: ${cyrillicResult.method}`);
             return result;
           }
         } catch (error) {
@@ -442,6 +463,7 @@ export class EnhancedUnicodeFontService {
 
         // Если кириллица не поддерживается, предупреждаем пользователя
         result.warnings.push('Cyrillic characters will be transliterated due to font limitations');
+        result.preservesCyrillic = false;
       }
 
       // Стандартная логика выбора шрифта (как было раньше)
@@ -471,7 +493,7 @@ export class EnhancedUnicodeFontService {
       }
 
       // Добавляем предупреждения
-      if (analysis.needsTransliteration && !needsCyrillic) {
+      if (analysis.needsTransliteration && !result.preservesCyrillic) {
         result.warnings.push(`${analysis.problemChars.length} characters will be transliterated`);
         result.appliedTransliterations = analysis.problemChars.length;
       }
@@ -539,7 +561,8 @@ export class EnhancedUnicodeFontService {
     const loadedFonts = Array.from(this.loadedFonts);
     
     const recommendations = [
-      'Use Times Roman for multilingual content',
+      'Use embedded fonts for best Cyrillic support',
+      'Times Roman for multilingual content',
       'Courier provides good monospace Unicode support',
       'Helvetica is basic but universally compatible',
       'Always test with sample text containing special characters'
