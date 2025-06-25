@@ -60,12 +60,17 @@ export class CsvToPdfGenerator {
         opts.title || ''
       ].filter(text => text.trim() !== '');
 
-      // Настройка шрифтов с новым сервисом
-      const fontSetup = EnhancedUnicodeFontService.setupPDFFont(pdf, sampleTexts);
+      // 🔧 ИСПРАВЛЕНО: Ждем Promise от setupPDFFont
+      console.log('🔤 Setting up fonts with sample texts...');
+      const fontSetup = await EnhancedUnicodeFontService.setupPDFFont(pdf, sampleTexts);
       
       if (!fontSetup.success) {
         console.error('❌ Font setup failed:', fontSetup.warnings);
-        throw new Error(`Font setup failed: ${fontSetup.warnings.join(', ')}`);
+        // 🔧 ИСПРАВЛЕНО: Безопасная обработка warnings
+        const warningMessage = fontSetup.warnings && Array.isArray(fontSetup.warnings) 
+          ? fontSetup.warnings.join(', ') 
+          : 'Unknown font setup error';
+        throw new Error(`Font setup failed: ${warningMessage}`);
       }
 
       console.log('✅ Font setup successful:', {
@@ -261,6 +266,7 @@ export class CsvToPdfGenerator {
       return new Uint8Array(pdfOutput);
 
     } catch (error) {
+      console.error('💥 PDF generation error:', error);
       throw new Error(`PDF generation failed: ${error}`);
     }
   }
