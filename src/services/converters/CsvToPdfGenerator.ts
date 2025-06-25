@@ -48,7 +48,7 @@ export class CsvToPdfGenerator {
         format: opts.pageSize.toLowerCase() as any,
       });
 
-      // 🆕 УЛУЧШЕННАЯ НАСТРОЙКА ШРИФТОВ С КИРИЛЛИЦЕЙ
+      // 🆕 БЕЗОПАСНАЯ НАСТРОЙКА ШРИФТОВ С КИРИЛЛИЦЕЙ
       // Собираем образцы текста для анализа
       const sampleTexts = [
         // Заголовки
@@ -76,37 +76,62 @@ export class CsvToPdfGenerator {
         preservesCyrillic: false
       };
 
-      // Если есть значительное количество кириллицы, пытаемся её сохранить
+      // 🔧 ИСПРАВЛЕНО: Безопасная настройка шрифтов
+      let finalFont = 'helvetica'; // Безопасный fallback
+
       if (hasCyrillic && cyrillicPercentage > 20) {
         console.log('🔤 Detected significant Cyrillic content, attempting preservation...');
         
-        // Попытка 1: Полная система кириллицы
+        // Попытка простой кириллицы с проверкой совместимости
         try {
-          fontSetup = await EnhancedUnicodeFontService.setupPDFFont(pdf, sampleTexts);
-        } catch (error) {
-          console.warn('⚠️ Advanced font setup failed, using simple method:', error);
+          // Сначала проверяем Times
+          pdf.setFont('times', 'normal');
           
-          // Попытка 2: Простая кириллица
-          const simpleSuccess = SimpleCyrillicFont.quickSetupCyrillic(pdf);
-          fontSetup.preservesCyrillic = simpleSuccess;
-          fontSetup.selectedFont = simpleSuccess ? 'times' : 'helvetica';
-          fontSetup.warnings.push(simpleSuccess ? 
-            'Using Times font with partial Cyrillic support' : 
-            'Cyrillic will be transliterated'
-          );
+          // Тестируем совместимость с AutoTable
+          const testCompatibility = this.testFontCompatibility(pdf, 'times');
+          
+          if (testCompatibility) {
+            finalFont = 'times';
+            fontSetup.preservesCyrillic = true;
+            fontSetup.selectedFont = 'times';
+            fontSetup.warnings.push('Using Times font with partial Cyrillic support');
+            console.log('✅ Times font compatible with AutoTable');
+          } else {
+            console.warn('⚠️ Times font not compatible with AutoTable, using Helvetica');
+            pdf.setFont('helvetica', 'normal');
+            finalFont = 'helvetica';
+            fontSetup.warnings.push('Times incompatible, Cyrillic will be transliterated');
+          }
+        } catch (error) {
+          console.warn('⚠️ Times font setup failed:', error);
+          pdf.setFont('helvetica', 'normal');
+          finalFont = 'helvetica';
+          fontSetup.warnings.push('Font setup failed, using Helvetica with transliteration');
         }
       } else {
-        // Стандартная настройка без кириллицы
+        // Стандартная настройка для английского текста
         try {
-          fontSetup = await EnhancedUnicodeFontService.setupPDFFont(pdf, sampleTexts);
-        } catch (error) {
-          console.warn('⚠️ Font setup failed, using helvetica:', error);
           pdf.setFont('helvetica', 'normal');
+          finalFont = 'helvetica';
+          fontSetup.selectedFont = 'helvetica';
+        } catch (error) {
+          console.warn('⚠️ Even Helvetica failed, this is unusual:', error);
+          finalFont = 'helvetica'; // Принудительно
         }
       }
 
-      console.log('✅ Font setup result:', {
-        selectedFont: fontSetup.selectedFont,
+      // Финальная проверка совместимости шрифта
+      const fontCompatible = this.testFontCompatibility(pdf, finalFont);
+      if (!fontCompatible) {
+        console.warn(`⚠️ Font ${finalFont} not compatible, forcing Helvetica`);
+        pdf.setFont('helvetica', 'normal');
+        finalFont = 'helvetica';
+        fontSetup.selectedFont = 'helvetica';
+        fontSetup.preservesCyrillic = false;
+      }
+
+      console.log('✅ Final font setup:', {
+        selectedFont: finalFont,
         preservesCyrillic: fontSetup.preservesCyrillic,
         warnings: fontSetup.warnings
       });
@@ -123,7 +148,7 @@ export class CsvToPdfGenerator {
         title: title,
         subject: `Data table with ${parseResult.rowCount} rows and ${parseResult.columnCount} columns`,
         author: 'ClientPDF Pro',
-        creator: 'ClientPDF Pro - CSV to PDF Converter with Enhanced Unicode Support v6.0',
+        creator: 'ClientPDF Pro - CSV to PDF Converter with Enhanced Unicode Support v6.1',
         keywords: 'CSV, PDF, data, table, export, unicode, multilingual, cyrillic, font-rendering',
       });
 
@@ -131,23 +156,23 @@ export class CsvToPdfGenerator {
       let currentY = opts.marginTop;
       if (opts.title) {
         pdf.setFontSize(16);
-        pdf.setFont(fontSetup.selectedFont, 'bold');
+        pdf.setFont(finalFont, 'bold');
         pdf.text(title, opts.marginLeft, currentY);
         currentY += 10;
       }
 
       // Информация о данных и кодировке
       pdf.setFontSize(8);
-      pdf.setFont(fontSetup.selectedFont, 'normal');
+      pdf.setFont(finalFont, 'normal');
       
-      const infoText = `Data: ${parseResult.rowCount} rows × ${parseResult.columnCount} columns | Font: ${fontSetup.selectedFont}`;
+      const infoText = `Data: ${parseResult.rowCount} rows × ${parseResult.columnCount} columns | Font: ${finalFont}`;
       pdf.text(infoText, opts.marginLeft, currentY);
       currentY += 5;
 
       // Предупреждения о кириллице
       if (hasCyrillic) {
         pdf.setFontSize(7);
-        pdf.setFont(fontSetup.selectedFont, 'italic');
+        pdf.setFont(finalFont, 'italic');
         const cyrillicInfo = fontSetup.preservesCyrillic 
           ? `✓ Cyrillic characters preserved (${cyrillicPercentage.toFixed(1)}% of text)`
           : `⚠ Cyrillic characters transliterated (${cyrillicPercentage.toFixed(1)}% of text)`;
@@ -189,102 +214,119 @@ export class CsvToPdfGenerator {
       // Настройки стилей таблицы
       const tableStyles = this.getTableStyles(opts);
       
-      // Генерация таблицы с улучшенными настройками шрифтов
-      pdf.autoTable({
-        head: [tableHeaders],
-        body: tableData,
-        startY: currentY + 5,
-        margin: {
-          top: opts.marginTop,
-          bottom: opts.marginBottom,
-          left: opts.marginLeft,
-          right: opts.marginRight,
-        },
-        styles: {
-          fontSize: opts.fontSize,
-          cellPadding: 1.5,
-          overflow: 'linebreak',
-          halign: 'left',
-          valign: 'top',
-          font: fontSetup.selectedFont,
-        },
-        headStyles: {
-          ...tableStyles.headerStyles,
-          minCellHeight: 6,
-          fontSize: Math.max(opts.fontSize, 7),
-          fontStyle: 'bold',
-          font: fontSetup.selectedFont,
-        },
-        bodyStyles: {
-          ...tableStyles.bodyStyles,
-          font: fontSetup.selectedFont,
-        },
-        alternateRowStyles: {
-          ...tableStyles.alternateRowStyles,
-          font: fontSetup.selectedFont,
-        },
-        columnStyles: columnStyles,
-        showHead: true,
-        showFoot: false,
-        tableLineColor: tableStyles.lineColor,
-        tableLineWidth: tableStyles.lineWidth,
-        tableWidth: 'wrap',
-        
-        // 🆕 УЛУЧШЕННЫЕ КОЛБЭКИ С КОНТРОЛЕМ ШРИФТОВ
-        didDrawPage: (data: any) => {
-          const pageNumber = (pdf as any).internal.getCurrentPageInfo().pageNumber;
-          const totalPages = (pdf as any).internal.getNumberOfPages();
+      // 🔧 БЕЗОПАСНАЯ ГЕНЕРАЦИЯ ТАБЛИЦЫ
+      try {
+        pdf.autoTable({
+          head: [tableHeaders],
+          body: tableData,
+          startY: currentY + 5,
+          margin: {
+            top: opts.marginTop,
+            bottom: opts.marginBottom,
+            left: opts.marginLeft,
+            right: opts.marginRight,
+          },
+          styles: {
+            fontSize: opts.fontSize,
+            cellPadding: 1.5,
+            overflow: 'linebreak',
+            halign: 'left',
+            valign: 'top',
+            font: finalFont, // Используем проверенный шрифт
+          },
+          headStyles: {
+            ...tableStyles.headerStyles,
+            minCellHeight: 6,
+            fontSize: Math.max(opts.fontSize, 7),
+            fontStyle: 'bold',
+            font: finalFont, // Используем проверенный шрифт
+          },
+          bodyStyles: {
+            ...tableStyles.bodyStyles,
+            font: finalFont, // Используем проверенный шрифт
+          },
+          alternateRowStyles: {
+            ...tableStyles.alternateRowStyles,
+            font: finalFont, // Используем проверенный шрифт
+          },
+          columnStyles: columnStyles,
+          showHead: true,
+          showFoot: false,
+          tableLineColor: tableStyles.lineColor,
+          tableLineWidth: tableStyles.lineWidth,
+          tableWidth: 'wrap',
           
-          pdf.setFontSize(8);
-          pdf.setFont(fontSetup.selectedFont, 'normal');
+          // 🔧 БЕЗОПАСНЫЕ КОЛБЭКИ
+          didDrawPage: (data: any) => {
+            try {
+              const pageNumber = (pdf as any).internal.getCurrentPageInfo().pageNumber;
+              const totalPages = (pdf as any).internal.getNumberOfPages();
+              
+              pdf.setFontSize(8);
+              pdf.setFont(finalFont, 'normal');
+              
+              pdf.text(
+                `Page ${pageNumber} of ${totalPages}`,
+                opts.marginLeft,
+                (pdf as any).internal.pageSize.height - 10
+              );
+              
+              const pageWidth = (pdf as any).internal.pageSize.width;
+              const footerText = `${parseResult.rowCount} rows | ${parseResult.columnCount} columns | ${finalFont}${fontSetup.preservesCyrillic ? ' [RU]' : ''}`;
+              pdf.text(
+                footerText,
+                pageWidth - 80,
+                (pdf as any).internal.pageSize.height - 10
+              );
+            } catch (error) {
+              console.warn('⚠️ Page drawing error:', error);
+            }
+          },
           
-          pdf.text(
-            `Page ${pageNumber} of ${totalPages}`,
-            opts.marginLeft,
-            (pdf as any).internal.pageSize.height - 10
-          );
+          willDrawPage: () => {
+            try {
+              pdf.setFont(finalFont, 'normal');
+            } catch (error) {
+              console.warn('⚠️ Font setting error in willDrawPage:', error);
+            }
+          },
           
-          const pageWidth = (pdf as any).internal.pageSize.width;
-          const footerText = `${parseResult.rowCount} rows | ${parseResult.columnCount} columns | ${fontSetup.selectedFont}${fontSetup.preservesCyrillic ? ' [RU]' : ''}`;
-          pdf.text(
-            footerText,
-            pageWidth - 80,
-            (pdf as any).internal.pageSize.height - 10
-          );
-        },
-        
-        willDrawPage: () => {
-          pdf.setFont(fontSetup.selectedFont, 'normal');
-        },
-        
-        willDrawCell: (data: any) => {
-          if (data.section === 'head') {
-            pdf.setFont(fontSetup.selectedFont, 'bold');
-          } else {
-            pdf.setFont(fontSetup.selectedFont, 'normal');
+          willDrawCell: (data: any) => {
+            try {
+              if (data.section === 'head') {
+                pdf.setFont(finalFont, 'bold');
+              } else {
+                pdf.setFont(finalFont, 'normal');
+              }
+            } catch (error) {
+              console.warn('⚠️ Font setting error in willDrawCell:', error);
+            }
           }
-        }
-      });
+        });
+      } catch (autoTableError) {
+        console.error('❌ AutoTable generation failed:', autoTableError);
+        throw new Error(`AutoTable generation failed: ${autoTableError.message}`);
+      }
 
       // Добавление предупреждения об ограничении строк
       if (parseResult.rowCount > maxRows) {
-        const finalY = (pdf as any).lastAutoTable.finalY || currentY + 50;
+        const finalY = (pdf as any).lastAutoTable?.finalY || currentY + 50;
         pdf.setFontSize(8);
-        pdf.setFont(fontSetup.selectedFont, 'normal');
+        pdf.setFont(finalFont, 'normal');
         const warningText = `Note: Only first ${maxRows} of ${parseResult.rowCount} rows are displayed`;
         pdf.text(warningText, opts.marginLeft, finalY + 10);
       }
 
       // 🆕 ИНФОРМАЦИЯ О КИРИЛЛИЦЕ
       if (hasCyrillic) {
-        const finalY = (pdf as any).lastAutoTable.finalY || currentY + 50;
+        const finalY = (pdf as any).lastAutoTable?.finalY || currentY + 50;
         pdf.setFontSize(6);
-        pdf.setFont(fontSetup.selectedFont, 'italic');
+        pdf.setFont(finalFont, 'italic');
         
         const noteLines = [
           'Cyrillic Text Processing:',
           `• Language detection: ${cyrillicPercentage.toFixed(1)}% Cyrillic characters`,
-          `• Font: ${fontSetup.selectedFont}`,
+          `• Font: ${finalFont}`,
           `• Method: ${fontSetup.preservesCyrillic ? 'Native rendering' : 'Transliteration'}`,
           fontSetup.preservesCyrillic ? 
             '• Russian text displayed in original form' : 
@@ -292,7 +334,11 @@ export class CsvToPdfGenerator {
         ];
         
         noteLines.forEach((line, index) => {
-          pdf.text(line, opts.marginLeft, finalY + 15 + (index * 4));
+          try {
+            pdf.text(line, opts.marginLeft, finalY + 15 + (index * 4));
+          } catch (error) {
+            console.warn('⚠️ Error adding info line:', error);
+          }
         });
       }
 
@@ -303,6 +349,49 @@ export class CsvToPdfGenerator {
     } catch (error) {
       console.error('💥 PDF generation error:', error);
       throw new Error(`PDF generation failed: ${error}`);
+    }
+  }
+
+  /**
+   * Тестирование совместимости шрифта с AutoTable
+   */
+  private static testFontCompatibility(pdf: jsPDF, fontName: string): boolean {
+    try {
+      // Проверяем есть ли информация о шрифте
+      const pdfInternal = (pdf as any).internal;
+      
+      if (!pdfInternal || !pdfInternal.fonts) {
+        return false;
+      }
+
+      // Проверяем доступность шрифта
+      const fontKey = `${fontName},normal`;
+      const fonts = pdfInternal.fonts;
+      
+      if (!fonts[fontKey]) {
+        console.warn(`⚠️ Font ${fontName} not found in internal fonts`);
+        return false;
+      }
+
+      // Проверяем наличие widths информации
+      const fontInfo = fonts[fontKey];
+      if (!fontInfo.metadata || !fontInfo.metadata.widths) {
+        console.warn(`⚠️ Font ${fontName} missing widths information`);
+        return false;
+      }
+
+      // Тестируем получение ширины текста
+      const testWidth = pdf.getTextWidth('Test');
+      if (isNaN(testWidth) || testWidth <= 0) {
+        console.warn(`⚠️ Font ${fontName} getTextWidth test failed`);
+        return false;
+      }
+
+      console.log(`✅ Font ${fontName} compatibility test passed`);
+      return true;
+    } catch (error) {
+      console.warn(`⚠️ Font compatibility test failed for ${fontName}:`, error);
+      return false;
     }
   }
 
@@ -340,34 +429,6 @@ export class CsvToPdfGenerator {
     }
     
     return (cyrillicMatches.length / totalLetters.length) * 100;
-  }
-
-  /**
-   * Проверка нужна ли транслитерация (теперь использует новый сервис)
-   */
-  private static checkIfNeedsTransliteration(parseResult: CsvParseResult): boolean {
-    // Анализируем заголовки
-    const headerAnalysis = EnhancedUnicodeFontService.analyzeText(parseResult.headers.join(' '));
-    if (headerAnalysis.needsTransliteration) {
-      return true;
-    }
-    
-    // Анализируем образец данных
-    const sampleSize = Math.min(10, parseResult.data.length);
-    for (let i = 0; i < sampleSize; i++) {
-      const row = parseResult.data[i];
-      for (const header of parseResult.headers) {
-        const value = row[header];
-        if (value && typeof value === 'string') {
-          const analysis = EnhancedUnicodeFontService.analyzeText(value);
-          if (analysis.needsTransliteration) {
-            return true;
-          }
-        }
-      }
-    }
-    
-    return false;
   }
 
   /**
