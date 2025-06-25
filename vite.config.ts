@@ -7,20 +7,30 @@ export default defineConfig({
   
   server: {
     port: 3000,
-    host: 'localhost',
-    open: false
+    host: '0.0.0.0', // Изменено с 'localhost' для лучшей совместимости
+    open: false,
+    // Исправление WebSocket проблем
+    hmr: {
+      port: 3000,
+      host: 'localhost'
+    },
+    // Увеличиваем таймауты для больших файлов
+    timeout: 120000
   },
   
   build: {
     target: 'es2020',
     outDir: 'dist',
     sourcemap: false,
+    // Увеличиваем лимит для больших файлов
+    chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
         manualChunks: {
           'react-vendor': ['react', 'react-dom'],
           'router': ['react-router-dom'],
           'ui': ['lucide-react', 'framer-motion'],
+          'pdf': ['jspdf', 'jspdf-autotable', 'pdf-lib'] // Выделяем PDF библиотеки
         }
       }
     }
@@ -47,7 +57,28 @@ export default defineConfig({
       'react-router-dom',
       'lucide-react',
       'clsx',
-      'tailwind-merge'
+      'tailwind-merge',
+      // Добавляем PDF библиотеки для предварительной оптимизации
+      'jspdf',
+      'jspdf-autotable',
+      'pdf-lib',
+      'papaparse'
+    ],
+    // Исключаем проблемные модули из предварительной оптимизации
+    exclude: [
+      'pdfjs-dist'
     ]
+  },
+  
+  // Дополнительные настройки для работы с PDF библиотеками
+  define: {
+    // Устанавливаем глобальные переменные для совместимости
+    global: 'globalThis',
+  },
+  
+  // Обработка CommonJS модулей
+  esbuild: {
+    // Включаем поддержку legacy decorators если нужно
+    target: 'es2020'
   }
 })
