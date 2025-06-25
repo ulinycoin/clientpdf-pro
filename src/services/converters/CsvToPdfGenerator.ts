@@ -2,6 +2,7 @@ import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 import { CsvParseResult, CsvToPdfOptions, ColumnAnalysis } from './CsvToPdfConverter';
 import { EnhancedUnicodeFontService } from '../EnhancedUnicodeFontService';
+import { SimpleCyrillicFont } from '../SimpleCyrillicFont';
 
 export class CsvToPdfGenerator {
   /**
@@ -47,7 +48,7 @@ export class CsvToPdfGenerator {
         format: opts.pageSize.toLowerCase() as any,
       });
 
-      // 🆕 УЛУЧШЕННАЯ НАСТРОЙКА ШРИФТОВ
+      // 🆕 УЛУЧШЕННАЯ НАСТРОЙКА ШРИФТОВ С КИРИЛЛИЦЕЙ
       // Собираем образцы текста для анализа
       const sampleTexts = [
         // Заголовки
@@ -60,39 +61,70 @@ export class CsvToPdfGenerator {
         opts.title || ''
       ].filter(text => text.trim() !== '');
 
-      // 🔧 ИСПРАВЛЕНО: Ждем Promise от setupPDFFont
-      console.log('🔤 Setting up fonts with sample texts...');
-      const fontSetup = await EnhancedUnicodeFontService.setupPDFFont(pdf, sampleTexts);
-      
-      if (!fontSetup.success) {
-        console.error('❌ Font setup failed:', fontSetup.warnings);
-        // 🔧 ИСПРАВЛЕНО: Безопасная обработка warnings
-        const warningMessage = fontSetup.warnings && Array.isArray(fontSetup.warnings) 
-          ? fontSetup.warnings.join(', ') 
-          : 'Unknown font setup error';
-        throw new Error(`Font setup failed: ${warningMessage}`);
+      // Анализируем есть ли кириллица в данных
+      const combinedText = sampleTexts.join(' ');
+      const hasCyrillic = /[а-яё]/i.test(combinedText);
+      const cyrillicPercentage = this.calculateCyrillicPercentage(combinedText);
+
+      console.log(`🔍 Text analysis: Cyrillic ${cyrillicPercentage.toFixed(1)}%`);
+
+      let fontSetup: any = {
+        success: true,
+        selectedFont: 'helvetica',
+        warnings: [],
+        appliedTransliterations: 0,
+        preservesCyrillic: false
+      };
+
+      // Если есть значительное количество кириллицы, пытаемся её сохранить
+      if (hasCyrillic && cyrillicPercentage > 20) {
+        console.log('🔤 Detected significant Cyrillic content, attempting preservation...');
+        
+        // Попытка 1: Полная система кириллицы
+        try {
+          fontSetup = await EnhancedUnicodeFontService.setupPDFFont(pdf, sampleTexts);
+        } catch (error) {
+          console.warn('⚠️ Advanced font setup failed, using simple method:', error);
+          
+          // Попытка 2: Простая кириллица
+          const simpleSuccess = SimpleCyrillicFont.quickSetupCyrillic(pdf);
+          fontSetup.preservesCyrillic = simpleSuccess;
+          fontSetup.selectedFont = simpleSuccess ? 'times' : 'helvetica';
+          fontSetup.warnings.push(simpleSuccess ? 
+            'Using Times font with partial Cyrillic support' : 
+            'Cyrillic will be transliterated'
+          );
+        }
+      } else {
+        // Стандартная настройка без кириллицы
+        try {
+          fontSetup = await EnhancedUnicodeFontService.setupPDFFont(pdf, sampleTexts);
+        } catch (error) {
+          console.warn('⚠️ Font setup failed, using helvetica:', error);
+          pdf.setFont('helvetica', 'normal');
+        }
       }
 
-      console.log('✅ Font setup successful:', {
+      console.log('✅ Font setup result:', {
         selectedFont: fontSetup.selectedFont,
-        warnings: fontSetup.warnings,
-        transliterations: fontSetup.appliedTransliterations
+        preservesCyrillic: fontSetup.preservesCyrillic,
+        warnings: fontSetup.warnings
       });
 
       // Анализ столбцов для оптимизации
       const columnAnalysis = this.analyzeColumns(parseResult.headers, parseResult.data, parseResult.columnTypes);
       
-      // Настройка метаданных с очисткой через новый сервис
+      // Настройка метаданных с учетом кириллицы
       const title = opts.title ? 
-        EnhancedUnicodeFontService.smartCleanText(opts.title) : 
+        this.processTextContent(opts.title, fontSetup.preservesCyrillic) : 
         'CSV Data Export';
       
       pdf.setProperties({
         title: title,
         subject: `Data table with ${parseResult.rowCount} rows and ${parseResult.columnCount} columns`,
         author: 'ClientPDF Pro',
-        creator: 'ClientPDF Pro - CSV to PDF Converter with Enhanced Unicode Support v5.0',
-        keywords: 'CSV, PDF, data, table, export, unicode, multilingual, font-rendering',
+        creator: 'ClientPDF Pro - CSV to PDF Converter with Enhanced Unicode Support v6.0',
+        keywords: 'CSV, PDF, data, table, export, unicode, multilingual, cyrillic, font-rendering',
       });
 
       // Добавление заголовка документа
@@ -112,18 +144,20 @@ export class CsvToPdfGenerator {
       pdf.text(infoText, opts.marginLeft, currentY);
       currentY += 5;
 
-      // Предупреждения о транслитерации
-      if (fontSetup.appliedTransliterations > 0) {
+      // Предупреждения о кириллице
+      if (hasCyrillic) {
         pdf.setFontSize(7);
         pdf.setFont(fontSetup.selectedFont, 'italic');
-        const warningText = `Note: ${fontSetup.appliedTransliterations} special characters have been transliterated for compatibility`;
-        pdf.text(warningText, opts.marginLeft, currentY);
+        const cyrillicInfo = fontSetup.preservesCyrillic 
+          ? `✓ Cyrillic characters preserved (${cyrillicPercentage.toFixed(1)}% of text)`
+          : `⚠ Cyrillic characters transliterated (${cyrillicPercentage.toFixed(1)}% of text)`;
+        pdf.text(cyrillicInfo, opts.marginLeft, currentY);
         currentY += 5;
       }
 
-      // 🆕 УЛУЧШЕННАЯ ОЧИСТКА ЗАГОЛОВКОВ
+      // 🆕 УЛУЧШЕННАЯ ОЧИСТКА ЗАГОЛОВКОВ С КИРИЛЛИЦЕЙ
       const cleanHeaders = parseResult.headers.map(header => 
-        EnhancedUnicodeFontService.smartCleanText(header)
+        this.processTextContent(header, fontSetup.preservesCyrillic)
       );
       
       const tableHeaders = opts.includeRowNumbers 
@@ -133,12 +167,12 @@ export class CsvToPdfGenerator {
       const maxRows = opts.maxRowsPerPage || 1000;
       const dataToProcess = parseResult.data.slice(0, maxRows);
 
-      // 🆕 УЛУЧШЕННАЯ ОЧИСТКА ДАННЫХ
+      // 🆕 УЛУЧШЕННАЯ ОЧИСТКА ДАННЫХ С КИРИЛЛИЦЕЙ
       const tableData = dataToProcess.map((row, index) => {
         const rowData = parseResult.headers.map(header => {
           const value = row[header];
           const formattedValue = this.formatCellValue(value, parseResult.columnTypes[header]);
-          return EnhancedUnicodeFontService.smartCleanText(formattedValue);
+          return this.processTextContent(formattedValue, fontSetup.preservesCyrillic);
         });
         return opts.includeRowNumbers 
           ? [String(index + 1), ...rowData]
@@ -172,22 +206,22 @@ export class CsvToPdfGenerator {
           overflow: 'linebreak',
           halign: 'left',
           valign: 'top',
-          font: fontSetup.selectedFont, // 🆕 Явно указываем шрифт
+          font: fontSetup.selectedFont,
         },
         headStyles: {
           ...tableStyles.headerStyles,
           minCellHeight: 6,
           fontSize: Math.max(opts.fontSize, 7),
           fontStyle: 'bold',
-          font: fontSetup.selectedFont, // 🆕 Явно указываем шрифт
+          font: fontSetup.selectedFont,
         },
         bodyStyles: {
           ...tableStyles.bodyStyles,
-          font: fontSetup.selectedFont, // 🆕 Явно указываем шрифт
+          font: fontSetup.selectedFont,
         },
         alternateRowStyles: {
           ...tableStyles.alternateRowStyles,
-          font: fontSetup.selectedFont, // 🆕 Явно указываем шрифт
+          font: fontSetup.selectedFont,
         },
         columnStyles: columnStyles,
         showHead: true,
@@ -211,20 +245,19 @@ export class CsvToPdfGenerator {
           );
           
           const pageWidth = (pdf as any).internal.pageSize.width;
+          const footerText = `${parseResult.rowCount} rows | ${parseResult.columnCount} columns | ${fontSetup.selectedFont}${fontSetup.preservesCyrillic ? ' [RU]' : ''}`;
           pdf.text(
-            `${parseResult.rowCount} rows | ${parseResult.columnCount} columns | Font: ${fontSetup.selectedFont}`,
+            footerText,
             pageWidth - 80,
             (pdf as any).internal.pageSize.height - 10
           );
         },
         
         willDrawPage: () => {
-          // Убеждаемся что шрифт установлен перед рисованием каждой страницы
           pdf.setFont(fontSetup.selectedFont, 'normal');
         },
         
         willDrawCell: (data: any) => {
-          // Устанавливаем правильный шрифт для каждой ячейки
           if (data.section === 'head') {
             pdf.setFont(fontSetup.selectedFont, 'bold');
           } else {
@@ -242,18 +275,20 @@ export class CsvToPdfGenerator {
         pdf.text(warningText, opts.marginLeft, finalY + 10);
       }
 
-      // 🆕 УЛУЧШЕННАЯ ИНФОРМАЦИЯ О ТРАНСЛИТЕРАЦИИ
-      const needsTransliteration = this.checkIfNeedsTransliteration(parseResult);
-      if (needsTransliteration || fontSetup.appliedTransliterations > 0) {
+      // 🆕 ИНФОРМАЦИЯ О КИРИЛЛИЦЕ
+      if (hasCyrillic) {
         const finalY = (pdf as any).lastAutoTable.finalY || currentY + 50;
         pdf.setFontSize(6);
         pdf.setFont(fontSetup.selectedFont, 'italic');
         
         const noteLines = [
-          'Font Rendering Information:',
-          `• Selected font: ${fontSetup.selectedFont}`,
-          `• Characters transliterated: ${fontSetup.appliedTransliterations}`,
-          '• Non-Latin characters converted for better compatibility'
+          'Cyrillic Text Processing:',
+          `• Language detection: ${cyrillicPercentage.toFixed(1)}% Cyrillic characters`,
+          `• Font: ${fontSetup.selectedFont}`,
+          `• Method: ${fontSetup.preservesCyrillic ? 'Native rendering' : 'Transliteration'}`,
+          fontSetup.preservesCyrillic ? 
+            '• Russian text displayed in original form' : 
+            '• Russian text converted to Latin alphabet for compatibility'
         ];
         
         noteLines.forEach((line, index) => {
@@ -269,6 +304,42 @@ export class CsvToPdfGenerator {
       console.error('💥 PDF generation error:', error);
       throw new Error(`PDF generation failed: ${error}`);
     }
+  }
+
+  /**
+   * Обработка текстового контента с учетом кириллицы
+   */
+  private static processTextContent(text: string, preserveCyrillic: boolean): string {
+    if (!text) return '';
+    
+    if (preserveCyrillic) {
+      // Минимальная очистка, сохраняем кириллицу
+      return text
+        .replace(/[\u200B-\u200D\uFEFF]/g, '') // Невидимые символы
+        .replace(/\s+/g, ' ')
+        .trim();
+    } else {
+      // Используем улучшенную транслитерацию
+      return SimpleCyrillicFont.transliterateRussian(
+        EnhancedUnicodeFontService.smartCleanText(text)
+      );
+    }
+  }
+
+  /**
+   * Расчет процента кириллицы в тексте
+   */
+  private static calculateCyrillicPercentage(text: string): number {
+    if (!text) return 0;
+    
+    const cyrillicMatches = text.match(/[а-яё]/gi);
+    const totalLetters = text.match(/[a-zA-Zа-яё]/gi);
+    
+    if (!cyrillicMatches || !totalLetters) {
+      return 0;
+    }
+    
+    return (cyrillicMatches.length / totalLetters.length) * 100;
   }
 
   /**
