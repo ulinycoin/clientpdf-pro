@@ -408,10 +408,10 @@ export class EnhancedUnicodeFontService {
       if (needsCyrillic) {
         console.log('🔤 Attempting to preserve Cyrillic characters...');
         
-        // Попытка 1: Внешний шрифт с кириллицей
+        // Попытка 1: Внешний шрифт с кириллицей (ИСПРАВЛЕНО: DejaVu вместо Roboto)
         try {
           const { ExternalFontLoader } = await import('./ExternalFontLoader');
-          const fontResult = await ExternalFontLoader.setupPDFWithCyrillicFont(pdf, 'Roboto');
+          const fontResult = await ExternalFontLoader.setupPDFWithCyrillicFont(pdf, 'DejaVu');
           
           if (fontResult.success) {
             result.success = true;
