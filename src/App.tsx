@@ -22,6 +22,7 @@ import { ImagesToPDFPage } from './pages/ImagesToPDFPage';
 import { CSVToPDFPage } from './pages/CSVToPDFPage';
 import { EnhancedCSVToPDFPage } from './pages/EnhancedCSVToPDFPage'; // 🆕 Новая страница
 import { StyleTestPage } from './pages/StyleTestPage'; // 🧪 Диагностическая страница
+import { MIMEDebugPage } from './pages/MIMEDebugPage'; // 🚨 MIME диагностика
 import { FAQPage } from './pages/FAQPage';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import { TermsOfService } from './pages/TermsOfService';
@@ -53,9 +54,10 @@ function App() {
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<TermsOfService />} />
             
-            {/* Debug and Test routes - available in all environments for diagnostics */}
+            {/* Debug and Test routes - available for diagnostics */}
             <Route path="/debug-pdf" element={<PDFTestComponent />} />
             <Route path="/style-test" element={<StyleTestPage />} /> {/* 🧪 Диагностическая страница */}
+            <Route path="/mime-debug" element={<MIMEDebugPage />} /> {/* 🚨 MIME диагностика */}
             <Route path="/test-enhanced" element={<EnhancedCSVToPDFPage />} /> {/* 🧪 Тестовый маршрут */}
           </Routes>
         </Layout>
