@@ -8,6 +8,9 @@ import { HelmetProvider } from 'react-helmet-async'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import App from './App.tsx'
 
+// 🔧 КРИТИЧЕСКИЙ ИМПОРТ: Tailwind CSS стили
+import './index.css'
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ErrorBoundary>
