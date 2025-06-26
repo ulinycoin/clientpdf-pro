@@ -2,6 +2,7 @@
  * EnhancedCSVToPDFPage.tsx  
  * Модернизированная страница CSV to PDF с интерактивным редактором
  * Сохраняет существующий функционал + добавляет новые возможности
+ * Улучшенная стилизация с fallback для стабильного отображения
  */
 
 import React, { useState, useCallback } from 'react';
@@ -154,76 +155,176 @@ export const EnhancedCSVToPDFPage: React.FC = () => {
     toast.success('PDF exported successfully!');
   };
 
-  const resetConverter = () => {
-    setCsvFile(null);
-    setParseResult(null);
-    setCurrentStep('upload');
-    setIsConverting(false);
-    setIsParsing(false);
+  // Inline стили для надежности отображения
+  const containerStyle: React.CSSProperties = {
+    minHeight: '100vh',
+    background: 'linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%)',
+    fontFamily: 'Inter, sans-serif'
   };
 
-  // 🆕 Переключатель режимов
+  const contentStyle: React.CSSProperties = {
+    maxWidth: '1200px',
+    margin: '0 auto',
+    padding: '2rem 1rem'
+  };
+
+  const headerStyle: React.CSSProperties = {
+    textAlign: 'center',
+    marginBottom: '2rem'
+  };
+
+  const titleStyle: React.CSSProperties = {
+    fontSize: '2.25rem',
+    fontWeight: '700',
+    color: '#111827',
+    margin: '1rem 0',
+    lineHeight: '2.5rem'
+  };
+
+  const subtitleStyle: React.CSSProperties = {
+    fontSize: '1.25rem',
+    color: '#4b5563',
+    maxWidth: '42rem',
+    margin: '0 auto',
+    lineHeight: '1.75rem'
+  };
+
+  const cardStyle: React.CSSProperties = {
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    backdropFilter: 'blur(10px)',
+    border: '1px solid rgba(255, 255, 255, 0.2)',
+    borderRadius: '0.5rem',
+    padding: '2rem',
+    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+    transition: 'transform 0.2s ease'
+  };
+
+  const uploadZoneStyle: React.CSSProperties = {
+    border: `2px dashed ${isDragActive ? '#3b82f6' : '#d1d5db'}`,
+    borderRadius: '0.5rem',
+    padding: '3rem',
+    textAlign: 'center',
+    cursor: isParsing ? 'not-allowed' : 'pointer',
+    transition: 'all 0.2s ease',
+    backgroundColor: isDragActive ? '#f0f9ff' : 'transparent',
+    opacity: isParsing ? 0.5 : 1
+  };
+
+  const stepIndicatorStyle: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '1rem',
+    marginBottom: '2rem',
+    flexWrap: 'wrap'
+  };
+
+  // 🆕 Переключатель режимов с улучшенными стилями
   const renderModeToggle = () => (
-    <Card className="mb-6 p-4 bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-3">
-          <div className="p-2 bg-purple-100 rounded-lg">
-            <Sparkles className="w-5 h-5 text-purple-600" />
+    <div style={{
+      marginBottom: '1.5rem',
+      padding: '1rem',
+      background: 'linear-gradient(135deg, #fdf2f8 0%, #f3e8ff 100%)',
+      borderRadius: '0.5rem',
+      border: '1px solid #e9d5ff'
+    }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <div style={{ 
+            padding: '0.5rem', 
+            backgroundColor: '#e9d5ff', 
+            borderRadius: '0.5rem',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            <Sparkles size={20} style={{ color: '#9333ea' }} />
           </div>
           <div>
-            <h3 className="font-semibold text-gray-900">Editor Mode</h3>
-            <p className="text-sm text-gray-600">
+            <h3 style={{ fontWeight: '600', color: '#111827', margin: 0, fontSize: '1rem' }}>
+              Editor Mode
+            </h3>
+            <p style={{ fontSize: '0.875rem', color: '#4b5563', margin: '0.25rem 0 0 0' }}>
               Choose between classic step-by-step or interactive live-preview editing
             </p>
           </div>
         </div>
         
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-2">
-            <span className={`text-sm font-medium ${editorMode === 'classic' ? 'text-gray-900' : 'text-gray-500'}`}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <span style={{ 
+              fontSize: '0.875rem', 
+              fontWeight: '500',
+              color: editorMode === 'classic' ? '#111827' : '#6b7280'
+            }}>
               Classic
             </span>
             <button
               onClick={() => setEditorMode(editorMode === 'classic' ? 'interactive' : 'classic')}
-              className="p-1 text-purple-600 hover:text-purple-700"
+              style={{ 
+                padding: '0.25rem', 
+                color: '#9333ea', 
+                background: 'none', 
+                border: 'none', 
+                cursor: 'pointer',
+                transition: 'color 0.2s',
+                display: 'flex',
+                alignItems: 'center'
+              }}
             >
-              {editorMode === 'classic' ? <ToggleLeft className="w-8 h-8" /> : <ToggleRight className="w-8 h-8" />}
+              {editorMode === 'classic' ? <ToggleLeft size={32} /> : <ToggleRight size={32} />}
             </button>
-            <span className={`text-sm font-medium ${editorMode === 'interactive' ? 'text-gray-900' : 'text-gray-500'}`}>
+            <span style={{ 
+              fontSize: '0.875rem', 
+              fontWeight: '500',
+              color: editorMode === 'interactive' ? '#111827' : '#6b7280'
+            }}>
               Interactive
             </span>
           </div>
           
-          <Badge 
-            variant={editorMode === 'interactive' ? 'success' : 'secondary'}
-            className="ml-2"
-          >
+          <div style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            padding: '0.25rem 0.75rem',
+            borderRadius: '9999px',
+            fontSize: '0.75rem',
+            fontWeight: '500',
+            backgroundColor: editorMode === 'interactive' ? '#d1fae5' : '#f3f4f6',
+            color: editorMode === 'interactive' ? '#065f46' : '#374151'
+          }}>
             {editorMode === 'interactive' ? (
               <>
-                <Zap className="w-3 h-3 mr-1" />
+                <Zap size={12} style={{ marginRight: '0.25rem' }} />
                 Live Preview
               </>
             ) : (
               'Step-by-Step'
             )}
-          </Badge>
+          </div>
         </div>
       </div>
 
       {editorMode === 'interactive' && (
-        <div className="mt-3 p-3 bg-white rounded-lg border border-purple-200">
-          <div className="flex items-start space-x-2">
-            <Sparkles className="w-4 h-4 text-purple-600 mt-0.5" />
-            <div className="text-sm">
-              <span className="font-medium text-purple-900">Interactive Mode Features:</span>
-              <span className="text-purple-700 ml-1">
+        <div style={{ 
+          marginTop: '0.75rem', 
+          padding: '0.75rem', 
+          backgroundColor: 'white', 
+          borderRadius: '0.5rem', 
+          border: '1px solid #e9d5ff' 
+        }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+            <Sparkles size={16} style={{ color: '#9333ea', marginTop: '0.125rem' }} />
+            <div style={{ fontSize: '0.875rem' }}>
+              <span style={{ fontWeight: '500', color: '#7c3aed' }}>Interactive Mode Features:</span>
+              <span style={{ color: '#8b5cf6', marginLeft: '0.25rem' }}>
                 Live PDF preview • Inline data editing • Smart font detection • Real-time styling • Template gallery
               </span>
             </div>
           </div>
         </div>
       )}
-    </Card>
+    </div>
   );
 
   // 🎯 Рендер интерактивного редактора
@@ -231,9 +332,22 @@ export const EnhancedCSVToPDFPage: React.FC = () => {
     return (
       <React.Suspense 
         fallback={
-          <div className="min-h-screen flex items-center justify-center">
-            <Spinner size="lg" />
-            <span className="ml-3 text-gray-600">Loading Interactive Editor...</span>
+          <div style={{ 
+            minHeight: '100vh', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center',
+            gap: '0.75rem'
+          }}>
+            <div style={{
+              width: '2rem',
+              height: '2rem',
+              border: '3px solid #e5e7eb',
+              borderTop: '3px solid #3b82f6',
+              borderRadius: '50%',
+              animation: 'spin 1s linear infinite'
+            }} />
+            <span style={{ color: '#4b5563', fontSize: '1rem' }}>Loading Interactive Editor...</span>
           </div>
         }
       >
@@ -270,60 +384,6 @@ export const EnhancedCSVToPDFPage: React.FC = () => {
     WebkitOverflowScrolling: 'touch'
   };
 
-  const tableStyle: React.CSSProperties = {
-    width: 'max-content',
-    minWidth: '100%',
-    borderCollapse: 'separate',
-    borderSpacing: 0,
-    whiteSpace: 'nowrap',
-    fontSize: '14px'
-  };
-
-  const cellStyle: React.CSSProperties = {
-    padding: '12px 16px',
-    borderRight: '1px solid #e5e7eb',
-    borderBottom: '1px solid #e5e7eb',
-    verticalAlign: 'top',
-    width: '180px',
-    minWidth: '150px',
-    maxWidth: '250px',
-    whiteSpace: 'nowrap',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    wordBreak: 'keep-all'
-  };
-
-  const headerStyle: React.CSSProperties = {
-    ...cellStyle,
-    backgroundColor: '#f9fafb',
-    fontWeight: '600',
-    color: '#374151',
-    fontSize: '12px',
-    textTransform: 'uppercase',
-    letterSpacing: '0.05em',
-    position: 'sticky',
-    top: 0,
-    zIndex: 10,
-    boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
-  };
-
-  const scrollIndicatorStyle: React.CSSProperties = {
-    position: 'absolute',
-    bottom: '-30px',
-    left: '50%',
-    transform: 'translateX(-50%)',
-    fontSize: '12px',
-    color: '#6b7280',
-    whiteSpace: 'nowrap',
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    padding: '4px 8px',
-    borderRadius: '4px',
-    border: '1px solid #e5e7eb',
-    textAlign: 'center'
-  };
-
-  const previewRowCount = parseResult ? Math.min(parseResult.rowCount, 20) : 5;
-
   const pageVariants = {
     initial: { opacity: 0, y: 20 },
     animate: { opacity: 1, y: 0 },
@@ -344,23 +404,34 @@ export const EnhancedCSVToPDFPage: React.FC = () => {
         <meta property="og:description" content="Transform CSV data into professional PDFs with our interactive editor featuring live preview, smart language detection, and real-time styling." />
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-        <div className="container-modern py-8">
+      <div style={containerStyle}>
+        <div style={contentStyle}>
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-8"
+            style={headerStyle}
           >
-            <div className="flex items-center justify-center mb-4">
-              <FileSpreadsheet className="w-12 h-12 text-blue-600 mr-3 float-animation" />
-              <h1 className="text-4xl font-bold text-gray-900">Enhanced CSV to PDF</h1>
-              <Badge variant="success" className="ml-3 px-3 py-1">
-                <Sparkles className="w-4 h-4 mr-1" />
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.75rem' }}>
+              <div style={{ animation: 'float 3s ease-in-out infinite' }}>
+                <FileSpreadsheet size={48} style={{ color: '#2563eb' }} />
+              </div>
+              <h1 style={titleStyle}>Enhanced CSV to PDF</h1>
+              <div style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                padding: '0.5rem 0.75rem',
+                borderRadius: '9999px',
+                fontSize: '0.75rem',
+                fontWeight: '500',
+                backgroundColor: '#d1fae5',
+                color: '#065f46'
+              }}>
+                <Sparkles size={16} style={{ marginRight: '0.25rem' }} />
                 New!
-              </Badge>
+              </div>
             </div>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p style={subtitleStyle}>
               Interactive editor with live preview, smart language detection, and professional styling
             </p>
           </motion.div>
@@ -370,38 +441,43 @@ export const EnhancedCSVToPDFPage: React.FC = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="mb-8"
+            style={stepIndicatorStyle}
           >
-            <div className="flex items-center justify-center space-x-4 overflow-x-auto">
-              {steps.map((step, index) => (
-                <div key={step.id} className="flex items-center">
-                  <div className={`
-                    flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all
-                    ${currentStep === step.id 
-                      ? 'border-blue-600 bg-blue-600 text-white' 
-                      : step.completed 
-                        ? 'border-green-500 bg-green-500 text-white'
-                        : 'border-gray-300 bg-white text-gray-400'
-                    }
-                  `}>
-                    {step.completed ? '✓' : index + 1}
-                  </div>
-                  <span className={`
-                    ml-2 text-sm font-medium
-                    ${currentStep === step.id ? 'text-blue-600' : 'text-gray-500'}
-                  `}>
-                    {step.title}
-                  </span>
-                  {index < steps.length - 1 && (
-                    <div className="w-8 h-px bg-gray-300 mx-4" />
-                  )}
+            {steps.map((step, index) => (
+              <div key={step.id} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '2.5rem',
+                  height: '2.5rem',
+                  borderRadius: '50%',
+                  border: '2px solid',
+                  borderColor: currentStep === step.id ? '#2563eb' : step.completed ? '#10b981' : '#d1d5db',
+                  backgroundColor: currentStep === step.id ? '#2563eb' : step.completed ? '#10b981' : 'white',
+                  color: currentStep === step.id || step.completed ? 'white' : '#9ca3af',
+                  fontSize: '0.875rem',
+                  fontWeight: '600',
+                  transition: 'all 0.2s ease'
+                }}>
+                  {step.completed ? '✓' : index + 1}
                 </div>
-              ))}
-            </div>
+                <span style={{
+                  fontSize: '0.875rem',
+                  fontWeight: '500',
+                  color: currentStep === step.id ? '#2563eb' : '#6b7280'
+                }}>
+                  {step.title}
+                </span>
+                {index < steps.length - 1 && (
+                  <div style={{ width: '2rem', height: '1px', backgroundColor: '#d1d5db', margin: '0 1rem' }} />
+                )}
+              </div>
+            ))}
           </motion.div>
 
           {/* Main Content */}
-          <div className="max-w-6xl mx-auto">
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
             {currentStep === 'upload' && (
               <motion.div
                 key="upload"
@@ -413,72 +489,100 @@ export const EnhancedCSVToPDFPage: React.FC = () => {
               >
                 {renderModeToggle()}
                 
-                <Card className="p-8 glass-card hover-lift">
+                <div style={cardStyle}>
                   <div
                     {...getRootProps()}
-                    className={`
-                      border-2 border-dashed rounded-lg p-12 text-center cursor-pointer transition-all
-                      ${isDragActive 
-                        ? 'border-blue-500 bg-blue-50' 
-                        : 'border-gray-300 hover:border-blue-400 hover:bg-gray-50'
-                      }
-                      ${isParsing ? 'pointer-events-none opacity-50' : ''}
-                    `}
+                    style={uploadZoneStyle}
                   >
                     <input {...getInputProps()} />
                     {isParsing ? (
-                      <div className="flex flex-col items-center">
-                        <Spinner size="lg" className="mb-4" />
-                        <h3 className="text-xl font-semibold text-gray-700 mb-2">
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+                        <div style={{
+                          width: '3rem',
+                          height: '3rem',
+                          border: '4px solid #e5e7eb',
+                          borderTop: '4px solid #3b82f6',
+                          borderRadius: '50%',
+                          animation: 'spin 1s linear infinite'
+                        }} />
+                        <h3 style={{ fontSize: '1.25rem', fontWeight: '600', color: '#374151', margin: '0' }}>
                           Parsing CSV File...
                         </h3>
-                        <p className="text-gray-500">
+                        <p style={{ color: '#6b7280', margin: '0', textAlign: 'center' }}>
                           Analyzing data structure, detecting language, and validating content
                         </p>
                       </div>
                     ) : (
-                      <div className="flex flex-col items-center">
-                        <FileSpreadsheet className="w-16 h-16 text-blue-500 mb-4" />
-                        <h3 className="text-xl font-semibold text-gray-700 mb-2">
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+                        <FileSpreadsheet size={64} style={{ color: '#3b82f6' }} />
+                        <h3 style={{ fontSize: '1.25rem', fontWeight: '600', color: '#374151', margin: '0' }}>
                           {isDragActive ? 'Drop your CSV file here' : 'Upload CSV File'}
                         </h3>
-                        <p className="text-gray-500 mb-4">
+                        <p style={{ color: '#6b7280', margin: '0', textAlign: 'center' }}>
                           Drag and drop or click to select your CSV, TSV, or TXT file
                         </p>
-                        <div className="flex flex-wrap gap-2 justify-center mb-4">
-                          <Badge variant="secondary">.csv</Badge>
-                          <Badge variant="secondary">.tsv</Badge>
-                          <Badge variant="secondary">.txt</Badge>
+                        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+                          {['.csv', '.tsv', '.txt'].map(ext => (
+                            <span key={ext} style={{
+                              padding: '0.25rem 0.5rem',
+                              borderRadius: '0.25rem',
+                              fontSize: '0.75rem',
+                              fontWeight: '500',
+                              backgroundColor: '#f3f4f6',
+                              color: '#374151'
+                            }}>
+                              {ext}
+                            </span>
+                          ))}
                         </div>
                         
                         {editorMode === 'interactive' && (
-                          <div className="mt-4 p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200">
-                            <div className="flex items-center justify-center space-x-2 mb-2">
-                              <Zap className="w-5 h-5 text-purple-600" />
-                              <span className="font-medium text-purple-900">Interactive Mode Ready</span>
+                          <div style={{ 
+                            marginTop: '1rem', 
+                            padding: '1rem', 
+                            background: 'linear-gradient(135deg, #fdf2f8 0%, #f3e8ff 100%)', 
+                            borderRadius: '0.5rem', 
+                            border: '1px solid #e9d5ff',
+                            maxWidth: '32rem',
+                            textAlign: 'center'
+                          }}>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                              <Zap size={20} style={{ color: '#9333ea' }} />
+                              <span style={{ fontWeight: '500', color: '#7c3aed' }}>Interactive Mode Ready</span>
                             </div>
-                            <div className="text-sm text-purple-700 text-center">
+                            <div style={{ fontSize: '0.875rem', color: '#8b5cf6' }}>
                               Your file will open in the advanced editor with live preview, language detection, and real-time styling
                             </div>
                           </div>
                         )}
                         
-                        <p className="text-sm text-gray-400 mt-4">
+                        <p style={{ fontSize: '0.875rem', color: '#9ca3af', margin: '1rem 0 0 0', textAlign: 'center' }}>
                           Maximum file size: 50MB • All processing happens locally • 15+ languages supported
                         </p>
                       </div>
                     )}
                   </div>
-                </Card>
+                </div>
               </motion.div>
             )}
 
-            {/* Остальной контент остается тем же... */}
-            {/* Для краткости не дублирую всё - остальная часть остается как в оригинале */}
+            {/* Здесь можно добавить остальные этапы при необходимости */}
             
           </div>
         </div>
       </div>
+
+      <style>{`
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-5px); }
+        }
+      `}</style>
     </>
   );
 };
