@@ -1,7 +1,7 @@
 /**
  * LivePreviewEditor.tsx
- * Интерактивный редактор CSV to PDF с живым предпросмотром
- * 🔧 ИСПРАВЛЕН: Правильная JSX структура без adjacent elements
+ * Интерактивный редактор CSV to PDF с РЕАЛЬНЫМ живым предпросмотром
+ * 🚀 ОБНОВЛЕН: Добавлен реальный PDF preview через существующие сервисы
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -18,14 +18,15 @@ import {
   AlertCircle,
   Globe,
   Type,
-  Zap
+  Zap,
+  FileText
 } from 'lucide-react';
 
 import { Button } from '../atoms/Button';
 import { Card } from '../atoms/Card';
 import { Badge } from '../atoms/Badge';
 import { Spinner } from '../atoms/Spinner';
-import { CsvParseResult } from '../../services/converters/CsvToPdfConverter';
+import { CsvToPdfConverter, CsvToPdfOptions, CsvParseResult } from '../../services/converters/CsvToPdfConverter';
 
 interface LivePreviewEditorProps {
   csvFile: File;
@@ -44,23 +45,13 @@ interface EditorState {
     confidence: number;
     script: string;
   };
-  pdfOptions: {
-    orientation: 'portrait' | 'landscape';
-    pageSize: 'a4' | 'letter' | 'legal';
-    fontSize: number;
-    fontFamily: string;
-    colorScheme: {
-      primary: string;
-      secondary: string;
-      headerBg: string;
-      textColor: string;
-    };
-  };
+  pdfOptions: CsvToPdfOptions;
   previewState: {
     isGenerating: boolean;
     lastGenerated: Date | null;
     error: string | null;
     warnings: string[];
+    pdfUrl: string | null;
   };
 }
 
@@ -82,21 +73,23 @@ export const LivePreviewEditor: React.FC<LivePreviewEditorProps> = ({
     },
     pdfOptions: {
       orientation: 'landscape',
-      pageSize: 'a4',
-      fontSize: 10,
-      fontFamily: 'Inter',
-      colorScheme: {
-        primary: '#3B82F6',
-        secondary: '#EBF8FF',
-        headerBg: '#F8FAFC',
-        textColor: '#1F2937'
-      }
+      pageSize: 'legal',
+      fontSize: 8,
+      tableStyle: 'grid',
+      headerStyle: 'bold',
+      fitToPage: true,
+      includeRowNumbers: false,
+      marginTop: 20,
+      marginBottom: 20,
+      marginLeft: 10,
+      marginRight: 10,
     },
     previewState: {
       isGenerating: false,
       lastGenerated: null,
       error: null,
-      warnings: []
+      warnings: [],
+      pdfUrl: null
     }
   });
 
@@ -106,15 +99,20 @@ export const LivePreviewEditor: React.FC<LivePreviewEditorProps> = ({
   }, []);
 
   // 🔧 Обновление PDF опций
-  const updatePdfOptions = useCallback((updates: Partial<EditorState['pdfOptions']>) => {
+  const updatePdfOptions = useCallback((updates: Partial<CsvToPdfOptions>) => {
     setEditorState(prev => ({
       ...prev,
       pdfOptions: { ...prev.pdfOptions, ...updates }
     }));
-  }, []);
+    
+    // Автоматически обновляем превью при изменении опций
+    if (editorState.currentView === 'preview') {
+      generatePreview();
+    }
+  }, [editorState.currentView]);
 
-  // 🔧 Генерация превью
-  const generatePreview = useCallback((force = false) => {
+  // 🚀 РЕАЛЬНАЯ генерация PDF Preview
+  const generatePreview = useCallback(async (force = false) => {
     if (editorState.previewState.isGenerating && !force) return;
 
     updateEditorState({
@@ -125,24 +123,58 @@ export const LivePreviewEditor: React.FC<LivePreviewEditorProps> = ({
       }
     });
 
-    // Симуляция генерации PDF
-    setTimeout(() => {
+    try {
+      console.log('🔄 Generating PDF preview...');
+      
+      // Используем реальный CsvToPdfConverter
+      const pdfBytes = await CsvToPdfConverter.convertToPDF(parseResult, editorState.pdfOptions);
+      
+      // Создаем URL для предпросмотра
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const pdfUrl = URL.createObjectURL(blob);
+      
       updateEditorState({
         previewState: {
           isGenerating: false,
           lastGenerated: new Date(),
           error: null,
-          warnings: parseResult.errors.map(e => e.message)
+          warnings: parseResult.errors.map(e => e.message),
+          pdfUrl: pdfUrl
         }
       });
-    }, 1500);
-  }, [editorState.previewState, parseResult.errors, updateEditorState]);
+
+      console.log('✅ PDF preview generated successfully');
+      
+    } catch (error) {
+      console.error('❌ PDF generation failed:', error);
+      updateEditorState({
+        previewState: {
+          ...editorState.previewState,
+          isGenerating: false,
+          error: `Failed to generate PDF: ${error}`
+        }
+      });
+    }
+  }, [editorState.previewState, editorState.pdfOptions, parseResult, updateEditorState]);
+
+  // 🚀 Экспорт PDF
+  const handleExport = useCallback(async () => {
+    try {
+      const pdfBytes = await CsvToPdfConverter.convertToPDF(parseResult, editorState.pdfOptions);
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const filename = `${csvFile.name.replace(/\.[^/.]+$/, '')}_enhanced.pdf`;
+      
+      onExport(blob, filename);
+    } catch (error) {
+      console.error('Export failed:', error);
+    }
+  }, [parseResult, editorState.pdfOptions, csvFile.name, onExport]);
 
   // 🔧 Инициализация компонента
   useEffect(() => {
     const initializeEditor = async () => {
       // Симуляция детекции языка
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 800));
       
       updateEditorState({
         isLoading: false,
@@ -155,16 +187,25 @@ export const LivePreviewEditor: React.FC<LivePreviewEditorProps> = ({
       });
 
       // Автоматическая генерация первого превью
-      generatePreview();
+      setTimeout(() => generatePreview(), 500);
     };
 
     initializeEditor();
   }, [generatePreview, updateEditorState]);
 
+  // 🔧 Очистка URL при размонтировании
+  useEffect(() => {
+    return () => {
+      if (editorState.previewState.pdfUrl) {
+        URL.revokeObjectURL(editorState.previewState.pdfUrl);
+      }
+    };
+  }, [editorState.previewState.pdfUrl]);
+
   // 🎨 Классы стилей
   const layoutClasses = 'min-h-screen bg-gray-50 flex flex-col';
   const tabClasses = (active: boolean) => `
-    px-4 py-2 text-sm font-medium rounded-lg transition-all
+    px-4 py-2 text-sm font-medium rounded-lg transition-all flex items-center
     ${active 
       ? 'bg-blue-600 text-white shadow-sm' 
       : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
@@ -178,22 +219,29 @@ export const LivePreviewEditor: React.FC<LivePreviewEditorProps> = ({
         onClick={() => updateEditorState({ currentView: 'edit' })}
         className={tabClasses(editorState.currentView === 'edit')}
       >
-        <Edit3 className="w-4 h-4 mr-2 inline" />
+        <Edit3 className="w-4 h-4 mr-2" />
         Edit Data
       </button>
       <button
         onClick={() => updateEditorState({ currentView: 'style' })}
         className={tabClasses(editorState.currentView === 'style')}
       >
-        <Palette className="w-4 h-4 mr-2 inline" />
+        <Palette className="w-4 h-4 mr-2" />
         Style
       </button>
       <button
-        onClick={() => updateEditorState({ currentView: 'preview' })}
+        onClick={() => {
+          updateEditorState({ currentView: 'preview' });
+          // Генерируем превью при переходе на таб
+          setTimeout(() => generatePreview(), 100);
+        }}
         className={tabClasses(editorState.currentView === 'preview')}
       >
-        <Eye className="w-4 h-4 mr-2 inline" />
+        <Eye className="w-4 h-4 mr-2" />
         Preview
+        {editorState.previewState.isGenerating && (
+          <Spinner size="sm" className="ml-2 w-3 h-3" />
+        )}
       </button>
     </div>
   );
@@ -221,7 +269,7 @@ export const LivePreviewEditor: React.FC<LivePreviewEditorProps> = ({
         
         <div className="flex items-center space-x-2">
           <Zap className="w-5 h-5 text-blue-600" />
-          <span className="text-sm font-medium text-blue-700">Live Preview Active</span>
+          <span className="text-sm font-medium text-blue-700">Live Preview Ready</span>
         </div>
       </div>
     </Card>
@@ -259,10 +307,10 @@ export const LivePreviewEditor: React.FC<LivePreviewEditorProps> = ({
       <div className="mb-6">
         <label className="block text-sm font-medium text-gray-700 mb-2">Page Orientation</label>
         <div className="flex space-x-2">
-          {['portrait', 'landscape'].map(orientation => (
+          {(['portrait', 'landscape'] as const).map(orientation => (
             <button
               key={orientation}
-              onClick={() => updatePdfOptions({ orientation: orientation as any })}
+              onClick={() => updatePdfOptions({ orientation })}
               className={`
                 flex-1 py-2 px-3 text-sm font-medium rounded-md transition-all
                 ${editorState.pdfOptions.orientation === orientation
@@ -277,32 +325,45 @@ export const LivePreviewEditor: React.FC<LivePreviewEditorProps> = ({
         </div>
       </div>
 
-      {/* Цветовая схема */}
-      <div className="mt-4 pt-4 border-t border-gray-200">
-        <label className="block text-sm font-medium text-gray-700 mb-3">Color Scheme</label>
-        <div className="flex space-x-3">
-          {[
-            { name: 'Blue', primary: '#3B82F6', secondary: '#EBF8FF' },
-            { name: 'Green', primary: '#10B981', secondary: '#F0FDF4' },
-            { name: 'Purple', primary: '#8B5CF6', secondary: '#FAF5FF' },
-            { name: 'Gray', primary: '#6B7280', secondary: '#F9FAFB' },
-          ].map(scheme => (
+      {/* Размер страницы */}
+      <div className="mb-6">
+        <label className="block text-sm font-medium text-gray-700 mb-2">Page Size</label>
+        <div className="flex space-x-2">
+          {(['a4', 'letter', 'legal'] as const).map(size => (
             <button
-              key={scheme.name}
-              onClick={() => updatePdfOptions({
-                colorScheme: {
-                  ...editorState.pdfOptions.colorScheme,
-                  primary: scheme.primary,
-                  headerBg: scheme.secondary
+              key={size}
+              onClick={() => updatePdfOptions({ pageSize: size })}
+              className={`
+                flex-1 py-2 px-3 text-sm font-medium rounded-md transition-all
+                ${editorState.pdfOptions.pageSize === size
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }
-              })}
-              className="flex flex-col items-center p-2 rounded-lg hover:bg-gray-50"
+              `}
             >
-              <div 
-                className="w-8 h-8 rounded-full mb-1"
-                style={{ backgroundColor: scheme.primary }}
-              />
-              <span className="text-xs text-gray-600">{scheme.name}</span>
+              {size.toUpperCase()}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Размер шрифта */}
+      <div className="mb-6">
+        <label className="block text-sm font-medium text-gray-700 mb-2">Font Size</label>
+        <div className="flex space-x-2">
+          {[6, 8, 10, 12].map(size => (
+            <button
+              key={size}
+              onClick={() => updatePdfOptions({ fontSize: size })}
+              className={`
+                flex-1 py-2 px-3 text-sm font-medium rounded-md transition-all
+                ${editorState.pdfOptions.fontSize === size
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }
+              `}
+            >
+              {size}pt
             </button>
           ))}
         </div>
@@ -319,14 +380,52 @@ export const LivePreviewEditor: React.FC<LivePreviewEditorProps> = ({
             {renderStatsPanel()}
             {renderLanguageInfo()}
             
-            {/* Таблица данных будет здесь */}
+            {/* Предпросмотр данных */}
             <Card className="p-6">
-              <h3 className="font-semibold text-gray-900 mb-4">Data Table (Preview)</h3>
-              <div className="text-gray-600 text-center py-12">
-                📝 Interactive data table editor will be implemented here
-                <br />
-                <span className="text-sm">Features: inline editing, drag & drop columns, sorting, filtering</span>
-              </div>
+              <h3 className="font-semibold text-gray-900 mb-4">Data Preview</h3>
+              
+              {parseResult.preview && parseResult.preview.length > 0 ? (
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        {parseResult.preview[0].map((header, index) => (
+                          <th
+                            key={index}
+                            className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                          >
+                            {header}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {parseResult.preview.slice(1, 6).map((row, rowIndex) => (
+                        <tr key={rowIndex}>
+                          {row.map((cell, cellIndex) => (
+                            <td
+                              key={cellIndex}
+                              className="px-4 py-2 whitespace-nowrap text-sm text-gray-900"
+                            >
+                              {cell}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  
+                  {parseResult.rowCount > 5 && (
+                    <div className="mt-4 text-center text-sm text-gray-500">
+                      ... and {parseResult.rowCount - 5} more rows
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="text-gray-600 text-center py-8">
+                  📄 No preview data available
+                </div>
+              )}
             </Card>
           </div>
         );
@@ -339,11 +438,47 @@ export const LivePreviewEditor: React.FC<LivePreviewEditorProps> = ({
             
             {/* Расширенные настройки стиля */}
             <Card className="p-6">
-              <h3 className="font-semibold text-gray-900 mb-4">Advanced Styling</h3>
-              <div className="text-gray-600 text-center py-12">
-                🎨 Advanced styling controls will be implemented here
-                <br />
-                <span className="text-sm">Features: custom themes, branding, advanced typography</span>
+              <h3 className="font-semibold text-gray-900 mb-4">Table Style</h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Table Style</label>
+                  <select 
+                    value={editorState.pdfOptions.tableStyle}
+                    onChange={(e) => updatePdfOptions({ tableStyle: e.target.value as any })}
+                    className="w-full p-2 border border-gray-300 rounded-md"
+                  >
+                    <option value="grid">Grid</option>
+                    <option value="striped">Striped</option>
+                    <option value="plain">Plain</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Header Style</label>
+                  <select 
+                    value={editorState.pdfOptions.headerStyle}
+                    onChange={(e) => updatePdfOptions({ headerStyle: e.target.value as any })}
+                    className="w-full p-2 border border-gray-300 rounded-md"
+                  >
+                    <option value="bold">Bold</option>
+                    <option value="italic">Italic</option>
+                    <option value="normal">Normal</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div className="mt-4 flex items-center">
+                <input
+                  type="checkbox"
+                  id="fitToPage"
+                  checked={editorState.pdfOptions.fitToPage}
+                  onChange={(e) => updatePdfOptions({ fitToPage: e.target.checked })}
+                  className="mr-2"
+                />
+                <label htmlFor="fitToPage" className="text-sm text-gray-700">
+                  Fit table to page width
+                </label>
               </div>
             </Card>
           </div>
@@ -352,7 +487,7 @@ export const LivePreviewEditor: React.FC<LivePreviewEditorProps> = ({
       case 'preview':
         return (
           <div className="space-y-6">
-            {/* Предпросмотр PDF */}
+            {/* PDF Preview */}
             <Card className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold text-gray-900">PDF Preview</h3>
@@ -377,12 +512,32 @@ export const LivePreviewEditor: React.FC<LivePreviewEditorProps> = ({
                   <AlertCircle className="w-5 h-5 text-red-500 mr-3" />
                   <span className="text-red-700">{editorState.previewState.error}</span>
                 </div>
+              ) : editorState.previewState.pdfUrl ? (
+                <div className="bg-gray-100 rounded-lg overflow-hidden">
+                  <iframe
+                    src={editorState.previewState.pdfUrl}
+                    className="w-full h-96 border-0"
+                    title="PDF Preview"
+                  />
+                </div>
+              ) : editorState.previewState.isGenerating ? (
+                <div className="bg-gray-100 rounded-lg p-8 text-center">
+                  <div className="flex flex-col items-center space-y-4">
+                    <Spinner size="lg" className="text-blue-600" />
+                    <div className="text-gray-600">
+                      🔄 Generating PDF preview...
+                      <br />
+                      <span className="text-sm">This may take a few moments</span>
+                    </div>
+                  </div>
+                </div>
               ) : (
                 <div className="bg-gray-100 rounded-lg p-8 text-center">
                   <div className="text-gray-600 py-12">
-                    👁️ Live PDF preview will be rendered here
+                    <FileText className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                    Click "Refresh" to generate PDF preview
                     <br />
-                    <span className="text-sm">Using PDF.js for in-browser rendering</span>
+                    <span className="text-sm">Live preview will appear here</span>
                   </div>
                 </div>
               )}
@@ -450,11 +605,8 @@ export const LivePreviewEditor: React.FC<LivePreviewEditorProps> = ({
             </Button>
             
             <Button
-              onClick={() => {
-                // Логика экспорта будет здесь
-                console.log('Exporting PDF...');
-              }}
-              disabled={editorState.previewState.isGenerating || !editorState.previewState.lastGenerated}
+              onClick={handleExport}
+              disabled={editorState.previewState.isGenerating}
               className="bg-blue-600 hover:bg-blue-700 text-white"
             >
               <Download className="w-4 h-4 mr-2" />
