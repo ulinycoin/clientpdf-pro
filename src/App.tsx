@@ -20,6 +20,7 @@ import { SplitPDFPage } from './pages/SplitPDFPage';
 import { CompressPDFPage } from './pages/CompressPDFPage';
 import { ImagesToPDFPage } from './pages/ImagesToPDFPage';
 import { CSVToPDFPage } from './pages/CSVToPDFPage';
+import { EnhancedCSVToPDFPage } from './pages/EnhancedCSVToPDFPage'; // 🆕 Новая страница
 import { FAQPage } from './pages/FAQPage';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import { TermsOfService } from './pages/TermsOfService';
@@ -42,13 +43,21 @@ function App() {
             <Route path="/split-pdf" element={<SplitPDFPage />} />
             <Route path="/compress-pdf" element={<CompressPDFPage />} />
             <Route path="/images-to-pdf" element={<ImagesToPDFPage />} />
+            
+            {/* CSV to PDF Routes */}
             <Route path="/csv-to-pdf" element={<CSVToPDFPage />} />
+            <Route path="/enhanced-csv-to-pdf" element={<EnhancedCSVToPDFPage />} /> {/* 🆕 Новый маршрут */}
+            
             <Route path="/faq" element={<FAQPage />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<TermsOfService />} />
-            {/* Debug route - only available in development */}
+            
+            {/* Debug routes - only available in development */}
             {import.meta.env.DEV && (
-              <Route path="/debug-pdf" element={<PDFTestComponent />} />
+              <>
+                <Route path="/debug-pdf" element={<PDFTestComponent />} />
+                <Route path="/test-enhanced" element={<EnhancedCSVToPDFPage />} /> {/* 🧪 Тестовый маршрут */}
+              </>
             )}
           </Routes>
         </Layout>
