@@ -1,20 +1,279 @@
-          <div className="flex space-x-2">
-            {['portrait', 'landscape'].map(orientation => (
-              <button
-                key={orientation}
-                onClick={() => updatePdfOptions({ orientation: orientation as any })}
-                className={`
-                  flex-1 py-2 px-3 text-sm font-medium rounded-md transition-all
-                  ${editorState.pdfOptions.orientation === orientation
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }
-                `}
-              >
-                {orientation.charAt(0).toUpperCase() + orientation.slice(1)}
-              </button>
-            ))}
+/**
+ * LivePreviewEditor.tsx
+ * Интерактивный редактор CSV to PDF с живым предпросмотром
+ * 🔧 ИСПРАВЛЕН: Правильная JSX структура без adjacent elements
+ */
+
+import React, { useState, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  ArrowLeft,
+  Download,
+  Save,
+  RefreshCw,
+  Eye,
+  Edit3,
+  Palette,
+  Settings,
+  AlertCircle,
+  Globe,
+  Type,
+  Zap
+} from 'lucide-react';
+
+import { Button } from '../atoms/Button';
+import { Card } from '../atoms/Card';
+import { Badge } from '../atoms/Badge';
+import { Spinner } from '../atoms/Spinner';
+import { CsvParseResult } from '../../services/converters/CsvToPdfConverter';
+
+interface LivePreviewEditorProps {
+  csvFile: File;
+  parseResult: CsvParseResult;
+  onBack: () => void;
+  onExport: (pdfBlob: Blob, filename: string) => void;
+  className?: string;
+}
+
+interface EditorState {
+  currentView: 'edit' | 'style' | 'preview';
+  isLoading: boolean;
+  detectedLanguage: {
+    code: string;
+    name: string;
+    confidence: number;
+    script: string;
+  };
+  pdfOptions: {
+    orientation: 'portrait' | 'landscape';
+    pageSize: 'a4' | 'letter' | 'legal';
+    fontSize: number;
+    fontFamily: string;
+    colorScheme: {
+      primary: string;
+      secondary: string;
+      headerBg: string;
+      textColor: string;
+    };
+  };
+  previewState: {
+    isGenerating: boolean;
+    lastGenerated: Date | null;
+    error: string | null;
+    warnings: string[];
+  };
+}
+
+export const LivePreviewEditor: React.FC<LivePreviewEditorProps> = ({
+  csvFile,
+  parseResult,
+  onBack,
+  onExport,
+  className = ''
+}) => {
+  const [editorState, setEditorState] = useState<EditorState>({
+    currentView: 'edit',
+    isLoading: true,
+    detectedLanguage: {
+      code: 'en',
+      name: 'English',
+      confidence: 0.95,
+      script: 'latin'
+    },
+    pdfOptions: {
+      orientation: 'landscape',
+      pageSize: 'a4',
+      fontSize: 10,
+      fontFamily: 'Inter',
+      colorScheme: {
+        primary: '#3B82F6',
+        secondary: '#EBF8FF',
+        headerBg: '#F8FAFC',
+        textColor: '#1F2937'
+      }
+    },
+    previewState: {
+      isGenerating: false,
+      lastGenerated: null,
+      error: null,
+      warnings: []
+    }
+  });
+
+  // 🔧 Обновление состояния редактора
+  const updateEditorState = useCallback((updates: Partial<EditorState>) => {
+    setEditorState(prev => ({ ...prev, ...updates }));
+  }, []);
+
+  // 🔧 Обновление PDF опций
+  const updatePdfOptions = useCallback((updates: Partial<EditorState['pdfOptions']>) => {
+    setEditorState(prev => ({
+      ...prev,
+      pdfOptions: { ...prev.pdfOptions, ...updates }
+    }));
+  }, []);
+
+  // 🔧 Генерация превью
+  const generatePreview = useCallback((force = false) => {
+    if (editorState.previewState.isGenerating && !force) return;
+
+    updateEditorState({
+      previewState: {
+        ...editorState.previewState,
+        isGenerating: true,
+        error: null
+      }
+    });
+
+    // Симуляция генерации PDF
+    setTimeout(() => {
+      updateEditorState({
+        previewState: {
+          isGenerating: false,
+          lastGenerated: new Date(),
+          error: null,
+          warnings: parseResult.errors.map(e => e.message)
+        }
+      });
+    }, 1500);
+  }, [editorState.previewState, parseResult.errors, updateEditorState]);
+
+  // 🔧 Инициализация компонента
+  useEffect(() => {
+    const initializeEditor = async () => {
+      // Симуляция детекции языка
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      updateEditorState({
+        isLoading: false,
+        detectedLanguage: {
+          code: 'auto',
+          name: 'Auto-detected',
+          confidence: 0.85,
+          script: 'latin'
+        }
+      });
+
+      // Автоматическая генерация первого превью
+      generatePreview();
+    };
+
+    initializeEditor();
+  }, [generatePreview, updateEditorState]);
+
+  // 🎨 Классы стилей
+  const layoutClasses = 'min-h-screen bg-gray-50 flex flex-col';
+  const tabClasses = (active: boolean) => `
+    px-4 py-2 text-sm font-medium rounded-lg transition-all
+    ${active 
+      ? 'bg-blue-600 text-white shadow-sm' 
+      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+    }
+  `;
+
+  // 🎯 Рендер навигации по табам
+  const renderTabNavigation = () => (
+    <div className="flex space-x-1 mb-6 bg-white p-1 rounded-lg border border-gray-200">
+      <button
+        onClick={() => updateEditorState({ currentView: 'edit' })}
+        className={tabClasses(editorState.currentView === 'edit')}
+      >
+        <Edit3 className="w-4 h-4 mr-2 inline" />
+        Edit Data
+      </button>
+      <button
+        onClick={() => updateEditorState({ currentView: 'style' })}
+        className={tabClasses(editorState.currentView === 'style')}
+      >
+        <Palette className="w-4 h-4 mr-2 inline" />
+        Style
+      </button>
+      <button
+        onClick={() => updateEditorState({ currentView: 'preview' })}
+        className={tabClasses(editorState.currentView === 'preview')}
+      >
+        <Eye className="w-4 h-4 mr-2 inline" />
+        Preview
+      </button>
+    </div>
+  );
+
+  // 🎯 Рендер панели статистики
+  const renderStatsPanel = () => (
+    <Card className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-6">
+          <div>
+            <div className="text-2xl font-bold text-blue-600">{parseResult.rowCount}</div>
+            <div className="text-sm text-blue-700">Rows</div>
           </div>
+          <div>
+            <div className="text-2xl font-bold text-blue-600">{parseResult.columnCount}</div>
+            <div className="text-sm text-blue-700">Columns</div>
+          </div>
+          <div>
+            <div className="text-2xl font-bold text-blue-600">
+              {Math.ceil(parseResult.rowCount / 20)}
+            </div>
+            <div className="text-sm text-blue-700">Est. Pages</div>
+          </div>
+        </div>
+        
+        <div className="flex items-center space-x-2">
+          <Zap className="w-5 h-5 text-blue-600" />
+          <span className="text-sm font-medium text-blue-700">Live Preview Active</span>
+        </div>
+      </div>
+    </Card>
+  );
+
+  // 🎯 Рендер информации о языке
+  const renderLanguageInfo = () => (
+    <Card className="p-4">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-3">
+          <Globe className="w-5 h-5 text-gray-500" />
+          <div>
+            <h3 className="font-medium text-gray-900">Language Detection</h3>
+            <p className="text-sm text-gray-600">
+              Detected: {editorState.detectedLanguage.name} 
+              ({(editorState.detectedLanguage.confidence * 100).toFixed(0)}% confidence)
+            </p>
+          </div>
+        </div>
+        
+        <Badge variant="success">
+          <Type className="w-3 h-3 mr-1" />
+          Auto Font
+        </Badge>
+      </div>
+    </Card>
+  );
+
+  // 🎯 Рендер быстрых настроек стиля
+  const renderQuickStylePanel = () => (
+    <Card className="p-6">
+      <h3 className="font-semibold text-gray-900 mb-4">Quick Style Options</h3>
+      
+      {/* Ориентация страницы */}
+      <div className="mb-6">
+        <label className="block text-sm font-medium text-gray-700 mb-2">Page Orientation</label>
+        <div className="flex space-x-2">
+          {['portrait', 'landscape'].map(orientation => (
+            <button
+              key={orientation}
+              onClick={() => updatePdfOptions({ orientation: orientation as any })}
+              className={`
+                flex-1 py-2 px-3 text-sm font-medium rounded-md transition-all
+                ${editorState.pdfOptions.orientation === orientation
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }
+              `}
+            >
+              {orientation.charAt(0).toUpperCase() + orientation.slice(1)}
+            </button>
+          ))}
         </div>
       </div>
 
