@@ -1,7 +1,7 @@
 /**
  * LivePreviewEditor.tsx
  * Интерактивный редактор CSV to PDF с РЕАЛЬНЫМ живым предпросмотром
- * 🔧 ИСПРАВЛЕН: Правильная обработка preview данных
+ * 🆕 ОБНОВЛЕНО: Интеграция FontLanguageSelector для улучшенной поддержки языков
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -27,6 +27,7 @@ import { Card } from '../atoms/Card';
 import { Badge } from '../atoms/Badge';
 import { Spinner } from '../atoms/Spinner';
 import { CsvToPdfConverter, CsvToPdfOptions, CsvParseResult } from '../../services/converters/CsvToPdfConverter';
+import FontLanguageSelector from './FontLanguageSelector';
 
 interface LivePreviewEditorProps {
   csvFile: File;
@@ -45,7 +46,10 @@ interface EditorState {
     confidence: number;
     script: string;
   };
-  pdfOptions: CsvToPdfOptions;
+  pdfOptions: CsvToPdfOptions & {
+    selectedLanguage?: string;
+    selectedFont?: string;
+  };
   previewState: {
     isGenerating: boolean;
     lastGenerated: Date | null;
@@ -66,8 +70,8 @@ export const LivePreviewEditor: React.FC<LivePreviewEditorProps> = ({
     currentView: 'edit',
     isLoading: true,
     detectedLanguage: {
-      code: 'en',
-      name: 'English',
+      code: 'auto',
+      name: 'Auto-detect',
       confidence: 0.95,
       script: 'latin'
     },
@@ -83,6 +87,9 @@ export const LivePreviewEditor: React.FC<LivePreviewEditorProps> = ({
       marginBottom: 20,
       marginLeft: 10,
       marginRight: 10,
+      selectedLanguage: 'auto',
+      selectedFont: 'helvetica',
+      fontFamily: 'auto' as any
     },
     previewState: {
       isGenerating: false,
@@ -99,7 +106,7 @@ export const LivePreviewEditor: React.FC<LivePreviewEditorProps> = ({
   }, []);
 
   // 🔧 Обновление PDF опций
-  const updatePdfOptions = useCallback((updates: Partial<CsvToPdfOptions>) => {
+  const updatePdfOptions = useCallback((updates: Partial<CsvToPdfOptions & { selectedLanguage?: string; selectedFont?: string }>) => {
     setEditorState(prev => ({
       ...prev,
       pdfOptions: { ...prev.pdfOptions, ...updates }
@@ -107,9 +114,46 @@ export const LivePreviewEditor: React.FC<LivePreviewEditorProps> = ({
     
     // Автоматически обновляем превью при изменении опций
     if (editorState.currentView === 'preview') {
-      generatePreview();
+      setTimeout(() => generatePreview(), 500);
     }
   }, [editorState.currentView]);
+
+  // 🆕 Обработчики для FontLanguageSelector
+  const handleLanguageChange = useCallback((language: string) => {
+    updatePdfOptions({ 
+      selectedLanguage: language,
+      fontFamily: language === 'ru' ? 'DejaVu' : 'auto'
+    });
+    
+    // Обновляем detected language для отображения
+    const languageNames: Record<string, string> = {
+      'auto': 'Auto-detect',
+      'en': 'English',
+      'ru': 'Russian',
+      'lv': 'Latvian',
+      'lt': 'Lithuanian',
+      'pl': 'Polish',
+      'de': 'German',
+      'fr': 'French',
+      'es': 'Spanish'
+    };
+    
+    updateEditorState({
+      detectedLanguage: {
+        code: language,
+        name: languageNames[language] || language,
+        confidence: 0.95,
+        script: language === 'ru' ? 'cyrillic' : 'latin'
+      }
+    });
+  }, [updatePdfOptions, updateEditorState]);
+
+  const handleFontChange = useCallback((font: string) => {
+    updatePdfOptions({ 
+      selectedFont: font,
+      fontFamily: font as any
+    });
+  }, [updatePdfOptions]);
 
   // 🚀 РЕАЛЬНАЯ генерация PDF Preview
   const generatePreview = useCallback(async (force = false) => {
@@ -124,13 +168,23 @@ export const LivePreviewEditor: React.FC<LivePreviewEditorProps> = ({
     });
 
     try {
-      console.log('🔄 Generating PDF preview...');
+      console.log('🔄 Generating PDF preview with font settings:', {
+        selectedLanguage: editorState.pdfOptions.selectedLanguage,
+        selectedFont: editorState.pdfOptions.selectedFont,
+        fontFamily: editorState.pdfOptions.fontFamily
+      });
       
-      // Используем реальный CsvToPdfConverter
-      const pdfBytes = await CsvToPdfConverter.convertToPDF(parseResult, editorState.pdfOptions);
+      // Используем реальный CsvToPdfConverter с улучшенными опциями
+      const enhancedOptions = {
+        ...editorState.pdfOptions,
+        title: `${csvFile.name} - ${editorState.detectedLanguage.name}`,
+        fontFamily: editorState.pdfOptions.selectedFont as any
+      };
+      
+      const pdfBytes = await CsvToPdfConverter.convertToPDF(parseResult, enhancedOptions);
       
       // Создаем URL для предпросмотра
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const blob = new Blob([pdfBytes as Uint8Array], { type: 'application/pdf' });
       const pdfUrl = URL.createObjectURL(blob);
       
       updateEditorState({
@@ -143,7 +197,7 @@ export const LivePreviewEditor: React.FC<LivePreviewEditorProps> = ({
         }
       });
 
-      console.log('✅ PDF preview generated successfully');
+      console.log('✅ PDF preview generated successfully with enhanced fonts');
       
     } catch (error) {
       console.error('❌ PDF generation failed:', error);
@@ -155,20 +209,26 @@ export const LivePreviewEditor: React.FC<LivePreviewEditorProps> = ({
         }
       });
     }
-  }, [editorState.previewState, editorState.pdfOptions, parseResult, updateEditorState]);
+  }, [editorState.previewState, editorState.pdfOptions, editorState.detectedLanguage, parseResult, updateEditorState, csvFile.name]);
 
   // 🚀 Экспорт PDF
   const handleExport = useCallback(async () => {
     try {
-      const pdfBytes = await CsvToPdfConverter.convertToPDF(parseResult, editorState.pdfOptions);
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-      const filename = `${csvFile.name.replace(/\.[^/.]+$/, '')}_enhanced.pdf`;
+      const enhancedOptions = {
+        ...editorState.pdfOptions,
+        title: `${csvFile.name} - ${editorState.detectedLanguage.name}`,
+        fontFamily: editorState.pdfOptions.selectedFont as any
+      };
+      
+      const pdfBytes = await CsvToPdfConverter.convertToPDF(parseResult, enhancedOptions);
+      const blob = new Blob([pdfBytes as Uint8Array], { type: 'application/pdf' });
+      const filename = `${csvFile.name.replace(/\.[^/.]+$/, '')}_enhanced_${editorState.detectedLanguage.code}.pdf`;
       
       onExport(blob, filename);
     } catch (error) {
       console.error('Export failed:', error);
     }
-  }, [parseResult, editorState.pdfOptions, csvFile.name, onExport]);
+  }, [parseResult, editorState.pdfOptions, editorState.detectedLanguage, csvFile.name, onExport]);
 
   // 🔧 Инициализация компонента
   useEffect(() => {
@@ -275,7 +335,7 @@ export const LivePreviewEditor: React.FC<LivePreviewEditorProps> = ({
     </Card>
   );
 
-  // 🎯 Рендер информации о языке
+  // 🆕 Рендер информации о языке (обновлено)
   const renderLanguageInfo = () => (
     <Card className="p-4">
       <div className="flex items-center justify-between">
@@ -284,16 +344,18 @@ export const LivePreviewEditor: React.FC<LivePreviewEditorProps> = ({
           <div>
             <h3 className="font-medium text-gray-900">Language Detection</h3>
             <p className="text-sm text-gray-600">
-              Detected: {editorState.detectedLanguage.name} 
+              Active: {editorState.detectedLanguage.name} 
               ({(editorState.detectedLanguage.confidence * 100).toFixed(0)}% confidence)
             </p>
           </div>
         </div>
         
-        <Badge variant="success">
-          <Type className="w-3 h-3 mr-1" />
-          Auto Font
-        </Badge>
+        <div className="flex items-center space-x-2">
+          <Badge variant="success">
+            <Type className="w-3 h-3 mr-1" />
+            {editorState.pdfOptions.selectedFont || 'Auto Font'}
+          </Badge>
+        </div>
       </div>
     </Card>
   );
@@ -437,6 +499,16 @@ export const LivePreviewEditor: React.FC<LivePreviewEditorProps> = ({
             {renderStatsPanel()}
             {renderLanguageInfo()}
             
+            {/* 🆕 Font & Language Selector */}
+            <FontLanguageSelector
+              csvData={parseResult.data}
+              headers={parseResult.headers}
+              selectedLanguage={editorState.pdfOptions.selectedLanguage}
+              selectedFont={editorState.pdfOptions.selectedFont}
+              onLanguageChange={handleLanguageChange}
+              onFontChange={handleFontChange}
+            />
+            
             {/* Предпросмотр данных */}
             <Card className="p-6">
               <h3 className="font-semibold text-gray-900 mb-4">Data Preview</h3>
@@ -449,6 +521,17 @@ export const LivePreviewEditor: React.FC<LivePreviewEditorProps> = ({
         return (
           <div className="space-y-6">
             {renderLanguageInfo()}
+            
+            {/* 🆕 Font & Language Selector in Style Tab */}
+            <FontLanguageSelector
+              csvData={parseResult.data}
+              headers={parseResult.headers}
+              selectedLanguage={editorState.pdfOptions.selectedLanguage}
+              selectedFont={editorState.pdfOptions.selectedFont}
+              onLanguageChange={handleLanguageChange}
+              onFontChange={handleFontChange}
+            />
+            
             {renderQuickStylePanel()}
             
             {/* Расширенные настройки стиля */}
@@ -540,9 +623,9 @@ export const LivePreviewEditor: React.FC<LivePreviewEditorProps> = ({
                   <div className="flex flex-col items-center space-y-4">
                     <Spinner size="lg" className="text-blue-600" />
                     <div className="text-gray-600">
-                      🔄 Generating PDF preview...
+                      🔄 Generating PDF preview with {editorState.detectedLanguage.name} support...
                       <br />
-                      <span className="text-sm">This may take a few moments</span>
+                      <span className="text-sm">Font: {editorState.pdfOptions.selectedFont}</span>
                     </div>
                   </div>
                 </div>
@@ -598,7 +681,7 @@ export const LivePreviewEditor: React.FC<LivePreviewEditorProps> = ({
                 {csvFile.name}
               </h1>
               <p className="text-sm text-gray-500">
-                Interactive CSV to PDF Editor
+                Interactive CSV to PDF Editor • {editorState.detectedLanguage.name} • {editorState.pdfOptions.selectedFont}
               </p>
             </div>
           </div>
