@@ -1,3 +1,10 @@
+import jsPDF from 'jspdf';
+
+/**
+ * Enhanced CSV to PDF Generator
+ * Handles font compatibility testing and PDF generation
+ */
+export class CsvToPdfGenerator {
   /**
    * Тестирование совместимости шрифта с AutoTable - РАССЛАБЛЕННАЯ ВЕРСИЯ
    */
@@ -54,3 +61,20 @@
       return false;
     }
   }
+
+  /**
+   * Public method to test font compatibility
+   */
+  public static isFontCompatible(pdf: jsPDF, fontName: string): boolean {
+    return this.testFontCompatibility(pdf, fontName);
+  }
+
+  /**
+   * Placeholder for future PDF generation method
+   */
+  public static async generatePdf(data: any[][], options: any = {}): Promise<jsPDF> {
+    const pdf = new jsPDF();
+    // TODO: Implement enhanced PDF generation with multi-language support
+    return pdf;
+  }
+}
