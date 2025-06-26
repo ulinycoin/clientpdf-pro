@@ -170,7 +170,7 @@ export class CsvToPdfGeneratorOptimized {
       compress: true, // Включаем сжатие
     });
 
-    // 🆕 УЛУЧШЕННАЯ НАСТРОЙКА ШРИФТОВ ДЛЯ БОЛЬШИХ ДАННЫХ
+    // 🆕 ИСПРАВЛЕННАЯ НАСТРОЙКА ШРИФТОВ ДЛЯ БОЛЬШИХ ДАННЫХ
     // Собираем более компактную выборку для анализа шрифтов
     const sampleTexts = [
       // Заголовки (все)
@@ -183,21 +183,41 @@ export class CsvToPdfGeneratorOptimized {
       opts.title || ''
     ].filter(text => text.trim() !== '');
 
-    // Настройка шрифтов с новым сервисом
+    // 🔧 ИСПРАВЛЕНО: Настройка шрифтов с proper error handling
     onProgress?.(35, 'Setting up fonts...');
-    const fontSetup = EnhancedUnicodeFontService.setupPDFFont(pdf, sampleTexts);
     
-    if (!fontSetup.success) {
-      console.error('❌ Font setup failed for large data:', fontSetup.warnings);
-      // Продолжаем с базовым helvetica
+    let fontSetup;
+    let selectedFont = 'helvetica'; // Значение по умолчанию
+    
+    try {
+      fontSetup = await EnhancedUnicodeFontService.setupPDFFont(pdf, sampleTexts);
+      
+      if (fontSetup && fontSetup.success) {
+        selectedFont = fontSetup.selectedFont;
+        console.log('✅ Large data font setup successful:', {
+          selectedFont: fontSetup.selectedFont,
+          warnings: fontSetup.warnings,
+          transliterations: fontSetup.appliedTransliterations
+        });
+      } else {
+        console.warn('⚠️ Font setup returned unsuccessful result, using fallback');
+        if (fontSetup && fontSetup.warnings) {
+          console.warn('Font setup warnings:', fontSetup.warnings);
+        }
+        // Устанавливаем fallback font
+        pdf.setFont('helvetica', 'normal');
+      }
+    } catch (error) {
+      console.error('❌ Font setup failed for large data:', error);
+      // Fallback в случае ошибки
       pdf.setFont('helvetica', 'normal');
+      fontSetup = {
+        success: false,
+        selectedFont: 'helvetica',
+        warnings: [`Font setup failed: ${error}`],
+        appliedTransliterations: 0
+      };
     }
-
-    console.log('✅ Large data font setup:', {
-      selectedFont: fontSetup.selectedFont,
-      warnings: fontSetup.warnings,
-      transliterations: fontSetup.appliedTransliterations
-    });
 
     // Настройка метаданных с очисткой через новый сервис
     const title = opts.title ? 
@@ -208,14 +228,14 @@ export class CsvToPdfGeneratorOptimized {
       title: title,
       subject: `Large data table with ${parseResult.rowCount} rows and ${parseResult.columnCount} columns`,
       author: 'ClientPDF Pro',
-      creator: 'ClientPDF Pro - Optimized CSV to PDF Converter with Enhanced Unicode v5.0',
+      creator: 'ClientPDF Pro - Optimized CSV to PDF Converter with Enhanced Unicode v5.1',
       keywords: 'CSV, PDF, large data, table, export, unicode, multilingual, optimized',
     });
 
     onProgress?.(40, 'Preparing table data...');
 
-    // 🆕 УЛУЧШЕННАЯ ПОДГОТОВКА ДАННЫХ С ОЧИСТКОЙ ШРИФТОВ
-    const { tableHeaders, tableData } = this.prepareTableDataOptimized(parseResult, opts, fontSetup.selectedFont);
+    // 🆕 ИСПРАВЛЕННАЯ ПОДГОТОВКА ДАННЫХ С ОЧИСТКОЙ ШРИФТОВ
+    const { tableHeaders, tableData } = this.prepareTableDataOptimized(parseResult, opts, selectedFont);
     
     onProgress?.(50, 'Calculating optimal layout...');
 
@@ -235,20 +255,20 @@ export class CsvToPdfGeneratorOptimized {
     let currentY = opts.marginTop || 20;
     if (opts.title) {
       pdf.setFontSize(14); // Немного меньше для экономии места
-      pdf.setFont(fontSetup.selectedFont, 'bold');
+      pdf.setFont(selectedFont, 'bold');
       pdf.text(title, opts.marginLeft || 10, currentY);
       currentY += 8;
     }
 
     // Информация о данных (сжатая) с информацией о шрифтах
     pdf.setFontSize(7);
-    pdf.setFont(fontSetup.selectedFont, 'normal');
+    pdf.setFont(selectedFont, 'normal');
     
     const infoLines = [
-      `${parseResult.rowCount} rows × ${parseResult.columnCount} columns | Font: ${fontSetup.selectedFont}`,
+      `${parseResult.rowCount} rows × ${parseResult.columnCount} columns | Font: ${selectedFont}`,
     ];
     
-    if (fontSetup.appliedTransliterations > 0) {
+    if (fontSetup && fontSetup.appliedTransliterations > 0) {
       infoLines.push(`${fontSetup.appliedTransliterations} characters transliterated for compatibility`);
     }
     
@@ -278,21 +298,21 @@ export class CsvToPdfGeneratorOptimized {
         valign: 'top',
         lineColor: tableStyles.lineColor,
         lineWidth: 0.1, // Тонкие линии для экономии места
-        font: fontSetup.selectedFont, // 🆕 Явно указываем шрифт
+        font: selectedFont, // 🆕 Явно указываем шрифт
       },
       headStyles: {
         ...tableStyles.headerStyles,
         minCellHeight: 4, // Компактные заголовки
         fontSize: Math.max(opts.fontSize || 6, 5),
-        font: fontSetup.selectedFont, // 🆕 Явно указываем шрифт
+        font: selectedFont, // 🆕 Явно указываем шрифт
       },
       bodyStyles: {
         ...tableStyles.bodyStyles,
-        font: fontSetup.selectedFont, // 🆕 Явно указываем шрифт
+        font: selectedFont, // 🆕 Явно указываем шрифт
       },
       alternateRowStyles: {
         ...tableStyles.alternateRowStyles,
-        font: fontSetup.selectedFont, // 🆕 Явно указываем шрифт
+        font: selectedFont, // 🆕 Явно указываем шрифт
       },
       columnStyles: columnStyles,
       showHead: true,
@@ -307,7 +327,7 @@ export class CsvToPdfGeneratorOptimized {
         const totalPages = (pdf as any).internal.getNumberOfPages();
         
         pdf.setFontSize(6);
-        pdf.setFont(fontSetup.selectedFont, 'normal');
+        pdf.setFont(selectedFont, 'normal');
         
         pdf.text(
           `Page ${pageNumber}/${totalPages}`,
@@ -316,7 +336,7 @@ export class CsvToPdfGeneratorOptimized {
         );
         
         pdf.text(
-          `${parseResult.rowCount} rows | ${fontSetup.selectedFont}`,
+          `${parseResult.rowCount} rows | ${selectedFont}`,
           (pdf as any).internal.pageSize.width - 40,
           (pdf as any).internal.pageSize.height - 8
         );
@@ -324,15 +344,15 @@ export class CsvToPdfGeneratorOptimized {
       
       willDrawPage: () => {
         // Убеждаемся что шрифт установлен перед рисованием каждой страницы
-        pdf.setFont(fontSetup.selectedFont, 'normal');
+        pdf.setFont(selectedFont, 'normal');
       },
       
       willDrawCell: (data: any) => {
         // Устанавливаем правильный шрифт для каждой ячейки
         if (data.section === 'head') {
-          pdf.setFont(fontSetup.selectedFont, 'bold');
+          pdf.setFont(selectedFont, 'bold');
         } else {
-          pdf.setFont(fontSetup.selectedFont, 'normal');
+          pdf.setFont(selectedFont, 'normal');
         }
       }
     });
