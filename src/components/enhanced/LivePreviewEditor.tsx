@@ -1,7 +1,7 @@
 /**
  * LivePreviewEditor.tsx
  * Интерактивный редактор CSV to PDF с РЕАЛЬНЫМ живым предпросмотром
- * 🚀 ОБНОВЛЕН: Добавлен реальный PDF preview через существующие сервисы
+ * 🔧 ИСПРАВЛЕН: Правильная обработка preview данных
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -371,6 +371,63 @@ export const LivePreviewEditor: React.FC<LivePreviewEditorProps> = ({
     </Card>
   );
 
+  // 🔧 ИСПРАВЛЕННЫЙ рендер предпросмотра данных
+  const renderDataPreview = () => {
+    // Используем данные напрямую из parseResult
+    const previewData = parseResult.preview && parseResult.preview.length > 0 
+      ? parseResult.preview 
+      : parseResult.data.slice(0, 5);
+
+    const headers = parseResult.headers;
+
+    if (!previewData || previewData.length === 0) {
+      return (
+        <div className="text-gray-600 text-center py-8">
+          📄 No preview data available
+        </div>
+      );
+    }
+
+    return (
+      <div className="overflow-x-auto">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-50">
+            <tr>
+              {headers.map((header, index) => (
+                <th
+                  key={index}
+                  className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  {header}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {previewData.map((row, rowIndex) => (
+              <tr key={rowIndex}>
+                {headers.map((header, cellIndex) => (
+                  <td
+                    key={cellIndex}
+                    className="px-4 py-2 whitespace-nowrap text-sm text-gray-900"
+                  >
+                    {row[header] || ''}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        
+        {parseResult.rowCount > previewData.length && (
+          <div className="mt-4 text-center text-sm text-gray-500">
+            ... and {parseResult.rowCount - previewData.length} more rows
+          </div>
+        )}
+      </div>
+    );
+  };
+
   // 🎯 Основной рендер контента
   const renderMainContent = () => {
     switch (editorState.currentView) {
@@ -383,49 +440,7 @@ export const LivePreviewEditor: React.FC<LivePreviewEditorProps> = ({
             {/* Предпросмотр данных */}
             <Card className="p-6">
               <h3 className="font-semibold text-gray-900 mb-4">Data Preview</h3>
-              
-              {parseResult.preview && parseResult.preview.length > 0 ? (
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        {parseResult.preview[0].map((header, index) => (
-                          <th
-                            key={index}
-                            className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                          >
-                            {header}
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {parseResult.preview.slice(1, 6).map((row, rowIndex) => (
-                        <tr key={rowIndex}>
-                          {row.map((cell, cellIndex) => (
-                            <td
-                              key={cellIndex}
-                              className="px-4 py-2 whitespace-nowrap text-sm text-gray-900"
-                            >
-                              {cell}
-                            </td>
-                          ))}
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                  
-                  {parseResult.rowCount > 5 && (
-                    <div className="mt-4 text-center text-sm text-gray-500">
-                      ... and {parseResult.rowCount - 5} more rows
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <div className="text-gray-600 text-center py-8">
-                  📄 No preview data available
-                </div>
-              )}
+              {renderDataPreview()}
             </Card>
           </div>
         );
@@ -462,8 +477,8 @@ export const LivePreviewEditor: React.FC<LivePreviewEditorProps> = ({
                     className="w-full p-2 border border-gray-300 rounded-md"
                   >
                     <option value="bold">Bold</option>
-                    <option value="italic">Italic</option>
-                    <option value="normal">Normal</option>
+                    <option value="colored">Colored</option>
+                    <option value="simple">Simple</option>
                   </select>
                 </div>
               </div>
