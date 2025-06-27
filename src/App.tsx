@@ -19,13 +19,9 @@ import { CompressPDFPage } from './pages/CompressPDFPage';
 import { ImagesToPDFPage } from './pages/ImagesToPDFPage';
 import { CSVToPDFPage } from './pages/CSVToPDFPage';
 import { EnhancedCSVToPDFPage } from './pages/EnhancedCSVToPDFPage';
-import { StyleTestPage } from './pages/StyleTestPage';
-import { MIMEDebugPage } from './pages/MIMEDebugPage';
-import { EmergencyPage } from './pages/EmergencyPage'; // 🚨 Оставляем для диагностики
 import { FAQPage } from './pages/FAQPage';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import { TermsOfService } from './pages/TermsOfService';
-import { PDFTestComponent } from './components/organisms/PDFTestComponent';
 
 function App() {
   return (
@@ -52,13 +48,6 @@ function App() {
             <Route path="/faq" element={<FAQPage />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<TermsOfService />} />
-            
-            {/* Debug and Test routes */}
-            <Route path="/debug-pdf" element={<PDFTestComponent />} />
-            <Route path="/style-test" element={<StyleTestPage />} />
-            <Route path="/mime-debug" element={<MIMEDebugPage />} />
-            <Route path="/emergency" element={<EmergencyPage />} /> {/* 🚨 Экстренная страница */}
-            <Route path="/test-enhanced" element={<EnhancedCSVToPDFPage />} />
           </Routes>
         </Layout>
       </Router>
