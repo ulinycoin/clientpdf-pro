@@ -1,29 +1,30 @@
 /**
- * Enhanced types for the new interactive CSV to PDF editor
- * Extends existing types while maintaining compatibility
+ * enhanced-csv-pdf.types.ts
+ * 🔧 Типы для расширенной системы CSV to PDF с живым предпросмотром
+ * 
+ * Обновленные интерфейсы для поддержки:
+ * - Многоязычности и автодетекции языка
+ * - Живого предпросмотра PDF
+ * - Расширенных настроек шрифтов
+ * - Интерактивного редактирования
  */
 
 import { CsvParseResult, CsvToPdfOptions } from '../services/converters/CsvToPdfConverter';
 
-// 🆕 Language and Font Support
+// 🌍 Языковая поддержка
 export interface LanguageDetectionResult {
-  detectedLanguage: string;
+  code: string;
+  name: string;
   confidence: number;
-  script: 'latin' | 'cyrillic' | 'arabic' | 'cjk' | 'devanagari' | 'mixed';
+  script: 'latin' | 'cyrillic' | 'arabic' | 'cjk' | 'devanagari';
   direction: 'ltr' | 'rtl';
-  supportedLanguages: string[];
-}
-
-export interface FontRecommendation {
-  primary: string;
-  fallbacks: string[];
-  webSafe: string[];
-  unicodeSupport: boolean;
-  qualityRating: 'excellent' | 'good' | 'basic' | 'poor';
+  suggestedFonts: string[];
 }
 
 export interface MultiLanguageSupport {
   supportedLanguages: {
+    'auto': 'Auto-detect';
+    'en': 'English';
     'ru': 'Русский (Кириллица)';
     'lv': 'Latviešu (Латышский)';
     'lt': 'Lietuvių (Литовский)';
@@ -33,376 +34,313 @@ export interface MultiLanguageSupport {
     'fr': 'Français (Французский)';
     'es': 'Español (Испанский)';
     'it': 'Italiano (Итальянский)';
+    'pt': 'Português (Португальский)';
+    'nl': 'Nederlands (Голландский)';
+    'sv': 'Svenska (Шведский)';
+    'no': 'Norsk (Норвежский)';
+    'da': 'Dansk (Датский)';
+    'fi': 'Suomi (Финский)';
     'zh': '中文 (Китайский)';
     'ja': '日本語 (Японский)';
     'ko': '한국어 (Корейский)';
     'ar': 'العربية (Арабский)';
     'hi': 'हिन्दी (Хинди)';
+    'th': 'ไทย (Тайский)';
+    'vi': 'Tiếng Việt (Вьетнамский)';
   };
   
   fontFamilies: {
-    'latin': ['Inter', 'Roboto', 'Open Sans', 'Lato'];
-    'cyrillic': ['Roboto', 'Open Sans', 'PT Sans', 'Fira Sans'];
-    'baltic': ['Roboto', 'Open Sans', 'Source Sans Pro'];
-    'cjk': ['Noto Sans CJK', 'Source Han Sans', 'Roboto'];
-    'arabic': ['Noto Sans Arabic', 'Roboto Arabic'];
-    'devanagari': ['Noto Sans Devanagari', 'Roboto Devanagari'];
+    'latin': ['Inter', 'Roboto', 'Open Sans', 'Lato', 'Source Sans Pro'];
+    'cyrillic': ['Roboto', 'Open Sans', 'PT Sans', 'Fira Sans', 'DejaVu Sans'];
+    'baltic': ['Roboto', 'Open Sans', 'Source Sans Pro', 'Lato'];
+    'cjk': ['Noto Sans CJK', 'Source Han Sans', 'Roboto', 'Microsoft YaHei'];
+    'arabic': ['Noto Sans Arabic', 'Roboto Arabic', 'Amiri', 'Scheherazade'];
+    'devanagari': ['Noto Sans Devanagari', 'Roboto Devanagari', 'Mangal'];
+    'thai': ['Noto Sans Thai', 'Roboto Thai', 'Sarabun'];
   };
   
   autoDetection: {
     detectLanguageFromCSV: boolean;
     suggestOptimalFont: boolean;
     fallbackChain: string[];
+    confidenceThreshold: number;
   };
 }
 
-// 🎨 Enhanced PDF Styling Options
-export interface EnhancedCsvToPdfOptions extends CsvToPdfOptions {
-  // Visual styling
-  theme: 'professional' | 'modern' | 'minimal' | 'colorful' | 'custom';
-  colorScheme: {
-    primary: string;
-    secondary: string;
-    accent: string;
-    background: string;
-    text: string;
-    headerBg: string;
-    headerText: string;
-    alternateRowBg?: string;
+// 🎨 Расширенные опции PDF
+export interface EnhancedPdfOptions extends CsvToPdfOptions {
+  // Языковые настройки
+  selectedLanguage?: string;
+  selectedFont?: string;
+  fontFamily?: string;
+  preserveUnicode?: boolean;
+  enableFallbackFonts?: boolean;
+  
+  // Живой предпросмотр
+  livePreview?: {
+    enabled: boolean;
+    updateDelay: number;
+    quality: 'low' | 'medium' | 'high';
+    cacheEnabled: boolean;
   };
   
-  // Typography
-  fontConfig: {
-    family: string;
-    size: number;
-    headerSize: number;
-    lineHeight: number;
-    letterSpacing: number;
+  // Расширенная стилизация
+  styling?: {
+    theme: 'default' | 'modern' | 'corporate' | 'academic' | 'minimal';
+    colorScheme: 'light' | 'dark' | 'auto';
+    headerBackground?: string;
+    headerTextColor?: string;
+    alternateRowColors?: boolean;
+    borderStyle: 'none' | 'thin' | 'medium' | 'thick';
+    cornerRadius?: number;
   };
   
-  // Layout and spacing
-  layout: {
-    cellPadding: number;
-    rowHeight: number;
-    columnSpacing: number;
-    borderWidth: number;
-    borderRadius: number;
-  };
-  
-  // Branding
+  // Брендинг
   branding?: {
     logo?: File | string;
-    logoPosition: 'top-left' | 'top-center' | 'top-right';
-    logoSize: { width: number; height: number };
-    companyName?: string;
+    watermark?: string;
     footer?: string;
+    companyName?: string;
   };
   
-  // Language and localization
-  language: string;
-  textDirection: 'ltr' | 'rtl';
-  preserveUnicode: boolean;
-  fontEmbedding: boolean;
+  // Метаданные
+  metadata?: {
+    author?: string;
+    subject?: string;
+    keywords?: string[];
+    creator?: string;
+    producer?: string;
+  };
 }
 
-// 📊 Live Preview State
-export interface LivePreviewState {
-  isGenerating: boolean;
-  lastGenerated: Date | null;
-  pdfBlob: Blob | null;
-  pdfPages: number;
-  generationTime: number;
-  error: string | null;
-  warnings: string[];
+// 📊 Состояние редактора
+export interface EditorState {
+  currentView: 'upload' | 'edit' | 'style' | 'preview' | 'export';
+  
+  // Данные
+  csvFile: File | null;
+  parseResult: CsvParseResult | null;
+  editedData?: any[][];
+  hasUnsavedChanges: boolean;
+  
+  // Языки и шрифты
+  detectedLanguage: LanguageDetectionResult | null;
+  availableFonts: FontInfo[];
+  loadedFonts: Set<string>;
+  
+  // Предпросмотр
+  previewState: {
+    isGenerating: boolean;
+    lastGenerated: Date | null;
+    error: string | null;
+    warnings: string[];
+    pdfUrl: string | null;
+    currentPage: number;
+    totalPages: number;
+    zoomLevel: number;
+  };
+  
+  // Настройки
+  options: EnhancedPdfOptions;
+  
+  // UI состояния
+  isLoading: boolean;
+  processingStage: 'idle' | 'parsing' | 'analyzing' | 'generating' | 'exporting';
+  progress: number;
+  
+  // Функции
+  features: {
+    autoLanguageDetection: boolean;
+    livePreview: boolean;
+    enhancedFonts: boolean;
+    dragDropEditing: boolean;
+    smartTemplates: boolean;
+    collaborativeEditing: boolean;
+  };
 }
 
-// 🔄 Real-time Data Editing
-export interface EditableCell {
-  rowIndex: number;
-  columnIndex: number;
-  originalValue: any;
-  editedValue: any;
-  isEditing: boolean;
-  hasChanges: boolean;
-  validationError?: string;
+// 🔤 Информация о шрифтах
+export interface FontInfo {
+  name: string;
+  displayName: string;
+  family: string;
+  supportedLanguages: string[];
+  supportedScripts: string[];
+  unicodeRanges: string[];
+  quality: 'excellent' | 'good' | 'basic' | 'poor';
+  source: 'system' | 'web' | 'embedded' | 'external';
+  fileSize?: number;
+  loadingTime?: number;
+  fallbacks: string[];
+  specimen?: string; // Образец текста для предпросмотра
 }
 
-export interface DataTableState {
-  editableCells: Map<string, EditableCell>;
-  selectedCells: Set<string>;
-  columnOrder: string[];
-  hiddenColumns: Set<string>;
-  columnWidths: Map<string, number>;
-  sortConfig: {
-    column: string;
-    direction: 'asc' | 'desc';
-  } | null;
-  filterConfig: Map<string, string>;
+// 🎯 События и действия
+export interface EditorAction {
+  type: 
+    | 'SET_FILE'
+    | 'SET_PARSE_RESULT'
+    | 'UPDATE_OPTIONS'
+    | 'CHANGE_VIEW'
+    | 'SET_LANGUAGE'
+    | 'SET_FONT'
+    | 'UPDATE_DATA'
+    | 'GENERATE_PREVIEW'
+    | 'EXPORT_PDF'
+    | 'RESET_EDITOR'
+    | 'SET_LOADING'
+    | 'SET_ERROR'
+    | 'UPDATE_PROGRESS';
+  
+  payload?: any;
+  meta?: {
+    timestamp: Date;
+    userId?: string;
+    sessionId?: string;
+  };
 }
 
-// 🎭 Template System
-export interface PdfTemplate {
+// 🚀 Хуки и контекст
+export interface EditorContextValue {
+  state: EditorState;
+  dispatch: React.Dispatch<EditorAction>;
+  
+  // Методы
+  uploadFile: (file: File) => Promise<void>;
+  updateOptions: (options: Partial<EnhancedPdfOptions>) => void;
+  changeLanguage: (language: string) => void;
+  changeFont: (font: string) => void;
+  updateData: (rowIndex: number, columnIndex: number, value: any) => void;
+  generatePreview: (force?: boolean) => Promise<void>;
+  exportPDF: () => Promise<Blob>;
+  resetEditor: () => void;
+  
+  // Утилиты
+  canUndo: boolean;
+  canRedo: boolean;
+  undo: () => void;
+  redo: () => void;
+  validateData: () => ValidationResult[];
+}
+
+// ✅ Результаты валидации
+export interface ValidationResult {
+  type: 'error' | 'warning' | 'info';
+  message: string;
+  row?: number;
+  column?: number;
+  field?: string;
+  suggestion?: string;
+}
+
+// 📈 Аналитика и метрики
+export interface PerformanceMetrics {
+  parseTime: number;
+  languageDetectionTime: number;
+  fontLoadTime: number;
+  previewGenerationTime: number;
+  exportTime: number;
+  totalRows: number;
+  totalColumns: number;
+  fileSize: number;
+  outputSize: number;
+  memoryUsage?: number;
+}
+
+// 🎨 Шаблоны документов
+export interface DocumentTemplate {
   id: string;
   name: string;
   description: string;
-  category: 'business' | 'academic' | 'personal' | 'government';
-  preview: string; // base64 image
-  options: Partial<EnhancedCsvToPdfOptions>;
+  preview?: string;
+  category: 'business' | 'academic' | 'financial' | 'creative' | 'technical';
+  options: Partial<EnhancedPdfOptions>;
+  supportedLanguages: string[];
   tags: string[];
-  isCustom: boolean;
+  popularity: number;
+  author?: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
-export interface TemplateGallery {
-  featured: PdfTemplate[];
-  categories: Record<string, PdfTemplate[]>;
-  userTemplates: PdfTemplate[];
-  recentlyUsed: PdfTemplate[];
-}
-
-// 🧠 Smart Recommendations
-export interface SmartRecommendation {
-  type: 'font' | 'layout' | 'color' | 'template' | 'optimization';
-  title: string;
-  description: string;
-  confidence: number;
-  action: {
-    type: 'apply' | 'suggest' | 'configure';
-    data: any;
+// 🔧 Конфигурация системы
+export interface SystemConfig {
+  maxFileSize: number;
+  supportedFormats: string[];
+  defaultOptions: EnhancedPdfOptions;
+  performance: {
+    previewDebounceTime: number;
+    maxConcurrentPreviews: number;
+    cacheTimeout: number;
+    workerPoolSize: number;
   };
-  reasoning: string[];
-  impact: 'low' | 'medium' | 'high';
+  features: {
+    enableAnalytics: boolean;
+    enableTelemetry: boolean;
+    enableCaching: boolean;
+    enableExperimentalFeatures: boolean;
+  };
+  limits: {
+    maxRows: number;
+    maxColumns: number;
+    maxCellLength: number;
+    maxPreviewPages: number;
+  };
 }
 
-// 🎯 Performance Metrics
-export interface PerformanceMetrics {
-  parseTime: number;
-  renderTime: number;
-  memoryUsage: number;
-  pdfSize: number;
-  totalTime: number;
-  optimizations: string[];
-  warnings: string[];
-}
-
-// 🌍 Internationalization
-export interface I18nConfig {
-  currentLanguage: string;
-  availableLanguages: string[];
-  translations: Record<string, Record<string, string>>;
-  dateFormats: Record<string, string>;
-  numberFormats: Record<string, Intl.NumberFormatOptions>;
-  rtlLanguages: string[];
-}
-
-// 📱 Responsive Layout
-export interface ViewportConfig {
+// 📱 Responsive состояния
+export interface ResponsiveState {
   isMobile: boolean;
   isTablet: boolean;
   isDesktop: boolean;
-  width: number;
-  height: number;
+  screenWidth: number;
+  screenHeight: number;
   orientation: 'portrait' | 'landscape';
-  splitViewEnabled: boolean;
-  previewPanelWidth: number;
+  touchDevice: boolean;
 }
 
-// 🔧 Advanced Configuration
-export interface AdvancedConfig {
-  performance: {
-    enableWebWorkers: boolean;
-    chunkSize: number;
-    maxMemoryUsage: number;
-    enableCaching: boolean;
-  };
-  
-  accessibility: {
-    enableHighContrast: boolean;
-    fontSize: 'small' | 'medium' | 'large';
-    enableScreenReader: boolean;
-    keyboardNavigation: boolean;
-  };
-  
-  debugging: {
-    enableConsoleLogging: boolean;
-    showPerformanceMetrics: boolean;
-    enableErrorBoundaries: boolean;
-  };
-}
-
-// 🎪 Main Enhanced Editor State
-export interface EnhancedCSVEditorState {
-  // Core data
-  csvFile: File | null;
-  parseResult: CsvParseResult | null;
-  
-  // UI state
-  currentView: 'upload' | 'edit' | 'style' | 'preview' | 'export';
-  isLoading: boolean;
-  
-  // Interactive editing
-  dataTableState: DataTableState;
-  
-  // PDF configuration
-  pdfOptions: EnhancedCsvToPdfOptions;
-  
-  // Live preview
-  previewState: LivePreviewState;
-  
-  // Templates and themes
-  selectedTemplate: PdfTemplate | null;
-  availableTemplates: TemplateGallery;
-  
-  // Language and fonts
-  languageDetection: LanguageDetectionResult | null;
-  fontRecommendations: FontRecommendation[];
-  
-  // Smart features
-  recommendations: SmartRecommendation[];
-  
-  // Performance and metrics
-  metrics: PerformanceMetrics | null;
-  
-  // Configuration
-  i18nConfig: I18nConfig;
-  viewportConfig: ViewportConfig;
-  advancedConfig: AdvancedConfig;
-}
-
-// 📤 Export Configuration
-export interface ExportConfig {
-  format: 'pdf' | 'multiple-pdf' | 'pdf-with-attachments';
-  filename: string;
-  includeMeta: boolean;
-  embedFonts: boolean;
-  optimize: boolean;
-  compressionLevel: 'none' | 'low' | 'medium' | 'high';
-  passwordProtect?: {
-    enabled: boolean;
-    password: string;
-    permissions: {
-      print: boolean;
-      copy: boolean;
-      modify: boolean;
-      annotate: boolean;
-    };
-  };
-}
-
-// 🎨 Theme Definitions
-export interface ThemeDefinition {
+// 🔄 История изменений
+export interface ChangeHistoryEntry {
   id: string;
-  name: string;
-  category: 'business' | 'creative' | 'academic' | 'minimal';
-  colors: {
-    primary: string;
-    secondary: string;
-    accent: string;
-    background: string;
-    surface: string;
-    text: string;
-    textSecondary: string;
-    border: string;
-    success: string;
-    warning: string;
-    error: string;
-  };
-  typography: {
-    fontFamily: string;
-    headingFont: string;
-    fontSize: {
-      xs: string;
-      sm: string;
-      base: string;
-      lg: string;
-      xl: string;
-      '2xl': string;
-    };
-    fontWeight: {
-      normal: number;
-      medium: number;
-      semibold: number;
-      bold: number;
-    };
-  };
-  spacing: {
-    xs: string;
-    sm: string;
-    md: string;
-    lg: string;
-    xl: string;
-  };
-  borderRadius: {
-    sm: string;
-    md: string;
-    lg: string;
-    full: string;
-  };
-  shadows: {
-    sm: string;
-    md: string;
-    lg: string;
-    xl: string;
-  };
+  timestamp: Date;
+  action: EditorAction;
+  previousState?: Partial<EditorState>;
+  newState?: Partial<EditorState>;
+  canUndo: boolean;
+  description: string;
 }
 
-// Utility types
-export type CellIdentifier = `${number}-${number}`;
-export type UpdateCellPayload = {
-  rowIndex: number;
-  columnIndex: number;
-  value: any;
-};
-export type ColumnReorderPayload = {
-  fromIndex: number;
-  toIndex: number;
+// 🌟 Экспортируемые типы для использования в компонентах
+export type {
+  LanguageDetectionResult,
+  MultiLanguageSupport,
+  EnhancedPdfOptions,
+  EditorState,
+  FontInfo,
+  EditorAction,
+  EditorContextValue,
+  ValidationResult,
+  PerformanceMetrics,
+  DocumentTemplate,
+  SystemConfig,
+  ResponsiveState,
+  ChangeHistoryEntry
 };
 
-// Default configurations
-export const DEFAULT_ENHANCED_OPTIONS: EnhancedCsvToPdfOptions = {
-  // Inherited from base options
-  orientation: 'landscape',
-  pageSize: 'legal',
-  fontSize: 8,
-  tableStyle: 'grid',
-  headerStyle: 'bold',
-  fitToPage: true,
-  includeRowNumbers: false,
-  marginTop: 20,
-  marginBottom: 20,
-  marginLeft: 10,
-  marginRight: 10,
-  fontFamily: 'auto',
-  
-  // Enhanced options
-  theme: 'professional',
-  colorScheme: {
-    primary: '#3B82F6',
-    secondary: '#6B7280',
-    accent: '#10B981',
-    background: '#FFFFFF',
-    text: '#1F2937',
-    headerBg: '#F3F4F6',
-    headerText: '#374151',
-    alternateRowBg: '#F9FAFB',
-  },
-  fontConfig: {
-    family: 'Inter',
-    size: 8,
-    headerSize: 9,
-    lineHeight: 1.4,
-    letterSpacing: 0,
-  },
-  layout: {
-    cellPadding: 8,
-    rowHeight: 32,
-    columnSpacing: 1,
-    borderWidth: 1,
-    borderRadius: 0,
-  },
-  language: 'auto',
-  textDirection: 'ltr',
-  preserveUnicode: true,
-  fontEmbedding: true,
-};
+// 🎯 Константы
+export const SUPPORTED_LANGUAGES = [
+  'auto', 'en', 'ru', 'lv', 'lt', 'et', 'pl', 'de', 'fr', 'es', 'it', 'pt',
+  'nl', 'sv', 'no', 'da', 'fi', 'zh', 'ja', 'ko', 'ar', 'hi', 'th', 'vi'
+] as const;
+
+export const FONT_CATEGORIES = [
+  'latin', 'cyrillic', 'baltic', 'cjk', 'arabic', 'devanagari', 'thai'
+] as const;
+
+export const DOCUMENT_THEMES = [
+  'default', 'modern', 'corporate', 'academic', 'minimal'
+] as const;
+
+export type SupportedLanguage = typeof SUPPORTED_LANGUAGES[number];
+export type FontCategory = typeof FONT_CATEGORIES[number];
+export type DocumentTheme = typeof DOCUMENT_THEMES[number];
