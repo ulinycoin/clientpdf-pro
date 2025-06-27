@@ -14,7 +14,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { FileText, Menu, X, HelpCircle, Shield, Gavel, Mail, Heart } from 'lucide-react';
+import { FileText, Menu, X, HelpCircle, Shield, Gavel, Mail, Heart, Sparkles } from 'lucide-react';
 import { clsx } from 'clsx';
 import { Toaster } from 'react-hot-toast';
 
@@ -38,6 +38,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
     { name: 'Compress PDF', href: '/compress-pdf' },
     { name: 'Images to PDF', href: '/images-to-pdf' },
     { name: 'CSV to PDF', href: '/csv-to-pdf' },
+    { name: 'Enhanced CSV', href: '/enhanced-csv-to-pdf', icon: Sparkles, badge: 'NEW', highlight: true },
     { name: 'FAQ', href: '/faq', icon: HelpCircle },
   ];
 
@@ -63,14 +64,23 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                     key={item.name}
                     to={item.href}
                     className={clsx(
-                      'flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors',
+                      'flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors relative',
                       location.pathname === item.href
-                        ? 'bg-blue-100 text-blue-700'
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                        ? item.highlight 
+                          ? 'bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700'
+                          : 'bg-blue-100 text-blue-700'
+                        : item.highlight
+                          ? 'text-purple-600 hover:text-purple-800 hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50'
+                          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                     )}
                   >
-                    {Icon && <Icon className="h-4 w-4" />}
+                    {Icon && <Icon className={clsx("h-4 w-4", item.highlight && "animate-pulse")} />}
                     <span>{item.name}</span>
+                    {item.badge && (
+                      <span className="ml-1 px-1.5 py-0.5 text-xs bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full animate-pulse">
+                        {item.badge}
+                      </span>
+                    )}
                   </Link>
                 );
               })}
@@ -101,15 +111,24 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                       key={item.name}
                       to={item.href}
                       className={clsx(
-                        'flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors',
+                        'flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors relative',
                         location.pathname === item.href
-                          ? 'bg-blue-100 text-blue-700'
-                          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                          ? item.highlight 
+                            ? 'bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700'
+                            : 'bg-blue-100 text-blue-700'
+                          : item.highlight
+                            ? 'text-purple-600 hover:text-purple-800 hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50'
+                            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                       )}
                       onClick={() => setMobileMenuOpen(false)}
                     >
-                      {Icon && <Icon className="h-4 w-4" />}
+                      {Icon && <Icon className={clsx("h-4 w-4", item.highlight && "animate-pulse")} />}
                       <span>{item.name}</span>
+                      {item.badge && (
+                        <span className="ml-1 px-1.5 py-0.5 text-xs bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full">
+                          {item.badge}
+                        </span>
+                      )}
                     </Link>
                   );
                 })}
@@ -206,7 +225,21 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                     className="text-gray-600 hover:text-blue-600 transition-colors duration-200 flex items-center group"
                   >
                     <span className="group-hover:translate-x-1 transition-transform duration-200">
-                      CSV to PDF
+                      CSV to PDF (Classic)
+                    </span>
+                  </Link>
+                </li>
+                <li>
+                  <Link 
+                    to="/enhanced-csv-to-pdf" 
+                    className="text-purple-600 hover:text-purple-700 transition-colors duration-200 flex items-center group font-medium"
+                  >
+                    <Sparkles className="h-4 w-4 mr-1 animate-pulse" />
+                    <span className="group-hover:translate-x-1 transition-transform duration-200">
+                      Enhanced CSV to PDF
+                    </span>
+                    <span className="ml-2 px-1.5 py-0.5 text-xs bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full">
+                      NEW
                     </span>
                   </Link>
                 </li>
