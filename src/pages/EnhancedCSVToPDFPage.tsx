@@ -156,20 +156,20 @@ export const EnhancedCSVToPDFPage: React.FC = () => {
   return (
     <>
       <Helmet>
-        <title>Enhanced CSV to PDF Converter - Interactive Editor with Live Preview | ClientPDF Pro</title>
+        <title>CSV to PDF Converter - Interactive Editor with Live Preview | LocalPDF</title>
         <meta 
           name="description" 
-          content="Transform CSV files into professional PDF tables with our enhanced interactive editor. Features live preview, multi-language support, and real-time editing capabilities." 
+          content="Transform CSV files into professional PDF tables with our enhanced interactive editor. Features live preview, multi-language support, real-time editing, and Unicode support." 
         />
-        <meta name="keywords" content="enhanced CSV to PDF, interactive editor, live preview, multi-language, Unicode support, real-time editing" />
-        <link rel="canonical" href="https://localpdf.online/enhanced-csv-to-pdf" />
-        <meta property="og:title" content="Enhanced CSV to PDF Converter - Interactive Editor" />
-        <meta property="og:description" content="Professional CSV to PDF conversion with live preview, multi-language support, and interactive editing capabilities." />
-        <meta property="og:url" content="https://localpdf.online/enhanced-csv-to-pdf" />
+        <meta name="keywords" content="CSV to PDF, interactive editor, live preview, multi-language, Unicode support, real-time editing, CSV converter, table generator" />
+        <link rel="canonical" href="https://localpdf.online/csv-to-pdf" />
+        <meta property="og:title" content="CSV to PDF Converter - Interactive Editor with Live Preview" />
+        <meta property="og:description" content="Professional CSV to PDF conversion with live preview, multi-language support, and interactive editing capabilities. Process files locally in your browser." />
+        <meta property="og:url" content="https://localpdf.online/csv-to-pdf" />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Enhanced CSV to PDF Converter | ClientPDF Pro" />
-        <meta name="twitter:description" content="Interactive CSV to PDF editor with live preview and multi-language support" />
+        <meta name="twitter:title" content="CSV to PDF Converter - Interactive Editor | LocalPDF" />
+        <meta name="twitter:description" content="Interactive CSV to PDF editor with live preview and multi-language support. Privacy-first processing in your browser." />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
@@ -186,11 +186,11 @@ export const EnhancedCSVToPDFPage: React.FC = () => {
                 <Sparkles className="w-6 h-6 text-yellow-500 absolute -top-1 -right-1" />
               </div>
               <h1 className="text-4xl font-bold text-gray-900">
-                Enhanced CSV to PDF Editor
+                CSV to PDF Converter
               </h1>
             </div>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Transform your CSV data into professional PDF tables with our interactive editor featuring 
+              Transform your CSV data into professional PDF tables with our enhanced interactive editor featuring 
               <span className="text-blue-600 font-semibold"> live preview</span>, 
               <span className="text-green-600 font-semibold"> multi-language support</span>, and 
               <span className="text-purple-600 font-semibold"> real-time editing</span>
