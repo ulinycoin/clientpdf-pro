@@ -1,6 +1,6 @@
 /**
  * ClientPDF Pro - Client-side PDF processing application
- * 🔧 UPDATED: Removed duplicate CSV converter, using only Enhanced version
+ * 🔧 UPDATED: Simplified CSV routing - Enhanced version is now the default
  * 
  * @license MIT
  * @author ulinycoin
@@ -8,7 +8,7 @@
  */
 
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { Layout } from './components/Layout';
 import { ScrollToTop } from './components/ScrollToTop';
@@ -40,8 +40,8 @@ function App() {
             <Route path="/compress-pdf" element={<CompressPDFPage />} />
             <Route path="/images-to-pdf" element={<ImagesToPDFPage />} />
             
-            {/* CSV to PDF - Only Enhanced Version */}
-            <Route path="/csv-to-pdf" element={<Navigate to="/enhanced-csv-to-pdf" replace />} />
+            {/* CSV to PDF - Enhanced version is now the primary route */}
+            <Route path="/csv-to-pdf" element={<EnhancedCSVToPDFPage />} />
             <Route path="/enhanced-csv-to-pdf" element={<EnhancedCSVToPDFPage />} />
             
             <Route path="/faq" element={<FAQPage />} />
