@@ -1,6 +1,6 @@
 /**
  * ClientPDF Pro - Client-side PDF processing application
- * 🔧 ВОССТАНОВЛЕН: Полный роутинг после исправления MIME проблемы
+ * 🔧 UPDATED: Removed duplicate CSV converter, using only Enhanced version
  * 
  * @license MIT
  * @author ulinycoin
@@ -8,7 +8,7 @@
  */
 
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { Layout } from './components/Layout';
 import { ScrollToTop } from './components/ScrollToTop';
@@ -17,7 +17,6 @@ import { MergePDFPage } from './pages/MergePDFPage';
 import { SplitPDFPage } from './pages/SplitPDFPage';
 import { CompressPDFPage } from './pages/CompressPDFPage';
 import { ImagesToPDFPage } from './pages/ImagesToPDFPage';
-import { CSVToPDFPage } from './pages/CSVToPDFPage';
 import { EnhancedCSVToPDFPage } from './pages/EnhancedCSVToPDFPage';
 import { FAQPage } from './pages/FAQPage';
 import PrivacyPolicy from './pages/PrivacyPolicy';
@@ -41,8 +40,8 @@ function App() {
             <Route path="/compress-pdf" element={<CompressPDFPage />} />
             <Route path="/images-to-pdf" element={<ImagesToPDFPage />} />
             
-            {/* CSV to PDF Routes */}
-            <Route path="/csv-to-pdf" element={<CSVToPDFPage />} />
+            {/* CSV to PDF - Only Enhanced Version */}
+            <Route path="/csv-to-pdf" element={<Navigate to="/enhanced-csv-to-pdf" replace />} />
             <Route path="/enhanced-csv-to-pdf" element={<EnhancedCSVToPDFPage />} />
             
             <Route path="/faq" element={<FAQPage />} />
