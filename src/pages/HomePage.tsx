@@ -8,7 +8,7 @@ export const HomePage: React.FC = () => {
     document.title = 'LocalPDF - Free Online PDF Tools | Privacy-First PDF Processing | 5 Essential Tools';
   }, []);
 
-  // Core PDF tools
+  // Core PDF tools - Updated CSV tool to point to enhanced version
   const tools = [
     {
       title: 'Merge PDF Files',
@@ -39,11 +39,12 @@ export const HomePage: React.FC = () => {
       color: 'purple'
     },
     {
-      title: 'CSV to PDF',
-      description: 'Convert CSV files to formatted PDF tables',
+      title: 'Enhanced CSV to PDF',
+      description: 'Convert CSV files to formatted PDF tables with live preview',
       icon: '📊',
-      href: '/csv-to-pdf',
-      color: 'cyan'
+      href: '/enhanced-csv-to-pdf',
+      color: 'cyan',
+      isNew: true
     }
   ];
 
@@ -87,7 +88,7 @@ export const HomePage: React.FC = () => {
               <div className="flex items-center mb-4">
                 <Sparkles className="h-8 w-8 text-yellow-300 mr-3 animate-pulse" />
                 <span className="bg-gradient-to-r from-yellow-300 to-orange-300 text-purple-900 px-3 py-1 rounded-full text-sm font-bold">
-                  🆕 NEW RELEASE
+                  🆕 NOW DEFAULT
                 </span>
               </div>
               
@@ -159,6 +160,13 @@ export const HomePage: React.FC = () => {
               tool.color === 'cyan' && 'border-cyan-200 hover:border-cyan-300 bg-gradient-to-br from-cyan-50 to-cyan-100 hover:from-cyan-100 hover:to-cyan-200'
             )}
           >
+            {/* NEW badge for enhanced CSV tool */}
+            {tool.isNew && (
+              <div className="absolute -top-2 -right-2 bg-gradient-to-r from-yellow-400 to-orange-400 text-white text-xs font-bold px-2 py-1 rounded-full animate-pulse">
+                NEW
+              </div>
+            )}
+            
             {/* Icon */}
             <div className="text-4xl md:text-5xl mb-2 md:mb-3 transform group-hover:scale-110 transition-transform duration-300">
               {tool.icon}
@@ -212,8 +220,8 @@ export const HomePage: React.FC = () => {
           </div>
           <div className="bg-white p-6 rounded-lg border border-blue-200">
             <div className="text-2xl mb-3">📊</div>
-            <h3 className="font-semibold text-blue-900 mb-2">Document Conversion</h3>
-            <p className="text-sm text-blue-700">Convert CSV, images, and more to professional PDFs</p>
+            <h3 className="font-semibold text-blue-900 mb-2">Enhanced CSV Editor</h3>
+            <p className="text-sm text-blue-700">Live preview, multi-language support, and real-time editing</p>
           </div>
         </div>
       </div>
