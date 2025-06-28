@@ -537,9 +537,9 @@ export const LivePreviewEditor: React.FC<Props> = ({
                   </div>
                 </div>
 
-                <div className="p-4 h-full">
+                <div className="p-4 h-[calc(100%-5rem)]">
                   {previewState.error ? (
-                    <div className="flex items-center justify-center h-64 bg-red-50 border border-red-200 rounded-lg">
+                    <div className="flex items-center justify-center h-full bg-red-50 border border-red-200 rounded-lg">
                       <div className="text-center">
                         <AlertCircle className="w-8 h-8 text-red-600 mx-auto mb-2" />
                         <p className="text-red-800 font-medium">Preview Error</p>
@@ -553,7 +553,7 @@ export const LivePreviewEditor: React.FC<Props> = ({
                       </div>
                     </div>
                   ) : previewState.isGenerating ? (
-                    <div className="flex items-center justify-center h-64 bg-gray-50 border border-gray-200 rounded-lg">
+                    <div className="flex items-center justify-center h-full bg-gray-50 border border-gray-200 rounded-lg">
                       <div className="text-center">
                         <Loader className="w-8 h-8 text-blue-600 mx-auto mb-2 animate-spin" />
                         <p className="text-gray-700 font-medium">Generating Preview...</p>
@@ -569,7 +569,7 @@ export const LivePreviewEditor: React.FC<Props> = ({
                       />
                     </div>
                   ) : (
-                    <div className="flex items-center justify-center h-64 bg-gray-50 border border-gray-200 rounded-lg">
+                    <div className="flex items-center justify-center h-full bg-gray-50 border border-gray-200 rounded-lg">
                       <div className="text-center">
                         <FileSpreadsheet className="w-8 h-8 text-gray-400 mx-auto mb-2" />
                         <p className="text-gray-600">No preview available</p>
