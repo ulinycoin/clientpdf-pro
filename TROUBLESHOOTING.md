@@ -1,302 +1,201 @@
-# 🛠️ Troubleshooting Guide
+# 🛠️ CSV to PDF Troubleshooting Guide
 
-## 🚨 Распространенные проблемы и решения
+This guide helps resolve common issues when converting CSV files to PDF, especially with Unicode characters (Russian, Latvian, Chinese, etc.).
 
-### ❌ **Проблема: Service Worker и Tailwind CDN**
+## 🚨 Common Error: "Cannot read properties of undefined (reading 'widths')"
+
+This error occurs when the PDF generator encounters font compatibility issues, especially with Unicode text.
+
+### ✅ Quick Solutions
+
+#### 1. **Enable Robust Mode** (Recommended)
+- Go to **Style** tab → **Generator Settings**
+- ✅ Check "Use Robust Generator"
+- ✅ Check "Enable Error Recovery"
+- Click **Refresh Preview**
+
+#### 2. **Use Safe Font Settings**
+- **Font Family**: Choose "Helvetica" or "Times Roman"
+- **Font Size**: Reduce to 7pt or lower
+- **Page Size**: Use "Legal" for wide tables
+
+#### 3. **Check Your Data**
+- Remove special characters if possible
+- Use English headers when possible
+- Test with a smaller sample first
+
+## 🌍 Unicode and International Characters
+
+### Supported Languages
+- ✅ **Cyrillic**: Русский (Russian)
+- ✅ **Baltic**: Latviešu (Latvian), Lietuvių (Lithuanian)
+- ✅ **European**: Deutsch, Français, Español, Polski
+- ⚠️ **Asian**: Chinese, Japanese (limited support, will be transliterated)
+
+### What Happens to Unicode Text
+1. **Robust Generator Available**: Best Unicode support
+2. **Fallback Mode**: Unicode characters are transliterated to ASCII
+   - Russian: `Привет` → `Privet`
+   - Latvian: `Būvēt` → `Buvet`
+   - Chinese: `你好` → `Ni Hao` (phonetic)
+
+## 🔧 Step-by-Step Troubleshooting
+
+### Step 1: Check Generator Status
+Look for status indicators in the top-right corner:
+- 🟢 **Robust Mode**: Best compatibility
+- 🟡 **Fallback Mode**: Limited Unicode support
+- 🔵 **Unicode**: Unicode characters detected
+
+### Step 2: If Preview Fails
+1. **Try Robust Mode**: Enable in Style tab
+2. **Use Safe Settings**: Click the "Use Safe Settings" button
+3. **Reduce Complexity**:
+   - Smaller font size (6-7pt)
+   - Fewer columns per page
+   - Portrait orientation for wide data
+
+### Step 3: For Large Datasets
+- **Rows > 1000**: Automatic optimization
+- **Columns > 15**: Use landscape + smaller font
+- **File > 10MB**: Will be split into multiple PDFs
+
+## 🎯 Best Practices
+
+### Before Upload
+- ✅ Remove unnecessary special characters
+- ✅ Use consistent data formatting
+- ✅ Test with a small sample (first 100 rows)
+
+### Font Selection Guide
+| Content Type | Recommended Font | Notes |
+|--------------|------------------|-------|
+| English only | Helvetica | Fast, reliable |
+| Mixed languages | Times Roman | Better Unicode support |
+| Tables/Data | Courier | Monospace, consistent width |
+| Auto-detect | Auto-select | Analyzes content automatically |
+
+### Page Layout Tips
+| Data Type | Orientation | Page Size | Font Size |
+|-----------|-------------|-----------|-----------|
+| Wide tables (10+ columns) | Landscape | Legal | 6-7pt |
+| Narrow tables (< 10 columns) | Portrait | A4 | 8-10pt |
+| Large datasets (1000+ rows) | Landscape | Legal | 6pt |
+
+## 🚑 Emergency Recovery
+
+### If All Generators Fail
+The system will create an **emergency PDF** with:
+- Error details
+- Data summary (row/column count)
+- Troubleshooting suggestions
+- Contact information
+
+### Generator Fallback Chain
+1. 🔧 **Robust Generator** (handles Unicode safely)
+2. 🔄 **Optimized Generator** (for large data)
+3. 📋 **Standard Generator** (basic functionality)
+4. 🚨 **Emergency PDF** (error information)
+
+## 🐛 Specific Error Solutions
+
+### "Font widths not available"
 ```
-sw.js:386 Fetch error: TypeError: Failed to fetch
-cdn.tailwindcss.com should not be used in production
-```
-
-**✅ Решение:**
-```bash
-# 1. Убедитесь что используется последняя версия без CDN
-git pull origin main
-
-# 2. Очистите кэш браузера
-# Chrome: F12 → Application → Storage → Clear site data
-# Firefox: F12 → Storage → Clear All
-
-# 3. Перезапустите dev сервер
-npm run dev
-```
-
-**🔧 Что исправлено:**
-- Удален Tailwind CDN из index.html
-- Используется локальная PostCSS сборка
-- Исправлены проблемы с Service Worker
-
----
-
-### ❌ **Проблема: 500 Internal Server Error**
-```
-Failed to load resource: the server responded with a status of 500
-```
-
-**✅ Решение:**
-```bash
-# 1. Проверьте TypeScript ошибки
-npm run type-check
-
-# 2. Очистите node_modules и переустановите
-rm -rf node_modules package-lock.json
-npm install --legacy-peer-deps
-
-# 3. Перезапустите сервер
-npm run dev
-```
-
-**🔧 Что исправлено:**
-- Использован lazy loading для компонентов
-- Исправлены circular dependency проблемы
-- Добавлен Suspense для загрузки
-
----
-
-### ❌ **Проблема: Import/Export ошибки**
-```
-Cannot resolve module '../components/enhanced/LivePreviewEditor'
-```
-
-**✅ Решение:**
-```bash
-# Проверьте что все файлы созданы:
-ls -la src/types/enhanced-csv-pdf.types.ts
-ls -la src/services/fontManager/MultiLanguageFontService.ts  
-ls -la src/components/enhanced/LivePreviewEditor.tsx
-ls -la src/pages/EnhancedCSVToPDFPage.tsx
-
-# Если файлы есть, перезапустите TypeScript сервер в VSCode:
-# Ctrl+Shift+P → "TypeScript: Restart TS Server"
-```
-
----
-
-### ❌ **Проблема: Компоненты не отображаются**
-```
-Blank page или компоненты не загружаются
-```
-
-**✅ Диагностика:**
-```bash
-# 1. Откройте DevTools (F12) и проверьте Console
-# 2. Проверьте Network tab на 404 ошибки
-# 3. Попробуйте альтернативные URL:
-
-http://localhost:5173/test-enhanced     # Тестовый маршрут
-http://localhost:5173/csv-to-pdf        # Оригинальная страница
-http://localhost:5173/                  # Главная страница
-```
-
----
-
-### ❌ **Проблема: Port уже используется**
-```
-Port 5173 is already in use
-```
-
-**✅ Решение:**
-```bash
-# Вариант 1: Использовать другой порт
-npm run dev -- --port 3000
-
-# Вариант 2: Убить процесс на порту 5173
-# Windows:
-netstat -ano | findstr :5173
-taskkill /PID <PID> /F
-
-# macOS/Linux:
-lsof -ti:5173 | xargs kill -9
+✅ Solution: Enable Robust Generator
+Settings → Use Robust Generator ✓
 ```
 
----
-
-### ❌ **Проблема: Node.js версия**
+### "Memory error" or "Data too large"
 ```
-Error: Node.js version not compatible
-```
-
-**✅ Решение:**
-```bash
-# Проверьте версию Node.js
-node --version
-
-# Требуется: Node.js >= 18.0.0
-# Если версия старая, обновите:
-# https://nodejs.org/en/download/
-
-# Или используйте nvm:
-nvm install 18
-nvm use 18
+✅ Solutions:
+1. Reduce font size to 6pt
+2. Use fewer columns
+3. Split data into smaller files
 ```
 
----
-
-### ❌ **Проблема: Dependencies conflict**
+### "Unicode characters not displaying"
 ```
-peer dep warnings или conflicting versions
-```
-
-**✅ Решение:**
-```bash
-# ВСЕГДА используйте --legacy-peer-deps для этого проекта
-npm install --legacy-peer-deps
-
-# Не используйте обычный npm install
-# Это может сломать совместимость пакетов
+✅ Solutions:
+1. Check if Robust Mode is enabled
+2. Accept transliteration for better compatibility
+3. Use Times Roman font
 ```
 
----
-
-### ❌ **Проблема: Hot reload не работает**
+### Preview shows blank/empty PDF
 ```
-Изменения не отражаются в браузере
-```
-
-**✅ Решение:**
-```bash
-# 1. Проверьте что файлы сохраняются
-# 2. Очистите браузерный кэш (Ctrl+F5)
-# 3. Перезапустите dev сервер:
-npm run dev
-
-# 4. Проверьте что используется правильный порт
-# http://localhost:5173 (не 3000 или другой)
+✅ Solutions:
+1. Refresh browser
+2. Check CSV data has content
+3. Try different browser (Chrome recommended)
 ```
 
----
+## 📞 Getting Additional Help
 
-## 🧪 Пошаговая диагностика
+### Before Contacting Support
+1. **Check Generator Status**: Note which mode is active
+2. **Test with Sample**: Try with a small, simple CSV
+3. **Browser Info**: Note your browser version
+4. **Error Details**: Screenshot of any error messages
 
-### 1. **Базовая проверка окружения**
-```bash
-# Проверьте версии
-node --version        # >= 18.0.0
-npm --version         # >= 8.0.0
-git --version         # любая современная
+### Information to Include
+- CSV file characteristics (rows, columns, languages)
+- Browser and version
+- Generator mode used (robust/fallback)
+- Specific error message
+- Screenshots of the issue
 
-# Проверьте что в правильной папке
-pwd                   # должно показать /path/to/clientpdf-pro
-ls                    # должны видеть package.json, src/, etc.
+### Contact Options
+- GitHub Issues: Report bugs and feature requests
+- Documentation: Check latest updates in README
+- Community: User discussions and tips
+
+## 🔄 Regular Maintenance
+
+### Keep Your Data Clean
+- Remove empty rows/columns
+- Use consistent formatting
+- Avoid mixing languages in single cells
+
+### Browser Optimization
+- Use Chrome or Firefox for best compatibility
+- Enable JavaScript
+- Clear cache if experiencing issues
+- Ensure PDF plugins are enabled
+
+## 📚 Advanced Tips
+
+### For Developers
+```typescript
+// Test font compatibility programmatically
+const compatibility = await CsvToPdfConverter.testFontCompatibility();
+if (!compatibility.robust) {
+  // Use fallback settings
+  options.useRobustGenerator = false;
+  options.enableErrorRecovery = true;
+}
 ```
 
-### 2. **Проверка файловой структуры**
-```bash
-# Убедитесь что все ключевые файлы есть:
-ls -la src/types/enhanced-csv-pdf.types.ts
-ls -la src/services/fontManager/MultiLanguageFontService.ts
-ls -la src/components/enhanced/LivePreviewEditor.tsx
-ls -la src/pages/EnhancedCSVToPDFPage.tsx
-ls -la src/App.tsx
-
-# Если какой-то файл отсутствует - скачайте последние изменения:
-git pull origin main
-```
-
-### 3. **Проверка зависимостей**
-```bash
-# Переустановка с нуля если проблемы:
-rm -rf node_modules package-lock.json
-npm cache clean --force
-npm install --legacy-peer-deps
-
-# Проверка что основные пакеты установлены:
-npm list react react-dom typescript vite tailwindcss
-```
-
-### 4. **Запуск и тестирование**
-```bash
-# Запуск в режиме разработки
-npm run dev
-
-# Должны увидеть:
-# > vite --host localhost
-# ➜  Local:   http://localhost:5173/
-# ➜  ready in XXXms
-
-# Тестовые URL:
-# http://localhost:5173/enhanced-csv-to-pdf  ← Основной
-# http://localhost:5173/test-enhanced        ← Тестовый  
-# http://localhost:5173/csv-to-pdf           ← Оригинальный
+### Custom Font Handling
+```typescript
+// Force safe mode for production
+const safeOptions = {
+  useRobustGenerator: true,
+  enableErrorRecovery: true,
+  fontFamily: 'helvetica',
+  fontSize: 7
+};
 ```
 
 ---
 
-## 🔍 Debug логи
+## 💡 Pro Tips
 
-### В браузерной консоли должны быть:
-```javascript
-// При загрузке файла:
-🌍 Language detection result: { detectedLanguage: "ru", confidence: 85.5 }
-
-// При переключении режимов:
-🎨 Mode switched to: interactive
-
-// При выборе шрифта:
-✅ Font set successfully: PT Sans
-```
-
-### Если логов нет:
-- Откройте DevTools (F12)
-- Перейдите на вкладку Console
-- Перезагрузите страницу
-- Попробуйте загрузить CSV файл
+1. **Always enable Error Recovery** for production use
+2. **Test with your actual data** before batch processing
+3. **Use Robust Mode** by default for international content
+4. **Keep font size at 7pt or below** for large tables
+5. **Legal page size** works best for wide CSV data
 
 ---
 
-## 📞 Если ничего не помогает
-
-### Крайние меры:
-```bash
-# 1. Полная переустановка
-rm -rf clientpdf-pro
-git clone https://github.com/ulinycoin/clientpdf-pro.git
-cd clientpdf-pro
-npm install --legacy-peer-deps
-npm run dev
-
-# 2. Использование другого порта
-npm run dev -- --port 3000
-# Затем: http://localhost:3000/enhanced-csv-to-pdf
-
-# 3. Проверка в другом браузере
-# Попробуйте Chrome, Firefox, Safari
-```
-
-### Сбор информации для отладки:
-```bash
-# Системная информация:
-node --version
-npm --version
-npx --version
-
-# Проект информация:
-npm list --depth=0
-npm run type-check
-
-# Логи ошибок:
-# 1. Скриншот консоли браузера (F12)
-# 2. Вывод команды npm run dev
-# 3. Результат npm run type-check
-```
-
----
-
-## ✅ Ожидаемое поведение
-
-### Когда всё работает правильно:
-
-1. **Страница загружается** без ошибок в консоли
-2. **Переключатель режимов** работает плавно
-3. **Загрузка CSV** показывает автодетекцию языка
-4. **Табы Edit/Style/Preview** переключаются
-5. **Responsive дизайн** адаптируется к размеру экрана
-
-### Placeholders (это нормально!):
-- PDF Preview показывает заглушку
-- Data Table показывает "will be implemented"
-- Export PDF только логирует в консоль
-
----
-
-**🎯 Главное: переключение режимов и автодетекция языка должны работать!**
+*This guide is updated regularly. For the latest information, check the project README and releases.*
