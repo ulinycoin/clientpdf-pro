@@ -8,7 +8,7 @@ export const HomePage: React.FC = () => {
     document.title = 'LocalPDF - Free Online PDF Tools | Privacy-First PDF Processing | 5 Essential Tools';
   }, []);
 
-  // Core PDF tools - Updated CSV tool to point to enhanced version
+  // Core PDF tools - Updated CSV tool to use primary route
   const tools = [
     {
       title: 'Merge PDF Files',
@@ -39,10 +39,10 @@ export const HomePage: React.FC = () => {
       color: 'purple'
     },
     {
-      title: 'Enhanced CSV to PDF',
-      description: 'Convert CSV files to formatted PDF tables with live preview',
+      title: 'CSV to PDF',
+      description: 'Enhanced CSV converter with live preview and multi-language support',
       icon: '📊',
-      href: '/enhanced-csv-to-pdf',
+      href: '/csv-to-pdf',
       color: 'cyan',
       isNew: true
     }
@@ -77,7 +77,7 @@ export const HomePage: React.FC = () => {
         </div>
       </div>
 
-      {/* 🆕 NEW: Enhanced CSV to PDF Promo Card */}
+      {/* Enhanced CSV to PDF Promo Card - Updated links */}
       <div className="relative mb-8">
         <div className="bg-gradient-to-br from-purple-600 via-blue-600 to-cyan-600 rounded-2xl p-8 text-white overflow-hidden relative">
           {/* Background pattern */}
@@ -88,7 +88,7 @@ export const HomePage: React.FC = () => {
               <div className="flex items-center mb-4">
                 <Sparkles className="h-8 w-8 text-yellow-300 mr-3 animate-pulse" />
                 <span className="bg-gradient-to-r from-yellow-300 to-orange-300 text-purple-900 px-3 py-1 rounded-full text-sm font-bold">
-                  🆕 NOW DEFAULT
+                  ✅ NOW DEFAULT
                 </span>
               </div>
               
@@ -117,7 +117,7 @@ export const HomePage: React.FC = () => {
               </div>
               
               <Link 
-                to="/enhanced-csv-to-pdf"
+                to="/csv-to-pdf"
                 className="inline-flex items-center bg-white text-purple-600 font-bold py-3 px-6 rounded-xl hover:bg-gray-100 transition-all duration-200 transform hover:scale-105 shadow-lg"
               >
                 Try Enhanced CSV Converter
