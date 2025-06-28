@@ -37,7 +37,6 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
     { name: 'Split PDF', href: '/split-pdf' },
     { name: 'Compress PDF', href: '/compress-pdf' },
     { name: 'Images to PDF', href: '/images-to-pdf' },
-    { name: 'CSV to PDF', href: '/csv-to-pdf' },
     { name: 'Enhanced CSV', href: '/enhanced-csv-to-pdf', icon: Sparkles, badge: 'NEW', highlight: true },
     { name: 'FAQ', href: '/faq', icon: HelpCircle },
   ];
@@ -216,16 +215,6 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                   >
                     <span className="group-hover:translate-x-1 transition-transform duration-200">
                       Images to PDF
-                    </span>
-                  </Link>
-                </li>
-                <li>
-                  <Link 
-                    to="/csv-to-pdf" 
-                    className="text-gray-600 hover:text-blue-600 transition-colors duration-200 flex items-center group"
-                  >
-                    <span className="group-hover:translate-x-1 transition-transform duration-200">
-                      CSV to PDF (Classic)
                     </span>
                   </Link>
                 </li>
