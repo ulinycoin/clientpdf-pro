@@ -2,10 +2,10 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Eye, Download, Settings, Globe, FileText, 
-  Sparkles, Check, Loader, Palette, Type, Zap, AlertTriangle
+  Sparkles, Check, Loader, Palette, Type, Zap, AlertTriangle, Shield
 } from 'lucide-react';
 import { detectLanguage, getOptimalPDFSettings, type LanguageInfo } from '../../services/elegantLanguageDetection';
-import { getOptimalFontSettings, type FontSolution } from '../../services/elegantFontSolution';
+import { getOptimizedFontSettings, type SimpleFontSolution } from '../../services/reliableFontSolution';
 
 interface Props {
   parseResult: {
@@ -58,18 +58,18 @@ const ElegantCSVConverter: React.FC<Props> = ({ parseResult, onExport, className
     isGenerating: false,
     showSettings: false,
     language: null as LanguageInfo | null,
-    fontSolution: null as FontSolution | null,
+    fontSolution: null as SimpleFontSolution | null,
     fontRecommendations: [] as string[]
   });
 
-  // 🔍 Умная автодетекция языка и шрифтов при загрузке
+  // 🔍 Умная автодетекция языка и надежных шрифтов при загрузке
   useEffect(() => {
     const analyzeData = async () => {
       const lang = detectLanguage(parseResult.data);
       const optimalSettings = getOptimalPDFSettings(lang);
       
-      // 🎨 Получаем оптимальное шрифтовое решение
-      const fontSettings = await getOptimalFontSettings(
+      // 🛡️ Получаем надежное шрифтовое решение
+      const fontSettings = getOptimizedFontSettings(
         lang.language,
         lang.script,
         parseResult.data
@@ -88,7 +88,7 @@ const ElegantCSVConverter: React.FC<Props> = ({ parseResult, onExport, className
         fontSize: optimalSettings.fontSize as any
       }));
       
-      console.log('🧠 Smart analysis completed:', {
+      console.log('🧠 Smart analysis with reliable fonts:', {
         language: lang.displayName,
         confidence: Math.round(lang.confidence * 100) + '%',
         fontStrategy: fontSettings.fontSolution.strategy,
@@ -100,29 +100,31 @@ const ElegantCSVConverter: React.FC<Props> = ({ parseResult, onExport, className
     analyzeData();
   }, [parseResult]);
 
-  // 📄 Элегантная генерация PDF с умными шрифтами
+  // 📄 Элегантная генерация PDF с надежными шрифтами
   const generatePDF = useCallback(async () => {
     setState(prev => ({ ...prev, isGenerating: true }));
     
     try {
       const { CsvToPdfConverter } = await import('../../services/converters/CsvToPdfConverter');
-      const { applyFontSolutionToPDF } = await import('../../services/elegantFontSolution');
+      const { applyReliableFontToPDF, hasUnicodeCharacters, sanitizeTextForPDF } = await import('../../services/reliableFontSolution');
       
-      // Преобразуем данные
+      // Преобразуем и очищаем данные
       const formattedData = parseResult.data.map(row => {
         const obj: Record<string, any> = {};
         parseResult.headers.forEach((header, index) => {
-          obj[header] = row[index] || '';
+          // Очищаем текст для безопасной обработки в PDF
+          const cellValue = row[index] || '';
+          obj[header] = sanitizeTextForPDF(cellValue);
         });
         return obj;
       });
 
       const csvData = {
         data: formattedData,
-        headers: parseResult.headers,
+        headers: parseResult.headers.map(h => sanitizeTextForPDF(h)),
         rowCount: parseResult.rowCount,
         columnCount: parseResult.columnCount,
-        reportTitle: parseResult.reportTitle || 'Elegant CSV Report',
+        reportTitle: sanitizeTextForPDF(parseResult.reportTitle || 'Elegant CSV Report'),
         delimiter: ',',
         errors: [],
         encoding: 'UTF-8' as const,
@@ -145,13 +147,13 @@ const ElegantCSVConverter: React.FC<Props> = ({ parseResult, onExport, className
         headerStyle: 'bold' as const,
         fitToPage: true,
         includeRowNumbers: false,
-        title: parseResult.reportTitle || 'Elegant CSV Report',
+        title: sanitizeTextForPDF(parseResult.reportTitle || 'Elegant CSV Report'),
         marginTop: 15,
         marginBottom: 15,
         marginLeft: 10,
         marginRight: 10,
-        // 🌍 Базовые настройки шрифтов
-        fontFamily: state.language?.recommendedFont || 'Arial',
+        // 🛡️ Базовые надежные настройки шрифтов
+        fontFamily: 'Arial', // Самый надежный выбор
         headerBackgroundColor: themeColors.header,
         borderColor: themeColors.border,
         textColor: themeColors.text,
@@ -159,17 +161,18 @@ const ElegantCSVConverter: React.FC<Props> = ({ parseResult, onExport, className
         ...optimalSettings
       };
 
-      // 🎨 Применяем умное шрифтовое решение
+      // 🛡️ Применяем надежное шрифтовое решение
       if (state.fontSolution) {
         const sampleText = parseResult.data.flat().join(' ');
-        pdfOptions = applyFontSolutionToPDF(pdfOptions, state.fontSolution, sampleText);
+        const hasUnicode = hasUnicodeCharacters(sampleText);
+        pdfOptions = applyReliableFontToPDF(pdfOptions, state.fontSolution, hasUnicode);
       }
 
-      console.log('🎯 Generating PDF with smart font solution:', {
+      console.log('🎯 Generating PDF with reliable font solution:', {
         language: state.language?.displayName,
         fontStrategy: state.fontSolution?.strategy,
         primaryFont: pdfOptions.fontFamily,
-        fallbacks: state.fontSolution?.fallback,
+        hasUnicode: hasUnicodeCharacters(parseResult.data.flat().join(' ')),
         theme: options.theme,
         fontSize: pdfOptions.fontSize
       });
@@ -181,14 +184,14 @@ const ElegantCSVConverter: React.FC<Props> = ({ parseResult, onExport, className
       const pdfUrl = URL.createObjectURL(pdfBlob);
       setState(prev => ({ ...prev, pdfUrl, isGenerating: false }));
 
-      console.log('✨ Elegant PDF with smart fonts generated:', {
+      console.log('✨ Reliable PDF generated successfully:', {
         size: `${(pdfBlob.size / 1024).toFixed(1)}KB`,
         optimizedFor: state.language?.displayName,
         fontStrategy: state.fontSolution?.strategy
       });
 
     } catch (error) {
-      console.error('❌ Elegant PDF generation failed:', error);
+      console.error('❌ PDF generation failed:', error);
       setState(prev => ({ ...prev, isGenerating: false }));
     }
   }, [parseResult, options, state.language, state.fontSolution]);
@@ -246,11 +249,11 @@ const ElegantCSVConverter: React.FC<Props> = ({ parseResult, onExport, className
               <p className="text-sm text-slate-600 flex items-center">
                 {parseResult.rowCount} rows × {parseResult.columnCount} columns
                 {state.fontSolution && (
-                  <span className="ml-3 flex items-center text-xs text-blue-600">
-                    <Type className="w-3 h-3 mr-1" />
+                  <span className="ml-3 flex items-center text-xs text-green-600">
+                    <Shield className="w-3 h-3 mr-1" />
                     {state.fontSolution.primary}
                     <span className="ml-1 text-xs text-slate-500">
-                      ({state.fontSolution.strategy})
+                      (reliable)
                     </span>
                   </span>
                 )}
@@ -295,7 +298,7 @@ const ElegantCSVConverter: React.FC<Props> = ({ parseResult, onExport, className
           </div>
         </div>
 
-        {/* ⚙️ Элегантные настройки с умными подсказками */}
+        {/* ⚙️ Элегантные настройки с надежными подсказками */}
         {state.showSettings && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
@@ -375,18 +378,18 @@ const ElegantCSVConverter: React.FC<Props> = ({ parseResult, onExport, className
               </div>
             </div>
             
-            {/* 🎨 Умные подсказки по шрифтам */}
+            {/* 🛡️ Надежные подсказки по шрифтам */}
             {state.language && state.fontSolution && (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className="mt-4 space-y-3"
               >
-                <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
-                  <div className="flex items-center text-sm text-blue-800">
-                    <Sparkles className="w-4 h-4 mr-2" />
+                <div className="p-3 bg-green-50 rounded-lg border border-green-200">
+                  <div className="flex items-center text-sm text-green-800">
+                    <Shield className="w-4 h-4 mr-2" />
                     <span>
-                      <strong>Smart optimization:</strong> Using {state.fontSolution.strategy} font strategy 
+                      <strong>Reliable fonts:</strong> Using proven system fonts 
                       for {state.language.displayName}
                     </span>
                   </div>
@@ -394,29 +397,17 @@ const ElegantCSVConverter: React.FC<Props> = ({ parseResult, onExport, className
                 
                 {/* Рекомендации по шрифтам */}
                 {state.fontRecommendations.length > 0 && (
-                  <div className="p-3 bg-green-50 rounded-lg border border-green-200">
-                    <div className="text-sm text-green-800">
-                      <strong>🎯 Font recommendations:</strong>
+                  <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+                    <div className="text-sm text-blue-800">
+                      <strong>🎯 Optimizations:</strong>
                       <ul className="mt-1 space-y-1">
                         {state.fontRecommendations.map((rec, index) => (
                           <li key={index} className="flex items-center">
-                            <span className="w-1 h-1 bg-green-600 rounded-full mr-2"></span>
+                            <span className="w-1 h-1 bg-blue-600 rounded-full mr-2"></span>
                             {rec}
                           </li>
                         ))}
                       </ul>
-                    </div>
-                  </div>
-                )}
-                
-                {/* Предупреждение если шрифт может не поддерживаться */}
-                {state.fontSolution.strategy === 'embedded' && (
-                  <div className="p-3 bg-yellow-50 rounded-lg border border-yellow-200">
-                    <div className="flex items-center text-sm text-yellow-800">
-                      <AlertTriangle className="w-4 h-4 mr-2" />
-                      <span>
-                        Using fallback font strategy. Some characters may not display perfectly.
-                      </span>
                     </div>
                   </div>
                 )}
@@ -446,11 +437,11 @@ const ElegantCSVConverter: React.FC<Props> = ({ parseResult, onExport, className
                 <Sparkles className="w-12 h-12 text-blue-600 mx-auto mb-4" />
               </motion.div>
               <h3 className="text-lg font-medium text-slate-900 mb-2">
-                Creating your elegant PDF...
+                Creating reliable PDF...
               </h3>
               <p className="text-slate-600">
                 {state.language && state.fontSolution && 
-                  `Optimizing for ${state.language.displayName} with ${state.fontSolution.strategy} fonts`
+                  `Optimizing for ${state.language.displayName} with reliable fonts`
                 }
               </p>
               <div className="mt-4 flex items-center justify-center gap-2">
@@ -468,14 +459,14 @@ const ElegantCSVConverter: React.FC<Props> = ({ parseResult, onExport, className
                 Ready to Generate
               </h3>
               <p className="text-slate-600 mb-6">
-                Click Preview to create your elegant PDF
+                Click Preview to create your reliable PDF
                 {state.language && ` optimized for ${state.language.displayName}`}
               </p>
               <button
                 onClick={generatePDF}
                 className="flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all shadow-sm mx-auto"
               >
-                <Sparkles className="w-5 h-5 mr-2" />
+                <Shield className="w-5 h-5 mr-2" />
                 Generate Preview
               </button>
             </div>
@@ -492,10 +483,10 @@ const ElegantCSVConverter: React.FC<Props> = ({ parseResult, onExport, className
               {state.language?.displayName || 'Auto-detecting...'}
             </span>
             <span className="flex items-center">
-              <Type className="w-3 h-3 mr-1" />
+              <Shield className="w-3 h-3 mr-1 text-green-600" />
               {state.fontSolution?.primary || 'Default font'}
               {state.fontSolution && (
-                <span className="ml-1 text-blue-600">({state.fontSolution.strategy})</span>
+                <span className="ml-1 text-green-600">(reliable)</span>
               )}
             </span>
           </div>
