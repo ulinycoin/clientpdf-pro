@@ -2,9 +2,10 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Eye, Download, Settings, Globe, FileText, 
-  Sparkles, Check, Loader, Palette, Type, Zap
+  Sparkles, Check, Loader, Palette, Type, Zap, AlertTriangle
 } from 'lucide-react';
 import { detectLanguage, getOptimalPDFSettings, type LanguageInfo } from '../../services/elegantLanguageDetection';
+import { getOptimalFontSettings, type FontSolution } from '../../services/elegantFontSolution';
 
 interface Props {
   parseResult: {
@@ -56,36 +57,56 @@ const ElegantCSVConverter: React.FC<Props> = ({ parseResult, onExport, className
     pdfUrl: null as string | null,
     isGenerating: false,
     showSettings: false,
-    language: null as LanguageInfo | null
+    language: null as LanguageInfo | null,
+    fontSolution: null as FontSolution | null,
+    fontRecommendations: [] as string[]
   });
 
-  // 🔍 Умная автодетекция при загрузке
+  // 🔍 Умная автодетекция языка и шрифтов при загрузке
   useEffect(() => {
-    const lang = detectLanguage(parseResult.data);
-    const optimalSettings = getOptimalPDFSettings(lang);
-    
-    setState(prev => ({ ...prev, language: lang }));
-    
-    // Автоматически применяем оптимальные настройки
-    setOptions(prev => ({
-      ...prev,
-      fontSize: optimalSettings.fontSize as any
-    }));
-    
-    console.log('🧠 Smart language detection:', {
-      detected: lang.displayName,
-      confidence: Math.round(lang.confidence * 100) + '%',
-      font: lang.recommendedFont,
-      script: lang.script
-    });
+    const analyzeData = async () => {
+      const lang = detectLanguage(parseResult.data);
+      const optimalSettings = getOptimalPDFSettings(lang);
+      
+      // 🎨 Получаем оптимальное шрифтовое решение
+      const fontSettings = await getOptimalFontSettings(
+        lang.language,
+        lang.script,
+        parseResult.data
+      );
+      
+      setState(prev => ({ 
+        ...prev, 
+        language: lang,
+        fontSolution: fontSettings.fontSolution,
+        fontRecommendations: fontSettings.recommendations
+      }));
+      
+      // Автоматически применяем оптимальные настройки
+      setOptions(prev => ({
+        ...prev,
+        fontSize: optimalSettings.fontSize as any
+      }));
+      
+      console.log('🧠 Smart analysis completed:', {
+        language: lang.displayName,
+        confidence: Math.round(lang.confidence * 100) + '%',
+        fontStrategy: fontSettings.fontSolution.strategy,
+        primaryFont: fontSettings.fontSolution.primary,
+        recommendations: fontSettings.recommendations
+      });
+    };
+
+    analyzeData();
   }, [parseResult]);
 
-  // 📄 Элегантная генерация PDF с умными настройками
+  // 📄 Элегантная генерация PDF с умными шрифтами
   const generatePDF = useCallback(async () => {
     setState(prev => ({ ...prev, isGenerating: true }));
     
     try {
       const { CsvToPdfConverter } = await import('../../services/converters/CsvToPdfConverter');
+      const { applyFontSolutionToPDF } = await import('../../services/elegantFontSolution');
       
       // Преобразуем данные
       const formattedData = parseResult.data.map(row => {
@@ -116,7 +137,7 @@ const ElegantCSVConverter: React.FC<Props> = ({ parseResult, onExport, className
       const themeColors = themes[options.theme].colors;
       const optimalSettings = state.language ? getOptimalPDFSettings(state.language) : {};
       
-      const pdfOptions = {
+      let pdfOptions = {
         orientation: options.orientation,
         pageSize: options.pageSize,
         fontSize: options.fontSize,
@@ -129,8 +150,8 @@ const ElegantCSVConverter: React.FC<Props> = ({ parseResult, onExport, className
         marginBottom: 15,
         marginLeft: 10,
         marginRight: 10,
-        // 🌍 Умные настройки шрифтов
-        fontFamily: state.language?.recommendedFont || 'Inter',
+        // 🌍 Базовые настройки шрифтов
+        fontFamily: state.language?.recommendedFont || 'Arial',
         headerBackgroundColor: themeColors.header,
         borderColor: themeColors.border,
         textColor: themeColors.text,
@@ -138,9 +159,17 @@ const ElegantCSVConverter: React.FC<Props> = ({ parseResult, onExport, className
         ...optimalSettings
       };
 
-      console.log('🎯 Generating elegant PDF with smart settings:', {
+      // 🎨 Применяем умное шрифтовое решение
+      if (state.fontSolution) {
+        const sampleText = parseResult.data.flat().join(' ');
+        pdfOptions = applyFontSolutionToPDF(pdfOptions, state.fontSolution, sampleText);
+      }
+
+      console.log('🎯 Generating PDF with smart font solution:', {
         language: state.language?.displayName,
-        font: pdfOptions.fontFamily,
+        fontStrategy: state.fontSolution?.strategy,
+        primaryFont: pdfOptions.fontFamily,
+        fallbacks: state.fontSolution?.fallback,
         theme: options.theme,
         fontSize: pdfOptions.fontSize
       });
@@ -152,16 +181,17 @@ const ElegantCSVConverter: React.FC<Props> = ({ parseResult, onExport, className
       const pdfUrl = URL.createObjectURL(pdfBlob);
       setState(prev => ({ ...prev, pdfUrl, isGenerating: false }));
 
-      console.log('✨ Elegant PDF generated successfully:', {
+      console.log('✨ Elegant PDF with smart fonts generated:', {
         size: `${(pdfBlob.size / 1024).toFixed(1)}KB`,
-        optimizedFor: state.language?.displayName
+        optimizedFor: state.language?.displayName,
+        fontStrategy: state.fontSolution?.strategy
       });
 
     } catch (error) {
       console.error('❌ Elegant PDF generation failed:', error);
       setState(prev => ({ ...prev, isGenerating: false }));
     }
-  }, [parseResult, options, state.language]);
+  }, [parseResult, options, state.language, state.fontSolution]);
 
   // 💾 Элегантный экспорт
   const handleExport = useCallback(async () => {
@@ -184,7 +214,7 @@ const ElegantCSVConverter: React.FC<Props> = ({ parseResult, onExport, className
 
   return (
     <div className={`bg-gradient-to-br from-slate-50 to-blue-50 rounded-xl overflow-hidden shadow-lg ${className}`}>
-      {/* 🎯 Умная шапка с языковой информацией */}
+      {/* 🎯 Умная шапка с языковой и шрифтовой информацией */}
       <div className="bg-white/90 backdrop-blur-sm border-b border-slate-200 p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
@@ -215,10 +245,13 @@ const ElegantCSVConverter: React.FC<Props> = ({ parseResult, onExport, className
               </h3>
               <p className="text-sm text-slate-600 flex items-center">
                 {parseResult.rowCount} rows × {parseResult.columnCount} columns
-                {state.language && (
+                {state.fontSolution && (
                   <span className="ml-3 flex items-center text-xs text-blue-600">
                     <Type className="w-3 h-3 mr-1" />
-                    {state.language.recommendedFont}
+                    {state.fontSolution.primary}
+                    <span className="ml-1 text-xs text-slate-500">
+                      ({state.fontSolution.strategy})
+                    </span>
                   </span>
                 )}
               </p>
@@ -342,20 +375,51 @@ const ElegantCSVConverter: React.FC<Props> = ({ parseResult, onExport, className
               </div>
             </div>
             
-            {/* Умная подсказка */}
-            {state.language && (
+            {/* 🎨 Умные подсказки по шрифтам */}
+            {state.language && state.fontSolution && (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="mt-3 p-3 bg-blue-50 rounded-lg border border-blue-200"
+                className="mt-4 space-y-3"
               >
-                <div className="flex items-center text-sm text-blue-800">
-                  <Sparkles className="w-4 h-4 mr-2" />
-                  <span>
-                    <strong>Smart optimization:</strong> Settings auto-tuned for {state.language.displayName} 
-                    using {state.language.recommendedFont} font
-                  </span>
+                <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+                  <div className="flex items-center text-sm text-blue-800">
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    <span>
+                      <strong>Smart optimization:</strong> Using {state.fontSolution.strategy} font strategy 
+                      for {state.language.displayName}
+                    </span>
+                  </div>
                 </div>
+                
+                {/* Рекомендации по шрифтам */}
+                {state.fontRecommendations.length > 0 && (
+                  <div className="p-3 bg-green-50 rounded-lg border border-green-200">
+                    <div className="text-sm text-green-800">
+                      <strong>🎯 Font recommendations:</strong>
+                      <ul className="mt-1 space-y-1">
+                        {state.fontRecommendations.map((rec, index) => (
+                          <li key={index} className="flex items-center">
+                            <span className="w-1 h-1 bg-green-600 rounded-full mr-2"></span>
+                            {rec}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                )}
+                
+                {/* Предупреждение если шрифт может не поддерживаться */}
+                {state.fontSolution.strategy === 'embedded' && (
+                  <div className="p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+                    <div className="flex items-center text-sm text-yellow-800">
+                      <AlertTriangle className="w-4 h-4 mr-2" />
+                      <span>
+                        Using fallback font strategy. Some characters may not display perfectly.
+                      </span>
+                    </div>
+                  </div>
+                )}
               </motion.div>
             )}
           </motion.div>
@@ -385,7 +449,9 @@ const ElegantCSVConverter: React.FC<Props> = ({ parseResult, onExport, className
                 Creating your elegant PDF...
               </h3>
               <p className="text-slate-600">
-                {state.language && `Optimizing for ${state.language.displayName} with ${state.language.recommendedFont}`}
+                {state.language && state.fontSolution && 
+                  `Optimizing for ${state.language.displayName} with ${state.fontSolution.strategy} fonts`
+                }
               </p>
               <div className="mt-4 flex items-center justify-center gap-2">
                 <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
@@ -427,7 +493,10 @@ const ElegantCSVConverter: React.FC<Props> = ({ parseResult, onExport, className
             </span>
             <span className="flex items-center">
               <Type className="w-3 h-3 mr-1" />
-              {state.language?.recommendedFont || 'Default font'}
+              {state.fontSolution?.primary || 'Default font'}
+              {state.fontSolution && (
+                <span className="ml-1 text-blue-600">({state.fontSolution.strategy})</span>
+              )}
             </span>
           </div>
           <div className="flex items-center space-x-4">
