@@ -1,5 +1,0 @@
-# DISABLED - Simple CI workflow disabled
-# Reason: Build failures due to TypeScript/dependency issues
-# Vercel auto-deploy is sufficient for now
-#
-# Original content moved to simple-ci.yml.disabled
