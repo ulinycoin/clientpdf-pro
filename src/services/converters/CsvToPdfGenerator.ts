@@ -4,12 +4,12 @@ import { CsvParseResult, CsvToPdfOptions } from './CsvToPdfConverter';
 import { EnhancedUnicodeFontService } from '../EnhancedUnicodeFontService';
 
 /**
- * Enhanced CSV to PDF Generator with fixed font integration
- * Handles font compatibility testing and PDF generation with multi-language support
+ * 🛡️ ОБНОВЛЕНО: Enhanced CSV to PDF Generator с поддержкой флага useSystemFonts
+ * Решает проблемы встроенных шрифтов с помощью надежных системных шрифтов
  */
 export class CsvToPdfGenerator {
   /**
-   * Enhanced PDF generation method with multi-language support and fixed font integration
+   * 🛡️ Обновленная генерация PDF с поддержкой надежных системных шрифтов
    */
   public static async convertToPDF(
     parseResult: CsvParseResult, 
@@ -29,11 +29,15 @@ export class CsvToPdfGenerator {
       marginBottom: 20,
       marginLeft: 10,
       marginRight: 10,
-      fontFamily: 'auto',
+      fontFamily: 'Arial', // 🛡️ По умолчанию используем Arial
+      useSystemFonts: true, // 🛡️ НОВЫЙ ФЛАГ: принудительно используем системные шрифты
       ...options
     };
 
-    console.log('🎯 Starting PDF generation with options:', finalOptions);
+    console.log('🎯 Starting PDF generation with options:', {
+      ...finalOptions,
+      useSystemFonts: finalOptions.useSystemFonts // Логируем новый флаг
+    });
 
     // Создаем PDF документ
     const pdf = new jsPDF({
@@ -53,20 +57,24 @@ export class CsvToPdfGenerator {
 
       console.log('🔤 Analyzing text for font selection...');
       
-      // Setup fonts with proper Unicode support
-      const fontSetup = await EnhancedUnicodeFontService.setupPDFFont(pdf, sampleTexts);
+      // 🛡️ ОБНОВЛЕННЫЙ вызов с флагом useSystemFonts
+      const fontSetup = await EnhancedUnicodeFontService.setupPDFFont(pdf, sampleTexts, {
+        useSystemFonts: finalOptions.useSystemFonts,
+        fontFamily: finalOptions.fontFamily
+      });
       
       console.log('🎯 Font setup result:', {
         success: fontSetup.success,
         selectedFont: fontSetup.selectedFont,
         preservesCyrillic: fontSetup.preservesCyrillic,
-        warnings: fontSetup.warnings.length
+        warnings: fontSetup.warnings.length,
+        systemFontsUsed: finalOptions.useSystemFonts // 🛡️ Логируем использование системных шрифтов
       });
 
       if (!fontSetup.success) {
-        console.warn('⚠️ Font setup failed, using fallback approach');
-        // Set fallback font
-        pdf.setFont('helvetica', 'normal');
+        console.warn('⚠️ Font setup failed, using emergency fallback');
+        // 🛡️ Экстренный fallback к Arial
+        pdf.setFont('Arial', 'normal');
       } else {
         console.log(`✅ Font set successfully: ${fontSetup.selectedFont}`);
       }
@@ -74,8 +82,8 @@ export class CsvToPdfGenerator {
       // Set initial font size
       pdf.setFontSize(finalOptions.fontSize);
 
-      // Process data with proper Unicode handling
-      const processedData = this.processDataWithUnicodeSupport(
+      // 🧹 Process data with cleaning (удаляем эмодзи и проблемные символы)
+      const processedData = this.processDataWithCleaning(
         parseResult, 
         fontSetup.preservesCyrillic || false
       );
@@ -83,7 +91,8 @@ export class CsvToPdfGenerator {
       console.log('📊 Data processed:', {
         originalRows: parseResult.data.length,
         processedRows: processedData.tableData.length,
-        preservesCyrillic: fontSetup.preservesCyrillic
+        preservesCyrillic: fontSetup.preservesCyrillic,
+        useSystemFonts: finalOptions.useSystemFonts
       });
 
       // Add document title if specified
@@ -92,27 +101,29 @@ export class CsvToPdfGenerator {
       if (finalOptions.title || parseResult.reportTitle) {
         const title = finalOptions.title || parseResult.reportTitle || 'CSV Data';
         pdf.setFontSize(16);
-        pdf.setFont(fontSetup.selectedFont || 'helvetica', 'bold');
+        pdf.setFont(fontSetup.selectedFont || 'Arial', 'bold');
         
-        // Clean title text if necessary
-        const cleanTitle = fontSetup.preservesCyrillic ? 
-          title : 
-          EnhancedUnicodeFontService.smartCleanText(title, false);
+        // 🧹 Очищаем заголовок
+        const cleanTitle = EnhancedUnicodeFontService.smartCleanText(
+          title, 
+          fontSetup.preservesCyrillic || false
+        );
         
         pdf.text(cleanTitle, finalOptions.marginLeft, startY);
         startY += 30;
       }
 
       // Configure table styles based on options
-      const tableStyles = this.getTableStyles(finalOptions, fontSetup.selectedFont || 'helvetica');
+      const tableStyles = this.getTableStyles(finalOptions, fontSetup.selectedFont || 'Arial');
 
       console.log('🎨 Generating table with styles:', {
         tableStyle: finalOptions.tableStyle,
         headerStyle: finalOptions.headerStyle,
-        fontSize: finalOptions.fontSize
+        fontSize: finalOptions.fontSize,
+        font: fontSetup.selectedFont
       });
 
-      // Generate the auto table with enhanced configuration
+      // 🛡️ Generate the auto table with reliable font configuration
       (pdf as any).autoTable({
         head: [processedData.cleanHeaders],
         body: processedData.tableData,
@@ -125,17 +136,18 @@ export class CsvToPdfGenerator {
         },
         ...tableStyles,
         didDrawPage: (data: any) => {
-          // Add page numbers
+          // Add page numbers with reliable font
           const pageNum = data.pageNumber;
           const totalPages = (pdf as any).internal.getNumberOfPages();
           
           pdf.setFontSize(8);
-          pdf.setFont(fontSetup.selectedFont || 'helvetica', 'normal');
+          pdf.setFont(fontSetup.selectedFont || 'Arial', 'normal');
           
           const pageText = `Page ${pageNum} of ${totalPages}`;
-          const cleanPageText = fontSetup.preservesCyrillic ? 
-            pageText : 
-            EnhancedUnicodeFontService.smartCleanText(pageText, false);
+          const cleanPageText = EnhancedUnicodeFontService.smartCleanText(
+            pageText, 
+            fontSetup.preservesCyrillic || false
+          );
           
           pdf.text(
             cleanPageText,
@@ -143,14 +155,14 @@ export class CsvToPdfGenerator {
             pdf.internal.pageSize.height - 10
           );
         },
-        // Enhanced error handling for table generation
+        // 🧹 Enhanced cell processing with cleaning
         didParseCell: (data: any) => {
-          // Ensure cell text is properly processed
           if (data.cell && data.cell.text && Array.isArray(data.cell.text)) {
             data.cell.text = data.cell.text.map((text: string) => {
-              return fontSetup.preservesCyrillic ? 
-                String(text) : 
-                EnhancedUnicodeFontService.smartCleanText(String(text), false);
+              return EnhancedUnicodeFontService.smartCleanText(
+                String(text), 
+                fontSetup.preservesCyrillic || false
+              );
             });
           }
         }
@@ -165,9 +177,9 @@ export class CsvToPdfGenerator {
     } catch (error) {
       console.error('❌ PDF generation failed:', error);
       
-      // Create a fallback PDF with error information
+      // 🛡️ Create a fallback PDF with reliable Arial font
       try {
-        pdf.setFont('helvetica', 'normal');
+        pdf.setFont('Arial', 'normal');
         pdf.setFontSize(12);
         pdf.text('PDF Generation Error', 50, 50);
         pdf.setFontSize(10);
@@ -183,41 +195,32 @@ export class CsvToPdfGenerator {
   }
 
   /**
-   * Process CSV data with proper Unicode support
+   * 🧹 Process CSV data with proper cleaning (updated method name)
    */
-  private static processDataWithUnicodeSupport(
+  private static processDataWithCleaning(
     parseResult: CsvParseResult,
     preservesCyrillic: boolean
   ): {
     cleanHeaders: string[];
     tableData: string[][];
   } {
-    console.log('🔄 Processing data with Unicode support, preserveCyrillic:', preservesCyrillic);
+    console.log('🔄 Processing data with cleaning, preservesCyrillic:', preservesCyrillic);
 
-    // Process headers
+    // Process headers with cleaning
     const cleanHeaders = parseResult.headers.map(header => {
-      if (preservesCyrillic) {
-        return header;
-      } else {
-        return EnhancedUnicodeFontService.smartCleanText(header, false);
-      }
+      return EnhancedUnicodeFontService.smartCleanText(header, preservesCyrillic);
     });
 
-    // Process table data
+    // Process table data with cleaning
     const tableData = parseResult.data.map(row => 
       parseResult.headers.map(header => {
         const value = row[header];
         const stringValue = String(value || '');
-        
-        if (preservesCyrillic) {
-          return stringValue;
-        } else {
-          return EnhancedUnicodeFontService.smartCleanText(stringValue, false);
-        }
+        return EnhancedUnicodeFontService.smartCleanText(stringValue, preservesCyrillic);
       })
     );
 
-    console.log('✅ Data processing completed:', {
+    console.log('✅ Data cleaning completed:', {
       headersProcessed: cleanHeaders.length,
       rowsProcessed: tableData.length,
       sampleHeader: cleanHeaders[0],
@@ -228,7 +231,7 @@ export class CsvToPdfGenerator {
   }
 
   /**
-   * Get table styles configuration
+   * 🛡️ Get table styles configuration with reliable fonts
    */
   private static getTableStyles(options: CsvToPdfOptions, selectedFont: string) {
     const baseStyles = {
@@ -237,14 +240,14 @@ export class CsvToPdfGenerator {
       overflow: 'linebreak' as const,
       halign: 'left' as const,
       valign: 'middle' as const,
-      font: selectedFont
+      font: selectedFont // 🛡️ Используем надежный выбранный шрифт
     };
 
     const headerStyles = {
       fillColor: options.headerStyle === 'colored' ? [51, 122, 183] : [240, 240, 240],
       textColor: options.headerStyle === 'colored' ? [255, 255, 255] : [51, 51, 51],
       fontStyle: options.headerStyle === 'bold' ? 'bold' as const : 'normal' as const,
-      font: selectedFont
+      font: selectedFont // 🛡️ Используем надежный выбранный шрифт
     };
 
     let alternateRowStyles = {};
@@ -307,9 +310,16 @@ export class CsvToPdfGenerator {
       preview: []
     };
 
-    onProgress?.(50, 'Generating PDF with enhanced fonts...');
+    onProgress?.(50, 'Generating PDF with reliable fonts...');
     
-    const pdfBytes = await this.convertToPDF(parseResult, options);
+    // 🛡️ Добавляем флаг useSystemFonts в опции
+    const enhancedOptions = {
+      ...options,
+      useSystemFonts: true, // 🛡️ Принудительно используем системные шрифты
+      fontFamily: 'Arial'
+    };
+    
+    const pdfBytes = await this.convertToPDF(parseResult, enhancedOptions);
     
     onProgress?.(90, 'Finalizing...');
     
@@ -322,12 +332,12 @@ export class CsvToPdfGenerator {
   }
 
   /**
-   * Test font compatibility (for diagnostics)
+   * 🛡️ Test font compatibility (enhanced for system fonts)
    */
   public static testFontCompatibility(pdf: jsPDF, fontName: string): boolean {
     try {
       pdf.setFont(fontName, 'normal');
-      const testWidth = pdf.getTextWidth('Test');
+      const testWidth = pdf.getTextWidth('Test Тест');
       return !isNaN(testWidth) && testWidth > 0;
     } catch (error) {
       console.warn(`⚠️ Font compatibility test failed for ${fontName}:`, error);
