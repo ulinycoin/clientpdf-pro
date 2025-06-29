@@ -37,6 +37,7 @@ declare module 'jspdf' {
   }
 }
 
+// 🛡️ ОБНОВЛЕН: Добавлен флаг useSystemFonts
 export interface CsvToPdfOptions {
   orientation: 'portrait' | 'landscape';
   pageSize: 'a4' | 'a3' | 'letter' | 'legal';
@@ -52,7 +53,11 @@ export interface CsvToPdfOptions {
   marginRight: number;
   maxRowsPerPage?: number;
   autoDetectDataTypes?: boolean;
-  fontFamily?: 'auto' | 'DejaVuSans' | 'Roboto' | 'NotoSans' | 'times' | 'helvetica'; // 🆕 Поддержка шрифтов
+  fontFamily?: 'auto' | 'Arial' | 'DejaVuSans' | 'Roboto' | 'NotoSans' | 'times' | 'helvetica';
+  useSystemFonts?: boolean; // 🛡️ НОВЫЙ ФЛАГ: принудительное использование системных шрифтов
+  embedFonts?: boolean; // 🛡️ ДОПОЛНИТЕЛЬНО: контроль встраивания шрифтов
+  unicodeSupport?: boolean; // 🛡️ ДОПОЛНИТЕЛЬНО: поддержка Unicode
+  preserveCyrillic?: boolean; // 🛡️ ДОПОЛНИТЕЛЬНО: сохранение кириллицы
 }
 
 export interface CsvParseResult {
@@ -87,6 +92,7 @@ interface DataSizeAnalysis {
 }
 
 export class CsvToPdfConverter {
+  // 🛡️ ОБНОВЛЕНО: Добавлены новые флаги по умолчанию
   private static readonly DEFAULT_OPTIONS: CsvToPdfOptions = {
     orientation: 'landscape',
     pageSize: 'legal',
@@ -101,7 +107,11 @@ export class CsvToPdfConverter {
     marginRight: 10,
     maxRowsPerPage: 1000,
     autoDetectDataTypes: true,
-    fontFamily: 'auto', // 🆕 Автоматический выбор шрифта по умолчанию
+    fontFamily: 'Arial', // 🛡️ ИЗМЕНЕНО: по умолчанию Arial вместо 'auto'
+    useSystemFonts: true, // 🛡️ НОВОЕ: по умолчанию используем системные шрифты
+    embedFonts: false, // 🛡️ НОВОЕ: по умолчанию не встраиваем шрифты
+    unicodeSupport: true, // 🛡️ НОВОЕ: поддержка Unicode включена
+    preserveCyrillic: false, // 🛡️ НОВОЕ: по умолчанию не сохраняем кириллицу
   };
 
   // Пороги для определения размера данных
@@ -274,22 +284,36 @@ export class CsvToPdfConverter {
   }
 
   /**
-   * Умная конвертация с выбором оптимального подхода
+   * 🛡️ ОБНОВЛЕНО: Умная конвертация с поддержкой системных шрифтов
    */
   static async convertToPDF(
     parseResult: CsvParseResult, 
     options: Partial<CsvToPdfOptions> = {},
     onProgress?: (progress: number, status: string) => void
   ): Promise<Uint8Array | Uint8Array[]> {
+    // 🛡️ Принудительно устанавливаем надежные настройки
+    const reliableOptions: Partial<CsvToPdfOptions> = {
+      ...this.DEFAULT_OPTIONS,
+      ...options,
+      useSystemFonts: true, // 🛡️ Принудительно используем системные шрифты
+      embedFonts: false, // 🛡️ Отключаем встраивание шрифтов
+      fontFamily: options.fontFamily || 'Arial' // 🛡️ По умолчанию Arial
+    };
+
     // Автоматически определяем заголовок если есть
-    if (parseResult.reportTitle && !options.title) {
-      options.title = parseResult.reportTitle;
+    if (parseResult.reportTitle && !reliableOptions.title) {
+      reliableOptions.title = parseResult.reportTitle;
     }
 
     // Анализируем размер данных
     const sizeAnalysis = this.analyzeDataSize(parseResult);
     
     console.log('Data size analysis:', sizeAnalysis);
+    console.log('🛡️ Using reliable font settings:', {
+      useSystemFonts: reliableOptions.useSystemFonts,
+      fontFamily: reliableOptions.fontFamily,
+      embedFonts: reliableOptions.embedFonts
+    });
     
     onProgress?.(5, 'Analyzing data size...');
 
@@ -299,8 +323,8 @@ export class CsvToPdfConverter {
       
       // Используем оптимизированный генератор
       const optimizedOptions: Partial<LargeDataOptions> = {
-        ...options,
-        maxRowsPerPdf: options.maxRowsPerPage || (sizeAnalysis.recommendedApproach === 'split' ? 5000 : 10000),
+        ...reliableOptions,
+        maxRowsPerPdf: reliableOptions.maxRowsPerPage || (sizeAnalysis.recommendedApproach === 'split' ? 5000 : 10000),
         createMultiplePdfs: sizeAnalysis.recommendedApproach === 'split',
         memoryOptimization: true,
         compressionLevel: 'medium'
@@ -315,11 +339,11 @@ export class CsvToPdfConverter {
       return result.length === 1 ? result[0] : result;
       
     } else {
-      onProgress?.(10, 'Using standard generator...');
+      onProgress?.(10, 'Using standard generator with reliable fonts...');
       
-      // Используем стандартный генератор для небольших данных
-      const result = await CsvToPdfGenerator.convertToPDF(parseResult, options);
-      onProgress?.(100, 'PDF created successfully!');
+      // 🛡️ Используем стандартный генератор с надежными настройками
+      const result = await CsvToPdfGenerator.convertToPDF(parseResult, reliableOptions);
+      onProgress?.(100, 'PDF created successfully with reliable fonts!');
       
       return result;
     }
@@ -335,6 +359,9 @@ export class CsvToPdfConverter {
   } {
     const sizeAnalysis = this.analyzeDataSize(parseResult);
     const recommendations: string[] = [];
+
+    // 🛡️ Добавляем рекомендации по шрифтам
+    recommendations.push('🛡️ Using reliable system fonts for best compatibility');
 
     if (sizeAnalysis.isLarge) {
       recommendations.push('✅ Automatically using optimized processing');
