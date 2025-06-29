@@ -6,7 +6,7 @@ import { useDropzone } from 'react-dropzone';
 import { toast } from 'react-hot-toast';
 
 import { CsvToPdfConverter, CsvParseResult } from '../services/converters/CsvToPdfConverter';
-import LivePreviewEditor from '../components/enhanced/LivePreviewEditor';
+import SimpleLivePreview from '../components/enhanced/SimpleLivePreview';
 import { Button } from '../components/atoms/Button';
 import { Card } from '../components/atoms/Card';
 import { Badge } from '../components/atoms/Badge';
@@ -27,7 +27,7 @@ export const EnhancedCSVToPDFPage: React.FC = () => {
 
   const steps: ConversionStep[] = [
     { id: 'upload', title: 'Upload & Parse', completed: csvFile !== null },
-    { id: 'edit', title: 'Edit & Style', completed: parseResult !== null },
+    { id: 'edit', title: 'Preview & Style', completed: parseResult !== null },
     { id: 'export', title: 'Export PDF', completed: false },
   ];
 
@@ -60,7 +60,20 @@ export const EnhancedCSVToPDFPage: React.FC = () => {
         return;
       }
 
-      setParseResult(result);
+      // Преобразуем результат в формат для SimpleLivePreview
+      const simpleParseResult = {
+        data: result.data.map(row => 
+          result.headers.map(header => String(row[header] || ''))
+        ),
+        headers: result.headers,
+        rowCount: result.rowCount,
+        columnCount: result.columnCount,
+        reportTitle: result.reportTitle,
+        delimiter: result.delimiter,
+        errors: result.errors
+      };
+
+      setParseResult(simpleParseResult);
       setCurrentStep('edit');
       
       console.log('✅ Enhanced CSV parsing completed:', {
@@ -92,14 +105,6 @@ export const EnhancedCSVToPDFPage: React.FC = () => {
     maxFiles: 1,
     multiple: false,
   });
-
-  const handleDataChange = useCallback((updatedData: CsvParseResult) => {
-    setParseResult(updatedData);
-    console.log('📝 Data updated in LivePreviewEditor:', {
-      rows: updatedData.rowCount,
-      columns: updatedData.columnCount
-    });
-  }, []);
 
   const handleExport = useCallback((blob: Blob) => {
     if (!csvFile || !parseResult) return;
@@ -193,7 +198,7 @@ export const EnhancedCSVToPDFPage: React.FC = () => {
               Transform your CSV data into professional PDF tables with our enhanced interactive editor featuring 
               <span className="text-blue-600 font-semibold"> live preview</span>, 
               <span className="text-green-600 font-semibold"> multi-language support</span>, and 
-              <span className="text-purple-600 font-semibold"> real-time editing</span>
+              <span className="text-purple-600 font-semibold"> simple workflow</span>
             </p>
             
             {/* Feature badges */}
@@ -203,7 +208,7 @@ export const EnhancedCSVToPDFPage: React.FC = () => {
                 Multi-Language
               </Badge>
               <Badge variant="secondary">Live Preview</Badge>
-              <Badge variant="success">Interactive Editing</Badge>
+              <Badge variant="success">Simple Workflow</Badge>
               <Badge variant="warning">Unicode Support</Badge>
             </div>
           </motion.div>
@@ -329,14 +334,14 @@ export const EnhancedCSVToPDFPage: React.FC = () => {
                       <FileSpreadsheet className="w-12 h-12 text-green-600 mx-auto mb-4" />
                       <h3 className="text-lg font-semibold mb-2">Live Preview</h3>
                       <p className="text-gray-600 text-sm">
-                        See your PDF in real-time as you edit data and adjust formatting options
+                        See your PDF in real-time as you adjust formatting options with instant feedback
                       </p>
                     </Card>
                     <Card className="p-6 text-center glass-card hover-lift">
                       <Sparkles className="w-12 h-12 text-purple-600 mx-auto mb-4" />
-                      <h3 className="text-lg font-semibold mb-2">Interactive Editor</h3>
+                      <h3 className="text-lg font-semibold mb-2">Simple Workflow</h3>
                       <p className="text-gray-600 text-sm">
-                        Edit data directly in the interface with professional styling and theme options
+                        Upload, preview, and download - streamlined process without complex editing interface
                       </p>
                     </Card>
                   </div>
@@ -350,9 +355,8 @@ export const EnhancedCSVToPDFPage: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 className="h-[calc(100vh-300px)]"
               >
-                <LivePreviewEditor
+                <SimpleLivePreview
                   parseResult={parseResult}
-                  onDataChange={handleDataChange}
                   onExport={handleExport}
                   className="h-full"
                 />
@@ -382,23 +386,6 @@ export const EnhancedCSVToPDFPage: React.FC = () => {
                       className="btn-secondary-modern"
                     >
                       Convert Another File
-                    </Button>
-                    <Button 
-                      onClick={() => parseResult && handleExport(new Blob())}
-                      disabled={isExporting}
-                      className="btn-primary-modern"
-                    >
-                      {isExporting ? (
-                        <>
-                          <Spinner size="sm" className="mr-2" />
-                          Exporting...
-                        </>
-                      ) : (
-                        <>
-                          <Download className="w-4 h-4 mr-2" />
-                          Download Again
-                        </>
-                      )}
                     </Button>
                   </div>
                 </Card>
