@@ -2,8 +2,9 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Eye, Download, Settings, Globe, FileText, 
-  Sparkles, Check, Loader, Palette, Type
+  Sparkles, Check, Loader, Palette, Type, Zap
 } from 'lucide-react';
+import { detectLanguage, getOptimalPDFSettings, type LanguageInfo } from '../../services/elegantLanguageDetection';
 
 interface Props {
   parseResult: {
@@ -24,40 +25,7 @@ interface ElegantOptions {
   theme: 'clean' | 'modern' | 'minimal';
 }
 
-interface LanguageInfo {
-  detected: string;
-  confidence: number;
-  font: string;
-  emoji: string;
-}
-
-// 🌍 Умная детекция языка
-const detectLanguage = (data: string[][]): LanguageInfo => {
-  const allText = data.flat().join(' ');
-  
-  const patterns = {
-    cyrillic: { regex: /[\u0400-\u04FF]/, name: 'Русский/Latvian', font: 'Roboto', emoji: '🇷🇺' },
-    chinese: { regex: /[\u4E00-\u9FFF]/, name: '中文', font: 'Noto Sans CJK', emoji: '🇨🇳' },
-    arabic: { regex: /[\u0600-\u06FF]/, name: 'العربية', font: 'Noto Sans Arabic', emoji: '🇸🇦' },
-    latin: { regex: /[a-zA-Z]/, name: 'English/Deutsch', font: 'Inter', emoji: '🌍' }
-  };
-  
-  for (const [key, pattern] of Object.entries(patterns)) {
-    const matches = allText.match(pattern.regex);
-    if (matches) {
-      return {
-        detected: pattern.name,
-        confidence: Math.min(0.95, matches.length / allText.length * 10),
-        font: pattern.font,
-        emoji: pattern.emoji
-      };
-    }
-  }
-  
-  return { detected: 'Auto', confidence: 0.5, font: 'Inter', emoji: '📄' };
-};
-
-// 🎨 Темы оформления
+// 🎨 Элегантные темы
 const themes = {
   clean: { 
     name: 'Clean', 
@@ -91,13 +59,28 @@ const ElegantCSVConverter: React.FC<Props> = ({ parseResult, onExport, className
     language: null as LanguageInfo | null
   });
 
-  // 🔍 Автодетекция при загрузке
+  // 🔍 Умная автодетекция при загрузке
   useEffect(() => {
     const lang = detectLanguage(parseResult.data);
+    const optimalSettings = getOptimalPDFSettings(lang);
+    
     setState(prev => ({ ...prev, language: lang }));
+    
+    // Автоматически применяем оптимальные настройки
+    setOptions(prev => ({
+      ...prev,
+      fontSize: optimalSettings.fontSize as any
+    }));
+    
+    console.log('🧠 Smart language detection:', {
+      detected: lang.displayName,
+      confidence: Math.round(lang.confidence * 100) + '%',
+      font: lang.recommendedFont,
+      script: lang.script
+    });
   }, [parseResult]);
 
-  // 📄 Генерация PDF с автоматической оптимизацией
+  // 📄 Элегантная генерация PDF с умными настройками
   const generatePDF = useCallback(async () => {
     setState(prev => ({ ...prev, isGenerating: true }));
     
@@ -118,7 +101,7 @@ const ElegantCSVConverter: React.FC<Props> = ({ parseResult, onExport, className
         headers: parseResult.headers,
         rowCount: parseResult.rowCount,
         columnCount: parseResult.columnCount,
-        reportTitle: parseResult.reportTitle || 'CSV Report',
+        reportTitle: parseResult.reportTitle || 'Elegant CSV Report',
         delimiter: ',',
         errors: [],
         encoding: 'UTF-8' as const,
@@ -129,8 +112,9 @@ const ElegantCSVConverter: React.FC<Props> = ({ parseResult, onExport, className
         preview: []
       };
 
-      // 🎨 Применяем тему
+      // 🎨 Применяем тему и умные настройки
       const themeColors = themes[options.theme].colors;
+      const optimalSettings = state.language ? getOptimalPDFSettings(state.language) : {};
       
       const pdfOptions = {
         orientation: options.orientation,
@@ -140,17 +124,26 @@ const ElegantCSVConverter: React.FC<Props> = ({ parseResult, onExport, className
         headerStyle: 'bold' as const,
         fitToPage: true,
         includeRowNumbers: false,
-        title: parseResult.reportTitle || 'CSV Report',
+        title: parseResult.reportTitle || 'Elegant CSV Report',
         marginTop: 15,
         marginBottom: 15,
         marginLeft: 10,
         marginRight: 10,
-        // Добавляем поддержку шрифтов
-        fontFamily: state.language?.font || 'Inter',
+        // 🌍 Умные настройки шрифтов
+        fontFamily: state.language?.recommendedFont || 'Inter',
         headerBackgroundColor: themeColors.header,
         borderColor: themeColors.border,
-        textColor: themeColors.text
+        textColor: themeColors.text,
+        // Оптимизация для языка
+        ...optimalSettings
       };
+
+      console.log('🎯 Generating elegant PDF with smart settings:', {
+        language: state.language?.displayName,
+        font: pdfOptions.fontFamily,
+        theme: options.theme,
+        fontSize: pdfOptions.fontSize
+      });
 
       const pdfResult = await CsvToPdfConverter.convertToPDF(csvData, pdfOptions);
       const pdfData = Array.isArray(pdfResult) ? pdfResult[0] : pdfResult;
@@ -159,13 +152,18 @@ const ElegantCSVConverter: React.FC<Props> = ({ parseResult, onExport, className
       const pdfUrl = URL.createObjectURL(pdfBlob);
       setState(prev => ({ ...prev, pdfUrl, isGenerating: false }));
 
+      console.log('✨ Elegant PDF generated successfully:', {
+        size: `${(pdfBlob.size / 1024).toFixed(1)}KB`,
+        optimizedFor: state.language?.displayName
+      });
+
     } catch (error) {
-      console.error('PDF generation failed:', error);
+      console.error('❌ Elegant PDF generation failed:', error);
       setState(prev => ({ ...prev, isGenerating: false }));
     }
   }, [parseResult, options, state.language]);
 
-  // 💾 Экспорт
+  // 💾 Элегантный экспорт
   const handleExport = useCallback(async () => {
     if (!state.pdfUrl) await generatePDF();
     
@@ -179,14 +177,15 @@ const ElegantCSVConverter: React.FC<Props> = ({ parseResult, onExport, className
   // 🎮 Автогенерация при изменении настроек
   useEffect(() => {
     if (state.pdfUrl) {
-      generatePDF();
+      const timeoutId = setTimeout(generatePDF, 300); // Debounce
+      return () => clearTimeout(timeoutId);
     }
   }, [options]);
 
   return (
-    <div className={`bg-gradient-to-br from-slate-50 to-blue-50 rounded-xl overflow-hidden ${className}`}>
-      {/* 🎯 Умная шапка */}
-      <div className="bg-white/80 backdrop-blur-sm border-b border-slate-200 p-4">
+    <div className={`bg-gradient-to-br from-slate-50 to-blue-50 rounded-xl overflow-hidden shadow-lg ${className}`}>
+      {/* 🎯 Умная шапка с языковой информацией */}
+      <div className="bg-white/90 backdrop-blur-sm border-b border-slate-200 p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="relative">
@@ -199,15 +198,29 @@ const ElegantCSVConverter: React.FC<Props> = ({ parseResult, onExport, className
             </div>
             <div>
               <h3 className="font-semibold text-slate-900 flex items-center">
-                {parseResult.reportTitle || 'CSV Document'}
+                {parseResult.reportTitle || 'Elegant CSV Document'}
                 {state.language && (
-                  <span className="ml-2 text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
-                    {state.language.detected}
-                  </span>
+                  <motion.span 
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="ml-3 flex items-center text-xs bg-gradient-to-r from-blue-100 to-green-100 text-blue-700 px-3 py-1 rounded-full"
+                  >
+                    <Zap className="w-3 h-3 mr-1" />
+                    {state.language.displayName}
+                    <span className="ml-1 text-green-600 font-medium">
+                      {Math.round(state.language.confidence * 100)}%
+                    </span>
+                  </motion.span>
                 )}
               </h3>
-              <p className="text-sm text-slate-600">
+              <p className="text-sm text-slate-600 flex items-center">
                 {parseResult.rowCount} rows × {parseResult.columnCount} columns
+                {state.language && (
+                  <span className="ml-3 flex items-center text-xs text-blue-600">
+                    <Type className="w-3 h-3 mr-1" />
+                    {state.language.recommendedFont}
+                  </span>
+                )}
               </p>
             </div>
           </div>
@@ -215,9 +228,9 @@ const ElegantCSVConverter: React.FC<Props> = ({ parseResult, onExport, className
           <div className="flex items-center space-x-2">
             <button
               onClick={() => setState(prev => ({ ...prev, showSettings: !prev.showSettings }))}
-              className={`p-2 rounded-lg transition-colors ${
+              className={`p-2 rounded-lg transition-all ${
                 state.showSettings 
-                  ? 'bg-blue-100 text-blue-700' 
+                  ? 'bg-blue-100 text-blue-700 shadow-sm' 
                   : 'hover:bg-slate-100 text-slate-600'
               }`}
             >
@@ -228,7 +241,7 @@ const ElegantCSVConverter: React.FC<Props> = ({ parseResult, onExport, className
               <button
                 onClick={generatePDF}
                 disabled={state.isGenerating}
-                className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
+                className="flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 disabled:opacity-50 transition-all shadow-sm"
               >
                 {state.isGenerating ? (
                   <Loader className="w-4 h-4 mr-2 animate-spin" />
@@ -240,7 +253,7 @@ const ElegantCSVConverter: React.FC<Props> = ({ parseResult, onExport, className
             ) : (
               <button
                 onClick={handleExport}
-                className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                className="flex items-center px-4 py-2 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 transition-all shadow-sm"
               >
                 <Download className="w-4 h-4 mr-2" />
                 Download
@@ -249,13 +262,13 @@ const ElegantCSVConverter: React.FC<Props> = ({ parseResult, onExport, className
           </div>
         </div>
 
-        {/* ⚙️ Элегантные настройки */}
+        {/* ⚙️ Элегантные настройки с умными подсказками */}
         {state.showSettings && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="mt-4 p-4 bg-slate-50 rounded-lg"
+            className="mt-4 p-4 bg-gradient-to-r from-slate-50 to-blue-50 rounded-lg border border-slate-200"
           >
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {/* Размер страницы */}
@@ -266,10 +279,10 @@ const ElegantCSVConverter: React.FC<Props> = ({ parseResult, onExport, className
                 <select
                   value={options.pageSize}
                   onChange={(e) => setOptions(prev => ({ ...prev, pageSize: e.target.value as any }))}
-                  className="w-full text-sm border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full text-sm border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 >
-                  <option value="a4">A4</option>
-                  <option value="letter">Letter</option>
+                  <option value="a4">A4 (210×297mm)</option>
+                  <option value="letter">Letter (8.5×11")</option>
                 </select>
               </div>
               
@@ -281,22 +294,27 @@ const ElegantCSVConverter: React.FC<Props> = ({ parseResult, onExport, className
                 <select
                   value={options.orientation}
                   onChange={(e) => setOptions(prev => ({ ...prev, orientation: e.target.value as any }))}
-                  className="w-full text-sm border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full text-sm border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 >
-                  <option value="landscape">Landscape</option>
-                  <option value="portrait">Portrait</option>
+                  <option value="landscape">🖼️ Landscape</option>
+                  <option value="portrait">📃 Portrait</option>
                 </select>
               </div>
               
-              {/* Размер шрифта */}
+              {/* Размер шрифта с умной подсказкой */}
               <div>
-                <label className="block text-xs font-medium text-slate-700 mb-2">
+                <label className="block text-xs font-medium text-slate-700 mb-2 flex items-center">
                   🔤 Font Size
+                  {state.language && (
+                    <span className="ml-1 text-blue-600 text-xs">
+                      (optimal: {getOptimalPDFSettings(state.language).fontSize}pt)
+                    </span>
+                  )}
                 </label>
                 <select
                   value={options.fontSize}
                   onChange={(e) => setOptions(prev => ({ ...prev, fontSize: parseInt(e.target.value) as any }))}
-                  className="w-full text-sm border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full text-sm border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 >
                   <option value="9">9pt</option>
                   <option value="10">10pt</option>
@@ -313,7 +331,7 @@ const ElegantCSVConverter: React.FC<Props> = ({ parseResult, onExport, className
                 <select
                   value={options.theme}
                   onChange={(e) => setOptions(prev => ({ ...prev, theme: e.target.value as any }))}
-                  className="w-full text-sm border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full text-sm border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 >
                   {Object.entries(themes).map(([key, theme]) => (
                     <option key={key} value={key}>
@@ -323,30 +341,57 @@ const ElegantCSVConverter: React.FC<Props> = ({ parseResult, onExport, className
                 </select>
               </div>
             </div>
+            
+            {/* Умная подсказка */}
+            {state.language && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="mt-3 p-3 bg-blue-50 rounded-lg border border-blue-200"
+              >
+                <div className="flex items-center text-sm text-blue-800">
+                  <Sparkles className="w-4 h-4 mr-2" />
+                  <span>
+                    <strong>Smart optimization:</strong> Settings auto-tuned for {state.language.displayName} 
+                    using {state.language.recommendedFont} font
+                  </span>
+                </div>
+              </motion.div>
+            )}
           </motion.div>
         )}
       </div>
 
-      {/* 🎬 Главный контент */}
+      {/* 🎬 Главный контент с элегантным превью */}
       <div className="p-4 h-[600px]">
         {state.pdfUrl ? (
-          <div className="h-full bg-white rounded-lg shadow-inner overflow-hidden">
+          <div className="h-full bg-white rounded-lg shadow-inner overflow-hidden border border-slate-200">
             <iframe
               src={state.pdfUrl}
               className="w-full h-full"
-              title="PDF Preview"
+              title="Elegant PDF Preview"
             />
           </div>
         ) : state.isGenerating ? (
-          <div className="h-full flex items-center justify-center bg-white rounded-lg">
+          <div className="h-full flex items-center justify-center bg-white rounded-lg border border-slate-200">
             <div className="text-center">
-              <Loader className="w-12 h-12 text-blue-600 mx-auto mb-4 animate-spin" />
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+              >
+                <Sparkles className="w-12 h-12 text-blue-600 mx-auto mb-4" />
+              </motion.div>
               <h3 className="text-lg font-medium text-slate-900 mb-2">
-                Creating your PDF...
+                Creating your elegant PDF...
               </h3>
               <p className="text-slate-600">
-                {state.language && `Optimizing for ${state.language.detected}`}
+                {state.language && `Optimizing for ${state.language.displayName} with ${state.language.recommendedFont}`}
               </p>
+              <div className="mt-4 flex items-center justify-center gap-2">
+                <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
+                <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+              </div>
             </div>
           </div>
         ) : (
@@ -354,14 +399,15 @@ const ElegantCSVConverter: React.FC<Props> = ({ parseResult, onExport, className
             <div className="text-center">
               <Eye className="w-16 h-16 text-slate-400 mx-auto mb-4" />
               <h3 className="text-xl font-medium text-slate-900 mb-2">
-                Ready to Preview
+                Ready to Generate
               </h3>
               <p className="text-slate-600 mb-6">
-                Click Preview to see your PDF with {state.language?.detected || 'auto-detected'} formatting
+                Click Preview to create your elegant PDF
+                {state.language && ` optimized for ${state.language.displayName}`}
               </p>
               <button
                 onClick={generatePDF}
-                className="flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors mx-auto"
+                className="flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all shadow-sm mx-auto"
               >
                 <Sparkles className="w-5 h-5 mr-2" />
                 Generate Preview
@@ -371,17 +417,17 @@ const ElegantCSVConverter: React.FC<Props> = ({ parseResult, onExport, className
         )}
       </div>
 
-      {/* 📊 Статус бар */}
-      <div className="bg-white/50 backdrop-blur-sm border-t border-slate-200 px-4 py-2">
+      {/* 📊 Элегантный статус бар */}
+      <div className="bg-white/80 backdrop-blur-sm border-t border-slate-200 px-4 py-2">
         <div className="flex items-center justify-between text-xs text-slate-600">
           <div className="flex items-center space-x-4">
             <span className="flex items-center">
               <Globe className="w-3 h-3 mr-1" />
-              {state.language?.detected || 'Auto-detecting...'}
+              {state.language?.displayName || 'Auto-detecting...'}
             </span>
             <span className="flex items-center">
               <Type className="w-3 h-3 mr-1" />
-              {state.language?.font || 'Default font'}
+              {state.language?.recommendedFont || 'Default font'}
             </span>
           </div>
           <div className="flex items-center space-x-4">
@@ -391,10 +437,14 @@ const ElegantCSVConverter: React.FC<Props> = ({ parseResult, onExport, className
               {themes[options.theme].name}
             </span>
             {state.pdfUrl && (
-              <span className="flex items-center text-green-600">
+              <motion.span 
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="flex items-center text-green-600"
+              >
                 <Check className="w-3 h-3 mr-1" />
                 Ready
-              </span>
+              </motion.span>
             )}
           </div>
         </div>
