@@ -1,0 +1,15 @@
+# 🚫 Workflows Disabled
+
+All GitHub Actions workflows are temporarily disabled during project rebuild.
+
+## Status
+- Project is being completely rebuilt
+- Old workflows will cause build failures
+- New workflows will be added after successful rebuild
+
+## Next Steps
+1. Complete project cleanup
+2. Build new minimal structure
+3. Re-enable workflows when ready
+
+**Date**: June 29, 2025
