@@ -6,7 +6,7 @@ import { useDropzone } from 'react-dropzone';
 import { toast } from 'react-hot-toast';
 
 import { CsvToPdfConverter, CsvParseResult } from '../services/converters/CsvToPdfConverter';
-import SimpleLivePreview from '../components/enhanced/SimpleLivePreview';
+import ElegantCSVConverter from '../components/enhanced/ElegantCSVConverter';
 import { Button } from '../components/atoms/Button';
 import { Card } from '../components/atoms/Card';
 import { Badge } from '../components/atoms/Badge';
@@ -45,7 +45,7 @@ export const EnhancedCSVToPDFPage: React.FC = () => {
     setIsParsing(true);
     
     try {
-      console.log('🔍 Starting enhanced CSV parsing...');
+      console.log('🔍 Starting elegant CSV parsing...');
       
       const result = await CsvToPdfConverter.parseCSV(file);
       
@@ -60,8 +60,8 @@ export const EnhancedCSVToPDFPage: React.FC = () => {
         return;
       }
 
-      // Преобразуем результат в формат для SimpleLivePreview
-      const simpleParseResult = {
+      // Преобразуем результат для ElegantCSVConverter
+      const elegantParseResult = {
         data: result.data.map(row => 
           result.headers.map(header => String(row[header] || ''))
         ),
@@ -73,10 +73,10 @@ export const EnhancedCSVToPDFPage: React.FC = () => {
         errors: result.errors
       };
 
-      setParseResult(simpleParseResult);
+      setParseResult(elegantParseResult);
       setCurrentStep('edit');
       
-      console.log('✅ Enhanced CSV parsing completed:', {
+      console.log('✅ Elegant CSV parsing completed:', {
         rows: result.rowCount,
         columns: result.columnCount,
         reportTitle: result.reportTitle,
@@ -84,13 +84,13 @@ export const EnhancedCSVToPDFPage: React.FC = () => {
       });
       
       toast.success(
-        `Successfully parsed ${result.rowCount} rows with ${result.columnCount} columns`,
+        `🎉 Successfully parsed ${result.rowCount} rows with ${result.columnCount} columns`,
         { duration: 4000 }
       );
       
     } catch (error) {
       toast.error(`Failed to parse CSV: ${error}`);
-      console.error('❌ Enhanced CSV parsing failed:', error);
+      console.error('❌ Elegant CSV parsing failed:', error);
     } finally {
       setIsParsing(false);
     }
@@ -117,10 +117,10 @@ export const EnhancedCSVToPDFPage: React.FC = () => {
       const link = document.createElement('a');
       link.href = url;
       
-      // Generate filename with timestamp
+      // Generate elegant filename with timestamp
       const timestamp = new Date().toISOString().slice(0, 19).replace(/[:-]/g, '');
       const baseName = csvFile.name.replace(/\.[^/.]+$/, '');
-      const fileName = `${baseName}_enhanced_${timestamp}.pdf`;
+      const fileName = `${baseName}_elegant_${timestamp}.pdf`;
       
       link.download = fileName;
       document.body.appendChild(link);
@@ -132,11 +132,11 @@ export const EnhancedCSVToPDFPage: React.FC = () => {
       setCurrentStep('export');
       
       toast.success(
-        `PDF exported successfully as ${fileName}!`,
+        `✨ PDF exported elegantly as ${fileName}!`,
         { duration: 5000 }
       );
       
-      console.log('📄 Enhanced PDF export completed:', {
+      console.log('📄 Elegant PDF export completed:', {
         fileName,
         fileSize: `${(blob.size / 1024).toFixed(1)}KB`,
         originalRows: parseResult.rowCount
@@ -144,7 +144,7 @@ export const EnhancedCSVToPDFPage: React.FC = () => {
       
     } catch (error) {
       toast.error(`Export failed: ${error}`);
-      console.error('❌ Enhanced PDF export failed:', error);
+      console.error('❌ Elegant PDF export failed:', error);
     } finally {
       setIsExporting(false);
     }
@@ -161,25 +161,25 @@ export const EnhancedCSVToPDFPage: React.FC = () => {
   return (
     <>
       <Helmet>
-        <title>CSV to PDF Converter - Interactive Editor with Live Preview | LocalPDF</title>
+        <title>CSV to PDF Converter - Elegant Editor with Live Preview | LocalPDF</title>
         <meta 
           name="description" 
-          content="Transform CSV files into professional PDF tables with our enhanced interactive editor. Features live preview, multi-language support, real-time editing, and Unicode support." 
+          content="Transform CSV files into beautiful PDF tables with our elegant editor. Features live preview, smart language detection, beautiful themes, and automatic optimization." 
         />
-        <meta name="keywords" content="CSV to PDF, interactive editor, live preview, multi-language, Unicode support, real-time editing, CSV converter, table generator" />
+        <meta name="keywords" content="CSV to PDF, elegant editor, live preview, smart detection, beautiful themes, auto optimization, CSV converter" />
         <link rel="canonical" href="https://localpdf.online/csv-to-pdf" />
-        <meta property="og:title" content="CSV to PDF Converter - Interactive Editor with Live Preview" />
-        <meta property="og:description" content="Professional CSV to PDF conversion with live preview, multi-language support, and interactive editing capabilities. Process files locally in your browser." />
+        <meta property="og:title" content="CSV to PDF Converter - Elegant Editor with Live Preview" />
+        <meta property="og:description" content="Beautiful CSV to PDF conversion with live preview, smart language detection, and elegant themes. Simple workflow, maximum impact." />
         <meta property="og:url" content="https://localpdf.online/csv-to-pdf" />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="CSV to PDF Converter - Interactive Editor | LocalPDF" />
-        <meta name="twitter:description" content="Interactive CSV to PDF editor with live preview and multi-language support. Privacy-first processing in your browser." />
+        <meta name="twitter:title" content="CSV to PDF Converter - Elegant Editor | LocalPDF" />
+        <meta name="twitter:description" content="Elegant CSV to PDF editor with smart detection and beautiful themes. Simple but sophisticated." />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
         <div className="container-modern py-8">
-          {/* Enhanced Header */}
+          {/* Elegant Header */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -191,29 +191,29 @@ export const EnhancedCSVToPDFPage: React.FC = () => {
                 <Sparkles className="w-6 h-6 text-yellow-500 absolute -top-1 -right-1" />
               </div>
               <h1 className="text-4xl font-bold text-gray-900">
-                CSV to PDF Converter
+                Elegant CSV to PDF
               </h1>
             </div>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Transform your CSV data into professional PDF tables with our enhanced interactive editor featuring 
-              <span className="text-blue-600 font-semibold"> live preview</span>, 
-              <span className="text-green-600 font-semibold"> multi-language support</span>, and 
-              <span className="text-purple-600 font-semibold"> simple workflow</span>
+              Transform your CSV data into beautiful PDF tables with our elegant editor featuring 
+              <span className="text-blue-600 font-semibold"> smart detection</span>, 
+              <span className="text-green-600 font-semibold"> live preview</span>, and 
+              <span className="text-purple-600 font-semibold"> beautiful themes</span>
             </p>
             
             {/* Feature badges */}
             <div className="flex flex-wrap justify-center gap-2 mt-4">
               <Badge variant="primary" className="flex items-center">
                 <Globe className="w-3 h-3 mr-1" />
-                Multi-Language
+                Smart Detection
               </Badge>
               <Badge variant="secondary">Live Preview</Badge>
-              <Badge variant="success">Simple Workflow</Badge>
-              <Badge variant="warning">Unicode Support</Badge>
+              <Badge variant="success">Beautiful Themes</Badge>
+              <Badge variant="warning">Auto Optimization</Badge>
             </div>
           </motion.div>
 
-          {/* Enhanced Progress Steps */}
+          {/* Progress Steps */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -275,10 +275,10 @@ export const EnhancedCSVToPDFPage: React.FC = () => {
                       <div className="flex flex-col items-center">
                         <Spinner size="lg" className="mb-4" />
                         <h3 className="text-xl font-semibold text-gray-700 mb-2">
-                          Processing CSV with Enhanced Engine...
+                          Preparing Elegant Experience...
                         </h3>
                         <p className="text-gray-500">
-                          Analyzing data structure, detecting language, and preparing for editing
+                          Analyzing data structure, detecting language, and optimizing for beauty
                         </p>
                         <div className="mt-4 flex items-center gap-2">
                           <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
@@ -293,11 +293,11 @@ export const EnhancedCSVToPDFPage: React.FC = () => {
                           <Sparkles className="w-8 h-8 text-yellow-500 absolute -top-2 -right-2" />
                         </div>
                         <h3 className="text-2xl font-semibold text-gray-700 mb-3">
-                          {isDragActive ? 'Drop your CSV file here' : 'Upload CSV File for Enhanced Processing'}
+                          {isDragActive ? 'Drop your CSV file here' : 'Upload CSV for Elegant Processing'}
                         </h3>
                         <p className="text-gray-500 mb-6 max-w-md">
                           Drag and drop or click to select your CSV, TSV, or TXT file. 
-                          Our enhanced engine will automatically detect language and optimize formatting.
+                          Our elegant engine will automatically detect language and apply beautiful formatting.
                         </p>
                         <div className="flex flex-wrap gap-2 justify-center mb-4">
                           <Badge variant="secondary">.csv</Badge>
@@ -305,14 +305,14 @@ export const EnhancedCSVToPDFPage: React.FC = () => {
                           <Badge variant="secondary">.txt</Badge>
                         </div>
                         <p className="text-sm text-gray-400">
-                          Maximum file size: 100MB • Multi-language support • Privacy protected
+                          Maximum file size: 100MB • Smart detection • Beautiful results
                         </p>
                       </div>
                     )}
                   </div>
                 </Card>
 
-                {/* Enhanced Features Preview */}
+                {/* Elegant Features Preview */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -320,28 +320,28 @@ export const EnhancedCSVToPDFPage: React.FC = () => {
                   className="mt-12"
                 >
                   <h2 className="text-2xl font-bold text-gray-900 text-center mb-8">
-                    Enhanced Features
+                    ✨ Elegant Features
                   </h2>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <Card className="p-6 text-center glass-card hover-lift">
                       <Globe className="w-12 h-12 text-blue-600 mx-auto mb-4" />
-                      <h3 className="text-lg font-semibold mb-2">Auto Language Detection</h3>
+                      <h3 className="text-lg font-semibold mb-2">🧠 Smart Detection</h3>
                       <p className="text-gray-600 text-sm">
-                        Automatically detects Русский, Latviešu, Lietuvių, Polski, and other languages with optimal font selection
+                        Automatically detects Русский, Latviešu, 中文, العربية and suggests perfect fonts and formatting
                       </p>
                     </Card>
                     <Card className="p-6 text-center glass-card hover-lift">
                       <FileSpreadsheet className="w-12 h-12 text-green-600 mx-auto mb-4" />
-                      <h3 className="text-lg font-semibold mb-2">Live Preview</h3>
+                      <h3 className="text-lg font-semibold mb-2">👁️ Live Preview</h3>
                       <p className="text-gray-600 text-sm">
-                        See your PDF in real-time as you adjust formatting options with instant feedback
+                        See your PDF update instantly as you adjust settings with real-time feedback
                       </p>
                     </Card>
                     <Card className="p-6 text-center glass-card hover-lift">
                       <Sparkles className="w-12 h-12 text-purple-600 mx-auto mb-4" />
-                      <h3 className="text-lg font-semibold mb-2">Simple Workflow</h3>
+                      <h3 className="text-lg font-semibold mb-2">🎨 Beautiful Themes</h3>
                       <p className="text-gray-600 text-sm">
-                        Upload, preview, and download - streamlined process without complex editing interface
+                        Choose from Clean, Modern, or Minimal themes - all optimized for professional results
                       </p>
                     </Card>
                   </div>
@@ -355,7 +355,7 @@ export const EnhancedCSVToPDFPage: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 className="h-[calc(100vh-300px)]"
               >
-                <SimpleLivePreview
+                <ElegantCSVConverter
                   parseResult={parseResult}
                   onExport={handleExport}
                   className="h-full"
@@ -374,10 +374,11 @@ export const EnhancedCSVToPDFPage: React.FC = () => {
                     <Download className="w-8 h-8 text-green-600" />
                   </div>
                   <h3 className="text-2xl font-semibold text-gray-900 mb-4">
-                    PDF Successfully Generated!
+                    ✨ Beautiful PDF Created!
                   </h3>
                   <p className="text-gray-600 mb-6">
-                    Your enhanced CSV has been converted to a professional PDF with optimized formatting and multi-language support.
+                    Your CSV has been transformed into an elegant PDF with smart formatting, 
+                    optimized fonts, and beautiful design.
                   </p>
                   <div className="flex flex-col sm:flex-row gap-4 justify-center">
                     <Button 
@@ -385,7 +386,7 @@ export const EnhancedCSVToPDFPage: React.FC = () => {
                       variant="secondary"
                       className="btn-secondary-modern"
                     >
-                      Convert Another File
+                      Create Another Beautiful PDF
                     </Button>
                   </div>
                 </Card>
