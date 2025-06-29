@@ -1,10 +1,10 @@
 /**
  * ClientPDF Pro - Client-side PDF processing application
- * 🔧 UPDATED: Simplified CSV routing - Enhanced version is now the default
+ * 🚀 UPDATED: Integrated Interactive CSV to PDF Editor with dual-mode support
  * 
  * @license MIT
  * @author ulinycoin
- * @version 0.1.0
+ * @version 0.2.0
  */
 
 import React from 'react';
@@ -17,7 +17,13 @@ import { MergePDFPage } from './pages/MergePDFPage';
 import { SplitPDFPage } from './pages/SplitPDFPage';
 import { CompressPDFPage } from './pages/CompressPDFPage';
 import { ImagesToPDFPage } from './pages/ImagesToPDFPage';
+
+// 🆕 NEW: Interactive CSV to PDF Editor with dual-mode support
+import { EnhancedCSVToPDFPageIntegration } from './components/enhanced/EnhancedCSVToPDFPageIntegration';
+
+// Legacy CSV page kept for compatibility
 import { EnhancedCSVToPDFPage } from './pages/EnhancedCSVToPDFPage';
+
 import { FAQPage } from './pages/FAQPage';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import { TermsOfService } from './pages/TermsOfService';
@@ -40,9 +46,12 @@ function App() {
             <Route path="/compress-pdf" element={<CompressPDFPage />} />
             <Route path="/images-to-pdf" element={<ImagesToPDFPage />} />
             
-            {/* CSV to PDF - Enhanced version is now the primary route */}
-            <Route path="/csv-to-pdf" element={<EnhancedCSVToPDFPage />} />
-            <Route path="/enhanced-csv-to-pdf" element={<EnhancedCSVToPDFPage />} />
+            {/* 🚀 CSV to PDF - NEW Interactive Editor with dual-mode support */}
+            <Route path="/csv-to-pdf" element={<EnhancedCSVToPDFPageIntegration />} />
+            <Route path="/enhanced-csv-to-pdf" element={<EnhancedCSVToPDFPageIntegration />} />
+            
+            {/* 🔄 Legacy CSV route for compatibility */}
+            <Route path="/csv-to-pdf-legacy" element={<EnhancedCSVToPDFPage />} />
             
             <Route path="/faq" element={<FAQPage />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
