@@ -32,14 +32,14 @@ const ToolsGrid: React.FC<ToolsGridProps> = ({
       description: 'Extract pages or split PDF into multiple files',
       icon: 'SPLIT',
       operationType: 'split',
-      comingSoon: true
+      comingSoon: false
     },
     {
       title: 'Rotate Pages',
       description: 'Rotate pages 90, 180, or 270 degrees',
       icon: 'ROTATE',
       operationType: 'rotate',
-      comingSoon: true
+      comingSoon: false
     },
     {
       title: 'Add Watermark',
