@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Header from '../components/organisms/Header'
 import FileUploadZone from '../components/molecules/FileUploadZone'
 import FileList from '../components/molecules/FileList'
+import ToolsGrid from '../components/organisms/ToolsGrid'
 
 interface FileItem {
   id: string
@@ -61,6 +62,24 @@ const HomePage = () => {
     simulateFileProcessing(fileId)
   }
 
+  const handleToolSelect = (toolId: string) => {
+    const completedFiles = files.filter(f => f.status === 'completed')
+    
+    if (completedFiles.length === 0) {
+      alert('Please upload some PDF files first!')
+      return
+    }
+
+    // For now, just show which tool was selected
+    switch (toolId) {
+      case 'merge':
+        alert(`Merge tool selected! Ready to merge ${completedFiles.length} file(s). Tool implementation coming soon.`)
+        break
+      default:
+        alert(`${toolId} tool coming soon! Stay tuned for updates.`)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -102,29 +121,9 @@ const HomePage = () => {
           )}
         </div>
 
-        {/* Tools section */}
-        <div className="max-w-4xl mx-auto px-4 pb-16">
-          <div className="text-center">
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                PDF Tools Coming Soon
-              </h2>
-              <p className="text-gray-600 mb-6">
-                Merge • Split • Compress • Convert
-              </p>
-              
-              {files.filter(f => f.status === 'completed').length > 0 && (
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <p className="text-blue-800 font-medium">
-                    ✅ {files.filter(f => f.status === 'completed').length} file(s) ready for processing
-                  </p>
-                  <p className="text-blue-600 text-sm mt-1">
-                    PDF processing tools will be added in upcoming updates
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
+        {/* Tools Section */}
+        <div className="max-w-7xl mx-auto px-4 pb-16">
+          <ToolsGrid onToolSelect={handleToolSelect} />
         </div>
       </main>
     </div>
