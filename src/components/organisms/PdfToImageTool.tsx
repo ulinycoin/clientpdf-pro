@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { FileUploadZone } from '../molecules/FileUploadZone';
-import { ProgressBar } from '../molecules/ProgressBar';
+import { ProgressBar } from '../atoms/ProgressBar';
 import { usePdfToImage } from '../../hooks/usePdfToImage';
 import { 
   ImageFormat, 
