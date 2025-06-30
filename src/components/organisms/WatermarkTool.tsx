@@ -92,29 +92,29 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
   return (
     <div className={`bg-white rounded-lg shadow-lg p-6 ${className}`}>
       {/* Header */}
-      <div className=\"flex items-center justify-between mb-6\">
+      <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className=\"text-2xl font-bold text-gray-900\">Add Watermark</h2>
-          <p className=\"text-gray-600 mt-1\">
+          <h2 className="text-2xl font-bold text-gray-900">Add Watermark</h2>
+          <p className="text-gray-600 mt-1">
             Add text watermarks to protect your documents
           </p>
         </div>
-        <Button variant=\"ghost\" onClick={onClose}>
+        <Button variant="ghost" onClick={onClose}>
           ✕
         </Button>
       </div>
 
       {/* File Info */}
       {currentFile && (
-        <div className=\"mb-6\">
-          <h3 className=\"text-lg font-medium text-gray-900 mb-4\">File to watermark:</h3>
+        <div className="mb-6">
+          <h3 className="text-lg font-medium text-gray-900 mb-4">File to watermark:</h3>
           
-          <div className=\"p-4 bg-gray-50 rounded-lg border border-gray-200\">
-            <div className=\"flex items-center space-x-3\">
-              <div className=\"text-2xl\">📄</div>
-              <div className=\"flex-1\">
-                <p className=\"font-medium text-gray-900\">{currentFile.name}</p>
-                <p className=\"text-sm text-gray-500\">
+          <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+            <div className="flex items-center space-x-3">
+              <div className="text-2xl">📄</div>
+              <div className="flex-1">
+                <p className="font-medium text-gray-900">{currentFile.name}</p>
+                <p className="text-sm text-gray-500">
                   {formatFileSize(currentFile.size)}
                 </p>
               </div>
@@ -124,45 +124,45 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
       )}
 
       {/* Watermark Settings */}
-      <div className=\"mb-6\">
-        <h3 className=\"text-lg font-medium text-gray-900 mb-4\">Watermark Settings:</h3>
+      <div className="mb-6">
+        <h3 className="text-lg font-medium text-gray-900 mb-4">Watermark Settings:</h3>
         
-        <div className=\"space-y-6\">
+        <div className="space-y-6">
           {/* Watermark Text */}
           <div>
-            <label className=\"block text-sm font-medium text-gray-700 mb-2\">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Watermark Text *
             </label>
             <input
-              type=\"text\"
+              type="text"
               value={options.text}
               onChange={(e) => setOptions(prev => ({ ...prev, text: e.target.value }))}
               disabled={isProcessing}
-              placeholder=\"Enter watermark text (e.g., CONFIDENTIAL, DRAFT)\"
-              className=\"w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent\"
+              placeholder="Enter watermark text (e.g., CONFIDENTIAL, DRAFT)"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               maxLength={50}
             />
-            <p className=\"text-xs text-gray-500 mt-1\">
+            <p className="text-xs text-gray-500 mt-1">
               {options.text.length}/50 characters
             </p>
           </div>
 
           {/* Font Size */}
           <div>
-            <label className=\"block text-sm font-medium text-gray-700 mb-2\">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Font Size: {options.fontSize}px
             </label>
             <input
-              type=\"range\"
-              min=\"8\"
-              max=\"144\"
-              step=\"4\"
+              type="range"
+              min="8"
+              max="144"
+              step="4"
               value={options.fontSize}
               onChange={(e) => setOptions(prev => ({ ...prev, fontSize: parseInt(e.target.value) }))}
               disabled={isProcessing}
-              className=\"w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer\"
+              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
             />
-            <div className=\"flex justify-between text-xs text-gray-500 mt-1\">
+            <div className="flex justify-between text-xs text-gray-500 mt-1">
               <span>Small (8px)</span>
               <span>Large (144px)</span>
             </div>
@@ -170,20 +170,20 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
 
           {/* Opacity */}
           <div>
-            <label className=\"block text-sm font-medium text-gray-700 mb-2\">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Opacity: {options.opacity}%
             </label>
             <input
-              type=\"range\"
-              min=\"5\"
-              max=\"100\"
-              step=\"5\"
+              type="range"
+              min="5"
+              max="100"
+              step="5"
               value={options.opacity}
               onChange={(e) => setOptions(prev => ({ ...prev, opacity: parseInt(e.target.value) }))}
               disabled={isProcessing}
-              className=\"w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer\"
+              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
             />
-            <div className=\"flex justify-between text-xs text-gray-500 mt-1\">
+            <div className="flex justify-between text-xs text-gray-500 mt-1">
               <span>Transparent (5%)</span>
               <span>Opaque (100%)</span>
             </div>
@@ -191,20 +191,20 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
 
           {/* Rotation */}
           <div>
-            <label className=\"block text-sm font-medium text-gray-700 mb-2\">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Rotation: {options.rotation}°
             </label>
             <input
-              type=\"range\"
-              min=\"-90\"
-              max=\"90\"
-              step=\"15\"
+              type="range"
+              min="-90"
+              max="90"
+              step="15"
               value={options.rotation}
               onChange={(e) => setOptions(prev => ({ ...prev, rotation: parseInt(e.target.value) }))}
               disabled={isProcessing}
-              className=\"w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer\"
+              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
             />
-            <div className=\"flex justify-between text-xs text-gray-500 mt-1\">
+            <div className="flex justify-between text-xs text-gray-500 mt-1">
               <span>-90°</span>
               <span>0°</span>
               <span>90°</span>
@@ -213,16 +213,20 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
 
           {/* Position */}
           <div>
-            <label className=\"block text-sm font-medium text-gray-700 mb-2\">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Position
             </label>
-            <div className=\"grid grid-cols-3 gap-2\">
+            <div className="grid grid-cols-3 gap-2">
               {positionPresets.map((preset) => (
                 <button
                   key={preset.value}
                   onClick={() => setOptions(prev => ({ ...prev, position: preset.value }))}
                   disabled={isProcessing}
-                  className={`px-3 py-2 text-sm border rounded-lg transition-colors ${\n                    options.position === preset.value\n                      ? 'bg-blue-500 text-white border-blue-500'\n                      : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'\n                  }`}
+                  className={`px-3 py-2 text-sm border rounded-lg transition-colors ${
+                    options.position === preset.value
+                      ? 'bg-blue-500 text-white border-blue-500'
+                      : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                  }`}
                 >
                   {preset.name}
                 </button>
@@ -232,14 +236,145 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
 
           {/* Color */}
           <div>
-            <label className=\"block text-sm font-medium text-gray-700 mb-2\">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Color
             </label>
-            <div className=\"grid grid-cols-6 gap-2\">
+            <div className="grid grid-cols-6 gap-2">
               {colorPresets.map((preset) => (
                 <button
                   key={preset.name}
                   onClick={() => setOptions(prev => ({ ...prev, color: preset.value }))}
                   disabled={isProcessing}
-                  className={`relative w-12 h-8 border-2 rounded-lg transition-transform hover:scale-105 ${\n                    options.color.r === preset.value.r && \n                    options.color.g === preset.value.g && \n                    options.color.b === preset.value.b\n                      ? 'border-blue-500 ring-2 ring-blue-200'\n                      : 'border-gray-300'\n                  }`}
-                  style={{ backgroundColor: `rgb(${preset.value.r}, ${preset.value.g}, ${preset.value.b})` }}\n                  title={preset.name}\n                >\n                  {options.color.r === preset.value.r && \n                   options.color.g === preset.value.g && \n                   options.color.b === preset.value.b && (\n                    <div className=\"absolute inset-0 flex items-center justify-center text-white text-xs\">\n                      ✓\n                    </div>\n                  )}\n                </button>\n              ))}\n            </div>\n          </div>\n        </div>\n      </div>\n\n      {/* Preview Button */}\n      <div className=\"mb-6\">\n        <Button\n          variant=\"outline\"\n          onClick={() => setShowPreview(!showPreview)}\n          disabled={isProcessing || !options.text.trim()}\n          className=\"w-full\"\n        >\n          {showPreview ? 'Hide Preview' : 'Show Preview'}\n        </Button>\n      </div>\n\n      {/* Preview */}\n      {showPreview && options.text.trim() && (\n        <div className=\"mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200\">\n          <h4 className=\"text-sm font-medium text-gray-900 mb-3\">Preview:</h4>\n          <div className=\"relative bg-white border border-gray-300 rounded\" style={{ height: '200px', width: '150px' }}>\n            <div\n              className=\"absolute pointer-events-none\"\n              style={{\n                color: `rgb(${options.color.r}, ${options.color.g}, ${options.color.b})`,\n                opacity: options.opacity / 100,\n                fontSize: `${Math.max(8, options.fontSize / 4)}px`,\n                transform: `rotate(${options.rotation}deg)`,\n                ...({\n                  'center': { top: '50%', left: '50%', transform: `translate(-50%, -50%) rotate(${options.rotation}deg)` },\n                  'top-left': { top: '10px', left: '10px' },\n                  'top-right': { top: '10px', right: '10px' },\n                  'bottom-left': { bottom: '10px', left: '10px' },\n                  'bottom-right': { bottom: '10px', right: '10px' }\n                }[options.position])\n              }}\n            >\n              {options.text}\n            </div>\n          </div>\n          <p className=\"text-xs text-gray-500 mt-2\">\n            This is a simplified preview. Actual watermark will be properly scaled for your PDF.\n          </p>\n        </div>\n      )}\n\n      {/* Progress */}\n      {isProcessing && (\n        <div className=\"mb-6\">\n          <ProgressBar\n            value={progress}\n            className=\"mb-2\"\n            animated={true}\n          />\n          <p className=\"text-sm text-gray-600 text-center\">\n            Adding watermark... {Math.round(progress)}%\n          </p>\n        </div>\n      )}\n\n      {/* Errors */}\n      {(error || validationErrors.length > 0) && (\n        <div className=\"mb-6 p-4 bg-red-50 border border-red-200 rounded-lg\">\n          <div className=\"flex items-start\">\n            <div className=\"text-red-400 mr-2 mt-0.5\">⚠️</div>\n            <div>\n              <h4 className=\"text-red-800 font-medium\">Error</h4>\n              {error && <p className=\"text-red-600 text-sm mt-1\">{error}</p>}\n              {validationErrors.map((err, index) => (\n                <p key={index} className=\"text-red-600 text-sm mt-1\">{err}</p>\n              ))}\n            </div>\n          </div>\n        </div>\n      )}\n\n      {/* Info Box */}\n      <div className=\"mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg\">\n        <div className=\"flex items-start\">\n          <div className=\"text-blue-400 mr-2 mt-0.5\">ℹ️</div>\n          <div>\n            <h4 className=\"text-blue-800 font-medium\">Privacy & Security</h4>\n            <p className=\"text-blue-700 text-sm mt-1\">\n              Watermarks are added locally in your browser. Your PDF never leaves your device, \n              ensuring complete privacy and security.\n            </p>\n          </div>\n        </div>\n      </div>\n\n      {/* Actions */}\n      <div className=\"flex justify-end space-x-3\">\n        <Button\n          variant=\"outline\"\n          onClick={onClose}\n          disabled={isProcessing}\n        >\n          Cancel\n        </Button>\n        <Button\n          variant=\"primary\"\n          onClick={handleAddWatermark}\n          disabled={files.length === 0 || isProcessing || validationErrors.length > 0 || !options.text.trim()}\n          loading={isProcessing}\n        >\n          {isProcessing ? 'Adding Watermark...' : 'Add Watermark'}\n        </Button>\n      </div>\n    </div>\n  );\n};\n\nexport default WatermarkTool;
+                  className={`relative w-12 h-8 border-2 rounded-lg transition-transform hover:scale-105 ${
+                    options.color.r === preset.value.r && 
+                    options.color.g === preset.value.g && 
+                    options.color.b === preset.value.b
+                      ? 'border-blue-500 ring-2 ring-blue-200'
+                      : 'border-gray-300'
+                  }`}
+                  style={{ backgroundColor: `rgb(${preset.value.r}, ${preset.value.g}, ${preset.value.b})` }}
+                  title={preset.name}
+                >
+                  {options.color.r === preset.value.r && 
+                   options.color.g === preset.value.g && 
+                   options.color.b === preset.value.b && (
+                    <div className="absolute inset-0 flex items-center justify-center text-white text-xs">
+                      ✓
+                    </div>
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Preview Button */}
+      <div className="mb-6">
+        <Button
+          variant="outline"
+          onClick={() => setShowPreview(!showPreview)}
+          disabled={isProcessing || !options.text.trim()}
+          className="w-full"
+        >
+          {showPreview ? 'Hide Preview' : 'Show Preview'}
+        </Button>
+      </div>
+
+      {/* Preview */}
+      {showPreview && options.text.trim() && (
+        <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+          <h4 className="text-sm font-medium text-gray-900 mb-3">Preview:</h4>
+          <div className="relative bg-white border border-gray-300 rounded" style={{ height: '200px', width: '150px' }}>
+            <div
+              className="absolute pointer-events-none"
+              style={{
+                color: `rgb(${options.color.r}, ${options.color.g}, ${options.color.b})`,
+                opacity: options.opacity / 100,
+                fontSize: `${Math.max(8, options.fontSize / 4)}px`,
+                transform: `rotate(${options.rotation}deg)`,
+                ...({
+                  'center': { top: '50%', left: '50%', transform: `translate(-50%, -50%) rotate(${options.rotation}deg)` },
+                  'top-left': { top: '10px', left: '10px' },
+                  'top-right': { top: '10px', right: '10px' },
+                  'bottom-left': { bottom: '10px', left: '10px' },
+                  'bottom-right': { bottom: '10px', right: '10px' }
+                }[options.position])
+              }}
+            >
+              {options.text}
+            </div>
+          </div>
+          <p className="text-xs text-gray-500 mt-2">
+            This is a simplified preview. Actual watermark will be properly scaled for your PDF.
+          </p>
+        </div>
+      )}
+
+      {/* Progress */}
+      {isProcessing && (
+        <div className="mb-6">
+          <ProgressBar
+            value={progress}
+            className="mb-2"
+            animated={true}
+          />
+          <p className="text-sm text-gray-600 text-center">
+            Adding watermark... {Math.round(progress)}%
+          </p>
+        </div>
+      )}
+
+      {/* Errors */}
+      {(error || validationErrors.length > 0) && (
+        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+          <div className="flex items-start">
+            <div className="text-red-400 mr-2 mt-0.5">⚠️</div>
+            <div>
+              <h4 className="text-red-800 font-medium">Error</h4>
+              {error && <p className="text-red-600 text-sm mt-1">{error}</p>}
+              {validationErrors.map((err, index) => (
+                <p key={index} className="text-red-600 text-sm mt-1">{err}</p>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Info Box */}
+      <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+        <div className="flex items-start">
+          <div className="text-blue-400 mr-2 mt-0.5">ℹ️</div>
+          <div>
+            <h4 className="text-blue-800 font-medium">Privacy & Security</h4>
+            <p className="text-blue-700 text-sm mt-1">
+              Watermarks are added locally in your browser. Your PDF never leaves your device, 
+              ensuring complete privacy and security.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Actions */}
+      <div className="flex justify-end space-x-3">
+        <Button
+          variant="outline"
+          onClick={onClose}
+          disabled={isProcessing}
+        >
+          Cancel
+        </Button>
+        <Button
+          variant="primary"
+          onClick={handleAddWatermark}
+          disabled={files.length === 0 || isProcessing || validationErrors.length > 0 || !options.text.trim()}
+          loading={isProcessing}
+        >
+          {isProcessing ? 'Adding Watermark...' : 'Add Watermark'}
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+export default WatermarkTool;
