@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { PDFProcessingResult } from '../types';
 import Header from '../components/organisms/Header';
+import Footer from '../components/organisms/Footer';
 import FileUploadZone from '../components/molecules/FileUploadZone';
 import ToolsGrid from '../components/organisms/ToolsGrid';
 import MergeTool from '../components/organisms/MergeTool';
@@ -109,10 +110,10 @@ const HomePage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
       
-      <main>
+      <main className="flex-grow">
         <div className="max-w-4xl mx-auto px-4 py-16">
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
@@ -190,6 +191,8 @@ const HomePage: React.FC = () => {
           </div>
         )}
       </main>
+
+      <Footer />
     </div>
   );
 };
