@@ -18,6 +18,29 @@ const ToolCard: React.FC<ToolCardProps> = ({
     }
   };
 
+  const getIconDisplay = (iconType: string) => {
+    switch (iconType) {
+      case 'PDF':
+        return '📄';
+      case 'COMPRESS':
+        return '🗜️';
+      case 'SPLIT':
+        return '✂️';
+      case 'ROTATE':
+        return '🔄';
+      case 'WATERMARK':
+        return '🏷️';
+      case 'EXTRACT':
+        return '📋';
+      case 'TEXT':
+        return '📝';
+      case 'IMAGE':
+        return '🖼️';
+      default:
+        return '📄';
+    }
+  };
+
   const isDisabled = disabled || comingSoon;
 
   return (
@@ -40,7 +63,7 @@ const ToolCard: React.FC<ToolCardProps> = ({
       
       {/* Icon */}
       <div className="text-4xl mb-4 text-center">
-        {icon}
+        {getIconDisplay(icon)}
       </div>
       
       {/* Title */}
