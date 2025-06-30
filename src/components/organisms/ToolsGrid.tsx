@@ -1,1 +1,113 @@
-import React from 'react';\nimport { PDFOperationType, ToolsGridProps } from '../../types';\nimport ToolCard from '../molecules/ToolCard';\n\nconst ToolsGrid: React.FC<ToolsGridProps> = ({\n  onToolSelect,\n  disabledTools = [],\n  className = ''\n}) => {\n  const tools = [\n    {\n      title: 'Merge PDFs',\n      description: 'Combine multiple PDF files into one document',\n      icon: 'PDF',\n      operationType: PDFOperationType.MERGE,\n      comingSoon: false\n    },\n    {\n      title: 'Compress PDF',\n      description: 'Reduce PDF file size while maintaining quality',\n      icon: 'COMPRESS',\n      operationType: PDFOperationType.COMPRESS,\n      comingSoon: false\n    },\n    {\n      title: 'Split PDF',\n      description: 'Extract pages or split PDF into multiple files',\n      icon: 'SPLIT',\n      operationType: PDFOperationType.SPLIT,\n      comingSoon: true\n    },\n    {\n      title: 'Rotate Pages',\n      description: 'Rotate pages 90, 180, or 270 degrees',\n      icon: 'ROTATE',\n      operationType: PDFOperationType.ROTATE,\n      comingSoon: true\n    },\n    {\n      title: 'Add Watermark',\n      description: 'Add text or image watermarks to your PDF',\n      icon: 'WATERMARK',\n      operationType: PDFOperationType.WATERMARK,\n      comingSoon: true\n    },\n    {\n      title: 'Extract Pages',\n      description: 'Extract specific pages from your PDF',\n      icon: 'EXTRACT',\n      operationType: PDFOperationType.EXTRACT_PAGES,\n      comingSoon: true\n    },\n    {\n      title: 'Extract Text',\n      description: 'Extract text content from PDF files',\n      icon: 'TEXT',\n      operationType: PDFOperationType.EXTRACT_TEXT,\n      comingSoon: true\n    },\n    {\n      title: 'PDF to Images',\n      description: 'Convert PDF pages to JPG or PNG images',\n      icon: 'IMAGE',\n      operationType: PDFOperationType.CONVERT,\n      comingSoon: true\n    }\n  ];\n\n  return (\n    <div className={className}>\n      <div className=\"text-center mb-12\">\n        <h2 className=\"text-3xl font-bold text-gray-900 mb-4\">\n          Choose Your Tool\n        </h2>\n        <p className=\"text-lg text-gray-600\">\n          Select a tool to get started with your PDF processing\n        </p>\n      </div>\n      \n      <div className=\"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6\">\n        {tools.map((tool) => (\n          <ToolCard\n            key={tool.operationType}\n            title={tool.title}\n            description={tool.description}\n            icon={tool.icon}\n            operationType={tool.operationType}\n            disabled={disabledTools.includes(tool.operationType)}\n            comingSoon={tool.comingSoon}\n            onClick={onToolSelect}\n          />\n        ))}\n      </div>\n      \n      {disabledTools.length > 0 && (\n        <div className=\"mt-8 text-center\">\n          <p className=\"text-sm text-gray-500\">\n            Upload some PDF files to enable the tools above\n          </p>\n        </div>\n      )}\n    </div>\n  );\n};\n\nexport default ToolsGrid;"
+import React from 'react';
+import ToolCard from '../molecules/ToolCard';
+
+interface ToolsGridProps {
+  onToolSelect: (toolType: string) => void;
+  disabledTools?: string[];
+  className?: string;
+}
+
+const ToolsGrid: React.FC<ToolsGridProps> = ({
+  onToolSelect,
+  disabledTools = [],
+  className = ''
+}) => {
+  const tools = [
+    {
+      title: 'Merge PDFs',
+      description: 'Combine multiple PDF files into one document',
+      icon: 'PDF',
+      operationType: 'merge',
+      comingSoon: false
+    },
+    {
+      title: 'Compress PDF',
+      description: 'Reduce PDF file size while maintaining quality',
+      icon: 'COMPRESS',
+      operationType: 'compress',
+      comingSoon: false
+    },
+    {
+      title: 'Split PDF',
+      description: 'Extract pages or split PDF into multiple files',
+      icon: 'SPLIT',
+      operationType: 'split',
+      comingSoon: true
+    },
+    {
+      title: 'Rotate Pages',
+      description: 'Rotate pages 90, 180, or 270 degrees',
+      icon: 'ROTATE',
+      operationType: 'rotate',
+      comingSoon: true
+    },
+    {
+      title: 'Add Watermark',
+      description: 'Add text or image watermarks to your PDF',
+      icon: 'WATERMARK',
+      operationType: 'watermark',
+      comingSoon: true
+    },
+    {
+      title: 'Extract Pages',
+      description: 'Extract specific pages from your PDF',
+      icon: 'EXTRACT',
+      operationType: 'extract',
+      comingSoon: true
+    },
+    {
+      title: 'Extract Text',
+      description: 'Extract text content from PDF files',
+      icon: 'TEXT',
+      operationType: 'extract-text',
+      comingSoon: true
+    },
+    {
+      title: 'PDF to Images',
+      description: 'Convert PDF pages to JPG or PNG images',
+      icon: 'IMAGE',
+      operationType: 'convert',
+      comingSoon: true
+    }
+  ];
+
+  const handleToolClick = (operationType: string) => {
+    onToolSelect(operationType);
+  };
+
+  return (
+    <div className={className}>
+      <div className="text-center mb-12">
+        <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          Choose Your Tool
+        </h2>
+        <p className="text-lg text-gray-600">
+          Select a tool to get started with your PDF processing
+        </p>
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {tools.map((tool) => (
+          <ToolCard
+            key={tool.operationType}
+            title={tool.title}
+            description={tool.description}
+            icon={tool.icon}
+            disabled={disabledTools.includes(tool.operationType) || tool.comingSoon}
+            onClick={() => handleToolClick(tool.operationType)}
+          />
+        ))}
+      </div>
+      
+      {disabledTools.length > 0 && (
+        <div className="mt-8 text-center">
+          <p className="text-sm text-gray-500">
+            Upload some PDF files to enable the tools above
+          </p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default ToolsGrid;
