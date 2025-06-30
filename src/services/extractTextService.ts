@@ -1,6 +1,7 @@
 import * as pdfjsLib from 'pdfjs-dist';
 import { PDFDocument } from 'pdf-lib';
 import { ProcessingResult } from '../types';
+import { TextFormatter, TextFormattingOptions } from './textFormatter';
 
 // Set up PDF.js worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
@@ -12,10 +13,14 @@ export interface ExtractTextOptions {
     start: number;
     end: number;
   };
+  // New formatting options
+  enableSmartFormatting: boolean;
+  formattingLevel: 'minimal' | 'standard' | 'advanced';
 }
 
 export interface ExtractedTextResult {
   text: string;
+  formattedText?: string;
   pageCount: number;
   metadata?: {
     title?: string;
@@ -26,16 +31,26 @@ export interface ExtractedTextResult {
     creationDate?: Date;
     modificationDate?: Date;
   };
+  formatting?: {
+    applied: boolean;
+    changes: string[];
+    level: string;
+  };
 }
 
 export class ExtractTextService {
   private static instance: ExtractTextService;
+  private textFormatter: TextFormatter;
 
   static getInstance(): ExtractTextService {
     if (!this.instance) {
       this.instance = new ExtractTextService();
     }
     return this.instance;
+  }
+
+  constructor() {
+    this.textFormatter = TextFormatter.getInstance();
   }
 
   async extractText(
@@ -107,8 +122,30 @@ export class ExtractTextService {
         }
 
         // Update progress
-        const pageProgress = 40 + ((pageNum - startPage + 1) / (endPage - startPage + 1)) * 50;
+        const pageProgress = 40 + ((pageNum - startPage + 1) / (endPage - startPage + 1)) * 40;
         onProgress?.(pageProgress);
+      }
+
+      onProgress?.(85);
+
+      // Apply smart formatting if enabled
+      let formattedText: string | undefined;
+      let formattingInfo: ExtractedTextResult['formatting'] | undefined;
+
+      if (options.enableSmartFormatting && extractedText.trim()) {
+        const formattingOptions = this.getFormattingOptions(options.formattingLevel);
+        
+        // Get preview of changes
+        const preview = this.textFormatter.previewFormatting(extractedText, formattingOptions);
+        
+        // Apply formatting
+        formattedText = this.textFormatter.formatText(extractedText, formattingOptions);
+        
+        formattingInfo = {
+          applied: true,
+          changes: preview.changes,
+          level: options.formattingLevel
+        };
       }
 
       onProgress?.(90);
@@ -129,11 +166,14 @@ export class ExtractTextService {
       onProgress?.(100);
 
       const finalText = extractedText.trim();
+      const displayText = formattedText || finalText;
 
       const result: ExtractedTextResult = {
-        text: finalText || '[No text could be extracted from this PDF]',
+        text: displayText || '[No text could be extracted from this PDF]',
+        formattedText: formattedText !== finalText ? formattedText : undefined,
         pageCount: endPage - startPage + 1,
-        metadata
+        metadata,
+        formatting: formattingInfo
       };
 
       return {
@@ -145,7 +185,9 @@ export class ExtractTextService {
           pageCount: totalPages,
           extractedPages: endPage - startPage + 1,
           textLength: result.text.length,
-          hasText: finalText.length > 0
+          hasText: finalText.length > 0,
+          formattingApplied: options.enableSmartFormatting,
+          formattingLevel: options.formattingLevel
         }
       };
 
@@ -155,6 +197,24 @@ export class ExtractTextService {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to extract text'
       };
+    }
+  }
+
+  private getFormattingOptions(level: ExtractTextOptions['formattingLevel']): TextFormattingOptions {
+    switch (level) {
+      case 'minimal':
+        return this.textFormatter.getMinimalOptions();
+      
+      case 'advanced':
+        return {
+          ...this.textFormatter.getDefaultOptions(),
+          detectHeadings: true,
+          preserveListStructure: true
+        };
+      
+      case 'standard':
+      default:
+        return this.textFormatter.getDefaultOptions();
     }
   }
 
@@ -178,32 +238,14 @@ export class ExtractTextService {
     }
   }
 
-  // Fallback method using pdf-lib (for metadata only)
-  private async extractMetadataWithPDFLib(arrayBuffer: ArrayBuffer): Promise<ExtractedTextResult['metadata']> {
-    try {
-      const pdfDoc = await PDFDocument.load(arrayBuffer);
-      
-      return {
-        title: pdfDoc.getTitle() || undefined,
-        author: pdfDoc.getAuthor() || undefined,
-        subject: pdfDoc.getSubject() || undefined,
-        creator: pdfDoc.getCreator() || undefined,
-        producer: pdfDoc.getProducer() || undefined,
-        creationDate: pdfDoc.getCreationDate() || undefined,
-        modificationDate: pdfDoc.getModificationDate() || undefined
-      };
-    } catch (error) {
-      console.warn('Could not extract metadata with pdf-lib:', error);
-      return undefined;
-    }
-  }
-
   // Get default options
   getDefaultOptions(): ExtractTextOptions {
     return {
       includeMetadata: true,
       preserveFormatting: true,
-      pageRange: undefined // Extract all pages
+      pageRange: undefined, // Extract all pages
+      enableSmartFormatting: true,
+      formattingLevel: 'standard'
     };
   }
 
@@ -239,27 +281,29 @@ export class ExtractTextService {
   downloadAsTextFile(result: ExtractedTextResult, originalFilename: string): void {
     let textContent = result.text;
 
-    // Add metadata header if available
-    if (result.metadata) {
-      const metadataHeader = [
+    // Add enhanced metadata header if available
+    if (result.metadata || result.formatting) {
+      const metadataLines = [
         '📄 PDF TEXT EXTRACTION RESULT',
         '=' .repeat(50),
-        result.metadata.title ? `Title: ${result.metadata.title}` : null,
-        result.metadata.author ? `Author: ${result.metadata.author}` : null,
-        result.metadata.subject ? `Subject: ${result.metadata.subject}` : null,
-        result.metadata.creator ? `Creator: ${result.metadata.creator}` : null,
-        result.metadata.producer ? `Producer: ${result.metadata.producer}` : null,
-        result.metadata.creationDate ? `Created: ${result.metadata.creationDate.toLocaleString()}` : null,
-        result.metadata.modificationDate ? `Modified: ${result.metadata.modificationDate.toLocaleString()}` : null,
+        result.metadata?.title ? `Title: ${result.metadata.title}` : null,
+        result.metadata?.author ? `Author: ${result.metadata.author}` : null,
+        result.metadata?.subject ? `Subject: ${result.metadata.subject}` : null,
+        result.metadata?.creator ? `Creator: ${result.metadata.creator}` : null,
+        result.metadata?.producer ? `Producer: ${result.metadata.producer}` : null,
+        result.metadata?.creationDate ? `Created: ${result.metadata.creationDate.toLocaleString()}` : null,
+        result.metadata?.modificationDate ? `Modified: ${result.metadata.modificationDate.toLocaleString()}` : null,
         `Pages extracted: ${result.pageCount}`,
         `Text length: ${result.text.length.toLocaleString()} characters`,
+        result.formatting?.applied ? `Smart formatting: ${result.formatting.level} level` : null,
+        result.formatting?.changes ? `Formatting changes: ${result.formatting.changes.join(', ')}` : null,
         `Extraction date: ${new Date().toLocaleString()}`,
         '',
         '=' .repeat(50),
         ''
-      ].filter(Boolean).join('\n');
+      ].filter(Boolean);
 
-      textContent = metadataHeader + '\n' + result.text;
+      textContent = metadataLines.join('\n') + '\n' + result.text;
     }
 
     const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' });
