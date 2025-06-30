@@ -1,0 +1,11 @@
+{
+  "timestamp": null,
+  "activeTask": null,
+  "workingFiles": [],
+  "blockers": [],
+  "environment": {
+    "nodeVersion": null,
+    "lastBuild": null,
+    "buildStatus": "unknown"
+  }
+}

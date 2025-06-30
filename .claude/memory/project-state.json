@@ -1,0 +1,12 @@
+{
+  "version": "0.1.0",
+  "initialized": "2025-06-30",
+  "sessionCount": 0,
+  "currentPhase": "initial-setup",
+  "lastSession": null,
+  "features": {
+    "implemented": ["merge", "split"],
+    "inProgress": [],
+    "planned": ["compress", "rotate", "watermark"]
+  }
+}

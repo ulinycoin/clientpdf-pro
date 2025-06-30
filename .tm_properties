@@ -1,0 +1,15 @@
+# TextMate settings for ClientPDF Pro
+excludeDirectories = {node_modules,dist,build,.cache}
+includeFiles = {.claude/**}
+
+# Показывать скрытые файлы
+showHidden = true
+
+# Подсветка для файлов Claude
+[ .claude/**/*.md ]
+fileType = markdown
+
+[ .claude/**/*.json ]
+fileType = json
+softTabs = true
+tabSize = 2
