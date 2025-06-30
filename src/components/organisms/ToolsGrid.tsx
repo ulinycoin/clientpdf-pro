@@ -43,10 +43,10 @@ const ToolsGrid: React.FC<ToolsGridProps> = ({
     },
     {
       title: 'Add Watermark',
-      description: 'Add text or image watermarks to your PDF',
+      description: 'Add text watermarks to protect your documents',
       icon: 'WATERMARK',
       operationType: 'watermark',
-      comingSoon: true
+      comingSoon: false
     },
     {
       title: 'Extract Pages',
