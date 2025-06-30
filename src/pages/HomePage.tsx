@@ -62,37 +62,37 @@ const HomePage = () => {
   }
 
   return (
-    <div className=\"min-h-screen bg-gray-50\">
+    <div className="min-h-screen bg-gray-50">
       <Header />
       
       <main>
         {/* Hero Section */}
-        <div className=\"max-w-4xl mx-auto px-4 py-16\">
-          <div className=\"text-center mb-12\">
-            <h1 className=\"text-4xl font-bold text-gray-900 mb-4\">
+        <div className="max-w-4xl mx-auto px-4 py-16">
+          <div className="text-center mb-12">
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">
               Free PDF Tools
             </h1>
-            <p className=\"text-xl text-gray-600 mb-8\">
+            <p className="text-xl text-gray-600 mb-8">
               Convert, merge, split and compress PDFs - all locally in your browser
             </p>
-            <p className=\"text-sm text-gray-500\">
+            <p className="text-sm text-gray-500">
               🔒 Your files never leave your device • 🚀 Fast processing • 💯 Completely free
             </p>
           </div>
 
           {/* File Upload Zone */}
-          <div className=\"mb-8\">
+          <div className="mb-8">
             <FileUploadZone
               onFileSelect={handleFileSelect}
               maxFiles={10}
               maxSizeBytes={50 * 1024 * 1024} // 50MB
-              className=\"mb-6\"
+              className="mb-6"
             />
           </div>
 
           {/* File List */}
           {files.length > 0 && (
-            <div className=\"mb-8\">
+            <div className="mb-8">
               <FileList
                 files={files}
                 onRemoveFile={handleRemoveFile}
@@ -103,22 +103,22 @@ const HomePage = () => {
         </div>
 
         {/* Tools section */}
-        <div className=\"max-w-4xl mx-auto px-4 pb-16\">
-          <div className=\"text-center\">
-            <div className=\"bg-white rounded-lg shadow-sm border border-gray-200 p-8\">
-              <h2 className=\"text-2xl font-semibold text-gray-900 mb-4\">
+        <div className="max-w-4xl mx-auto px-4 pb-16">
+          <div className="text-center">
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+              <h2 className="text-2xl font-semibold text-gray-900 mb-4">
                 PDF Tools Coming Soon
               </h2>
-              <p className=\"text-gray-600 mb-6\">
+              <p className="text-gray-600 mb-6">
                 Merge • Split • Compress • Convert
               </p>
               
               {files.filter(f => f.status === 'completed').length > 0 && (
-                <div className=\"bg-blue-50 border border-blue-200 rounded-lg p-4\">
-                  <p className=\"text-blue-800 font-medium\">
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <p className="text-blue-800 font-medium">
                     ✅ {files.filter(f => f.status === 'completed').length} файл(ов) готово к обработке
                   </p>
-                  <p className=\"text-blue-600 text-sm mt-1\">
+                  <p className="text-blue-600 text-sm mt-1">
                     Инструменты для работы с PDF будут добавлены в следующих обновлениях
                   </p>
                 </div>
