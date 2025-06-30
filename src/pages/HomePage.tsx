@@ -8,6 +8,7 @@ import MergeTool from '../components/organisms/MergeTool';
 import CompressionTool from '../components/organisms/CompressionTool';
 import SplitTool from '../components/organisms/SplitTool';
 import RotateTool from '../components/organisms/RotateTool';
+import WatermarkTool from '../components/organisms/WatermarkTool';
 import { useFileUpload } from '../hooks/useFileUpload';
 import { downloadBlob, generateFilename } from '../utils/fileHelpers';
 
@@ -89,6 +90,8 @@ const HomePage: React.FC = () => {
         return <SplitTool {...props} />;
       case 'rotate':
         return <RotateTool {...props} />;
+      case 'watermark':
+        return <WatermarkTool {...props} />;
       default:
         return (
           <div className="bg-white rounded-lg shadow-lg p-6">
