@@ -5,6 +5,8 @@ import FileUploadZone from '../components/molecules/FileUploadZone';
 import ToolsGrid from '../components/organisms/ToolsGrid';
 import MergeTool from '../components/organisms/MergeTool';
 import CompressionTool from '../components/organisms/CompressionTool';
+import SplitTool from '../components/organisms/SplitTool';
+import RotateTool from '../components/organisms/RotateTool';
 import { useFileUpload } from '../hooks/useFileUpload';
 import { downloadBlob, generateFilename } from '../utils/fileHelpers';
 
@@ -41,17 +43,19 @@ const HomePage: React.FC = () => {
 
   const handleToolComplete = (result: PDFProcessingResult | PDFProcessingResult[]) => {
     if (Array.isArray(result)) {
+      // Handle multiple results (e.g., from split tool)
       result.forEach((res, index) => {
         if (res.success && res.data) {
           const filename = generateFilename(
-            `split_part_${index + 1}`,
-            undefined,
+            `${selectedTool}_part_${index + 1}`,
+            files[0]?.name,
             true
           );
           downloadBlob(res.data, filename);
         }
       });
     } else {
+      // Handle single result
       if (result.success && result.data) {
         const toolName = selectedTool || 'processed';
         const filename = generateFilename(
@@ -80,6 +84,10 @@ const HomePage: React.FC = () => {
         return <MergeTool {...props} />;
       case 'compress':
         return <CompressionTool {...props} />;
+      case 'split':
+        return <SplitTool {...props} />;
+      case 'rotate':
+        return <RotateTool {...props} />;
       default:
         return (
           <div className="bg-white rounded-lg shadow-lg p-6">
@@ -111,7 +119,7 @@ const HomePage: React.FC = () => {
               Free PDF Tools
             </h1>
             <p className="text-xl text-gray-600 mb-8">
-              Convert, merge, split and compress PDFs - all locally in your browser
+              Convert, merge, split, rotate and compress PDFs - all locally in your browser
             </p>
             <p className="text-sm text-gray-500">
               Your files never leave your device - Fast processing - Completely free
