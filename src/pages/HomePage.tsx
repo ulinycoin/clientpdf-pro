@@ -9,6 +9,7 @@ import CompressionTool from '../components/organisms/CompressionTool';
 import SplitTool from '../components/organisms/SplitTool';
 import RotateTool from '../components/organisms/RotateTool';
 import WatermarkTool from '../components/organisms/WatermarkTool';
+import ExtractTextTool from '../components/organisms/ExtractTextTool';
 import { useFileUpload } from '../hooks/useFileUpload';
 import { downloadBlob, generateFilename } from '../utils/fileHelpers';
 
@@ -59,13 +60,16 @@ const HomePage: React.FC = () => {
     } else {
       // Handle single result
       if (result.success && result.data) {
-        const toolName = selectedTool || 'processed';
-        const filename = generateFilename(
-          toolName,
-          files[0]?.name,
-          true
-        );
-        downloadBlob(result.data, filename);
+        // For extract-text tool, the download is handled within the component
+        if (selectedTool !== 'extract-text') {
+          const toolName = selectedTool || 'processed';
+          const filename = generateFilename(
+            toolName,
+            files[0]?.name,
+            true
+          );
+          downloadBlob(result.data, filename);
+        }
       }
     }
     
@@ -92,6 +96,8 @@ const HomePage: React.FC = () => {
         return <RotateTool {...props} />;
       case 'watermark':
         return <WatermarkTool {...props} />;
+      case 'extract-text':
+        return <ExtractTextTool {...props} />;
       default:
         return (
           <div className="bg-white rounded-lg shadow-lg p-6">
@@ -189,7 +195,7 @@ const HomePage: React.FC = () => {
           <div className="max-w-7xl mx-auto px-4 pb-16">
             <ToolsGrid 
               onToolSelect={handleToolSelect}
-              disabledTools={files.length === 0 ? ['merge', 'compress', 'split', 'rotate', 'watermark'] : []}
+              disabledTools={files.length === 0 ? ['merge', 'compress', 'split', 'rotate', 'watermark', 'extract-text'] : []}
             />
           </div>
         )}
