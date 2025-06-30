@@ -73,6 +73,9 @@ const ExtractTextTool: React.FC<ExtractTextToolProps> = ({
 
   const currentFile = files[0];
 
+  // Helper to show before/after comparison if both exist
+  const showComparison = result?.success && result.data?.formattedText && result.data?.text !== result.data?.formattedText;
+
   return (
     <div className={`bg-white rounded-lg shadow-lg p-6 ${className}`}>
       {/* Header */}
@@ -303,10 +306,43 @@ const ExtractTextTool: React.FC<ExtractTextToolProps> = ({
                 )}
               </div>
               
-              {/* Preview first 400 characters */}
-              {result.data.text && result.data.text.length > 50 && (
+              {/* Before/After Comparison Preview */}
+              {showComparison && (
+                <div className="mt-4 p-4 bg-white border border-green-300 rounded-lg">
+                  <h5 className="font-medium text-gray-900 mb-3">🔍 Formatting Improvement Preview:</h5>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Before */}
+                    <div>
+                      <p className="text-xs font-medium text-red-600 mb-2">❌ Before (Raw):</p>
+                      <div className="p-2 bg-red-50 border border-red-200 rounded text-xs">
+                        <pre className="whitespace-pre-wrap font-mono text-gray-700">
+                          {result.data.formattedText!.substring(0, 200)}...
+                        </pre>
+                      </div>
+                    </div>
+                    
+                    {/* After */}
+                    <div>
+                      <p className="text-xs font-medium text-green-600 mb-2">✅ After (Smart Formatted):</p>
+                      <div className="p-2 bg-green-50 border border-green-200 rounded text-xs">
+                        <pre className="whitespace-pre-wrap font-mono text-gray-700">
+                          {result.data.text.substring(0, 200)}...
+                        </pre>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <p className="text-xs text-gray-500 mt-2 text-center">
+                    ↑ Notice the improved formatting, merged words, and better structure!
+                  </p>
+                </div>
+              )}
+
+              {/* Regular preview for non-formatted text */}
+              {!showComparison && result.data.text && result.data.text.length > 50 && (
                 <div className="mt-3 p-3 bg-white border border-green-200 rounded text-xs">
-                  <p className="font-medium text-gray-700 mb-2">Formatted Text Preview:</p>
+                  <p className="font-medium text-gray-700 mb-2">📄 Extracted Text Preview:</p>
                   <p className="text-gray-600 font-mono whitespace-pre-wrap">
                     {result.data.text.substring(0, 400)}
                     {result.data.text.length > 400 && '...'}
