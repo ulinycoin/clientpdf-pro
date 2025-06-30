@@ -29,7 +29,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onFilesSelected }) => {
 
           {/* Feature Pills */}
           <div className="flex flex-wrap justify-center gap-4 mb-12">
-            {features.map((feature, index) => (
+            {features.map((feature) => (
               <div
                 key={feature.text}
                 className="flex items-center space-x-2 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-soft border border-gray-200 hover:shadow-medium transition-shadow duration-200"
