@@ -15,7 +15,7 @@ const FileUploadZone = ({
   onFileSelect,
   acceptedTypes = ['.pdf'],
   maxFiles = 10,
-  maxSizeBytes = 50 * 1024 * 1024, // 50MB по умолчанию
+  maxSizeBytes = 50 * 1024 * 1024, // 50MB default
   className = '',
   disabled = false
 }: FileUploadZoneProps) => {
@@ -28,28 +28,28 @@ const FileUploadZone = ({
     const errors: string[] = []
 
     if (files.length > maxFiles) {
-      errors.push(`Максимум ${maxFiles} файлов за раз`)
+      errors.push(`Maximum ${maxFiles} files at once`)
       return { valid, errors }
     }
 
     files.forEach(file => {
-      // Проверка типа файла
+      // Check file type
       const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase()
       if (!acceptedTypes.includes(fileExtension)) {
-        errors.push(`${file.name}: неподдерживаемый тип файла`)
+        errors.push(`${file.name}: unsupported file type`)
         return
       }
 
-      // Проверка размера
+      // Check file size
       if (file.size > maxSizeBytes) {
         const maxSizeMB = Math.round(maxSizeBytes / (1024 * 1024))
-        errors.push(`${file.name}: файл слишком большой (макс. ${maxSizeMB}MB)`)
+        errors.push(`${file.name}: file too large (max ${maxSizeMB}MB)`)
         return
       }
 
-      // Проверка что это действительно PDF
+      // Check if it's actually a PDF
       if (file.type !== 'application/pdf') {
-        errors.push(`${file.name}: не является PDF файлом`)
+        errors.push(`${file.name}: not a valid PDF file`)
         return
       }
 
@@ -108,7 +108,7 @@ const FileUploadZone = ({
 
   const handleFileInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     handleFiles(e.target.files)
-    // Очищаем input для возможности повторного выбора тех же файлов
+    // Clear input to allow selecting the same files again
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
     }
@@ -157,7 +157,7 @@ const FileUploadZone = ({
         className="h-full w-full"
       >
         <div className="flex flex-col items-center justify-center space-y-4">
-          {/* Иконка */}
+          {/* Icon */}
           <div className={`p-4 rounded-full ${error ? 'bg-red-100' : 'bg-blue-100'}`}>
             <Icon 
               name={error ? 'x' : 'upload'} 
@@ -166,33 +166,33 @@ const FileUploadZone = ({
             />
           </div>
 
-          {/* Основной текст */}
+          {/* Main text */}
           <div className="space-y-2">
             <h3 className="text-lg font-medium text-gray-900">
               {isDragging && !disabled
-                ? 'Отпустите файлы здесь'
+                ? 'Drop files here'
                 : error
-                ? 'Ошибка загрузки'
-                : 'Загрузите PDF файлы'
+                ? 'Upload failed'
+                : 'Upload PDF files'
               }
             </h3>
             
             {!error && (
               <p className="text-sm text-gray-600">
-                Перетащите файлы сюда или{' '}
-                <span className="text-blue-600 font-medium">нажмите для выбора</span>
+                Drag and drop files here or{' '}
+                <span className="text-blue-600 font-medium">click to browse</span>
               </p>
             )}
           </div>
 
-          {/* Ошибка */}
+          {/* Error */}
           {error && (
             <div className="text-sm text-red-600 bg-red-100 px-3 py-2 rounded-md">
               {error}
             </div>
           )}
 
-          {/* Кнопка загрузки */}
+          {/* Upload button */}
           {!isDragging && !error && (
             <Button
               onClick={(e) => {
@@ -203,15 +203,15 @@ const FileUploadZone = ({
               size="md"
               disabled={disabled}
             >
-              Выбрать файлы
+              Choose Files
             </Button>
           )}
 
-          {/* Дополнительная информация */}
+          {/* Additional info */}
           <div className="text-xs text-gray-500 space-y-1">
-            <p>Поддерживаемые форматы: {formatFileTypes()}</p>
-            <p>Максимальный размер: {formatMaxSize()} на файл</p>
-            {maxFiles > 1 && <p>До {maxFiles} файлов одновременно</p>}
+            <p>Supported formats: {formatFileTypes()}</p>
+            <p>Maximum size: {formatMaxSize()} per file</p>
+            {maxFiles > 1 && <p>Up to {maxFiles} files at once</p>}
           </div>
         </div>
       </div>
