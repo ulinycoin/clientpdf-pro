@@ -51,7 +51,7 @@
 
   /* Modern Tool Card */
   .tool-card {
-    @apply card card-interactive p-8 text-center group relative overflow-hidden;
+    @apply card card-interactive p-8 text-center relative overflow-hidden;
   }
   
   .tool-card-enabled {
