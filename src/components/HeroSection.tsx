@@ -1,6 +1,6 @@
 import React from 'react'
-import { motion } from 'framer-motion'
-import { Shield, Zap, Heart } from 'lucide-react'
+// import { motion } from 'framer-motion'
+// import { Shield, Zap, Heart } from 'lucide-react'
 import FileUploadZone from './molecules/FileUploadZone'
 
 interface HeroSectionProps {
@@ -9,26 +9,16 @@ interface HeroSectionProps {
 
 const HeroSection: React.FC<HeroSectionProps> = ({ onFilesSelected }) => {
   const features = [
-    { icon: Shield, text: 'Private', subtitle: '100% Client-side' },
-    { icon: Zap, text: 'Fast', subtitle: 'Instant Processing' },
-    { icon: Heart, text: 'Simple', subtitle: 'No Signup Required' },
+    { icon: '🛡️', text: 'Private', subtitle: '100% Client-side' },
+    { icon: '⚡', text: 'Fast', subtitle: 'Instant Processing' },
+    { icon: '❤️', text: 'Simple', subtitle: 'No Signup Required' },
   ]
 
   return (
-    <motion.section 
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, delay: 0.2 }}
-      className="py-16 lg:py-24 bg-gradient-to-br from-gray-50 via-white to-primary-50/30"
-    >
+    <section className="py-16 lg:py-24 bg-gradient-to-br from-gray-50 via-white to-primary-50/30">
       <div className="container-app">
         {/* Hero Text */}
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="text-center mb-12"
-        >
+        <div className="text-center mb-12">
           <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 mb-6">
             Free <span className="text-gradient">PDF Tools</span>
           </h1>
@@ -38,40 +28,22 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onFilesSelected }) => {
           </p>
 
           {/* Feature Pills */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-            className="flex flex-wrap justify-center gap-4 mb-12"
-          >
+          <div className="flex flex-wrap justify-center gap-4 mb-12">
             {features.map((feature, index) => (
-              <motion.div
+              <div
                 key={feature.text}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ 
-                  duration: 0.4, 
-                  delay: 0.8 + index * 0.1,
-                  type: 'spring',
-                  stiffness: 200
-                }}
                 className="flex items-center space-x-2 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-soft border border-gray-200 hover:shadow-medium transition-shadow duration-200"
               >
-                <feature.icon className="w-4 h-4 text-primary-600" />
+                <span className="text-lg">{feature.icon}</span>
                 <span className="font-medium text-gray-900">{feature.text}</span>
                 <span className="text-sm text-gray-500">• {feature.subtitle}</span>
-              </motion.div>
+              </div>
             ))}
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
 
         {/* File Upload Zone */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.8 }}
-          className="max-w-2xl mx-auto"
-        >
+        <div className="max-w-2xl mx-auto">
           <FileUploadZone 
             onFilesSelected={onFilesSelected}
             accept={{ 
@@ -82,15 +54,10 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onFilesSelected }) => {
             maxSize={100 * 1024 * 1024} // 100MB
             multiple={true}
           />
-        </motion.div>
+        </div>
 
         {/* Trust Indicators */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 1.2 }}
-          className="mt-12 text-center"
-        >
+        <div className="mt-12 text-center">
           <div className="flex flex-wrap justify-center items-center gap-8 text-sm text-gray-500">
             <div className="flex items-center space-x-2">
               <div className="w-2 h-2 bg-green-400 rounded-full"></div>
@@ -105,9 +72,9 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onFilesSelected }) => {
               <span>No account required</span>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
-    </motion.section>
+    </section>
   )
 }
 
