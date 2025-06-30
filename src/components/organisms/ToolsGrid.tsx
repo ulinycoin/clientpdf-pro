@@ -56,17 +56,17 @@ const ToolsGrid: React.FC<ToolsGridProps> = ({
       comingSoon: false
     },
     {
+      title: 'PDF to Images',
+      description: 'Convert PDF pages to high-quality PNG or JPEG images',
+      icon: 'IMAGE',
+      operationType: 'pdf-to-image',
+      comingSoon: false
+    },
+    {
       title: 'Extract Pages',
       description: 'Extract specific pages from your PDF',
       icon: 'EXTRACT',
       operationType: 'extract',
-      comingSoon: true
-    },
-    {
-      title: 'PDF to Images',
-      description: 'Convert PDF pages to JPG or PNG images',
-      icon: 'IMAGE',
-      operationType: 'convert',
       comingSoon: true
     }
   ];
