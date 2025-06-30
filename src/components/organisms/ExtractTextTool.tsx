@@ -237,16 +237,22 @@ const ExtractTextTool: React.FC<ExtractTextToolProps> = ({
                 {result.data.metadata?.title && (
                   <p>📋 Document title: {result.data.metadata.title}</p>
                 )}
+                {result.data.metadata?.author && (
+                  <p>👤 Author: {result.data.metadata.author}</p>
+                )}
                 <p>💾 File automatically downloaded as .txt</p>
+                {result.metadata?.hasText === false && (
+                  <p className="text-orange-600">⚠️ This PDF may contain scanned images without extractable text</p>
+                )}
               </div>
               
-              {/* Preview first 200 characters */}
-              {result.data.text && (
+              {/* Preview first 300 characters */}
+              {result.data.text && result.data.text.length > 50 && (
                 <div className="mt-3 p-3 bg-white border border-green-200 rounded text-xs">
                   <p className="font-medium text-gray-700 mb-2">Text Preview:</p>
-                  <p className="text-gray-600 font-mono">
-                    {result.data.text.substring(0, 200)}
-                    {result.data.text.length > 200 && '...'}
+                  <p className="text-gray-600 font-mono whitespace-pre-wrap">
+                    {result.data.text.substring(0, 300)}
+                    {result.data.text.length > 300 && '...'}
                   </p>
                 </div>
               )}
@@ -272,29 +278,29 @@ const ExtractTextTool: React.FC<ExtractTextToolProps> = ({
       )}
 
       {/* Info Box */}
-      <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+      <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
         <div className="flex items-start">
-          <div className="text-yellow-400 mr-2 mt-0.5">ℹ️</div>
+          <div className="text-blue-400 mr-2 mt-0.5">ℹ️</div>
           <div>
-            <h4 className="text-yellow-800 font-medium">Important Note</h4>
-            <p className="text-yellow-700 text-sm mt-1">
-              Text extraction quality depends on how the PDF was created. 
-              PDFs created from scanned images may not contain extractable text. 
-              For best results, use PDFs created from text documents.
+            <h4 className="text-blue-800 font-medium">How Text Extraction Works</h4>
+            <p className="text-blue-700 text-sm mt-1">
+              Using PDF.js technology to extract actual text content from your PDF. 
+              Works best with PDFs created from text documents. Scanned images or 
+              image-based PDFs may have limited or no extractable text.
             </p>
           </div>
         </div>
       </div>
 
       {/* Privacy Notice */}
-      <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+      <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
         <div className="flex items-start">
-          <div className="text-blue-400 mr-2 mt-0.5">🔒</div>
+          <div className="text-green-400 mr-2 mt-0.5">🔒</div>
           <div>
-            <h4 className="text-blue-800 font-medium">Privacy & Security</h4>
-            <p className="text-blue-700 text-sm mt-1">
-              Text extraction happens locally in your browser. Your PDF content never leaves your device, 
-              ensuring complete privacy and security.
+            <h4 className="text-green-800 font-medium">Privacy & Security</h4>
+            <p className="text-green-700 text-sm mt-1">
+              Text extraction happens locally in your browser using PDF.js technology. 
+              Your PDF content never leaves your device, ensuring complete privacy and security.
             </p>
           </div>
         </div>
