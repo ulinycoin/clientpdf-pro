@@ -10,6 +10,7 @@ import SplitTool from '../components/organisms/SplitTool';
 import RotateTool from '../components/organisms/RotateTool';
 import WatermarkTool from '../components/organisms/WatermarkTool';
 import ExtractTextTool from '../components/organisms/ExtractTextTool';
+import { PdfToImageTool } from '../components/organisms/PdfToImageTool';
 import { useFileUpload } from '../hooks/useFileUpload';
 import { downloadBlob, generateFilename } from '../utils/fileHelpers';
 
@@ -32,6 +33,12 @@ const HomePage: React.FC = () => {
   };
 
   const handleToolSelect = (toolType: string) => {
+    // PDF to Image tool doesn't require pre-uploaded files
+    if (toolType === 'pdf-to-image') {
+      setSelectedTool(toolType);
+      return;
+    }
+
     if (files.length === 0) {
       alert('Please upload some PDF files first!');
       return;
@@ -60,8 +67,8 @@ const HomePage: React.FC = () => {
     } else {
       // Handle single result
       if (result.success && result.data) {
-        // For extract-text tool, the download is handled within the component
-        if (selectedTool !== 'extract-text') {
+        // For extract-text tool and pdf-to-image tool, the download is handled within the component
+        if (selectedTool !== 'extract-text' && selectedTool !== 'pdf-to-image') {
           const toolName = selectedTool || 'processed';
           const filename = generateFilename(
             toolName,
@@ -98,6 +105,8 @@ const HomePage: React.FC = () => {
         return <WatermarkTool {...props} />;
       case 'extract-text':
         return <ExtractTextTool {...props} />;
+      case 'pdf-to-image':
+        return <PdfToImageTool />;
       default:
         return (
           <div className="bg-white rounded-lg shadow-lg p-6">
@@ -136,18 +145,21 @@ const HomePage: React.FC = () => {
             </p>
           </div>
 
-          <div className="mb-8">
-            <FileUploadZone
-              onFilesSelected={handleFileSelect}
-              accept="application/pdf"
-              multiple={true}
-              maxSize={100 * 1024 * 1024}
-              disabled={false}
-              className="mb-6"
-            />
-          </div>
+          {/* Only show file upload zone if not using standalone tools */}
+          {selectedTool !== 'pdf-to-image' && (
+            <div className="mb-8">
+              <FileUploadZone
+                onFilesSelected={handleFileSelect}
+                accept="application/pdf"
+                multiple={true}
+                maxSize={100 * 1024 * 1024}
+                disabled={false}
+                className="mb-6"
+              />
+            </div>
+          )}
 
-          {files.length > 0 && (
+          {files.length > 0 && selectedTool !== 'pdf-to-image' && (
             <div className="mb-8">
               <div className="bg-white rounded-lg shadow p-4">
                 <h3 className="text-lg font-medium mb-4">Uploaded Files ({files.length})</h3>
