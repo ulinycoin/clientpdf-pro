@@ -80,7 +80,7 @@ const ExtractTextTool: React.FC<ExtractTextToolProps> = ({
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Extract Text</h2>
           <p className="text-gray-600 mt-1">
-            Extract text content from your PDF document
+            Extract and intelligently format text content from your PDF
           </p>
         </div>
         <Button variant="ghost" onClick={onClose}>
@@ -112,6 +112,57 @@ const ExtractTextTool: React.FC<ExtractTextToolProps> = ({
         <h3 className="text-lg font-medium text-gray-900 mb-4">Extraction Options:</h3>
         
         <div className="space-y-4">
+          {/* Smart Formatting Toggle */}
+          <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                checked={options.enableSmartFormatting}
+                onChange={(e) => setOptions(prev => ({ ...prev, enableSmartFormatting: e.target.checked }))}
+                disabled={isProcessing}
+                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+              />
+              <span className="ml-3 text-sm font-medium text-blue-900">
+                ✨ Enable Smart Formatting (Recommended)
+              </span>
+            </label>
+            <p className="ml-7 text-xs text-blue-700 mt-1">
+              Automatically clean up text, fix line breaks, detect headings, and improve readability
+            </p>
+          </div>
+
+          {/* Formatting Level */}
+          {options.enableSmartFormatting && (
+            <div className="ml-4 space-y-3">
+              <label className="block text-sm font-medium text-gray-700">
+                Formatting Level:
+              </label>
+              <div className="space-y-2">
+                {[
+                  { value: 'minimal', label: 'Minimal', desc: 'Basic cleanup - merge broken words, remove extra spaces' },
+                  { value: 'standard', label: 'Standard', desc: 'Recommended - paragraphs, headings, lists, clean formatting' },
+                  { value: 'advanced', label: 'Advanced', desc: 'Maximum - all features plus enhanced structure detection' }
+                ].map((level) => (
+                  <label key={level.value} className="flex items-start">
+                    <input
+                      type="radio"
+                      name="formattingLevel"
+                      value={level.value}
+                      checked={options.formattingLevel === level.value}
+                      onChange={(e) => setOptions(prev => ({ ...prev, formattingLevel: e.target.value as any }))}
+                      disabled={isProcessing}
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 mt-0.5"
+                    />
+                    <div className="ml-3">
+                      <span className="text-sm font-medium text-gray-900">{level.label}</span>
+                      <p className="text-xs text-gray-600">{level.desc}</p>
+                    </div>
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Include Metadata */}
           <label className="flex items-center">
             <input
@@ -240,19 +291,25 @@ const ExtractTextTool: React.FC<ExtractTextToolProps> = ({
                 {result.data.metadata?.author && (
                   <p>👤 Author: {result.data.metadata.author}</p>
                 )}
+                {result.data.formatting?.applied && (
+                  <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded">
+                    <p className="text-blue-800 font-medium text-xs">✨ Smart Formatting Applied ({result.data.formatting.level})</p>
+                    <p className="text-blue-700 text-xs">{result.data.formatting.changes.join(', ')}</p>
+                  </div>
+                )}
                 <p>💾 File automatically downloaded as .txt</p>
                 {result.metadata?.hasText === false && (
                   <p className="text-orange-600">⚠️ This PDF may contain scanned images without extractable text</p>
                 )}
               </div>
               
-              {/* Preview first 300 characters */}
+              {/* Preview first 400 characters */}
               {result.data.text && result.data.text.length > 50 && (
                 <div className="mt-3 p-3 bg-white border border-green-200 rounded text-xs">
-                  <p className="font-medium text-gray-700 mb-2">Text Preview:</p>
+                  <p className="font-medium text-gray-700 mb-2">Formatted Text Preview:</p>
                   <p className="text-gray-600 font-mono whitespace-pre-wrap">
-                    {result.data.text.substring(0, 300)}
-                    {result.data.text.length > 300 && '...'}
+                    {result.data.text.substring(0, 400)}
+                    {result.data.text.length > 400 && '...'}
                   </p>
                 </div>
               )}
@@ -280,13 +337,13 @@ const ExtractTextTool: React.FC<ExtractTextToolProps> = ({
       {/* Info Box */}
       <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
         <div className="flex items-start">
-          <div className="text-blue-400 mr-2 mt-0.5">ℹ️</div>
+          <div className="text-blue-400 mr-2 mt-0.5">🧠</div>
           <div>
-            <h4 className="text-blue-800 font-medium">How Text Extraction Works</h4>
+            <h4 className="text-blue-800 font-medium">Smart Text Extraction</h4>
             <p className="text-blue-700 text-sm mt-1">
-              Using PDF.js technology to extract actual text content from your PDF. 
-              Works best with PDFs created from text documents. Scanned images or 
-              image-based PDFs may have limited or no extractable text.
+              Using PDF.js with intelligent formatting to extract clean, readable text. 
+              Smart formatting automatically fixes common PDF text issues like broken words, 
+              messy line breaks, and poor structure.
             </p>
           </div>
         </div>
@@ -299,7 +356,7 @@ const ExtractTextTool: React.FC<ExtractTextToolProps> = ({
           <div>
             <h4 className="text-green-800 font-medium">Privacy & Security</h4>
             <p className="text-green-700 text-sm mt-1">
-              Text extraction happens locally in your browser using PDF.js technology. 
+              Text extraction and formatting happen locally in your browser. 
               Your PDF content never leaves your device, ensuring complete privacy and security.
             </p>
           </div>
