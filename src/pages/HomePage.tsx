@@ -1,1 +1,145 @@
-import React, { useState } from 'react'\nimport Header from '../components/Header'\nimport HeroSection from '../components/HeroSection'\nimport ToolCard from '../components/ToolCard'\nimport MergePDF from '../components/MergePDF'\n\ntype Tool = 'merge' | 'split' | 'compress' | 'images'\ntype AppState = 'home' | 'tool'\n\nconst HomePage: React.FC = () => {\n  const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null)\n  const [activeTool, setActiveTool] = useState<Tool | null>(null)\n  const [appState, setAppState] = useState<AppState>('home')\n\n  const handleFilesSelected = (files: FileList) => {\n    setSelectedFiles(files)\n    console.log('Files selected:', Array.from(files).map(f => f.name))\n  }\n\n  const handleToolClick = (tool: Tool) => {\n    setActiveTool(tool)\n    \n    if (tool === 'merge') {\n      // Check if we have files to merge\n      if (selectedFiles && selectedFiles.length > 0) {\n        setAppState('tool')\n      } else {\n        alert('Please select PDF files first using the \"Choose Files\" button above.')\n      }\n    } else {\n      // TODO: Implement other tools\n      alert(`${tool} functionality coming soon!`)\n    }\n  }\n\n  const handleBackToHome = () => {\n    setAppState('home')\n    setActiveTool(null)\n    // Keep selected files for potential reuse\n  }\n\n  const hasFiles = selectedFiles && selectedFiles.length > 0\n  const pdfFileCount = hasFiles ? \n    Array.from(selectedFiles).filter(file => \n      file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')\n    ).length : 0\n\n  // Show tool interface\n  if (appState === 'tool' && activeTool === 'merge' && selectedFiles) {\n    return (\n      <div className=\"app\">\n        <Header />\n        <div className=\"container\">\n          <MergePDF \n            files={selectedFiles}\n            onClose={handleBackToHome}\n          />\n        </div>\n      </div>\n    )\n  }\n\n  // Show home page\n  return (\n    <div className=\"home-page\">\n      <Header />\n      \n      <HeroSection onFilesSelected={handleFilesSelected} />\n      \n      <section className=\"tools-section\">\n        <div className=\"container\">\n          {hasFiles && (\n            <div className=\"mb-32 text-center\">\n              <p className=\"text-base mb-8\">\n                📁 {selectedFiles!.length} file(s) selected\n              </p>\n              {pdfFileCount > 0 && (\n                <p className=\"text-sm\" style={{ color: '#059669' }}>\n                  ✓ {pdfFileCount} PDF file{pdfFileCount > 1 ? 's' : ''} ready for processing\n                </p>\n              )}\n              {pdfFileCount === 0 && (\n                <p className=\"text-sm\" style={{ color: '#DC2626' }}>\n                  ⚠️ No PDF files found. Please select PDF files for processing.\n                </p>\n              )}\n            </div>\n          )}\n          \n          <div className=\"grid grid-2\">\n            <ToolCard\n              icon=\"🔗\"\n              title=\"Merge\"\n              description=\"Combine multiple PDF files\"\n              onClick={() => handleToolClick('merge')}\n              disabled={pdfFileCount < 1}\n            />\n            \n            <ToolCard\n              icon=\"✂️\"\n              title=\"Split\"\n              description=\"Extract pages from PDF\"\n              onClick={() => handleToolClick('split')}\n              disabled={true}\n            />\n            \n            <ToolCard\n              icon=\"🗜️\"\n              title=\"Compress\"\n              description=\"Reduce PDF file size\"\n              onClick={() => handleToolClick('compress')}\n              disabled={true}\n            />\n            \n            <ToolCard\n              icon=\"🖼️\"\n              title=\"Images\"\n              description=\"Convert images to PDF\"\n              onClick={() => handleToolClick('images')}\n              disabled={true}\n            />\n          </div>\n          \n          {!hasFiles && (\n            <div className=\"mt-32 text-center\">\n              <p className=\"text-sm\" style={{ color: '#6B7280' }}>\n                Select files above to start processing\n              </p>\n            </div>\n          )}\n          \n          {activeTool && appState === 'home' && (\n            <div className=\"mt-32 text-center\">\n              <p className=\"text-sm\" style={{ color: '#6B7280' }}>\n                Selected tool: <strong>{activeTool}</strong>\n              </p>\n            </div>\n          )}\n        </div>\n      </section>\n    </div>\n  )\n}\n\nexport default HomePage"
+import React, { useState } from 'react'
+import Header from '../components/Header'
+import HeroSection from '../components/HeroSection'
+import ToolCard from '../components/ToolCard'
+import MergePDF from '../components/MergePDF'
+
+type Tool = 'merge' | 'split' | 'compress' | 'images'
+type AppState = 'home' | 'tool'
+
+const HomePage: React.FC = () => {
+  const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null)
+  const [activeTool, setActiveTool] = useState<Tool | null>(null)
+  const [appState, setAppState] = useState<AppState>('home')
+
+  const handleFilesSelected = (files: FileList) => {
+    setSelectedFiles(files)
+    console.log('Files selected:', Array.from(files).map(f => f.name))
+  }
+
+  const handleToolClick = (tool: Tool) => {
+    setActiveTool(tool)
+    
+    if (tool === 'merge') {
+      // Check if we have files to merge
+      if (selectedFiles && selectedFiles.length > 0) {
+        setAppState('tool')
+      } else {
+        alert('Please select PDF files first using the "Choose Files" button above.')
+      }
+    } else {
+      // TODO: Implement other tools
+      alert(`${tool} functionality coming soon!`)
+    }
+  }
+
+  const handleBackToHome = () => {
+    setAppState('home')
+    setActiveTool(null)
+    // Keep selected files for potential reuse
+  }
+
+  const hasFiles = selectedFiles && selectedFiles.length > 0
+  const pdfFileCount = hasFiles ? 
+    Array.from(selectedFiles).filter(file => 
+      file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')
+    ).length : 0
+
+  // Show tool interface
+  if (appState === 'tool' && activeTool === 'merge' && selectedFiles) {
+    return (
+      <div className="app">
+        <Header />
+        <div className="container">
+          <MergePDF 
+            files={selectedFiles}
+            onClose={handleBackToHome}
+          />
+        </div>
+      </div>
+    )
+  }
+
+  // Show home page
+  return (
+    <div className="home-page">
+      <Header />
+      
+      <HeroSection onFilesSelected={handleFilesSelected} />
+      
+      <section className="tools-section">
+        <div className="container">
+          {hasFiles && (
+            <div className="mb-32 text-center">
+              <p className="text-base mb-8">
+                📁 {selectedFiles!.length} file(s) selected
+              </p>
+              {pdfFileCount > 0 && (
+                <p className="text-sm" style={{ color: '#059669' }}>
+                  ✓ {pdfFileCount} PDF file{pdfFileCount > 1 ? 's' : ''} ready for processing
+                </p>
+              )}
+              {pdfFileCount === 0 && (
+                <p className="text-sm" style={{ color: '#DC2626' }}>
+                  ⚠️ No PDF files found. Please select PDF files for processing.
+                </p>
+              )}
+            </div>
+          )}
+          
+          <div className="grid grid-2">
+            <ToolCard
+              icon="🔗"
+              title="Merge"
+              description="Combine multiple PDF files"
+              onClick={() => handleToolClick('merge')}
+              disabled={pdfFileCount < 1}
+            />
+            
+            <ToolCard
+              icon="✂️"
+              title="Split"
+              description="Extract pages from PDF"
+              onClick={() => handleToolClick('split')}
+              disabled={true}
+            />
+            
+            <ToolCard
+              icon="🗜️"
+              title="Compress"
+              description="Reduce PDF file size"
+              onClick={() => handleToolClick('compress')}
+              disabled={true}
+            />
+            
+            <ToolCard
+              icon="🖼️"
+              title="Images"
+              description="Convert images to PDF"
+              onClick={() => handleToolClick('images')}
+              disabled={true}
+            />
+          </div>
+          
+          {!hasFiles && (
+            <div className="mt-32 text-center">
+              <p className="text-sm" style={{ color: '#6B7280' }}>
+                Select files above to start processing
+              </p>
+            </div>
+          )}
+          
+          {activeTool && appState === 'home' && (
+            <div className="mt-32 text-center">
+              <p className="text-sm" style={{ color: '#6B7280' }}>
+                Selected tool: <strong>{activeTool}</strong>
+              </p>
+            </div>
+          )}
+        </div>
+      </section>
+    </div>
+  )
+}
+
+export default HomePage
