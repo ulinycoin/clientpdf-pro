@@ -64,7 +64,7 @@ const FileList = ({
   return (
     <div className={`space-y-3 ${className}`}>
       <h3 className="text-lg font-medium text-gray-900">
-        Загруженные файлы ({files.length})
+        Uploaded Files ({files.length})
       </h3>
       
       <div className="space-y-2">
@@ -73,12 +73,12 @@ const FileList = ({
             key={fileItem.id}
             className="flex items-center p-4 bg-white border border-gray-200 rounded-lg hover:border-gray-300 transition-colors"
           >
-            {/* Иконка файла и статус */}
+            {/* File icon and status */}
             <div className="flex-shrink-0 mr-3">
               {getStatusIcon(fileItem.status)}
             </div>
 
-            {/* Информация о файле */}
+            {/* File information */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between mb-1">
                 <p className="text-sm font-medium text-gray-900 truncate">
@@ -89,7 +89,7 @@ const FileList = ({
                 </p>
               </div>
 
-              {/* Прогресс бар или ошибка */}
+              {/* Progress bar or error */}
               {fileItem.status === 'processing' && fileItem.progress !== undefined && (
                 <ProgressBar
                   progress={fileItem.progress}
@@ -104,11 +104,11 @@ const FileList = ({
               )}
 
               {fileItem.status === 'completed' && (
-                <p className="text-sm text-green-600">Готов к обработке</p>
+                <p className="text-sm text-green-600">Ready for processing</p>
               )}
             </div>
 
-            {/* Действия */}
+            {/* Actions */}
             <div className="flex items-center space-x-2 ml-3">
               {fileItem.status === 'error' && onRetryFile && (
                 <Button
@@ -116,7 +116,7 @@ const FileList = ({
                   variant="ghost"
                   size="sm"
                 >
-                  Повторить
+                  Retry
                 </Button>
               )}
               
@@ -133,13 +133,13 @@ const FileList = ({
         ))}
       </div>
 
-      {/* Общая статистика */}
+      {/* Overall stats */}
       <div className="flex justify-between items-center pt-3 border-t border-gray-200 text-sm text-gray-600">
         <span>
-          Готово: {files.filter(f => f.status === 'completed').length} из {files.length}
+          Ready: {files.filter(f => f.status === 'completed').length} of {files.length}
         </span>
         <span>
-          Общий размер: {formatFileSize(files.reduce((total, f) => total + f.file.size, 0))}
+          Total size: {formatFileSize(files.reduce((total, f) => total + f.file.size, 0))}
         </span>
       </div>
     </div>
