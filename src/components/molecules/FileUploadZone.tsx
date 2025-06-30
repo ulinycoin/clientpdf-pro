@@ -1,7 +1,4 @@
-import React, { useCallback } from 'react'
-// import { useDropzone } from 'react-dropzone'
-// import { motion, AnimatePresence } from 'framer-motion'
-// import { Upload, FileText, AlertCircle } from 'lucide-react'
+import React from 'react'
 import Button from '../atoms/Button'
 
 interface FileUploadZoneProps {
@@ -21,13 +18,6 @@ const FileUploadZone: React.FC<FileUploadZoneProps> = ({
   multiple = true,
   className = '',
 }) => {
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files
-    if (files && files.length > 0) {
-      onFilesSelected(files)
-    }
-  }
-
   const handleClick = () => {
     const input = document.createElement('input')
     input.type = 'file'
