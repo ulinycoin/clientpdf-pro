@@ -32,40 +32,83 @@ const FileUploadZone: React.FC<FileUploadZoneProps> = ({
     input.click()
   }
 
+  const zoneStyle = {
+    border: '2px dashed #d1d5db',
+    borderRadius: '12px',
+    padding: '48px',
+    textAlign: 'center' as const,
+    transition: 'all 0.2s ease',
+    cursor: 'pointer',
+    background: 'white'
+  }
+
   return (
     <div className={`relative ${className}`}>
       <div
         onClick={handleClick}
-        className="border-2 border-dashed border-gray-300 rounded-xl p-12 text-center transition-all duration-200 hover:border-blue-400 hover:bg-blue-50/50 cursor-pointer"
+        style={zoneStyle}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.borderColor = '#3b82f6'
+          e.currentTarget.style.background = 'rgba(59, 130, 246, 0.05)'
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.borderColor = '#d1d5db'
+          e.currentTarget.style.background = 'white'
+        }}
       >
-        <div className="mb-6">
-          <div className="w-16 h-16 mx-auto text-gray-400 mb-4">
+        <div style={{ marginBottom: '24px' }}>
+          <div style={{ 
+            width: '64px', 
+            height: '64px', 
+            margin: '0 auto 16px',
+            fontSize: '32px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#9ca3af'
+          }}>
             📄
           </div>
         </div>
 
-        <div className="space-y-4">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+            <h3 style={{ 
+              fontSize: '20px', 
+              fontWeight: 600, 
+              color: '#111827', 
+              margin: '0 0 8px 0' 
+            }}>
               Choose PDF files
             </h3>
-            <p className="text-gray-600">
+            <p style={{ 
+              color: '#6b7280',
+              margin: 0,
+              fontSize: '16px'
+            }}>
               Drag and drop PDF files here, or click to browse
             </p>
           </div>
 
-          <Button
-            variant="primary"
-            size="lg"
-            className="pointer-events-none"
-          >
-            📁 Select Files
-          </Button>
+          <div style={{ pointerEvents: 'none' }}>
+            <Button
+              variant="primary"
+              size="lg"
+            >
+              📁 Select Files
+            </Button>
+          </div>
 
-          <div className="text-sm text-gray-500 space-y-1">
-            <p>• Maximum file size: {Math.round(maxSize / (1024 * 1024))}MB</p>
-            <p>• Maximum files: {maxFiles}</p>
-            <p>• Supported: PDF files only</p>
+          <div style={{ 
+            fontSize: '14px', 
+            color: '#6b7280',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '4px'
+          }}>
+            <p style={{ margin: 0 }}>• Maximum file size: {Math.round(maxSize / (1024 * 1024))}MB</p>
+            <p style={{ margin: 0 }}>• Maximum files: {maxFiles}</p>
+            <p style={{ margin: 0 }}>• Supported: PDF files only</p>
           </div>
         </div>
       </div>
