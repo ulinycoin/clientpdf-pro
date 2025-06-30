@@ -1,6 +1,6 @@
 import React from 'react'
-import { motion } from 'framer-motion'
-import { LucideIcon } from 'lucide-react'
+// import { motion } from 'framer-motion'
+// import { LucideIcon } from 'lucide-react'
 
 interface ButtonProps {
   children: React.ReactNode
@@ -9,7 +9,6 @@ interface ButtonProps {
   size?: 'sm' | 'md' | 'lg'
   disabled?: boolean
   loading?: boolean
-  icon?: LucideIcon
   className?: string
   type?: 'button' | 'submit' | 'reset'
 }
@@ -21,7 +20,6 @@ const Button: React.FC<ButtonProps> = ({
   size = 'md',
   disabled = false,
   loading = false,
-  icon: Icon,
   className = '',
   type = 'button',
 }) => {
@@ -48,14 +46,11 @@ const Button: React.FC<ButtonProps> = ({
   ].filter(Boolean).join(' ')
 
   return (
-    <motion.button
+    <button
       type={type}
       className={classes}
       onClick={onClick}
       disabled={disabled || loading}
-      whileHover={disabled || loading ? {} : { scale: 1.02 }}
-      whileTap={disabled || loading ? {} : { scale: 0.98 }}
-      transition={{ duration: 0.15 }}
     >
       {loading && (
         <svg className="animate-spin -ml-1 mr-3 h-4 w-4" fill="none" viewBox="0 0 24 24">
@@ -63,9 +58,8 @@ const Button: React.FC<ButtonProps> = ({
           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
         </svg>
       )}
-      {!loading && Icon && <Icon className="w-4 h-4 mr-2" />}
       {children}
-    </motion.button>
+    </button>
   )
 }
 
