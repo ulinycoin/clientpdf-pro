@@ -1,15 +1,5 @@
 import React, { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { 
-  Link, 
-  Scissors, 
-  Archive, 
-  ImageIcon,
-  ArrowLeft,
-  CheckCircle,
-  FileText,
-  AlertCircle
-} from 'lucide-react'
+// import { motion, AnimatePresence } from 'framer-motion'
 
 import Header from '../components/Header'
 import HeroSection from '../components/HeroSection'
@@ -38,11 +28,9 @@ const HomePage: React.FC = () => {
       if (selectedFiles && selectedFiles.length > 0) {
         setAppState('tool')
       } else {
-        // TODO: Show toast notification instead of alert
         alert('Please select PDF files first using the file upload area above.')
       }
     } else {
-      // TODO: Implement other tools
       alert(`${tool} functionality coming soon!`)
     }
   }
@@ -50,7 +38,6 @@ const HomePage: React.FC = () => {
   const handleBackToHome = () => {
     setAppState('home')
     setActiveTool(null)
-    // Keep selected files for potential reuse
   }
 
   const hasFiles = selectedFiles && selectedFiles.length > 0
@@ -90,59 +77,51 @@ const HomePage: React.FC = () => {
       <section className="py-16 lg:py-24">
         <div className="container-app">
           {/* File Status */}
-          <AnimatePresence>
-            {hasFiles && (
-              <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.4 }}
-                className="mb-12"
-              >
-                <Card className="p-6 text-center">
-                  <div className="flex items-center justify-center mb-4">
-                    <CheckCircle className="w-8 h-8 text-green-500 mr-3" />
-                    <h3 className="text-xl font-semibold text-gray-900">
-                      Files Ready for Processing
-                    </h3>
-                  </div>
-                  
-                  <div className="flex flex-wrap justify-center gap-6 text-sm">
-                    {pdfFileCount > 0 && (
-                      <div className="flex items-center space-x-2 text-green-700">
-                        <FileText className="w-4 h-4" />
-                        <span className="font-medium">
-                          {pdfFileCount} PDF file{pdfFileCount > 1 ? 's' : ''}
-                        </span>
-                      </div>
-                    )}
-                    {imageFileCount > 0 && (
-                      <div className="flex items-center space-x-2 text-blue-700">
-                        <ImageIcon className="w-4 h-4" />
-                        <span className="font-medium">
-                          {imageFileCount} image{imageFileCount > 1 ? 's' : ''}
-                        </span>
-                      </div>
-                    )}
-                    <div className="flex items-center space-x-2 text-gray-600">
-                      <span>
-                        Total: {selectedFiles!.length} file{selectedFiles!.length > 1 ? 's' : ''}
-                      </span>
-                    </div>
-                  </div>
-
-                  {pdfFileCount === 0 && imageFileCount === 0 && (
-                    <div className="flex items-center justify-center mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-                      <AlertCircle className="w-5 h-5 text-amber-600 mr-2" />
-                      <span className="text-amber-800 text-sm">
-                        No PDF or image files detected. Please select compatible files.
+          {hasFiles && (
+            <div className="mb-12">
+              <Card className="p-6 text-center">
+                <div className="flex items-center justify-center mb-4">
+                  <span className="text-green-500 text-2xl mr-3">✅</span>
+                  <h3 className="text-xl font-semibold text-gray-900">
+                    Files Ready for Processing
+                  </h3>
+                </div>
+                
+                <div className="flex flex-wrap justify-center gap-6 text-sm">
+                  {pdfFileCount > 0 && (
+                    <div className="flex items-center space-x-2 text-green-700">
+                      <span>📄</span>
+                      <span className="font-medium">
+                        {pdfFileCount} PDF file{pdfFileCount > 1 ? 's' : ''}
                       </span>
                     </div>
                   )}
-                </Card>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                  {imageFileCount > 0 && (
+                    <div className="flex items-center space-x-2 text-blue-700">
+                      <span>🖼️</span>
+                      <span className="font-medium">
+                        {imageFileCount} image{imageFileCount > 1 ? 's' : ''}
+                      </span>
+                    </div>
+                  )}
+                  <div className="flex items-center space-x-2 text-gray-600">
+                    <span>
+                      Total: {selectedFiles!.length} file{selectedFiles!.length > 1 ? 's' : ''}
+                    </span>
+                  </div>
+                </div>
+
+                {pdfFileCount === 0 && imageFileCount === 0 && (
+                  <div className="flex items-center justify-center mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                    <span className="text-amber-600 mr-2">⚠️</span>
+                    <span className="text-amber-800 text-sm">
+                      No PDF or image files detected. Please select compatible files.
+                    </span>
+                  </div>
+                )}
+              </Card>
+            </div>
+          )}
 
           {/* Tools Grid */}
           <div className="text-center mb-12">
@@ -155,14 +134,9 @@ const HomePage: React.FC = () => {
             </p>
           </div>
 
-          <motion.div 
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-          >
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <ToolCard
-              icon={Link}
+              icon="🔗"
               title="Merge PDFs"
               description="Combine multiple PDF files into one document"
               onClick={() => handleToolClick('merge')}
@@ -171,7 +145,7 @@ const HomePage: React.FC = () => {
             />
             
             <ToolCard
-              icon={Scissors}
+              icon="✂️"
               title="Split PDF"
               description="Extract specific pages from PDF files"
               onClick={() => handleToolClick('split')}
@@ -180,7 +154,7 @@ const HomePage: React.FC = () => {
             />
             
             <ToolCard
-              icon={Archive}
+              icon="🗜️"
               title="Compress"
               description="Reduce PDF file size while maintaining quality"
               onClick={() => handleToolClick('compress')}
@@ -189,7 +163,7 @@ const HomePage: React.FC = () => {
             />
             
             <ToolCard
-              icon={ImageIcon}
+              icon="🖼️"
               title="Images to PDF"
               description="Convert images into a single PDF document"
               onClick={() => handleToolClick('images')}
@@ -197,19 +171,14 @@ const HomePage: React.FC = () => {
               badge={imageFileCount > 0 ? 'Ready' : undefined}
               comingSoon={imageFileCount === 0}
             />
-          </motion.div>
+          </div>
           
           {/* No Files State */}
           {!hasFiles && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-              className="text-center mt-16 p-8"
-            >
+            <div className="text-center mt-16 p-8">
               <div className="max-w-md mx-auto">
                 <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <FileText className="w-8 h-8 text-gray-400" />
+                  <span className="text-3xl">📄</span>
                 </div>
                 <h3 className="text-xl font-medium text-gray-900 mb-2">
                   No Files Selected
@@ -226,7 +195,7 @@ const HomePage: React.FC = () => {
                   ↑ Go to File Upload
                 </Button>
               </div>
-            </motion.div>
+            </div>
           )}
         </div>
       </section>
