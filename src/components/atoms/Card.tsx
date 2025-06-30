@@ -1,5 +1,4 @@
 import React from 'react'
-// import { motion } from 'framer-motion'
 
 interface CardProps {
   children: React.ReactNode
@@ -7,7 +6,6 @@ interface CardProps {
   className?: string
   interactive?: boolean
   disabled?: boolean
-  hover?: boolean
 }
 
 const Card: React.FC<CardProps> = ({
@@ -16,7 +14,6 @@ const Card: React.FC<CardProps> = ({
   className = '',
   interactive = false,
   disabled = false,
-  hover = true,
 }) => {
   const baseClasses = 'card'
   
