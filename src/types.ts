@@ -68,6 +68,7 @@ export interface ButtonProps {
   size?: 'sm' | 'md' | 'lg';
   disabled?: boolean;
   loading?: boolean;
+  fullWidth?: boolean;
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   type?: 'button' | 'submit' | 'reset';
   className?: string;
@@ -85,8 +86,10 @@ export interface ToolCardProps {
   title: string;
   description: string;
   icon: string;
-  onClick: () => void;
+  operationType?: string;
   disabled?: boolean;
+  comingSoon?: boolean;
+  onClick: (operationType?: string) => void;
   className?: string;
 }
 
