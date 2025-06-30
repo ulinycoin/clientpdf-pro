@@ -15,7 +15,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onFilesSelected }) => {
   ]
 
   return (
-    <section className="py-16 lg:py-24 bg-gradient-to-br from-gray-50 via-white to-primary-50/30">
+    <section className="py-16 lg:py-24 bg-gradient-to-br from-gray-50 via-white to-blue-50/30">
       <div className="container-app">
         {/* Hero Text */}
         <div className="text-center mb-12">
