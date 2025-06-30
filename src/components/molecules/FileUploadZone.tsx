@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react'
-import { useDropzone } from 'react-dropzone'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Upload, FileText, AlertCircle } from 'lucide-react'
+// import { useDropzone } from 'react-dropzone'
+// import { motion, AnimatePresence } from 'framer-motion'
+// import { Upload, FileText, AlertCircle } from 'lucide-react'
 import Button from '../atoms/Button'
 
 interface FileUploadZoneProps {
@@ -21,83 +21,46 @@ const FileUploadZone: React.FC<FileUploadZoneProps> = ({
   multiple = true,
   className = '',
 }) => {
-  const handleDrop = useCallback((acceptedFiles: File[]) => {
-    if (acceptedFiles.length > 0) {
-      // Create FileList-like object
-      const fileList = {
-        ...acceptedFiles,
-        length: acceptedFiles.length,
-      } as FileList
-      
-      onFilesSelected(fileList)
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files
+    if (files && files.length > 0) {
+      onFilesSelected(files)
     }
-  }, [onFilesSelected])
+  }
 
-  const {
-    getRootProps,
-    getInputProps,
-    isDragActive,
-    isDragReject,
-    fileRejections,
-  } = useDropzone({
-    onDrop: handleDrop,
-    accept,
-    maxFiles,
-    maxSize,
-    multiple,
-  })
-
-  const hasErrors = fileRejections.length > 0
+  const handleClick = () => {
+    const input = document.createElement('input')
+    input.type = 'file'
+    input.accept = Object.keys(accept).join(',')
+    input.multiple = multiple
+    input.onchange = (e) => {
+      const target = e.target as HTMLInputElement
+      if (target.files && target.files.length > 0) {
+        onFilesSelected(target.files)
+      }
+    }
+    input.click()
+  }
 
   return (
     <div className={`relative ${className}`}>
-      <motion.div
-        {...getRootProps()}
-        className={`
-          upload-zone cursor-pointer
-          ${isDragActive && !isDragReject ? 'upload-zone-active' : ''}
-          ${isDragReject ? 'border-red-400 bg-red-50' : ''}
-          ${hasErrors ? 'border-red-300' : ''}
-        `}
-        whileHover={{ scale: 1.01 }}
-        whileTap={{ scale: 0.99 }}
-        transition={{ duration: 0.2 }}
+      <div
+        onClick={handleClick}
+        className="border-2 border-dashed border-gray-300 rounded-xl p-12 text-center transition-all duration-200 hover:border-primary-400 hover:bg-primary-50/50 cursor-pointer"
       >
-        <input {...getInputProps()} />
-        
-        <motion.div
-          initial={{ scale: 1 }}
-          animate={{ 
-            scale: isDragActive ? 1.1 : 1,
-            rotate: isDragActive ? 5 : 0,
-          }}
-          transition={{ duration: 0.2 }}
-          className="mb-6"
-        >
-          {isDragReject ? (
-            <AlertCircle className="w-16 h-16 mx-auto text-red-400" />
-          ) : (
-            <Upload className="w-16 h-16 mx-auto text-gray-400" />
-          )}
-        </motion.div>
+        <div className="mb-6">
+          <div className="w-16 h-16 mx-auto text-gray-400 mb-4">
+            📄
+          </div>
+        </div>
 
         <div className="space-y-4">
           <div>
             <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              {isDragActive 
-                ? isDragReject 
-                  ? 'Invalid file type!' 
-                  : 'Drop files here...'
-                : 'Choose PDF files'
-              }
+              Choose PDF files
             </h3>
             <p className="text-gray-600">
-              {isDragActive 
-                ? isDragReject
-                  ? 'Only PDF files are allowed'
-                  : 'Release to upload'
-                : 'Drag and drop PDF files here, or click to browse'
-              }
+              Drag and drop PDF files here, or click to browse
             </p>
           </div>
 
@@ -106,8 +69,7 @@ const FileUploadZone: React.FC<FileUploadZoneProps> = ({
             size="lg"
             className="pointer-events-none"
           >
-            <FileText className="w-5 h-5 mr-2" />
-            Select Files
+            📁 Select Files
           </Button>
 
           <div className="text-sm text-gray-500 space-y-1">
@@ -116,37 +78,7 @@ const FileUploadZone: React.FC<FileUploadZoneProps> = ({
             <p>• Supported: PDF files only</p>
           </div>
         </div>
-      </motion.div>
-
-      {/* Error Messages */}
-      <AnimatePresence>
-        {hasErrors && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3 }}
-            className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg"
-          >
-            <div className="flex items-start">
-              <AlertCircle className="w-5 h-5 text-red-400 mr-3 mt-0.5 flex-shrink-0" />
-              <div className="space-y-2">
-                <h4 className="font-medium text-red-800">
-                  Some files were rejected:
-                </h4>
-                <ul className="text-sm text-red-700 space-y-1">
-                  {fileRejections.map(({ file, errors }, index) => (
-                    <li key={index}>
-                      <span className="font-medium">{file.name}:</span>{' '}
-                      {errors.map(error => error.message).join(', ')}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      </div>
     </div>
   )
 }
