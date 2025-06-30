@@ -1,252 +1,273 @@
-import { useState, useEffect } from 'react'
-import Button from '../atoms/Button'
-import Icon from '../atoms/Icon'
-import ProgressBar from '../atoms/ProgressBar'
-import { usePDFProcessor } from '../../hooks/usePDFProcessor'
+import React, { useState, useCallback } from 'react';
+import { MergeToolProps, PDFProcessingResult, MergeOptions } from '../../types';
+import { pdfService } from '../../services/pdfService';
+import Button from '../atoms/Button';
+import ProgressBar from '../atoms/ProgressBar';
 
-interface MergeToolProps {
-  files: File[]
-  onClose: () => void
-  className?: string
-}
-
-const MergeTool = ({ files, onClose, className = '' }: MergeToolProps) => {
-  const [mergeFiles, setMergeFiles] = useState<File[]>(files)
-  const [mergeFilename, setMergeFilename] = useState('')
-  
-  const {
-    isProcessing,
-    progress,
-    error,
-    result,
-    mergePDFs,
-    downloadResult,
-    resetState,
-    formatFileSize,
-    formatTime
-  } = usePDFProcessor()
-
-  useEffect(() => {
-    // Generate default filename
-    const timestamp = new Date().toISOString().split('T')[0]
-    setMergeFilename(`merged-${timestamp}.pdf`)
-  }, [])
-
-  const handleRemoveFile = (index: number) => {
-    setMergeFiles(prev => prev.filter((_, i) => i !== index))
-  }
-
-  const handleMoveFile = (fromIndex: number, toIndex: number) => {
-    const newFiles = [...mergeFiles]
-    const [removed] = newFiles.splice(fromIndex, 1)
-    newFiles.splice(toIndex, 0, removed)
-    setMergeFiles(newFiles)
-  }
+const MergeTool: React.FC<MergeToolProps> = ({
+  files,
+  onComplete,
+  onClose,
+  className = ''
+}) => {
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [progressMessage, setProgressMessage] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [options, setOptions] = useState<MergeOptions>({
+    order: Array.from({ length: files.length }, (_, i) => i),
+    bookmarks: true,
+    metadata: {
+      title: 'Merged PDF',
+      author: 'ClientPDF Pro',
+      subject: 'Merged PDF Document'
+    }
+  });
 
   const handleMerge = async () => {
-    if (mergeFiles.length === 0) return
+    if (files.length < 2) {
+      setError('Please select at least 2 files to merge');
+      return;
+    }
+
+    setIsProcessing(true);
+    setProgress(0);
+    setProgressMessage('Starting merge...');
+    setError(null);
+
+    try {
+      const result = await pdfService.mergePDFs(
+        files,
+        options,
+        (progress, message) => {
+          setProgress(progress);
+          setProgressMessage(message || '');
+        }
+      );
+
+      if (result.success) {
+        onComplete(result);
+      } else {
+        setError(result.error?.message || 'Merge failed');
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An unexpected error occurred');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const formatFileSize = (bytes: number): string => {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`;
+  };
+
+  const totalSize = files.reduce((sum, file) => sum + file.size, 0);
+
+  const moveFile = (fromIndex: number, toIndex: number) => {
+    if (isProcessing) return;
     
-    resetState()
-    await mergePDFs(mergeFiles)
-  }
+    const newOrder = [...(options.order || [])];
+    const item = newOrder.splice(fromIndex, 1)[0];
+    newOrder.splice(toIndex, 0, item);
+    
+    setOptions(prev => ({ ...prev, order: newOrder }));
+  };
 
-  const handleDownload = () => {
-    downloadResult(mergeFilename)
-  }
-
-  const canMerge = mergeFiles.length > 0 && !isProcessing
-  const totalSize = mergeFiles.reduce((total, file) => total + file.size, 0)
+  const orderedFiles = options.order ? 
+    options.order.map(index => files[index]).filter(Boolean) : 
+    files;
 
   return (
-    <div className={`bg-white rounded-lg border border-gray-200 shadow-sm ${className}`}>
+    <div className={`bg-white rounded-lg shadow-lg p-6 ${className}`}>
       {/* Header */}
-      <div className="flex items-center justify-between p-6 border-b border-gray-200">
-        <div className="flex items-center">
-          <Icon name="merge" size={24} className="text-blue-600 mr-3" />
-          <h2 className="text-xl font-semibold text-gray-900">Merge PDFs</h2>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900">Merge PDFs</h2>
+          <p className="text-gray-600 mt-1">
+            Combine {files.length} files into one PDF document
+          </p>
         </div>
-        <Button
-          onClick={onClose}
-          variant="ghost"
-          size="sm"
-          className="text-gray-500 hover:text-gray-700"
-        >
-          <Icon name="x" size={20} />
+        <Button variant="ghost" onClick={onClose}>
+          ✕
         </Button>
       </div>
 
-      <div className="p-6">
-        {/* File List */}
-        <div className="mb-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-3">
-            Files to Merge ({mergeFiles.length})
-          </h3>
-          
-          {mergeFiles.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">
-              <Icon name="file-pdf" size={48} className="mx-auto mb-2 text-gray-300" />
-              <p>No files selected for merging</p>
-            </div>
-          ) : (
-            <div className="space-y-2">
-              {mergeFiles.map((file, index) => (
-                <div
-                  key={`${file.name}-${index}`}
-                  className="flex items-center p-3 bg-gray-50 rounded-lg border border-gray-200"
-                >
-                  {/* Drag handle */}
-                  <div className="cursor-move mr-3 text-gray-400">
-                    <Icon name="file-pdf" size={20} />
-                  </div>
-
-                  {/* File info */}
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900 truncate">
-                      {file.name}
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      {formatFileSize(file.size)}
-                    </p>
-                  </div>
-
-                  {/* Order controls */}
-                  <div className="flex items-center space-x-1 mr-3">
-                    <Button
-                      onClick={() => handleMoveFile(index, Math.max(0, index - 1))}
-                      variant="ghost"
-                      size="sm"
-                      disabled={index === 0 || isProcessing}
-                      className="p-1"
-                    >
-                      ↑
-                    </Button>
-                    <Button
-                      onClick={() => handleMoveFile(index, Math.min(mergeFiles.length - 1, index + 1))}
-                      variant="ghost"
-                      size="sm"
-                      disabled={index === mergeFiles.length - 1 || isProcessing}
-                      className="p-1"
-                    >
-                      ↓
-                    </Button>
-                  </div>
-
-                  {/* Remove button */}
-                  <Button
-                    onClick={() => handleRemoveFile(index)}
-                    variant="ghost"
-                    size="sm"
-                    disabled={isProcessing}
-                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                  >
-                    <Icon name="x" size={16} />
-                  </Button>
+      {/* File List with Reordering */}
+      <div className="mb-6">
+        <h3 className="text-lg font-medium text-gray-900 mb-4">
+          Files to merge (drag to reorder):
+        </h3>
+        
+        <div className="space-y-2">
+          {orderedFiles.map((file, index) => (
+            <div
+              key={`${file.name}-${index}`}
+              className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200"
+            >
+              <div className="flex items-center space-x-3">
+                <div className="cursor-move text-gray-400">
+                  ⋮⋮
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Filename input */}
-        {mergeFiles.length > 0 && (
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Output filename
-            </label>
-            <input
-              type="text"
-              value={mergeFilename}
-              onChange={(e) => setMergeFilename(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              placeholder="merged.pdf"
-              disabled={isProcessing}
-            />
-          </div>
-        )}
-
-        {/* Progress */}
-        {isProcessing && (
-          <div className="mb-6">
-            <ProgressBar
-              progress={progress}
-              label="Merging PDFs..."
-              color="blue"
-              size="md"
-            />
-          </div>
-        )}
-
-        {/* Error */}
-        {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-            <div className="flex items-center">
-              <Icon name="x" size={20} className="text-red-500 mr-2" />
-              <p className="text-red-700">{error}</p>
-            </div>
-          </div>
-        )}
-
-        {/* Success */}
-        {result?.success && (
-          <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
-            <div className="flex items-center mb-2">
-              <Icon name="check" size={20} className="text-green-500 mr-2" />
-              <p className="text-green-700 font-medium">PDF merged successfully!</p>
-            </div>
-            {result.metadata && (
-              <div className="text-sm text-green-600 space-y-1">
-                <p>Pages: {result.metadata.pageCount}</p>
-                <p>Original size: {formatFileSize(result.metadata.originalSize)}</p>
-                <p>Final size: {formatFileSize(result.metadata.processedSize)}</p>
-                <p>Processing time: {formatTime(result.metadata.processingTime)}</p>
+                <div className="text-lg">📄</div>
+                <div>
+                  <p className="font-medium text-gray-900">{file.name}</p>
+                  <p className="text-sm text-gray-500">
+                    {formatFileSize(file.size)}
+                  </p>
+                </div>
               </div>
-            )}
-          </div>
-        )}
+              
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => moveFile(index, Math.max(0, index - 1))}
+                  disabled={index === 0 || isProcessing}
+                  className="p-1 text-gray-400 hover:text-gray-600 disabled:opacity-50"
+                >
+                  ↑
+                </button>
+                <button
+                  onClick={() => moveFile(index, Math.min(orderedFiles.length - 1, index + 1))}
+                  disabled={index === orderedFiles.length - 1 || isProcessing}
+                  className="p-1 text-gray-400 hover:text-gray-600 disabled:opacity-50"
+                >
+                  ↓
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+        
+        <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+          <p className="text-sm text-blue-800">
+            📊 Total size: {formatFileSize(totalSize)} • {files.length} files
+          </p>
+        </div>
+      </div>
 
-        {/* Actions */}
-        <div className="flex items-center justify-between pt-4 border-t border-gray-200">
-          <div className="text-sm text-gray-600">
-            {mergeFiles.length > 0 && (
-              <span>Total size: {formatFileSize(totalSize)}</span>
-            )}
-          </div>
+      {/* Options */}
+      <div className="mb-6">
+        <h3 className="text-lg font-medium text-gray-900 mb-4">Options:</h3>
+        
+        <div className="space-y-3">
+          <label className="flex items-center">
+            <input
+              type="checkbox"
+              checked={options.bookmarks}
+              onChange={(e) => setOptions(prev => ({ ...prev, bookmarks: e.target.checked }))}
+              disabled={isProcessing}
+              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+            />
+            <span className="ml-3 text-sm text-gray-700">
+              Create bookmarks for each file
+            </span>
+          </label>
           
-          <div className="flex space-x-3">
-            {result?.success ? (
-              <Button
-                onClick={handleDownload}
-                variant="primary"
-                size="md"
-              >
-                <Icon name="upload" size={16} className="mr-2" />
-                Download PDF
-              </Button>
-            ) : (
-              <Button
-                onClick={handleMerge}
-                variant="primary"
-                size="md"
-                disabled={!canMerge}
-              >
-                {isProcessing ? (
-                  <>
-                    <Icon name="loading" size={16} className="mr-2 animate-spin" />
-                    Merging...
-                  </>
-                ) : (
-                  <>
-                    <Icon name="merge" size={16} className="mr-2" />
-                    Merge PDFs
-                  </>
-                )}
-              </Button>
-            )}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Title
+              </label>
+              <input
+                type="text"
+                value={options.metadata?.title || ''}
+                onChange={(e) => setOptions(prev => ({
+                  ...prev,
+                  metadata: { ...prev.metadata, title: e.target.value }
+                }))}
+                disabled={isProcessing}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Document title"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Author
+              </label>
+              <input
+                type="text"
+                value={options.metadata?.author || ''}
+                onChange={(e) => setOptions(prev => ({
+                  ...prev,
+                  metadata: { ...prev.metadata, author: e.target.value }
+                }))}
+                disabled={isProcessing}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Author name"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Subject
+              </label>
+              <input
+                type="text"
+                value={options.metadata?.subject || ''}
+                onChange={(e) => setOptions(prev => ({
+                  ...prev,
+                  metadata: { ...prev.metadata, subject: e.target.value }
+                }))}
+                disabled={isProcessing}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Document subject"
+              />
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  )
-}
 
-export default MergeTool
+      {/* Progress */}
+      {isProcessing && (
+        <div className="mb-6">
+          <ProgressBar
+            value={progress}
+            className="mb-2"
+            animated={true}
+          />
+          <p className="text-sm text-gray-600 text-center">
+            {progressMessage}
+          </p>
+        </div>
+      )}
+
+      {/* Error */}
+      {error && (
+        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+          <div className="flex items-center">
+            <div className="text-red-400 mr-2">⚠️</div>
+            <div>
+              <h4 className="text-red-800 font-medium">Merge Failed</h4>
+              <p className="text-red-600 text-sm mt-1">{error}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Actions */}
+      <div className="flex justify-end space-x-3">
+        <Button
+          variant="outline"
+          onClick={onClose}
+          disabled={isProcessing}
+        >
+          Cancel
+        </Button>
+        <Button
+          variant="primary"
+          onClick={handleMerge}
+          disabled={files.length < 2 || isProcessing}
+          loading={isProcessing}
+        >
+          {isProcessing ? 'Merging...' : `Merge ${files.length} Files`}
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+export default MergeTool;

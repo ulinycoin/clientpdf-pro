@@ -1,149 +1,134 @@
-import Button from '../atoms/Button'
-import Icon from '../atoms/Icon'
-import ProgressBar from '../atoms/ProgressBar'
+import React from 'react';
+import { FileListProps } from '../../types';
 
-interface FileItem {
-  id: string
-  file: File
-  status: 'pending' | 'processing' | 'completed' | 'error'
-  progress?: number
-  error?: string
-}
-
-interface FileListProps {
-  files: FileItem[]
-  onRemoveFile: (id: string) => void
-  onRetryFile?: (id: string) => void
-  className?: string
-}
-
-const FileList = ({ 
-  files, 
-  onRemoveFile, 
+const FileList: React.FC<FileListProps> = ({
+  files,
+  onRemoveFile,
   onRetryFile,
-  className = '' 
-}: FileListProps) => {
+  showProgress = true,
+  allowReorder = false,
+  className = ''
+}) => {
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'pending':
+        return '⏳';
+      case 'processing':
+        return '🔄';
+      case 'completed':
+        return '✅';
+      case 'error':
+        return '❌';
+      default:
+        return '📄';
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'pending':
+        return 'text-yellow-600';
+      case 'processing':
+        return 'text-blue-600';
+      case 'completed':
+        return 'text-green-600';
+      case 'error':
+        return 'text-red-600';
+      default:
+        return 'text-gray-600';
+    }
+  };
+
   const formatFileSize = (bytes: number): string => {
-    if (bytes === 0) return '0 Bytes'
-    const k = 1024
-    const sizes = ['Bytes', 'KB', 'MB', 'GB']
-    const i = Math.floor(Math.log(bytes) / Math.log(k))
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
-  }
-
-  const getStatusIcon = (status: FileItem['status']) => {
-    switch (status) {
-      case 'completed':
-        return <Icon name="check" size={20} className="text-green-600" />
-      case 'error':
-        return <Icon name="x" size={20} className="text-red-600" />
-      case 'processing':
-        return <Icon name="loading" size={20} className="text-blue-600 animate-spin" />
-      default:
-        return <Icon name="file-pdf" size={20} className="text-gray-600" />
-    }
-  }
-
-  const getStatusColor = (status: FileItem['status']) => {
-    switch (status) {
-      case 'completed':
-        return 'green'
-      case 'error':
-        return 'red'
-      case 'processing':
-        return 'blue'
-      default:
-        return 'blue'
-    }
-  }
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`;
+  };
 
   if (files.length === 0) {
-    return null
+    return null;
   }
 
   return (
     <div className={`space-y-3 ${className}`}>
-      <h3 className="text-lg font-medium text-gray-900">
+      <h3 className="text-lg font-medium text-gray-900 mb-4">
         Uploaded Files ({files.length})
       </h3>
       
-      <div className="space-y-2">
-        {files.map((fileItem) => (
-          <div
-            key={fileItem.id}
-            className="flex items-center p-4 bg-white border border-gray-200 rounded-lg hover:border-gray-300 transition-colors"
-          >
-            {/* File icon and status */}
-            <div className="flex-shrink-0 mr-3">
-              {getStatusIcon(fileItem.status)}
+      {files.map((fileItem, index) => (
+        <div
+          key={fileItem.id}
+          className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm"
+        >
+          <div className="flex items-center justify-between">
+            {/* File Info */}
+            <div className="flex items-center space-x-3 flex-1">
+              <div className="text-2xl">
+                {getStatusIcon(fileItem.status)}
+              </div>
+              
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center space-x-2">
+                  <p className="text-sm font-medium text-gray-900 truncate">
+                    {fileItem.file.name}
+                  </p>
+                  <span className={`text-xs font-medium ${getStatusColor(fileItem.status)}`}>
+                    {fileItem.status.charAt(0).toUpperCase() + fileItem.status.slice(1)}
+                  </span>
+                </div>
+                
+                <p className="text-xs text-gray-500">
+                  {formatFileSize(fileItem.file.size)} • {fileItem.file.type}
+                </p>
+                
+                {fileItem.error && (
+                  <p className="text-xs text-red-600 mt-1">
+                    {fileItem.error}
+                  </p>
+                )}
+              </div>
             </div>
 
-            {/* File information */}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center justify-between mb-1">
-                <p className="text-sm font-medium text-gray-900 truncate">
-                  {fileItem.file.name}
-                </p>
-                <p className="text-sm text-gray-500 ml-2 flex-shrink-0">
-                  {formatFileSize(fileItem.file.size)}
+            {/* Progress Bar */}
+            {showProgress && fileItem.status === 'processing' && fileItem.progress !== undefined && (
+              <div className="w-24 mr-4">
+                <div className="bg-gray-200 rounded-full h-2">
+                  <div
+                    className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                    style={{ width: `${fileItem.progress}%` }}
+                  />
+                </div>
+                <p className="text-xs text-gray-500 text-center mt-1">
+                  {Math.round(fileItem.progress)}%
                 </p>
               </div>
-
-              {/* Progress bar or error */}
-              {fileItem.status === 'processing' && fileItem.progress !== undefined && (
-                <ProgressBar
-                  progress={fileItem.progress}
-                  size="sm"
-                  color={getStatusColor(fileItem.status)}
-                  showPercentage={false}
-                />
-              )}
-
-              {fileItem.status === 'error' && fileItem.error && (
-                <p className="text-sm text-red-600">{fileItem.error}</p>
-              )}
-
-              {fileItem.status === 'completed' && (
-                <p className="text-sm text-green-600">Ready for processing</p>
-              )}
-            </div>
+            )}
 
             {/* Actions */}
-            <div className="flex items-center space-x-2 ml-3">
-              {fileItem.status === 'error' && onRetryFile && (
-                <Button
+            <div className="flex items-center space-x-2">
+              {fileItem.status === 'error' && (
+                <button
                   onClick={() => onRetryFile(fileItem.id)}
-                  variant="ghost"
-                  size="sm"
+                  className="text-blue-600 hover:text-blue-800 text-sm font-medium"
                 >
                   Retry
-                </Button>
+                </button>
               )}
               
-              <Button
+              <button
                 onClick={() => onRemoveFile(fileItem.id)}
-                variant="ghost"
-                size="sm"
-                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                className="text-red-600 hover:text-red-800 text-sm font-medium"
               >
-                <Icon name="x" size={16} />
-              </Button>
+                Remove
+              </button>
             </div>
           </div>
-        ))}
-      </div>
-
-      {/* Overall stats */}
-      <div className="flex justify-between items-center pt-3 border-t border-gray-200 text-sm text-gray-600">
-        <span>
-          Ready: {files.filter(f => f.status === 'completed').length} of {files.length}
-        </span>
-        <span>
-          Total size: {formatFileSize(files.reduce((total, f) => total + f.file.size, 0))}
-        </span>
-      </div>
+        </div>
+      ))}
     </div>
-  )
-}
+  );
+};
 
-export default FileList
+export default FileList;
