@@ -3,6 +3,7 @@ import Header from '../components/organisms/Header'
 import FileUploadZone from '../components/molecules/FileUploadZone'
 import FileList from '../components/molecules/FileList'
 import ToolsGrid from '../components/organisms/ToolsGrid'
+import MergeTool from '../components/organisms/MergeTool'
 
 interface FileItem {
   id: string
@@ -14,6 +15,7 @@ interface FileItem {
 
 const HomePage = () => {
   const [files, setFiles] = useState<FileItem[]>([])
+  const [selectedTool, setSelectedTool] = useState<string | null>(null)
 
   const handleFileSelect = (selectedFiles: File[]) => {
     const newFiles: FileItem[] = selectedFiles.map(file => ({
@@ -70,15 +72,15 @@ const HomePage = () => {
       return
     }
 
-    // For now, just show which tool was selected
-    switch (toolId) {
-      case 'merge':
-        alert(`Merge tool selected! Ready to merge ${completedFiles.length} file(s). Tool implementation coming soon.`)
-        break
-      default:
-        alert(`${toolId} tool coming soon! Stay tuned for updates.`)
-    }
+    // Open the tool
+    setSelectedTool(toolId)
   }
+
+  const handleCloseTool = () => {
+    setSelectedTool(null)
+  }
+
+  const completedFiles = files.filter(f => f.status === 'completed').map(f => f.file)
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -121,10 +123,25 @@ const HomePage = () => {
           )}
         </div>
 
+        {/* Selected Tool */}
+        {selectedTool && (
+          <div className="max-w-4xl mx-auto px-4 mb-16">
+            {selectedTool === 'merge' && (
+              <MergeTool
+                files={completedFiles}
+                onClose={handleCloseTool}
+              />
+            )}
+            {/* Add other tools here when implemented */}
+          </div>
+        )}
+
         {/* Tools Section */}
-        <div className="max-w-7xl mx-auto px-4 pb-16">
-          <ToolsGrid onToolSelect={handleToolSelect} />
-        </div>
+        {!selectedTool && (
+          <div className="max-w-7xl mx-auto px-4 pb-16">
+            <ToolsGrid onToolSelect={handleToolSelect} />
+          </div>
+        )}
       </main>
     </div>
   )
