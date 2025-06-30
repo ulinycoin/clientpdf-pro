@@ -1,1 +1,136 @@
-import React, { useRef } from 'react';\nimport { FileUploadZoneProps } from '../../types';\nimport Button from '../atoms/Button';\n\nconst FileUploadZone: React.FC<FileUploadZoneProps> = ({\n  onFileSelect,\n  accept = '.pdf,application/pdf',\n  multiple = true,\n  maxFiles = 10,\n  maxSizeBytes = 50 * 1024 * 1024, // 50MB\n  disabled = false,\n  dragActive = false,\n  uploading = false,\n  className = ''\n}) => {\n  const fileInputRef = useRef<HTMLInputElement>(null);\n\n  const handleClick = () => {\n    if (!disabled && fileInputRef.current) {\n      fileInputRef.current.click();\n    }\n  };\n\n  const handleFileInput = (event: React.ChangeEvent<HTMLInputElement>) => {\n    const files = event.target.files;\n    if (files && files.length > 0) {\n      onFileSelect(Array.from(files));\n      // Reset input value to allow selecting the same file again\n      event.target.value = '';\n    }\n  };\n\n  const formatMaxSize = (bytes: number): string => {\n    const mb = bytes / (1024 * 1024);\n    return `${Math.round(mb)}MB`;\n  };\n\n  const borderColor = dragActive \n    ? 'border-blue-400 bg-blue-50' \n    : 'border-gray-300 hover:border-gray-400';\n  \n  const isDisabled = disabled || uploading;\n\n  return (\n    <div className={className}>\n      <div\n        onClick={handleClick}\n        className={`\n          relative border-2 border-dashed rounded-lg p-8 text-center cursor-pointer\n          transition-all duration-200\n          ${borderColor}\n          ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}\n        `}\n      >\n        {/* Hidden file input */}\n        <input\n          ref={fileInputRef}\n          type=\"file\"\n          accept={accept}\n          multiple={multiple}\n          onChange={handleFileInput}\n          disabled={isDisabled}\n          className=\"hidden\"\n        />\n        \n        {/* Upload Icon */}\n        <div className=\"text-6xl mb-4\">\n          {uploading ? '⏳' : dragActive ? '📂' : '📄'}\n        </div>\n        \n        {/* Main Text */}\n        <h3 className=\"text-xl font-semibold text-gray-700 mb-2\">\n          {uploading \n            ? 'Uploading files...' \n            : dragActive \n              ? 'Drop your PDF files here' \n              : 'Choose PDF files or drag & drop'\n          }\n        </h3>\n        \n        {/* Subtitle */}\n        <p className=\"text-gray-500 mb-6\">\n          {uploading\n            ? 'Please wait while we process your files'\n            : `Upload up to ${maxFiles} files, max ${formatMaxSize(maxSizeBytes)} each`\n          }\n        </p>\n        \n        {/* Action Button */}\n        {!uploading && (\n          <Button\n            variant=\"primary\"\n            size=\"lg\"\n            disabled={isDisabled}\n            onClick={(e) => {\n              e?.stopPropagation();\n              handleClick();\n            }}\n          >\n            Select Files\n          </Button>\n        )}\n        \n        {/* Features */}\n        <div className=\"mt-6 flex justify-center space-x-8 text-sm text-gray-500\">\n          <div className=\"flex items-center\">\n            <span className=\"mr-1\">🔒</span>\n            <span>100% Private</span>\n          </div>\n          <div className=\"flex items-center\">\n            <span className=\"mr-1\">⚡</span>\n            <span>Fast Processing</span>\n          </div>\n          <div className=\"flex items-center\">\n            <span className=\"mr-1\">💯</span>\n            <span>Free Forever</span>\n          </div>\n        </div>\n      </div>\n      \n      {/* Help Text */}\n      <div className=\"mt-4 text-center\">\n        <p className=\"text-xs text-gray-500\">\n          Supported format: PDF • \n          Files are processed locally in your browser • \n          No data is sent to our servers\n        </p>\n      </div>\n    </div>\n  );\n};\n\nexport default FileUploadZone;"
+import React, { useRef } from 'react';
+import { FileUploadZoneProps } from '../../types';
+import Button from '../atoms/Button';
+
+const FileUploadZone: React.FC<FileUploadZoneProps> = ({
+  onFilesSelected,
+  accept = 'application/pdf',
+  multiple = true,
+  maxSize = 50 * 1024 * 1024, // 50MB
+  disabled = false,
+  className = ''
+}) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleClick = () => {
+    if (!disabled && fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleFileInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (files && files.length > 0) {
+      onFilesSelected(Array.from(files));
+      // Reset input value to allow selecting the same file again
+      event.target.value = '';
+    }
+  };
+
+  const handleDragOver = (event: React.DragEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+  };
+
+  const handleDragLeave = (event: React.DragEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+  };
+
+  const handleDrop = (event: React.DragEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    const files = event.dataTransfer.files;
+    if (files && files.length > 0) {
+      onFilesSelected(Array.from(files));
+    }
+  };
+
+  const formatMaxSize = (bytes: number): string => {
+    const mb = bytes / (1024 * 1024);
+    return `${Math.round(mb)}MB`;
+  };
+
+  return (
+    <div className={className}>
+      <div
+        onClick={handleClick}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+        className={`
+          relative border-2 border-dashed rounded-lg p-8 text-center cursor-pointer
+          transition-all duration-200 border-gray-300 hover:border-gray-400
+          ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-50'}
+        `}
+      >
+        {/* Hidden file input */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept={accept}
+          multiple={multiple}
+          onChange={handleFileInput}
+          disabled={disabled}
+          className="hidden"
+        />
+        
+        {/* Upload Icon */}
+        <div className="text-6xl mb-4">
+          📄
+        </div>
+        
+        {/* Main Text */}
+        <h3 className="text-xl font-semibold text-gray-700 mb-2">
+          Choose PDF files or drag & drop
+        </h3>
+        
+        {/* Subtitle */}
+        <p className="text-gray-500 mb-6">
+          Upload PDF files, max {formatMaxSize(maxSize)} each
+        </p>
+        
+        {/* Action Button */}
+        <Button
+          variant="primary"
+          size="lg"
+          disabled={disabled}
+          onClick={(e) => {
+            e?.stopPropagation();
+            handleClick();
+          }}
+        >
+          Select Files
+        </Button>
+        
+        {/* Features */}
+        <div className="mt-6 flex justify-center space-x-8 text-sm text-gray-500">
+          <div className="flex items-center">
+            <span className="mr-1">🔒</span>
+            <span>100% Private</span>
+          </div>
+          <div className="flex items-center">
+            <span className="mr-1">⚡</span>
+            <span>Fast Processing</span>
+          </div>
+          <div className="flex items-center">
+            <span className="mr-1">💯</span>
+            <span>Free Forever</span>
+          </div>
+        </div>
+      </div>
+      
+      {/* Help Text */}
+      <div className="mt-4 text-center">
+        <p className="text-xs text-gray-500">
+          Supported format: PDF • 
+          Files are processed locally in your browser • 
+          No data is sent to our servers
+        </p>
+      </div>
+    </div>
+  );
+};
+
+export default FileUploadZone;
