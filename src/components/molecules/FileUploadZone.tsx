@@ -36,7 +36,7 @@ const FileUploadZone: React.FC<FileUploadZoneProps> = ({
     <div className={`relative ${className}`}>
       <div
         onClick={handleClick}
-        className="border-2 border-dashed border-gray-300 rounded-xl p-12 text-center transition-all duration-200 hover:border-primary-400 hover:bg-primary-50/50 cursor-pointer"
+        className="border-2 border-dashed border-gray-300 rounded-xl p-12 text-center transition-all duration-200 hover:border-blue-400 hover:bg-blue-50/50 cursor-pointer"
       >
         <div className="mb-6">
           <div className="w-16 h-16 mx-auto text-gray-400 mb-4">
