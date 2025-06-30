@@ -1,4 +1,4 @@
-import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
+import { PDFDocument, rgb, StandardFonts, degrees } from 'pdf-lib';
 import { ProcessingResult } from '../types';
 
 export interface WatermarkOptions {
@@ -73,7 +73,7 @@ export class WatermarkService {
           font
         );
 
-        // Draw watermark
+        // Draw watermark with corrected rotation
         page.drawText(options.text, {
           x: position.x,
           y: position.y,
@@ -85,10 +85,7 @@ export class WatermarkService {
             options.color.b / 255
           ),
           opacity: options.opacity / 100,
-          rotate: {
-            angle: options.rotation,
-            origin: { x: position.x, y: position.y }
-          }
+          rotate: degrees(options.rotation) // Convert degrees to radians
         });
 
         // Update progress
