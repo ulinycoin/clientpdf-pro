@@ -1,10 +1,10 @@
 import React from 'react'
-import { motion } from 'framer-motion'
-import { LucideIcon } from 'lucide-react'
+// import { motion } from 'framer-motion'
+// import { LucideIcon } from 'lucide-react'
 import Card from '../atoms/Card'
 
 interface ToolCardProps {
-  icon: string | LucideIcon
+  icon: string | React.ReactNode
   title: string
   description: string
   onClick: () => void
@@ -24,8 +24,6 @@ const ToolCard: React.FC<ToolCardProps> = ({
   comingSoon = false,
   className = '',
 }) => {
-  const IconComponent = typeof icon === 'string' ? null : icon
-
   return (
     <Card
       onClick={disabled ? undefined : onClick}
@@ -42,12 +40,7 @@ const ToolCard: React.FC<ToolCardProps> = ({
       
       {/* Badge */}
       {(badge || comingSoon) && (
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
-          className="absolute -top-2 -right-2 z-10"
-        >
+        <div className="absolute -top-2 -right-2 z-10">
           <div className={`
             px-3 py-1 text-xs font-medium rounded-full
             ${comingSoon 
@@ -57,34 +50,32 @@ const ToolCard: React.FC<ToolCardProps> = ({
           `}>
             {comingSoon ? 'Soon' : badge}
           </div>
-        </motion.div>
+        </div>
       )}
 
       <div className="relative z-10">
         {/* Icon */}
-        <motion.div
-          className="mb-6 flex justify-center"
-          whileHover={disabled ? {} : { scale: 1.1, rotate: 5 }}
-          transition={{ duration: 0.2 }}
-        >
-          {IconComponent ? (
-            <IconComponent className={`
-              w-12 h-12 
-              ${disabled 
-                ? 'text-gray-400' 
-                : 'text-primary-600 group-hover:text-primary-700'
-              }
-              transition-colors duration-200
-            `} />
-          ) : (
+        <div className="mb-6 flex justify-center">
+          {typeof icon === 'string' ? (
             <span className={`
               text-5xl 
               ${disabled ? 'grayscale opacity-50' : 'group-hover:scale-110 transition-transform duration-200'}
             `}>
               {icon}
             </span>
+          ) : (
+            <div className={`
+              w-12 h-12 
+              ${disabled 
+                ? 'text-gray-400' 
+                : 'text-primary-600 group-hover:text-primary-700'
+              }
+              transition-colors duration-200
+            `}>
+              {icon}
+            </div>
           )}
-        </motion.div>
+        </div>
 
         {/* Content */}
         <div className="text-center space-y-3">
@@ -107,18 +98,13 @@ const ToolCard: React.FC<ToolCardProps> = ({
 
         {/* Hover Effect Arrow */}
         {!disabled && (
-          <motion.div
-            className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100"
-            initial={{ x: -10 }}
-            whileHover={{ x: 0 }}
-            transition={{ duration: 0.2 }}
-          >
+          <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
             <div className="w-6 h-6 bg-primary-600 rounded-full flex items-center justify-center">
               <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
             </div>
-          </motion.div>
+          </div>
         )}
 
         {/* Disabled Overlay */}
