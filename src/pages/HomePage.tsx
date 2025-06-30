@@ -23,22 +23,22 @@ const HomePage = () => {
 
     setFiles(prev => [...prev, ...newFiles])
 
-    // Симуляция обработки файлов
+    // Simulate file processing
     newFiles.forEach(fileItem => {
       simulateFileProcessing(fileItem.id)
     })
   }
 
   const simulateFileProcessing = (fileId: string) => {
-    // Начинаем обработку
+    // Start processing
     setFiles(prev => prev.map(f => 
       f.id === fileId ? { ...f, status: 'processing' as const, progress: 0 } : f
     ))
 
-    // Симулируем прогресс
+    // Simulate progress
     let progress = 0
     const interval = setInterval(() => {
-      progress += Math.random() * 15 + 5 // Случайный прогресс от 5 до 20%
+      progress += Math.random() * 15 + 5 // Random progress from 5 to 20%
       
       if (progress >= 100) {
         clearInterval(interval)
@@ -116,10 +116,10 @@ const HomePage = () => {
               {files.filter(f => f.status === 'completed').length > 0 && (
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                   <p className="text-blue-800 font-medium">
-                    ✅ {files.filter(f => f.status === 'completed').length} файл(ов) готово к обработке
+                    ✅ {files.filter(f => f.status === 'completed').length} file(s) ready for processing
                   </p>
                   <p className="text-blue-600 text-sm mt-1">
-                    Инструменты для работы с PDF будут добавлены в следующих обновлениях
+                    PDF processing tools will be added in upcoming updates
                   </p>
                 </div>
               )}
