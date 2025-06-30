@@ -1,89 +1,125 @@
-import { useState } from 'react'
-import Header from '../components/organisms/Header'
-import FileUploadZone from '../components/molecules/FileUploadZone'
-import FileList from '../components/molecules/FileList'
-import ToolsGrid from '../components/organisms/ToolsGrid'
-import MergeTool from '../components/organisms/MergeTool'
+import React, { useState } from 'react';
+import { FileItem, PDFOperationType, PDFProcessingResult } from '../types';
+import Header from '../components/organisms/Header';
+import FileUploadZone from '../components/molecules/FileUploadZone';
+import FileList from '../components/molecules/FileList';
+import ToolsGrid from '../components/organisms/ToolsGrid';
+import MergeTool from '../components/organisms/MergeTool';
+import CompressionTool from '../components/organisms/CompressionTool';
+import { useFileUpload } from '../hooks/useFileUpload';
+import { downloadBlob, generateFilename } from '../utils/fileHelpers';
 
-interface FileItem {
-  id: string
-  file: File
-  status: 'pending' | 'processing' | 'completed' | 'error'
-  progress?: number
-  error?: string
-}
+const HomePage: React.FC = () => {
+  const {
+    files,
+    isDragActive,
+    isUploading,
+    addFiles,
+    removeFile,
+    retryFile,
+    getRootProps,
+    getInputProps
+  } = useFileUpload({
+    maxFiles: 10,
+    maxSizeBytes: 100 * 1024 * 1024, // 100MB
+    acceptedTypes: ['application/pdf'],
+    autoProcess: true
+  });
 
-const HomePage = () => {
-  const [files, setFiles] = useState<FileItem[]>([])
-  const [selectedTool, setSelectedTool] = useState<string | null>(null)
+  const [selectedTool, setSelectedTool] = useState<PDFOperationType | null>(null);
 
   const handleFileSelect = (selectedFiles: File[]) => {
-    const newFiles: FileItem[] = selectedFiles.map(file => ({
-      id: Date.now() + Math.random().toString(),
-      file,
-      status: 'pending' as const
-    }))
+    addFiles(selectedFiles);
+  };
 
-    setFiles(prev => [...prev, ...newFiles])
-
-    // Simulate file processing
-    newFiles.forEach(fileItem => {
-      simulateFileProcessing(fileItem.id)
-    })
-  }
-
-  const simulateFileProcessing = (fileId: string) => {
-    // Start processing
-    setFiles(prev => prev.map(f => 
-      f.id === fileId ? { ...f, status: 'processing' as const, progress: 0 } : f
-    ))
-
-    // Simulate progress
-    let progress = 0
-    const interval = setInterval(() => {
-      progress += Math.random() * 15 + 5 // Random progress from 5 to 20%
-      
-      if (progress >= 100) {
-        clearInterval(interval)
-        setFiles(prev => prev.map(f => 
-          f.id === fileId ? { ...f, status: 'completed' as const, progress: 100 } : f
-        ))
-      } else {
-        setFiles(prev => prev.map(f => 
-          f.id === fileId ? { ...f, progress } : f
-        ))
-      }
-    }, 200)
-  }
-
-  const handleRemoveFile = (fileId: string) => {
-    setFiles(prev => prev.filter(f => f.id !== fileId))
-  }
-
-  const handleRetryFile = (fileId: string) => {
-    simulateFileProcessing(fileId)
-  }
-
-  const handleToolSelect = (toolId: string) => {
-    const completedFiles = files.filter(f => f.status === 'completed')
+  const handleToolSelect = (toolType: PDFOperationType) => {
+    const completedFiles = files
+      .filter(f => f.status === 'completed')
+      .map(f => f.file);
     
     if (completedFiles.length === 0) {
-      alert('Please upload some PDF files first!')
-      return
+      alert('Please upload some PDF files first!');
+      return;
     }
 
-    // Open the tool
-    setSelectedTool(toolId)
-  }
+    setSelectedTool(toolType);
+  };
 
   const handleCloseTool = () => {
-    setSelectedTool(null)
-  }
+    setSelectedTool(null);
+  };
 
-  const completedFiles = files.filter(f => f.status === 'completed').map(f => f.file)
+  const handleToolComplete = (result: PDFProcessingResult | PDFProcessingResult[]) => {
+    if (Array.isArray(result)) {
+      // Handle multiple results (e.g., from split operation)
+      result.forEach((res, index) => {
+        if (res.success && res.data) {
+          const filename = generateFilename(
+            `split_part_${index + 1}`,
+            'processed',
+            'pdf'
+          );
+          downloadBlob(res.data, filename);
+        }
+      });
+    } else {
+      // Handle single result
+      if (result.success && result.data) {
+        const toolName = selectedTool || 'processed';
+        const filename = generateFilename(
+          `${toolName}_result`,
+          'processed',
+          'pdf'
+        );
+        downloadBlob(result.data, filename);
+      }
+    }
+    
+    setSelectedTool(null);
+  };
+
+  const completedFiles = files
+    .filter(f => f.status === 'completed')
+    .map(f => f.file);
+
+  const renderSelectedTool = () => {
+    if (!selectedTool) return null;
+
+    const props = {
+      files: completedFiles,
+      onComplete: handleToolComplete,
+      onClose: handleCloseTool
+    };
+
+    switch (selectedTool) {
+      case PDFOperationType.MERGE:
+        return <MergeTool {...props} />;
+      case PDFOperationType.COMPRESS:
+        return <CompressionTool {...props} />;
+      // Add other tools as they're implemented
+      default:
+        return (
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <h2 className="text-xl font-bold mb-4">
+              {selectedTool.charAt(0).toUpperCase() + selectedTool.slice(1)} Tool
+            </h2>
+            <p className="text-gray-600 mb-4">
+              This tool is coming soon! We're working hard to bring you this feature.
+            </p>
+            <button
+              onClick={handleCloseTool}
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            >
+              Close
+            </button>
+          </div>
+        );
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50" {...getRootProps()}>
+      <input {...getInputProps()} />
       <Header />
       
       <main>
@@ -105,8 +141,10 @@ const HomePage = () => {
           <div className="mb-8">
             <FileUploadZone
               onFileSelect={handleFileSelect}
+              dragActive={isDragActive}
+              uploading={isUploading}
               maxFiles={10}
-              maxSizeBytes={50 * 1024 * 1024} // 50MB
+              maxSizeBytes={100 * 1024 * 1024}
               className="mb-6"
             />
           </div>
@@ -116,8 +154,9 @@ const HomePage = () => {
             <div className="mb-8">
               <FileList
                 files={files}
-                onRemoveFile={handleRemoveFile}
-                onRetryFile={handleRetryFile}
+                onRemoveFile={removeFile}
+                onRetryFile={retryFile}
+                showProgress={true}
               />
             </div>
           )}
@@ -126,25 +165,28 @@ const HomePage = () => {
         {/* Selected Tool */}
         {selectedTool && (
           <div className="max-w-4xl mx-auto px-4 mb-16">
-            {selectedTool === 'merge' && (
-              <MergeTool
-                files={completedFiles}
-                onClose={handleCloseTool}
-              />
-            )}
-            {/* Add other tools here when implemented */}
+            {renderSelectedTool()}
           </div>
         )}
 
         {/* Tools Section */}
         {!selectedTool && (
           <div className="max-w-7xl mx-auto px-4 pb-16">
-            <ToolsGrid onToolSelect={handleToolSelect} />
+            <ToolsGrid 
+              onToolSelect={handleToolSelect}
+              disabledTools={completedFiles.length === 0 ? [
+                PDFOperationType.MERGE,
+                PDFOperationType.COMPRESS,
+                PDFOperationType.SPLIT,
+                PDFOperationType.ROTATE,
+                PDFOperationType.WATERMARK
+              ] : []}
+            />
           </div>
         )}
       </main>
     </div>
-  )
-}
+  );
+};
 
-export default HomePage
+export default HomePage;

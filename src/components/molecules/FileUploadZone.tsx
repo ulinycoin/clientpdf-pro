@@ -1,222 +1,133 @@
-import { useState, useRef, DragEvent, ChangeEvent } from 'react'
-import Button from '../atoms/Button'
-import Icon from '../atoms/Icon'
+import React, { useRef } from 'react';
+import { FileUploadZoneProps } from '../../types';
+import Button from '../atoms/Button';
 
-interface FileUploadZoneProps {
-  onFileSelect: (files: File[]) => void
-  acceptedTypes?: string[]
-  maxFiles?: number
-  maxSizeBytes?: number
-  className?: string
-  disabled?: boolean
-}
-
-const FileUploadZone = ({
+const FileUploadZone: React.FC<FileUploadZoneProps> = ({
   onFileSelect,
-  acceptedTypes = ['.pdf'],
+  accept = '.pdf,application/pdf',
+  multiple = true,
   maxFiles = 10,
-  maxSizeBytes = 50 * 1024 * 1024, // 50MB default
-  className = '',
-  disabled = false
-}: FileUploadZoneProps) => {
-  const [isDragging, setIsDragging] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const fileInputRef = useRef<HTMLInputElement>(null)
+  maxSizeBytes = 50 * 1024 * 1024, // 50MB
+  disabled = false,
+  dragActive = false,
+  uploading = false,
+  className = ''
+}) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const validateFiles = (files: File[]): { valid: File[], errors: string[] } => {
-    const valid: File[] = []
-    const errors: string[] = []
-
-    if (files.length > maxFiles) {
-      errors.push(`Maximum ${maxFiles} files at once`)
-      return { valid, errors }
-    }
-
-    files.forEach(file => {
-      // Check file type
-      const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase()
-      if (!acceptedTypes.includes(fileExtension)) {
-        errors.push(`${file.name}: unsupported file type`)
-        return
-      }
-
-      // Check file size
-      if (file.size > maxSizeBytes) {
-        const maxSizeMB = Math.round(maxSizeBytes / (1024 * 1024))
-        errors.push(`${file.name}: file too large (max ${maxSizeMB}MB)`)
-        return
-      }
-
-      // Check if it's actually a PDF
-      if (file.type !== 'application/pdf') {
-        errors.push(`${file.name}: not a valid PDF file`)
-        return
-      }
-
-      valid.push(file)
-    })
-
-    return { valid, errors }
-  }
-
-  const handleFiles = (files: FileList | null) => {
-    if (!files || files.length === 0) return
-
-    const fileArray = Array.from(files)
-    const { valid, errors } = validateFiles(fileArray)
-
-    if (errors.length > 0) {
-      setError(errors.join(', '))
-      setTimeout(() => setError(null), 5000)
-    }
-
-    if (valid.length > 0) {
-      setError(null)
-      onFileSelect(valid)
-    }
-  }
-
-  const handleDragEnter = (e: DragEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    if (!disabled) {
-      setIsDragging(true)
-    }
-  }
-
-  const handleDragLeave = (e: DragEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setIsDragging(false)
-  }
-
-  const handleDragOver = (e: DragEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-  }
-
-  const handleDrop = (e: DragEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setIsDragging(false)
-
-    if (disabled) return
-
-    const files = e.dataTransfer.files
-    handleFiles(files)
-  }
-
-  const handleFileInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    handleFiles(e.target.files)
-    // Clear input to allow selecting the same files again
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ''
-    }
-  }
-
-  const openFileDialog = () => {
+  const handleClick = () => {
     if (!disabled && fileInputRef.current) {
-      fileInputRef.current.click()
+      fileInputRef.current.click();
     }
-  }
+  };
 
-  const formatFileTypes = () => {
-    return acceptedTypes.join(', ').toUpperCase()
-  }
+  const handleFileInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (files && files.length > 0) {
+      onFileSelect(Array.from(files));
+      // Reset input value to allow selecting the same file again
+      event.target.value = '';
+    }
+  };
 
-  const formatMaxSize = () => {
-    const sizeMB = Math.round(maxSizeBytes / (1024 * 1024))
-    return `${sizeMB}MB`
-  }
+  const formatMaxSize = (bytes: number): string => {
+    const mb = bytes / (1024 * 1024);
+    return `${Math.round(mb)}MB`;
+  };
 
-  const baseClasses = `
-    relative border-2 border-dashed rounded-lg p-8 text-center transition-all duration-200
-    ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer hover:border-blue-400'}
-    ${isDragging && !disabled ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}
-    ${error ? 'border-red-400 bg-red-50' : ''}
-  `
+  const borderColor = dragActive 
+    ? 'border-blue-400 bg-blue-50' 
+    : 'border-gray-300 hover:border-gray-400';
+  
+  const isDisabled = disabled || uploading;
 
   return (
-    <div className={`${baseClasses} ${className}`}>
-      <input
-        ref={fileInputRef}
-        type="file"
-        multiple={maxFiles > 1}
-        accept={acceptedTypes.join(',')}
-        onChange={handleFileInputChange}
-        className="hidden"
-        disabled={disabled}
-      />
-
+    <div className={className}>
       <div
-        onDragEnter={handleDragEnter}
-        onDragLeave={handleDragLeave}
-        onDragOver={handleDragOver}
-        onDrop={handleDrop}
-        onClick={openFileDialog}
-        className="h-full w-full"
+        onClick={handleClick}
+        className={`
+          relative border-2 border-dashed rounded-lg p-8 text-center cursor-pointer
+          transition-all duration-200
+          ${borderColor}
+          ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}
+        `}
       >
-        <div className="flex flex-col items-center justify-center space-y-4">
-          {/* Icon */}
-          <div className={`p-4 rounded-full ${error ? 'bg-red-100' : 'bg-blue-100'}`}>
-            <Icon 
-              name={error ? 'x' : 'upload'} 
-              size={32} 
-              className={error ? 'text-red-500' : 'text-blue-500'} 
-            />
+        {/* Hidden file input */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept={accept}
+          multiple={multiple}
+          onChange={handleFileInput}
+          disabled={isDisabled}
+          className="hidden"
+        />
+        
+        {/* Upload Icon */}
+        <div className="text-6xl mb-4">
+          {uploading ? '⏳' : dragActive ? '📂' : '📄'}
+        </div>
+        
+        {/* Main Text */}
+        <h3 className="text-xl font-semibold text-gray-700 mb-2">
+          {uploading 
+            ? 'Uploading files...' 
+            : dragActive 
+              ? 'Drop your PDF files here' 
+              : 'Choose PDF files or drag & drop'
+          }
+        </h3>
+        
+        {/* Subtitle */}
+        <p className="text-gray-500 mb-6">
+          {uploading
+            ? 'Please wait while we process your files'
+            : `Upload up to ${maxFiles} files, max ${formatMaxSize(maxSizeBytes)} each`
+          }
+        </p>
+        
+        {/* Action Button */}
+        {!uploading && (
+          <Button
+            variant="primary"
+            size="lg"
+            disabled={isDisabled}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleClick();
+            }}
+          >
+            Select Files
+          </Button>
+        )}
+        
+        {/* Features */}
+        <div className="mt-6 flex justify-center space-x-8 text-sm text-gray-500">
+          <div className="flex items-center">
+            <span className="mr-1">🔒</span>
+            <span>100% Private</span>
           </div>
-
-          {/* Main text */}
-          <div className="space-y-2">
-            <h3 className="text-lg font-medium text-gray-900">
-              {isDragging && !disabled
-                ? 'Drop files here'
-                : error
-                ? 'Upload failed'
-                : 'Upload PDF files'
-              }
-            </h3>
-            
-            {!error && (
-              <p className="text-sm text-gray-600">
-                Drag and drop files here or{' '}
-                <span className="text-blue-600 font-medium">click to browse</span>
-              </p>
-            )}
+          <div className="flex items-center">
+            <span className="mr-1">⚡</span>
+            <span>Fast Processing</span>
           </div>
-
-          {/* Error */}
-          {error && (
-            <div className="text-sm text-red-600 bg-red-100 px-3 py-2 rounded-md">
-              {error}
-            </div>
-          )}
-
-          {/* Upload button */}
-          {!isDragging && !error && (
-            <Button
-              onClick={(e) => {
-                e.stopPropagation()
-                openFileDialog()
-              }}
-              variant="primary"
-              size="md"
-              disabled={disabled}
-            >
-              Choose Files
-            </Button>
-          )}
-
-          {/* Additional info */}
-          <div className="text-xs text-gray-500 space-y-1">
-            <p>Supported formats: {formatFileTypes()}</p>
-            <p>Maximum size: {formatMaxSize()} per file</p>
-            {maxFiles > 1 && <p>Up to {maxFiles} files at once</p>}
+          <div className="flex items-center">
+            <span className="mr-1">💯</span>
+            <span>Free Forever</span>
           </div>
         </div>
       </div>
+      
+      {/* Help Text */}
+      <div className="mt-4 text-center">
+        <p className="text-xs text-gray-500">
+          Supported format: PDF • 
+          Files are processed locally in your browser • 
+          No data is sent to our servers
+        </p>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default FileUploadZone
+export default FileUploadZone;
