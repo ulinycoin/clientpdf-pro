@@ -1,1 +1,189 @@
-import React, { useState } from 'react';\nimport { FileItem, PDFOperationType, PDFProcessingResult } from '../types';\nimport Header from '../components/organisms/Header';\nimport FileUploadZone from '../components/molecules/FileUploadZone';\nimport FileList from '../components/molecules/FileList';\nimport ToolsGrid from '../components/organisms/ToolsGrid';\nimport MergeTool from '../components/organisms/MergeTool';\nimport CompressionTool from '../components/organisms/CompressionTool';\nimport { useFileUpload } from '../hooks/useFileUpload';\nimport { downloadBlob, generateFilename } from '../utils/fileHelpers';\n\nconst HomePage: React.FC = () => {\n  const {\n    files,\n    isDragActive,\n    isUploading,\n    addFiles,\n    removeFile,\n    retryFile,\n    getRootProps,\n    getInputProps\n  } = useFileUpload({\n    maxFiles: 10,\n    maxSizeBytes: 100 * 1024 * 1024,\n    acceptedTypes: ['application/pdf'],\n    autoProcess: true\n  });\n\n  const [selectedTool, setSelectedTool] = useState<PDFOperationType | null>(null);\n\n  const handleFileSelect = (selectedFiles: File[]) => {\n    addFiles(selectedFiles);\n  };\n\n  const handleToolSelect = (toolType: PDFOperationType) => {\n    const completedFiles = files\n      .filter(f => f.status === 'completed')\n      .map(f => f.file);\n    \n    if (completedFiles.length === 0) {\n      alert('Please upload some PDF files first!');\n      return;\n    }\n\n    setSelectedTool(toolType);\n  };\n\n  const handleCloseTool = () => {\n    setSelectedTool(null);\n  };\n\n  const handleToolComplete = (result: PDFProcessingResult | PDFProcessingResult[]) => {\n    if (Array.isArray(result)) {\n      result.forEach((res, index) => {\n        if (res.success && res.data) {\n          const filename = generateFilename(\n            `split_part_${index + 1}`,\n            'processed',\n            'pdf'\n          );\n          downloadBlob(res.data, filename);\n        }\n      });\n    } else {\n      if (result.success && result.data) {\n        const toolName = selectedTool || 'processed';\n        const filename = generateFilename(\n          `${toolName}_result`,\n          'processed',\n          'pdf'\n        );\n        downloadBlob(result.data, filename);\n      }\n    }\n    \n    setSelectedTool(null);\n  };\n\n  const completedFiles = files\n    .filter(f => f.status === 'completed')\n    .map(f => f.file);\n\n  const renderSelectedTool = () => {\n    if (!selectedTool) return null;\n\n    const props = {\n      files: completedFiles,\n      onComplete: handleToolComplete,\n      onClose: handleCloseTool\n    };\n\n    switch (selectedTool) {\n      case PDFOperationType.MERGE:\n        return <MergeTool {...props} />;\n      case PDFOperationType.COMPRESS:\n        return <CompressionTool {...props} />;\n      default:\n        return (\n          <div className=\"bg-white rounded-lg shadow-lg p-6\">\n            <h2 className=\"text-xl font-bold mb-4\">\n              {selectedTool.charAt(0).toUpperCase() + selectedTool.slice(1)} Tool\n            </h2>\n            <p className=\"text-gray-600 mb-4\">\n              This tool is coming soon! We are working hard to bring you this feature.\n            </p>\n            <button\n              onClick={handleCloseTool}\n              className=\"px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700\"\n            >\n              Close\n            </button>\n          </div>\n        );\n    }\n  };\n\n  return (\n    <div className=\"min-h-screen bg-gray-50\" {...getRootProps()}>\n      <input {...getInputProps()} />\n      <Header />\n      \n      <main>\n        <div className=\"max-w-4xl mx-auto px-4 py-16\">\n          <div className=\"text-center mb-12\">\n            <h1 className=\"text-4xl font-bold text-gray-900 mb-4\">\n              Free PDF Tools\n            </h1>\n            <p className=\"text-xl text-gray-600 mb-8\">\n              Convert, merge, split and compress PDFs - all locally in your browser\n            </p>\n            <p className=\"text-sm text-gray-500\">\n              Your files never leave your device - Fast processing - Completely free\n            </p>\n          </div>\n\n          <div className=\"mb-8\">\n            <FileUploadZone\n              onFileSelect={handleFileSelect}\n              dragActive={isDragActive}\n              uploading={isUploading}\n              maxFiles={10}\n              maxSizeBytes={100 * 1024 * 1024}\n              className=\"mb-6\"\n            />\n          </div>\n\n          {files.length > 0 && (\n            <div className=\"mb-8\">\n              <FileList\n                files={files}\n                onRemoveFile={removeFile}\n                onRetryFile={retryFile}\n                showProgress={true}\n              />\n            </div>\n          )}\n        </div>\n\n        {selectedTool && (\n          <div className=\"max-w-4xl mx-auto px-4 mb-16\">\n            {renderSelectedTool()}\n          </div>\n        )}\n\n        {!selectedTool && (\n          <div className=\"max-w-7xl mx-auto px-4 pb-16\">\n            <ToolsGrid \n              onToolSelect={handleToolSelect}\n              disabledTools={completedFiles.length === 0 ? [\n                PDFOperationType.MERGE,\n                PDFOperationType.COMPRESS,\n                PDFOperationType.SPLIT,\n                PDFOperationType.ROTATE,\n                PDFOperationType.WATERMARK\n              ] : []}\n            />\n          </div>\n        )}\n      </main>\n    </div>\n  );\n};\n\nexport default HomePage;"
+import React, { useState } from 'react';
+import { PDFProcessingResult } from '../types';
+import Header from '../components/organisms/Header';
+import FileUploadZone from '../components/molecules/FileUploadZone';
+import ToolsGrid from '../components/organisms/ToolsGrid';
+import MergeTool from '../components/organisms/MergeTool';
+import CompressionTool from '../components/organisms/CompressionTool';
+import { useFileUpload } from '../hooks/useFileUpload';
+import { downloadBlob, generateFilename } from '../utils/fileHelpers';
+
+const HomePage: React.FC = () => {
+  const {
+    files,
+    isDragging,
+    addFiles,
+    removeFile,
+    clearFiles,
+    handleDragOver,
+    handleDragLeave,
+    handleDrop
+  } = useFileUpload();
+
+  const [selectedTool, setSelectedTool] = useState<string | null>(null);
+
+  const handleFileSelect = (selectedFiles: File[]) => {
+    addFiles(selectedFiles);
+  };
+
+  const handleToolSelect = (toolType: string) => {
+    if (files.length === 0) {
+      alert('Please upload some PDF files first!');
+      return;
+    }
+
+    setSelectedTool(toolType);
+  };
+
+  const handleCloseTool = () => {
+    setSelectedTool(null);
+  };
+
+  const handleToolComplete = (result: PDFProcessingResult | PDFProcessingResult[]) => {
+    if (Array.isArray(result)) {
+      result.forEach((res, index) => {
+        if (res.success && res.data) {
+          const filename = generateFilename(
+            `split_part_${index + 1}`,
+            undefined,
+            true
+          );
+          downloadBlob(res.data, filename);
+        }
+      });
+    } else {
+      if (result.success && result.data) {
+        const toolName = selectedTool || 'processed';
+        const filename = generateFilename(
+          toolName,
+          files[0]?.name,
+          true
+        );
+        downloadBlob(result.data, filename);
+      }
+    }
+    
+    setSelectedTool(null);
+  };
+
+  const renderSelectedTool = () => {
+    if (!selectedTool) return null;
+
+    const props = {
+      files: files,
+      onComplete: handleToolComplete,
+      onClose: handleCloseTool
+    };
+
+    switch (selectedTool) {
+      case 'merge':
+        return <MergeTool {...props} />;
+      case 'compress':
+        return <CompressionTool {...props} />;
+      default:
+        return (
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <h2 className="text-xl font-bold mb-4">
+              {selectedTool.charAt(0).toUpperCase() + selectedTool.slice(1)} Tool
+            </h2>
+            <p className="text-gray-600 mb-4">
+              This tool is coming soon! We are working hard to bring you this feature.
+            </p>
+            <button
+              onClick={handleCloseTool}
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            >
+              Close
+            </button>
+          </div>
+        );
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <Header />
+      
+      <main>
+        <div className="max-w-4xl mx-auto px-4 py-16">
+          <div className="text-center mb-12">
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+              Free PDF Tools
+            </h1>
+            <p className="text-xl text-gray-600 mb-8">
+              Convert, merge, split and compress PDFs - all locally in your browser
+            </p>
+            <p className="text-sm text-gray-500">
+              Your files never leave your device - Fast processing - Completely free
+            </p>
+          </div>
+
+          <div className="mb-8">
+            <FileUploadZone
+              onFilesSelected={handleFileSelect}
+              accept="application/pdf"
+              multiple={true}
+              maxSize={100 * 1024 * 1024}
+              disabled={false}
+              className="mb-6"
+            />
+          </div>
+
+          {files.length > 0 && (
+            <div className="mb-8">
+              <div className="bg-white rounded-lg shadow p-4">
+                <h3 className="text-lg font-medium mb-4">Uploaded Files ({files.length})</h3>
+                <div className="space-y-2">
+                  {files.map((file, index) => (
+                    <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded">
+                      <div className="flex items-center space-x-3">
+                        <div className="text-red-500">📄</div>
+                        <div>
+                          <p className="font-medium text-gray-900">{file.name}</p>
+                          <p className="text-sm text-gray-500">
+                            {(file.size / 1024 / 1024).toFixed(2)} MB
+                          </p>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => removeFile(index)}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-4">
+                  <button
+                    onClick={clearFiles}
+                    className="text-sm text-gray-500 hover:text-gray-700"
+                  >
+                    Clear All
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {selectedTool && (
+          <div className="max-w-4xl mx-auto px-4 mb-16">
+            {renderSelectedTool()}
+          </div>
+        )}
+
+        {!selectedTool && (
+          <div className="max-w-7xl mx-auto px-4 pb-16">
+            <ToolsGrid 
+              onToolSelect={handleToolSelect}
+              disabledTools={files.length === 0 ? ['merge', 'compress', 'split', 'rotate', 'watermark'] : []}
+            />
+          </div>
+        )}
+      </main>
+    </div>
+  );
+};
+
+export default HomePage;
