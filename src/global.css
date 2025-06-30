@@ -21,11 +21,11 @@
   }
   
   .btn-primary {
-    @apply bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500 shadow-medium hover:shadow-strong;
+    @apply bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 shadow-md hover:shadow-lg;
   }
   
   .btn-secondary {
-    @apply bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 hover:border-gray-400 focus:ring-gray-500 shadow-soft;
+    @apply bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 hover:border-gray-400 focus:ring-gray-500 shadow-sm;
   }
   
   .btn-ghost {
@@ -38,15 +38,15 @@
 
   /* Modern Card Components */
   .card {
-    @apply bg-white rounded-xl border border-gray-200 shadow-soft hover:shadow-medium transition-all duration-200;
+    @apply bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200;
   }
   
   .card-interactive {
-    @apply cursor-pointer hover:border-primary-300 hover:bg-gray-50/50;
+    @apply cursor-pointer hover:border-blue-300 hover:bg-gray-50/50;
   }
   
   .card-disabled {
-    @apply opacity-60 cursor-not-allowed hover:shadow-soft hover:border-gray-200 hover:bg-white;
+    @apply opacity-60 cursor-not-allowed hover:shadow-sm hover:border-gray-200 hover:bg-white;
   }
 
   /* Modern Tool Card */
@@ -55,7 +55,7 @@
   }
   
   .tool-card-enabled {
-    @apply hover:scale-105 hover:shadow-glow;
+    @apply hover:scale-105 hover:shadow-xl;
   }
   
   .tool-card-disabled {
@@ -64,11 +64,11 @@
 
   /* File Upload Zone */
   .upload-zone {
-    @apply border-2 border-dashed border-gray-300 rounded-xl p-12 text-center transition-all duration-200 hover:border-primary-400 hover:bg-primary-50/50;
+    @apply border-2 border-dashed border-gray-300 rounded-xl p-12 text-center transition-all duration-200 hover:border-blue-400 hover:bg-blue-50/50;
   }
   
   .upload-zone-active {
-    @apply border-primary-500 bg-primary-50 ring-4 ring-primary-100;
+    @apply border-blue-500 bg-blue-50 ring-4 ring-blue-100;
   }
 
   /* Status Indicators */
@@ -86,7 +86,7 @@
 
   /* Modern Input */
   .input {
-    @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors duration-200;
+    @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200;
   }
 
   /* Container Utilities */
@@ -121,12 +121,12 @@
   
   /* Gradient Text */
   .text-gradient {
-    @apply bg-gradient-to-r from-primary-600 to-blue-600 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-blue-600 to-blue-600 bg-clip-text text-transparent;
   }
   
   /* Hover Glow Effect */
   .hover-glow {
-    @apply transition-all duration-300 hover:shadow-glow;
+    @apply transition-all duration-300 hover:shadow-xl;
   }
 
   /* Modern Scrollbar */
@@ -151,9 +151,26 @@
   .scrollbar-thin::-webkit-scrollbar-thumb:hover {
     background-color: rgb(148 163 184);
   }
+
+  /* Custom shadow utilities */
+  .shadow-soft {
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  }
+  
+  .shadow-medium {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+  
+  .shadow-strong {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
+  
+  .shadow-glow {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
+  }
 }
 
-/* Legacy CSS Compatibility - будем удалять постепенно */
+/* Legacy CSS Compatibility */
 .app {
   @apply min-h-screen bg-gray-50;
 }
