@@ -46,10 +46,10 @@ const ToolCard: React.FC<ToolCardProps> = ({
   return (
     <div 
       className={`
-        relative bg-white rounded-lg shadow-md border border-gray-200 p-6 
-        transition-all duration-200 hover:shadow-lg
-        ${!isDisabled ? 'hover:border-blue-300 hover:-translate-y-1' : ''}
-        ${isDisabled ? 'opacity-75' : ''}
+        relative bg-white rounded-lg shadow-md border-2 p-6 
+        transition-all duration-200 
+        ${!isDisabled ? 'border-gray-200 hover:border-blue-300 hover:shadow-lg hover:-translate-y-1' : ''}
+        ${isDisabled ? 'border-gray-100 bg-gray-50' : ''}
         ${className}
       `}
     >
@@ -62,18 +62,18 @@ const ToolCard: React.FC<ToolCardProps> = ({
         </div>
       )}
       
-      {/* Icon - Always visible */}
-      <div className="text-4xl mb-4 text-center">
+      {/* Icon */}
+      <div className={`text-4xl mb-4 text-center transition-opacity ${isDisabled ? 'opacity-40' : ''}`}>
         {getIconDisplay(icon)}
       </div>
       
       {/* Title */}
-      <h3 className="text-xl font-semibold text-gray-900 mb-2 text-center">
+      <h3 className={`text-xl font-semibold mb-2 text-center ${isDisabled ? 'text-gray-400' : 'text-gray-900'}`}>
         {title}
       </h3>
       
       {/* Description */}
-      <p className="text-gray-600 text-sm mb-6 text-center leading-relaxed">
+      <p className={`text-sm mb-6 text-center leading-relaxed ${isDisabled ? 'text-gray-400' : 'text-gray-600'}`}>
         {description}
       </p>
       
@@ -89,18 +89,6 @@ const ToolCard: React.FC<ToolCardProps> = ({
           {comingSoon ? 'Coming Soon' : disabled ? 'Upload PDF Files' : 'Start'}
         </Button>
       </div>
-      
-      {/* Disabled Overlay - Subtle version */}
-      {disabled && !comingSoon && (
-        <div className="absolute inset-0 bg-white bg-opacity-60 rounded-lg flex items-center justify-center backdrop-blur-[1px]">
-          <div className="text-center p-4">
-            <div className="text-3xl mb-3 opacity-60">📁</div>
-            <p className="text-sm text-gray-700 font-medium">
-              Upload PDF files first
-            </p>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
