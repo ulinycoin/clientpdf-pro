@@ -1,12 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from '../atoms/Button';
 import Icon from '../atoms/Icon';
 import ProgressBar from '../atoms/ProgressBar';
-import FileUploadZone from '../molecules/FileUploadZone';
 import { useExtractPages } from '../../hooks/useExtractPages';
-import { PAGE_SELECTION_MODES } from '../../types/pageExtraction.types';
+import { 
+  PAGE_SELECTION_MODES, 
+  ExtractPagesToolProps 
+} from '../../types/pageExtraction.types';
 
-export const ExtractPagesTool: React.FC = () => {
+export const ExtractPagesTool: React.FC<ExtractPagesToolProps> = ({
+  files,
+  onComplete,
+  onClose,
+  className = ''
+}) => {
   const {
     file,
     pages,
@@ -33,11 +40,12 @@ export const ExtractPagesTool: React.FC = () => {
   const [rangeStart, setRangeStart] = useState('');
   const [rangeEnd, setRangeEnd] = useState('');
 
-  const handleFileUpload = async (uploadedFiles: File[]) => {
-    if (uploadedFiles.length > 0) {
-      await loadFile(uploadedFiles[0]);
+  // Load the first file when component mounts or files change
+  useEffect(() => {
+    if (files && files.length > 0 && !file) {
+      loadFile(files[0]);
     }
-  };
+  }, [files, file, loadFile]);
 
   const handleRangeSelection = () => {
     const start = parseInt(rangeStart);
@@ -54,46 +62,61 @@ export const ExtractPagesTool: React.FC = () => {
     }
   };
 
-  if (!file) {
+  const handleExtract = async () => {
+    await extractPages();
+    // Note: Since ExtractPagesTool handles its own download,
+    // we call onComplete with a dummy success result
+    if (result && result.success) {
+      onComplete({
+        success: true,
+        blob: undefined, // Download already handled
+        extractedPageCount: result.extractedPageCount,
+        originalPageCount: result.originalPageCount,
+        processingTime: result.processingTime
+      });
+    }
+  };
+
+  // Show loading state while file is being loaded
+  if (!file && files && files.length > 0) {
     return (
-      <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg">
-        <div className="text-center mb-6">
+      <div className={`max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg ${className}`}>
+        <div className="text-center">
           <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <Icon name="extract" className="w-8 h-8 text-purple-600" />
           </div>
           <h2 className="text-2xl font-bold text-gray-800 mb-2">Extract PDF Pages</h2>
-          <p className="text-gray-600">
-            Extract specific pages from your PDF into a new document
-          </p>
+          <p className="text-gray-600 mb-4">Loading PDF file...</p>
+          <ProgressBar progress={50} color="blue" />
         </div>
+      </div>
+    );
+  }
 
-        <FileUploadZone
-          onFilesSelected={handleFileUpload}
-          accept="application/pdf"
-          multiple={false}
-          maxSize={50 * 1024 * 1024}
-        />
-
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
-          <div className="flex items-center">
-            <Icon name="checkmark" className="w-4 h-4 text-green-500 mr-2" />
-            Select specific pages or ranges
-          </div>
-          <div className="flex items-center">
-            <Icon name="checkmark" className="w-4 h-4 text-green-500 mr-2" />
-            Preview page selection
-          </div>
-          <div className="flex items-center">
-            <Icon name="checkmark" className="w-4 h-4 text-green-500 mr-2" />
-            Maintain original quality
-          </div>
+  // Show error if no file available
+  if (!file) {
+    return (
+      <div className={`max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg ${className}`}>
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold text-gray-800">Extract PDF Pages</h2>
+          <Button variant="outline" onClick={onClose}>
+            <Icon name="x" className="w-4 h-4 mr-2" />
+            Close
+          </Button>
+        </div>
+        <div className="text-center py-8">
+          <Icon name="alert" className="w-12 h-12 text-red-500 mx-auto mb-4" />
+          <p className="text-gray-600">No PDF file available for page extraction.</p>
+          <Button variant="primary" onClick={onClose} className="mt-4">
+            Go Back
+          </Button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-6 bg-white rounded-lg shadow-lg">
+    <div className={`max-w-6xl mx-auto p-6 bg-white rounded-lg shadow-lg ${className}`}>
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
@@ -105,9 +128,9 @@ export const ExtractPagesTool: React.FC = () => {
             Total pages: {totalPages} • Selected: {selectedPages.length}
           </p>
         </div>
-        <Button variant="outline" onClick={reset} className="flex items-center">
-          <Icon name="refresh" className="w-4 h-4 mr-2" />
-          New File
+        <Button variant="outline" onClick={onClose} className="flex items-center">
+          <Icon name="x" className="w-4 h-4 mr-2" />
+          Close
         </Button>
       </div>
 
@@ -299,7 +322,7 @@ export const ExtractPagesTool: React.FC = () => {
           </Button>
           <Button
             variant="primary"
-            onClick={() => extractPages()}
+            onClick={handleExtract}
             disabled={!isValidSelection() || isProcessing}
             className="flex items-center"
           >
