@@ -11,6 +11,7 @@ import RotateTool from '../components/organisms/RotateTool';
 import WatermarkTool from '../components/organisms/WatermarkTool';
 import ExtractTextTool from '../components/organisms/ExtractTextTool';
 import { PdfToImageTool } from '../components/organisms/PdfToImageTool';
+import { ExtractPagesTool } from '../components/organisms/ExtractPagesTool';
 import { useFileUpload } from '../hooks/useFileUpload';
 import { downloadBlob, generateFilename } from '../utils/fileHelpers';
 import { scrollToTop } from '../utils/scrollHelpers';
@@ -73,8 +74,11 @@ const HomePage: React.FC = () => {
     } else {
       // Handle single result
       if (result.success && result.data) {
-        // For extract-text tool and pdf-to-image tool, the download is handled within the component
-        if (selectedTool !== 'extract-text' && selectedTool !== 'pdf-to-image') {
+        // For extract-text tool, pdf-to-image tool, and extract-pages tool, 
+        // the download is handled within the component
+        if (selectedTool !== 'extract-text' && 
+            selectedTool !== 'pdf-to-image' && 
+            selectedTool !== 'extract-pages') {
           const toolName = selectedTool || 'processed';
           const filename = generateFilename(
             toolName,
@@ -114,6 +118,9 @@ const HomePage: React.FC = () => {
       case 'pdf-to-image':
         // Pass the first file to PdfToImageTool for consistency
         return <PdfToImageTool onClose={handleCloseTool} initialFile={files[0]} />;
+      case 'extract-pages':
+        // ExtractPagesTool handles its own file selection and download
+        return <ExtractPagesTool />;
       default:
         return (
           <div className="bg-white rounded-lg shadow-lg p-6">
@@ -208,7 +215,7 @@ const HomePage: React.FC = () => {
 
         {/* Tool Interface - positioned at top when tool is selected */}
         {selectedTool && (
-          <div className="max-w-4xl mx-auto px-4 pt-8 pb-16">
+          <div className="max-w-6xl mx-auto px-4 pt-8 pb-16">
             {renderSelectedTool()}
           </div>
         )}
@@ -218,7 +225,7 @@ const HomePage: React.FC = () => {
           <div className="max-w-7xl mx-auto px-4 pb-16">
             <ToolsGrid 
               onToolSelect={handleToolSelect}
-              disabledTools={files.length === 0 ? ['merge', 'compress', 'split', 'rotate', 'watermark', 'extract-text', 'pdf-to-image'] : []}
+              disabledTools={files.length === 0 ? ['merge', 'compress', 'split', 'rotate', 'watermark', 'extract-text', 'pdf-to-image', 'extract-pages'] : []}
             />
           </div>
         )}
