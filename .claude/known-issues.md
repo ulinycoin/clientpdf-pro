@@ -14,6 +14,23 @@
 
 ## ✅ Решенные проблемы
 
+### Critical: setTotalPages is not a function in AddTextTool - RESOLVED ✅
+**Дата обнаружения**: 2025-07-01
+**Дата решения**: 2025-07-01
+**Серьезность**: critical
+**Компонент**: useAddText.ts, AddTextTool.tsx
+**Проблема**: AddTextTool.tsx вызывал setTotalPages из хука, но функция не была экспортирована
+**Ошибка**: `TypeError: setTotalPages is not a function at loadPDF`
+**Причина**: 
+- setTotalPages была объявлена в интерфейсе UseAddTextReturn
+- Функция setTotalPagesValue была реализована в хуке
+- Но функция не экспортировалась в return блоке хука
+**Решение**:
+- Добавлена setTotalPages в интерфейс UseAddTextReturn
+- Реализована setTotalPagesValue с валидацией (total >= 1)
+- Экспортирована setTotalPages: setTotalPagesValue в return блоке
+- Теперь AddTextTool может корректно устанавливать количество страниц
+
 ### Critical: Non-ASCII characters in watermark text - RESOLVED ✅
 **Дата обнаружения**: 2025-07-01
 **Дата решения**: 2025-07-01
