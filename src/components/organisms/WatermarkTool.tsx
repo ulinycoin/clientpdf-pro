@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useWatermark } from '../../hooks/useWatermark';
-import { WatermarkOptions } from '../../services/watermarkService';
+import { WatermarkOptions, WatermarkService } from '../../services/watermarkService';
 import Button from '../atoms/Button';
 import ProgressBar from '../atoms/ProgressBar';
 
@@ -32,12 +32,19 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
   const [options, setOptions] = useState<WatermarkOptions>(getDefaultOptions());
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const [showPreview, setShowPreview] = useState(false);
+  const [nonAsciiWarning, setNonAsciiWarning] = useState<string | null>(null);
 
-  // Validate options on change
+  const watermarkService = WatermarkService.getInstance();
+
+  // Validate options and check for non-ASCII characters on change
   useEffect(() => {
     const validation = validateOptions(options);
     setValidationErrors(validation.errors);
-  }, [options, validateOptions]);
+    
+    // Check for non-ASCII characters
+    const warning = watermarkService.getNonAsciiWarning(options.text);
+    setNonAsciiWarning(warning);
+  }, [options, validateOptions, watermarkService]);
 
   // Handle completion
   useEffect(() => {
@@ -145,6 +152,24 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
             <p className="text-xs text-gray-500 mt-1">
               {options.text.length}/50 characters
             </p>
+            
+            {/* Non-ASCII Character Warning */}
+            {nonAsciiWarning && (
+              <div className="mt-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <div className="flex items-start">
+                  <div className="text-yellow-400 mr-2 mt-0.5">⚠️</div>
+                  <div>
+                    <h4 className="text-yellow-800 font-medium text-sm">Character Conversion Notice</h4>
+                    <p className="text-yellow-700 text-sm mt-1">
+                      {nonAsciiWarning}
+                    </p>
+                    <p className="text-yellow-700 text-xs mt-1">
+                      For example: "с" will become "s", "А" will become "A"
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Font Size */}
