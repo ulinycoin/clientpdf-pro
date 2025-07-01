@@ -4,7 +4,7 @@ import {
   PageExtractionResult, 
   PageExtractionError 
 } from '../types/pageExtraction.types';
-import { PDFError } from '../types/pdf.types';
+import { PDFError } from '../types';
 
 export class ExtractPagesService {
   private static instance: ExtractPagesService;
