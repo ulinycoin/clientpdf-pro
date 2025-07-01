@@ -14,6 +14,23 @@
 
 ## ✅ Решенные проблемы
 
+### Critical: Non-ASCII characters in watermark text - RESOLVED ✅
+**Дата обнаружения**: 2025-07-01
+**Дата решения**: 2025-07-01
+**Серьезность**: critical
+**Компонент**: watermarkService.ts
+**Проблема**: Ошибка "WinAnsi cannot encode" при использовании кириллических символов в водяных знаках
+**Ошибка**: `Error: WinAnsi cannot encode "с" (0x0441) at WatermarkService.calculatePosition`
+**Причина**: StandardFonts.Helvetica в pdf-lib не поддерживает кириллицу и другие non-ASCII символы
+**Решение**:
+- Добавлена функция `sanitizeText()` с транслитерацией кириллицы в латиницу
+- Mapping кириллических символов: "с" → "s", "А" → "A", etc.
+- Поддержка диакритических знаков: "ñ" → "n", "ë" → "e", etc.
+- Fallback для неподдерживаемых символов: замена на "?"
+- Безопасная обработка ошибок в `calculatePosition()`
+- Добавлено предупреждение в UI о конвертации символов
+- Методы `hasNonAsciiCharacters()` и `getNonAsciiWarning()` для UX
+
 ### UX: Page scroll position on tool navigation - RESOLVED ✅
 **Дата обнаружения**: 2025-07-01
 **Дата решения**: 2025-07-01
