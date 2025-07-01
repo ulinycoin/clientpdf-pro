@@ -1,7 +1,7 @@
 {
   "version": "0.1.0",
-  "lastSession": "2025-07-01T15:45:00Z",
-  "sessionCount": 7,
+  "lastSession": "2025-07-01T20:00:00Z",
+  "sessionCount": 8,
   "currentPhase": "8-tools-complete",
   "activeFeatures": {
     "extractPagesTool": {
@@ -111,9 +111,9 @@
     "lintWarnings": 0,
     "testCoverage": 0,
     "typeScriptCoverage": 100,
-    "lastSuccessfulBuild": "2025-07-01T15:45:00Z",
+    "lastSuccessfulBuild": "2025-07-01T20:00:00Z",
     "devServerStatus": "ready",
-    "knownIssues": 0,
+    "knownIssues": 1,
     "criticalIssues": 0
   },
   "dependencies": {
