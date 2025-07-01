@@ -33,12 +33,7 @@ const HomePage: React.FC = () => {
   };
 
   const handleToolSelect = (toolType: string) => {
-    // PDF to Image tool doesn't require pre-uploaded files
-    if (toolType === 'pdf-to-image') {
-      setSelectedTool(toolType);
-      return;
-    }
-
+    // All tools now require files to be uploaded first
     if (files.length === 0) {
       alert('Please upload some PDF files first!');
       return;
@@ -106,7 +101,8 @@ const HomePage: React.FC = () => {
       case 'extract-text':
         return <ExtractTextTool {...props} />;
       case 'pdf-to-image':
-        return <PdfToImageTool onClose={handleCloseTool} />;
+        // Pass the first file to PdfToImageTool for consistency
+        return <PdfToImageTool onClose={handleCloseTool} initialFile={files[0]} />;
       default:
         return (
           <div className="bg-white rounded-lg shadow-lg p-6">
@@ -145,8 +141,8 @@ const HomePage: React.FC = () => {
             </p>
           </div>
 
-          {/* Only show file upload zone if not using standalone tools */}
-          {selectedTool !== 'pdf-to-image' && (
+          {/* Always show file upload zone when no tool is selected */}
+          {!selectedTool && (
             <div className="mb-8">
               <FileUploadZone
                 onFilesSelected={handleFileSelect}
@@ -159,7 +155,7 @@ const HomePage: React.FC = () => {
             </div>
           )}
 
-          {files.length > 0 && selectedTool !== 'pdf-to-image' && (
+          {files.length > 0 && !selectedTool && (
             <div className="mb-8">
               <div className="bg-white rounded-lg shadow p-4">
                 <h3 className="text-lg font-medium mb-4">Uploaded Files ({files.length})</h3>
@@ -207,7 +203,7 @@ const HomePage: React.FC = () => {
           <div className="max-w-7xl mx-auto px-4 pb-16">
             <ToolsGrid 
               onToolSelect={handleToolSelect}
-              disabledTools={files.length === 0 ? ['merge', 'compress', 'split', 'rotate', 'watermark', 'extract-text'] : []}
+              disabledTools={files.length === 0 ? ['merge', 'compress', 'split', 'rotate', 'watermark', 'extract-text', 'pdf-to-image'] : []}
             />
           </div>
         )}
