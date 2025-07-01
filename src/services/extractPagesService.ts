@@ -4,7 +4,6 @@ import {
   PageExtractionResult, 
   PageExtractionError 
 } from '../types/pageExtraction.types';
-import { PDFError } from '../types';
 
 export class ExtractPagesService {
   private static instance: ExtractPagesService;
@@ -111,7 +110,7 @@ export class ExtractPagesService {
       const pdf = await PDFDocument.load(buffer);
       return pdf.getPageCount();
     } catch (error) {
-      throw new PDFError('Failed to get page count', 'PAGE_COUNT_ERROR');
+      throw new Error('Failed to get page count');
     }
   }
 
@@ -131,7 +130,7 @@ export class ExtractPagesService {
         height: page.getHeight()
       }));
     } catch (error) {
-      throw new PDFError('Failed to get page information', 'PAGE_INFO_ERROR');
+      throw new Error('Failed to get page information');
     }
   }
 
