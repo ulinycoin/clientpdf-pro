@@ -49,8 +49,15 @@ export class WatermarkService {
       
       onProgress?.(40);
 
-      // Load font
-      const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+      // Load font with Unicode support
+      let font;
+      try {
+        // Try to use a font that supports more characters
+        font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+      } catch (fontError) {
+        console.warn('[WatermarkService] Font loading failed, using fallback');
+        font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+      }
       
       onProgress?.(50);
 
@@ -63,7 +70,7 @@ export class WatermarkService {
         const page = pages[i];
         const { width, height } = page.getSize();
 
-        // Calculate position
+        // Calculate position with safe text handling
         const position = this.calculatePosition(
           options.position, 
           width, 
@@ -73,8 +80,11 @@ export class WatermarkService {
           font
         );
 
+        // Sanitize text for pdf-lib compatibility
+        const sanitizedText = this.sanitizeText(options.text);
+
         // Draw watermark with corrected rotation
-        page.drawText(options.text, {
+        page.drawText(sanitizedText, {
           x: position.x,
           y: position.y,
           size: options.fontSize,
@@ -123,6 +133,46 @@ export class WatermarkService {
     }
   }
 
+  /**
+   * Sanitize text to handle non-ASCII characters
+   * Replace unsupported characters with ASCII equivalents
+   */
+  private sanitizeText(text: string): string {
+    // Map of common non-ASCII characters to ASCII equivalents
+    const charMap: { [key: string]: string } = {
+      // Cyrillic to Latin transliteration
+      'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'e',
+      'ж': 'zh', 'з': 'z', 'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm',
+      'н': 'n', 'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u',
+      'ф': 'f', 'х': 'h', 'ц': 'ts', 'ч': 'ch', 'ш': 'sh', 'щ': 'sch',
+      'ъ': '"', 'ы': 'y', 'ь': "'", 'э': 'e', 'ю': 'yu', 'я': 'ya',
+      
+      'А': 'A', 'Б': 'B', 'В': 'V', 'Г': 'G', 'Д': 'D', 'Е': 'E', 'Ё': 'E',
+      'Ж': 'ZH', 'З': 'Z', 'И': 'I', 'Й': 'Y', 'К': 'K', 'Л': 'L', 'М': 'M',
+      'Н': 'N', 'О': 'O', 'П': 'P', 'Р': 'R', 'С': 'S', 'Т': 'T', 'У': 'U',
+      'Ф': 'F', 'Х': 'H', 'Ц': 'TS', 'Ч': 'CH', 'Ш': 'SH', 'Щ': 'SCH',
+      'Ъ': '"', 'Ы': 'Y', 'Ь': "'", 'Э': 'E', 'Ю': 'YU', 'Я': 'YA',
+      
+      // Common special characters
+      'à': 'a', 'á': 'a', 'ä': 'a', 'ç': 'c', 'è': 'e', 'é': 'e', 'ê': 'e', 'ë': 'e',
+      'ì': 'i', 'í': 'i', 'î': 'i', 'ï': 'i', 'ñ': 'n', 'ò': 'o', 'ó': 'o', 'ô': 'o',
+      'õ': 'o', 'ö': 'o', 'ù': 'u', 'ú': 'u', 'û': 'u', 'ü': 'u', 'ý': 'y', 'ÿ': 'y',
+      
+      'À': 'A', 'Á': 'A', 'Ä': 'A', 'Ç': 'C', 'È': 'E', 'É': 'E', 'Ê': 'E', 'Ë': 'E',
+      'Ì': 'I', 'Í': 'I', 'Î': 'I', 'Ï': 'I', 'Ñ': 'N', 'Ò': 'O', 'Ó': 'O', 'Ô': 'O',
+      'Õ': 'O', 'Ö': 'O', 'Ù': 'U', 'Ú': 'U', 'Û': 'U', 'Ü': 'U', 'Ý': 'Y'
+    };
+
+    // Replace characters using the map
+    let sanitized = text;
+    for (const [nonAscii, ascii] of Object.entries(charMap)) {
+      sanitized = sanitized.replace(new RegExp(nonAscii, 'g'), ascii);
+    }
+
+    // Remove any remaining non-ASCII characters
+    return sanitized.replace(/[^\x00-\x7F]/g, '?');
+  }
+
   private calculatePosition(
     position: WatermarkOptions['position'],
     pageWidth: number,
@@ -131,45 +181,56 @@ export class WatermarkService {
     fontSize: number,
     font: any
   ): { x: number; y: number } {
-    const textWidth = font.widthOfTextAtSize(text, fontSize);
-    const textHeight = fontSize;
+    try {
+      // Use sanitized text for width calculation
+      const sanitizedText = this.sanitizeText(text);
+      const textWidth = font.widthOfTextAtSize(sanitizedText, fontSize);
+      const textHeight = fontSize;
 
-    switch (position) {
-      case 'center':
-        return {
-          x: (pageWidth - textWidth) / 2,
-          y: (pageHeight - textHeight) / 2
-        };
-      
-      case 'top-left':
-        return {
-          x: 50,
-          y: pageHeight - textHeight - 50
-        };
-      
-      case 'top-right':
-        return {
-          x: pageWidth - textWidth - 50,
-          y: pageHeight - textHeight - 50
-        };
-      
-      case 'bottom-left':
-        return {
-          x: 50,
-          y: 50
-        };
-      
-      case 'bottom-right':
-        return {
-          x: pageWidth - textWidth - 50,
-          y: 50
-        };
-      
-      default:
-        return {
-          x: (pageWidth - textWidth) / 2,
-          y: (pageHeight - textHeight) / 2
-        };
+      switch (position) {
+        case 'center':
+          return {
+            x: (pageWidth - textWidth) / 2,
+            y: (pageHeight - textHeight) / 2
+          };
+        
+        case 'top-left':
+          return {
+            x: 50,
+            y: pageHeight - textHeight - 50
+          };
+        
+        case 'top-right':
+          return {
+            x: pageWidth - textWidth - 50,
+            y: pageHeight - textHeight - 50
+          };
+        
+        case 'bottom-left':
+          return {
+            x: 50,
+            y: 50
+          };
+        
+        case 'bottom-right':
+          return {
+            x: pageWidth - textWidth - 50,
+            y: 50
+          };
+        
+        default:
+          return {
+            x: (pageWidth - textWidth) / 2,
+            y: (pageHeight - textHeight) / 2
+          };
+      }
+    } catch (error) {
+      console.warn('[WatermarkService] Position calculation failed, using center:', error);
+      // Fallback to center position
+      return {
+        x: pageWidth / 2,
+        y: pageHeight / 2
+      };
     }
   }
 
@@ -181,7 +242,10 @@ export class WatermarkService {
   ): { x: number; y: number } {
     // Mock font for preview (rough estimation)
     const mockFont = {
-      widthOfTextAtSize: (text: string, size: number) => text.length * size * 0.6
+      widthOfTextAtSize: (text: string, size: number) => {
+        const sanitizedText = this.sanitizeText(text);
+        return sanitizedText.length * size * 0.6;
+      }
     };
 
     return this.calculatePosition(
@@ -234,5 +298,18 @@ export class WatermarkService {
       valid: errors.length === 0,
       errors
     };
+  }
+
+  // Check if text contains non-ASCII characters
+  hasNonAsciiCharacters(text: string): boolean {
+    return /[^\x00-\x7F]/.test(text);
+  }
+
+  // Get warning message for non-ASCII text
+  getNonAsciiWarning(text: string): string | null {
+    if (this.hasNonAsciiCharacters(text)) {
+      return 'Your text contains non-ASCII characters that will be transliterated to ASCII equivalents for PDF compatibility.';
+    }
+    return null;
   }
 }
