@@ -8,3 +8,4 @@ export { default as RotateTool } from './RotateTool';
 export { default as WatermarkTool } from './WatermarkTool';
 export { default as ExtractTextTool } from './ExtractTextTool';
 export { PdfToImageTool } from './PdfToImageTool';
+export { ExtractPagesTool } from './ExtractPagesTool';
