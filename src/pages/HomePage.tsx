@@ -13,6 +13,7 @@ import ExtractTextTool from '../components/organisms/ExtractTextTool';
 import { PdfToImageTool } from '../components/organisms/PdfToImageTool';
 import { useFileUpload } from '../hooks/useFileUpload';
 import { downloadBlob, generateFilename } from '../utils/fileHelpers';
+import { scrollToTop } from '../utils/scrollHelpers';
 
 const HomePage: React.FC = () => {
   const {
@@ -28,9 +29,12 @@ const HomePage: React.FC = () => {
 
   const [selectedTool, setSelectedTool] = useState<string | null>(null);
 
-  // Scroll to top when tool changes
+  // Smooth scroll to top when tool changes
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (selectedTool) {
+      // Scroll to top when opening a tool
+      scrollToTop(100);
+    }
   }, [selectedTool]);
 
   const handleFileSelect = (selectedFiles: File[]) => {
@@ -49,10 +53,8 @@ const HomePage: React.FC = () => {
 
   const handleCloseTool = () => {
     setSelectedTool(null);
-    // Scroll to top when returning to main page
-    setTimeout(() => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, 100);
+    // Smooth scroll to top when returning to main page
+    scrollToTop(150);
   };
 
   const handleToolComplete = (result: PDFProcessingResult | PDFProcessingResult[]) => {
@@ -183,7 +185,7 @@ const HomePage: React.FC = () => {
                         </div>
                         <button
                           onClick={() => removeFile(index)}
-                          className="text-red-500 hover:text-red-700"
+                          className="text-red-500 hover:text-red-700 transition-colors"
                         >
                           Remove
                         </button>
@@ -193,7 +195,7 @@ const HomePage: React.FC = () => {
                   <div className="mt-4">
                     <button
                       onClick={clearFiles}
-                      className="text-sm text-gray-500 hover:text-gray-700"
+                      className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
                     >
                       Clear All
                     </button>
@@ -204,9 +206,9 @@ const HomePage: React.FC = () => {
           </div>
         )}
 
-        {/* Tool Interface - full width when tool is selected */}
+        {/* Tool Interface - positioned at top when tool is selected */}
         {selectedTool && (
-          <div className="max-w-4xl mx-auto px-4 py-8">
+          <div className="max-w-4xl mx-auto px-4 pt-8 pb-16">
             {renderSelectedTool()}
           </div>
         )}
