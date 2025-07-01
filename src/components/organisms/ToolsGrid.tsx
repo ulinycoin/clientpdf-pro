@@ -68,6 +68,13 @@ const ToolsGrid: React.FC<ToolsGridProps> = ({
       icon: 'EXTRACT',
       operationType: 'extract-pages',
       comingSoon: false
+    },
+    {
+      title: 'Add Text',
+      description: 'Add text annotations and comments to your PDF',
+      icon: '✏️',
+      operationType: 'add-text',
+      comingSoon: false
     }
   ];
 
