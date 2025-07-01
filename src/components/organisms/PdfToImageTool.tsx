@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import FileUploadZone from '../molecules/FileUploadZone';
 import Button from '../atoms/Button';
 import ProgressBar from '../atoms/ProgressBar';
@@ -15,10 +15,11 @@ import {
 
 interface PdfToImageToolProps {
   onClose?: () => void;
+  initialFile?: File; // Optional pre-loaded file from HomePage
 }
 
-export const PdfToImageTool: React.FC<PdfToImageToolProps> = ({ onClose }) => {
-  const [file, setFile] = useState<File | null>(null);
+export const PdfToImageTool: React.FC<PdfToImageToolProps> = ({ onClose, initialFile }) => {
+  const [file, setFile] = useState<File | null>(initialFile || null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState<ImageConversionProgress | null>(null);
   const [result, setResult] = useState<ImageConversionResult | null>(null);
@@ -33,6 +34,15 @@ export const PdfToImageTool: React.FC<PdfToImageToolProps> = ({ onClose }) => {
   const [backgroundColor, setBackgroundColor] = useState('#ffffff');
 
   const pdfToImageService = PdfToImageService.getInstance();
+
+  // Set initial file if provided
+  useEffect(() => {
+    if (initialFile) {
+      setFile(initialFile);
+      setResult(null);
+      setPreviewImages([]);
+    }
+  }, [initialFile]);
 
   const handleFileSelect = useCallback((files: File[]) => {
     if (files.length > 0) {
