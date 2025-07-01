@@ -6,7 +6,7 @@ import {
   PageInfo,
   PageExtractionResult 
 } from '../types/pageExtraction.types';
-import { downloadFile } from '../utils/fileHelpers';
+import { downloadBlob } from '../utils/fileHelpers';
 
 export const useExtractPages = () => {
   const [state, setState] = useState<ExtractPagesState>({
@@ -190,7 +190,7 @@ export const useExtractPages = () => {
         const fileName = customFileName || 
           extractPagesService.generateFileName(state.file.name, state.selectedPages);
         
-        downloadFile(result.blob, fileName);
+        downloadBlob(result.blob, fileName);
       }
 
       setState(prev => ({
