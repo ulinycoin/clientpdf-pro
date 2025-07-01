@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Button } from '../atoms/Button';
-import { Icon } from '../atoms/Icon';
-import { ProgressBar } from '../atoms/ProgressBar';
-import { FileUploadZone } from '../molecules/FileUploadZone';
+import Button from '../atoms/Button';
+import Icon from '../atoms/Icon';
+import ProgressBar from '../atoms/ProgressBar';
+import FileUploadZone from '../molecules/FileUploadZone';
 import { useExtractPages } from '../../hooks/useExtractPages';
 import { PAGE_SELECTION_MODES } from '../../types/pageExtraction.types';
 
@@ -261,7 +261,7 @@ export const ExtractPagesTool: React.FC = () => {
             <span className="text-sm font-medium text-gray-700">Extracting pages...</span>
             <span className="text-sm text-gray-500">{Math.round(progress)}%</span>
           </div>
-          <ProgressBar progress={progress} variant="purple" />
+          <ProgressBar progress={progress} color="blue" />
         </div>
       )}
 
