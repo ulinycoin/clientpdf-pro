@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PDFProcessingResult } from '../types';
 import Header from '../components/organisms/Header';
 import Footer from '../components/organisms/Footer';
@@ -28,6 +28,11 @@ const HomePage: React.FC = () => {
 
   const [selectedTool, setSelectedTool] = useState<string | null>(null);
 
+  // Scroll to top when tool changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [selectedTool]);
+
   const handleFileSelect = (selectedFiles: File[]) => {
     addFiles(selectedFiles);
   };
@@ -44,6 +49,10 @@ const HomePage: React.FC = () => {
 
   const handleCloseTool = () => {
     setSelectedTool(null);
+    // Scroll to top when returning to main page
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 100);
   };
 
   const handleToolComplete = (result: PDFProcessingResult | PDFProcessingResult[]) => {
@@ -128,21 +137,22 @@ const HomePage: React.FC = () => {
       <Header />
       
       <main className="flex-grow">
-        <div className="max-w-4xl mx-auto px-4 py-16">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              Free PDF Tools
-            </h1>
-            <p className="text-xl text-gray-600 mb-8">
-              Convert, merge, split, rotate and compress PDFs - all locally in your browser
-            </p>
-            <p className="text-sm text-gray-500">
-              Your files never leave your device - Fast processing - Completely free
-            </p>
-          </div>
+        {/* Hero Section - only show when no tool is selected */}
+        {!selectedTool && (
+          <div className="max-w-4xl mx-auto px-4 py-16">
+            <div className="text-center mb-12">
+              <h1 className="text-4xl font-bold text-gray-900 mb-4">
+                Free PDF Tools
+              </h1>
+              <p className="text-xl text-gray-600 mb-8">
+                Convert, merge, split, rotate and compress PDFs - all locally in your browser
+              </p>
+              <p className="text-sm text-gray-500">
+                Your files never leave your device - Fast processing - Completely free
+              </p>
+            </div>
 
-          {/* Always show file upload zone when no tool is selected */}
-          {!selectedTool && (
+            {/* File Upload Zone */}
             <div className="mb-8">
               <FileUploadZone
                 onFilesSelected={handleFileSelect}
@@ -153,52 +163,55 @@ const HomePage: React.FC = () => {
                 className="mb-6"
               />
             </div>
-          )}
 
-          {files.length > 0 && !selectedTool && (
-            <div className="mb-8">
-              <div className="bg-white rounded-lg shadow p-4">
-                <h3 className="text-lg font-medium mb-4">Uploaded Files ({files.length})</h3>
-                <div className="space-y-2">
-                  {files.map((file, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded">
-                      <div className="flex items-center space-x-3">
-                        <div className="text-red-500">📄</div>
-                        <div>
-                          <p className="font-medium text-gray-900">{file.name}</p>
-                          <p className="text-sm text-gray-500">
-                            {(file.size / 1024 / 1024).toFixed(2)} MB
-                          </p>
+            {/* Uploaded Files List */}
+            {files.length > 0 && (
+              <div className="mb-8">
+                <div className="bg-white rounded-lg shadow p-4">
+                  <h3 className="text-lg font-medium mb-4">Uploaded Files ({files.length})</h3>
+                  <div className="space-y-2">
+                    {files.map((file, index) => (
+                      <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded">
+                        <div className="flex items-center space-x-3">
+                          <div className="text-red-500">📄</div>
+                          <div>
+                            <p className="font-medium text-gray-900">{file.name}</p>
+                            <p className="text-sm text-gray-500">
+                              {(file.size / 1024 / 1024).toFixed(2)} MB
+                            </p>
+                          </div>
                         </div>
+                        <button
+                          onClick={() => removeFile(index)}
+                          className="text-red-500 hover:text-red-700"
+                        >
+                          Remove
+                        </button>
                       </div>
-                      <button
-                        onClick={() => removeFile(index)}
-                        className="text-red-500 hover:text-red-700"
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-4">
-                  <button
-                    onClick={clearFiles}
-                    className="text-sm text-gray-500 hover:text-gray-700"
-                  >
-                    Clear All
-                  </button>
+                    ))}
+                  </div>
+                  <div className="mt-4">
+                    <button
+                      onClick={clearFiles}
+                      className="text-sm text-gray-500 hover:text-gray-700"
+                    >
+                      Clear All
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        )}
 
+        {/* Tool Interface - full width when tool is selected */}
         {selectedTool && (
-          <div className="max-w-4xl mx-auto px-4 mb-16">
+          <div className="max-w-4xl mx-auto px-4 py-8">
             {renderSelectedTool()}
           </div>
         )}
 
+        {/* Tools Grid - only show when no tool is selected */}
         {!selectedTool && (
           <div className="max-w-7xl mx-auto px-4 pb-16">
             <ToolsGrid 
