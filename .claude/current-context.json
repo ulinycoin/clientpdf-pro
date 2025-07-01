@@ -1,65 +1,79 @@
 {
-  "timestamp": "2025-07-01T14:15:00Z",
+  "timestamp": "2025-07-01T15:35:00Z",
   "activeTask": {
-    "type": "feature-development",
-    "name": "PDF to Image Conversion Tool",
-    "description": "Implement PDF to image conversion with multiple format support (PNG, JPEG) and quality settings",
+    "type": "feature-planning",
+    "name": "Next Feature Development Planning",
+    "description": "Planning implementation of Extract Pages Tool - the next priority feature",
     "startedAt": "2025-07-01",
     "priority": "high",
     "completion": 0,
     "estimatedDuration": "2-3 hours"
   },
-  "workingFiles": [
-    "src/services/pdfToImageService.ts",
-    "src/components/organisms/PdfToImageTool.tsx",
-    "src/workers/imageConversionWorker.ts",
-    "src/hooks/usePdfToImage.ts",
-    "src/types/image.types.ts"
-  ],
+  "workingFiles": [],
   "currentBlockers": [],
-  "recentDecisions": [
-    {
-      "decision": "Use PDF.js for rendering PDF pages to canvas",
-      "rationale": "Already integrated in project, reliable, supports high-quality rendering",
-      "date": "2025-07-01",
-      "alternatives": ["pdf2pic", "pdf-poppler"],
-      "impact": "Consistent with existing text extraction implementation"
+  "recentDecisions": [],
+  "availableForImplementation": {
+    "extractPagesTool": {
+      "priority": 1,
+      "estimatedEffort": "2-3 hours",
+      "description": "Extract specific pages from PDF into a new document",
+      "features": [
+        "Select specific pages or ranges",
+        "Preview selected pages", 
+        "Drag-and-drop page reordering",
+        "Page range validation",
+        "Progress tracking for large PDFs"
+      ],
+      "technicalPlan": {
+        "service": "extractPagesService.ts - pdf-lib page extraction",
+        "component": "ExtractPagesTool.tsx - page selection UI",
+        "hook": "useExtractPages.ts - state management",
+        "types": "pageExtraction.types.ts - extraction options"
+      }
     },
-    {
-      "decision": "Support PNG and JPEG formats with quality control",
-      "rationale": "PNG for high quality/transparency, JPEG for smaller file sizes",
-      "date": "2025-07-01"
+    "pdfInfoViewer": {
+      "priority": 2,
+      "estimatedEffort": "1-2 hours",
+      "description": "Display comprehensive PDF information and metadata",
+      "features": [
+        "File size, page count, dimensions",
+        "Creation/modification dates",
+        "Author, title, subject metadata", 
+        "PDF version and security info",
+        "Page-by-page size breakdown",
+        "Text content analysis"
+      ],
+      "technicalPlan": {
+        "service": "pdfInfoService.ts - metadata extraction with pdf-lib",
+        "component": "PdfInfoTool.tsx - info display UI",
+        "hook": "usePdfInfo.ts - info extraction logic",
+        "types": "pdfInfo.types.ts - metadata types"
+      }
     },
-    {
-      "decision": "Implement page range selection like in Split tool",
-      "rationale": "Consistent UX, allows selective conversion",
-      "date": "2025-07-01"
-    }
-  ],
-  "technicalPlan": {
-    "coreLibrary": "pdfjs-dist (already integrated)",
-    "outputFormats": ["PNG", "JPEG"],
-    "features": [
-      "Single page conversion",
-      "Multiple pages conversion", 
-      "Page range selection",
-      "Quality/resolution settings",
-      "Batch download as ZIP",
-      "Preview before download"
-    ],
-    "architecture": {
-      "service": "pdfToImageService.ts - PDF.js canvas rendering",
-      "component": "PdfToImageTool.tsx - UI with format/quality controls",
-      "hook": "usePdfToImage.ts - state management and conversion logic",
-      "types": "image.types.ts - conversion options and result types",
-      "worker": "imageConversionWorker.ts - for large files/multiple pages"
+    "passwordProtection": {
+      "priority": 3,
+      "estimatedEffort": "3-4 hours",
+      "description": "Add or remove password protection from PDFs",
+      "features": [
+        "Add password protection",
+        "Remove existing passwords",
+        "Permission settings (print, copy, edit)",
+        "Password strength indicator",
+        "Batch password operations"
+      ],
+      "technicalPlan": {
+        "service": "passwordService.ts - pdf-lib encryption handling",
+        "component": "PasswordTool.tsx - password management UI",
+        "hook": "usePasswordProtection.ts - encryption logic",
+        "types": "password.types.ts - encryption options"
+      }
     }
   },
   "environment": {
     "nodeVersion": "18+",
     "npmVersion": "9+",
     "lastInstall": "2025-06-30",
-    "lastBuild": "2025-07-01T14:15:00Z",
+    "lastBuild": "2025-07-01T15:35:00Z",
     "buildStatus": "passing"
   }
 }
