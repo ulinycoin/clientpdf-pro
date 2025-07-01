@@ -10,6 +10,7 @@ import SplitTool from '../components/organisms/SplitTool';
 import RotateTool from '../components/organisms/RotateTool';
 import WatermarkTool from '../components/organisms/WatermarkTool';
 import ExtractTextTool from '../components/organisms/ExtractTextTool';
+import { AddTextTool } from '../components/organisms';
 import { PdfToImageTool } from '../components/organisms/PdfToImageTool';
 import { ExtractPagesTool } from '../components/organisms/ExtractPagesTool';
 import { useFileUpload } from '../hooks/useFileUpload';
@@ -74,11 +75,12 @@ const HomePage: React.FC = () => {
     } else {
       // Handle single result
       if (result.success && result.data) {
-        // For extract-text tool, pdf-to-image tool, and extract-pages tool, 
+        // For extract-text tool, pdf-to-image tool, extract-pages tool, and add-text tool,
         // the download is handled within the component
         if (selectedTool !== 'extract-text' && 
             selectedTool !== 'pdf-to-image' && 
-            selectedTool !== 'extract-pages') {
+            selectedTool !== 'extract-pages' &&
+            selectedTool !== 'add-text') {
           const toolName = selectedTool || 'processed';
           const filename = generateFilename(
             toolName,
@@ -115,6 +117,8 @@ const HomePage: React.FC = () => {
         return <WatermarkTool {...props} />;
       case 'extract-text':
         return <ExtractTextTool {...props} />;
+      case 'add-text':
+        return <AddTextTool {...props} />;
       case 'pdf-to-image':
         // Pass the first file to PdfToImageTool for consistency
         return <PdfToImageTool onClose={handleCloseTool} initialFile={files[0]} />;
@@ -225,7 +229,7 @@ const HomePage: React.FC = () => {
           <div className="max-w-7xl mx-auto px-4 pb-16">
             <ToolsGrid 
               onToolSelect={handleToolSelect}
-              disabledTools={files.length === 0 ? ['merge', 'compress', 'split', 'rotate', 'watermark', 'extract-text', 'pdf-to-image', 'extract-pages'] : []}
+              disabledTools={files.length === 0 ? ['merge', 'compress', 'split', 'rotate', 'watermark', 'extract-text', 'pdf-to-image', 'extract-pages', 'add-text'] : []}
             />
           </div>
         )}
