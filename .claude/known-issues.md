@@ -14,6 +14,22 @@
 
 ## ✅ Решенные проблемы
 
+### Critical: Component import types mismatch - RESOLVED ✅
+**Дата обнаружения**: 2025-07-01
+**Дата решения**: 2025-07-01
+**Серьезность**: critical
+**Компонент**: PdfToImageTool.tsx
+**Проблема**: Неправильные типы импортов компонентов
+**Ошибки**: 
+- `import { Button } from '../atoms/Button'` (компонент экспортируется как default)
+- `import { FileUploadZone } from '../molecules/FileUploadZone'` (компонент экспортируется как default)
+- `import { ProgressBar } from '../atoms/ProgressBar'` (компонент экспортируется как default)
+
+**Решение**: Исправлены импорты на default exports:
+- `import Button from '../atoms/Button'`
+- `import FileUploadZone from '../molecules/FileUploadZone'`
+- `import ProgressBar from '../atoms/ProgressBar'`
+
 ### Critical: ProgressBar import path incorrect - RESOLVED ✅
 **Дата обнаружения**: 2025-07-01
 **Дата решения**: 2025-07-01
@@ -21,7 +37,7 @@
 **Компонент**: PdfToImageTool.tsx
 **Проблема**: Неправильный путь импорта `import { ProgressBar } from "../molecules/ProgressBar"`
 **Ошибка**: `Failed to resolve import "../molecules/ProgressBar" from "src/components/organisms/PdfToImageTool.tsx"`
-**Решение**: Исправлен импорт на `import { ProgressBar } from "../atoms/ProgressBar"`
+**Решение**: Исправлен импорт на `import ProgressBar from "../atoms/ProgressBar"`
 **Причина**: ProgressBar находится в atoms, а не в molecules согласно Atomic Design архитектуре
 
 ### Critical: PdfToImageTool component not exported - RESOLVED ✅
