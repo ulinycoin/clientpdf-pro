@@ -55,6 +55,7 @@ const AddTextTool: React.FC<AddTextToolProps> = ({
     goToPage,
     setPageScale,
     setPageDimensions,
+    setTotalPages,
     // Processing
     processFile,
     resetState
@@ -65,7 +66,7 @@ const AddTextTool: React.FC<AddTextToolProps> = ({
   const [currentPageRenderer, setCurrentPageRenderer] = useState<any>(null);
   const [isLoadingPDF, setIsLoadingPDF] = useState(false);
   const [toolMode, setToolMode] = useState<'select' | 'add'>('add');
-  const [editingText, setEditingText] = useState(''); // Local state for inline editing
+  const [editingText, setEditingText] = useState('');
 
   // Refs
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -103,15 +104,12 @@ const AddTextTool: React.FC<AddTextToolProps> = ({
       const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
       setPdfDocument(pdf);
       
-      // ✅ FIX: Set totalPages when PDF loads
+      // Set totalPages when PDF loads
       const numPages = pdf.numPages;
+      setTotalPages(numPages);
       
       goToPage(1);
       await renderPage(pdf, 1);
-      
-      // Update total pages in hook state
-      // Note: This assumes the hook has a setTotalPages function or similar
-      // For now, we'll manage it locally and update the hook if needed
       
     } catch (error) {
       console.error('[AddTextTool] Error loading PDF:', error);
@@ -158,7 +156,7 @@ const AddTextTool: React.FC<AddTextToolProps> = ({
     currentPageElements.forEach(element => renderTextElement(context, element, viewport));
   };
 
-  // ✅ FIX: Improved text element rendering with better measurements
+  // Render single text element
   const renderTextElement = (context: CanvasRenderingContext2D, element: TextElement, viewport: any) => {
     context.save();
     let fontString = `${element.fontSize}px `;
@@ -191,7 +189,7 @@ const AddTextTool: React.FC<AddTextToolProps> = ({
       context.lineWidth = 2;
       context.setLineDash([5, 5]);
       
-      // ✅ FIX: Use proper text measurements
+      // Use proper text measurements
       const metrics = context.measureText(element.text);
       const textWidth = metrics.width;
       const textHeight = element.fontSize;
@@ -210,7 +208,7 @@ const AddTextTool: React.FC<AddTextToolProps> = ({
     context.restore();
   };
 
-  // ✅ FIX: Improved element position detection
+  // Find text element at position
   const findElementAtPosition = useCallback((x: number, y: number): TextElement | null => {
     const canvas = canvasRef.current;
     if (!canvas) return null;
@@ -263,7 +261,7 @@ const AddTextTool: React.FC<AddTextToolProps> = ({
     return null;
   }, [textElements, currentPage]);
   
-  // ✅ FIX: Canvas click handler with correct dependencies
+  // Handle canvas click
   const handleCanvasClick = useCallback((event: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
     if (!canvas || !pageDimensions) return;
@@ -345,7 +343,8 @@ const AddTextTool: React.FC<AddTextToolProps> = ({
 
   // Handle page change
   const handlePageChange = (newPage: number) => {
-    if (pdfDocument && newPage >= 1 && newPage <= (pdfDocument?.numPages || totalPages)) {
+    const actualTotalPages = pdfDocument?.numPages || totalPages;
+    if (pdfDocument && newPage >= 1 && newPage <= actualTotalPages) {
       goToPage(newPage);
       renderPage(pdfDocument, newPage);
     }
@@ -358,22 +357,17 @@ const AddTextTool: React.FC<AddTextToolProps> = ({
     }
   };
 
-  // ✅ FIX: Proper edit finish handling
+  // Handle edit input change
+  const handleEditInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newText = event.target.value;
+    setEditingText(newText);
+  };
+
+  // Handle edit finish
   const handleEditFinish = (text: string) => {
     const trimmedText = text.trim();
     finishEditing(trimmedText || 'Text');
     setEditingText('');
-  };
-
-  // ✅ FIX: Proper edit input change handling
-  const handleEditInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newText = event.target.value;
-    setEditingText(newText);
-    // Optionally update the temp text in the editing state
-    if (editingState.elementId) {
-      // Update the temp text but don't commit yet
-      // This could be handled in the hook if needed
-    }
   };
 
   // Handle key press in edit mode
@@ -542,7 +536,7 @@ const AddTextTool: React.FC<AddTextToolProps> = ({
               </div>
             </div>
               
-        {/* Canvas Container */}
+            {/* Canvas Container */}
             <div className="p-4 overflow-auto max-h-96 relative" ref={containerRef}>
               {isLoadingPDF && (
                 <div className="flex items-center justify-center h-64">
@@ -561,7 +555,7 @@ const AddTextTool: React.FC<AddTextToolProps> = ({
                 onMouseLeave={handleMouseUp}
               />
 
-              {/* ✅ FIX: Proper edit input with state management */}
+              {/* Edit Input Overlay */}
               {editingState.isEditing && (
                 <input
                   ref={editInputRef}
@@ -625,4 +619,292 @@ const AddTextTool: React.FC<AddTextToolProps> = ({
                           Page {element.pageNumber} • {element.fontSize}px
                         </p>
                       </div>
-                      <div className="flex space-x-1 ml-2
+                      <div className="flex space-x-1 ml-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            duplicateElement(element.id);
+                          }}
+                          title="Duplicate"
+                        >
+                          📋
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            deleteTextElement(element.id);
+                          }}
+                          title="Delete"
+                        >
+                          🗑️
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          
+          {/* Format Panel - Only show when element is selected */}
+          {selectedElement && (
+            <div>
+              <h3 className="text-lg font-medium text-gray-900 mb-3">Format Text</h3>
+              
+              <div className="space-y-4">
+                {/* Text Content */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Text Content
+                  </label>
+                  <input
+                    type="text"
+                    value={selectedElement.text}
+                    onChange={(e) => handleFormatChange({ text: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Enter text..."
+                  />
+                </div>
+
+                {/* Font Family */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Font Family
+                  </label>
+                  <select
+                    value={selectedElement.fontFamily}
+                    onChange={(e) => handleFormatChange({ 
+                      fontFamily: e.target.value as 'Helvetica' | 'Times-Roman' | 'Courier' 
+                    })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    {fontOptions.map(font => (
+                      <option key={font.value} value={font.value}>
+                        {font.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Font Size */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Font Size: {selectedElement.fontSize}px
+                  </label>
+                  <input
+                    type="range"
+                    min="8"
+                    max="72"
+                    step="1"
+                    value={selectedElement.fontSize}
+                    onChange={(e) => handleFormatChange({ fontSize: parseInt(e.target.value) })}
+                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                  />
+                </div>
+
+                {/* Font Style */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Font Style
+                  </label>
+                  <div className="flex space-x-2">
+                    <Button
+                      variant={selectedElement.isBold ? 'primary' : 'outline'}
+                      size="sm"
+                      onClick={() => handleFormatChange({ isBold: !selectedElement.isBold })}
+                    >
+                      <strong>B</strong>
+                    </Button>
+                    <Button
+                      variant={selectedElement.isItalic ? 'primary' : 'outline'}
+                      size="sm"
+                      onClick={() => handleFormatChange({ isItalic: !selectedElement.isItalic })}
+                    >
+                      <em>I</em>
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Color */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Text Color
+                  </label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {colorPresets.map((preset) => (
+                      <button
+                        key={preset.name}
+                        onClick={() => handleFormatChange({ color: preset.value })}
+                        className={`w-full h-8 border-2 rounded-lg transition-transform hover:scale-105 ${
+                          selectedElement.color.r === preset.value.r && 
+                          selectedElement.color.g === preset.value.g && 
+                          selectedElement.color.b === preset.value.b
+                            ? 'border-blue-500 ring-2 ring-blue-200'
+                            : 'border-gray-300'
+                        }`}
+                        style={{ backgroundColor: `rgb(${preset.value.r}, ${preset.value.g}, ${preset.value.b})` }}
+                        title={preset.name}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                {/* Opacity */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Opacity: {selectedElement.opacity}%
+                  </label>
+                  <input
+                    type="range"
+                    min="10"
+                    max="100"
+                    step="5"
+                    value={selectedElement.opacity}
+                    onChange={(e) => handleFormatChange({ opacity: parseInt(e.target.value) })}
+                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                  />
+                </div>
+
+		        {/* Rotation */}
+		                   <div>
+		                     <label className="block text-sm font-medium text-gray-700 mb-2">
+		                       Rotation: {selectedElement.rotation}°
+		                     </label>
+		                     <input
+		                       type="range"
+		                       min="-90"
+		                       max="90"
+		                       step="15"
+		                       value={selectedElement.rotation}
+		                       onChange={(e) => handleFormatChange({ rotation: parseInt(e.target.value) })}
+		                       className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+		                     />
+		                     <div className="flex justify-between text-xs text-gray-500 mt-1">
+		                       <span>-90°</span>
+		                       <span>0°</span>
+		                       <span>90°</span>
+		                     </div>
+		                   </div>
+		                 </div>
+		               </div>
+		             )}
+		           </div>
+		         </div>
+
+		         {/* Progress */}
+		         {isProcessing && (
+		           <div className="mt-6">
+		             <ProgressBar
+		               value={progress}
+		               className="mb-2"
+		               animated={true}
+		             />
+		             <p className="text-sm text-gray-600 text-center">
+		               Adding text to PDF... {Math.round(progress)}%
+		             </p>
+		           </div>
+		         )}
+
+		         {/* Errors */}
+		         {error && (
+		           <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+		             <div className="flex items-start">
+		               <div className="text-red-400 mr-2 mt-0.5">⚠️</div>
+		               <div>
+		                 <h4 className="text-red-800 font-medium">Error</h4>
+		                 <p className="text-red-600 text-sm mt-1">{error}</p>
+		               </div>
+		             </div>
+		           </div>
+		         )}
+
+		         {/* Info Box */}
+		         <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+		           <div className="flex items-start">
+		             <div className="text-blue-400 mr-2 mt-0.5">ℹ️</div>
+		             <div>
+		               <h4 className="text-blue-800 font-medium">Privacy & Security</h4>
+		               <p className="text-blue-700 text-sm mt-1">
+		                 Text is added locally in your browser. Your PDF never leaves your device, 
+		                 ensuring complete privacy and security.
+		               </p>
+		             </div>
+		           </div>
+		         </div>
+
+		         {/* Usage Tips */}
+		         <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+		           <div className="flex items-start">
+		             <div className="text-green-400 mr-2 mt-0.5">💡</div>
+		             <div>
+		               <h4 className="text-green-800 font-medium">Quick Tips</h4>
+		               <ul className="text-green-700 text-sm mt-1 space-y-1">
+		                 <li>• Use "Add Text" mode to place new text elements</li>
+		                 <li>• Switch to "Select" mode to move and edit existing text</li>
+		                 <li>• Double-click any text to edit it inline</li>
+		                 <li>• Use Ctrl+Z / Ctrl+Y for undo/redo (or toolbar buttons)</li>
+		                 <li>• Drag text elements to reposition them precisely</li>
+		               </ul>
+		             </div>
+		           </div>
+		         </div>
+      
+		         {/* Actions */}
+		         <div className="flex justify-between items-center mt-6">
+		           <div className="flex space-x-3">
+		             <Button
+		               variant="outline"
+		               onClick={onClose}
+		               disabled={isProcessing}
+		             >
+		               Cancel
+		             </Button>
+          
+		             {textElements.length > 0 && (
+		               <Button
+		                 variant="outline"
+		                 onClick={() => {
+		                   if (window.confirm('Are you sure you want to clear all text elements?')) {
+		                     resetState();
+		                   }
+		                 }}
+		                 disabled={isProcessing}
+		               >
+		                 Clear All
+		               </Button>
+		             )}
+		           </div>
+
+		           <div className="flex items-center space-x-3">
+		             {/* Element Count */}
+		             {textElements.length > 0 && (
+		               <span className="text-sm text-gray-600">
+		                 {textElements.length} text element{textElements.length !== 1 ? 's' : ''} added
+		               </span>
+		             )}
+
+		             {/* Process Button */}
+		             <Button
+		               variant="primary"
+		               onClick={handleProcess}
+		               disabled={isProcessing || textElements.length === 0}
+		               loading={isProcessing}
+		             >
+		               {isProcessing 
+		                 ? 'Adding Text...' 
+		                 : textElements.length === 0 
+		                   ? 'Add Text First' 
+		                   : `Apply Text (${textElements.length})`
+		               }
+		             </Button>
+		           </div>
+		         </div>
+		       </div>
+		     );
+		   };
+
+		   export default AddTextTool;     
