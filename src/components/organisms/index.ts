@@ -9,3 +9,4 @@ export { default as WatermarkTool } from './WatermarkTool';
 export { default as ExtractTextTool } from './ExtractTextTool';
 export { PdfToImageTool } from './PdfToImageTool';
 export { ExtractPagesTool } from './ExtractPagesTool';
+export { default as AddTextTool } from './AddTextTool';
