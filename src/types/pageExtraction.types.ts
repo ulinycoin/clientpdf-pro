@@ -42,6 +42,14 @@ export interface PageSelectionMode {
   description: string;
 }
 
+// Props interface for ExtractPagesTool component
+export interface ExtractPagesToolProps {
+  files: File[];
+  onComplete: (result: PageExtractionResult) => void;
+  onClose: () => void;
+  className?: string;
+}
+
 export const PAGE_SELECTION_MODES: PageSelectionMode[] = [
   {
     type: 'individual',
