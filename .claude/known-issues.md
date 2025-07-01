@@ -14,6 +14,16 @@
 
 ## ✅ Решенные проблемы
 
+### Critical: ProgressBar import path incorrect - RESOLVED ✅
+**Дата обнаружения**: 2025-07-01
+**Дата решения**: 2025-07-01
+**Серьезность**: critical
+**Компонент**: PdfToImageTool.tsx
+**Проблема**: Неправильный путь импорта `import { ProgressBar } from "../molecules/ProgressBar"`
+**Ошибка**: `Failed to resolve import "../molecules/ProgressBar" from "src/components/organisms/PdfToImageTool.tsx"`
+**Решение**: Исправлен импорт на `import { ProgressBar } from "../atoms/ProgressBar"`
+**Причина**: ProgressBar находится в atoms, а не в molecules согласно Atomic Design архитектуре
+
 ### Critical: PdfToImageTool component not exported - RESOLVED ✅
 **Дата обнаружения**: 2025-07-01
 **Дата решения**: 2025-07-01
