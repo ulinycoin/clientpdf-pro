@@ -64,10 +64,10 @@ const ToolsGrid: React.FC<ToolsGridProps> = ({
     },
     {
       title: 'Extract Pages',
-      description: 'Extract specific pages from your PDF',
+      description: 'Extract specific pages from your PDF into a new document',
       icon: 'EXTRACT',
-      operationType: 'extract',
-      comingSoon: true
+      operationType: 'extract-pages',
+      comingSoon: false
     }
   ];
 
