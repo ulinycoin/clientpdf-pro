@@ -1,3 +1,7 @@
+            <div>
+              <h4 className="text-red-800 font-medium">Error</h4>
+              <p className="text-red-600 text-sm mt-1">{error}</p>
+            </div>
           </div>
         </div>
       )}
@@ -36,11 +40,7 @@
       {/* Actions */}
       <div className="flex justify-between items-center mt-6">
         <div className="flex space-x-3">
-          <Button
-            variant="outline"
-            onClick={onClose}
-            disabled={isProcessing}
-          >
+          <Button variant="outline" onClick={onClose} disabled={isProcessing}>
             Cancel
           </Button>
           
@@ -60,14 +60,12 @@
         </div>
 
         <div className="flex items-center space-x-3">
-          {/* Element Count */}
           {textElements.length > 0 && (
             <span className="text-sm text-gray-600">
               {textElements.length} text element{textElements.length !== 1 ? 's' : ''} added
             </span>
           )}
 
-          {/* Process Button */}
           <Button
             variant="primary"
             onClick={handleProcess}
