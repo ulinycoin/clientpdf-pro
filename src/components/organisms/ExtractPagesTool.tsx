@@ -70,8 +70,8 @@ export const ExtractPagesTool: React.FC = () => {
         <FileUploadZone
           onFilesSelected={handleFileUpload}
           accept="application/pdf"
-          maxFiles={1}
-          maxSizeMB={50}
+          multiple={false}
+          maxSize={50 * 1024 * 1024}
         />
 
         <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
