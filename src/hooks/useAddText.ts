@@ -64,6 +64,7 @@ interface UseAddTextReturn {
   goToPage: (page: number) => void;
   setPageScale: (scale: number) => void;
   setPageDimensions: (dimensions: PageDimensions) => void;
+  setTotalPages: (total: number) => void; // ✅ ADDED: функция для установки totalPages
 
   // Processing
   processFile: (file: File) => Promise<void>;
@@ -325,6 +326,13 @@ export const useAddText = (): UseAddTextReturn => {
     setPageDimensions(dimensions);
   }, []);
 
+  // ✅ ADDED: setTotalPages function
+  const setTotalPagesValue = useCallback((total: number) => {
+    if (total >= 1) {
+      setTotalPages(total);
+    }
+  }, []);
+
   // Process file
   const processFile = useCallback(async (file: File) => {
     try {
@@ -490,6 +498,7 @@ export const useAddText = (): UseAddTextReturn => {
     goToPage,
     setPageScale: setPageScaleValue,
     setPageDimensions: setPageDimensionsValue,
+    setTotalPages: setTotalPagesValue, // ✅ ADDED: Export the setTotalPages function
 
     // Processing
     processFile,
