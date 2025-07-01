@@ -106,7 +106,7 @@ const HomePage: React.FC = () => {
       case 'extract-text':
         return <ExtractTextTool {...props} />;
       case 'pdf-to-image':
-        return <PdfToImageTool />;
+        return <PdfToImageTool onClose={handleCloseTool} />;
       default:
         return (
           <div className="bg-white rounded-lg shadow-lg p-6">
