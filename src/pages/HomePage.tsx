@@ -119,8 +119,8 @@ const HomePage: React.FC = () => {
         // Pass the first file to PdfToImageTool for consistency
         return <PdfToImageTool onClose={handleCloseTool} initialFile={files[0]} />;
       case 'extract-pages':
-        // ExtractPagesTool handles its own file selection and download
-        return <ExtractPagesTool />;
+        // ExtractPagesTool now receives files like other tools
+        return <ExtractPagesTool {...props} />;
       default:
         return (
           <div className="bg-white rounded-lg shadow-lg p-6">
