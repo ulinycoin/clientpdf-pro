@@ -8,7 +8,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.j
 interface CanvasProps {
   pdfFile: File | null;
   currentPage: number;
-  textElements: TextElement[];
+  textElements: TextElement[]; // Now receives only current page elements
   selectedElementId: string | null;
   scale: number;
   onCanvasClick: (x: number, y: number) => void;
@@ -21,7 +21,7 @@ interface CanvasProps {
 const Canvas: React.FC<CanvasProps> = ({
   pdfFile,
   currentPage,
-  textElements,
+  textElements, // Already filtered for current page
   selectedElementId,
   scale,
   onCanvasClick,
@@ -164,7 +164,7 @@ const Canvas: React.FC<CanvasProps> = ({
       await renderTaskRef.current.promise;
       renderTaskRef.current = null;
 
-      // Render text elements on top
+      // Render text elements on top (only current page elements)
       renderTextElements(context, viewport);
 
     } catch (error) {
@@ -178,49 +178,48 @@ const Canvas: React.FC<CanvasProps> = ({
 
   // Render text elements overlay with multiline support
   const renderTextElements = useCallback((context: CanvasRenderingContext2D, viewport: any) => {
-    textElements
-      .filter(element => element.pageNumber === currentPage)
-      .forEach(element => {
-        context.save();
+    // textElements already contains only current page elements
+    textElements.forEach(element => {
+      context.save();
+      
+      // Set text properties
+      context.font = `${element.fontSize * scale}px ${element.fontFamily}`;
+      context.fillStyle = element.color;
+      context.textBaseline = 'top';
+
+      // Get text bounds for selection highlighting
+      const bounds = getMultilineTextBounds(
+        context, 
+        element.text, 
+        element.fontSize * scale
+      );
+
+      // Highlight selected element
+      if (element.id === selectedElementId) {
+        context.strokeStyle = '#007bff';
+        context.lineWidth = 2;
+        context.setLineDash([5, 5]);
         
-        // Set text properties
-        context.font = `${element.fontSize * scale}px ${element.fontFamily}`;
-        context.fillStyle = element.color;
-        context.textBaseline = 'top';
-
-        // Get text bounds for selection highlighting
-        const bounds = getMultilineTextBounds(
-          context, 
-          element.text, 
-          element.fontSize * scale
+        context.strokeRect(
+          element.x * scale - 2,
+          element.y * scale - 2,
+          bounds.width + 4,
+          bounds.height + 4
         );
+      }
 
-        // Highlight selected element
-        if (element.id === selectedElementId) {
-          context.strokeStyle = '#007bff';
-          context.lineWidth = 2;
-          context.setLineDash([5, 5]);
-          
-          context.strokeRect(
-            element.x * scale - 2,
-            element.y * scale - 2,
-            bounds.width + 4,
-            bounds.height + 4
-          );
-        }
+      // Draw multiline text
+      renderMultilineText(
+        context,
+        element.text,
+        element.x * scale,
+        element.y * scale,
+        element.fontSize * scale
+      );
 
-        // Draw multiline text
-        renderMultilineText(
-          context,
-          element.text,
-          element.x * scale,
-          element.y * scale,
-          element.fontSize * scale
-        );
-
-        context.restore();
-      });
-  }, [textElements, currentPage, selectedElementId, scale, renderMultilineText, getMultilineTextBounds]);
+      context.restore();
+    });
+  }, [textElements, selectedElementId, scale, renderMultilineText, getMultilineTextBounds]);
 
   // Handle canvas click
   const handleCanvasClick = useCallback((event: React.MouseEvent<HTMLCanvasElement>) => {
@@ -231,10 +230,8 @@ const Canvas: React.FC<CanvasProps> = ({
     const x = (event.clientX - rect.left) / scale;
     const y = (event.clientY - rect.top) / scale;
 
-    // Check if clicked on existing text element
+    // Check if clicked on existing text element (only current page elements)
     const clickedElement = textElements.find(element => {
-      if (element.pageNumber !== currentPage) return false;
-      
       const canvas2d = canvas.getContext('2d');
       if (!canvas2d) return false;
       
@@ -258,7 +255,7 @@ const Canvas: React.FC<CanvasProps> = ({
     } else {
       onCanvasClick(x, y);
     }
-  }, [textElements, currentPage, scale, onElementSelect, onCanvasClick, getMultilineTextBounds]);
+  }, [textElements, scale, onElementSelect, onCanvasClick, getMultilineTextBounds]);
 
   // Handle mouse down for dragging
   const handleMouseDown = useCallback((event: React.MouseEvent<HTMLCanvasElement>) => {
