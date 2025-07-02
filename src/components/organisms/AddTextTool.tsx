@@ -6,6 +6,7 @@ import Toolbar from './AddTextTool/components/Toolbar';
 import FormatPanel from './AddTextTool/components/FormatPanel';
 import FileUploadZone from '../molecules/FileUploadZone';
 import { PDFProcessingResult } from '../../types';
+import { downloadBlob, generateFilename } from '../../utils/fileHelpers';
 
 const AddTextTool: React.FC<AddTextToolProps> = ({
   files,
@@ -72,14 +73,20 @@ const AddTextTool: React.FC<AddTextToolProps> = ({
     moveElement(id, x, y);
   }, [moveElement]);
 
-  // Handle save with proper result structure
+  // Handle save with direct download (bypass onComplete callback)
   const handleSave = useCallback(async () => {
     if (!pdfFile) return;
     
     try {
       const resultBlob = await savePDF(pdfFile);
       
-      // Create proper PDFProcessingResult
+      // Generate filename and download directly
+      const filename = generateFilename('add-text', pdfFile.name, true);
+      downloadBlob(resultBlob, filename);
+      
+      console.log(`PDF saved successfully: ${filename}`);
+      
+      // Optional: Still call onComplete for consistency, but don't close tool
       const result: PDFProcessingResult = {
         success: true,
         data: resultBlob,
@@ -91,22 +98,14 @@ const AddTextTool: React.FC<AddTextToolProps> = ({
         }
       };
       
-      onComplete(result);
+      // Don't call onComplete to avoid closing the tool
+      // onComplete(result);
+      
     } catch (error) {
       console.error('Error saving PDF:', error);
-      
-      // Create error result
-      const errorResult: PDFProcessingResult = {
-        success: false,
-        error: {
-          message: error instanceof Error ? error.message : 'Unknown error occurred',
-          code: 'PDF_SAVE_ERROR'
-        }
-      };
-      
-      onComplete(errorResult);
+      alert(`Error saving PDF: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
-  }, [pdfFile, savePDF, onComplete, textElements.length]);
+  }, [pdfFile, savePDF, textElements.length]);
 
   // Keyboard shortcuts
   useEffect(() => {
