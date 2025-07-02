@@ -194,17 +194,19 @@ const FormatPanel: React.FC<FormatPanelProps> = ({
         </div>
       </div>
 
-      {/* Preview */}
+      {/* Preview with multiline support */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
           Preview
         </label>
         <div 
-          className="p-3 border border-gray-300 rounded-md bg-gray-50 min-h-12 flex items-center"
+          className="p-3 border border-gray-300 rounded-md bg-gray-50 min-h-12"
           style={{
             fontFamily: selectedElement.fontFamily,
             fontSize: `${Math.min(selectedElement.fontSize, 16)}px`,
-            color: selectedElement.color
+            color: selectedElement.color,
+            lineHeight: '1.2',
+            whiteSpace: 'pre-wrap' // This enables multiline display
           }}
         >
           {selectedElement.text || 'Sample text'}
@@ -216,6 +218,7 @@ const FormatPanel: React.FC<FormatPanelProps> = ({
         <div className="text-xs text-gray-500 space-y-1">
           <div>ID: {selectedElement.id.slice(0, 8)}...</div>
           <div>Page: {selectedElement.pageNumber}</div>
+          <div>Lines: {selectedElement.text.split('\n').length}</div>
         </div>
       </div>
     </div>
