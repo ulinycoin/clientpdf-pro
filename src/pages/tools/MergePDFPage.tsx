@@ -2,7 +2,7 @@ import React from 'react';
 import { toolsSEOData } from '../../data/seoData';
 import SEOHead from '../../components/SEO/SEOHead';
 import RelatedTools from '../../components/common/RelatedTools';
-import { MergeTool } from '../../components/organisms/MergeTool';
+import MergeTool from '../../components/organisms/MergeTool';
 
 const MergePDFPage: React.FC = () => {
   const seoData = toolsSEOData.merge;
@@ -30,7 +30,11 @@ const MergePDFPage: React.FC = () => {
 
         {/* Tool Component */}
         <section className="mb-12">
-          <MergeTool />
+          <MergeTool 
+            files={[]} 
+            onComplete={() => {}} 
+            onClose={() => {}} 
+          />
         </section>
 
         {/* Features Section */}

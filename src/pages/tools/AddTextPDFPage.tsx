@@ -2,7 +2,7 @@ import React from 'react';
 import { toolsSEOData } from '../../data/seoData';
 import SEOHead from '../../components/SEO/SEOHead';
 import RelatedTools from '../../components/common/RelatedTools';
-import { AddTextTool } from '../../components/organisms/AddTextTool';
+import AddTextTool from '../../components/organisms/AddTextTool';
 
 const AddTextPDFPage: React.FC = () => {
   const seoData = toolsSEOData.addText;
@@ -28,7 +28,11 @@ const AddTextPDFPage: React.FC = () => {
         </header>
 
         <section className="mb-12">
-          <AddTextTool />
+          <AddTextTool 
+            file={null} 
+            onComplete={() => {}} 
+            onClose={() => {}} 
+          />
         </section>
 
         <RelatedTools currentTool="addText" className="mb-8" />
