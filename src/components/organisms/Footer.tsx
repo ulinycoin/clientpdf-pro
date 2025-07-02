@@ -11,7 +11,7 @@ const Footer: React.FC = () => {
           
           {/* Brand & Privacy */}
           <div className="md:col-span-2">
-            <h3 className="text-xl font-bold mb-4">ClientPDF Pro</h3>
+            <h3 className="text-xl font-bold mb-4">LocalPDF</h3>
             <p className="text-gray-300 mb-4 leading-relaxed">
               Free, fast, and secure PDF tools that work entirely in your browser. 
               Your files never leave your device.
@@ -46,12 +46,17 @@ const Footer: React.FC = () => {
                   🔄 Rotate Pages
                 </a>
               </li>
+              <li>
+                <a href="#" className="hover:text-white transition-colors">
+                  ✍️ Add Text
+                </a>
+              </li>
             </ul>
           </div>
 
           {/* Links */}
           <div>
-            <h4 className="font-semibold mb-4">Project</h4>
+            <h4 className="font-semibold mb-4">Information</h4>
             <ul className="space-y-2 text-gray-300">
               <li>
                 <a 
@@ -65,18 +70,36 @@ const Footer: React.FC = () => {
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">
-                  📝 Privacy Policy
+                <a 
+                  href="https://github.com/ulinycoin/clientpdf-pro/blob/main/PRIVACY.md" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="hover:text-white transition-colors flex items-center space-x-2"
+                >
+                  <span>🔒</span>
+                  <span>Privacy Policy</span>
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">
-                  ❓ Help & FAQ
+                <a 
+                  href="https://github.com/ulinycoin/clientpdf-pro/blob/main/FAQ.md" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="hover:text-white transition-colors flex items-center space-x-2"
+                >
+                  <span>❓</span>
+                  <span>Help & FAQ</span>
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">
-                  📞 Contact
+                <a 
+                  href="https://github.com/ulinycoin/clientpdf-pro/issues" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="hover:text-white transition-colors flex items-center space-x-2"
+                >
+                  <span>📞</span>
+                  <span>Contact & Support</span>
                 </a>
               </li>
             </ul>
@@ -89,7 +112,7 @@ const Footer: React.FC = () => {
             
             {/* Copyright */}
             <div className="text-gray-400 text-sm">
-              © {currentYear} ClientPDF Pro. Open Source Project.
+              © {currentYear} LocalPDF. Open Source Project.
             </div>
 
             {/* Tech Stack */}
@@ -110,6 +133,32 @@ const Footer: React.FC = () => {
             All PDF processing happens locally in your browser. No files are uploaded to servers. 
             No data collection. No tracking. Open source and transparent.
           </p>
+          <div className="mt-3 flex justify-center space-x-6 text-xs">
+            <a 
+              href="https://github.com/ulinycoin/clientpdf-pro/blob/main/PRIVACY.md" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-gray-400 hover:text-white transition-colors"
+            >
+              Privacy Policy
+            </a>
+            <span className="text-gray-600">•</span>
+            <a 
+              href="https://github.com/ulinycoin/clientpdf-pro/blob/main/FAQ.md" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-gray-400 hover:text-white transition-colors"
+            >
+              FAQ
+            </a>
+            <span className="text-gray-600">•</span>
+            <a 
+              href="https://localpdf.online" 
+              className="text-gray-400 hover:text-white transition-colors"
+            >
+              localpdf.online
+            </a>
+          </div>
         </div>
       </div>
     </footer>
