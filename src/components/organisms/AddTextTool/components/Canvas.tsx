@@ -71,6 +71,49 @@ const Canvas: React.FC<CanvasProps> = ({
     }
   }, [currentPage, onTotalPagesChange]);
 
+  // Helper function to render multiline text
+  const renderMultilineText = useCallback((
+    context: CanvasRenderingContext2D,
+    text: string,
+    x: number,
+    y: number,
+    fontSize: number,
+    lineHeight?: number
+  ) => {
+    const lines = text.split('\n');
+    const actualLineHeight = lineHeight || fontSize * 1.2; // Default line height is 120% of font size
+    
+    lines.forEach((line, index) => {
+      const lineY = y + (index * actualLineHeight);
+      context.fillText(line, x, lineY);
+    });
+    
+    return lines.length * actualLineHeight; // Return total height
+  }, []);
+
+  // Get text bounds for multiline text
+  const getMultilineTextBounds = useCallback((
+    context: CanvasRenderingContext2D,
+    text: string,
+    fontSize: number,
+    lineHeight?: number
+  ) => {
+    const lines = text.split('\n');
+    const actualLineHeight = lineHeight || fontSize * 1.2;
+    
+    let maxWidth = 0;
+    lines.forEach(line => {
+      const metrics = context.measureText(line);
+      maxWidth = Math.max(maxWidth, metrics.width);
+    });
+    
+    return {
+      width: maxWidth,
+      height: lines.length * actualLineHeight,
+      lineCount: lines.length
+    };
+  }, []);
+
   // Render PDF page with race condition fix
   const renderPage = useCallback(async (pdf: any, pageNumber: number) => {
     if (!pdf || !canvasRef.current) return;
@@ -122,7 +165,7 @@ const Canvas: React.FC<CanvasProps> = ({
     }
   }, [scale, canvasState.scale, textElements, selectedElementId]);
 
-  // Render text elements overlay
+  // Render text elements overlay with multiline support
   const renderTextElements = useCallback((context: CanvasRenderingContext2D, viewport: any) => {
     textElements
       .filter(element => element.pageNumber === currentPage)
@@ -134,33 +177,39 @@ const Canvas: React.FC<CanvasProps> = ({
         context.fillStyle = element.color;
         context.textBaseline = 'top';
 
+        // Get text bounds for selection highlighting
+        const bounds = getMultilineTextBounds(
+          context, 
+          element.text, 
+          element.fontSize * scale
+        );
+
         // Highlight selected element
         if (element.id === selectedElementId) {
           context.strokeStyle = '#007bff';
           context.lineWidth = 2;
           context.setLineDash([5, 5]);
           
-          const textWidth = context.measureText(element.text).width;
-          const textHeight = element.fontSize * scale;
-          
           context.strokeRect(
             element.x * scale - 2,
             element.y * scale - 2,
-            textWidth + 4,
-            textHeight + 4
+            bounds.width + 4,
+            bounds.height + 4
           );
         }
 
-        // Draw text
-        context.fillText(
+        // Draw multiline text
+        renderMultilineText(
+          context,
           element.text,
           element.x * scale,
-          element.y * scale
+          element.y * scale,
+          element.fontSize * scale
         );
 
         context.restore();
       });
-  }, [textElements, currentPage, selectedElementId, scale]);
+  }, [textElements, currentPage, selectedElementId, scale, renderMultilineText, getMultilineTextBounds]);
 
   // Handle canvas click
   const handleCanvasClick = useCallback((event: React.MouseEvent<HTMLCanvasElement>) => {
@@ -179,14 +228,17 @@ const Canvas: React.FC<CanvasProps> = ({
       if (!canvas2d) return false;
       
       canvas2d.font = `${element.fontSize * scale}px ${element.fontFamily}`;
-      const textWidth = canvas2d.measureText(element.text).width / scale;
-      const textHeight = element.fontSize;
+      const bounds = getMultilineTextBounds(
+        canvas2d, 
+        element.text, 
+        element.fontSize * scale
+      );
       
       return (
         x >= element.x &&
-        x <= element.x + textWidth &&
+        x <= element.x + (bounds.width / scale) &&
         y >= element.y &&
-        y <= element.y + textHeight
+        y <= element.y + (bounds.height / scale)
       );
     });
 
@@ -195,7 +247,7 @@ const Canvas: React.FC<CanvasProps> = ({
     } else {
       onCanvasClick(x, y);
     }
-  }, [textElements, currentPage, scale, onElementSelect, onCanvasClick]);
+  }, [textElements, currentPage, scale, onElementSelect, onCanvasClick, getMultilineTextBounds]);
 
   // Handle mouse down for dragging
   const handleMouseDown = useCallback((event: React.MouseEvent<HTMLCanvasElement>) => {
