@@ -131,7 +131,7 @@ export interface ProgressBarProps extends BaseComponentProps {
 
 // Button types
 export interface ButtonProps extends BaseComponentProps {
-  variant?: 'primary' | 'secondary' | 'danger' | 'success';
+  variant?: 'primary' | 'secondary' | 'danger' | 'success' | 'outline' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
   disabled?: boolean;
   loading?: boolean;
@@ -139,9 +139,15 @@ export interface ButtonProps extends BaseComponentProps {
   type?: 'button' | 'submit' | 'reset';
 }
 
-// AddTextTool types
+// Tool Props
 export interface AddTextToolProps {
   files?: File[];
   onComplete?: (result: Blob) => void;
   onClose?: () => void;
+}
+
+export interface MergeToolProps extends BaseComponentProps {
+  files: File[];
+  onComplete: (result: PDFProcessingResult) => void;
+  onClose: () => void;
 }
