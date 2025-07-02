@@ -1,4 +1,4 @@
-# Known Issues - ClientPDF Pro
+# Known Issues - LocalPDF
 
 ## 🐛 Активные проблемы
 

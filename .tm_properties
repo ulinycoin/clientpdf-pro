@@ -1,15 +1,26 @@
-# TextMate settings for ClientPDF Pro
-excludeDirectories = {node_modules,dist,build,.cache}
-includeFiles = {.claude/**}
+# TextMate Project Settings for LocalPDF
 
-# Показывать скрытые файлы
-showHidden = true
+projectDirectory = "$CWD"
 
-# Подсветка для файлов Claude
-[ .claude/**/*.md ]
-fileType = markdown
+# File browser settings
+include = "{.claude,src,public,*.md,*.json,*.ts,*.tsx,*.js,*.jsx,*.css,*.html,*.txt,*.sh}"
+exclude = "{node_modules,dist,build,.git,coverage,*.log}"
 
-[ .claude/**/*.json ]
-fileType = json
-softTabs = true
+# Editor settings
 tabSize = 2
+softTabs = true
+spellChecking = false
+showInvisibles = false
+wrapColumn = 100
+
+# Default file types
+*.ts.fileType = 'source.ts'
+*.tsx.fileType = 'source.tsx'
+*.js.fileType = 'source.js'
+*.jsx.fileType = 'source.jsx'
+*.md.fileType = 'text.html.markdown'
+*.json.fileType = 'source.json'
+
+# LocalPDF specific settings
+TM_PROJECT_NAME = "LocalPDF"
+TM_PROJECT_DIRECTORY = "$CWD"
