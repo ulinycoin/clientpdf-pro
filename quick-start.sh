@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "🚀 ClientPDF Pro - Quick Start Script"
+echo "🚀 LocalPDF - Quick Start Script"
 echo "======================================"
 
 # Check if Node.js is installed
@@ -37,9 +37,10 @@ fi
 
 # Start development server
 echo ""
-echo "🚀 Starting development server..."
+echo "🚀 Starting LocalPDF development server..."
 echo "📱 Opening http://localhost:5173"
-echo "🎯 Look for 'Add Text' tool to test modular AddTextTool"
+echo "🎯 All 9 PDF tools ready for testing!"
+echo "🔒 Privacy-first PDF processing in your browser"
 echo ""
 echo "Press Ctrl+C to stop the server"
 echo "======================================"
