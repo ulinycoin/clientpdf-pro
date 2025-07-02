@@ -7,7 +7,7 @@ const Footer: React.FC = () => {
     <footer className="bg-gray-900 text-white py-12 mt-16">
       <div className="max-w-7xl mx-auto px-4">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           
           {/* Brand & Privacy */}
           <div className="md:col-span-2">
@@ -20,38 +20,6 @@ const Footer: React.FC = () => {
               <span className="text-lg">🔒</span>
               <span className="text-sm font-medium">100% Private & Secure</span>
             </div>
-          </div>
-
-          {/* Tools */}
-          <div>
-            <h4 className="font-semibold mb-4">PDF Tools</h4>
-            <ul className="space-y-2 text-gray-300">
-              <li>
-                <a href="#" className="hover:text-white transition-colors">
-                  📄 Merge PDFs
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-white transition-colors">
-                  🗜️ Compress PDF
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-white transition-colors">
-                  ✂️ Split PDF
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-white transition-colors">
-                  🔄 Rotate Pages
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-white transition-colors">
-                  ✍️ Add Text
-                </a>
-              </li>
-            </ul>
           </div>
 
           {/* Links */}
@@ -71,9 +39,7 @@ const Footer: React.FC = () => {
               </li>
               <li>
                 <a 
-                  href="https://github.com/ulinycoin/clientpdf-pro/blob/main/PRIVACY.md" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
+                  href="/privacy" 
                   className="hover:text-white transition-colors flex items-center space-x-2"
                 >
                   <span>🔒</span>
@@ -82,9 +48,7 @@ const Footer: React.FC = () => {
               </li>
               <li>
                 <a 
-                  href="https://github.com/ulinycoin/clientpdf-pro/blob/main/FAQ.md" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
+                  href="/faq" 
                   className="hover:text-white transition-colors flex items-center space-x-2"
                 >
                   <span>❓</span>
@@ -135,18 +99,14 @@ const Footer: React.FC = () => {
           </p>
           <div className="mt-3 flex justify-center space-x-6 text-xs">
             <a 
-              href="https://github.com/ulinycoin/clientpdf-pro/blob/main/PRIVACY.md" 
-              target="_blank" 
-              rel="noopener noreferrer"
+              href="/privacy" 
               className="text-gray-400 hover:text-white transition-colors"
             >
               Privacy Policy
             </a>
             <span className="text-gray-600">•</span>
             <a 
-              href="https://github.com/ulinycoin/clientpdf-pro/blob/main/FAQ.md" 
-              target="_blank" 
-              rel="noopener noreferrer"
+              href="/faq" 
               className="text-gray-400 hover:text-white transition-colors"
             >
               FAQ
