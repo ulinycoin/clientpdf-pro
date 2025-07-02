@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { MergeToolProps, PDFProcessingResult, MergeOptions } from '../../types';
+import { MergeToolProps, PDFProcessingResult, MergeOptions, ProgressCallback } from '../../types';
 import { pdfService } from '../../services/pdfService';
 import Button from '../atoms/Button';
 import ProgressBar from '../atoms/ProgressBar';
@@ -16,7 +16,6 @@ const MergeTool: React.FC<MergeToolProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [options, setOptions] = useState<MergeOptions>({
     order: Array.from({ length: files.length }, (_, i) => i),
-    bookmarks: true,
     metadata: {
       title: 'Merged PDF',
       author: 'LocalPDF',
@@ -36,13 +35,15 @@ const MergeTool: React.FC<MergeToolProps> = ({
     setError(null);
 
     try {
+      const progressCallback: ProgressCallback = (progress: number, message?: string) => {
+        setProgress(progress);
+        setProgressMessage(message || '');
+      };
+
       const result = await pdfService.mergePDFs(
         files,
-        options,
-        (progress, message) => {
-          setProgress(progress);
-          setProgressMessage(message || '');
-        }
+        progressCallback,
+        options
       );
 
       if (result.success) {
@@ -153,19 +154,6 @@ const MergeTool: React.FC<MergeToolProps> = ({
         <h3 className="text-lg font-medium text-gray-900 mb-4">Options:</h3>
         
         <div className="space-y-3">
-          <label className="flex items-center">
-            <input
-              type="checkbox"
-              checked={options.bookmarks}
-              onChange={(e) => setOptions(prev => ({ ...prev, bookmarks: e.target.checked }))}
-              disabled={isProcessing}
-              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
-            />
-            <span className="ml-3 text-sm text-gray-700">
-              Create bookmarks for each file
-            </span>
-          </label>
-          
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
