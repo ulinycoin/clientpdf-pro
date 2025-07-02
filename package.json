@@ -19,18 +19,25 @@
     "compress",
     "watermark",
     "text",
-    "convert"
+    "convert",
+    "free",
+    "tools",
+    "online",
+    "secure"
   ],
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "type-check": "tsc --noEmit",
-    "test:addtext": "tsc --noEmit src/tests/AddTextTool.compilation.test.tsx"
+    "test:addtext": "tsc --noEmit src/tests/AddTextTool.compilation.test.tsx",
+    "seo:check": "lighthouse --only-categories=seo --chrome-flags='--headless' http://localhost:4173"
   },
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-router-dom": "^6.8.0",
+    "react-helmet-async": "^1.3.0",
     "pdf-lib": "^1.17.1",
     "jspdf": "^2.5.1",
     "pdfjs-dist": "^3.11.174"
@@ -38,6 +45,7 @@
   "devDependencies": {
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
+    "@types/react-router-dom": "^5.3.3",
     "@vitejs/plugin-react": "^4.0.0",
     "typescript": "^5.0.0",
     "vite": "^4.5.0",
