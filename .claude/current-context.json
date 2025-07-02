@@ -1,73 +1,83 @@
 {
-  "timestamp": "2025-07-02T11:16:00Z",
+  "timestamp": "2025-07-02T11:31:30Z",
   "activeTask": {
-    "type": "dependency-fix",
-    "name": "Fixed fontkit dependency issue with text sanitization approach",
-    "description": "Removed @pdf-lib/fontkit dependency and implemented Cyrillic transliteration",
-    "startedAt": "2025-07-02T11:12:00Z",
-    "completedAt": "2025-07-02T11:16:00Z",
+    "type": "critical-ux-fixes",
+    "name": "Fixed Save PDF redirect and page-specific text elements",
+    "description": "Resolved two major UX issues affecting multi-page PDF editing",
+    "startedAt": "2025-07-02T11:25:00Z",
+    "completedAt": "2025-07-02T11:31:30Z",
     "priority": "critical",
     "completion": 100
   },
-  "dependencyIssueResolved": {
-    "problem": "Vite import error: @pdf-lib/fontkit package not found",
-    "solution": "Removed fontkit dependency and implemented text sanitization",
-    "approach": "Smart text conversion instead of custom font embedding",
-    "benefits": [
-      "No additional dependencies required",
-      "Faster PDF processing",
-      "More reliable cross-platform compatibility",
-      "Smaller bundle size"
-    ]
-  },
-  "textSanitizationFeatures": {
-    "cyrillicTransliteration": {
-      "description": "Complete Russian alphabet mapping to Latin equivalents",
-      "examples": {
-        "а": "a", "б": "b", "в": "v", "г": "g", "д": "d", "е": "e",
-        "Привет": "Privet", "мир": "mir", "текст": "tekst"
-      },
-      "coverage": "Full Russian alphabet (uppercase and lowercase)"
+  "criticalUXIssuesFixed": {
+    "savePdfRedirect": {
+      "issue": "Save PDF button redirected to main page instead of downloading",
+      "rootCause": "onComplete callback expected PDFProcessingResult structure",
+      "solution": "Created proper result structure with success/error handling",
+      "implementation": [
+        "Added PDFProcessingResult type import",
+        "Wrapped blob result in proper structure with metadata",
+        "Added error handling with structured error response",
+        "Maintained download functionality while staying in tool"
+      ]
     },
-    "smartCharacterReplacement": {
-      "smartQuotes": "Replace "" with regular quotes",
-      "dashes": "Replace –— with hyphens",
-      "ellipsis": "Replace … with three dots",
-      "apostrophes": "Replace '' with regular apostrophes"
-    },
-    "fallbackMechanism": {
-      "level1": "Cyrillic transliteration",
-      "level2": "Smart character replacement",
-      "level3": "ASCII fallback with ? for unknown characters"
+    "pageSpecificTextElements": {
+      "issue": "Text added to one page appeared on all pages when switching",
+      "rootCause": "Canvas received all text elements, not filtered by current page",
+      "solution": "Filter text elements by page before passing to Canvas",
+      "implementation": [
+        "Added currentPageElements filter in AddTextTool",
+        "Updated Canvas to work with pre-filtered elements",
+        "Added page-specific element counter in header",
+        "Updated status bar to show per-page and total counts"
+      ]
     }
   },
-  "addTextToolCapabilities": {
-    "textInput": "✅ Accepts any text including Cyrillic",
-    "canvasDisplay": "✅ Shows original text with proper formatting",
-    "pdfSaving": "✅ Converts problematic characters automatically",
-    "userExperience": "✅ Seamless - user sees original, PDF gets compatible version",
-    "multilineSupport": "✅ Works with multiline text including mixed languages",
-    "errorRecovery": "✅ Graceful handling of any unsupported characters"
+  "pageSpecificFunctionality": {
+    "textElementFiltering": "✅ Each page shows only its own text elements",
+    "pageNavigation": "✅ Switching pages shows correct elements per page",
+    "elementCounting": "✅ Display shows per-page and total element counts",
+    "crossPageEditing": "✅ Can add different text to different pages",
+    "pageIsolation": "✅ Text on page 1 doesn't appear on page 2"
   },
-  "implementationDetails": {
-    "sanitizeTextForPDF": "Main function that handles character conversion",
-    "cyrillicMapping": "Complete Russian-to-Latin transliteration table",
-    "errorHandling": "Try-catch with multiple fallback levels",
-    "performanceOptimized": "No external API calls or font downloads",
-    "crossPlatform": "Works identically across all operating systems"
+  "savepdFunctionality": {
+    "properResultStructure": "✅ Returns PDFProcessingResult with success/error",
+    "metadataIncluded": "✅ Original size, processed size, elements count",
+    "errorHandling": "✅ Graceful error handling with user feedback",
+    "downloadBehavior": "✅ File downloads without leaving the tool",
+    "processingIndicator": "✅ Shows progress with element count"
   },
-  "userExperienceFlow": {
-    "input": "User types: 'Привет мир!'",
-    "display": "Canvas shows: 'Привет мир!' (original)",
-    "processing": "System converts: 'Privet mir!' for PDF",
-    "result": "PDF contains readable transliterated text",
-    "advantage": "No errors, always works, readable output"
+  "userExperienceImprovements": {
+    "multiPageWorkflow": [
+      "Add text to page 1: 'Page 1 content'",
+      "Navigate to page 2: 'Page 1 content' disappears",
+      "Add text to page 2: 'Page 2 content'",
+      "Switch back to page 1: Only 'Page 1 content' visible",
+      "Save PDF: Both pages have their respective text"
+    ],
+    "saveWorkflow": [
+      "Click Save PDF button",
+      "Processing indicator shows with element count",
+      "PDF downloads with all text elements",
+      "User remains in AddTextTool for further editing"
+    ]
+  },
+  "interfaceEnhancements": {
+    "headerInformation": "Shows page-specific element count and total",
+    "statusBar": "Enhanced with per-page element counts",
+    "processingOverlay": "Shows total element count during save",
+    "pageIndicator": "Clear indication of which page is active"
+  },
+  "technicalImplementation": {
+    "elementFiltering": "currentPageElements = textElements.filter(el => el.pageNumber === currentPage)",
+    "resultStructure": "PDFProcessingResult with success, data, metadata, error fields",
+    "canvasOptimization": "Canvas only processes current page elements",
+    "errorRecovery": "Structured error handling for save failures"
   },
   "testingScenarios": [
-    "Pure Cyrillic text: 'Привет мир'",
-    "Mixed text: 'Hello Привет 123'",
-    "Multiline: 'Строка 1\\nLine 2\\nСтрока 3'",
-    "Special characters: 'Text "quotes" and –dashes–'",
-    "Complex: 'Документ №1 — важный файл!'"
+    "✅ Add text to page 1, navigate to page 2 - page 1 text disappears",
+    "✅ Add different text to page 2, go back to page 1 - correct text shows",
+    "✅ Save PDF - downloads without redirect, contains all page text",
+    "✅ Multi-page PDF with different text per page works correctly"
   ]
 }
