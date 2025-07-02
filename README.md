@@ -1,12 +1,12 @@
-# ClientPDF Pro 🚀
+# LocalPDF 🚀
 
 **Ultra-fast, privacy-first PDF tools that work entirely in your browser**
 
-[✨ **Live Demo**](https://your-domain.com) | [📖 **Documentation**](#documentation) | [🛠️ **Features**](#features)
+[✨ **Live Demo**](https://localpdf.online) | [📖 **Documentation**](#documentation) | [🛠️ **Features**](#features) | [❓ **FAQ**](FAQ.md) | [🔒 **Privacy**](PRIVACY.md)
 
 ---
 
-## 🎯 Why ClientPDF Pro?
+## 🎯 Why LocalPDF?
 
 - **🔒 100% Private**: All processing happens in your browser - no uploads, no tracking
 - **⚡ Lightning Fast**: Modern React architecture with Web Workers for large files  
@@ -50,7 +50,7 @@
 ## 🚀 Quick Start
 
 ### For Users
-Just visit the live demo and start using the tools - no installation required!
+Just visit [localpdf.online](https://localpdf.online) and start using the tools - no installation required!
 
 ### For Developers
 
@@ -126,6 +126,8 @@ npm run type-check   # TypeScript validation
 
 ## 🔐 Privacy & Security
 
+LocalPDF is built with privacy as the foundation. See our [Privacy Policy](PRIVACY.md) for complete details.
+
 - **No Data Collection**: Zero tracking, analytics, or user data collection
 - **Local Processing**: All PDF operations happen in your browser
 - **No Server Uploads**: Files never leave your device
@@ -140,6 +142,10 @@ npm run type-check   # TypeScript validation
 | Firefox | 90+ | ✅ Fully Supported |
 | Safari | 14+ | ✅ Fully Supported |
 | Edge | 90+ | ✅ Fully Supported |
+
+## ❓ Frequently Asked Questions
+
+See our comprehensive [FAQ](FAQ.md) for answers to common questions about LocalPDF.
 
 ## 🤝 Contributing
 
@@ -170,7 +176,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - **Issues**: [GitHub Issues](https://github.com/ulinycoin/clientpdf-pro/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/ulinycoin/clientpdf-pro/discussions)
-- **Email**: [Your Email](mailto:your-email@domain.com)
+- **Website**: [localpdf.online](https://localpdf.online)
 
 ---
 
