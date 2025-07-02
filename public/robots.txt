@@ -1,0 +1,28 @@
+User-agent: *
+Allow: /
+
+# PDF Tools
+Allow: /merge-pdf
+Allow: /split-pdf
+Allow: /compress-pdf
+Allow: /add-text-pdf
+Allow: /watermark-pdf
+Allow: /rotate-pdf
+Allow: /extract-pages-pdf
+Allow: /extract-text-pdf
+Allow: /pdf-to-image
+
+# Information pages
+Allow: /privacy
+Allow: /faq
+Allow: /how-to-use
+
+# Block development files
+Disallow: /src/
+Disallow: /node_modules/
+Disallow: /*.json$
+Disallow: /*.ts$
+Disallow: /*.tsx$
+Disallow: /dev-assets/
+
+Sitemap: https://localpdf.online/sitemap.xml
