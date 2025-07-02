@@ -19,7 +19,7 @@ const MergeTool: React.FC<MergeToolProps> = ({
     bookmarks: true,
     metadata: {
       title: 'Merged PDF',
-      author: 'ClientPDF Pro',
+      author: 'LocalPDF',
       subject: 'Merged PDF Document'
     }
   });
