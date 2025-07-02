@@ -354,3 +354,6 @@ export const ExtractPagesTool: React.FC<ExtractPagesToolProps> = ({
     </div>
   );
 };
+
+// Add default export
+export default ExtractPagesTool;
