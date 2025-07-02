@@ -5,6 +5,7 @@ import Canvas from './AddTextTool/components/Canvas';
 import Toolbar from './AddTextTool/components/Toolbar';
 import FormatPanel from './AddTextTool/components/FormatPanel';
 import FileUploadZone from '../molecules/FileUploadZone';
+import { PDFProcessingResult } from '../../types';
 
 const AddTextTool: React.FC<AddTextToolProps> = ({
   files,
@@ -71,18 +72,41 @@ const AddTextTool: React.FC<AddTextToolProps> = ({
     moveElement(id, x, y);
   }, [moveElement]);
 
-  // Handle save
+  // Handle save with proper result structure
   const handleSave = useCallback(async () => {
     if (!pdfFile) return;
     
     try {
-      const result = await savePDF(pdfFile);
+      const resultBlob = await savePDF(pdfFile);
+      
+      // Create proper PDFProcessingResult
+      const result: PDFProcessingResult = {
+        success: true,
+        data: resultBlob,
+        metadata: {
+          originalSize: pdfFile.size,
+          processedSize: resultBlob.size,
+          textElementsAdded: textElements.length,
+          processingTime: Date.now()
+        }
+      };
+      
       onComplete(result);
     } catch (error) {
       console.error('Error saving PDF:', error);
-      // Could add toast notification here
+      
+      // Create error result
+      const errorResult: PDFProcessingResult = {
+        success: false,
+        error: {
+          message: error instanceof Error ? error.message : 'Unknown error occurred',
+          code: 'PDF_SAVE_ERROR'
+        }
+      };
+      
+      onComplete(errorResult);
     }
-  }, [pdfFile, savePDF, onComplete]);
+  }, [pdfFile, savePDF, onComplete, textElements.length]);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -190,6 +214,9 @@ const AddTextTool: React.FC<AddTextToolProps> = ({
     );
   }
 
+  // Filter text elements for current page
+  const currentPageElements = textElements.filter(element => element.pageNumber === currentPage);
+
   return (
     <div className={`bg-white rounded-lg shadow-lg ${className}`} style={{ height: '90vh' }}>
       {/* Header */}
@@ -203,7 +230,8 @@ const AddTextTool: React.FC<AddTextToolProps> = ({
         </button>
         <h2 className="text-xl font-bold text-gray-900">Add Text to PDF</h2>
         <div className="text-sm text-gray-500">
-          {textElements.length} text element{textElements.length !== 1 ? 's' : ''}
+          Page {currentPage}: {currentPageElements.length} element{currentPageElements.length !== 1 ? 's' : ''}
+          {totalPages > 1 && ` (Total: ${textElements.length})`}
         </div>
       </div>
 
@@ -236,7 +264,7 @@ const AddTextTool: React.FC<AddTextToolProps> = ({
           <Canvas
             pdfFile={pdfFile}
             currentPage={currentPage}
-            textElements={textElements}
+            textElements={currentPageElements}
             selectedElementId={selectedElementId}
             scale={scale}
             onCanvasClick={handleCanvasClick}
@@ -254,6 +282,7 @@ const AddTextTool: React.FC<AddTextToolProps> = ({
             </div>
             <div>
               Zoom: {Math.round(scale * 100)}% | Page {currentPage} of {totalPages}
+              {totalPages > 1 && ` | Elements on page: ${currentPageElements.length}`}
             </div>
           </div>
         </div>
@@ -264,7 +293,7 @@ const AddTextTool: React.FC<AddTextToolProps> = ({
         <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 text-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"></div>
-            <p className="text-gray-700">Processing PDF...</p>
+            <p className="text-gray-700">Saving PDF with {textElements.length} text elements...</p>
           </div>
         </div>
       )}
