@@ -19,26 +19,20 @@ const ToolCard: React.FC<ToolCardProps> = ({
   };
 
   const getIconDisplay = (iconType: string) => {
-    switch (iconType) {
-      case 'PDF':
-        return '📄';
-      case 'COMPRESS':
-        return '🗜️';
-      case 'SPLIT':
-        return '✂️';
-      case 'ROTATE':
-        return '🔄';
-      case 'WATERMARK':
-        return '🏷️';
-      case 'EXTRACT':
-        return '📋';
-      case 'TEXT':
-        return '📝';
-      case 'IMAGE':
-        return '🖼️';
-      default:
-        return '📄';
-    }
+    const iconMap = {
+      'PDF': '📄',
+      'COMPRESS': '🗜️', 
+      'SPLIT': '✂️',
+      'ROTATE': '🔄',
+      'WATERMARK': '🏷️',
+      'EXTRACT': '📋',
+      'TEXT': '📝',
+      'IMAGE': '🖼️',
+      'MERGE': '📑',
+      'PAGES': '📄'
+    };
+    
+    return iconMap[iconType as keyof typeof iconMap] || iconType || '📄';
   };
 
   const isDisabled = disabled || comingSoon;
@@ -46,47 +40,53 @@ const ToolCard: React.FC<ToolCardProps> = ({
   return (
     <div 
       className={`
-        relative bg-white rounded-lg shadow-md border-2 p-6 
-        transition-all duration-200 
-        ${!isDisabled ? 'border-gray-200 hover:border-blue-300 hover:shadow-lg hover:-translate-y-1' : ''}
+        relative bg-white rounded-xl shadow-md border-2 p-6 
+        transition-all duration-300 ease-in-out
+        ${!isDisabled ? 'border-gray-200 hover:border-blue-400 hover:shadow-xl hover:-translate-y-2 cursor-pointer' : ''} 
         ${isDisabled ? 'border-gray-100 bg-gray-50' : ''}
         ${className}
+        flex flex-col justify-between h-full
       `}
+      onClick={!isDisabled ? handleClick : undefined}
     >
       {/* Coming Soon Badge */}
       {comingSoon && (
-        <div className="absolute top-4 right-4 z-10">
-          <span className="bg-yellow-100 text-yellow-800 text-xs font-medium px-2 py-1 rounded-full">
+        <div className="absolute -top-2 -right-2 z-10">
+          <span className="bg-gradient-to-r from-yellow-400 to-orange-400 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
             Coming Soon
           </span>
         </div>
       )}
       
-      {/* Icon */}
-      <div className={`text-4xl mb-4 text-center transition-opacity ${isDisabled ? 'opacity-40' : ''}`}>
-        {getIconDisplay(icon)}
+      {/* Top Section */}
+      <div className="flex-grow">
+        {/* Icon */}
+        <div className={`text-5xl mb-4 text-center transition-all duration-300 ${isDisabled ? 'opacity-40' : 'transform hover:scale-110'}`}>
+          {getIconDisplay(icon)}
+        </div>
+        
+        {/* Title */}
+        <h3 className={`text-xl font-bold mb-3 text-center ${isDisabled ? 'text-gray-400' : 'text-gray-900'}`}>
+          {title}
+        </h3>
+        
+        {/* Description */}
+        <p className={`text-sm mb-4 text-center leading-relaxed ${isDisabled ? 'text-gray-400' : 'text-gray-600'}`}>
+          {description}
+        </p>
       </div>
       
-      {/* Title */}
-      <h3 className={`text-xl font-semibold mb-2 text-center ${isDisabled ? 'text-gray-400' : 'text-gray-900'}`}>
-        {title}
-      </h3>
-      
-      {/* Description */}
-      <p className={`text-sm mb-6 text-center leading-relaxed ${isDisabled ? 'text-gray-400' : 'text-gray-600'}`}>
-        {description}
-      </p>
-      
-      {/* Action Button */}
-      <div className="text-center">
+      {/* Bottom Section - Action Button */}
+      <div className="mt-auto">
         <Button
           onClick={handleClick}
           disabled={isDisabled}
           variant={comingSoon ? 'outline' : disabled ? 'outline' : 'primary'}
           size="md"
           fullWidth
+          className="transition-all duration-200"
         >
-          {comingSoon ? 'Coming Soon' : disabled ? 'Upload PDF Files' : 'Start'}
+          {comingSoon ? 'Coming Soon' : disabled ? 'Upload PDF First' : 'Start Processing'}
         </Button>
       </div>
     </div>
