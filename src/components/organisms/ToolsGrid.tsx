@@ -89,20 +89,6 @@ const ToolsGrid: React.FC<ToolsGridProps> = ({
     onToolSelect(operationType);
   };
 
-  const groupedTools = {
-    core: tools.filter(tool => tool.category === 'core'),
-    content: tools.filter(tool => tool.category === 'content'), 
-    pages: tools.filter(tool => tool.category === 'pages'),
-    conversion: tools.filter(tool => tool.category === 'conversion')
-  };
-
-  const categoryTitles = {
-    core: 'Core Operations',
-    content: 'Text & Content',
-    pages: 'Page Management', 
-    conversion: 'Conversion Tools'
-  };
-
   return (
     <div className={`space-y-12 ${className}`}>
       {/* Header */}
@@ -135,38 +121,6 @@ const ToolsGrid: React.FC<ToolsGridProps> = ({
             />
           ))}
         </div>
-      </div>
-
-      {/* Categorized View - Alternative Layout */}
-      <div className="space-y-8">
-        <div className="text-center">
-          <h3 className="text-xl font-semibold text-gray-800 mb-2">
-            Tools by Category
-          </h3>
-          <p className="text-gray-600">Browse tools organized by function</p>
-        </div>
-        
-        {Object.entries(groupedTools).map(([category, categoryTools]) => (
-          <div key={category} className="space-y-4">
-            <h4 className="text-lg font-medium text-gray-700 border-b border-gray-200 pb-2">
-              {categoryTitles[category as keyof typeof categoryTitles]} ({categoryTools.length})
-            </h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {categoryTools.map((tool) => (
-                <ToolCard
-                  key={`${category}-${tool.operationType}`}
-                  title={tool.title}
-                  description={tool.description}
-                  icon={tool.icon}
-                  operationType={tool.operationType}
-                  disabled={disabledTools.includes(tool.operationType)}
-                  onClick={() => handleToolClick(tool.operationType)}
-                  className="min-h-[240px]"
-                />
-              ))}
-            </div>
-          </div>
-        ))}
       </div>
       
       {/* Upload Reminder */}
