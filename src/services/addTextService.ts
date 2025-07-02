@@ -6,6 +6,8 @@ import {
   TextElementValidation 
 } from '../types/addText.types';
 
+type FontFamily = 'Helvetica' | 'Times-Roman' | 'Courier';
+
 export class AddTextService {
   private static instance: AddTextService;
 
@@ -178,7 +180,8 @@ export class AddTextService {
 
     } catch (error) {
       console.error('[AddTextService] Error adding text element:', error);
-      throw new Error(`Failed to add text element: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      throw new Error(`Failed to add text element: ${errorMessage}`);
     }
   }
 
@@ -372,9 +375,9 @@ export class AddTextService {
    */
   getFontOptions() {
     return [
-      { value: 'Helvetica' as const, label: 'Helvetica', preview: 'Modern sans-serif font' },
-      { value: 'Times-Roman' as const, label: 'Times Roman', preview: 'Classic serif font' },
-      { value: 'Courier' as const, label: 'Courier', preview: 'Monospace font' }
+      { value: 'Helvetica' as FontFamily, label: 'Helvetica', preview: 'Modern sans-serif font' },
+      { value: 'Times-Roman' as FontFamily, label: 'Times Roman', preview: 'Classic serif font' },
+      { value: 'Courier' as FontFamily, label: 'Courier', preview: 'Monospace font' }
     ];
   }
 
@@ -387,7 +390,7 @@ export class AddTextService {
         name: 'Heading',
         fontSize: 24,
         color: { r: 0, g: 0, b: 0 },
-        fontFamily: 'Helvetica' as const,
+        fontFamily: 'Helvetica' as FontFamily,
         isBold: true,
         isItalic: false
       },
@@ -395,7 +398,7 @@ export class AddTextService {
         name: 'Subheading',
         fontSize: 18,
         color: { r: 64, g: 64, b: 64 },
-        fontFamily: 'Helvetica' as const,
+        fontFamily: 'Helvetica' as FontFamily,
         isBold: true,
         isItalic: false
       },
@@ -403,7 +406,7 @@ export class AddTextService {
         name: 'Body Text',
         fontSize: 12,
         color: { r: 0, g: 0, b: 0 },
-        fontFamily: 'Times-Roman' as const,
+        fontFamily: 'Times-Roman' as FontFamily,
         isBold: false,
         isItalic: false
       },
@@ -411,7 +414,7 @@ export class AddTextService {
         name: 'Note',
         fontSize: 10,
         color: { r: 128, g: 128, b: 128 },
-        fontFamily: 'Helvetica' as const,
+        fontFamily: 'Helvetica' as FontFamily,
         isBold: false,
         isItalic: true
       },
@@ -419,7 +422,7 @@ export class AddTextService {
         name: 'Code',
         fontSize: 11,
         color: { r: 64, g: 64, b: 64 },
-        fontFamily: 'Courier' as const,
+        fontFamily: 'Courier' as FontFamily,
         isBold: false,
         isItalic: false
       }
