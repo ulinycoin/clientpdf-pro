@@ -166,6 +166,21 @@ export const useAddTextTool = (): UseAddTextToolReturn => {
     } : { r: 0, g: 0, b: 0 };
   };
 
+  // Helper function to draw multiline text on PDF
+  const drawMultilineText = (page: any, text: string, x: number, y: number, options: any) => {
+    const lines = text.split('\n');
+    const lineHeight = options.size * 1.2; // 120% line height
+    
+    lines.forEach((line, index) => {
+      const lineY = y - (index * lineHeight);
+      page.drawText(line, {
+        ...options,
+        x,
+        y: lineY,
+      });
+    });
+  };
+
   // Save PDF with text elements
   const savePDF = useCallback(async (originalFile: File): Promise<Blob> => {
     setIsProcessing(true);
@@ -173,6 +188,20 @@ export const useAddTextTool = (): UseAddTextToolReturn => {
       // Load original PDF
       const arrayBuffer = await originalFile.arrayBuffer();
       const pdfDoc = await PDFDocument.load(arrayBuffer);
+      
+      // Embed standard fonts
+      const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
+      const helveticaBoldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+      const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
+      
+      // Font mapping
+      const fontMap: Record<string, any> = {
+        'Arial': helveticaFont,
+        'Helvetica': helveticaFont,
+        'Times': timesRomanFont,
+        'Times New Roman': timesRomanFont,
+        'Courier': await pdfDoc.embedFont(StandardFonts.Courier),
+      };
       
       // Group elements by page
       const elementsByPage = textElements.reduce((acc, element) => {
@@ -193,13 +222,13 @@ export const useAddTextTool = (): UseAddTextToolReturn => {
 
         elements.forEach(element => {
           const color = hexToRgb(element.color);
+          const font = fontMap[element.fontFamily] || helveticaFont;
           
-          page.drawText(element.text, {
-            x: element.x,
-            y: height - element.y - element.fontSize, // PDF coordinates are bottom-up
+          // Draw multiline text
+          drawMultilineText(page, element.text, element.x, height - element.y - element.fontSize, {
             size: element.fontSize,
             color: rgb(color.r, color.g, color.b),
-            font: StandardFonts.Helvetica, // Could be made configurable
+            font: font,
           });
         });
       });
