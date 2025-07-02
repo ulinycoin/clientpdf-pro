@@ -8,7 +8,7 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({
-  title = 'ClientPDF Pro',
+  title = 'LocalPDF',
   showLogo = true,
   actions,
   className = ''
