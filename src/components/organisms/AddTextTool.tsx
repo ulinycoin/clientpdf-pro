@@ -178,11 +178,11 @@ const AddTextTool: React.FC<AddTextToolProps> = ({
           <h3 className="text-lg font-medium text-gray-900 mb-2">No PDF File Selected</h3>
           <p className="text-gray-600 mb-6">Please upload a PDF file to add text</p>
           <FileUploadZone
-            onFileUpload={(files) => {
+            onFilesSelected={(files) => {
               // This would need to be handled by parent component
               console.log('Files uploaded:', files);
             }}
-            accept=".pdf"
+            accept="application/pdf"
             multiple={false}
           />
         </div>
