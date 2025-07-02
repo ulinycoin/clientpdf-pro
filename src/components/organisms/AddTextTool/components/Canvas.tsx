@@ -34,6 +34,7 @@ const Canvas: React.FC<CanvasProps> = ({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const renderTaskRef = useRef<any>(null);
+  const isRenderingRef = useRef(false); // Prevent concurrent renders
 
   // State
   const [pdfDocument, setPdfDocument] = useState<any>(null);
@@ -114,17 +115,21 @@ const Canvas: React.FC<CanvasProps> = ({
     };
   }, []);
 
-  // Render PDF page with race condition fix
+  // Render PDF page with improved race condition fix
   const renderPage = useCallback(async (pdf: any, pageNumber: number) => {
-    if (!pdf || !canvasRef.current) return;
+    if (!pdf || !canvasRef.current || isRenderingRef.current) return;
+
+    // Set rendering flag
+    isRenderingRef.current = true;
 
     // Cancel previous render task - CRITICAL FIX
     if (renderTaskRef.current) {
       try {
-        renderTaskRef.current.cancel();
+        await renderTaskRef.current.cancel();
       } catch (e) {
-        // Task might already be completed
+        // Task might already be completed or cancelled
       }
+      renderTaskRef.current = null;
     }
 
     try {
@@ -132,7 +137,10 @@ const Canvas: React.FC<CanvasProps> = ({
       const canvas = canvasRef.current;
       const context = canvas.getContext('2d');
 
-      if (!context) return;
+      if (!context) {
+        isRenderingRef.current = false;
+        return;
+      }
 
       // Calculate viewport
       const viewport = page.getViewport({ scale: scale * canvasState.scale });
@@ -154,6 +162,7 @@ const Canvas: React.FC<CanvasProps> = ({
 
       renderTaskRef.current = page.render(renderContext);
       await renderTaskRef.current.promise;
+      renderTaskRef.current = null;
 
       // Render text elements on top
       renderTextElements(context, viewport);
@@ -162,6 +171,8 @@ const Canvas: React.FC<CanvasProps> = ({
       if (error.name !== 'RenderingCancelledException') {
         console.error('Error rendering page:', error);
       }
+    } finally {
+      isRenderingRef.current = false;
     }
   }, [scale, canvasState.scale, textElements, selectedElementId]);
 
@@ -298,10 +309,15 @@ const Canvas: React.FC<CanvasProps> = ({
     }
   }, [pdfFile, loadPDF]);
 
-  // Re-render when page or elements change
+  // Re-render when page or elements change with debouncing
   useEffect(() => {
-    if (pdfDocument) {
-      renderPage(pdfDocument, currentPage);
+    if (pdfDocument && !isRenderingRef.current) {
+      // Small delay to prevent rapid re-renders
+      const timeoutId = setTimeout(() => {
+        renderPage(pdfDocument, currentPage);
+      }, 100);
+      
+      return () => clearTimeout(timeoutId);
     }
   }, [pdfDocument, currentPage, textElements, selectedElementId, scale, renderPage]);
 
@@ -315,6 +331,7 @@ const Canvas: React.FC<CanvasProps> = ({
           // Task might already be completed
         }
       }
+      isRenderingRef.current = false;
     };
   }, []);
 
