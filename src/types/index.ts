@@ -63,6 +63,14 @@ export interface MergeOptions {
   };
 }
 
+export interface CompressionOptions {
+  quality?: number;
+  imageQuality?: number;
+}
+
+// Legacy alias
+export type CompressionSettings = CompressionOptions;
+
 export type ProgressCallback = (progress: number, message?: string) => void;
 
 // PDF Error type
@@ -139,9 +147,10 @@ export interface ButtonProps extends BaseComponentProps {
   type?: 'button' | 'submit' | 'reset';
 }
 
-// Tool Props
+// Tool Props - ALL TOOLS
 export interface AddTextToolProps {
   files?: File[];
+  file?: File | null; // Support both
   onComplete?: (result: Blob) => void;
   onClose?: () => void;
 }
@@ -151,3 +160,55 @@ export interface MergeToolProps extends BaseComponentProps {
   onComplete: (result: PDFProcessingResult) => void;
   onClose: () => void;
 }
+
+export interface CompressionToolProps extends BaseComponentProps {
+  files?: File[];
+  file?: File | null;
+  onComplete?: (result: Blob) => void;
+  onClose?: () => void;
+}
+
+export interface ExtractPagesToolProps extends BaseComponentProps {
+  files?: File[];
+  file?: File | null;
+  onComplete?: (result: any) => void; // Will be refined later
+  onClose?: () => void;
+}
+
+export interface ExtractTextToolProps extends BaseComponentProps {
+  files?: File[];
+  file?: File | null;
+  onComplete?: (result: any) => void;
+  onClose?: () => void;
+}
+
+export interface PdfToImageToolProps extends BaseComponentProps {
+  files?: File[];
+  file?: File | null;
+  onComplete?: (result: any) => void;
+  onClose?: () => void;
+}
+
+export interface RotateToolProps extends BaseComponentProps {
+  files?: File[];
+  file?: File | null;
+  onComplete?: (result: any) => void;
+  onClose?: () => void;
+}
+
+export interface SplitToolProps extends BaseComponentProps {
+  files?: File[];
+  file?: File | null;
+  onComplete?: (result: any) => void;
+  onClose?: () => void;
+}
+
+export interface WatermarkToolProps extends BaseComponentProps {
+  files?: File[];
+  file?: File | null;
+  onComplete?: (result: any) => void;
+  onClose?: () => void;
+}
+
+// Rotation types
+export type RotationTypes = 'radians' | 'degrees';
