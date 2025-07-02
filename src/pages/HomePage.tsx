@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { PDFProcessingResult } from '../types';
-import Header from '../components/organisms/Header';
-import Footer from '../components/organisms/Footer';
+import { 
+  Header, 
+  Footer, 
+  ToolsGrid, 
+  MergeTool, 
+  CompressionTool, 
+  SplitTool, 
+  RotateTool, 
+  WatermarkTool, 
+  ExtractTextTool, 
+  AddTextTool, 
+  PdfToImageTool, 
+  ExtractPagesTool 
+} from '../components/organisms';
 import FileUploadZone from '../components/molecules/FileUploadZone';
-import ToolsGrid from '../components/organisms/ToolsGrid';
-import MergeTool from '../components/organisms/MergeTool';
-import CompressionTool from '../components/organisms/CompressionTool';
-import SplitTool from '../components/organisms/SplitTool';
-import RotateTool from '../components/organisms/RotateTool';
-import WatermarkTool from '../components/organisms/WatermarkTool';
-import ExtractTextTool from '../components/organisms/ExtractTextTool';
-import { AddTextTool } from '../components/organisms';
-import { PdfToImageTool } from '../components/organisms/PdfToImageTool';
-import { ExtractPagesTool } from '../components/organisms/ExtractPagesTool';
 import { useFileUpload } from '../hooks/useFileUpload';
 import { downloadBlob, generateFilename } from '../utils/fileHelpers';
 import { scrollToTop } from '../utils/scrollHelpers';
