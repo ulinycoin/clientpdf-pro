@@ -14,6 +14,25 @@
 
 ## ✅ Решенные проблемы
 
+### Critical: Missing lucide-react dependency - RESOLVED ✅
+**Дата обнаружения**: 2025-07-02
+**Дата решения**: 2025-07-02
+**Серьезность**: critical
+**Компонент**: NotFoundPage.tsx, package.json
+**Проблема**: NotFoundPage.tsx импортировал lucide-react иконки, но пакет отсутствовал в dependencies
+**Ошибка**: `Failed to resolve import "lucide-react" from "src/pages/NotFoundPage.tsx"`
+**Причина**: 
+- NotFoundPage.tsx использовал import { ArrowLeft, Home, Search, FileText } from "lucide-react"
+- lucide-react не был добавлен в package.json dependencies
+- Vite не смог разрешить импорт при сборке
+**Решение**:
+- Добавлен "lucide-react": "^0.263.1" в dependencies секцию package.json
+- Версия совместима с React 18 и TypeScript проекта
+- Теперь все иконки в NotFoundPage корректно импортируются
+**Файлы изменены**:
+- package.json - добавлена зависимость lucide-react
+**Тестирование**: После npm install проект должен собираться без ошибок
+
 ### Critical: setTotalPages is not a function in AddTextTool - RESOLVED ✅
 **Дата обнаружения**: 2025-07-01
 **Дата решения**: 2025-07-01
