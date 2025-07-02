@@ -1,9 +1,26 @@
 {
-  "name": "clientpdf-pro",
+  "name": "localpdf",
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "Ultra-minimalist PDF tools - Private, Fast, Simple",
+  "description": "LocalPDF - Ultra-fast, privacy-first PDF tools that work entirely in your browser",
+  "homepage": "https://localpdf.online",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ulinycoin/clientpdf-pro.git"
+  },
+  "keywords": [
+    "pdf",
+    "privacy",
+    "local",
+    "browser",
+    "merge",
+    "split",
+    "compress",
+    "watermark",
+    "text",
+    "convert"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
