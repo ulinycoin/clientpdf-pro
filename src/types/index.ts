@@ -36,7 +36,16 @@ export interface PDFProcessingResult<T = any> {
   data?: T;
   error?: ProcessingError;
   progress?: ProcessingProgress;
+  metadata?: {
+    pageCount?: number;
+    originalSize?: number;
+    processedSize?: number;
+    processingTime?: number;
+  };
 }
+
+// Legacy alias for compatibility
+export type ProcessingResult<T = any> = PDFProcessingResult<T>;
 
 // PDF Service types
 export interface PDFFileInfo {
@@ -55,6 +64,13 @@ export interface MergeOptions {
 }
 
 export type ProgressCallback = (progress: number, message?: string) => void;
+
+// PDF Error type
+export interface PDFError {
+  code: string;
+  message: string;
+  details?: string;
+}
 
 // Tool types
 export type ToolType = 
@@ -75,12 +91,16 @@ export interface BaseComponentProps {
 }
 
 // File upload types
-export interface FileUploadProps extends BaseComponentProps {
-  onFilesSelected: (files: File[]) => void;
+export interface FileUploadZoneProps extends BaseComponentProps {
+  onFilesSelected?: (files: File[]) => void;
+  onFileUpload?: (files: File[]) => void; // Legacy alias
   accept?: string;
   multiple?: boolean;
   maxSize?: number;
 }
+
+// Legacy alias
+export type FileUploadProps = FileUploadZoneProps;
 
 // FileList types
 export interface FileItem {
@@ -99,12 +119,14 @@ export interface FileListProps extends BaseComponentProps {
   allowReorder?: boolean;
 }
 
-// Progress bar types
+// Progress bar types - FIXED
 export interface ProgressBarProps extends BaseComponentProps {
-  progress: number;
+  progress?: number;
+  value?: number; // Allow both progress and value props
   max?: number;
   showPercentage?: boolean;
   size?: 'sm' | 'md' | 'lg';
+  animated?: boolean; // Add animated prop
 }
 
 // Button types
@@ -115,4 +137,11 @@ export interface ButtonProps extends BaseComponentProps {
   loading?: boolean;
   onClick?: () => void;
   type?: 'button' | 'submit' | 'reset';
+}
+
+// AddTextTool types
+export interface AddTextToolProps {
+  files?: File[];
+  onComplete?: (result: Blob) => void;
+  onClose?: () => void;
 }
