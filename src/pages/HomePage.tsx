@@ -157,14 +157,25 @@ const HomePage: React.FC = () => {
           <div className="max-w-4xl mx-auto px-4 py-16">
             <div className="text-center mb-12">
               <h1 className="text-4xl font-bold text-gray-900 mb-4">
-                Free PDF Tools
+                LocalPDF - Free Privacy-First PDF Tools
               </h1>
               <p className="text-xl text-gray-600 mb-8">
-                Convert, merge, split, rotate and compress PDFs - all locally in your browser
+                9 powerful PDF tools that work entirely in your browser. No uploads, no tracking, completely free.
               </p>
-              <p className="text-sm text-gray-500">
-                Your files never leave your device - Fast processing - Completely free
-              </p>
+              <div className="flex flex-col sm:flex-row justify-center items-center space-y-2 sm:space-y-0 sm:space-x-6 text-sm text-gray-500">
+                <div className="flex items-center space-x-2">
+                  <span className="text-green-500">🔒</span>
+                  <span>Your files never leave your device</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className="text-blue-500">⚡</span>
+                  <span>Fast local processing</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className="text-purple-500">🆓</span>
+                  <span>Completely free</span>
+                </div>
+              </div>
             </div>
 
             {/* File Upload Zone */}
