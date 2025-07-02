@@ -25,22 +25,40 @@ const Header: React.FC<HeaderProps> = ({
               </div>
             )}
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">
+              <a href="/" className="text-2xl font-bold text-gray-900 hover:text-blue-600 transition-colors">
                 {title}
-              </h1>
+              </a>
               <p className="text-sm text-gray-600">
                 9 Free PDF Tools • Privacy First • No Upload Required
               </p>
             </div>
           </div>
 
-          {/* Stats Badge */}
-          <div className="hidden md:flex items-center space-x-4">
-            <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
-              ✓ 9 Tools Active
-            </div>
-            <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
-              🔒 100% Private
+          {/* Navigation */}
+          <div className="hidden md:flex items-center space-x-6">
+            <nav className="flex items-center space-x-4">
+              <a 
+                href="/privacy" 
+                className="text-gray-600 hover:text-gray-900 transition-colors text-sm font-medium"
+              >
+                Privacy
+              </a>
+              <a 
+                href="/faq" 
+                className="text-gray-600 hover:text-gray-900 transition-colors text-sm font-medium"
+              >
+                FAQ
+              </a>
+            </nav>
+
+            {/* Stats Badge */}
+            <div className="flex items-center space-x-3">
+              <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
+                ✓ 9 Tools Active
+              </div>
+              <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                🔒 100% Private
+              </div>
             </div>
           </div>
 
@@ -71,6 +89,15 @@ const Header: React.FC<HeaderProps> = ({
               </a>
             </div>
           )}
+
+          {/* Mobile Menu Button */}
+          <div className="md:hidden">
+            <button className="text-gray-600 hover:text-gray-900 p-2">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
     </header>
