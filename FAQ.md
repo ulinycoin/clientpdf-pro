@@ -1,206 +1,231 @@
 # Frequently Asked Questions (FAQ) - LocalPDF
 
+## 📋 General Questions
+
+### ❓ What is LocalPDF?
+LocalPDF is a free, privacy-first web application that provides 9 powerful PDF tools for merging, splitting, compressing, editing, and converting PDF files. All processing happens entirely in your browser - no uploads, no registration, no tracking.
+
+### ❓ Is LocalPDF really free?
+Yes! LocalPDF is completely free to use with no limitations, ads, or hidden fees. We believe essential PDF tools should be accessible to everyone.
+
+### ❓ Do I need to create an account?
+No account required! Simply visit [localpdf.online](https://localpdf.online) and start using any tool immediately.
+
+### ❓ Does LocalPDF work offline?
+Yes! After your first visit, LocalPDF works offline. Your browser caches the application, so you can use it without an internet connection.
+
+---
+
 ## 🔒 Privacy & Security
 
-### Is LocalPDF really private?
-**Yes, 100% private.** All PDF processing happens entirely in your browser. Your files never leave your device - no uploads, no cloud storage, no tracking. We can't see your files because we never receive them.
+### ❓ Are my files uploaded to your servers?
+**No!** This is LocalPDF's core feature - all processing happens in your browser. Your files never leave your device. We cannot see, access, or store your documents.
 
-### Do you store my files anywhere?
-**No.** LocalPDF processes files locally in your browser's memory. Once you close the tab or refresh the page, everything is gone. We have no servers to store files on.
+### ❓ What happens to my files after I use LocalPDF?
+Your files are processed in your browser's memory and automatically cleared when you close the page or navigate away. Nothing is stored permanently.
 
-### Can you see what files I'm processing?
-**Absolutely not.** Since all processing happens in your browser, we have zero visibility into what files you work with. Your privacy is guaranteed by the technology itself.
+### ❓ Can you recover my files if I lose them?
+No, because we never have access to your files. Make sure to download your processed documents before closing the browser.
 
-### Do you use cookies or tracking?
-**No cookies, no tracking, no analytics.** We don't collect any data about you or your usage. LocalPDF is completely anonymous.
+### ❓ Is LocalPDF safe for confidential documents?
+Yes! Since all processing is local and we don't collect any data, LocalPDF is ideal for confidential, sensitive, or private documents.
 
----
-
-## ⚡ Performance & Compatibility
-
-### What's the maximum file size I can process?
-**Up to 100MB** for most tools. Larger files may work but could be slower depending on your device's RAM and processing power.
-
-### Which browsers are supported?
-- **Chrome 90+** ✅ Fully supported
-- **Firefox 90+** ✅ Fully supported  
-- **Safari 14+** ✅ Fully supported
-- **Edge 90+** ✅ Fully supported
-
-### Does LocalPDF work offline?
-**Yes!** After your first visit, core functionality works without internet. Perfect for sensitive documents or unreliable connections.
-
-### Why is LocalPDF faster than other PDF tools?
-Because there's no upload/download time. Your files are processed instantly in your browser using optimized JavaScript libraries.
+### ❓ Do you use cookies or tracking?
+We use minimal local storage only for user preferences (like theme settings). No tracking cookies, no analytics, no data collection.
 
 ---
 
-## 🛠️ Features & Usage
+## 🛠️ Technical Questions
 
-### What PDF tools are available?
-**9 powerful tools:**
-1. **Merge PDFs** - Combine multiple files
-2. **Split PDFs** - Extract pages or split by ranges
-3. **Compress PDFs** - Reduce file size
-4. **Add Text** - Insert custom text with full control
-5. **Add Watermarks** - Text or image watermarks
-6. **Rotate Pages** - 90°, 180°, 270° rotation
-7. **Extract Pages** - Get specific pages
-8. **Extract Text** - Pull text content
-9. **PDF to Images** - Convert to PNG/JPEG
+### ❓ What browsers support LocalPDF?
+LocalPDF works on all modern browsers:
+- **Chrome** 90+
+- **Firefox** 90+
+- **Safari** 14+
+- **Edge** 90+
 
-### Can I process multiple files at once?
-Most tools support multiple files. For example, you can merge dozens of PDFs or split multiple documents simultaneously.
+### ❓ What's the maximum file size I can process?
+LocalPDF can handle files up to **100MB**. For very large files, processing may take longer depending on your device's performance.
 
-### Do you support password-protected PDFs?
-Currently, we support basic password removal, but full encrypted PDF editing is limited by browser security restrictions.
+### ❓ Why is processing slow on my device?
+Processing speed depends on:
+- File size and complexity
+- Your device's processing power
+- Browser performance
+- Available memory
 
-### What image formats are supported for watermarks?
-**PNG, JPEG, GIF, and SVG** images can be used as watermarks.
+Large files (50MB+) are automatically processed using Web Workers to keep the interface responsive.
 
----
-
-## 🔧 Technical Questions
-
-### How does LocalPDF work technically?
-LocalPDF uses modern web technologies:
-- **PDF-lib** for PDF manipulation
-- **PDF.js** for rendering and viewing
-- **Web Workers** for heavy processing
-- **React + TypeScript** for the interface
-
-### Is LocalPDF open source?
-**Yes!** The code is available on GitHub. You can inspect, contribute, or even host your own version.
-
-### Can I use LocalPDF for commercial purposes?
-**Absolutely.** LocalPDF is free for personal and commercial use. No licensing fees or restrictions.
-
-### Does LocalPDF work on mobile devices?
-**Yes!** The interface is fully responsive and works great on phones and tablets.
+### ❓ Can I process multiple files at once?
+This depends on the tool:
+- **Merge PDFs**: Yes, select multiple files
+- **Batch operations**: Currently one file at a time
+- **Future versions**: Will support batch processing for all tools
 
 ---
 
-## 🚨 Troubleshooting
+## 📄 PDF Tools Questions
 
-### My file won't upload or process
-**Try these steps:**
-1. Check file size (max 100MB for best performance)
-2. Ensure it's a valid PDF file
-3. Try a different browser
-4. Refresh the page and try again
+### ❓ What PDF tools are available?
 
-### The tool seems slow or frozen
-**Possible causes:**
-- Very large file (>50MB) - processing takes time
-- Low device memory - close other browser tabs
-- Complex PDF with many elements - be patient
+1. **📄 Merge PDFs** - Combine multiple PDFs into one document
+2. **✂️ Split PDFs** - Extract specific pages or split into separate files
+3. **🗜️ Compress PDFs** - Reduce file size while maintaining quality
+4. **✍️ Add Text** - Insert custom text with full formatting control
+5. **🏷️ Add Watermarks** - Add text or image watermarks
+6. **🔄 Rotate Pages** - Rotate pages 90°, 180°, or 270°
+7. **📑 Extract Pages** - Extract specific pages or page ranges
+8. **📝 Extract Text** - Pull text content from PDFs
+9. **🖼️ PDF to Images** - Convert PDF pages to PNG or JPEG images
 
-### I'm getting an error message
-**Most common solutions:**
-- Refresh the page and try again
-- Check if your PDF is corrupted
-- Try a smaller file first
-- Clear browser cache and reload
+### ❓ Can I edit existing text in PDFs?
+Currently, LocalPDF allows **adding new text** to PDFs but not editing existing text. You can add text overlays, signatures, notes, and annotations.
 
-### The download isn't working
-**Check these:**
-- Allow downloads in your browser settings
-- Disable popup blockers for LocalPDF
-- Try right-click → "Save as" on the download link
+### ❓ What image formats can I convert PDFs to?
+- **PNG**: Best for documents with text and simple graphics
+- **JPEG**: Best for documents with photos and complex images
+- Quality settings from 1-100 for JPEG
+
+### ❓ Can I password-protect PDFs?
+This feature is planned for future releases. Currently, LocalPDF focuses on editing and conversion tools.
+
+---
+
+## 🎨 User Experience
+
+### ❓ How do I upload files?
+You can upload files by:
+- **Dragging and dropping** files onto the upload area
+- **Clicking "Choose Files"** to browse your device
+- **Copy-pasting** files (in supported browsers)
+
+### ❓ Can I use keyboard shortcuts?
+Yes! LocalPDF supports common shortcuts:
+- **Ctrl+S** (Cmd+S): Save/download processed file
+- **Ctrl+Z** (Cmd+Z): Undo last action (where applicable)
+- **Ctrl+O** (Cmd+O): Open file dialog
+- **Tab**: Navigate between interface elements
+
+### ❓ Does LocalPDF work on mobile devices?
+Yes! LocalPDF is fully responsive and works on:
+- **Smartphones** (iOS, Android)
+- **Tablets** (iPad, Android tablets)
+- **Touch interfaces** with optimized controls
+
+### ❓ Why can't I see my text additions on some PDFs?
+This can happen due to:
+- **PDF protection settings**
+- **Complex PDF structures**
+- **Font compatibility issues**
+
+Try using different text colors or positions, or check our troubleshooting guide.
+
+---
+
+## 🔧 Troubleshooting
+
+### ❓ LocalPDF isn't loading properly
+Try these steps:
+1. **Clear browser cache** and refresh
+2. **Disable browser extensions** temporarily
+3. **Try incognito/private mode**
+4. **Check if JavaScript is enabled**
+5. **Update your browser** to the latest version
+
+### ❓ My PDF file won't process
+Common issues and solutions:
+- **File too large**: Maximum 100MB supported
+- **Corrupted PDF**: Try opening the file in another PDF viewer first
+- **Password-protected PDF**: Remove password protection first
+- **Complex PDF structure**: Some PDFs with advanced features may not be supported
+
+### ❓ Processing is taking very long
+For large files:
+- **Be patient**: Files over 50MB can take several minutes
+- **Close other browser tabs** to free up memory
+- **Don't navigate away** during processing
+- **Check if your browser shows progress** indicators
+
+### ❓ Download isn't working
+If downloads fail:
+1. **Check browser download settings**
+2. **Ensure pop-ups are allowed** for LocalPDF
+3. **Try right-clicking and "Save as"**
+4. **Clear browser downloads folder** if it's full
+
+---
+
+## 🌍 Compatibility & Access
+
+### ❓ Does LocalPDF work in different languages?
+Currently, LocalPDF is available in English. Multi-language support is planned for future updates.
+
+### ❓ Can I use LocalPDF on a corporate network?
+Yes, as long as:
+- JavaScript is enabled
+- The domain isn't blocked
+- Modern browser is available
+- No restrictions on downloading files
+
+### ❓ Is LocalPDF accessible for users with disabilities?
+Yes! LocalPDF includes:
+- **Keyboard navigation** support
+- **Screen reader** compatibility
+- **High contrast** mode
+- **Accessible markup** following WCAG guidelines
+
+---
+
+## 🔄 Updates & Development
+
+### ❓ How often is LocalPDF updated?
+We continuously improve LocalPDF with:
+- **Security updates**: As needed
+- **Feature additions**: Monthly releases
+- **Bug fixes**: As they're discovered
+- **Performance improvements**: Ongoing
+
+### ❓ Can I request new features?
+Yes! Submit feature requests through:
+- **GitHub Issues**: [github.com/ulinycoin/clientpdf-pro/issues](https://github.com/ulinycoin/clientpdf-pro/issues)
+- Include detailed descriptions and use cases
+
+### ❓ Is LocalPDF open source?
+Yes! LocalPDF is open source under the MIT license. You can view the code, contribute, or even host your own instance.
 
 ---
 
 ## 💡 Tips & Best Practices
 
-### How to get the best performance?
-- **Close unnecessary browser tabs** to free up memory
-- **Process smaller files first** to test functionality
-- **Use Chrome or Firefox** for best performance
-- **Ensure stable internet** for initial loading
+### ❓ How can I get the best results?
+- **Use high-quality PDFs** for best processing results
+- **Keep file sizes reasonable** (under 50MB when possible)
+- **Close unnecessary browser tabs** for better performance
+- **Use specific page ranges** instead of processing entire large documents
+- **Download results immediately** - they're not stored permanently
 
-### How to handle large files?
-- **Split large PDFs** into smaller chunks first
-- **Compress files** before other operations
-- **Process one large file at a time**
-- **Be patient** - large files take time
-
-### Security best practices
-- **Don't process sensitive files** on public computers
-- **Close the browser tab** when done for complete privacy
-- **Use incognito mode** for extra privacy
-- **Keep your browser updated** for security patches
+### ❓ What if I encounter a bug?
+Please report bugs through:
+1. **GitHub Issues** with detailed steps to reproduce
+2. Include your **browser version** and **operating system**
+3. Describe **expected vs actual behavior**
+4. Include **file size and type** if relevant
 
 ---
 
-## 🌍 Accessibility & Internationalization
+## 📞 Still Need Help?
 
-### Is LocalPDF accessible?
-**Yes!** We support:
-- **Keyboard navigation** for all functions
-- **Screen readers** with proper ARIA labels
-- **High contrast** compatibility
-- **Large text** scaling
+### 🆘 Getting Support
+- **GitHub Issues**: [Technical problems and bug reports](https://github.com/ulinycoin/clientpdf-pro/issues)
+- **GitHub Discussions**: [General questions and community help](https://github.com/ulinycoin/clientpdf-pro/discussions)
+- **Documentation**: [Complete guides and tutorials](https://github.com/ulinycoin/clientpdf-pro)
 
-### What languages are supported?
-Currently **English** with plans for multiple languages. The interface is designed for easy localization.
-
----
-
-## 🚀 Future Features
-
-### What's coming next?
-- **Dark mode** for comfortable night usage
-- **Batch processing** for multiple operations
-- **Advanced compression** options
-- **Digital signatures** support
-- **Form filling** capabilities
-
-### How can I request a feature?
-**Contact us through:**
-- GitHub Issues (preferred)
-- Email feedback
-- Community discussions
-
-### How often is LocalPDF updated?
-We release updates regularly based on user feedback and security requirements. All updates maintain backward compatibility.
-
----
-
-## 📞 Support & Contact
-
-### How can I get help?
-1. **Check this FAQ** first
-2. **GitHub Issues** for bug reports
-3. **Email support** for specific questions
-4. **Community discussions** for general help
-
-### How can I contribute?
-- **Report bugs** on GitHub
-- **Suggest features** through issues
-- **Contribute code** via pull requests
-- **Share LocalPDF** with others who need privacy
-
-### Is there a premium version?
-**No.** LocalPDF is completely free and always will be. No premium features, no paid tiers, no subscriptions.
-
----
-
-## ⚖️ Legal & Compliance
-
-### What's your legal basis for processing?
-We don't process your data - you do, locally in your browser. We have no legal obligations regarding your files because we never access them.
-
-### Are you GDPR compliant?
-**Yes, by design.** Since we collect no personal data and process no files on our servers, GDPR doesn't apply to your file processing. We're inherently compliant.
-
-### What about HIPAA or other regulations?
-LocalPDF's local processing model makes it suitable for regulated industries, but you should consult your compliance team for specific requirements.
+### 📧 Contact Information
+For privacy, security, or business inquiries, please use GitHub Issues as our primary communication channel.
 
 ---
 
 <div align="center">
-  <strong>Still have questions?</strong><br>
-  <a href="mailto:support@localpdf.online">Contact Support</a> | 
-  <a href="https://github.com/ulinycoin/localpdf/issues">Report Issue</a> | 
-  <a href="https://github.com/ulinycoin/localpdf/discussions">Community</a>
+  <strong>🔍 Didn't find your question?</strong><br>
+  <sub><a href="https://github.com/ulinycoin/clientpdf-pro/issues">Ask on GitHub Issues</a> • <a href="https://github.com/ulinycoin/clientpdf-pro/discussions">Join the Discussion</a></sub>
 </div>
