@@ -1,6 +1,7 @@
 import { useState, useCallback, useRef } from 'react';
 import { TextElement } from '../types';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
+import fontkit from '@pdf-lib/fontkit';
 
 interface UseAddTextToolReturn {
   // State
@@ -166,18 +167,56 @@ export const useAddTextTool = (): UseAddTextToolReturn => {
     } : { r: 0, g: 0, b: 0 };
   };
 
+  // Load Google Fonts with Cyrillic support
+  const loadCyrillicFont = async (pdfDoc: any) => {
+    try {
+      // Try to load a font that supports Cyrillic from Google Fonts
+      const fontUrl = 'https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxKKTU1Kg.woff2';
+      const fontResponse = await fetch(fontUrl);
+      const fontArrayBuffer = await fontResponse.arrayBuffer();
+      
+      // Register fontkit
+      pdfDoc.registerFontkit(fontkit);
+      
+      // Embed the font
+      const customFont = await pdfDoc.embedFont(fontArrayBuffer);
+      return customFont;
+    } catch (error) {
+      console.warn('Could not load Cyrillic font, falling back to Helvetica');
+      return null;
+    }
+  };
+
+  // Helper function to check if text contains Cyrillic characters
+  const containsCyrillic = (text: string) => {
+    return /[\u0400-\u04FF]/.test(text);
+  };
+
   // Helper function to draw multiline text on PDF
   const drawMultilineText = (page: any, text: string, x: number, y: number, options: any) => {
     const lines = text.split('\n');
     const lineHeight = options.size * 1.2; // 120% line height
     
     lines.forEach((line, index) => {
-      const lineY = y - (index * lineHeight);
-      page.drawText(line, {
-        ...options,
-        x,
-        y: lineY,
-      });
+      if (line.trim()) { // Only draw non-empty lines
+        const lineY = y - (index * lineHeight);
+        try {
+          page.drawText(line, {
+            ...options,
+            x,
+            y: lineY,
+          });
+        } catch (error) {
+          console.warn(`Could not draw line "${line}":`, error);
+          // Try with basic ASCII fallback
+          const asciiLine = line.replace(/[^\x00-\x7F]/g, '?');
+          page.drawText(asciiLine, {
+            ...options,
+            x,
+            y: lineY,
+          });
+        }
+      }
     });
   };
 
@@ -189,18 +228,34 @@ export const useAddTextTool = (): UseAddTextToolReturn => {
       const arrayBuffer = await originalFile.arrayBuffer();
       const pdfDoc = await PDFDocument.load(arrayBuffer);
       
+      // Register fontkit for custom fonts
+      pdfDoc.registerFontkit(fontkit);
+      
+      // Try to load Cyrillic-compatible font
+      const cyrillicFont = await loadCyrillicFont(pdfDoc);
+      
       // Embed standard fonts
       const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
       const helveticaBoldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
       const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
+      const courierFont = await pdfDoc.embedFont(StandardFonts.Courier);
       
-      // Font mapping
-      const fontMap: Record<string, any> = {
-        'Arial': helveticaFont,
-        'Helvetica': helveticaFont,
-        'Times': timesRomanFont,
-        'Times New Roman': timesRomanFont,
-        'Courier': await pdfDoc.embedFont(StandardFonts.Courier),
+      // Font mapping - prefer Cyrillic font for Cyrillic text
+      const getFontForText = (text: string, fontFamily: string) => {
+        if (containsCyrillic(text) && cyrillicFont) {
+          return cyrillicFont;
+        }
+        
+        const fontMap: Record<string, any> = {
+          'Arial': helveticaFont,
+          'Helvetica': helveticaFont,
+          'Times': timesRomanFont,
+          'Times New Roman': timesRomanFont,
+          'Courier': courierFont,
+          'Courier New': courierFont,
+        };
+        
+        return fontMap[fontFamily] || helveticaFont;
       };
       
       // Group elements by page
@@ -222,14 +277,25 @@ export const useAddTextTool = (): UseAddTextToolReturn => {
 
         elements.forEach(element => {
           const color = hexToRgb(element.color);
-          const font = fontMap[element.fontFamily] || helveticaFont;
+          const font = getFontForText(element.text, element.fontFamily);
           
-          // Draw multiline text
-          drawMultilineText(page, element.text, element.x, height - element.y - element.fontSize, {
-            size: element.fontSize,
-            color: rgb(color.r, color.g, color.b),
-            font: font,
-          });
+          // Draw multiline text with error handling
+          try {
+            drawMultilineText(page, element.text, element.x, height - element.y - element.fontSize, {
+              size: element.fontSize,
+              color: rgb(color.r, color.g, color.b),
+              font: font,
+            });
+          } catch (error) {
+            console.error(`Error drawing text "${element.text}":`, error);
+            // Fallback: try with ASCII only
+            const asciiText = element.text.replace(/[^\x00-\x7F]/g, '?');
+            drawMultilineText(page, asciiText, element.x, height - element.y - element.fontSize, {
+              size: element.fontSize,
+              color: rgb(color.r, color.g, color.b),
+              font: helveticaFont,
+            });
+          }
         });
       });
 
