@@ -2,7 +2,7 @@ import React from 'react';
 import { toolsSEOData } from '../../data/seoData';
 import SEOHead from '../../components/SEO/SEOHead';
 import RelatedTools from '../../components/common/RelatedTools';
-import { ExtractPagesTool } from '../../components/organisms/ExtractPagesTool';
+import ExtractPagesTool from '../../components/organisms/ExtractPagesTool';
 
 const ExtractPagesPDFPage: React.FC = () => {
   const seoData = toolsSEOData.extractPages;
@@ -28,7 +28,11 @@ const ExtractPagesPDFPage: React.FC = () => {
         </header>
 
         <section className="mb-12">
-          <ExtractPagesTool />
+          <ExtractPagesTool 
+            file={null} 
+            onComplete={() => {}} 
+            onClose={() => {}} 
+          />
         </section>
 
         <RelatedTools currentTool="extractPages" className="mb-8" />

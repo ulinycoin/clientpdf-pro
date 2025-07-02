@@ -2,7 +2,7 @@ import React from 'react';
 import { toolsSEOData } from '../../data/seoData';
 import SEOHead from '../../components/SEO/SEOHead';
 import RelatedTools from '../../components/common/RelatedTools';
-import { WatermarkTool } from '../../components/organisms/WatermarkTool';
+import WatermarkTool from '../../components/organisms/WatermarkTool';
 
 const WatermarkPDFPage: React.FC = () => {
   const seoData = toolsSEOData.watermark;
@@ -28,7 +28,11 @@ const WatermarkPDFPage: React.FC = () => {
         </header>
 
         <section className="mb-12">
-          <WatermarkTool />
+          <WatermarkTool 
+            file={null} 
+            onComplete={() => {}} 
+            onClose={() => {}} 
+          />
         </section>
 
         <RelatedTools currentTool="watermark" className="mb-8" />

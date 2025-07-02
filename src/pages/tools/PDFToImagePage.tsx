@@ -2,7 +2,7 @@ import React from 'react';
 import { toolsSEOData } from '../../data/seoData';
 import SEOHead from '../../components/SEO/SEOHead';
 import RelatedTools from '../../components/common/RelatedTools';
-import { PdfToImageTool } from '../../components/organisms/PdfToImageTool';
+import PdfToImageTool from '../../components/organisms/PdfToImageTool';
 
 const PDFToImagePage: React.FC = () => {
   const seoData = toolsSEOData.pdfToImage;
@@ -28,7 +28,11 @@ const PDFToImagePage: React.FC = () => {
         </header>
 
         <section className="mb-12">
-          <PdfToImageTool />
+          <PdfToImageTool 
+            file={null} 
+            onComplete={() => {}} 
+            onClose={() => {}} 
+          />
         </section>
 
         <RelatedTools currentTool="pdfToImage" className="mb-8" />

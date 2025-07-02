@@ -2,7 +2,7 @@ import React from 'react';
 import { toolsSEOData } from '../../data/seoData';
 import SEOHead from '../../components/SEO/SEOHead';
 import RelatedTools from '../../components/common/RelatedTools';
-import { RotateTool } from '../../components/organisms/RotateTool';
+import RotateTool from '../../components/organisms/RotateTool';
 
 const RotatePDFPage: React.FC = () => {
   const seoData = toolsSEOData.rotate;
@@ -28,7 +28,11 @@ const RotatePDFPage: React.FC = () => {
         </header>
 
         <section className="mb-12">
-          <RotateTool />
+          <RotateTool 
+            file={null} 
+            onComplete={() => {}} 
+            onClose={() => {}} 
+          />
         </section>
 
         <RelatedTools currentTool="rotate" className="mb-8" />
