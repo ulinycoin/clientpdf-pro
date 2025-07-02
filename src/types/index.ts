@@ -38,6 +38,24 @@ export interface PDFProcessingResult<T = any> {
   progress?: ProcessingProgress;
 }
 
+// PDF Service types
+export interface PDFFileInfo {
+  pages: number;
+  originalSize: number;
+  dimensions: { width: number; height: number };
+}
+
+export interface MergeOptions {
+  order?: number[];
+  metadata?: {
+    title?: string;
+    author?: string;
+    subject?: string;
+  };
+}
+
+export type ProgressCallback = (progress: number, message?: string) => void;
+
 // Tool types
 export type ToolType = 
   | 'merge'
