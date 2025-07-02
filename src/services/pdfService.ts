@@ -2,7 +2,9 @@ import { PDFDocument } from 'pdf-lib';
 import { 
   PDFProcessingResult, 
   MergeOptions,
-  ProgressCallback
+  ProgressCallback,
+  PDFFileInfo,
+  ProcessingError
 } from '../types';
 
 export class PDFService {
@@ -27,7 +29,7 @@ export class PDFService {
   /**
    * Validate if file is a valid PDF
    */
-  async validateFile(file: File): Promise<boolean> {
+  async validatePDF(file: File): Promise<boolean> {
     try {
       const arrayBuffer = await file.arrayBuffer();
       const pdfDoc = await PDFDocument.load(arrayBuffer);
@@ -40,11 +42,7 @@ export class PDFService {
   /**
    * Get PDF metadata
    */
-  async getMetadata(file: File): Promise<{
-    pages: number;
-    originalSize: number;
-    dimensions: { width: number; height: number };
-  }> {
+  async getPDFInfo(file: File): Promise<PDFFileInfo> {
     try {
       const arrayBuffer = await file.arrayBuffer();
       const pdfDoc = await PDFDocument.load(arrayBuffer);
@@ -75,8 +73,8 @@ export class PDFService {
    */
   async mergePDFs(
     files: File[],
-    options: MergeOptions = {},
-    onProgress?: ProgressCallback
+    onProgress?: ProgressCallback,
+    options: MergeOptions = {}
   ): Promise<PDFProcessingResult> {
     const startTime = performance.now();
     
@@ -166,9 +164,45 @@ export class PDFService {
   }
 
   /**
+   * Download a file
+   */
+  downloadFile(blob: Blob, filename: string): void {
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+
+  /**
+   * Format file size in human readable format
+   */
+  formatFileSize(bytes: number): string {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`;
+  }
+
+  /**
+   * Format time in human readable format
+   */
+  formatTime(ms: number): string {
+    if (ms < 1000) return `${Math.round(ms)}ms`;
+    const seconds = ms / 1000;
+    if (seconds < 60) return `${seconds.toFixed(1)}s`;
+    const minutes = seconds / 60;
+    return `${minutes.toFixed(1)}m`;
+  }
+
+  /**
    * Create a standardized PDF error
    */
-  private createPDFError(error: any, context: string = 'PDF processing') {
+  private createPDFError(error: any, context: string = 'PDF processing'): ProcessingError {
     let message = 'An error occurred during PDF processing';
     
     if (error instanceof Error) {
@@ -188,10 +222,15 @@ export class PDFService {
     return {
       code: 'PROCESSING_ERROR',
       message: `${context}: ${message}`,
-      cause: error
+      details: error instanceof Error ? error.stack : String(error)
     };
   }
 }
 
-// Export singleton instance
-export const pdfService = PDFService.getInstance();
+// Export singleton instance as default
+const pdfService = PDFService.getInstance();
+export default pdfService;
+
+// Named exports for compatibility
+export { pdfService };
+export type { PDFFileInfo, PDFProcessingResult };
