@@ -64,6 +64,23 @@ export interface FileUploadProps extends BaseComponentProps {
   maxSize?: number;
 }
 
+// FileList types
+export interface FileItem {
+  id: string;
+  file: File;
+  status: 'pending' | 'processing' | 'completed' | 'error';
+  progress?: number;
+  error?: string;
+}
+
+export interface FileListProps extends BaseComponentProps {
+  files: FileItem[];
+  onRemoveFile: (id: string) => void;
+  onRetryFile: (id: string) => void;
+  showProgress?: boolean;
+  allowReorder?: boolean;
+}
+
 // Progress bar types
 export interface ProgressBarProps extends BaseComponentProps {
   progress: number;
