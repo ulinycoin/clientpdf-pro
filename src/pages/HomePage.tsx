@@ -67,9 +67,9 @@ const HomePage: React.FC = () => {
       result.forEach((res, index) => {
         if (res.success && res.data) {
           const filename = generateFilename(
+            files[0]?.name || 'processed',
             `${selectedTool}_part_${index + 1}`,
-            files[0]?.name,
-            true
+            'pdf' // ✅ ИСПРАВЛЕНО: передаем правильное расширение
           );
           downloadBlob(res.data, filename);
         }
@@ -85,9 +85,9 @@ const HomePage: React.FC = () => {
             selectedTool !== 'add-text') {
           const toolName = selectedTool || 'processed';
           const filename = generateFilename(
+            files[0]?.name || 'processed',
             toolName,
-            files[0]?.name,
-            true
+            'pdf' // ✅ ИСПРАВЛЕНО: передаем правильное расширение
           );
           downloadBlob(result.data, filename);
         }
