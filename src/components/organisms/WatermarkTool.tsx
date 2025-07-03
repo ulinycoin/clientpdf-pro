@@ -96,6 +96,60 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
     { name: 'Bottom Right', value: 'bottom-right' }
   ];
 
+  // Get position style for preview (fix duplicate transform issue)
+  const getPositionStyle = (position: WatermarkOptions['position'], rotation: number) => {
+    const baseStyle = {
+      color: `rgb(${options.color.r}, ${options.color.g}, ${options.color.b})`,
+      opacity: options.opacity / 100,
+      fontSize: `${Math.max(8, options.fontSize / 4)}px`,
+    };
+
+    switch (position) {
+      case 'center':
+        return {
+          ...baseStyle,
+          top: '50%',
+          left: '50%',
+          transform: `translate(-50%, -50%) rotate(${rotation}deg)`
+        };
+      case 'top-left':
+        return {
+          ...baseStyle,
+          top: '10px',
+          left: '10px',
+          transform: `rotate(${rotation}deg)`
+        };
+      case 'top-right':
+        return {
+          ...baseStyle,
+          top: '10px',
+          right: '10px',
+          transform: `rotate(${rotation}deg)`
+        };
+      case 'bottom-left':
+        return {
+          ...baseStyle,
+          bottom: '10px',
+          left: '10px',
+          transform: `rotate(${rotation}deg)`
+        };
+      case 'bottom-right':
+        return {
+          ...baseStyle,
+          bottom: '10px',
+          right: '10px',
+          transform: `rotate(${rotation}deg)`
+        };
+      default:
+        return {
+          ...baseStyle,
+          top: '50%',
+          left: '50%',
+          transform: `translate(-50%, -50%) rotate(${rotation}deg)`
+        };
+    }
+  };
+
   return (
     <div className={`bg-white rounded-lg shadow-lg p-6 ${className}`}>
       {/* Header */}
@@ -313,19 +367,7 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
           <div className="relative bg-white border border-gray-300 rounded" style={{ height: '200px', width: '150px' }}>
             <div
               className="absolute pointer-events-none"
-              style={{
-                color: `rgb(${options.color.r}, ${options.color.g}, ${options.color.b})`,
-                opacity: options.opacity / 100,
-                fontSize: `${Math.max(8, options.fontSize / 4)}px`,
-                transform: `rotate(${options.rotation}deg)`,
-                ...({
-                  'center': { top: '50%', left: '50%', transform: `translate(-50%, -50%) rotate(${options.rotation}deg)` },
-                  'top-left': { top: '10px', left: '10px' },
-                  'top-right': { top: '10px', right: '10px' },
-                  'bottom-left': { bottom: '10px', left: '10px' },
-                  'bottom-right': { bottom: '10px', right: '10px' }
-                }[options.position])
-              }}
+              style={getPositionStyle(options.position, options.rotation)}
             >
               {options.text}
             </div>
