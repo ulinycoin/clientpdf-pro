@@ -65,7 +65,7 @@ const Canvas: React.FC<CanvasProps> = ({
       if (currentPage <= pdf.numPages) {
         await renderPage(pdf, currentPage);
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error loading PDF:', error);
     } finally {
       setIsLoading(false);
@@ -126,7 +126,7 @@ const Canvas: React.FC<CanvasProps> = ({
     if (renderTaskRef.current) {
       try {
         await renderTaskRef.current.cancel();
-      } catch (e) {
+      } catch (e: unknown) {
         // Task might already be completed or cancelled
       }
       renderTaskRef.current = null;
@@ -167,8 +167,8 @@ const Canvas: React.FC<CanvasProps> = ({
       // Render text elements on top (only current page elements)
       renderTextElements(context, viewport);
 
-    } catch (error) {
-      if (error.name !== 'RenderingCancelledException') {
+    } catch (error: unknown) {
+      if (error instanceof Error && error.name !== 'RenderingCancelledException') {
         console.error('Error rendering page:', error);
       }
     } finally {
@@ -324,7 +324,7 @@ const Canvas: React.FC<CanvasProps> = ({
       if (renderTaskRef.current) {
         try {
           renderTaskRef.current.cancel();
-        } catch (e) {
+        } catch (e: unknown) {
           // Task might already be completed
         }
       }
