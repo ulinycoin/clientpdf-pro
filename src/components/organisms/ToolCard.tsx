@@ -52,7 +52,7 @@ const ToolCard = ({
           `}>
             <Icon 
               name={icon} 
-              size={24} 
+              size="lg" 
               className={`
                 transition-colors duration-300
                 ${isDisabled 
@@ -78,7 +78,7 @@ const ToolCard = ({
             <li key={index} className="flex items-center text-sm text-gray-700">
               <Icon 
                 name="check" 
-                size={16} 
+                size="sm" 
                 className="text-green-500 mr-2 flex-shrink-0" 
               />
               {feature}
