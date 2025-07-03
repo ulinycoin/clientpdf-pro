@@ -1,12 +1,12 @@
 import { useState, useCallback } from 'react';
 import { ExtractTextService, ExtractTextOptions, ExtractedTextResult } from '../services/extractTextService';
-import { ProcessingResult } from '../types';
+import { PDFProcessingResult } from '../types';
 
 interface UseExtractTextReturn {
   isProcessing: boolean;
   progress: number;
   error: string | null;
-  result: ProcessingResult<ExtractedTextResult> | null;
+  result: PDFProcessingResult<ExtractedTextResult> | null;
   extractText: (file: File, options: ExtractTextOptions) => Promise<void>;
   resetState: () => void;
   getDefaultOptions: () => ExtractTextOptions;
@@ -18,7 +18,7 @@ export const useExtractText = (): UseExtractTextReturn => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
-  const [result, setResult] = useState<ProcessingResult<ExtractedTextResult> | null>(null);
+  const [result, setResult] = useState<PDFProcessingResult<ExtractedTextResult> | null>(null);
 
   const extractTextService = ExtractTextService.getInstance();
 
@@ -47,7 +47,7 @@ export const useExtractText = (): UseExtractTextReturn => {
       if (result.success) {
         setResult(result);
       } else {
-        setError(result.error || 'Failed to extract text');
+        setError(result.error?.message || 'Failed to extract text');
       }
 
     } catch (err) {
