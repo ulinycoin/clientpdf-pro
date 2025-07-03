@@ -57,7 +57,7 @@ export const usePDFProcessor = () => {
       setState({
         isProcessing: false,
         progress: 100,
-        error: result.success ? null : result.error || 'Unknown error',
+        error: result.success ? null : result.error?.message || 'Unknown error',
         result
       })
 
