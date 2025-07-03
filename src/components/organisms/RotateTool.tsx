@@ -71,7 +71,7 @@ const RotateTool: React.FC<RotateToolProps> = ({ files, onComplete, onClose }) =
       setProgress(100);
       
       if (!result.success) {
-        setError(result.error || 'Rotation failed');
+        setError(result.error?.message || 'Rotation failed');
         return;
       }
 
