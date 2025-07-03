@@ -28,7 +28,8 @@ export function validateFileType(file: File, allowedTypes: string[]): boolean {
 
 export function generateFilename(originalName: string, suffix: string, extension?: string): string {
   const baseName = originalName.replace(/\.[^/.]+$/, '');
-  const ext = extension || originalName.split('.').pop() || 'pdf';
+  // ✅ ИСПРАВЛЕНО: правильная обработка extension параметра
+  const ext = extension !== undefined ? extension : (originalName.split('.').pop() || 'pdf');
   return `${baseName}_${suffix}.${ext}`;
 }
 
