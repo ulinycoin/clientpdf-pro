@@ -1,12 +1,12 @@
 import { useState, useCallback } from 'react';
 import { WatermarkService, WatermarkOptions } from '../services/watermarkService';
-import { ProcessingResult } from '../types';
+import { PDFProcessingResult } from '../types';
 
 interface UseWatermarkReturn {
   isProcessing: boolean;
   progress: number;
   error: string | null;
-  result: ProcessingResult | null;
+  result: PDFProcessingResult | null;
   addWatermark: (file: File, options: WatermarkOptions) => Promise<void>;
   resetState: () => void;
   getDefaultOptions: () => WatermarkOptions;
@@ -18,7 +18,7 @@ export const useWatermark = (): UseWatermarkReturn => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
-  const [result, setResult] = useState<ProcessingResult | null>(null);
+  const [result, setResult] = useState<PDFProcessingResult | null>(null);
 
   const watermarkService = WatermarkService.getInstance();
 
@@ -47,7 +47,7 @@ export const useWatermark = (): UseWatermarkReturn => {
       if (result.success) {
         setResult(result);
       } else {
-        setError(result.error || 'Failed to add watermark');
+        setError(result.error?.message || 'Failed to add watermark');
       }
 
     } catch (err) {
