@@ -18,7 +18,12 @@ const PDFToImagePage = React.lazy(() => import('./pages/tools/PDFToImagePage'));
 function App() {
   return (
     <HelmetProvider>
-      <Router>
+      <Router 
+        future={{ 
+          v7_startTransition: true,
+          v7_relativeSplatPath: true 
+        }}
+      >
         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
           {/* Breadcrumbs for navigation */}
           <Breadcrumbs />
