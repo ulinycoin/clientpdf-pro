@@ -105,6 +105,7 @@ export interface FileUploadZoneProps extends BaseComponentProps {
   accept?: string;
   multiple?: boolean;
   maxSize?: number;
+  disabled?: boolean; // Add disabled prop
 }
 
 // Legacy alias
@@ -135,6 +136,8 @@ export interface ProgressBarProps extends BaseComponentProps {
   showPercentage?: boolean;
   size?: 'sm' | 'md' | 'lg';
   animated?: boolean; // Add animated prop
+  color?: string; // Add color prop
+  label?: string; // Add label prop
 }
 
 // Button types
