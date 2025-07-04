@@ -27,7 +27,8 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "vite build",
+    "build:type-check": "tsc && vite build",
     "preview": "vite preview",
     "type-check": "tsc --noEmit",
     "test:addtext": "tsc --noEmit src/tests/AddTextTool.compilation.test.tsx",
