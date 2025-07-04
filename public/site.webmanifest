@@ -13,47 +13,9 @@
   "scope": "/",
   "icons": [
     {
-      "src": "/favicon-16x16.png",
-      "sizes": "16x16",
-      "type": "image/png"
-    },
-    {
-      "src": "/favicon-32x32.png",
-      "sizes": "32x32",
-      "type": "image/png"
-    },
-    {
-      "src": "/apple-touch-icon.png",
-      "sizes": "180x180",
-      "type": "image/png"
-    },
-    {
-      "src": "/android-chrome-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/android-chrome-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
-  ],
-  "screenshots": [
-    {
-      "src": "/screenshots/desktop-home.png",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "LocalPDF Home Screen"
-    },
-    {
-      "src": "/screenshots/mobile-tools.png",
-      "sizes": "375x812",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "PDF Tools on Mobile"
+      "src": "/vite.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
     }
   ],
   "shortcuts": [
@@ -61,37 +23,19 @@
       "name": "Merge PDF",
       "short_name": "Merge",
       "description": "Combine multiple PDF files",
-      "url": "/merge-pdf",
-      "icons": [
-        {
-          "src": "/icons/merge-shortcut.png",
-          "sizes": "96x96"
-        }
-      ]
+      "url": "/merge-pdf"
     },
     {
-      "name": "Split PDF",
+      "name": "Split PDF", 
       "short_name": "Split",
       "description": "Split PDF into separate files",
-      "url": "/split-pdf",
-      "icons": [
-        {
-          "src": "/icons/split-shortcut.png",
-          "sizes": "96x96"
-        }
-      ]
+      "url": "/split-pdf"
     },
     {
       "name": "Compress PDF",
-      "short_name": "Compress",
+      "short_name": "Compress", 
       "description": "Reduce PDF file size",
-      "url": "/compress-pdf",
-      "icons": [
-        {
-          "src": "/icons/compress-shortcut.png",
-          "sizes": "96x96"
-        }
-      ]
+      "url": "/compress-pdf"
     }
   ]
 }
