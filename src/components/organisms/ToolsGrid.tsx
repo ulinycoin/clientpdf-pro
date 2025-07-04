@@ -91,52 +91,6 @@ const ToolsGrid: React.FC<ToolsGridProps> = ({
 
   return (
     <div className={`space-y-12 ${className}`}>
-      {/* Enhanced Header */}
-      <div className="text-center relative">
-        {/* Background decoration */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
-        </div>
-        
-        {/* Main heading */}
-        <div className="relative bg-gray-50 px-8 py-6">
-          <div className="flex items-center justify-center space-x-3 mb-3">
-            <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-              <span className="text-white text-lg font-bold">📄</span>
-            </div>
-            <h2 className="text-4xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-purple-800 bg-clip-text text-transparent">
-              Professional PDF Tools
-            </h2>
-            <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-500 rounded-lg flex items-center justify-center">
-              <span className="text-white text-lg font-bold">⚡</span>
-            </div>
-          </div>
-          
-          <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            Advanced PDF processing tools designed for <span className="font-semibold text-blue-600">privacy</span>, 
-            <span className="font-semibold text-green-600"> speed</span>, and 
-            <span className="font-semibold text-purple-600"> reliability</span>. 
-            All processing happens locally in your browser.
-          </p>
-          
-          {/* Feature badges */}
-          <div className="flex flex-wrap justify-center items-center gap-3 mt-6">
-            <div className="flex items-center space-x-2 bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
-              <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-              <span>100% Private</span>
-            </div>
-            <div className="flex items-center space-x-2 bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
-              <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-              <span>Lightning Fast</span>
-            </div>
-            <div className="flex items-center space-x-2 bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-medium">
-              <span className="w-2 h-2 bg-purple-500 rounded-full"></span>
-              <span>Always Free</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Tools Section */}
       <div className="relative">
         {/* Section title with icon */}
