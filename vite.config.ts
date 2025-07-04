@@ -73,15 +73,9 @@ export default defineConfig({
     ],
   },
   
-  // Global defines for better compatibility
-  define: {
-    global: 'globalThis',
-  },
-  
   esbuild: {
     // Production optimizations
     logLevel: 'info',
-    target: 'es2020',
-    drop: ['console', 'debugger'], // Remove console.log in production
+    target: 'es2020'
   }
 })
