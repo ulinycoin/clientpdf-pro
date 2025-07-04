@@ -47,15 +47,11 @@ export default defineConfig({
       }
     },
     
-    // Build optimizations
+    // Build optimizations - safe settings for Vercel
     target: 'es2020',
     minify: 'esbuild',
     cssMinify: true,
-    
-    // Chunk size warnings
     chunkSizeWarningLimit: 1000,
-    
-    // Ensure proper source maps in production
     sourcemap: false,
   },
   
@@ -74,7 +70,6 @@ export default defineConfig({
   },
   
   esbuild: {
-    // Production optimizations
     logLevel: 'info',
     target: 'es2020'
   }
