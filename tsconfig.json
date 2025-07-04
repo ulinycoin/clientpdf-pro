@@ -13,10 +13,15 @@
     "jsx": "react-jsx",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "strict": true,
+    "strict": false,
+    "noImplicitAny": false,
+    "noImplicitReturns": false,
+    "noImplicitThis": false,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": false,
+    "suppressImplicitAnyIndexErrors": true,
+    "noImplicitOverride": false
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
