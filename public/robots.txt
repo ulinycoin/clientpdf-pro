@@ -1,7 +1,7 @@
 User-agent: *
 Allow: /
 
-# PDF Tools
+# PDF Tools - All tools are optimized for search engines
 Allow: /merge-pdf
 Allow: /split-pdf
 Allow: /compress-pdf
@@ -17,12 +17,15 @@ Allow: /privacy
 Allow: /faq
 Allow: /how-to-use
 
-# Block development files
+# Block development and system files
 Disallow: /src/
 Disallow: /node_modules/
 Disallow: /*.json$
 Disallow: /*.ts$
 Disallow: /*.tsx$
 Disallow: /dev-assets/
+Disallow: /.git/
+Disallow: /.claude/
 
+# Sitemap location
 Sitemap: https://localpdf.online/sitemap.xml
