@@ -28,10 +28,13 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:fast": "vite build",
     "build:production": "npm run type-check && vite build",
+    "build:force": "vite build --force",
     "preview": "vite preview",
     "type-check": "tsc --noEmit",
     "type-check:watch": "tsc --noEmit --watch",
+    "type-check:relaxed": "tsc --noEmit --skipLibCheck",
     "test:addtext": "tsc --noEmit src/tests/AddTextTool.compilation.test.tsx",
     "seo:check": "lighthouse --only-categories=seo --chrome-flags='--headless' http://localhost:4173",
     "lint": "echo 'Linting not configured yet'",
