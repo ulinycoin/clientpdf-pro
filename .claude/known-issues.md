@@ -1,5 +1,24 @@
 ## ✅ Решенные проблемы
 
+### Critical: Файлы с расширением .pdf.название_инструмента - RESOLVED ✅
+**Дата обнаружения**: 2025-07-04
+**Дата решения**: 2025-07-04
+**Серьезность**: critical
+**Компонент**: generateFilename calls в AddTextTool.tsx
+**Проблема**: Файлы скачивались с двойным расширением типа `filename.pdf.add-text` вместо правильного `filename_add-text.pdf`
+**Ошибка**: В AddTextTool.tsx неправильный порядок параметров в функции `generateFilename`
+**Причина**: 
+- В AddTextTool.tsx на строке 75 использовалось `generateFilename("add-text", pdfFile.name)`
+- Функция `generateFilename` ожидает порядок параметров: `(originalName, suffix, extension)`
+- Результат: файлы скачивались как `add-text_document.pdf.undefined` или подобное
+**Решение**:
+- Исправлен вызов в AddTextTool.tsx на: `generateFilename(pdfFile.name, 'add-text', 'pdf')`
+- Теперь файлы скачиваются с правильным форматом: `document_add-text.pdf`
+**Файлы изменены**:
+- src/components/organisms/AddTextTool.tsx - исправлен порядок параметров generateFilename
+**Тестирование**: После исправления AddTextTool должен сохранять файлы с правильными расширениями
+**Влияние**: Исправлена проблема с именованием файлов в AddTextTool, теперь весь проект использует консистентные имена файлов
+
 ### Critical: Сконвертированные файлы выходят с расширением .true - RESOLVED ✅
 **Дата обнаружения**: 2025-07-03
 **Дата решения**: 2025-07-03
