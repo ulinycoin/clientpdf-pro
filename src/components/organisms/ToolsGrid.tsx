@@ -121,33 +121,6 @@ const ToolsGrid: React.FC<ToolsGridProps> = ({
           ))}
         </div>
       </div>
-      
-      {/* Upload Reminder - Enhanced */}
-      {disabledTools.length > 0 && (
-        <div className="relative bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-dashed border-blue-200 rounded-xl p-8 text-center overflow-hidden">
-          {/* Background pattern */}
-          <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
-          
-          <div className="relative z-10">
-            <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-              <span className="text-white text-3xl">📁</span>
-            </div>
-            <h4 className="text-2xl font-bold text-blue-900 mb-3">
-              Ready to Process Your PDFs?
-            </h4>
-            <p className="text-blue-700 text-lg max-w-md mx-auto mb-4">
-              Upload your PDF files above to unlock all professional tools
-            </p>
-            <div className="inline-flex items-center space-x-2 text-blue-600 font-medium">
-              <span>Drag & Drop</span>
-              <span className="text-blue-400">•</span>
-              <span>Browse Files</span>
-              <span className="text-blue-400">•</span>
-              <span>Start Processing</span>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Enhanced Statistics */}
       <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-8 border border-gray-200">
