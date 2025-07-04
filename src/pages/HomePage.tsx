@@ -152,34 +152,89 @@ const HomePage: React.FC = () => {
       <Header />
       
       <main className="flex-grow">
-        {/* Hero Section - only show when no tool is selected */}
+        {/* Enhanced Hero Section - only show when no tool is selected */}
         {!selectedTool && (
-          <div className="max-w-4xl mx-auto px-4 py-16">
-            <div className="text-center mb-12">
-              <h1 className="text-4xl font-bold text-gray-900 mb-4">
-                LocalPDF - Free Privacy-First PDF Tools
-              </h1>
-              <p className="text-xl text-gray-600 mb-8">
-                9 powerful PDF tools that work entirely in your browser. No uploads, no tracking, completely free.
-              </p>
-              <div className="flex flex-col sm:flex-row justify-center items-center space-y-2 sm:space-y-0 sm:space-x-6 text-sm text-gray-500">
-                <div className="flex items-center space-x-2">
-                  <span className="text-green-500">🔒</span>
-                  <span>Your files never leave your device</span>
+          <div className="max-w-5xl mx-auto px-4 py-16">
+            {/* Enhanced Hero Header */}
+            <div className="text-center mb-16 relative">
+              {/* Background decoration */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-full h-px bg-gradient-to-r from-transparent via-blue-200 to-transparent"></div>
+              </div>
+              
+              {/* Main hero content */}
+              <div className="relative bg-gray-50 px-8 py-8">
+                {/* Main title with gradient */}
+                <h1 className="text-5xl md:text-6xl font-bold mb-6">
+                  <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
+                    LocalPDF
+                  </span>
+                  <br />
+                  <span className="text-gray-800 text-3xl md:text-4xl font-semibold">
+                    Privacy-First PDF Tools
+                  </span>
+                </h1>
+                
+                {/* Enhanced description */}
+                <div className="max-w-4xl mx-auto mb-8">
+                  <p className="text-xl md:text-2xl text-gray-700 mb-4 leading-relaxed">
+                    Professional PDF processing tools that work <span className="font-semibold text-blue-600">entirely in your browser</span>
+                  </p>
+                  <p className="text-lg text-gray-600">
+                    No uploads • No tracking • No limits • Completely free forever
+                  </p>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <span className="text-blue-500">⚡</span>
-                  <span>Fast local processing</span>
+                
+                {/* Enhanced feature highlights */}
+                <div className="flex flex-wrap justify-center items-center gap-4 mb-8">
+                  <div className="flex items-center space-x-3 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl text-base font-medium shadow-sm">
+                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                      <span className="text-lg">🔒</span>
+                    </div>
+                    <span>Your files never leave your device</span>
+                  </div>
+                  <div className="flex items-center space-x-3 bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-xl text-base font-medium shadow-sm">
+                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                      <span className="text-lg">⚡</span>
+                    </div>
+                    <span>Lightning fast local processing</span>
+                  </div>
+                  <div className="flex items-center space-x-3 bg-purple-50 border border-purple-200 text-purple-700 px-4 py-3 rounded-xl text-base font-medium shadow-sm">
+                    <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                      <span className="text-lg">🆓</span>
+                    </div>
+                    <span>Completely free, no limits</span>
+                  </div>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <span className="text-purple-500">🆓</span>
-                  <span>Completely free</span>
+
+                {/* Trust indicators */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto text-sm text-gray-500">
+                  <div className="flex items-center justify-center space-x-2">
+                    <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                    <span>No registration required</span>
+                  </div>
+                  <div className="flex items-center justify-center space-x-2">
+                    <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                    <span>Works offline</span>
+                  </div>
+                  <div className="flex items-center justify-center space-x-2">
+                    <span className="w-2 h-2 bg-purple-500 rounded-full"></span>
+                    <span>Open source</span>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* File Upload Zone */}
-            <div className="mb-8">
+            {/* Enhanced File Upload Zone */}
+            <div className="mb-12">
+              <div className="text-center mb-6">
+                <h2 className="text-2xl font-bold text-gray-800 mb-2">
+                  Get Started in Seconds
+                </h2>
+                <p className="text-gray-600">
+                  Upload your PDF files to begin processing with our professional tools
+                </p>
+              </div>
               <FileUploadZone
                 onFilesSelected={handleFileSelect}
                 accept="application/pdf"
@@ -190,39 +245,46 @@ const HomePage: React.FC = () => {
               />
             </div>
 
-            {/* Uploaded Files List */}
+            {/* Enhanced Uploaded Files List */}
             {files.length > 0 && (
-              <div className="mb-8">
-                <div className="bg-white rounded-lg shadow p-4">
-                  <h3 className="text-lg font-medium mb-4">Uploaded Files ({files.length})</h3>
-                  <div className="space-y-2">
+              <div className="mb-12">
+                <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-xl font-semibold text-gray-800 flex items-center space-x-2">
+                      <span className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <span className="text-blue-600">📁</span>
+                      </span>
+                      <span>Ready to Process ({files.length} file{files.length !== 1 ? 's' : ''})</span>
+                    </h3>
+                    <button
+                      onClick={clearFiles}
+                      className="text-sm text-red-500 hover:text-red-700 transition-colors font-medium"
+                    >
+                      Clear All
+                    </button>
+                  </div>
+                  <div className="space-y-3">
                     {files.map((file, index) => (
-                      <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded">
-                        <div className="flex items-center space-x-3">
-                          <div className="text-red-500">📄</div>
+                      <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border">
+                        <div className="flex items-center space-x-4">
+                          <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                            <span className="text-red-600 text-lg">📄</span>
+                          </div>
                           <div>
                             <p className="font-medium text-gray-900">{file.name}</p>
                             <p className="text-sm text-gray-500">
-                              {(file.size / 1024 / 1024).toFixed(2)} MB
+                              {(file.size / 1024 / 1024).toFixed(2)} MB • PDF Document
                             </p>
                           </div>
                         </div>
                         <button
                           onClick={() => removeFile(index)}
-                          className="text-red-500 hover:text-red-700 transition-colors"
+                          className="px-3 py-1 text-sm text-red-600 hover:text-white hover:bg-red-600 border border-red-200 hover:border-red-600 rounded-lg transition-all duration-200"
                         >
                           Remove
                         </button>
                       </div>
                     ))}
-                  </div>
-                  <div className="mt-4">
-                    <button
-                      onClick={clearFiles}
-                      className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
-                    >
-                      Clear All
-                    </button>
                   </div>
                 </div>
               </div>
