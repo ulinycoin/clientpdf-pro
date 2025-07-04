@@ -1,25 +1,88 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import path from 'path'
 
 export default defineConfig({
   plugins: [react()],
+  
+  // Path resolution for cleaner imports
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+      '@/components': path.resolve(__dirname, './src/components'),
+      '@/services': path.resolve(__dirname, './src/services'),
+      '@/utils': path.resolve(__dirname, './src/utils'),
+      '@/types': path.resolve(__dirname, './src/types'),
+      '@/hooks': path.resolve(__dirname, './src/hooks'),
+      '@/data': path.resolve(__dirname, './src/data'),
+    },
+  },
+  
   server: {
     host: true,
     port: 3000
   },
+  
   build: {
+    // Optimize bundle
     rollupOptions: {
+      output: {
+        manualChunks: {
+          // Separate vendor chunks for better caching
+          'react-vendor': ['react', 'react-dom'],
+          'router-vendor': ['react-router-dom', 'react-helmet-async'],
+          'pdf-vendor': ['pdf-lib', 'jspdf', 'pdfjs-dist'],
+          'ui-vendor': ['lucide-react']
+        }
+      },
       onwarn(warning, warn) {
-        // Skip TypeScript warnings and errors
-        if (warning.code === 'TYPESCRIPT' || warning.code === 'TS') return
-        // Skip all warnings related to types
-        if (warning.message.includes('TypeScript') || warning.message.includes('types')) return
+        // Skip certain TypeScript warnings but show critical errors
+        if (warning.code === 'TYPESCRIPT' || warning.code === 'TS') {
+          // Only show critical TypeScript errors that could break functionality
+          if (warning.message.includes('Cannot find module') || 
+              warning.message.includes('Property does not exist') ||
+              warning.message.includes('Type error')) {
+            warn(warning)
+          }
+          return
+        }
+        
+        // Skip certain warnings that don't affect functionality
+        if (warning.message.includes('Use of eval') || 
+            warning.message.includes('Circular dependency')) {
+          return
+        }
+        
         warn(warning)
       }
-    }
+    },
+    
+    // Build optimizations
+    target: 'es2020',
+    minify: 'esbuild',
+    cssMinify: true,
+    
+    // Chunk size warnings
+    chunkSizeWarningLimit: 1000,
   },
+  
+  // Optimized dependencies
+  optimizeDeps: {
+    include: [
+      'react', 
+      'react-dom', 
+      'react-router-dom',
+      'react-helmet-async',
+      'pdf-lib',
+      'jspdf',
+      'pdfjs-dist',
+      'lucide-react'
+    ],
+  },
+  
   esbuild: {
-    // Ignore TypeScript errors completely
-    logLevel: 'silent'
+    // Show TypeScript errors in development but don't fail build
+    logLevel: 'info',
+    target: 'es2020'
   }
 })
