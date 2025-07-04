@@ -28,11 +28,15 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "build:with-types": "tsc && vite build",
+    "build:production": "npm run type-check && vite build",
     "preview": "vite preview",
     "type-check": "tsc --noEmit",
+    "type-check:watch": "tsc --noEmit --watch",
     "test:addtext": "tsc --noEmit src/tests/AddTextTool.compilation.test.tsx",
-    "seo:check": "lighthouse --only-categories=seo --chrome-flags='--headless' http://localhost:4173"
+    "seo:check": "lighthouse --only-categories=seo --chrome-flags='--headless' http://localhost:4173",
+    "lint": "echo 'Linting not configured yet'",
+    "clean": "rm -rf dist",
+    "build:analyze": "npm run build && npx vite-bundle-analyzer dist/stats.html"
   },
   "dependencies": {
     "react": "^18.2.0",
@@ -45,6 +49,7 @@
     "lucide-react": "^0.263.1"
   },
   "devDependencies": {
+    "@types/node": "^20.0.0",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "@types/react-router-dom": "^5.3.3",
