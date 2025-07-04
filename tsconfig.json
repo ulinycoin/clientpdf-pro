@@ -22,13 +22,11 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
-    "suppressImplicitAnyIndexErrors": true,
     "noImplicitOverride": false,
     
     // Additional helpful checks
     "exactOptionalPropertyTypes": false,
     "noUncheckedIndexedAccess": false,
-    "noImplicitReturns": true,
     "noPropertyAccessFromIndexSignature": false,
     
     // Path mapping for cleaner imports
