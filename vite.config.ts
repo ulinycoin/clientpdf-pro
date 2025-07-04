@@ -36,23 +36,13 @@ export default defineConfig({
         }
       },
       onwarn(warning, warn) {
-        // Skip certain TypeScript warnings but show critical errors
-        if (warning.code === 'TYPESCRIPT' || warning.code === 'TS') {
-          // Only show critical TypeScript errors that could break functionality
-          if (warning.message.includes('Cannot find module') || 
-              warning.message.includes('Property does not exist') ||
-              warning.message.includes('Type error')) {
-            warn(warning)
-          }
-          return
-        }
-        
         // Skip certain warnings that don't affect functionality
-        if (warning.message.includes('Use of eval') || 
-            warning.message.includes('Circular dependency')) {
-          return
-        }
+        if (warning.code === 'MODULE_LEVEL_DIRECTIVE') return
+        if (warning.message.includes('Use of eval')) return
+        if (warning.message.includes('Circular dependency')) return
+        if (warning.message.includes('Generated an empty chunk')) return
         
+        // Only show critical warnings
         warn(warning)
       }
     },
@@ -64,6 +54,9 @@ export default defineConfig({
     
     // Chunk size warnings
     chunkSizeWarningLimit: 1000,
+    
+    // Ensure proper source maps in production
+    sourcemap: false,
   },
   
   // Optimized dependencies
@@ -80,9 +73,15 @@ export default defineConfig({
     ],
   },
   
+  // Global defines for better compatibility
+  define: {
+    global: 'globalThis',
+  },
+  
   esbuild: {
-    // Show TypeScript errors in development but don't fail build
+    // Production optimizations
     logLevel: 'info',
-    target: 'es2020'
+    target: 'es2020',
+    drop: ['console', 'debugger'], // Remove console.log in production
   }
 })
