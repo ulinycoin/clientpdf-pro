@@ -13,15 +13,35 @@
     "jsx": "react-jsx",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "strict": false,
+    
+    // Enable stricter checking gradually
+    "strict": true,
     "noImplicitAny": false,
-    "noImplicitReturns": false,
-    "noImplicitThis": false,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "noFallthroughCasesInSwitch": false,
+    "noFallthroughCasesInSwitch": true,
     "suppressImplicitAnyIndexErrors": true,
-    "noImplicitOverride": false
+    "noImplicitOverride": false,
+    
+    // Additional helpful checks
+    "exactOptionalPropertyTypes": false,
+    "noUncheckedIndexedAccess": false,
+    "noImplicitReturns": true,
+    "noPropertyAccessFromIndexSignature": false,
+    
+    // Path mapping for cleaner imports
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@/components/*": ["src/components/*"],
+      "@/services/*": ["src/services/*"],
+      "@/utils/*": ["src/utils/*"],
+      "@/types/*": ["src/types/*"],
+      "@/hooks/*": ["src/hooks/*"],
+      "@/data/*": ["src/data/*"]
+    }
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
