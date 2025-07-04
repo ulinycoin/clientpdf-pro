@@ -91,22 +91,67 @@ const ToolsGrid: React.FC<ToolsGridProps> = ({
 
   return (
     <div className={`space-y-12 ${className}`}>
-      {/* Header */}
-      <div className="text-center">
-        <h2 className="text-3xl font-bold text-gray-900 mb-4">
-          PDF Tools ({tools.length} Available)
-        </h2>
-        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          Professional PDF processing tools that work entirely in your browser. 
-          Your files never leave your device.
-        </p>
+      {/* Enhanced Header */}
+      <div className="text-center relative">
+        {/* Background decoration */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
+        </div>
+        
+        {/* Main heading */}
+        <div className="relative bg-gray-50 px-8 py-6">
+          <div className="flex items-center justify-center space-x-3 mb-3">
+            <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+              <span className="text-white text-lg font-bold">📄</span>
+            </div>
+            <h2 className="text-4xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-purple-800 bg-clip-text text-transparent">
+              Professional PDF Tools
+            </h2>
+            <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-500 rounded-lg flex items-center justify-center">
+              <span className="text-white text-lg font-bold">⚡</span>
+            </div>
+          </div>
+          
+          <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            Advanced PDF processing tools designed for <span className="font-semibold text-blue-600">privacy</span>, 
+            <span className="font-semibold text-green-600"> speed</span>, and 
+            <span className="font-semibold text-purple-600"> reliability</span>. 
+            All processing happens locally in your browser.
+          </p>
+          
+          {/* Feature badges */}
+          <div className="flex flex-wrap justify-center items-center gap-3 mt-6">
+            <div className="flex items-center space-x-2 bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
+              <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+              <span>100% Private</span>
+            </div>
+            <div className="flex items-center space-x-2 bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+              <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+              <span>Lightning Fast</span>
+            </div>
+            <div className="flex items-center space-x-2 bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-medium">
+              <span className="w-2 h-2 bg-purple-500 rounded-full"></span>
+              <span>Always Free</span>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* All Tools in One Grid */}
-      <div>
-        <h3 className="text-xl font-semibold text-gray-800 mb-6 text-center">
-          All Available Tools
-        </h3>
+      {/* Tools Section */}
+      <div className="relative">
+        {/* Section title with icon */}
+        <div className="flex items-center justify-center space-x-3 mb-8">
+          <div className="h-px bg-gradient-to-r from-transparent to-gray-300 flex-1"></div>
+          <div className="flex items-center space-x-2 bg-white px-4 py-2 rounded-full border border-gray-200 shadow-sm">
+            <span className="text-2xl">🛠️</span>
+            <h3 className="text-xl font-semibold text-gray-800">
+              Choose Your Tool
+            </h3>
+          </div>
+          <div className="h-px bg-gradient-to-l from-transparent to-gray-300 flex-1"></div>
+        </div>
+        
+        {/* Tools grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {tools.map((tool) => (
             <ToolCard
@@ -117,48 +162,79 @@ const ToolsGrid: React.FC<ToolsGridProps> = ({
               operationType={tool.operationType}
               disabled={disabledTools.includes(tool.operationType)}
               onClick={() => handleToolClick(tool.operationType)}
-              className="min-h-[280px] flex flex-col"
+              className="min-h-[280px] flex flex-col transform transition-all duration-200 hover:scale-105"
             />
           ))}
         </div>
       </div>
       
-      {/* Upload Reminder */}
+      {/* Upload Reminder - Enhanced */}
       {disabledTools.length > 0 && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 text-center">
-          <div className="text-blue-600 text-2xl mb-2">📁</div>
-          <h4 className="text-lg font-medium text-blue-900 mb-2">
-            Upload PDF Files to Get Started
-          </h4>
-          <p className="text-blue-700">
-            Select "Choose Files" above or drag and drop your PDF files to enable all tools
-          </p>
+        <div className="relative bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-dashed border-blue-200 rounded-xl p-8 text-center overflow-hidden">
+          {/* Background pattern */}
+          <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+          
+          <div className="relative z-10">
+            <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+              <span className="text-white text-3xl">📁</span>
+            </div>
+            <h4 className="text-2xl font-bold text-blue-900 mb-3">
+              Ready to Process Your PDFs?
+            </h4>
+            <p className="text-blue-700 text-lg max-w-md mx-auto mb-4">
+              Upload your PDF files above to unlock all professional tools
+            </p>
+            <div className="inline-flex items-center space-x-2 text-blue-600 font-medium">
+              <span>Drag & Drop</span>
+              <span className="text-blue-400">•</span>
+              <span>Browse Files</span>
+              <span className="text-blue-400">•</span>
+              <span>Start Processing</span>
+            </div>
+          </div>
         </div>
       )}
 
-      {/* Statistics */}
-      <div className="bg-gray-50 rounded-lg p-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-          <div>
-            <div className="text-2xl font-bold text-blue-600">{tools.length}</div>
-            <div className="text-sm text-gray-600">PDF Tools</div>
+      {/* Enhanced Statistics */}
+      <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-8 border border-gray-200">
+        <div className="text-center mb-6">
+          <h4 className="text-2xl font-bold text-gray-800 mb-2">Why Choose LocalPDF?</h4>
+          <p className="text-gray-600">The numbers speak for themselves</p>
+        </div>
+        
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="text-center group">
+            <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mx-auto mb-3 shadow-lg group-hover:scale-110 transition-transform">
+              <span className="text-white text-2xl font-bold">{tools.length}</span>
+            </div>
+            <div className="text-sm font-medium text-gray-800">Professional Tools</div>
+            <div className="text-xs text-gray-500">Everything you need</div>
           </div>
-          <div>
-            <div className="text-2xl font-bold text-green-600">100%</div>
-            <div className="text-sm text-gray-600">Private</div>
+          
+          <div className="text-center group">
+            <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-green-600 rounded-xl flex items-center justify-center mx-auto mb-3 shadow-lg group-hover:scale-110 transition-transform">
+              <span className="text-white text-xl font-bold">100%</span>
+            </div>
+            <div className="text-sm font-medium text-gray-800">Private & Secure</div>
+            <div className="text-xs text-gray-500">No server uploads</div>
           </div>
-          <div>
-            <div className="text-2xl font-bold text-purple-600">0</div>
-            <div className="text-sm text-gray-600">Server Upload</div>
+          
+          <div className="text-center group">
+            <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-3 shadow-lg group-hover:scale-110 transition-transform">
+              <span className="text-white text-2xl font-bold">0</span>
+            </div>
+            <div className="text-sm font-medium text-gray-800">Data Collection</div>
+            <div className="text-xs text-gray-500">Zero tracking</div>
           </div>
-          <div>
-            <div className="text-2xl font-bold text-orange-600">∞</div>
-            <div className="text-sm text-gray-600">File Size*</div>
+          
+          <div className="text-center group">
+            <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl flex items-center justify-center mx-auto mb-3 shadow-lg group-hover:scale-110 transition-transform">
+              <span className="text-white text-2xl font-bold">∞</span>
+            </div>
+            <div className="text-sm font-medium text-gray-800">Usage Limits</div>
+            <div className="text-xs text-gray-500">Unlimited & free</div>
           </div>
         </div>
-        <p className="text-xs text-gray-500 text-center mt-3">
-          * Limited only by your device's memory and browser capabilities
-        </p>
       </div>
     </div>
   );
