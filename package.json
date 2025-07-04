@@ -36,7 +36,9 @@
     "seo:check": "lighthouse --only-categories=seo --chrome-flags='--headless' http://localhost:4173",
     "lint": "echo 'Linting not configured yet'",
     "clean": "rm -rf dist",
-    "build:analyze": "npm run build && npx vite-bundle-analyzer dist/stats.html"
+    "build:analyze": "npm run build && npx vite-bundle-analyzer dist/stats.html",
+    "verify-build": "chmod +x scripts/verify-build.sh && ./scripts/verify-build.sh",
+    "quick-start": "npm install --legacy-peer-deps && npm run dev"
   },
   "dependencies": {
     "react": "^18.2.0",
