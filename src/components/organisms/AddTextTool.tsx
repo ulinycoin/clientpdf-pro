@@ -80,8 +80,8 @@ const AddTextTool: React.FC<AddTextToolProps> = ({
     try {
       const resultBlob = await savePDF(pdfFile);
       
-      // Generate filename and download directly - using elegant approach
-      const filename = generateFilename("add-text", pdfFile.name);
+      // ✅ ИСПРАВЛЕНО: правильный порядок параметров для generateFilename
+      const filename = generateFilename(pdfFile.name, 'add-text', 'pdf');
       downloadBlob(resultBlob, filename);
       
       console.log(`PDF saved successfully: ${filename}`);
