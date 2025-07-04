@@ -1,0 +1,48 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local development
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Build outputs
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Coverage reports
+coverage/
+
+# Temporary files
+.tmp/
+temp/
+
+# Claude memory files (not needed for deployment)
+.claude/
+
+# Development scripts
+quick-start.sh
+claude-start.sh
+LOCAL_DEVELOPMENT.md
+
+# Test files
+src/tests/
+*.test.tsx
+*.test.ts
