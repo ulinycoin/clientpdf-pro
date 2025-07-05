@@ -1,0 +1,108 @@
+{
+  "merge": {
+    "title": "Merge PDF",
+    "description": "Combine multiple PDF files into one",
+    "action": "Merge Files",
+    "selectFiles": "Select PDF files to merge",
+    "dragDrop": "Drag and drop PDF files here",
+    "reorder": "Drag to reorder files",
+    "processing": "Merging PDFs...",
+    "success": "PDFs merged successfully",
+    "error": "Failed to merge PDFs"
+  },
+  "split": {
+    "title": "Split PDF", 
+    "description": "Split a PDF into separate pages or ranges",
+    "action": "Split PDF",
+    "selectFile": "Select PDF file to split",
+    "options": "Split options",
+    "allPages": "Split all pages",
+    "pageRange": "Split by page range",
+    "processing": "Splitting PDF...",
+    "success": "PDF split successfully",
+    "error": "Failed to split PDF"
+  },
+  "compress": {
+    "title": "Compress PDF",
+    "description": "Reduce PDF file size",
+    "action": "Compress PDF",
+    "selectFile": "Select PDF file to compress",
+    "quality": "Compression quality",
+    "low": "Low (smallest file)",
+    "medium": "Medium (balanced)",
+    "high": "High (best quality)",
+    "processing": "Compressing PDF...",
+    "success": "PDF compressed successfully",
+    "error": "Failed to compress PDF"
+  },
+  "addText": {
+    "title": "Add Text to PDF",
+    "description": "Add text annotations to PDF pages",
+    "action": "Add Text",
+    "selectFile": "Select PDF file",
+    "text": "Text to add",
+    "position": "Text position",
+    "font": "Font",
+    "size": "Font size",
+    "color": "Text color",
+    "processing": "Adding text to PDF...",
+    "success": "Text added successfully",
+    "error": "Failed to add text"
+  },
+  "watermark": {
+    "title": "Add Watermark",
+    "description": "Add watermark to PDF pages",
+    "action": "Add Watermark",
+    "selectFile": "Select PDF file",
+    "watermarkText": "Watermark text",
+    "opacity": "Opacity",
+    "position": "Position",
+    "processing": "Adding watermark...",
+    "success": "Watermark added successfully",
+    "error": "Failed to add watermark"
+  },
+  "rotate": {
+    "title": "Rotate PDF",
+    "description": "Rotate PDF pages",
+    "action": "Rotate PDF",
+    "selectFile": "Select PDF file",
+    "angle": "Rotation angle",
+    "pages": "Pages to rotate",
+    "allPages": "All pages",
+    "specificPages": "Specific pages",
+    "processing": "Rotating PDF...",
+    "success": "PDF rotated successfully",
+    "error": "Failed to rotate PDF"
+  },
+  "extractPages": {
+    "title": "Extract Pages",
+    "description": "Extract specific pages from PDF",
+    "action": "Extract Pages",
+    "selectFile": "Select PDF file",
+    "pageRange": "Page range to extract",
+    "processing": "Extracting pages...",
+    "success": "Pages extracted successfully",
+    "error": "Failed to extract pages"
+  },
+  "extractText": {
+    "title": "Extract Text",
+    "description": "Extract text content from PDF",
+    "action": "Extract Text",
+    "selectFile": "Select PDF file",
+    "processing": "Extracting text...",
+    "success": "Text extracted successfully",
+    "error": "Failed to extract text"
+  },
+  "pdfToImage": {
+    "title": "PDF to Image",
+    "description": "Convert PDF pages to images",
+    "action": "Convert to Images",
+    "selectFile": "Select PDF file",
+    "format": "Image format",
+    "quality": "Image quality",
+    "pages": "Pages to convert",
+    "processing": "Converting to images...",
+    "success": "PDF converted to images successfully",
+    "error": "Failed to convert PDF to images"
+  }
+}
