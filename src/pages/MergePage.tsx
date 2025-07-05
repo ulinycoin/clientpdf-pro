@@ -49,7 +49,7 @@ const MergePage: React.FC = () => {
 
   const handleMerge = useCallback(async () => {
     if (files.length < 2) {
-      setError(tCommon('messages.noFilesSelected'));
+      setError('Please select at least 2 PDF files');
       return;
     }
 
@@ -61,28 +61,22 @@ const MergePage: React.FC = () => {
     try {
       const fileList = files.map(f => f.file);
       
-      // Simulate progress updates
-      const progressInterval = setInterval(() => {
-        setProgress(prev => {
-          if (prev >= 90) {
-            clearInterval(progressInterval);
-            return 90;
-          }
-          return prev + 10;
-        });
-      }, 200);
-
-      const mergedPdf = await mergePDFs(fileList);
+      const result = await mergePDFs(fileList, (progress, status) => {
+        setProgress(progress);
+      });
       
-      clearInterval(progressInterval);
-      setProgress(100);
-      setResult(mergedPdf);
+      if (result.success && result.data) {
+        setProgress(100);
+        setResult(result.data);
+      } else {
+        throw new Error(result.error?.message || 'Merge failed');
+      }
     } catch (err) {
-      setError(err instanceof Error ? err.message : tCommon('errors.processingError'));
+      setError(err instanceof Error ? err.message : 'An error occurred during processing');
     } finally {
       setIsProcessing(false);
     }
-  }, [files, t, tCommon]);
+  }, [files]);
 
   const downloadResult = useCallback(() => {
     if (!result) return;
@@ -123,10 +117,10 @@ const MergePage: React.FC = () => {
         <div className="text-center mb-12">
           <div className="text-6xl mb-6">🔗</div>
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            {t('merge.title')}
+            {t('merge.title', 'Merge PDF')}
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            {t('merge.description')}
+            {t('merge.description', 'Combine multiple PDF files into one')}
           </p>
         </div>
 
@@ -135,20 +129,42 @@ const MergePage: React.FC = () => {
           <h2 className="font-semibold text-blue-900 mb-2">
             {language === 'ru' ? 'Как использовать:' : 'How to use:'}
           </h2>
-          <p className="text-blue-800 text-sm">
-            {t('merge.instructions')}
-          </p>
+          <ol className="text-blue-800 text-sm space-y-1">
+            <li>1. {language === 'ru' ? 'Выберите 2 или более PDF файлов' : 'Select 2 or more PDF files'}</li>
+            <li>2. {language === 'ru' ? 'Измените порядок файлов при необходимости' : 'Reorder files if needed'}</li>
+            <li>3. {language === 'ru' ? 'Нажмите "Объединить" для создания одного файла' : 'Click "Merge" to create single file'}</li>
+          </ol>
         </div>
 
         {/* File Upload */}
         {files.length === 0 && (
-          <LocalizedFileUpload
-            onFilesSelected={handleFilesSelected}
-            multiple={true}
-            titleKey="merge.selectFiles"
-            descriptionKey="messages.dragDropFiles"
-            className="mb-8"
-          />
+          <div className="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center mb-8">
+            <div className="text-4xl mb-4">📁</div>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">
+              {language === 'ru' ? 'Выберите PDF файлы' : 'Select PDF files'}
+            </h3>
+            <p className="text-gray-600 mb-4">
+              {language === 'ru' ? 'Перетащите файлы сюда или нажмите для выбора' : 'Drag and drop files here or click to browse'}
+            </p>
+            <input
+              type="file"
+              multiple
+              accept=".pdf"
+              onChange={(e) => {
+                if (e.target.files) {
+                  handleFilesSelected(Array.from(e.target.files));
+                }
+              }}
+              className="hidden"
+              id="file-upload"
+            />
+            <label
+              htmlFor="file-upload"
+              className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 cursor-pointer"
+            >
+              {language === 'ru' ? 'Выбрать файлы' : 'Choose Files'}
+            </label>
+          </div>
         )}
 
         {/* Selected Files */}
@@ -156,26 +172,26 @@ const MergePage: React.FC = () => {
           <div className="mb-8">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold text-gray-900">
-                {tCommon('fileInfo.name')} ({files.length})
+                {language === 'ru' ? 'Выбранные файлы' : 'Selected Files'} ({files.length})
               </h3>
-              <LocalizedButton
-                textKey="actions.selectFiles"
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  const input = document.createElement('input');
-                  input.type = 'file';
-                  input.multiple = true;
-                  input.accept = '.pdf';
-                  input.onchange = (e) => {
-                    const target = e.target as HTMLInputElement;
-                    if (target.files) {
-                      handleFilesSelected(Array.from(target.files));
-                    }
-                  };
-                  input.click();
+              <input
+                type="file"
+                multiple
+                accept=".pdf"
+                onChange={(e) => {
+                  if (e.target.files) {
+                    handleFilesSelected(Array.from(e.target.files));
+                  }
                 }}
+                className="hidden"
+                id="add-more-files"
               />
+              <label
+                htmlFor="add-more-files"
+                className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 cursor-pointer"
+              >
+                {language === 'ru' ? 'Добавить файлы' : 'Add More Files'}
+              </label>
             </div>
             
             <div className="space-y-3">
@@ -192,7 +208,7 @@ const MergePage: React.FC = () => {
                       </div>
                       <div className="text-sm text-gray-500">
                         {Math.round(fileItem.file.size / 1024)} KB
-                        {fileItem.pages && ` • ${fileItem.pages} ${tCommon('fileInfo.pages')}`}
+                        {fileItem.pages && ` • ${fileItem.pages} pages`}
                       </div>
                     </div>
                   </div>
@@ -201,7 +217,7 @@ const MergePage: React.FC = () => {
                     <button
                       onClick={() => removeFile(fileItem.id)}
                       className="p-2 text-red-600 hover:bg-red-50 rounded-md transition-colors"
-                      title={tCommon('actions.clear')}
+                      title={language === 'ru' ? 'Удалить' : 'Remove'}
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -211,26 +227,27 @@ const MergePage: React.FC = () => {
                 </div>
               ))}
             </div>
-            
-            {files.length > 1 && (
-              <div className="mt-4 text-center">
-                <p className="text-sm text-gray-500 mb-4">
-                  {t('merge.reorderHint')}
-                </p>
-              </div>
-            )}
           </div>
         )}
 
         {/* Progress */}
         {isProcessing && (
           <div className="mb-8">
-            <LocalizedProgressBar
-              progress={progress}
-              status="processing"
-              showPercentage={true}
-              showStatus={true}
-            />
+            <div className="bg-white border border-gray-200 rounded-lg p-6">
+              <div className="flex items-center mb-4">
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600 mr-3"></div>
+                <span className="text-gray-900 font-medium">
+                  {language === 'ru' ? 'Объединение PDF файлов...' : 'Merging PDF files...'}
+                </span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div 
+                  className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                  style={{ width: `${progress}%` }}
+                ></div>
+              </div>
+              <div className="text-sm text-gray-600 mt-2">{progress}%</div>
+            </div>
           </div>
         )}
 
@@ -249,40 +266,36 @@ const MergePage: React.FC = () => {
         {/* Actions */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           {!result && (
-            <LocalizedButton
-              textKey="merge.mergeButton"
+            <button
               onClick={handleMerge}
               disabled={files.length < 2 || isProcessing}
-              loading={isProcessing}
-              size="lg"
-              icon={
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.102m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                </svg>
-              }
-            />
+              className="inline-flex items-center justify-center px-8 py-4 border border-transparent text-lg font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+            >
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.102m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+              </svg>
+              {language === 'ru' ? 'Объединить PDF' : 'Merge PDF'}
+            </button>
           )}
           
           {result && (
             <>
-              <LocalizedButton
-                textKey="merge.downloadMerged"
+              <button
                 onClick={downloadResult}
-                variant="success"
-                size="lg"
-                icon={
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                }
-              />
+                className="inline-flex items-center justify-center px-8 py-4 border border-transparent text-lg font-medium rounded-md text-white bg-green-600 hover:bg-green-700 transition-colors"
+              >
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                {language === 'ru' ? 'Скачать результат' : 'Download Result'}
+              </button>
               
-              <LocalizedButton
-                textKey="actions.reset"
+              <button
                 onClick={reset}
-                variant="outline"
-                size="lg"
-              />
+                className="inline-flex items-center justify-center px-8 py-4 border border-gray-300 text-lg font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+              >
+                {language === 'ru' ? 'Начать заново' : 'Start Over'}
+              </button>
             </>
           )}
         </div>
@@ -295,7 +308,7 @@ const MergePage: React.FC = () => {
                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
               </svg>
               <span className="text-green-800 font-semibold">
-                {tCommon('messages.processingComplete')}
+                {language === 'ru' ? 'Успешно объединено!' : 'Successfully merged!'}
               </span>
             </div>
             <p className="text-green-700 text-sm">
