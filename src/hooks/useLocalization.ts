@@ -1,1 +1,275 @@
-import { useState, useEffect, useCallback } from 'react';\n\n// Supported languages\nexport type Language = 'en' | 'ru';\n\n// Language detection\nfunction detectLanguage(): Language {\n  // Check localStorage first\n  const saved = localStorage.getItem('localpdf-language') as Language;\n  if (saved && ['en', 'ru'].includes(saved)) {\n    return saved;\n  }\n\n  // Check browser language\n  const browserLang = navigator.language.toLowerCase();\n  if (browserLang.startsWith('ru')) {\n    return 'ru';\n  }\n\n  // Default to English\n  return 'en';\n}\n\n// Translation cache\ninterface TranslationCache {\n  [language: string]: {\n    [namespace: string]: any;\n  };\n}\n\nconst translationCache: TranslationCache = {};\n\n// Load translations\nasync function loadTranslations(language: Language, namespace: string): Promise<any> {\n  const cacheKey = `${language}-${namespace}`;\n  \n  if (translationCache[language]?.[namespace]) {\n    return translationCache[language][namespace];\n  }\n\n  try {\n    const response = await import(`../locales/${language}/${namespace}.json`);\n    \n    if (!translationCache[language]) {\n      translationCache[language] = {};\n    }\n    \n    translationCache[language][namespace] = response.default || response;\n    return translationCache[language][namespace];\n  } catch (error) {\n    console.warn(`Failed to load translations for ${language}/${namespace}:`, error);\n    \n    // Fallback to English if current language fails\n    if (language !== 'en') {\n      try {\n        const fallbackResponse = await import(`../locales/en/${namespace}.json`);\n        return fallbackResponse.default || fallbackResponse;\n      } catch (fallbackError) {\n        console.error(`Failed to load fallback translations:`, fallbackError);\n        return {};\n      }\n    }\n    \n    return {};\n  }\n}\n\n// Translation hook\nexport function useLocalization(namespace: string = 'common') {\n  const [language, setLanguage] = useState<Language>(detectLanguage);\n  const [translations, setTranslations] = useState<any>({});\n  const [isLoading, setIsLoading] = useState(true);\n\n  // Load translations when language or namespace changes\n  useEffect(() => {\n    let isMounted = true;\n    \n    async function loadAndSetTranslations() {\n      setIsLoading(true);\n      \n      try {\n        const newTranslations = await loadTranslations(language, namespace);\n        \n        if (isMounted) {\n          setTranslations(newTranslations);\n        }\n      } catch (error) {\n        console.error('Failed to load translations:', error);\n      } finally {\n        if (isMounted) {\n          setIsLoading(false);\n        }\n      }\n    }\n\n    loadAndSetTranslations();\n    \n    return () => {\n      isMounted = false;\n    };\n  }, [language, namespace]);\n\n  // Change language\n  const changeLanguage = useCallback((newLanguage: Language) => {\n    setLanguage(newLanguage);\n    localStorage.setItem('localpdf-language', newLanguage);\n    \n    // Clear cache to force reload\n    if (translationCache[newLanguage]) {\n      delete translationCache[newLanguage];\n    }\n  }, []);\n\n  // Translation function\n  const t = useCallback((key: string, fallback?: string): string => {\n    const keys = key.split('.');\n    let current = translations;\n    \n    for (const k of keys) {\n      current = current?.[k];\n      if (current === undefined) {\n        break;\n      }\n    }\n    \n    if (typeof current === 'string') {\n      return current;\n    }\n    \n    // Return fallback or key if translation not found\n    return fallback || key;\n  }, [translations]);\n\n  // Check if translation exists\n  const hasTranslation = useCallback((key: string): boolean => {\n    const keys = key.split('.');\n    let current = translations;\n    \n    for (const k of keys) {\n      current = current?.[k];\n      if (current === undefined) {\n        return false;\n      }\n    }\n    \n    return typeof current === 'string';\n  }, [translations]);\n\n  return {\n    language,\n    changeLanguage,\n    t,\n    hasTranslation,\n    isLoading,\n    translations\n  };\n}\n\n// Multiple namespace hook\nexport function useMultipleNamespaces(namespaces: string[]) {\n  const [language, setLanguage] = useState<Language>(detectLanguage);\n  const [allTranslations, setAllTranslations] = useState<{[namespace: string]: any}>({});\n  const [isLoading, setIsLoading] = useState(true);\n\n  // Load all translations\n  useEffect(() => {\n    let isMounted = true;\n    \n    async function loadAllTranslations() {\n      setIsLoading(true);\n      \n      try {\n        const promises = namespaces.map(namespace => \n          loadTranslations(language, namespace).then(translations => ({ namespace, translations }))\n        );\n        \n        const results = await Promise.all(promises);\n        \n        if (isMounted) {\n          const newTranslations: {[namespace: string]: any} = {};\n          results.forEach(({ namespace, translations }) => {\n            newTranslations[namespace] = translations;\n          });\n          setAllTranslations(newTranslations);\n        }\n      } catch (error) {\n        console.error('Failed to load translations:', error);\n      } finally {\n        if (isMounted) {\n          setIsLoading(false);\n        }\n      }\n    }\n\n    loadAllTranslations();\n    \n    return () => {\n      isMounted = false;\n    };\n  }, [language, namespaces]);\n\n  // Change language\n  const changeLanguage = useCallback((newLanguage: Language) => {\n    setLanguage(newLanguage);\n    localStorage.setItem('localpdf-language', newLanguage);\n    \n    // Clear cache to force reload\n    if (translationCache[newLanguage]) {\n      delete translationCache[newLanguage];\n    }\n  }, []);\n\n  // Translation function with namespace\n  const t = useCallback((namespace: string, key: string, fallback?: string): string => {\n    const translations = allTranslations[namespace];\n    if (!translations) {\n      return fallback || key;\n    }\n\n    const keys = key.split('.');\n    let current = translations;\n    \n    for (const k of keys) {\n      current = current?.[k];\n      if (current === undefined) {\n        break;\n      }\n    }\n    \n    if (typeof current === 'string') {\n      return current;\n    }\n    \n    return fallback || key;\n  }, [allTranslations]);\n\n  return {\n    language,\n    changeLanguage,\n    t,\n    isLoading,\n    translations: allTranslations\n  };\n}\n\n// Language display names\nexport const LANGUAGE_NAMES = {\n  en: 'English',\n  ru: 'Русский'\n} as const;\n\n// Language flags/icons\nexport const LANGUAGE_FLAGS = {\n  en: '🇺🇸',\n  ru: '🇷🇺'\n} as const;\n\n// Export singleton for global access\nlet globalLanguage: Language = detectLanguage();\nlet globalChangeLanguage: ((lang: Language) => void) | null = null;\n\nexport function setGlobalLanguageChanger(changer: (lang: Language) => void) {\n  globalChangeLanguage = changer;\n}\n\nexport function getGlobalLanguage(): Language {\n  return globalLanguage;\n}\n\nexport function changeGlobalLanguage(language: Language) {\n  globalLanguage = language;\n  if (globalChangeLanguage) {\n    globalChangeLanguage(language);\n  }\n}"
+import { useState, useEffect, useCallback } from 'react';
+
+// Supported languages
+export type Language = 'en' | 'ru';
+
+// Language detection
+function detectLanguage(): Language {
+  // Check localStorage first
+  const saved = localStorage.getItem('localpdf-language') as Language;
+  if (saved && ['en', 'ru'].includes(saved)) {
+    return saved;
+  }
+
+  // Check browser language
+  const browserLang = navigator.language.toLowerCase();
+  if (browserLang.startsWith('ru')) {
+    return 'ru';
+  }
+
+  // Default to English
+  return 'en';
+}
+
+// Translation cache
+interface TranslationCache {
+  [language: string]: {
+    [namespace: string]: any;
+  };
+}
+
+const translationCache: TranslationCache = {};
+
+// Load translations
+async function loadTranslations(language: Language, namespace: string): Promise<any> {
+  const cacheKey = `${language}-${namespace}`;
+  
+  if (translationCache[language]?.[namespace]) {
+    return translationCache[language][namespace];
+  }
+
+  try {
+    const response = await import(`../locales/${language}/${namespace}.json`);
+    
+    if (!translationCache[language]) {
+      translationCache[language] = {};
+    }
+    
+    translationCache[language][namespace] = response.default || response;
+    return translationCache[language][namespace];
+  } catch (error) {
+    console.warn(`Failed to load translations for ${language}/${namespace}:`, error);
+    
+    // Fallback to English if current language fails
+    if (language !== 'en') {
+      try {
+        const fallbackResponse = await import(`../locales/en/${namespace}.json`);
+        return fallbackResponse.default || fallbackResponse;
+      } catch (fallbackError) {
+        console.error(`Failed to load fallback translations:`, fallbackError);
+        return {};
+      }
+    }
+    
+    return {};
+  }
+}
+
+// Translation hook
+export function useLocalization(namespace: string = 'common') {
+  const [language, setLanguage] = useState<Language>(detectLanguage);
+  const [translations, setTranslations] = useState<any>({});
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Load translations when language or namespace changes
+  useEffect(() => {
+    let isMounted = true;
+    
+    async function loadAndSetTranslations() {
+      setIsLoading(true);
+      
+      try {
+        const newTranslations = await loadTranslations(language, namespace);
+        
+        if (isMounted) {
+          setTranslations(newTranslations);
+        }
+      } catch (error) {
+        console.error('Failed to load translations:', error);
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    loadAndSetTranslations();
+    
+    return () => {
+      isMounted = false;
+    };
+  }, [language, namespace]);
+
+  // Change language
+  const changeLanguage = useCallback((newLanguage: Language) => {
+    setLanguage(newLanguage);
+    localStorage.setItem('localpdf-language', newLanguage);
+    
+    // Clear cache to force reload
+    if (translationCache[newLanguage]) {
+      delete translationCache[newLanguage];
+    }
+  }, []);
+
+  // Translation function
+  const t = useCallback((key: string, fallback?: string): string => {
+    const keys = key.split('.');
+    let current = translations;
+    
+    for (const k of keys) {
+      current = current?.[k];
+      if (current === undefined) {
+        break;
+      }
+    }
+    
+    if (typeof current === 'string') {
+      return current;
+    }
+    
+    // Return fallback or key if translation not found
+    return fallback || key;
+  }, [translations]);
+
+  // Check if translation exists
+  const hasTranslation = useCallback((key: string): boolean => {
+    const keys = key.split('.');
+    let current = translations;
+    
+    for (const k of keys) {
+      current = current?.[k];
+      if (current === undefined) {
+        return false;
+      }
+    }
+    
+    return typeof current === 'string';
+  }, [translations]);
+
+  return {
+    language,
+    changeLanguage,
+    t,
+    hasTranslation,
+    isLoading,
+    translations
+  };
+}
+
+// Multiple namespace hook
+export function useMultipleNamespaces(namespaces: string[]) {
+  const [language, setLanguage] = useState<Language>(detectLanguage);
+  const [allTranslations, setAllTranslations] = useState<{[namespace: string]: any}>({});
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Load all translations
+  useEffect(() => {
+    let isMounted = true;
+    
+    async function loadAllTranslations() {
+      setIsLoading(true);
+      
+      try {
+        const promises = namespaces.map(namespace => 
+          loadTranslations(language, namespace).then(translations => ({ namespace, translations }))
+        );
+        
+        const results = await Promise.all(promises);
+        
+        if (isMounted) {
+          const newTranslations: {[namespace: string]: any} = {};
+          results.forEach(({ namespace, translations }) => {
+            newTranslations[namespace] = translations;
+          });
+          setAllTranslations(newTranslations);
+        }
+      } catch (error) {
+        console.error('Failed to load translations:', error);
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    loadAllTranslations();
+    
+    return () => {
+      isMounted = false;
+    };
+  }, [language, namespaces]);
+
+  // Change language
+  const changeLanguage = useCallback((newLanguage: Language) => {
+    setLanguage(newLanguage);
+    localStorage.setItem('localpdf-language', newLanguage);
+    
+    // Clear cache to force reload
+    if (translationCache[newLanguage]) {
+      delete translationCache[newLanguage];
+    }
+  }, []);
+
+  // Translation function with namespace
+  const t = useCallback((namespace: string, key: string, fallback?: string): string => {
+    const translations = allTranslations[namespace];
+    if (!translations) {
+      return fallback || key;
+    }
+
+    const keys = key.split('.');
+    let current = translations;
+    
+    for (const k of keys) {
+      current = current?.[k];
+      if (current === undefined) {
+        break;
+      }
+    }
+    
+    if (typeof current === 'string') {
+      return current;
+    }
+    
+    return fallback || key;
+  }, [allTranslations]);
+
+  return {
+    language,
+    changeLanguage,
+    t,
+    isLoading,
+    translations: allTranslations
+  };
+}
+
+// Language display names
+export const LANGUAGE_NAMES = {
+  en: 'English',
+  ru: 'Русский'
+} as const;
+
+// Language flags/icons
+export const LANGUAGE_FLAGS = {
+  en: '🇺🇸',
+  ru: '🇷🇺'
+} as const;
+
+// Export singleton for global access
+let globalLanguage: Language = detectLanguage();
+let globalChangeLanguage: ((lang: Language) => void) | null = null;
+
+export function setGlobalLanguageChanger(changer: (lang: Language) => void) {
+  globalChangeLanguage = changer;
+}
+
+export function getGlobalLanguage(): Language {
+  return globalLanguage;
+}
+
+export function changeGlobalLanguage(language: Language) {
+  globalLanguage = language;
+  if (globalChangeLanguage) {
+    globalChangeLanguage(language);
+  }
+}
