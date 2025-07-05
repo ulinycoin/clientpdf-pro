@@ -31,23 +31,26 @@
     "help": "Help",
     "about": "About",
     "privacy": "Privacy",
-    "terms": "Terms"
+    "terms": "Terms",
+    "demo": "Demo",
+    "active": "Active"
   },
   "navigation": {
     "home": "Home",
     "tools": "Tools",
     "faq": "FAQ",
-    "contact": "Contact"
+    "contact": "Contact",
+    "privacy": "Privacy"
   },
   "header": {
     "title": "LocalPDF",
-    "subtitle": "Free PDF Tools - Privacy First",
+    "subtitle": "9 Free PDF Tools • Privacy First • No Upload Required",
     "tagline": "Professional PDF processing directly in your browser"
   },
   "footer": {
     "description": "LocalPDF - Free, secure, and private PDF tools. All processing happens locally in your browser.",
     "copyright": "© 2025 LocalPDF. All rights reserved.",
-    "privacyFirst": "Privacy First",
+    "privacyFirst": "100% Private",
     "noUploads": "No Server Uploads",
     "freeForever": "Free Forever"
   },
