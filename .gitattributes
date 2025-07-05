@@ -1,0 +1,39 @@
+# Git attributes for LocalPDF deployment optimization
+
+# Exclude Claude AI memory system from GitHub releases and archives
+.claude/ export-ignore
+.claude/* export-ignore
+
+# Exclude development files from GitHub releases
+*.sh export-ignore
+LOCAL_DEVELOPMENT.md export-ignore
+BUILD.md export-ignore  
+TASK_TRACKER.md export-ignore
+QUICK_START.md export-ignore
+scripts/ export-ignore
+.tm_properties export-ignore
+
+# Ensure proper line endings for different file types
+*.js text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.jsx text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.css text eol=lf
+*.html text eol=lf
+*.xml text eol=lf
+*.txt text eol=lf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.svg binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
+*.pdf binary
