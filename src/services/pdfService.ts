@@ -234,3 +234,32 @@ export default pdfService;
 // Named exports for compatibility
 export { pdfService };
 export type { PDFFileInfo, PDFProcessingResult };
+
+// Export individual functions for easier use
+export const mergePDFs = (
+  files: File[],
+  onProgress?: ProgressCallback,
+  options?: MergeOptions
+): Promise<PDFProcessingResult> => {
+  return pdfService.mergePDFs(files, onProgress, options);
+};
+
+export const validatePDF = (file: File): Promise<boolean> => {
+  return pdfService.validatePDF(file);
+};
+
+export const getPDFInfo = (file: File): Promise<PDFFileInfo> => {
+  return pdfService.getPDFInfo(file);
+};
+
+export const downloadFile = (blob: Blob, filename: string): void => {
+  return pdfService.downloadFile(blob, filename);
+};
+
+export const formatFileSize = (bytes: number): string => {
+  return pdfService.formatFileSize(bytes);
+};
+
+export const formatTime = (ms: number): string => {
+  return pdfService.formatTime(ms);
+};
