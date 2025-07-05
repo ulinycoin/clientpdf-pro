@@ -1,0 +1,79 @@
+{
+  "homePage": {
+    "hero": {
+      "title": "LocalPDF",
+      "subtitle": "Ultra-fast, privacy-first PDF tools that work entirely in your browser",
+      "getStarted": "Get Started",
+      "features": {
+        "private": {
+          "title": "100% Private",
+          "description": "Everything processed locally in your browser"
+        },
+        "instant": {
+          "title": "Instant",
+          "description": "No uploads or waiting required"
+        },
+        "free": {
+          "title": "Completely Free",
+          "description": "No registration or limitations"
+        }
+      }
+    },
+    "whyChoose": {
+      "title": "Why LocalPDF?",
+      "subtitle": "We make PDF work simple, fast, and secure",
+      "features": {
+        "worksEverywhere": {
+          "title": "Works Everywhere",
+          "description": "Any browser, any device"
+        },
+        "superFast": {
+          "title": "Super Fast",
+          "description": "Processing in seconds"
+        },
+        "maxSecurity": {
+          "title": "Maximum Security",
+          "description": "Files never leave your browser"
+        },
+        "easyToUse": {
+          "title": "Easy to Use",
+          "description": "Intuitive interface"
+        }
+      }
+    },
+    "statistics": {
+      "tools": "PDF Tools",
+      "privacy": "Privacy",
+      "cost": "Cost"
+    }
+  },
+  "privacyPage": {
+    "title": "Privacy Policy",
+    "lastUpdated": "Last updated",
+    "sections": {
+      "overview": {
+        "title": "Overview",
+        "content": "LocalPDF is fully committed to protecting your privacy. All PDF processing happens locally in your browser."
+      },
+      "dataCollection": {
+        "title": "Data Collection",
+        "content": "We do NOT collect, store, or transmit your files or personal data."
+      },
+      "localProcessing": {
+        "title": "Local Processing",
+        "content": "All PDF operations are performed exclusively in your browser. Files never leave your device."
+      }
+    }
+  },
+  "faqPage": {
+    "title": "Frequently Asked Questions",
+    "searchPlaceholder": "Search questions...",
+    "categories": {
+      "general": "General Questions",
+      "privacy": "Privacy & Security",
+      "technical": "Technical Requirements",
+      "tools": "Tool-specific Questions",
+      "troubleshooting": "Troubleshooting"
+    }
+  }
+}
