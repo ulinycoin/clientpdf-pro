@@ -1,13 +1,25 @@
 import React from 'react';
-import Header from '../components/organisms/Header';
-import Footer from '../components/organisms/Footer';
+import { useLocalizedText } from '../components/context/LocalizationProvider';
+import SEOHead from '../components/SEO/SEOHead';
 
 const PrivacyPage: React.FC = () => {
+  const { language } = useLocalizedText('common');
+
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <Header />
+    <>
+      <SEOHead 
+        title={language === 'ru' ? 'Политика конфиденциальности - LocalPDF' : 'Privacy Policy - LocalPDF'}
+        description={language === 'ru'
+          ? 'LocalPDF обеспечивает 100% приватность. Все файлы обрабатываются локально в вашем браузере без загрузки на сервер.'
+          : 'LocalPDF ensures 100% privacy. All files are processed locally in your browser with no server uploads.'
+        }
+        keywords={language === 'ru'
+          ? 'приватность, конфиденциальность, локальная обработка, безопасность PDF'
+          : 'privacy, confidentiality, local processing, PDF security'
+        }
+      />
       
-      <main className="flex-grow max-w-4xl mx-auto px-4 py-16">
+      <div className="max-w-4xl mx-auto px-4 py-16">
         <div className="bg-white rounded-lg shadow-lg p-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-6">Privacy Policy for LocalPDF</h1>
           <p className="text-sm text-gray-500 mb-8">Last Updated: July 2, 2025</p>
@@ -183,10 +195,8 @@ const PrivacyPage: React.FC = () => {
             </section>
           </div>
         </div>
-      </main>
-
-      <Footer />
-    </div>
+      </div>
+    </>
   );
 };
 
