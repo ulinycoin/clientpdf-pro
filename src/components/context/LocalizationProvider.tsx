@@ -1,1 +1,58 @@
-import React, { createContext, useContext, useEffect } from 'react';\nimport { useMultipleNamespaces, Language, setGlobalLanguageChanger } from '../../hooks/useLocalization';\n\ninterface LocalizationContextType {\n  language: Language;\n  changeLanguage: (language: Language) => void;\n  t: (namespace: string, key: string, fallback?: string) => string;\n  isLoading: boolean;\n  translations: {[namespace: string]: any};\n}\n\nconst LocalizationContext = createContext<LocalizationContextType | null>(null);\n\ninterface LocalizationProviderProps {\n  children: React.ReactNode;\n  namespaces?: string[];\n}\n\nexport const LocalizationProvider: React.FC<LocalizationProviderProps> = ({\n  children,\n  namespaces = ['common', 'tools']\n}) => {\n  const localization = useMultipleNamespaces(namespaces);\n\n  // Set global language changer\n  useEffect(() => {\n    setGlobalLanguageChanger(localization.changeLanguage);\n  }, [localization.changeLanguage]);\n\n  return (\n    <LocalizationContext.Provider value={localization}>\n      {children}\n    </LocalizationContext.Provider>\n  );\n};\n\nexport function useGlobalLocalization() {\n  const context = useContext(LocalizationContext);\n  if (!context) {\n    throw new Error('useGlobalLocalization must be used within a LocalizationProvider');\n  }\n  return context;\n}\n\n// Convenience hook for single namespace\nexport function useLocalizedText(namespace: string = 'common') {\n  const { t, language, isLoading } = useGlobalLocalization();\n  \n  const translate = (key: string, fallback?: string) => {\n    return t(namespace, key, fallback);\n  };\n  \n  return {\n    t: translate,\n    language,\n    isLoading\n  };\n}"
+import React, { createContext, useContext, useEffect } from 'react';
+import { useMultipleNamespaces, Language, setGlobalLanguageChanger } from '../../hooks/useLocalization';
+
+interface LocalizationContextType {
+  language: Language;
+  changeLanguage: (language: Language) => void;
+  t: (namespace: string, key: string, fallback?: string) => string;
+  isLoading: boolean;
+  translations: {[namespace: string]: any};
+}
+
+const LocalizationContext = createContext<LocalizationContextType | null>(null);
+
+interface LocalizationProviderProps {
+  children: React.ReactNode;
+  namespaces?: string[];
+}
+
+export const LocalizationProvider: React.FC<LocalizationProviderProps> = ({
+  children,
+  namespaces = ['common', 'tools']
+}) => {
+  const localization = useMultipleNamespaces(namespaces);
+
+  // Set global language changer
+  useEffect(() => {
+    setGlobalLanguageChanger(localization.changeLanguage);
+  }, [localization.changeLanguage]);
+
+  return (
+    <LocalizationContext.Provider value={localization}>
+      {children}
+    </LocalizationContext.Provider>
+  );
+};
+
+export function useGlobalLocalization() {
+  const context = useContext(LocalizationContext);
+  if (!context) {
+    throw new Error('useGlobalLocalization must be used within a LocalizationProvider');
+  }
+  return context;
+}
+
+// Convenience hook for single namespace
+export function useLocalizedText(namespace: string = 'common') {
+  const { t, language, isLoading } = useGlobalLocalization();
+  
+  const translate = (key: string, fallback?: string) => {
+    return t(namespace, key, fallback);
+  };
+  
+  return {
+    t: translate,
+    language,
+    isLoading
+  };
+}
