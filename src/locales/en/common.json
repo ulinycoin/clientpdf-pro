@@ -1,0 +1,59 @@
+{
+  "app": {
+    "title": "LocalPDF",
+    "description": "Privacy-first PDF tools",
+    "tagline": "Fast, secure, and completely private"
+  },
+  "navigation": {
+    "home": "Home",
+    "tools": "Tools",
+    "privacy": "Privacy",
+    "faq": "FAQ",
+    "back": "Back"
+  },
+  "buttons": {
+    "upload": "Upload File",
+    "download": "Download",
+    "process": "Process",
+    "cancel": "Cancel",
+    "retry": "Retry",
+    "clear": "Clear",
+    "reset": "Reset",
+    "start": "Start",
+    "continue": "Continue",
+    "finish": "Finish"
+  },
+  "file": {
+    "upload": "Upload files",
+    "drag": "Drag and drop files here",
+    "browse": "Browse files",
+    "selected": "Selected files",
+    "processing": "Processing...",
+    "completed": "Completed",
+    "error": "Error processing file",
+    "formats": "Supported formats",
+    "size": "File size",
+    "pages": "Pages"
+  },
+  "status": {
+    "loading": "Loading...",
+    "processing": "Processing...",
+    "success": "Success!",
+    "error": "Error occurred",
+    "completed": "Completed",
+    "ready": "Ready"
+  },
+  "errors": {
+    "generic": "An error occurred",
+    "fileUpload": "File upload failed",
+    "processing": "Processing failed", 
+    "network": "Network error",
+    "notSupported": "Not supported"
+  },
+  "language": {
+    "switch": "Switch language",
+    "current": "Current language",
+    "english": "English",
+    "russian": "Russian"
+  }
+}
