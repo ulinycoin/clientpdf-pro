@@ -10,17 +10,18 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
-# Build outputs
+# Build outputs (these are rebuilt by Vercel)
 dist/
 build/
 
-# IDE
+# IDE files
 .vscode/
 .idea/
 *.swp
 *.swo
+.tm_properties
 
-# OS
+# OS files
 .DS_Store
 Thumbs.db
 
@@ -34,15 +35,55 @@ coverage/
 .tmp/
 temp/
 
-# Claude memory files (not needed for deployment)
+# Claude AI memory system (development only)
 .claude/
+.claude/*
 
-# Development scripts
+# Development documentation and scripts
 quick-start.sh
 claude-start.sh
+claude-end.sh
 LOCAL_DEVELOPMENT.md
+BUILD.md
+TASK_TRACKER.md
+QUICK_START.md
+
+# Development scripts directory
+scripts/
+scripts/*
 
 # Test files
 src/tests/
 *.test.tsx
 *.test.ts
+*.spec.ts
+*.spec.tsx
+
+# Development config files
+.gitignore
+.vercelignore
+
+# GitHub specific files (not needed for deployment)
+.github/
+.github/*
+
+# Git files
+.git/
+.git/*
+.gitattributes
+
+# Development dependencies tracking
+package-lock.json
+
+# TypeScript node config (not needed for runtime)
+tsconfig.node.json
+
+# Development/build tools configs (Vercel handles these)
+postcss.config.js
+tailwind.config.js
+vite.config.ts
+
+# Documentation files (not needed for app runtime)
+README.md
+FAQ.md
+PRIVACY.md
