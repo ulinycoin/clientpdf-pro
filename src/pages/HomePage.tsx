@@ -7,6 +7,26 @@ import SEOHead from '../components/SEO/SEOHead';
 const HomePage: React.FC = () => {
   const { t, language } = useLocalizedText('common');
 
+  const handleToolSelect = (toolType: string) => {
+    // Navigate to the appropriate tool page
+    const toolRoutes: Record<string, string> = {
+      'merge': '/merge-pdf',
+      'split': '/split-pdf', 
+      'compress': '/compress-pdf',
+      'add-text': '/add-text-pdf',
+      'watermark': '/watermark-pdf',
+      'rotate': '/rotate-pdf',
+      'extract-pages': '/extract-pages-pdf',
+      'extract-text': '/extract-text-pdf',
+      'pdf-to-image': '/pdf-to-image'
+    };
+
+    const route = toolRoutes[toolType];
+    if (route) {
+      window.location.href = route;
+    }
+  };
+
   return (
     <>
       <SEOHead 
@@ -28,7 +48,7 @@ const HomePage: React.FC = () => {
             <div className="mb-8">
               <div className="text-8xl mb-6">📄</div>
               <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-                {t('header.title', 'LocalPDF')}
+                {t('app.title', 'LocalPDF')}
               </h1>
               <p className="text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
                 {language === 'ru' 
@@ -97,7 +117,9 @@ const HomePage: React.FC = () => {
         
         {/* Tools Section */}
         <div id="tools" className="bg-white/50 backdrop-blur">
-          <ToolsGrid />
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <ToolsGrid onToolSelect={handleToolSelect} />
+          </div>
         </div>
         
         {/* Why Choose LocalPDF Section */}
