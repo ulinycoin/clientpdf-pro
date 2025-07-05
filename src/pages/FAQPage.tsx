@@ -1,13 +1,25 @@
 import React from 'react';
-import Header from '../components/organisms/Header';
-import Footer from '../components/organisms/Footer';
+import { useLocalizedText } from '../components/context/LocalizationProvider';
+import SEOHead from '../components/SEO/SEOHead';
 
 const FAQPage: React.FC = () => {
+  const { language } = useLocalizedText('common');
+
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <Header />
+    <>
+      <SEOHead 
+        title={language === 'ru' ? 'Часто задаваемые вопросы - LocalPDF' : 'FAQ - LocalPDF'}
+        description={language === 'ru'
+          ? 'Ответы на часто задаваемые вопросы о LocalPDF. Узнайте как использовать PDF инструменты безопасно и эффективно.'
+          : 'Answers to frequently asked questions about LocalPDF. Learn how to use PDF tools safely and effectively.'
+        }
+        keywords={language === 'ru'
+          ? 'FAQ, вопросы, помощь, инструкция, LocalPDF, PDF инструменты'
+          : 'FAQ, questions, help, guide, LocalPDF, PDF tools'
+        }
+      />
       
-      <main className="flex-grow max-w-4xl mx-auto px-4 py-16">
+      <div className="max-w-4xl mx-auto px-4 py-16">
         <div className="bg-white rounded-lg shadow-lg p-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-6">Frequently Asked Questions</h1>
           <p className="text-gray-600 mb-8">
@@ -276,10 +288,8 @@ const FAQPage: React.FC = () => {
 
           </div>
         </div>
-      </main>
-
-      <Footer />
-    </div>
+      </div>
+    </>
   );
 };
 
