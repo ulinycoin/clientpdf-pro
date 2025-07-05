@@ -22,7 +22,12 @@ function App() {
   return (
     <HelmetProvider>
       <LocalizationProvider namespaces={['common', 'tools']}>
-        <Router>
+        <Router
+          future={{
+            v7_startTransition: true,
+            v7_relativeSplatPath: true
+          }}
+        >
           <div className="min-h-screen bg-gray-50 flex flex-col">
             <LocalizedHeader />
             
