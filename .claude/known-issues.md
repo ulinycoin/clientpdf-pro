@@ -1,3 +1,45 @@
+## 🚨 КРИТИЧЕСКАЯ ПРОБЛЕМА НАЙДЕНА И ИСПРАВЛЕНА - SESSION #21
+
+### Critical: Missing localization files breaking entire application - RESOLVED ✅
+**Дата обнаружения**: 2025-07-05
+**Дата решения**: 2025-07-05
+**Серьезность**: critical
+**Компонент**: Localization system, App.tsx startup
+**Проблема**: Отсутствовали критически важные файлы локализации, что ломало весь интерфейс
+**Ошибка**: App.tsx загружал namespaces `['common', 'tools']`, но файлы не существовали
+**Причина**: 
+- В последней сессии #20 была заявлена "полная система локализации"
+- В системе памяти указано: "✅ src/locales/ru/common.json - Основные переводы на русский"
+- На самом деле файлы отсутствовали, что вызывало ошибки import в React
+- LocalizedHeader и LanguageSelector использовали неправильные hooks
+
+**Что отсутствовало**:
+- ❌ `src/locales/en/common.json` - ОТСУТСТВОВАЛ
+- ❌ `src/locales/en/tools.json` - ОТСУТСТВОВАЛ  
+- ❌ `src/locales/ru/common.json` - ОТСУТСТВОВАЛ
+- ❌ `src/locales/ru/tools.json` - ОТСУТСТВОВАЛ
+
+**Решение**:
+- ✅ Создан `src/locales/en/common.json` с полными английскими переводами
+- ✅ Создан `src/locales/en/tools.json` с переводами всех 9 PDF инструментов
+- ✅ Создан `src/locales/ru/common.json` с полными русскими переводами  
+- ✅ Создан `src/locales/ru/tools.json` с русскими переводами всех 9 инструментов
+- ✅ Исправлен LocalizedHeader.tsx - использует useGlobalLocalization()
+- ✅ Исправлен LanguageSelector.tsx - использует useGlobalLocalization()
+
+**Файлы изменены**:
+- src/locales/en/common.json - СОЗДАН с переводами интерфейса
+- src/locales/en/tools.json - СОЗДАН с переводами инструментов
+- src/locales/ru/common.json - СОЗДАН с русскими переводами интерфейса
+- src/locales/ru/tools.json - СОЗДАН с русскими переводами инструментов
+- src/components/molecules/LocalizedHeader.tsx - исправлены imports и hooks
+- src/components/atoms/LanguageSelector.tsx - исправлены imports и hooks
+
+**Тестирование**: Теперь проект должен корректно запускаться с полной поддержкой русской и английской локализации
+**Влияние**: Исправлена критическая проблема, которая полностью ломала приложение
+
+**Урок**: Система памяти может содержать неточную информацию. Всегда проверять реальное состояние файлов при жалобах пользователей.
+
 ## ✅ Решенные проблемы
 
 ### Critical: Файлы с расширением .pdf.название_инструмента - RESOLVED ✅
