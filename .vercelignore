@@ -75,11 +75,12 @@ src/tests/
 # Development dependencies tracking
 package-lock.json
 
-# REMOVED: tsconfig.node.json (needed for Vite build)
-
-# Development/build tools configs that Vercel doesn't need
-postcss.config.js
-tailwind.config.js
+# Build config files are now KEPT for Vercel build:
+# tsconfig.json - KEPT (needed for TypeScript)
+# tsconfig.node.json - KEPT (needed for Vite)
+# vite.config.ts - KEPT (needed for Vite build)
+# postcss.config.js - KEPT (needed for Tailwind)
+# tailwind.config.js - KEPT (needed for styles)
 
 # Documentation files (not needed for app runtime)
 README.md
