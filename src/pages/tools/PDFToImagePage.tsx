@@ -1,11 +1,31 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { toolsSEOData } from '../../data/seoData';
 import SEOHead from '../../components/SEO/SEOHead';
 import RelatedTools from '../../components/common/RelatedTools';
-import { Link } from 'react-router-dom';
+import PdfToImageTool from '../../components/organisms/PdfToImageTool';
+import FileUploadZone from '../../components/molecules/FileUploadZone';
 
 const PDFToImagePage: React.FC = () => {
   const seoData = toolsSEOData.pdfToImage;
+  const [files, setFiles] = useState<File[]>([]);
+  const [showTool, setShowTool] = useState(false);
+
+  const handleFilesSelected = (selectedFiles: File[]) => {
+    const pdfFiles = selectedFiles.filter(file => file.type === 'application/pdf');
+    if (pdfFiles.length > 0) {
+      setFiles(pdfFiles);
+      setShowTool(true);
+    }
+  };
+
+  const handleToolComplete = (result: any) => {
+    console.log('PDF to image completed:', result);
+  };
+
+  const handleToolClose = () => {
+    setShowTool(false);
+    setFiles([]);
+  };
 
   return (
     <>
@@ -23,30 +43,39 @@ const PDFToImagePage: React.FC = () => {
             Convert PDF to Images Free
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Convert PDF pages to images for free. Export PDF as JPG, PNG, or WEBP.
+            Convert PDF pages to images for free. Export PDF as JPG, PNG, or WEBP. High-quality conversion in your browser.
           </p>
         </header>
 
         <section className="mb-12">
-          <div className="max-w-2xl mx-auto text-center">
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-8">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-blue-600 text-2xl">🖼️</span>
+          {!showTool ? (
+            <div className="max-w-2xl mx-auto">
+              <FileUploadZone
+                onFilesSelected={handleFilesSelected}
+                multiple={false}
+                accept="application/pdf"
+                className="mb-6"
+              />
+              
+              <div className="text-center text-gray-600">
+                <p className="mb-2">
+                  <strong>Step 1:</strong> Upload your PDF file
+                </p>
+                <p className="mb-2">
+                  <strong>Step 2:</strong> Choose output format (PNG, JPG, WEBP)
+                </p>
+                <p>
+                  <strong>Step 3:</strong> Download your converted images
+                </p>
               </div>
-              <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                Ready to Convert PDF to Images?
-              </h2>
-              <p className="text-gray-600 mb-6">
-                Use our main tool to convert PDF pages to high-quality images.
-              </p>
-              <Link
-                to="/"
-                className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
-              >
-                Go to PDF to Image Converter
-              </Link>
             </div>
-          </div>
+          ) : (
+            <PdfToImageTool 
+              files={files} 
+              onComplete={handleToolComplete} 
+              onClose={handleToolClose} 
+            />
+          )}
         </section>
 
         <RelatedTools currentTool="pdfToImage" className="mb-8" />
