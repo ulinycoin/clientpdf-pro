@@ -10,8 +10,8 @@ const WatermarkPDFPage: React.FC = () => {
   const [files, setFiles] = useState<File[]>([]);
   const [showTool, setShowTool] = useState(false);
 
-  const handleFilesUploaded = (uploadedFiles: File[]) => {
-    const pdfFiles = uploadedFiles.filter(file => file.type === 'application/pdf');
+  const handleFilesSelected = (selectedFiles: File[]) => {
+    const pdfFiles = selectedFiles.filter(file => file.type === 'application/pdf');
     if (pdfFiles.length > 0) {
       setFiles(pdfFiles);
       setShowTool(true);
@@ -52,9 +52,9 @@ const WatermarkPDFPage: React.FC = () => {
           {!showTool ? (
             <div className="max-w-2xl mx-auto">
               <FileUploadZone
-                onFilesUploaded={handleFilesUploaded}
-                maxFiles={1}
-                acceptedTypes={['application/pdf']}
+                onFilesSelected={handleFilesSelected}
+                multiple={false}
+                accept="application/pdf"
                 className="mb-6"
               />
               
