@@ -43,3 +43,8 @@ export function downloadBlob(blob: Blob, filename: string): void {
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
 }
+
+// Alias for compatibility - same function as downloadBlob
+export function downloadFile(blob: Blob, filename: string): void {
+  downloadBlob(blob, filename);
+}
