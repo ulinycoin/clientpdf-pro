@@ -233,8 +233,30 @@ const HowToUsePage: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Remaining tools would continue here... */}
-                {/* For brevity, I'll include the rest in the structure */}
+                {/* Additional PDF Tools */}
+                <div className="bg-gradient-to-r from-red-50 to-red-100 rounded-lg p-6">
+                  <div className="flex items-start">
+                    <div className="text-red-600 text-3xl mr-4">🏷️</div>
+                    <div className="flex-1">
+                      <h3 className="text-xl font-semibold text-red-800 mb-3">Add Watermarks & More</h3>
+                      <p className="text-red-700 mb-4">LocalPDF includes 5 additional powerful tools for comprehensive PDF editing.</p>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-red-700">
+                        <div>
+                          <p><strong>🏷️ Watermarks:</strong> Add text or image watermarks</p>
+                          <p><strong>🔄 Rotate Pages:</strong> Fix page orientation</p>
+                          <p><strong>📑 Extract Pages:</strong> Create new PDFs from selected pages</p>
+                        </div>
+                        <div>
+                          <p><strong>📝 Extract Text:</strong> Get text content from PDFs</p>
+                          <p><strong>🖼️ PDF to Images:</strong> Convert pages to PNG/JPEG</p>
+                        </div>
+                      </div>
+                      <div className="mt-4 p-3 bg-red-100 rounded">
+                        <p className="text-xs text-red-600"><strong>All tools work the same way:</strong> Upload → Configure → Process → Download. Each tool has specific options tailored to its function.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
               </div>
             </section>
@@ -249,7 +271,7 @@ const HowToUsePage: React.FC = () => {
                 <div className="bg-gray-50 p-6 rounded-lg">
                   <h3 className="font-semibold text-gray-800 mb-3">🚀 Performance Tips</h3>
                   <ul className="space-y-2 text-sm text-gray-600">
-                    <li>• Close other browser tabs for large files (>50MB)</li>
+                    <li>• Close other browser tabs for large files ({'>'}50MB)</li>
                     <li>• Use Chrome or Firefox for best performance</li>
                     <li>• Enable hardware acceleration in browser settings</li>
                     <li>• Process very large files in smaller batches</li>
@@ -283,6 +305,47 @@ const HowToUsePage: React.FC = () => {
                     <li>• Clear browser cache for persistent issues</li>
                     <li>• Ensure JavaScript is enabled</li>
                     <li>• Update browser to latest version</li>
+                  </ul>
+                </div>
+              </div>
+            </section>
+
+            {/* File Format Support */}
+            <section className="mb-12">
+              <h2 className="text-3xl font-semibold text-gray-800 mb-8 border-b border-gray-200 pb-3">
+                📋 File Format Support
+              </h2>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="bg-green-50 p-6 rounded-lg border border-green-200">
+                  <h3 className="font-semibold text-green-800 mb-3">✅ Supported Input</h3>
+                  <ul className="space-y-1 text-sm text-green-700">
+                    <li>• PDF files (any version)</li>
+                    <li>• Multi-page documents</li>
+                    <li>• Text and image PDFs</li>
+                    <li>• Forms and annotations</li>
+                    <li>• Files up to 100MB</li>
+                  </ul>
+                </div>
+                
+                <div className="bg-blue-50 p-6 rounded-lg border border-blue-200">
+                  <h3 className="font-semibold text-blue-800 mb-3">📤 Output Formats</h3>
+                  <ul className="space-y-1 text-sm text-blue-700">
+                    <li>• PDF (processed documents)</li>
+                    <li>• PNG (high quality images)</li>
+                    <li>• JPEG (compressed images)</li>
+                    <li>• WEBP (modern format)</li>
+                    <li>• TXT (extracted text)</li>
+                  </ul>
+                </div>
+                
+                <div className="bg-yellow-50 p-6 rounded-lg border border-yellow-200">
+                  <h3 className="font-semibold text-yellow-800 mb-3">⚠️ Limitations</h3>
+                  <ul className="space-y-1 text-sm text-yellow-700">
+                    <li>• Maximum file size: 100MB</li>
+                    <li>• Password-protected files not supported</li>
+                    <li>• Some complex PDF structures may fail</li>
+                    <li>• Scanned PDFs: limited text extraction</li>
                   </ul>
                 </div>
               </div>
