@@ -71,8 +71,7 @@ const PDFToImagePage: React.FC = () => {
             </div>
           ) : (
             <PdfToImageTool 
-              files={files} 
-              onComplete={handleToolComplete} 
+              initialFile={files[0]} 
               onClose={handleToolClose} 
             />
           )}
