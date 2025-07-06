@@ -1,5 +1,38 @@
 ## ✅ Решенные проблемы
 
+### Critical: Favicon не отображается в браузере - RESOLVED ✅
+**Дата обнаружения**: 2025-07-06
+**Дата решения**: 2025-07-06
+**Серьезность**: medium
+**Компонент**: favicon files, index.html
+**Проблема**: Favicon не отображался в браузерных табах, закладках и истории
+**Ошибка**: 
+- В index.html использовался `<link rel="icon" type="image/svg+xml" href="/vite.svg" />` вместо LocalPDF favicon
+- Отсутствовал основной файл `favicon.ico` (требуется для legacy browser support)
+- Отсутствовал `favicon.svg` для современных браузеров
+- Неправильный порядок объявления favicon в HTML
+**Причина**: 
+- index.html содержал ссылку на Vite SVG вместо брендированного favicon
+- В папке public/ не было файла favicon.ico
+- Не был создан SVG favicon с логотипом LocalPDF
+**Решение**:
+- Создан favicon.svg с дизайном LocalPDF (синий градиент, PDF иконка, зеленая точка "Local")
+- Создан favicon.ico файл (16x16, синий фон с белой буквой "L")
+- Обновлен index.html с правильной иерархией favicon:
+  ```html
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  ```
+- Сохранены существующие PNG варианты и Apple Touch icon
+**Файлы изменены**:
+- `public/favicon.ico` - создан новый ICO файл
+- `public/favicon.svg` - создан новый SVG логотип
+- `index.html` - исправлены ссылки на favicon
+**Тестирование**: После исправления favicon должен отображаться во всех современных браузерах и legacy браузерах
+**Влияние**: Улучшена узнаваемость бренда LocalPDF, favicon теперь виден в табах, закладках и PWA установках
+
 ### Critical: Файлы с расширением .pdf.название_инструмента - RESOLVED ✅
 **Дата обнаружения**: 2025-07-04
 **Дата решения**: 2025-07-04
