@@ -2,6 +2,7 @@
 export { default as HomePage } from './HomePage';
 export { default as PrivacyPage } from './PrivacyPage';
 export { default as FAQPage } from './FAQPage';
+export { default as HowToUsePage } from './HowToUsePage';
 export { default as NotFoundPage } from './NotFoundPage';
 
 // Tool pages exports (lazy loaded in App.tsx)
