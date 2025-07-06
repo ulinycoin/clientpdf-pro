@@ -1,5 +1,62 @@
 ## ✅ Решенные проблемы
 
+### Critical: Build error - downloadFile not exported - RESOLVED ✅
+**Дата обнаружения**: 2025-07-06
+**Дата решения**: 2025-07-06  
+**Серьезность**: critical
+**Компонент**: src/utils/fileHelpers.ts, RotatePDFPage.tsx, ExtractPagesPDFPage.tsx
+**Проблема**: Ошибка сборки `"downloadFile" is not exported by "src/utils/fileHelpers.ts"`
+**Ошибка**: 
+```
+"downloadFile" is not exported by "src/utils/fileHelpers.ts", imported by "src/pages/tools/RotatePDFPage.tsx".
+file: /vercel/path0/src/pages/tools/RotatePDFPage.tsx:8:9
+8: import { downloadFile } from '../../utils/fileHelpers';
+```
+**Причина**: 
+- В fileHelpers.ts была функция `downloadBlob`, но не было `downloadFile`
+- Новые страницы RotatePDFPage и ExtractPagesPDFPage импортировали несуществующую функцию `downloadFile`
+- Разные страницы использовали разные названия для одной и той же функции
+**Решение**:
+- Добавлена функция `downloadFile` в fileHelpers.ts как алиас для `downloadBlob`
+- Обеспечена обратная совместимость - обе функции теперь доступны
+- Код:
+  ```typescript
+  // Alias for compatibility - same function as downloadBlob
+  export function downloadFile(blob: Blob, filename: string): void {
+    downloadBlob(blob, filename);
+  }
+  ```
+**Файлы изменены**:
+- src/utils/fileHelpers.ts - добавлен экспорт функции downloadFile
+**Тестирование**: Build должен проходить успешно без ошибок импорта
+**Влияние**: Критическое исправление - позволяет успешно собирать и деплоить проект
+
+### Critical: SEO лендинги без функционала - RESOLVED ✅
+**Дата обнаружения**: 2025-07-06
+**Дата решения**: 2025-07-06  
+**Серьезность**: critical
+**Компонент**: ExtractPagesPDFPage.tsx, RotatePDFPage.tsx
+**Проблема**: SEO лендинги `/extract-pages-pdf` и `/rotate-pdf` перенаправляли на главную страницу вместо предоставления функциональных инструментов
+**Ошибка**: 
+- ExtractPagesPDFPage.tsx содержал только SEO контент с кнопкой "Go to PDF Page Extractor" → "/"
+- RotatePDFPage.tsx содержал только SEO контент с кнопкой "Go to PDF Rotation Tool" → "/"
+- Пользователи не могли использовать инструменты напрямую с этих URL
+**Причина**: 
+- Страницы были настроены как чисто SEO лендинги без интеграции функциональных компонентов
+- Отсутствовали FileUploadZone и соответствующие Tool компоненты
+- Неправильная архитектура: SEO + функционал должны быть на одной странице
+**Решение**:
+- **ExtractPagesPDFPage.tsx**: Добавлен полный функционал с FileUploadZone, ExtractPagesTool, и обработчиками файлов
+- **RotatePDFPage.tsx**: Добавлен полный функционал с FileUploadZone, RotateTool, и обработчиками файлов  
+- Сохранен весь SEO контент (title, description, structured data)
+- Добавлены красивые лендинг секции (Benefits, How It Works)
+- Реализован паттерн: Upload → Tool → Download
+**Файлы изменены**:
+- src/pages/tools/ExtractPagesPDFPage.tsx - полная переписка с функциональным инструментом
+- src/pages/tools/RotatePDFPage.tsx - полная переписка с функциональным инструментом
+**Тестирование**: Теперь оба URL предоставляют полную функциональность без редиректов
+**Влияние**: Критическое улучшение UX - пользователи могут использовать инструменты напрямую с SEO URL
+
 ### Critical: Favicon не отображается в браузере - RESOLVED ✅
 **Дата обнаружения**: 2025-07-06
 **Дата решения**: 2025-07-06
