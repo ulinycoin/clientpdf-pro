@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
-import { HomePage, PrivacyPage, FAQPage, NotFoundPage } from './pages';
+import { HomePage, PrivacyPage, FAQPage, HowToUsePage, NotFoundPage } from './pages';
 import Breadcrumbs from './components/common/Breadcrumbs';
 
 // Lazy load tool pages for better performance
@@ -55,9 +55,7 @@ function App() {
               {/* Information pages */}
               <Route path="/privacy" element={<PrivacyPage />} />
               <Route path="/faq" element={<FAQPage />} />
-              
-              {/* Additional SEO pages */}
-              <Route path="/how-to-use" element={<HomePage />} />
+              <Route path="/how-to-use" element={<HowToUsePage />} />
               
               {/* 404 page - professional LocalPDF branded error page */}
               <Route path="*" element={<NotFoundPage />} />
