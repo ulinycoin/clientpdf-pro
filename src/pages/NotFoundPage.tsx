@@ -17,13 +17,13 @@ const NotFoundPage: React.FC = () => {
         <title>Page Not Found - LocalPDF | Free Privacy-First PDF Tools</title>
         <meta name="description" content="The page you're looking for doesn't exist. Explore LocalPDF's free privacy-first PDF tools for merging, splitting, compressing, and editing PDF files." />
         <meta name="robots" content="noindex, follow" />
-        <link rel="canonical" href="https://localpdf.tech/404" />
+        <link rel="canonical" href="https://localpdf.online/404" />
         
         {/* Open Graph */}
         <meta property="og:title" content="Page Not Found - LocalPDF" />
         <meta property="og:description" content="Explore LocalPDF's free privacy-first PDF tools for all your document needs." />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://localpdf.tech/404" />
+        <meta property="og:url" content="https://localpdf.online/404" />
         
         {/* Twitter Cards */}
         <meta name="twitter:card" content="summary" />
