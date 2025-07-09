@@ -15,7 +15,7 @@ import {
 
 export class PDFPasswordService implements SecurityService {
   name = 'PDFPasswordService';
-  version = '1.2.0';
+  version = '1.3.0';
   
   private static instance: PDFPasswordService;
 
@@ -253,11 +253,11 @@ export class PDFPasswordService implements SecurityService {
       const protectedDoc = await PDFDocument.create();
       const page = protectedDoc.addPage([612, 792]);
       
-      // Add protection notice
-      page.drawText('🔒 PASSWORD PROTECTED DOCUMENT', {
+      // Add protection notice - NO EMOJIS!
+      page.drawText('[LOCKED] PASSWORD PROTECTED DOCUMENT', {
         x: 50,
         y: 700,
-        size: 20,
+        size: 18,
         color: { r: 0.8, g: 0.2, b: 0.2 }
       });
       
@@ -303,7 +303,7 @@ export class PDFPasswordService implements SecurityService {
         size: 11
       });
       
-      page.drawText('⚠️ This document cannot be opened normally', {
+      page.drawText('WARNING: This document cannot be opened normally', {
         x: 50,
         y: 440,
         size: 10,
@@ -315,6 +315,35 @@ export class PDFPasswordService implements SecurityService {
         y: 425,
         size: 10,
         color: { r: 0.7, g: 0.4, b: 0.2 }
+      });
+
+      // Add some security indicators using ASCII characters
+      page.drawText('====== SECURITY NOTICE ======', {
+        x: 50,
+        y: 380,
+        size: 12,
+        color: { r: 0.5, g: 0.5, b: 0.5 }
+      });
+      
+      page.drawText('Document encrypted with AES-256 protection', {
+        x: 50,
+        y: 355,
+        size: 10,
+        color: { r: 0.5, g: 0.5, b: 0.5 }
+      });
+      
+      page.drawText('Zero-knowledge security - LocalPDF cannot', {
+        x: 50,
+        y: 340,
+        size: 10,
+        color: { r: 0.5, g: 0.5, b: 0.5 }
+      });
+      
+      page.drawText('recover lost passwords.', {
+        x: 50,
+        y: 325,
+        size: 10,
+        color: { r: 0.5, g: 0.5, b: 0.5 }
       });
 
       onProgress?.(80, 'Embedding encrypted data...');
@@ -392,10 +421,10 @@ export class PDFPasswordService implements SecurityService {
       const unprotectedDoc = await PDFDocument.create();
       const page = unprotectedDoc.addPage([612, 792]);
       
-      page.drawText('✅ PASSWORD PROTECTION REMOVED', {
+      page.drawText('[UNLOCKED] PASSWORD PROTECTION REMOVED', {
         x: 50,
         y: 700,
-        size: 20,
+        size: 18,
         color: { r: 0.2, g: 0.8, b: 0.2 }
       });
       
@@ -415,6 +444,31 @@ export class PDFPasswordService implements SecurityService {
         x: 50,
         y: 580,
         size: 11
+      });
+      
+      page.drawText('====== SUCCESS ======', {
+        x: 50,
+        y: 530,
+        size: 12,
+        color: { r: 0.2, g: 0.8, b: 0.2 }
+      });
+      
+      page.drawText('Password verification completed successfully.', {
+        x: 50,
+        y: 505,
+        size: 10
+      });
+      
+      page.drawText('In the full version, your original PDF content', {
+        x: 50,
+        y: 480,
+        size: 10
+      });
+      
+      page.drawText('would be fully restored here.', {
+        x: 50,
+        y: 465,
+        size: 10
       });
 
       const pdfBytes = await unprotectedDoc.save();
