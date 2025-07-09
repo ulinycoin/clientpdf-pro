@@ -15,7 +15,7 @@ import {
 
 export class PDFPasswordService implements SecurityService {
   name = 'PDFPasswordService';
-  version = '1.4.0';
+  version = '1.5.0';
   
   private static instance: PDFPasswordService;
 
@@ -136,7 +136,10 @@ export class PDFPasswordService implements SecurityService {
         
         // Check if this is our protected document
         const keywords = pdfDoc.getKeywords();
-        if (keywords && keywords.includes('LocalPDF:Protected')) {
+        if (keywords && (
+          (typeof keywords === 'string' && keywords.includes('LocalPDF:Protected')) ||
+          (Array.isArray(keywords) && keywords.some(k => k.includes('LocalPDF:Protected')))
+        )) {
           isPasswordProtected = true;
         }
       } catch (error) {
@@ -359,7 +362,11 @@ export class PDFPasswordService implements SecurityService {
       protectedDoc.setTitle('LocalPDF Protected Document');
       protectedDoc.setAuthor('LocalPDF Security');
       protectedDoc.setSubject(`Protected: ${originalFile.name}`);
-      protectedDoc.setKeywords(`LocalPDF:Protected:${passwordHash}:${base64Data.substring(0, 100)}...`);
+      
+      // FIX: setKeywords expects an array, not a string
+      const protectionData = `LocalPDF:Protected:${passwordHash}:${base64Data.substring(0, 100)}...`;
+      protectedDoc.setKeywords(['LocalPDF', 'Protected', 'Password', protectionData]);
+      
       protectedDoc.setCreator('LocalPDF Password Tool');
 
       onProgress?.(90, 'Finalizing protection...');
@@ -404,12 +411,28 @@ export class PDFPasswordService implements SecurityService {
 
       // Check if this is our protected document
       const keywords = pdfDoc.getKeywords();
-      if (!keywords || !keywords.includes('LocalPDF:Protected')) {
+      let isProtected = false;
+      let protectionData = '';
+
+      if (keywords) {
+        if (typeof keywords === 'string') {
+          isProtected = keywords.includes('LocalPDF:Protected');
+          protectionData = keywords;
+        } else if (Array.isArray(keywords)) {
+          const protectedKeyword = keywords.find(k => typeof k === 'string' && k.includes('LocalPDF:Protected'));
+          if (protectedKeyword) {
+            isProtected = true;
+            protectionData = protectedKeyword;
+          }
+        }
+      }
+
+      if (!isProtected) {
         throw new Error('This is not a LocalPDF protected document or is using different protection');
       }
 
       // Extract password hash and verify
-      const parts = keywords.split(':');
+      const parts = protectionData.split(':');
       if (parts.length < 4) {
         throw new Error('Invalid protection format');
       }
