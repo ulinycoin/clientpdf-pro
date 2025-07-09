@@ -16,3 +16,6 @@ export { default as ExtractPagesTool } from './ExtractPagesTool';
 
 // Modular AddTextTool - now correctly points to the modular version
 export { default as AddTextTool } from './AddTextTool';
+
+// Security Tools
+export { default as PasswordTool } from './PasswordTool';
