@@ -1,4 +1,4 @@
-import { PDFDocument, PDFDict, PDFName, PDFString } from 'pdf-lib';
+import { PDFDocument, rgb } from 'pdf-lib';
 import { 
   PDFProcessingResult, 
   ProgressCallback, 
@@ -15,7 +15,7 @@ import {
 
 export class PDFPasswordService implements SecurityService {
   name = 'PDFPasswordService';
-  version = '1.3.0';
+  version = '1.4.0';
   
   private static instance: PDFPasswordService;
 
@@ -253,68 +253,75 @@ export class PDFPasswordService implements SecurityService {
       const protectedDoc = await PDFDocument.create();
       const page = protectedDoc.addPage([612, 792]);
       
-      // Add protection notice - NO EMOJIS!
+      // Add protection notice - using rgb() function for colors
       page.drawText('[LOCKED] PASSWORD PROTECTED DOCUMENT', {
         x: 50,
         y: 700,
         size: 18,
-        color: { r: 0.8, g: 0.2, b: 0.2 }
+        color: rgb(0.8, 0.2, 0.2) // Red color for warning
       });
       
       page.drawText(`Original file: ${originalFile.name}`, {
         x: 50,
         y: 650,
-        size: 12
+        size: 12,
+        color: rgb(0, 0, 0) // Black color
       });
       
       page.drawText(`Pages: ${pdfDoc.getPageCount()}`, {
         x: 50,
         y: 630,
-        size: 12
+        size: 12,
+        color: rgb(0, 0, 0)
       });
       
       page.drawText('This document is password protected by LocalPDF.', {
         x: 50,
         y: 580,
-        size: 12
+        size: 12,
+        color: rgb(0, 0, 0)
       });
       
       page.drawText('To unlock the original content:', {
         x: 50,
         y: 550,
-        size: 12
+        size: 12,
+        color: rgb(0, 0, 0)
       });
       
       page.drawText('1. Go to LocalPDF password tool', {
         x: 70,
         y: 525,
-        size: 11
+        size: 11,
+        color: rgb(0, 0, 0)
       });
       
       page.drawText('2. Upload this protected file', {
         x: 70,
         y: 505,
-        size: 11
+        size: 11,
+        color: rgb(0, 0, 0)
       });
       
       page.drawText('3. Enter your password to decrypt', {
         x: 70,
         y: 485,
-        size: 11
+        size: 11,
+        color: rgb(0, 0, 0)
       });
       
       page.drawText('WARNING: This document cannot be opened normally', {
         x: 50,
         y: 440,
         size: 10,
-        color: { r: 0.7, g: 0.4, b: 0.2 }
+        color: rgb(0.7, 0.4, 0.2) // Orange warning color
       });
       
       page.drawText('without the correct password.', {
         x: 50,
         y: 425,
         size: 10,
-        color: { r: 0.7, g: 0.4, b: 0.2 }
+        color: rgb(0.7, 0.4, 0.2)
       });
 
       // Add some security indicators using ASCII characters
@@ -322,28 +329,28 @@ export class PDFPasswordService implements SecurityService {
         x: 50,
         y: 380,
         size: 12,
-        color: { r: 0.5, g: 0.5, b: 0.5 }
+        color: rgb(0.5, 0.5, 0.5) // Gray color
       });
       
       page.drawText('Document encrypted with AES-256 protection', {
         x: 50,
         y: 355,
         size: 10,
-        color: { r: 0.5, g: 0.5, b: 0.5 }
+        color: rgb(0.5, 0.5, 0.5)
       });
       
       page.drawText('Zero-knowledge security - LocalPDF cannot', {
         x: 50,
         y: 340,
         size: 10,
-        color: { r: 0.5, g: 0.5, b: 0.5 }
+        color: rgb(0.5, 0.5, 0.5)
       });
       
       page.drawText('recover lost passwords.', {
         x: 50,
         y: 325,
         size: 10,
-        color: { r: 0.5, g: 0.5, b: 0.5 }
+        color: rgb(0.5, 0.5, 0.5)
       });
 
       onProgress?.(80, 'Embedding encrypted data...');
@@ -425,50 +432,56 @@ export class PDFPasswordService implements SecurityService {
         x: 50,
         y: 700,
         size: 18,
-        color: { r: 0.2, g: 0.8, b: 0.2 }
+        color: rgb(0.2, 0.8, 0.2) // Green success color
       });
       
       page.drawText('This document has been successfully unlocked.', {
         x: 50,
         y: 650,
-        size: 12
+        size: 12,
+        color: rgb(0, 0, 0)
       });
       
       page.drawText('Note: This is a demo version. In production,', {
         x: 50,
         y: 600,
-        size: 11
+        size: 11,
+        color: rgb(0, 0, 0)
       });
       
       page.drawText('the original document content would be restored here.', {
         x: 50,
         y: 580,
-        size: 11
+        size: 11,
+        color: rgb(0, 0, 0)
       });
       
       page.drawText('====== SUCCESS ======', {
         x: 50,
         y: 530,
         size: 12,
-        color: { r: 0.2, g: 0.8, b: 0.2 }
+        color: rgb(0.2, 0.8, 0.2)
       });
       
       page.drawText('Password verification completed successfully.', {
         x: 50,
         y: 505,
-        size: 10
+        size: 10,
+        color: rgb(0, 0, 0)
       });
       
       page.drawText('In the full version, your original PDF content', {
         x: 50,
         y: 480,
-        size: 10
+        size: 10,
+        color: rgb(0, 0, 0)
       });
       
       page.drawText('would be fully restored here.', {
         x: 50,
         y: 465,
-        size: 10
+        size: 10,
+        color: rgb(0, 0, 0)
       });
 
       const pdfBytes = await unprotectedDoc.save();
