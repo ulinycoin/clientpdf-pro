@@ -15,6 +15,9 @@ const ExtractPagesPDFPage = React.lazy(() => import('./pages/tools/ExtractPagesP
 const ExtractTextPDFPage = React.lazy(() => import('./pages/tools/ExtractTextPDFPage'));
 const PDFToImagePage = React.lazy(() => import('./pages/tools/PDFToImagePage'));
 
+// Security Tools
+const PasswordPDFPage = React.lazy(() => import('./pages/tools/PasswordPDFPage'));
+
 // Loading component
 const LoadingSpinner: React.FC = () => (
   <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
@@ -51,6 +54,9 @@ function App() {
               <Route path="/extract-pages-pdf" element={<ExtractPagesPDFPage />} />
               <Route path="/extract-text-pdf" element={<ExtractTextPDFPage />} />
               <Route path="/pdf-to-image" element={<PDFToImagePage />} />
+              
+              {/* Security Tools */}
+              <Route path="/password-pdf" element={<PasswordPDFPage />} />
               
               {/* Information pages */}
               <Route path="/privacy" element={<PrivacyPage />} />
