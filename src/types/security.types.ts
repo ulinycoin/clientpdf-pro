@@ -98,7 +98,7 @@ export interface SecurityError {
   cause?: unknown;
 }
 
-// Hook Types
+// Hook Types - Extended with additional methods
 export interface UsePasswordProtectionResult {
   protectPDF: (file: File, options: PasswordProtectionOptions) => Promise<PDFProcessingResult>;
   removePDFPassword: (file: File, password: string) => Promise<PDFProcessingResult>;
@@ -106,4 +106,7 @@ export interface UsePasswordProtectionResult {
   progress: number;
   error: string | null;
   securityInfo: PDFSecurityInfo | null;
+  analyzeSecurityInfo: (file: File) => Promise<void>;
+  clearError: () => void;
+  reset: () => void;
 }
