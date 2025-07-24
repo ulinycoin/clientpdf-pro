@@ -1,8 +1,8 @@
 import * as pdfjsLib from 'pdfjs-dist';
-import { 
-  ImageConversionOptions, 
-  ImageConversionResult, 
-  ConvertedImage, 
+import {
+  ImageConversionOptions,
+  ImageConversionResult,
+  ConvertedImage,
   ImageConversionProgress,
   QUALITY_SETTINGS,
   ImageFormat
@@ -10,7 +10,7 @@ import {
 import { createFileName } from '../utils/fileHelpers';
 
 // Configure PDF.js worker
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
+pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
 
 export class PdfToImageService {
   private static instance: PdfToImageService;
@@ -26,12 +26,12 @@ export class PdfToImageService {
    * Convert PDF pages to images
    */
   async convertToImages(
-    file: File, 
+    file: File,
     options: ImageConversionOptions,
     onProgress?: (progress: ImageConversionProgress) => void
   ): Promise<ImageConversionResult> {
     const startTime = Date.now();
-    
+
     try {
       // Update progress
       onProgress?.({
@@ -49,7 +49,7 @@ export class PdfToImageService {
 
       // Determine which pages to convert
       const pagesToConvert = this.getPageNumbers(totalPages, options);
-      
+
       onProgress?.({
         currentPage: 0,
         totalPages: pagesToConvert.length,
@@ -61,10 +61,10 @@ export class PdfToImageService {
       // Convert pages
       const convertedImages: ConvertedImage[] = [];
       const qualitySettings = QUALITY_SETTINGS[options.quality];
-      
+
       for (let i = 0; i < pagesToConvert.length; i++) {
         const pageNumber = pagesToConvert[i];
-        
+
         onProgress?.({
           currentPage: i + 1,
           totalPages: pagesToConvert.length,
@@ -74,13 +74,13 @@ export class PdfToImageService {
         });
 
         const convertedImage = await this.convertPage(
-          pdfDoc, 
-          pageNumber, 
-          options, 
+          pdfDoc,
+          pageNumber,
+          options,
           qualitySettings.resolution,
           file.name
         );
-        
+
         convertedImages.push(convertedImage);
       }
 
@@ -112,7 +112,7 @@ export class PdfToImageService {
 
     } catch (error) {
       console.error('[PdfToImageService] Conversion failed:', error);
-      
+
       return {
         success: false,
         images: [],
@@ -136,7 +136,7 @@ export class PdfToImageService {
   ): Promise<ConvertedImage> {
     // Get page
     const page = await pdfDoc.getPage(pageNumber);
-    
+
     // Calculate scale for desired resolution
     const viewport = page.getViewport({ scale: 1 });
     const scale = resolution / 72; // 72 DPI is the default
@@ -145,7 +145,7 @@ export class PdfToImageService {
     // Create canvas
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
-    
+
     if (!context) {
       throw new Error('Failed to get canvas context');
     }
@@ -169,7 +169,7 @@ export class PdfToImageService {
 
     // Convert canvas to blob
     const blob = await this.canvasToBlob(canvas, options);
-    
+
     // Create data URL for preview
     const dataUrl = canvas.toDataURL(
       `image/${options.format}`,
@@ -195,8 +195,8 @@ export class PdfToImageService {
   private canvasToBlob(canvas: HTMLCanvasElement, options: ImageConversionOptions): Promise<Blob> {
     return new Promise((resolve, reject) => {
       const mimeType = `image/${options.format}`;
-      const quality = options.format === 'jpeg' 
-        ? QUALITY_SETTINGS[options.quality].jpegQuality 
+      const quality = options.format === 'jpeg'
+        ? QUALITY_SETTINGS[options.quality].jpegQuality
         : undefined;
 
       canvas.toBlob(
@@ -220,20 +220,20 @@ export class PdfToImageService {
     switch (options.pages) {
       case 'all':
         return Array.from({ length: totalPages }, (_, i) => i + 1);
-      
+
       case 'specific':
         return options.pageNumbers?.filter(n => n >= 1 && n <= totalPages) || [];
-      
+
       case 'range':
         if (!options.pageRange) return [];
         const { start, end } = options.pageRange;
         const validStart = Math.max(1, Math.min(start, totalPages));
         const validEnd = Math.min(totalPages, Math.max(end, validStart));
         return Array.from(
-          { length: validEnd - validStart + 1 }, 
+          { length: validEnd - validStart + 1 },
           (_, i) => validStart + i
         );
-      
+
       default:
         return [];
     }
@@ -246,7 +246,7 @@ export class PdfToImageService {
     // For now, we'll implement a simple solution without JSZip
     // In a real implementation, you might want to add JSZip dependency
     // This is a placeholder that creates a single blob
-    
+
     if (images.length === 1) {
       return images[0].blob;
     }
@@ -255,7 +255,7 @@ export class PdfToImageService {
     // 1. Add JSZip dependency
     // 2. Create individual downloads
     // 3. Use browser's native APIs
-    
+
     // For now, return the first image and log a note
     console.warn('Multiple image ZIP creation not implemented yet. Returning first image.');
     return images[0].blob;

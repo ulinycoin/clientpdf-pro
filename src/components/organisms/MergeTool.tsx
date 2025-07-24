@@ -34,8 +34,8 @@ const MergeTool: React.FC<MergeToolProps> = React.memo(({
 
   // Memoized computed values
   const orderedFiles = useMemo(() => {
-    return options.order ? 
-      options.order.map(index => files[index]).filter(Boolean) : 
+    return options.order ?
+      options.order.map(index => files[index]).filter(Boolean) :
       files;
   }, [files, options.order]);
 
@@ -64,7 +64,7 @@ const MergeTool: React.FC<MergeToolProps> = React.memo(({
 
       if (result.success && result.data) {
         setResult(result);
-        
+
         // Auto-download
         const filename = generateFilename(
           files[0]?.name || 'merged',
@@ -72,7 +72,7 @@ const MergeTool: React.FC<MergeToolProps> = React.memo(({
           'pdf'
         );
         downloadBlob(result.data, filename);
-        
+
         // Notify parent
         onComplete(result);
       } else {
@@ -85,11 +85,11 @@ const MergeTool: React.FC<MergeToolProps> = React.memo(({
 
   const moveFile = (fromIndex: number, toIndex: number) => {
     if (!canProcess) return;
-    
+
     const newOrder = [...(options.order || [])];
     const item = newOrder.splice(fromIndex, 1)[0];
     newOrder.splice(toIndex, 0, item);
-    
+
     setOptions(prev => ({ ...prev, order: newOrder }));
   };
 
@@ -106,6 +106,7 @@ const MergeTool: React.FC<MergeToolProps> = React.memo(({
       description={mergeDescription}
       files={files}
       onClose={onClose}
+      showFileList={false}
       isProcessing={state.isProcessing}
       progress={state.progress}
       progressMessage={state.progressMessage}
@@ -133,7 +134,7 @@ const MergeTool: React.FC<MergeToolProps> = React.memo(({
             </span>
             File Order (drag to reorder)
           </h3>
-          
+
           <div className="space-y-3">
             {orderedFiles.map((file, index) => (
               <div
@@ -157,7 +158,7 @@ const MergeTool: React.FC<MergeToolProps> = React.memo(({
                     </p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center space-x-2">
                   <button
                     onClick={() => moveFile(index, Math.max(0, index - 1))}
@@ -189,7 +190,7 @@ const MergeTool: React.FC<MergeToolProps> = React.memo(({
             </span>
             Document Metadata
           </h3>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium text-secondary-700 mb-2">
@@ -204,7 +205,7 @@ const MergeTool: React.FC<MergeToolProps> = React.memo(({
                 placeholder="Document title"
               />
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-secondary-700 mb-2">
                 Author
@@ -218,7 +219,7 @@ const MergeTool: React.FC<MergeToolProps> = React.memo(({
                 placeholder="Author name"
               />
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-secondary-700 mb-2">
                 Subject

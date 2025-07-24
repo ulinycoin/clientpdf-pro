@@ -465,6 +465,63 @@ export const fr: Translations = {
           subtitle: 'Combinez plusieurs images en un seul document PDF',
           supportedFormats: 'JPEG, PNG, GIF, WebP',
         },
+        tool: {
+          title: 'Convertisseur d\'Images en PDF',
+          description: 'Combinez plusieurs images en un seul document PDF avec des options de mise en page personnalisées',
+          selectedImages: 'Images Sélectionnées ({count})',
+          clearAll: 'Tout Effacer',
+          pdfSettings: 'Paramètres PDF',
+          pageSize: 'Taille de Page',
+          pageSizeOptions: {
+            a4: 'A4 (210 × 297 mm)',
+            letter: 'Letter (8.5 × 11 pouces)',
+            auto: 'Auto (ajuster le contenu)'
+          },
+          orientation: 'Orientation',
+          orientationOptions: {
+            portrait: 'Portrait',
+            landscape: 'Paysage'
+          },
+          imageLayout: 'Mise en Page d\'Image',
+          layoutOptions: {
+            fitToPage: 'Ajuster à la page',
+            actualSize: 'Taille réelle',
+            fitWidth: 'Ajuster à la largeur',
+            fitHeight: 'Ajuster à la hauteur'
+          },
+          imageQuality: 'Qualité d\'Image ({quality}%)',
+          qualitySlider: {
+            lowerSize: 'Taille réduite',
+            higherQuality: 'Qualité supérieure'
+          },
+          pageMargin: 'Marge de Page ({margin} pouce)',
+          marginSlider: {
+            noMargin: 'Sans marge',
+            twoInch: '2 pouces'
+          },
+          background: 'Arrière-plan',
+          backgroundOptions: {
+            white: 'Blanc',
+            lightGray: 'Gris clair',
+            gray: 'Gris',
+            black: 'Noir'
+          },
+          fileInfo: '{count} image{plural} sélectionnée{plural} • Taille totale : {size}',
+          converting: 'Conversion des images en PDF... {progress}%',
+          buttons: {
+            reset: 'Réinitialiser',
+            createPdf: 'Créer PDF',
+            converting: 'Conversion...'
+          },
+          help: {
+            title: 'Comment Utiliser Images en PDF',
+            dragDrop: 'Glissez simplement vos images dans la zone de téléchargement ou cliquez pour parcourir',
+            formats: 'Prend en charge les formats d\'images JPEG, PNG, GIF et WebP',
+            layout: 'Choisissez la taille de page, l\'orientation et comment les images s\'adaptent sur chaque page',
+            quality: 'Ajustez la qualité d\'image pour équilibrer la taille du fichier et la qualité visuelle',
+            privacy: 'Tout le traitement se fait localement - vos images ne quittent jamais votre appareil'
+          }
+        },
         features: {
           title: 'Pourquoi choisir notre convertisseur d\'images en PDF ?',
           private: {
@@ -677,6 +734,65 @@ export const fr: Translations = {
           choose: 'Étape 2 : Choisissez les options d\'extraction (formatage intelligent recommandé)',
           download: 'Étape 3 : Téléchargez le texte extrait en tant que fichier .txt',
         },
+        tool: {
+          title: 'Extraire le Texte',
+          description: 'Extrayez et formatez intelligemment le contenu textuel de vos PDF',
+          fileToExtract: 'Fichier pour extraire le texte :',
+          extractionOptions: 'Options d\'Extraction :',
+          smartFormatting: 'Activer le Formatage Intelligent (Recommandé)',
+          smartFormattingDesc: 'Nettoyer automatiquement le texte, corriger les sauts de ligne, détecter les titres et améliorer la lisibilité',
+          formattingLevel: 'Niveau de Formatage :',
+          levels: {
+            minimal: {
+              title: 'Minimal',
+              desc: 'Nettoyage de base - fusionner les mots cassés, supprimer les espaces supplémentaires'
+            },
+            standard: {
+              title: 'Standard',
+              desc: 'Recommandé - paragraphes, titres, listes, formatage propre'
+            },
+            advanced: {
+              title: 'Avancé',
+              desc: 'Maximum - toutes les fonctionnalités plus détection de structure améliorée'
+            }
+          },
+          includeMetadata: 'Inclure les métadonnées du document (titre, auteur, date de création)',
+          preserveFormatting: 'Préserver le formatage des pages (inclure les numéros de page et séparateurs)',
+          pageRange: 'Extraire une plage de pages spécifique (par défaut : toutes les pages)',
+          pageRangeFields: {
+            startPage: 'Page de Début',
+            endPage: 'Page de Fin',
+            note: 'Laissez la page de fin vide ou égale à la page de début pour extraire une seule page'
+          },
+          extracting: 'Extraction du texte... {progress}%',
+          success: {
+            title: 'Extraction de Texte Terminée !',
+            pagesProcessed: 'Pages traitées : {count}',
+            textLength: 'Longueur du texte : {length} caractères',
+            documentTitle: 'Titre du document : {title}',
+            author: 'Auteur : {author}',
+            smartFormattingApplied: 'Formatage Intelligent Appliqué ({level})',
+            fileDownloaded: 'Fichier automatiquement téléchargé en .txt',
+            noTextWarning: 'Ce PDF peut contenir des images scannées sans texte extractible',
+            comparisonPreview: 'Aperçu des Améliorations de Formatage :',
+            before: 'Avant (Brut) :',
+            after: 'Après (Formaté Intelligemment) :',
+            notice: '↑ Remarquez le formatage amélioré, les mots fusionnés et la meilleure structure !',
+            textPreview: 'Aperçu du Texte Extrait :'
+          },
+          infoBox: {
+            title: 'Extraction de Texte Intelligente',
+            description: 'Utilisation de PDF.js avec formatage intelligent pour extraire un texte propre et lisible. Le formatage intelligent corrige automatiquement les problèmes courants du texte PDF comme les mots cassés, les sauts de ligne désordonnés et la mauvaise structure.'
+          },
+          privacy: {
+            title: 'Confidentialité et Sécurité',
+            description: 'L\'extraction et le formatage du texte se font localement dans votre navigateur. Le contenu de votre PDF ne quitte jamais votre appareil, assurant une confidentialité et sécurité complètes.'
+          },
+          buttons: {
+            extractText: 'Extraire le Texte',
+            extracting: 'Extraction du Texte...'
+          }
+        }
       },
       addText: {
         pageTitle: 'Ajouter du Texte au PDF Gratuitement',

@@ -465,6 +465,63 @@ export const en: Translations = {
           subtitle: 'Combine multiple images into a single PDF document',
           supportedFormats: 'JPEG, PNG, GIF, WebP',
         },
+        tool: {
+          title: 'Images to PDF Converter',
+          description: 'Combine multiple images into a single PDF document with custom layout options',
+          selectedImages: 'Selected Images ({count})',
+          clearAll: 'Clear All',
+          pdfSettings: 'PDF Settings',
+          pageSize: 'Page Size',
+          pageSizeOptions: {
+            a4: 'A4 (210 × 297 mm)',
+            letter: 'Letter (8.5 × 11 in)',
+            auto: 'Auto (fit content)'
+          },
+          orientation: 'Orientation',
+          orientationOptions: {
+            portrait: 'Portrait',
+            landscape: 'Landscape'
+          },
+          imageLayout: 'Image Layout',
+          layoutOptions: {
+            fitToPage: 'Fit to Page',
+            actualSize: 'Actual Size',
+            fitWidth: 'Fit Width',
+            fitHeight: 'Fit Height'
+          },
+          imageQuality: 'Image Quality ({quality}%)',
+          qualitySlider: {
+            lowerSize: 'Lower size',
+            higherQuality: 'Higher quality'
+          },
+          pageMargin: 'Page Margin ({margin} inch)',
+          marginSlider: {
+            noMargin: 'No margin',
+            twoInch: '2 inch'
+          },
+          background: 'Background',
+          backgroundOptions: {
+            white: 'White',
+            lightGray: 'Light Gray',
+            gray: 'Gray',
+            black: 'Black'
+          },
+          fileInfo: '{count} image{plural} selected • Total size: {size}',
+          converting: 'Converting images to PDF... {progress}%',
+          buttons: {
+            reset: 'Reset',
+            createPdf: 'Create PDF',
+            converting: 'Converting...'
+          },
+          help: {
+            title: 'How to Use Images to PDF',
+            dragDrop: 'Simply drag your images into the upload area or click to browse',
+            formats: 'Supports JPEG, PNG, GIF, and WebP image formats',
+            layout: 'Choose page size, orientation, and how images fit on each page',
+            quality: 'Adjust image quality to balance file size and visual quality',
+            privacy: 'All processing happens locally - your images never leave your device'
+          }
+        },
         features: {
           title: 'Why Choose Our Images to PDF Converter?',
           private: {
@@ -677,6 +734,65 @@ export const en: Translations = {
           choose: 'Step 2: Choose extraction options (smart formatting recommended)',
           download: 'Step 3: Download extracted text as .txt file',
         },
+        tool: {
+          title: 'Extract Text',
+          description: 'Extract and intelligently format text content from your PDF',
+          fileToExtract: 'File to extract text from:',
+          extractionOptions: 'Extraction Options:',
+          smartFormatting: 'Enable Smart Formatting (Recommended)',
+          smartFormattingDesc: 'Automatically clean up text, fix line breaks, detect headings, and improve readability',
+          formattingLevel: 'Formatting Level:',
+          levels: {
+            minimal: {
+              title: 'Minimal',
+              desc: 'Basic cleanup - merge broken words, remove extra spaces'
+            },
+            standard: {
+              title: 'Standard',
+              desc: 'Recommended - paragraphs, headings, lists, clean formatting'
+            },
+            advanced: {
+              title: 'Advanced',
+              desc: 'Maximum - all features plus enhanced structure detection'
+            }
+          },
+          includeMetadata: 'Include document metadata (title, author, creation date)',
+          preserveFormatting: 'Preserve page formatting (include page numbers and separators)',
+          pageRange: 'Extract specific page range (default: all pages)',
+          pageRangeFields: {
+            startPage: 'Start Page',
+            endPage: 'End Page',
+            note: 'Leave end page empty or equal to start page to extract a single page'
+          },
+          extracting: 'Extracting text... {progress}%',
+          success: {
+            title: 'Text Extraction Complete!',
+            pagesProcessed: 'Pages processed: {count}',
+            textLength: 'Text length: {length} characters',
+            documentTitle: 'Document title: {title}',
+            author: 'Author: {author}',
+            smartFormattingApplied: 'Smart Formatting Applied ({level})',
+            fileDownloaded: 'File automatically downloaded as .txt',
+            noTextWarning: 'This PDF may contain scanned images without extractable text',
+            comparisonPreview: 'Formatting Improvement Preview:',
+            before: 'Before (Raw):',
+            after: 'After (Smart Formatted):',
+            notice: '↑ Notice the improved formatting, merged words, and better structure!',
+            textPreview: 'Extracted Text Preview:'
+          },
+          infoBox: {
+            title: 'Smart Text Extraction',
+            description: 'Using PDF.js with intelligent formatting to extract clean, readable text. Smart formatting automatically fixes common PDF text issues like broken words, messy line breaks, and poor structure.'
+          },
+          privacy: {
+            title: 'Privacy & Security',
+            description: 'Text extraction and formatting happen locally in your browser. Your PDF content never leaves your device, ensuring complete privacy and security.'
+          },
+          buttons: {
+            extractText: 'Extract Text',
+            extracting: 'Extracting Text...'
+          }
+        }
       },
       addText: {
         pageTitle: 'Add Text to PDF Free',

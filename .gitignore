@@ -68,3 +68,45 @@ temp/
 *.njsproj
 *.sln
 *.sw?
+
+# Development session documentation files
+ANALYTICS_SETUP.md
+DEPLOYMENT.md
+DEVELOPMENT_SESSION_SUMMARY.md
+FINAL_STATUS_REPORT.md
+HEADER_FOOTER_PROGRESS.md
+I18N_SETUP.md
+MIGRATION_TASK.md
+MISSION_COMPLETE.md
+OCR_PAGE_REDESIGN_COMPLETE.md
+OCR_SPACING_IMPROVEMENTS.md
+PRODUCTION_SETUP_GUIDE.md
+REFACTORING_CHANGELOG.md
+RUSSIAN_OCR_IMPROVEMENTS.md
+SEO_OPTIMIZATION_REPORT.md
+SIMPLE_OCR_SOLUTION.md
+SPLIT_PDF_FIX.md
+TESTING_TYPESCRIPT_PROGRESS.md
+TOOL_PAGES_UPDATE_STATUS.md
+UPLOAD_SECTION_CHANGES.md
+PDF_DOWNLOAD_FIXES_COMPLETE.md
+SPLIT_PDF_QUICK_FIX.md
+
+# Development scripts
+cleanup-for-deploy.sh
+copy-seo-files.sh
+create-production-version.sh
+fix-split-pdf.sh
+refactor-scroll-helper.sh
+update_tool_pages.sh
+update_upload_sections.sh
+
+# Debug and test files in root
+debug-*.js
+test-*.js
+test-*.ts
+test-*.html
+ocr-integration-test.js
+
+# CodeMCP config
+codemcp.toml

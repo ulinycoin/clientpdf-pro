@@ -465,6 +465,63 @@ export const es: Translations = {
           subtitle: 'Combina múltiples imágenes en un solo documento PDF',
           supportedFormats: 'JPEG, PNG, GIF, WebP',
         },
+        tool: {
+          title: 'Conversor de Imágenes a PDF',
+          description: 'Combina múltiples imágenes en un solo documento PDF con opciones de diseño personalizadas',
+          selectedImages: 'Imágenes Seleccionadas ({count})',
+          clearAll: 'Limpiar Todo',
+          pdfSettings: 'Configuración de PDF',
+          pageSize: 'Tamaño de Página',
+          pageSizeOptions: {
+            a4: 'A4 (210 × 297 mm)',
+            letter: 'Letter (8.5 × 11 pulgadas)',
+            auto: 'Auto (ajustar contenido)'
+          },
+          orientation: 'Orientación',
+          orientationOptions: {
+            portrait: 'Vertical',
+            landscape: 'Horizontal'
+          },
+          imageLayout: 'Diseño de Imagen',
+          layoutOptions: {
+            fitToPage: 'Ajustar a la página',
+            actualSize: 'Tamaño real',
+            fitWidth: 'Ajustar al ancho',
+            fitHeight: 'Ajustar a la altura'
+          },
+          imageQuality: 'Calidad de Imagen ({quality}%)',
+          qualitySlider: {
+            lowerSize: 'Menor tamaño',
+            higherQuality: 'Mayor calidad'
+          },
+          pageMargin: 'Margen de Página ({margin} pulgada)',
+          marginSlider: {
+            noMargin: 'Sin margen',
+            twoInch: '2 pulgadas'
+          },
+          background: 'Fondo',
+          backgroundOptions: {
+            white: 'Blanco',
+            lightGray: 'Gris claro',
+            gray: 'Gris',
+            black: 'Negro'
+          },
+          fileInfo: '{count} imagen{plural} seleccionada{plural} • Tamaño total: {size}',
+          converting: 'Convirtiendo imágenes a PDF... {progress}%',
+          buttons: {
+            reset: 'Reiniciar',
+            createPdf: 'Crear PDF',
+            converting: 'Convirtiendo...'
+          },
+          help: {
+            title: 'Cómo Usar Imágenes a PDF',
+            dragDrop: 'Simplemente arrastra tus imágenes al área de carga o haz clic para navegar',
+            formats: 'Soporta formatos de imagen JPEG, PNG, GIF y WebP',
+            layout: 'Elige el tamaño de página, orientación y cómo las imágenes se ajustan en cada página',
+            quality: 'Ajusta la calidad de imagen para equilibrar el tamaño del archivo y la calidad visual',
+            privacy: 'Todo el procesamiento ocurre localmente - tus imágenes nunca dejan tu dispositivo'
+          }
+        },
         features: {
           title: '¿Por qué elegir nuestro conversor de imágenes a PDF?',
           private: {
@@ -677,6 +734,65 @@ export const es: Translations = {
           choose: 'Paso 2: Elige opciones de extracción (formato inteligente recomendado)',
           download: 'Paso 3: Descarga el texto extraído como archivo .txt',
         },
+        tool: {
+          title: 'Extraer Texto',
+          description: 'Extrae y formatea inteligentemente el contenido de texto de tus PDFs',
+          fileToExtract: 'Archivo para extraer texto:',
+          extractionOptions: 'Opciones de Extracción:',
+          smartFormatting: 'Habilitar Formato Inteligente (Recomendado)',
+          smartFormattingDesc: 'Limpiar automáticamente el texto, corregir saltos de línea, detectar títulos y mejorar la legibilidad',
+          formattingLevel: 'Nivel de Formato:',
+          levels: {
+            minimal: {
+              title: 'Mínimo',
+              desc: 'Limpieza básica - fusionar palabras rotas, eliminar espacios extra'
+            },
+            standard: {
+              title: 'Estándar',
+              desc: 'Recomendado - párrafos, títulos, listas, formato limpio'
+            },
+            advanced: {
+              title: 'Avanzado',
+              desc: 'Máximo - todas las características más detección de estructura mejorada'
+            }
+          },
+          includeMetadata: 'Incluir metadatos del documento (título, autor, fecha de creación)',
+          preserveFormatting: 'Preservar formato de página (incluir números de página y separadores)',
+          pageRange: 'Extraer rango de páginas específico (predeterminado: todas las páginas)',
+          pageRangeFields: {
+            startPage: 'Página de Inicio',
+            endPage: 'Página Final',
+            note: 'Deja la página final vacía o igual a la página de inicio para extraer una sola página'
+          },
+          extracting: 'Extrayendo texto... {progress}%',
+          success: {
+            title: '¡Extracción de Texto Completada!',
+            pagesProcessed: 'Páginas procesadas: {count}',
+            textLength: 'Longitud del texto: {length} caracteres',
+            documentTitle: 'Título del documento: {title}',
+            author: 'Autor: {author}',
+            smartFormattingApplied: 'Formato Inteligente Aplicado ({level})',
+            fileDownloaded: 'Archivo descargado automáticamente como .txt',
+            noTextWarning: 'Este PDF puede contener imágenes escaneadas sin texto extraíble',
+            comparisonPreview: 'Vista Previa de Mejoras de Formato:',
+            before: 'Antes (Crudo):',
+            after: 'Después (Formato Inteligente):',
+            notice: '↑ ¡Nota el formato mejorado, palabras fusionadas y mejor estructura!',
+            textPreview: 'Vista Previa del Texto Extraído:'
+          },
+          infoBox: {
+            title: 'Extracción de Texto Inteligente',
+            description: 'Usando PDF.js con formato inteligente para extraer texto limpio y legible. El formato inteligente corrige automáticamente problemas comunes del texto PDF como palabras rotas, saltos de línea desordenados y estructura pobre.'
+          },
+          privacy: {
+            title: 'Privacidad y Seguridad',
+            description: 'La extracción y formato de texto ocurren localmente en tu navegador. El contenido de tu PDF nunca deja tu dispositivo, asegurando completa privacidad y seguridad.'
+          },
+          buttons: {
+            extractText: 'Extraer Texto',
+            extracting: 'Extrayendo Texto...'
+          }
+        }
       },
       addText: {
         pageTitle: 'Agregar Texto a PDF Gratis',

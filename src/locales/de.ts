@@ -465,6 +465,63 @@ export const de: Translations = {
           subtitle: 'Mehrere Bilder in ein einziges PDF-Dokument kombinieren',
           supportedFormats: 'JPEG, PNG, GIF, WebP',
         },
+        tool: {
+          title: 'Bilder zu PDF Konverter',
+          description: 'Mehrere Bilder in ein einziges PDF-Dokument mit anpassbaren Layout-Optionen kombinieren',
+          selectedImages: 'Ausgewählte Bilder ({count})',
+          clearAll: 'Alle Löschen',
+          pdfSettings: 'PDF-Einstellungen',
+          pageSize: 'Seitengröße',
+          pageSizeOptions: {
+            a4: 'A4 (210 × 297 mm)',
+            letter: 'Letter (8.5 × 11 Zoll)',
+            auto: 'Auto (Inhalt anpassen)'
+          },
+          orientation: 'Ausrichtung',
+          orientationOptions: {
+            portrait: 'Hochformat',
+            landscape: 'Querformat'
+          },
+          imageLayout: 'Bild-Layout',
+          layoutOptions: {
+            fitToPage: 'An Seite anpassen',
+            actualSize: 'Tatsächliche Größe',
+            fitWidth: 'An Breite anpassen',
+            fitHeight: 'An Höhe anpassen'
+          },
+          imageQuality: 'Bildqualität ({quality}%)',
+          qualitySlider: {
+            lowerSize: 'Kleinere Größe',
+            higherQuality: 'Höhere Qualität'
+          },
+          pageMargin: 'Seitenrand ({margin} Zoll)',
+          marginSlider: {
+            noMargin: 'Kein Rand',
+            twoInch: '2 Zoll'
+          },
+          background: 'Hintergrund',
+          backgroundOptions: {
+            white: 'Weiß',
+            lightGray: 'Hellgrau',
+            gray: 'Grau',
+            black: 'Schwarz'
+          },
+          fileInfo: '{count} Bild{plural} ausgewählt • Gesamtgröße: {size}',
+          converting: 'Bilder zu PDF konvertieren... {progress}%',
+          buttons: {
+            reset: 'Zurücksetzen',
+            createPdf: 'PDF Erstellen',
+            converting: 'Konvertieren...'
+          },
+          help: {
+            title: 'So verwenden Sie Bilder zu PDF',
+            dragDrop: 'Ziehen & Ablegen: Ziehen Sie einfach Ihre Bilder in den Upload-Bereich oder klicken Sie zum Durchsuchen',
+            formats: 'Mehrere Formate: Unterstützt JPEG, PNG, GIF und WebP Bildformate',
+            layout: 'Anpassbares Layout: Wählen Sie Seitengröße, Ausrichtung und wie Bilder auf jede Seite passen',
+            quality: 'Qualitätskontrolle: Passen Sie die Bildqualität an, um Dateigröße und visuelle Qualität auszubalancieren',
+            privacy: 'Datenschutz: Alle Verarbeitung erfolgt lokal - Ihre Bilder verlassen niemals Ihr Gerät'
+          }
+        },
         features: {
           title: 'Warum unseren Bilder zu PDF Konverter wählen?',
           private: {
@@ -677,6 +734,65 @@ export const de: Translations = {
           choose: 'Schritt 2: Wählen Sie Extraktionsoptionen (intelligente Formatierung empfohlen)',
           download: 'Schritt 3: Laden Sie den extrahierten Text als .txt-Datei herunter',
         },
+        tool: {
+          title: 'Text Extrahieren',
+          description: 'Extrahieren und intelligent formatieren Sie Textinhalte aus Ihren PDFs',
+          fileToExtract: 'Datei zum Extrahieren von Text:',
+          extractionOptions: 'Extraktionsoptionen:',
+          smartFormatting: 'Intelligente Formatierung Aktivieren (Empfohlen)',
+          smartFormattingDesc: 'Automatisch Text aufräumen, Zeilenumbrüche korrigieren, Überschriften erkennen und Lesbarkeit verbessern',
+          formattingLevel: 'Formatierungsebene:',
+          levels: {
+            minimal: {
+              title: 'Minimal',
+              desc: 'Grundreinigung - unterbrochene Wörter zusammenführen, zusätzliche Leerzeichen entfernen'
+            },
+            standard: {
+              title: 'Standard',
+              desc: 'Empfohlen - Absätze, Überschriften, Listen, saubere Formatierung'
+            },
+            advanced: {
+              title: 'Erweitert',
+              desc: 'Maximum - alle Funktionen plus verbesserte Strukturerkennung'
+            }
+          },
+          includeMetadata: 'Dokumentmetadaten einschließen (Titel, Autor, Erstellungsdatum)',
+          preserveFormatting: 'Seitenformatierung beibehalten (Seitenzahlen und Trennzeichen einschließen)',
+          pageRange: 'Bestimmten Seitenbereich extrahieren (Standard: alle Seiten)',
+          pageRangeFields: {
+            startPage: 'Startseite',
+            endPage: 'Endseite',
+            note: 'Lassen Sie die Endseite leer oder gleich der Startseite, um eine einzelne Seite zu extrahieren'
+          },
+          extracting: 'Text extrahieren... {progress}%',
+          success: {
+            title: 'Textextraktion Abgeschlossen!',
+            pagesProcessed: 'Seiten verarbeitet: {count}',
+            textLength: 'Textlänge: {length} Zeichen',
+            documentTitle: 'Dokumenttitel: {title}',
+            author: 'Autor: {author}',
+            smartFormattingApplied: 'Intelligente Formatierung Angewendet ({level})',
+            fileDownloaded: 'Datei automatisch als .txt heruntergeladen',
+            noTextWarning: 'Diese PDF könnte gescannte Bilder ohne extrahierbaren Text enthalten',
+            comparisonPreview: 'Formatierungsverbesserungs-Vorschau:',
+            before: 'Vorher (Roh):',
+            after: 'Nachher (Intelligent Formatiert):',
+            notice: '↑ Beachten Sie die verbesserte Formatierung, zusammengeführte Wörter und bessere Struktur!',
+            textPreview: 'Extrahierter Text Vorschau:'
+          },
+          infoBox: {
+            title: 'Intelligente Textextraktion',
+            description: 'Verwendung von PDF.js mit intelligenter Formatierung zur Extraktion von sauberem, lesbarem Text. Intelligente Formatierung behebt automatisch häufige PDF-Textprobleme wie unterbrochene Wörter, unordentliche Zeilenumbrüche und schlechte Struktur.'
+          },
+          privacy: {
+            title: 'Datenschutz & Sicherheit',
+            description: 'Textextraktion und Formatierung erfolgen lokal in Ihrem Browser. Ihr PDF-Inhalt verlässt niemals Ihr Gerät und gewährleistet vollständigen Datenschutz und Sicherheit.'
+          },
+          buttons: {
+            extractText: 'Text Extrahieren',
+            extracting: 'Text Extrahieren...'
+          }
+        }
       },
       addText: {
         pageTitle: 'Text zu PDF Kostenlos Hinzufügen',
