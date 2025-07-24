@@ -1,0 +1,34 @@
+User-agent: *
+Allow: /
+
+# PDF Tools - All tools are optimized for search engines
+Allow: /merge-pdf
+Allow: /split-pdf
+Allow: /compress-pdf
+Allow: /add-text-pdf
+Allow: /watermark-pdf
+Allow: /rotate-pdf
+Allow: /extract-pages-pdf
+Allow: /extract-text-pdf
+Allow: /pdf-to-image
+Allow: /images-to-pdf
+Allow: /word-to-pdf
+Allow: /ocr-pdf
+
+# Information pages
+Allow: /privacy
+Allow: /faq
+Allow: /how-to-use
+
+# Block development and system files
+Disallow: /src/
+Disallow: /node_modules/
+Disallow: /*.json$
+Disallow: /*.ts$
+Disallow: /*.tsx$
+Disallow: /dev-assets/
+Disallow: /.git/
+Disallow: /.claude/
+
+# Sitemap location
+Sitemap: https://localpdf.online/sitemap.xml

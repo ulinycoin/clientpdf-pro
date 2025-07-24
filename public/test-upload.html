@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .upload-zone {
+            border: 2px dashed #ccc;
+            padding: 40px;
+            text-align: center;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        .upload-zone:hover {
+            border-color: #007bff;
+            background: #f8f9fa;
+        }
+        .btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+        .hidden {
+            display: none;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background: #d4edda;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>File Upload Button Test</h1>
+
+    <div class="upload-zone" onclick="triggerFileInput()">
+        <h3>🔍 Click anywhere here to select file</h3>
+        <p>Or click the button below</p>
+        <button class="btn" onclick="event.stopPropagation(); triggerFileInput();">
+            Select File
+        </button>
+        <input type="file" id="fileInput" class="hidden" accept=".pdf,image/*" onchange="handleFileSelect(event)">
+    </div>
+
+    <div id="result"></div>
+
+    <script>
+        function triggerFileInput() {
+            console.log('triggerFileInput called');
+            const fileInput = document.getElementById('fileInput');
+            if (fileInput) {
+                console.log('File input found, triggering click');
+                fileInput.click();
+            } else {
+                console.error('File input not found');
+            }
+        }
+
+        function handleFileSelect(event) {
+            console.log('File selected:', event.target.files);
+            const files = event.target.files;
+            const result = document.getElementById('result');
+
+            if (files && files.length > 0) {
+                result.innerHTML = `
+                    <div class="result">
+                        ✅ File selected successfully!<br>
+                        <strong>Name:</strong> ${files[0].name}<br>
+                        <strong>Size:</strong> ${(files[0].size / 1024 / 1024).toFixed(2)} MB<br>
+                        <strong>Type:</strong> ${files[0].type}
+                    </div>
+                `;
+            }
+        }
+
+        // Test on page load
+        window.onload = function() {
+            console.log('Page loaded, testing file input...');
+            const fileInput = document.getElementById('fileInput');
+            console.log('File input element:', fileInput);
+        };
+    </script>
+</body>
+</html>

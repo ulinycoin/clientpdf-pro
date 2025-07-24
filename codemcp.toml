@@ -1,0 +1,318 @@
+# LocalPDF MCP Configuration
+# Конфигурация для работы с проектом LocalPDF через MCP
+
+[project]
+name = "LocalPDF"
+description = "Privacy-first PDF tools that work entirely in your browser"
+version = "1.0.0"
+repository = "https://github.com/ulinycoin/clientpdf-pro"
+
+[environment]
+node_version = "18+"
+npm_version = "9+"
+typescript_version = "5.0+"
+
+[build]
+# Команды сборки
+dev = "npm run dev"
+build = "npm run build"
+preview = "npm run preview"
+type_check = "npm run type-check"
+
+[directories]
+# Основные директории проекта
+root = "."
+source = "src"
+public = "public"
+dist = "dist"
+node_modules = "node_modules"
+
+[source_structure]
+# Структура исходного кода
+components = "src/components"
+atoms = "src/components/atoms"
+molecules = "src/components/molecules"
+organisms = "src/components/organisms"
+pages = "src/components/pages"
+services = "src/services"
+hooks = "src/hooks"
+utils = "src/utils"
+types = "src/types"
+workers = "src/workers"
+styles = "src/styles"
+assets = "src/assets"
+
+[tech_stack]
+# Основной технологический стек
+frontend = ["React 18", "TypeScript", "Vite 4.5"]
+styling = ["Tailwind CSS", "CSS Modules"]
+pdf_libraries = ["pdf-lib", "jsPDF", "PDF.js"]
+state_management = ["Context API", "Custom Hooks"]
+build_tools = ["Vite", "PostCSS", "ESLint", "Prettier"]
+
+[features]
+# Основные функции приложения
+pdf_tools = [
+  "merge",
+  "split",
+  "compress",
+  "add-text",
+  "add-watermarks",
+  "rotate",
+  "extract-pages",
+  "extract-text",
+  "pdf-to-images",
+  "word-to-pdf"
+]
+
+[code_style]
+# Настройки стиля кода
+typescript_strict = true
+eslint_config = ".eslintrc.js"
+prettier_config = ".prettierrc"
+indent_size = 2
+line_ending = "lf"
+quote_style = "single"
+semicolons = true
+
+[performance]
+# Целевые показатели производительности
+bundle_size_limit = "500KB"
+lighthouse_score_min = 90
+time_to_interactive_max = "3s"
+max_file_size_support = "100MB"
+
+[testing]
+# Конфигурация тестирования
+test_runner = "jest"
+test_framework = "React Testing Library"
+coverage_threshold = 80
+
+[deployment]
+# Настройки деплоя
+platform = "static-hosting"
+domain = "localpdf.online"
+ssl = true
+cdn = true
+
+[development_workflow]
+# Рабочий процесс разработки
+branch_naming = "feature/*, bugfix/*, hotfix/*"
+commit_convention = "conventional-commits"
+pr_required = true
+code_review_required = true
+
+[dependencies]
+# Ключевые зависимости (версии из package.json)
+react = "^18.0.0"
+typescript = "^5.0.0"
+vite = "^4.5.0"
+tailwindcss = "^3.0.0"
+pdf-lib = "*"
+jspdf = "*"
+pdfjs-dist = "*"
+
+[scripts]
+# Дополнительные скрипты для разработки
+install = "npm install --legacy-peer-deps"
+clean = "rm -rf dist node_modules"
+lint = "eslint src --ext .ts,.tsx"
+format = "prettier --write 'src/**/*.{ts,tsx,css}'"
+analyze = "vite-bundle-visualizer"
+
+[privacy]
+# Настройки приватности
+no_analytics = true
+no_tracking = true
+no_cookies = true
+local_processing_only = true
+no_server_uploads = true
+
+[browser_support]
+# Поддержка браузеров
+chrome = "90+"
+firefox = "90+"
+safari = "14+"
+edge = "90+"
+
+[security]
+# Настройки безопасности
+content_security_policy = "strict"
+cors = "same-origin"
+https_only = true
+no_external_requests = true
+
+[monitoring]
+# Мониторинг (только локальный)
+error_handling = "sentry-local"
+performance_monitoring = "web-vitals"
+console_logs = "development-only"
+
+[optimization]
+# Оптимизации
+code_splitting = true
+lazy_loading = true
+tree_shaking = true
+minification = true
+compression = "gzip"
+image_optimization = true
+web_workers = true
+
+[documentation]
+# Документация
+readme = "README.md"
+faq = "FAQ.md"
+privacy_policy = "PRIVACY.md"
+contributing = "CONTRIBUTING.md"
+license = "LICENSE"
+
+[ai_assistance]
+# Настройки для AI-помощников
+context_files = [
+  "README.md",
+  "package.json",
+  "tsconfig.json",
+  "vite.config.js",
+  "src/types/*.ts",
+  "src/services/*.ts"
+]
+ignore_patterns = [
+  "node_modules/**",
+  "dist/**",
+  "*.min.js",
+  "*.map"
+]
+preferred_explanations = "russian"
+
+[prompt]
+# Системный промпт для AI-модели
+role = """
+Ты - опытный Senior Frontend разработчик в команде LocalPDF. Твоя задача - писать и поддерживать код проекта LocalPDF.
+
+ОСНОВНЫЕ ПРИНЦИПЫ:
+1. Пиши код на TypeScript в строгом режиме (strict: true)
+2. Следуй архитектуре Atomic Design (atoms → molecules → organisms → pages)
+3. Все PDF операции выполняй локально в браузере через Web Workers
+4. НИКОГДА не отправляй данные на сервер - всё работает локально
+5. Используй React 18, Vite, Tailwind CSS
+6. Пиши чистый, читаемый код с комментариями на русском языке
+
+СТРУКТУРА КОМПОНЕНТОВ:
+- atoms/ - базовые UI элементы (Button, Input, Icon)
+- molecules/ - составные компоненты (FileUploader, ProgressBar)
+- organisms/ - сложные компоненты-инструменты (MergeTool, SplitTool)
+- pages/ - страницы приложения
+
+РАБОТА С PDF:
+- Используй pdf-lib для манипуляций с PDF
+- PDF.js для рендеринга и предпросмотра
+- jsPDF для генерации новых PDF
+- Всегда обрабатывай большие файлы через Web Workers
+
+СТИЛЬ КОДА:
+- Используй функциональные компоненты с хуками
+- Типизируй всё через TypeScript интерфейсы
+- Применяй Tailwind CSS для стилизации
+- Обрабатывай ошибки с понятными сообщениями для пользователя
+
+ПРОИЗВОДИТЕЛЬНОСТЬ:
+- Lazy loading для тяжёлых компонентов
+- Мемоизация дорогих вычислений
+- Оптимизация ре-рендеров через React.memo
+- Эффективная работа с памятью при обработке больших PDF
+
+БЕЗОПАСНОСТЬ И ПРИВАТНОСТЬ:
+- НЕ используй внешние API
+- НЕ отправляй данные на сервер
+- НЕ сохраняй пользовательские данные
+- НЕ используй cookies или localStorage для файлов
+
+При написании кода:
+1. Сначала пойми задачу и контекст
+2. Предложи архитектурное решение
+3. Напиши код с учётом существующей структуры
+4. Добавь обработку ошибок
+5. Оптимизируй производительность
+6. Проверь типы TypeScript
+
+Отвечай на русском языке, но код и комментарии в коде пиши на английском.
+"""
+
+code_examples = """
+// Пример компонента-атома
+interface ButtonProps {
+  onClick: () => void;
+  children: React.ReactNode;
+  variant?: 'primary' | 'secondary';
+  disabled?: boolean;
+}
+
+export const Button: React.FC<ButtonProps> = ({ 
+  onClick, 
+  children, 
+  variant = 'primary',
+  disabled = false 
+}) => {
+  const baseClasses = 'px-4 py-2 rounded-lg font-medium transition-colors';
+  const variantClasses = {
+    primary: 'bg-blue-600 text-white hover:bg-blue-700',
+    secondary: 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+  };
+  
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      className={`${baseClasses} ${variantClasses[variant]} ${
+        disabled ? 'opacity-50 cursor-not-allowed' : ''
+      }`}
+    >
+      {children}
+    </button>
+  );
+};
+
+// Пример сервиса для работы с PDF
+export class PDFMergeService {
+  static async mergePDFs(files: File[]): Promise<Uint8Array> {
+    // Проверка входных данных
+    if (!files || files.length === 0) {
+      throw new Error('Необходимо выбрать файлы для объединения');
+    }
+
+    try {
+      const mergedPdf = await PDFDocument.create();
+      
+      // Обработка каждого файла
+      for (const file of files) {
+        const pdfBytes = await file.arrayBuffer();
+        const pdf = await PDFDocument.load(pdfBytes);
+        const pages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+        
+        pages.forEach(page => mergedPdf.addPage(page));
+      }
+      
+      return await mergedPdf.save();
+    } catch (error) {
+      throw new Error(`Ошибка при объединении PDF: ${error.message}`);
+    }
+  }
+}
+
+// Пример использования Web Worker
+// worker.ts
+self.addEventListener('message', async (event) => {
+  const { type, payload } = event.data;
+  
+  switch (type) {
+    case 'COMPRESS_PDF':
+      try {
+        const compressed = await compressPDF(payload);
+        self.postMessage({ type: 'SUCCESS', data: compressed });
+      } catch (error) {
+        self.postMessage({ type: 'ERROR', error: error.message });
+      }
+      break;
+  }
+});
+"""
