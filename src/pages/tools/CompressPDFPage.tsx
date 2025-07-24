@@ -6,7 +6,7 @@ import RelatedTools from '../../components/common/RelatedTools';
 import UploadSection from '../../components/molecules/UploadSection';
 import CompressionTool from '../../components/organisms/CompressionTool';
 import Button from '../../components/atoms/Button';
-import { downloadFile } from '../../utils/fileHelpers';
+import { downloadBlob } from '../../utils/fileHelpers';
 import { generateFilename } from '../../utils/fileHelpers';
 import { useScrollToTop } from '../../hooks/useScrollBehavior';
 import { useI18n } from '../../hooks/useI18n';
@@ -26,13 +26,13 @@ const CompressPDFPage: React.FC = () => {
   };
 
   const handleComplete = (result: any) => {
-    if (result.success && result.blob) {
+    if (result.success && result.data) {
       const filename = generateFilename(
         uploadedFiles[0]?.name || 'document',
         'compressed',
         'pdf'
       );
-      downloadFile(result.blob, filename);
+      downloadBlob(result.data, filename);
     }
   };
 

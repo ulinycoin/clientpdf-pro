@@ -7,6 +7,8 @@ import SplitTool from '../../components/organisms/SplitTool';
 import UploadSection from '../../components/molecules/UploadSection';
 import { useFileUpload } from '../../hooks/useFileUpload';
 import { useI18n } from '../../hooks/useI18n';
+import { PDFProcessingResult } from '../../types';
+import { downloadBlob, generateFilename, createZipFromBlobs } from '../../utils/fileHelpers';
 
 const SplitPDFPage: React.FC = () => {
   const { t } = useI18n();
@@ -32,7 +34,69 @@ const SplitPDFPage: React.FC = () => {
     }
   };
 
-  const handleToolComplete = () => {
+  const handleToolComplete = async (results: PDFProcessingResult[], options?: { useZip?: boolean }) => {
+    // Download all successful split results
+    const successfulResults = results.filter(result => result.success && result.data);
+
+    if (successfulResults.length > 0) {
+      // Check if should use ZIP (for many files or user preference)
+      const shouldUseZip = options?.useZip || successfulResults.length > 5;
+
+      if (shouldUseZip && successfulResults.length > 1) {
+        // Prepare files for ZIP
+        const filesForZip = successfulResults.map((result, index) => {
+          const originalFilename = files[0]?.name || 'document.pdf';
+          let filename: string;
+
+          if (result.metadata?.pageNumber) {
+            filename = generateFilename(originalFilename, `page_${result.metadata.pageNumber}`);
+          } else if (result.metadata?.startPage && result.metadata?.endPage) {
+            filename = generateFilename(originalFilename, `pages_${result.metadata.startPage}-${result.metadata.endPage}`);
+          } else {
+            filename = generateFilename(originalFilename, `split_${index + 1}`);
+          }
+
+          return { blob: result.data as Blob, filename };
+        });
+
+        try {
+          const zipBlob = await createZipFromBlobs(filesForZip, 'split_pages.zip');
+          const zipFilename = generateFilename(files[0]?.name || 'document.pdf', 'split_pages', 'zip');
+          downloadBlob(zipBlob, zipFilename);
+        } catch (error) {
+          console.error('ZIP creation failed, falling back to individual downloads:', error);
+          // Fallback to individual downloads
+          successfulResults.forEach((result, index) => {
+            if (result.data instanceof Blob) {
+              const originalFilename = files[0]?.name || 'document.pdf';
+              const filename = generateFilename(originalFilename, `page_${index + 1}`);
+              setTimeout(() => downloadBlob(result.data as Blob, filename), index * 200);
+            }
+          });
+        }
+      } else {
+        // Individual downloads
+        successfulResults.forEach((result, index) => {
+          if (result.data instanceof Blob) {
+            const originalFilename = files[0]?.name || 'document.pdf';
+            let filename: string;
+
+            if (result.metadata?.pageNumber) {
+              filename = generateFilename(originalFilename, `page_${result.metadata.pageNumber}`);
+            } else if (result.metadata?.startPage && result.metadata?.endPage) {
+              filename = generateFilename(originalFilename, `pages_${result.metadata.startPage}-${result.metadata.endPage}`);
+            } else {
+              filename = generateFilename(originalFilename, `split_${index + 1}`);
+            }
+
+            setTimeout(() => {
+              downloadBlob(result.data as Blob, filename);
+            }, index * 200);
+          }
+        });
+      }
+    }
+
     setToolActive(false);
     clearFiles();
   };

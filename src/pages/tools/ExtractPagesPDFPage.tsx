@@ -6,7 +6,7 @@ import RelatedTools from '../../components/common/RelatedTools';
 import UploadSection from '../../components/molecules/UploadSection';
 import ExtractPagesTool from '../../components/organisms/ExtractPagesTool';
 import Button from '../../components/atoms/Button';
-import { downloadFile } from '../../utils/fileHelpers';
+import { downloadBlob } from '../../utils/fileHelpers';
 import { generateFilename } from '../../utils/fileHelpers';
 import { useI18n } from '../../hooks/useI18n';
 
@@ -27,13 +27,13 @@ const ExtractPagesPDFPage: React.FC = () => {
   };
 
   const handleComplete = (result: any) => {
-    if (result.success && result.blob) {
+    if (result.success && result.data) {
       const filename = generateFilename(
         uploadedFiles[0]?.name || 'document',
         'extracted-pages',
         'pdf'
       );
-      downloadFile(result.blob, filename);
+      downloadBlob(result.data, filename);
     }
   };
 

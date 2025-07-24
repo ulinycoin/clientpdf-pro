@@ -174,7 +174,7 @@ export function downloadBlob(
     // Create temporary link element
     const link = document.createElement('a');
     link.href = url;
-    link.download = generateFilename(filename, '', '');
+    link.download = filename; // Use filename directly
     link.style.display = 'none';
 
     // Add to DOM, click, and remove
@@ -343,6 +343,124 @@ export function createFilePreview(file: File): FilePreview {
     isValid: validation.isValid,
     validationError: validation.error
   };
+}
+
+/**
+ * Create a simple ZIP file from multiple blobs (browser-based)
+ */
+export async function createZipFromBlobs(
+  files: Array<{ blob: Blob; filename: string }>,
+  zipFilename: string
+): Promise<Blob> {
+  // Simple ZIP implementation for browser
+  // This creates a basic ZIP structure without compression
+
+  const zipParts: Uint8Array[] = [];
+  const centralDirectoryEntries: Uint8Array[] = [];
+  let offset = 0;
+
+  for (const { blob, filename } of files) {
+    const fileData = new Uint8Array(await blob.arrayBuffer());
+    const filenameBytes = new TextEncoder().encode(filename);
+
+    // Local file header
+    const localHeader = new Uint8Array(30 + filenameBytes.length);
+    const view = new DataView(localHeader.buffer);
+
+    // Local file header signature
+    view.setUint32(0, 0x04034b50, true);
+    // Version needed to extract
+    view.setUint16(4, 20, true);
+    // General purpose bit flag
+    view.setUint16(6, 0, true);
+    // Compression method (0 = no compression)
+    view.setUint16(8, 0, true);
+    // File last modification time
+    view.setUint16(10, 0, true);
+    // File last modification date
+    view.setUint16(12, 0, true);
+    // CRC-32 (simplified)
+    view.setUint32(14, 0, true);
+    // Compressed size
+    view.setUint32(18, fileData.length, true);
+    // Uncompressed size
+    view.setUint32(22, fileData.length, true);
+    // File name length
+    view.setUint16(26, filenameBytes.length, true);
+    // Extra field length
+    view.setUint16(28, 0, true);
+
+    // Copy filename
+    localHeader.set(filenameBytes, 30);
+
+    zipParts.push(localHeader);
+    zipParts.push(fileData);
+
+    // Central directory entry
+    const centralEntry = new Uint8Array(46 + filenameBytes.length);
+    const centralView = new DataView(centralEntry.buffer);
+
+    centralView.setUint32(0, 0x02014b50, true); // Central directory signature
+    centralView.setUint16(4, 20, true); // Version made by
+    centralView.setUint16(6, 20, true); // Version needed
+    centralView.setUint16(8, 0, true); // General purpose bit flag
+    centralView.setUint16(10, 0, true); // Compression method
+    centralView.setUint16(12, 0, true); // Last mod time
+    centralView.setUint16(14, 0, true); // Last mod date
+    centralView.setUint32(16, 0, true); // CRC-32
+    centralView.setUint32(20, fileData.length, true); // Compressed size
+    centralView.setUint32(24, fileData.length, true); // Uncompressed size
+    centralView.setUint16(28, filenameBytes.length, true); // Filename length
+    centralView.setUint16(30, 0, true); // Extra field length
+    centralView.setUint16(32, 0, true); // Comment length
+    centralView.setUint16(34, 0, true); // Disk number
+    centralView.setUint16(36, 0, true); // Internal attributes
+    centralView.setUint32(38, 0, true); // External attributes
+    centralView.setUint32(42, offset, true); // Local header offset
+
+    centralEntry.set(filenameBytes, 46);
+    centralDirectoryEntries.push(centralEntry);
+
+    offset += localHeader.length + fileData.length;
+  }
+
+  // Central directory
+  const centralDirectory = new Uint8Array(
+    centralDirectoryEntries.reduce((sum, entry) => sum + entry.length, 0)
+  );
+  let centralOffset = 0;
+  for (const entry of centralDirectoryEntries) {
+    centralDirectory.set(entry, centralOffset);
+    centralOffset += entry.length;
+  }
+
+  // End of central directory
+  const endRecord = new Uint8Array(22);
+  const endView = new DataView(endRecord.buffer);
+  endView.setUint32(0, 0x06054b50, true); // End signature
+  endView.setUint16(4, 0, true); // Disk number
+  endView.setUint16(6, 0, true); // Central directory disk
+  endView.setUint16(8, files.length, true); // Number of entries on disk
+  endView.setUint16(10, files.length, true); // Total number of entries
+  endView.setUint32(12, centralDirectory.length, true); // Central directory size
+  endView.setUint32(16, offset, true); // Central directory offset
+  endView.setUint16(20, 0, true); // Comment length
+
+  // Combine all parts
+  const totalLength = zipParts.reduce((sum, part) => sum + part.length, 0) +
+                     centralDirectory.length + endRecord.length;
+  const zipData = new Uint8Array(totalLength);
+
+  let zipOffset = 0;
+  for (const part of zipParts) {
+    zipData.set(part, zipOffset);
+    zipOffset += part.length;
+  }
+  zipData.set(centralDirectory, zipOffset);
+  zipOffset += centralDirectory.length;
+  zipData.set(endRecord, zipOffset);
+
+  return new Blob([zipData], { type: 'application/zip' });
 }
 
 // Legacy aliases for backward compatibility
