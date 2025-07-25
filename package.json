@@ -36,6 +36,7 @@
   },
   "dependencies": {
     "@pdf-lib/fontkit": "^1.1.1",
+    "@types/xlsx": "^0.0.35",
     "@vercel/analytics": "^1.5.0",
     "franc": "^6.2.0",
     "html2canvas": "^1.4.1",
@@ -48,7 +49,8 @@
     "react-dom": "^18.2.0",
     "react-helmet-async": "^1.3.0",
     "react-router-dom": "^6.8.0",
-    "tesseract.js": "^5.1.1"
+    "tesseract.js": "^5.1.1",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.1.4",

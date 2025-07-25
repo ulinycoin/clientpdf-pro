@@ -46,9 +46,9 @@ export const fr: Translations = {
       github: 'GitHub',
     },
     badges: {
-      tools: '12 outils',
+      tools: 'Outils PDF',
       private: '100% Privé',
-      activeTools: '12 outils actifs',
+      activeTools: 'Outils actifs',
       privateProcessing: '100% traitement privé',
     },
     mobileMenu: {
@@ -95,7 +95,7 @@ export const fr: Translations = {
       pdfDocument: 'Document PDF',
     },
     tools: {
-      title: '12 outils PDF puissants',
+      title: 'Boîte à outils PDF complète',
       subtitle: 'Choisissez l\'outil adapté à vos besoins. Toutes les opérations sont effectuées localement dans votre navigateur.',
       whyChoose: {
         title: 'Pourquoi choisir LocalPDF ?',
