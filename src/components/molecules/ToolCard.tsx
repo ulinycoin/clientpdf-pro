@@ -124,12 +124,14 @@ const ToolCard: React.FC<ToolCardProps> = ({
           </div>
 
           {/* Bottom section - Trust indicator */}
-          <div className="flex items-center justify-center">
-            <div className="flex items-center text-xs text-secondary-500 bg-white/50 px-3 py-1 rounded-full backdrop-blur-sm">
-              <div className="w-2 h-2 rounded-full mr-2 bg-success-400 pdf-status-indicator"></div>
-              <span className="font-medium">100% Приватно</span>
+          {!isDisabled && (
+            <div className="flex items-center justify-center">
+              <div className="flex items-center text-xs text-secondary-500 bg-white/50 px-3 py-1 rounded-full backdrop-blur-sm">
+                <div className="w-2 h-2 rounded-full mr-2 bg-success-400 pdf-status-indicator"></div>
+                <span className="font-medium">Ready</span>
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Subtle hover effect overlay */}
