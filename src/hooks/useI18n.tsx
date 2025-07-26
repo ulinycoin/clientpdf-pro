@@ -20,25 +20,54 @@ interface I18nProviderProps {
 // Константы для localStorage
 const LANGUAGE_KEY = 'localpdf-language';
 
-// Функция для определения языка браузера
+// Функция для определения языка браузера с расширенной поддержкой
 const getBrowserLanguage = (): SupportedLanguage => {
   if (typeof window === 'undefined') return DEFAULT_LANGUAGE;
-  
-  const browserLang = navigator.language.split('-')[0] as SupportedLanguage;
-  return SUPPORTED_LANGUAGES.some(lang => lang.code === browserLang) 
-    ? browserLang 
-    : DEFAULT_LANGUAGE;
+
+  // Получаем все языки браузера в порядке предпочтения
+  const browserLanguages = navigator.languages || [navigator.language];
+
+  // Проверяем каждый язык браузера
+  for (const lang of browserLanguages) {
+    // Извлекаем код языка (например, 'en' из 'en-US')
+    const languageCode = lang.split('-')[0].toLowerCase() as SupportedLanguage;
+
+    // Проверяем, поддерживается ли этот язык
+    if (SUPPORTED_LANGUAGES.some(supportedLang => supportedLang.code === languageCode)) {
+      return languageCode;
+    }
+  }
+
+  return DEFAULT_LANGUAGE;
 };
 
-// Функция для загрузки сохраненного языка
+// Функция для определения языка из URL (опционально)
+const getLanguageFromURL = (): SupportedLanguage | null => {
+  if (typeof window === 'undefined') return null;
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const langParam = urlParams.get('lang') as SupportedLanguage;
+
+  return SUPPORTED_LANGUAGES.some(lang => lang.code === langParam) ? langParam : null;
+};
+
+// Функция для загрузки сохраненного языка с приоритетом
 const getSavedLanguage = (): SupportedLanguage => {
   if (typeof window === 'undefined') return DEFAULT_LANGUAGE;
-  
+
   try {
+    // 1. Проверяем URL параметр (высший приоритет)
+    const urlLang = getLanguageFromURL();
+    if (urlLang) return urlLang;
+
+    // 2. Проверяем localStorage
     const saved = localStorage.getItem(LANGUAGE_KEY) as SupportedLanguage;
-    return SUPPORTED_LANGUAGES.some(lang => lang.code === saved) 
-      ? saved 
-      : getBrowserLanguage();
+    if (SUPPORTED_LANGUAGES.some(lang => lang.code === saved)) {
+      return saved;
+    }
+
+    // 3. Fallback на язык браузера
+    return getBrowserLanguage();
   } catch {
     return getBrowserLanguage();
   }
@@ -47,7 +76,7 @@ const getSavedLanguage = (): SupportedLanguage => {
 // Функция для интерполяции параметров в переводах
 const interpolate = (text: string, params?: TranslationParams): string => {
   if (!params) return text;
-  
+
   return Object.entries(params).reduce((result, [key, value]) => {
     return result.replace(new RegExp(`{${key}}`, 'g'), String(value));
   }, text);
@@ -69,7 +98,7 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
     if (SUPPORTED_LANGUAGES.some(lang => lang.code === language)) {
       setCurrentLanguage(language);
       setTranslations(getTranslations(language));
-      
+
       // Сохраняем выбор в localStorage
       try {
         localStorage.setItem(LANGUAGE_KEY, language);
@@ -87,12 +116,12 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
   // Функция перевода с поддержкой интерполяции
   const t = (key: string, params?: TranslationParams): string => {
     const value = getNestedValue(translations, key);
-    
+
     if (value === undefined) {
       console.warn(`Translation missing for key: "${key}" in language: "${currentLanguage}"`);
       return key; // Возвращаем ключ как fallback
     }
-    
+
     return interpolate(value, params);
   };
 
@@ -126,11 +155,11 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
 // Хук для использования контекста интернационализации
 export const useI18n = (): I18nContextType => {
   const context = useContext(I18nContext);
-  
+
   if (!context) {
     throw new Error('useI18n must be used within an I18nProvider');
   }
-  
+
   return context;
 };
 
@@ -138,6 +167,23 @@ export const useI18n = (): I18nContextType => {
 export const useTranslation = () => {
   const { t } = useI18n();
   return { t };
+};
+
+// Утилитарные функции для экспорта
+export const detectBrowserLanguage = (): SupportedLanguage => getBrowserLanguage();
+export const getLanguageFromUrl = (): SupportedLanguage | null => getLanguageFromURL();
+export const isLanguageSupported = (language: string): language is SupportedLanguage => {
+  return SUPPORTED_LANGUAGES.some(lang => lang.code === language);
+};
+
+// Хук для автоматического определения языка (полезен для отладки)
+export const useLanguageDetection = () => {
+  return {
+    browserLanguage: detectBrowserLanguage(),
+    urlLanguage: getLanguageFromUrl(),
+    savedLanguage: typeof window !== 'undefined' ? localStorage.getItem(LANGUAGE_KEY) : null,
+    isSupported: isLanguageSupported,
+  };
 };
 
 // Экспорт типов и утилит
