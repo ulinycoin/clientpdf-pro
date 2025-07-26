@@ -19,6 +19,7 @@ const PDFToImagePage = React.lazy(() => import('./pages/tools/PDFToImagePage'));
 const ImageToPDFPage = React.lazy(() => import('./pages/tools/ImageToPDFPage'));
 const WordToPDFPage = React.lazy(() => import('./pages/tools/WordToPDFPage'));
 const OCRPDFPage = React.lazy(() => import('./pages/tools/OCRPDFPage'));
+const EnhancedPDFProcessorPage = React.lazy(() => import('./pages/EnhancedPDFProcessorPage'));
 
 // Loading component
 const LoadingSpinner: React.FC = () => {
@@ -63,6 +64,9 @@ function App() {
                 <Route path="/images-to-pdf" element={<ImageToPDFPage />} />
                 <Route path="/word-to-pdf" element={<WordToPDFPage />} />
                 <Route path="/ocr-pdf" element={<OCRPDFPage />} />
+
+                {/* Demo page */}
+                <Route path="/demo" element={<EnhancedPDFProcessorPage />} />
 
                 {/* Information pages */}
                 <Route path="/privacy" element={<PrivacyPage />} />

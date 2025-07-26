@@ -1,5 +1,5 @@
 import { PDFDocument } from 'pdf-lib';
-import { PDFProcessingResult, ProcessingError } from '../types';
+import { PDFProcessingResult } from '../types';
 
 export class SplitService {
   static async splitPDF(file: File, options: {

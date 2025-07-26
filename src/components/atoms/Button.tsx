@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { ButtonProps } from '../../types';
 
-const Button: React.FC<ButtonProps> = ({
+const Button: React.FC<ButtonProps> = memo(({
   children,
   onClick,
   variant = 'primary',
@@ -22,14 +22,14 @@ const Button: React.FC<ButtonProps> = ({
     outline: 'border border-secondary-300 text-secondary-700 hover:bg-secondary-50 hover:border-blue-300 hover:text-blue-700 focus-visible:ring-secondary-500 transition-all duration-200',
     ghost: 'text-secondary-600 hover:bg-secondary-100 hover:text-secondary-900 hover:scale-[1.02]',
     danger: 'bg-gradient-to-r from-red-500 to-red-600 text-white shadow-soft hover:scale-[1.02] hover:shadow-medium hover:from-red-600 hover:to-red-700'
-  };
+  } as const;
 
   // Touch-оптимизированные размеры
   const sizeClasses = {
     sm: 'px-4 py-2 text-sm min-h-[40px]',
     md: 'px-6 py-3 text-base min-h-[48px]',
     lg: 'px-8 py-4 text-lg min-h-[56px]'
-  };
+  } as const;
 
   const disabledClasses = (disabled || loading) ? 'opacity-50 cursor-not-allowed hover:scale-100 hover:shadow-soft' : '';
   const widthClasses = fullWidth ? 'w-full' : '';
@@ -68,6 +68,8 @@ const Button: React.FC<ButtonProps> = ({
       {children}
     </button>
   );
-};
+});
+
+Button.displayName = 'Button';
 
 export default Button;

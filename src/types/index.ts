@@ -12,23 +12,6 @@ export * from './image.types';
 export * from './pageExtraction.types';
 export * from './ocr.types';
 
-// Core types that might be imported from the legacy types.ts
-export interface PDFProcessingResult<T = unknown> {
-  success: boolean;
-  data?: T;
-  error?: ProcessingError;
-  progress?: ProcessingProgress;
-  metadata?: {
-    pageCount?: number;
-    originalSize?: number;
-    processedSize?: number;
-    processingTime?: number;
-  };
-}
-
-// Legacy alias for compatibility
-export type ProcessingResult<T = unknown> = PDFProcessingResult<T>;
-
 // Common PDF processing types
 export interface PDFFile {
   file: File;
@@ -49,7 +32,8 @@ export interface ProcessingError {
   details?: string;
 }
 
-export interface PDFProcessingResult<T = any> {
+// Main PDF processing result interface - single definition
+export interface PDFProcessingResult<T = Blob> {
   success: boolean;
   data?: T;
   error?: ProcessingError;
@@ -59,11 +43,12 @@ export interface PDFProcessingResult<T = any> {
     originalSize?: number;
     processedSize?: number;
     processingTime?: number;
+    [key: string]: unknown;
   };
 }
 
 // Legacy alias for compatibility
-export type ProcessingResult<T = any> = PDFProcessingResult<T>;
+export type ProcessingResult<T = Blob> = PDFProcessingResult<T>;
 
 // Hook result types for backwards compatibility
 export interface UseFileUploadResult {
@@ -228,42 +213,42 @@ export interface CompressionToolProps extends BaseComponentProps {
 export interface ExtractPagesToolProps extends BaseComponentProps {
   files?: File[];
   file?: File | null;
-  onComplete?: (result: any) => void; // Will be refined later
+  onComplete?: (result: PDFProcessingResult<Blob[]>) => void;
   onClose?: () => void;
 }
 
 export interface ExtractTextToolProps extends BaseComponentProps {
   files?: File[];
   file?: File | null;
-  onComplete?: (result: any) => void;
+  onComplete?: (result: PDFProcessingResult<string>) => void;
   onClose?: () => void;
 }
 
 export interface PdfToImageToolProps extends BaseComponentProps {
   files?: File[];
   file?: File | null;
-  onComplete?: (result: any) => void;
+  onComplete?: (result: PDFProcessingResult<Blob[]>) => void;
   onClose?: () => void;
 }
 
 export interface RotateToolProps extends BaseComponentProps {
   files?: File[];
   file?: File | null;
-  onComplete?: (result: any) => void;
+  onComplete?: (result: PDFProcessingResult<Blob>) => void;
   onClose?: () => void;
 }
 
 export interface SplitToolProps extends BaseComponentProps {
   files?: File[];
   file?: File | null;
-  onComplete?: (result: any) => void;
+  onComplete?: (result: PDFProcessingResult<Blob[]>) => void;
   onClose?: () => void;
 }
 
 export interface WatermarkToolProps extends BaseComponentProps {
   files?: File[];
   file?: File | null;
-  onComplete?: (result: any) => void;
+  onComplete?: (result: PDFProcessingResult<Blob>) => void;
   onClose?: () => void;
 }
 
