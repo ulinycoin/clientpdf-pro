@@ -19,6 +19,12 @@ build = "npm run build"
 preview = "npm run preview"
 type_check = "npm run type-check"
 
+# Команды для удобства разработки с AI
+quick_check = "npm run type-check"
+full_check = "npm run type-check && npm run test:run"
+build_test = "npm run build"
+status = "git status --short"
+
 [directories]
 # Основные директории проекта
 root = "."
@@ -53,16 +59,16 @@ build_tools = ["Vite", "PostCSS", "ESLint", "Prettier"]
 [features]
 # Основные функции приложения
 pdf_tools = [
-  "merge",
-  "split",
-  "compress",
-  "add-text",
-  "add-watermarks",
-  "rotate",
-  "extract-pages",
-  "extract-text",
-  "pdf-to-images",
-  "word-to-pdf"
+ "merge",
+ "split",
+ "compress",
+ "add-text",
+ "add-watermarks",
+ "rotate",
+ "extract-pages",
+ "extract-text",
+ "pdf-to-images",
+ "word-to-pdf"
 ]
 
 [code_style]
@@ -169,18 +175,18 @@ license = "LICENSE"
 [ai_assistance]
 # Настройки для AI-помощников
 context_files = [
-  "README.md",
-  "package.json",
-  "tsconfig.json",
-  "vite.config.js",
-  "src/types/*.ts",
-  "src/services/*.ts"
+ "README.md",
+ "package.json",
+ "tsconfig.json",
+ "vite.config.js",
+ "src/types/*.ts",
+ "src/services/*.ts"
 ]
 ignore_patterns = [
-  "node_modules/**",
-  "dist/**",
-  "*.min.js",
-  "*.map"
+ "node_modules/**",
+ "dist/**",
+ "*.min.js",
+ "*.map"
 ]
 preferred_explanations = "russian"
 
@@ -241,78 +247,78 @@ role = """
 code_examples = """
 // Пример компонента-атома
 interface ButtonProps {
-  onClick: () => void;
-  children: React.ReactNode;
-  variant?: 'primary' | 'secondary';
-  disabled?: boolean;
+ onClick: () => void;
+ children: React.ReactNode;
+ variant?: 'primary' | 'secondary';
+ disabled?: boolean;
 }
 
-export const Button: React.FC<ButtonProps> = ({ 
-  onClick, 
-  children, 
-  variant = 'primary',
-  disabled = false 
+export const Button: React.FC<ButtonProps> = ({
+ onClick,
+ children,
+ variant = 'primary',
+ disabled = false
 }) => {
-  const baseClasses = 'px-4 py-2 rounded-lg font-medium transition-colors';
-  const variantClasses = {
-    primary: 'bg-blue-600 text-white hover:bg-blue-700',
-    secondary: 'bg-gray-200 text-gray-800 hover:bg-gray-300'
-  };
-  
-  return (
-    <button
-      onClick={onClick}
-      disabled={disabled}
-      className={`${baseClasses} ${variantClasses[variant]} ${
-        disabled ? 'opacity-50 cursor-not-allowed' : ''
-      }`}
-    >
-      {children}
-    </button>
-  );
+ const baseClasses = 'px-4 py-2 rounded-lg font-medium transition-colors';
+ const variantClasses = {
+   primary: 'bg-blue-600 text-white hover:bg-blue-700',
+   secondary: 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+ };
+
+ return (
+   <button
+     onClick={onClick}
+     disabled={disabled}
+     className={`${baseClasses} ${variantClasses[variant]} ${
+       disabled ? 'opacity-50 cursor-not-allowed' : ''
+     }`}
+   >
+     {children}
+   </button>
+ );
 };
 
 // Пример сервиса для работы с PDF
 export class PDFMergeService {
-  static async mergePDFs(files: File[]): Promise<Uint8Array> {
-    // Проверка входных данных
-    if (!files || files.length === 0) {
-      throw new Error('Необходимо выбрать файлы для объединения');
-    }
+ static async mergePDFs(files: File[]): Promise<Uint8Array> {
+   // Проверка входных данных
+   if (!files || files.length === 0) {
+     throw new Error('Необходимо выбрать файлы для объединения');
+   }
 
-    try {
-      const mergedPdf = await PDFDocument.create();
-      
-      // Обработка каждого файла
-      for (const file of files) {
-        const pdfBytes = await file.arrayBuffer();
-        const pdf = await PDFDocument.load(pdfBytes);
-        const pages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
-        
-        pages.forEach(page => mergedPdf.addPage(page));
-      }
-      
-      return await mergedPdf.save();
-    } catch (error) {
-      throw new Error(`Ошибка при объединении PDF: ${error.message}`);
-    }
-  }
+   try {
+     const mergedPdf = await PDFDocument.create();
+
+     // Обработка каждого файла
+     for (const file of files) {
+       const pdfBytes = await file.arrayBuffer();
+       const pdf = await PDFDocument.load(pdfBytes);
+       const pages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+
+       pages.forEach(page => mergedPdf.addPage(page));
+     }
+
+     return await mergedPdf.save();
+   } catch (error) {
+     throw new Error(`Ошибка при объединении PDF: ${error.message}`);
+   }
+ }
 }
 
 // Пример использования Web Worker
 // worker.ts
 self.addEventListener('message', async (event) => {
-  const { type, payload } = event.data;
-  
-  switch (type) {
-    case 'COMPRESS_PDF':
-      try {
-        const compressed = await compressPDF(payload);
-        self.postMessage({ type: 'SUCCESS', data: compressed });
-      } catch (error) {
-        self.postMessage({ type: 'ERROR', error: error.message });
-      }
-      break;
-  }
+ const { type, payload } = event.data;
+
+ switch (type) {
+   case 'COMPRESS_PDF':
+     try {
+       const compressed = await compressPDF(payload);
+       self.postMessage({ type: 'SUCCESS', data: compressed });
+     } catch (error) {
+       self.postMessage({ type: 'ERROR', error: error.message });
+     }
+     break;
+ }
 });
 """
