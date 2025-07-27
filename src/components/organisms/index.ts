@@ -15,6 +15,7 @@ export { default as PdfToImageTool } from './PdfToImageTool';
 export { default as ExtractPagesTool } from './ExtractPagesTool';
 export { default as ImageToPDFTool } from './ImageToPDFTool';
 export { default as OCRTool } from './OCRTool';
+export { default as ExcelToPDFTool } from './ExcelToPDFTool';
 
 // Modular AddTextTool - now correctly points to the modular version
 export { default as AddTextTool } from './AddTextTool';

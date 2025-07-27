@@ -346,13 +346,44 @@ export const toolsSEOData = {
       "softwareVersion": "1.0.0",
       "applicationSubCategory": "PDF Tools"
     }
+  },
+
+  excelToPdf: {
+    title: "Excel to PDF Converter Free - Convert XLSX to PDF Online",
+    description: "Convert Excel files (.xlsx, .xls) to PDF format for free. Support for multiple sheets, wide tables, and international languages. Private and secure conversion in your browser.",
+    keywords: "excel to pdf, xlsx to pdf, xls to pdf, spreadsheet to pdf, convert excel, table to pdf, excel converter online free",
+    canonical: "https://localpdf.online/excel-to-pdf",
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Excel to PDF Converter - LocalPDF",
+      "description": "Free tool to convert Excel spreadsheets to PDF format",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "featureList": [
+        "Convert XLSX and XLS files",
+        "Multiple sheet support",
+        "International language support",
+        "Wide table handling",
+        "Preserve formatting and colors",
+        "Custom page orientation",
+        "Font selection and sizing"
+      ],
+      "softwareVersion": "1.0.0",
+      "applicationSubCategory": "PDF Tools"
+    }
   }
 };
 
 export const homepageSEOData = {
   title: "LocalPDF - Free Privacy-First PDF Tools | Merge, Split, Compress",
-  description: "12 powerful PDF tools that work entirely in your browser. Merge, split, compress, add text, watermark, OCR PDFs. 100% private - no uploads, no tracking. Free forever.",
-  keywords: "PDF tools, merge PDF, split PDF, compress PDF, add text PDF, watermark PDF, rotate PDF, extract pages, PDF to image, images to PDF, Word to PDF, OCR PDF, privacy, local processing, browser PDF editor, free PDF tools",
+  description: "13 powerful PDF tools that work entirely in your browser. Merge, split, compress, add text, watermark, OCR, convert Excel to PDF. 100% private - no uploads, no tracking. Free forever.",
+  keywords: "PDF tools, merge PDF, split PDF, compress PDF, add text PDF, watermark PDF, rotate PDF, extract pages, PDF to image, images to PDF, Word to PDF, Excel to PDF, OCR PDF, privacy, local processing, browser PDF editor, free PDF tools",
   canonical: "https://localpdf.online/",
   structuredData: {
     "@context": "https://schema.org",
@@ -379,6 +410,7 @@ export const homepageSEOData = {
       "Convert PDF to images",
       "Convert images to PDF",
       "Convert Word to PDF",
+      "Convert Excel to PDF",
       "OCR text recognition"
     ],
     "browserRequirements": "Requires JavaScript. Chrome 90+, Firefox 90+, Safari 14+, Edge 90+",

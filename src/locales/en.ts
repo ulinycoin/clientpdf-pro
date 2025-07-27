@@ -884,6 +884,65 @@ export const en: Translations = {
           download: 'Step 3: Download your converted images',
         },
       },
+      excelToPdf: {
+        seo: {
+          title: 'Excel to PDF Converter - Convert XLSX to PDF Online Free | LocalPDF',
+          description: 'Convert Excel files (.xlsx, .xls) to PDF format for free. Support for multiple sheets, wide tables, and international languages. Fast, secure, and private.',
+          keywords: 'excel to pdf, xlsx to pdf, xls to pdf, spreadsheet to pdf, table to pdf, excel converter',
+          structuredData: {
+            name: 'Excel to PDF Converter',
+            description: 'Convert Excel spreadsheets to PDF format online for free',
+            permissions: 'No file upload required',
+          },
+        },
+        breadcrumbs: {
+          home: 'Home',
+          excelToPdf: 'Excel to PDF',
+        },
+        pageTitle: 'Excel to PDF Converter',
+        pageDescription: 'Convert your Excel files (.xlsx, .xls) to PDF format with support for multiple sheets, wide tables, and international text. All processing happens locally.',
+        howTo: {
+          title: 'How to Convert Excel to PDF',
+          steps: {
+            upload: {
+              title: 'Upload Excel File',
+              description: 'Select your Excel file (.xlsx or .xls)',
+            },
+            configure: {
+              title: 'Configure Settings',
+              description: 'Choose sheets, orientation, and formatting options',
+            },
+            download: {
+              title: 'Download PDF',
+              description: 'Get your converted PDF files',
+            },
+          },
+        },
+        features: {
+          title: 'Why Choose Our Excel to PDF Converter?',
+          privacy: {
+            title: '🔒 Privacy First',
+            description: 'Your spreadsheets never leave your device. All conversion happens locally in your browser.',
+          },
+          multiSheet: {
+            title: '📊 Multiple Sheets',
+            description: 'Convert single or multiple sheets to PDF. Create separate files or combine into one.',
+          },
+          international: {
+            title: '🌍 International Support',
+            description: 'Automatic language detection and font loading for proper text rendering.',
+          },
+          formatting: {
+            title: '✨ Preserve Formatting',
+            description: 'Maintains cell formatting, borders, colors, and column widths.',
+          },
+        },
+        steps: {
+          upload: 'Step 1: Upload your Excel file (.xlsx or .xls)',
+          configure: 'Step 2: Select sheets and configure conversion settings',
+          download: 'Step 3: Download your converted PDF files',
+        },
+      },
     },
   },
 };

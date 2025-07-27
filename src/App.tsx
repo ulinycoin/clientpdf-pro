@@ -18,6 +18,7 @@ const ExtractTextPDFPage = React.lazy(() => import('./pages/tools/ExtractTextPDF
 const PDFToImagePage = React.lazy(() => import('./pages/tools/PDFToImagePage'));
 const ImageToPDFPage = React.lazy(() => import('./pages/tools/ImageToPDFPage'));
 const WordToPDFPage = React.lazy(() => import('./pages/tools/WordToPDFPage'));
+const ExcelToPDFPage = React.lazy(() => import('./pages/tools/ExcelToPDFPageSimplified'));
 const OCRPDFPage = React.lazy(() => import('./pages/tools/OCRPDFPage'));
 const EnhancedPDFProcessorPage = React.lazy(() => import('./pages/EnhancedPDFProcessorPage'));
 
@@ -63,6 +64,7 @@ function App() {
                 <Route path="/pdf-to-image" element={<PDFToImagePage />} />
                 <Route path="/images-to-pdf" element={<ImageToPDFPage />} />
                 <Route path="/word-to-pdf" element={<WordToPDFPage />} />
+                <Route path="/excel-to-pdf" element={<ExcelToPDFPage />} />
                 <Route path="/ocr-pdf" element={<OCRPDFPage />} />
 
                 {/* Demo page */}
