@@ -3,6 +3,9 @@ import { useI18n } from '../../hooks/useI18n';
 import FileUploadZone from '../molecules/FileUploadZone';
 import ProgressBar from '../atoms/ProgressBar';
 import Button from '../atoms/Button';
+import TestDataGenerator from '../molecules/TestDataGenerator';
+import FontDiagnostics from '../molecules/FontDiagnostics';
+import DebugControls from '../molecules/DebugControls';
 import { useExcelToPDF, DEFAULT_OPTIONS } from '../../hooks/useExcelToPDF';
 import { ConversionOptions } from '../../types/excelToPdf.types';
 
@@ -194,6 +197,10 @@ export const ExcelToPDFTool: React.FC = () => {
     }
   };
 
+  const handleGeneratedFile = async (file: File) => {
+    await parseFile(file);
+  };
+
   const handleConvert = async () => {
     await convertToPDF(options);
   };
@@ -279,15 +286,23 @@ export const ExcelToPDFTool: React.FC = () => {
       </div>
 
       {!workbook ? (
-        <div className="bg-white rounded-lg shadow-lg p-6">
-          <FileUploadZone
-            onFilesSelected={handleFileSelect}
-            accept=".xlsx,.xls"
-            acceptedTypes={['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel']}
-            maxSize={100 * 1024 * 1024}
-            multiple={false}
-          />
-        </div>
+        <>
+          <TestDataGenerator onFileGenerated={handleGeneratedFile} />
+
+          <FontDiagnostics />
+
+          <DebugControls />
+
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <FileUploadZone
+              onFilesSelected={handleFileSelect}
+              accept=".xlsx,.xls"
+              acceptedTypes={['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel']}
+              maxSize={100 * 1024 * 1024}
+              multiple={false}
+            />
+          </div>
+        </>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="bg-white rounded-lg shadow-lg p-6">
