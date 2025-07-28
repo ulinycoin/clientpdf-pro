@@ -72,10 +72,13 @@ export class ExcelToPDFGenerator {
   }
 
   async loadFont(pdfDoc: PDFDocument, language: string, isCyrillic: boolean = false): Promise<FontLoadResult> {
+    console.log(`🔤 Loading font for language: ${language}, isCyrillic: ${isCyrillic}`);
+
     try {
       // Check cache first
       const cacheKey = `${language}-${isCyrillic}`;
       if (this.fontCache.has(cacheKey)) {
+        console.log(`💾 Using cached font for ${cacheKey}`);
         const cachedData = this.fontCache.get(cacheKey);
         return {
           font: cachedData.font,
@@ -91,29 +94,37 @@ export class ExcelToPDFGenerator {
       let fontName = 'Helvetica';
 
       if (isCyrillic) {
+        console.log('🌍 Attempting to load Cyrillic font...');
         try {
           font = await this.loadCyrillicFont(pdfDoc, language);
           supportsCyrillic = true;
           needsTransliteration = false;
-          fontName = 'Noto Sans Cyrillic';
+          fontName = 'DejaVu Sans';
+          console.log('✅ Cyrillic font (DejaVu Sans) loaded successfully');
         } catch (error) {
-          console.warn(`Failed to load Cyrillic font, falling back to standard font with transliteration`);
+          console.warn(`⚠️ Failed to load Cyrillic font: ${error.message}`);
+          console.log('🔄 Falling back to standard font with transliteration');
+
           // Try Times-Roman first as it has better Unicode support than Helvetica
           try {
             font = await pdfDoc.embedFont(StandardFonts.TimesRoman);
             fontName = 'Times-Roman';
+            console.log('✅ Times-Roman font loaded as fallback');
           } catch (timesError) {
-            console.warn('Times-Roman also failed, using Helvetica');
+            console.warn('⚠️ Times-Roman also failed, using Helvetica');
             font = await pdfDoc.embedFont(StandardFonts.Helvetica);
             fontName = 'Helvetica';
+            console.log('✅ Helvetica font loaded as last resort');
           }
           supportsCyrillic = false;
           needsTransliteration = true;
         }
       } else {
+        console.log('📝 Loading standard Helvetica font for Latin text');
         font = await pdfDoc.embedFont(StandardFonts.Helvetica);
         supportsCyrillic = false;
         needsTransliteration = false;
+        console.log('✅ Helvetica font loaded');
       }
 
       // Cache the loaded font with metadata
@@ -123,6 +134,8 @@ export class ExcelToPDFGenerator {
         supportsCyrillic,
         needsTransliteration
       });
+
+      console.log(`💾 Font result cached: ${fontName} (supportsCyrillic: ${supportsCyrillic}, needsTransliteration: ${needsTransliteration})`);
 
       return {
         font,
@@ -187,6 +200,16 @@ export class ExcelToPDFGenerator {
   ): Promise<ConversionResult> {
     const pdfDoc = await PDFDocument.create();
 
+    // Set PDF metadata for better compatibility
+    pdfDoc.setTitle('Excel to PDF Conversion');
+    pdfDoc.setAuthor('LocalPDF');
+    pdfDoc.setSubject('Excel Spreadsheet Conversion');
+    pdfDoc.setKeywords(['excel', 'pdf', 'conversion', 'localpdf']);
+    pdfDoc.setProducer('LocalPDF - Privacy-first PDF tools');
+    pdfDoc.setCreator('LocalPDF');
+    pdfDoc.setCreationDate(new Date());
+    pdfDoc.setModificationDate(new Date());
+
     // Detect if we need Cyrillic support
     const allText = this.extractAllTextFromSheets(sheets);
     const isCyrillic = this.containsCyrillic(allText);
@@ -207,7 +230,13 @@ export class ExcelToPDFGenerator {
     }
 
     onProgress?.(95, 'Finalizing PDF...');
-    const pdfBytes = await pdfDoc.save();
+
+    // Save with better compression and compatibility settings
+    const pdfBytes = await pdfDoc.save({
+      useObjectStreams: false, // Better compatibility with older PDF readers
+      addDefaultPage: false,   // Don't add empty pages
+      objectsPerTick: 50      // Optimize performance
+    });
 
     return {
       success: true,
@@ -243,11 +272,27 @@ export class ExcelToPDFGenerator {
       );
 
       const pdfDoc = await PDFDocument.create();
+
+      // Set PDF metadata for each file
+      pdfDoc.setTitle(`${sheet.name} - Excel to PDF`);
+      pdfDoc.setAuthor('LocalPDF');
+      pdfDoc.setSubject(`Excel Sheet: ${sheet.name}`);
+      pdfDoc.setKeywords(['excel', 'pdf', 'conversion', 'localpdf', sheet.name]);
+      pdfDoc.setProducer('LocalPDF - Privacy-first PDF tools');
+      pdfDoc.setCreator('LocalPDF');
+      pdfDoc.setCreationDate(new Date());
+      pdfDoc.setModificationDate(new Date());
+
       const fontResult = await this.loadFont(pdfDoc, 'ru', isCyrillic);
 
       await this.addSheetToPDFDocument(pdfDoc, sheet, options, fontResult);
 
-      const pdfBytes = await pdfDoc.save();
+      // Save with better compatibility settings
+      const pdfBytes = await pdfDoc.save({
+        useObjectStreams: false, // Better compatibility with older PDF readers
+        addDefaultPage: false,   // Don't add empty pages
+        objectsPerTick: 50      // Optimize performance
+      });
 
       pdfFiles.push({
         name: `${this.sanitizeFileName(sheet.name)}.pdf`,
@@ -599,6 +644,53 @@ export class ExcelToPDFGenerator {
     return name.replace(/[^a-zA-Z0-9_-]/g, '_');
   }
 
+  public analyzeTableLayout(
+    sheet: ExcelSheet,
+    options: ConversionOptions
+  ): {
+    isOverflowing: boolean;
+    recommendedOrientation?: 'landscape' | 'portrait';
+    recommendedPageSize?: string;
+    columnCount: number;
+    scaleFactor?: number;
+    estimatedColumnWidths: number[];
+  } {
+    const { columns } = this.prepareTableData(sheet, options);
+    const dimensions = this.getPageDimensions(options.pageSize, options.orientation);
+    const [width] = dimensions;
+
+    const pageMargins = 50;
+    const columnPadding = 10;
+    const usableWidth = width - (pageMargins * 2) - (columnPadding * Math.max(0, columns.length - 1));
+
+    const estimatedColumnWidths = this.getOriginalColumnWidths(sheet, columns, usableWidth);
+    const totalContentWidth = estimatedColumnWidths.reduce((sum, w) => sum + w, 0);
+
+    const scaleFactor = totalContentWidth > usableWidth ? usableWidth / totalContentWidth : 1;
+    const isOverflowing = scaleFactor < 0.8; // Consider overflowing if scaled below 80%
+
+    let recommendedOrientation: 'landscape' | 'portrait' | undefined;
+    let recommendedPageSize: string | undefined;
+
+    // Analyze and recommend better settings
+    if (isOverflowing) {
+      if (options.orientation === 'portrait' && columns.length >= 5) {
+        recommendedOrientation = 'landscape';
+      } else if (options.orientation === 'landscape' && options.pageSize === 'A4' && columns.length >= 10) {
+        recommendedPageSize = 'A3';
+      }
+    }
+
+    return {
+      isOverflowing,
+      recommendedOrientation,
+      recommendedPageSize,
+      columnCount: columns.length,
+      scaleFactor: scaleFactor < 1 ? scaleFactor : undefined,
+      estimatedColumnWidths
+    };
+  }
+
   private extractAllTextFromSheets(sheets: ExcelSheet[]): string {
     return sheets.map(sheet =>
       sheet.data.flat().map(cell =>
@@ -641,9 +733,15 @@ export class ExcelToPDFGenerator {
     const dimensions = this.getPageDimensions(options.pageSize, options.orientation);
     console.log(`📏 Page dimensions calculated: ${dimensions[0]} x ${dimensions[1]}`);
 
-    const page = pdfDoc.addPage(dimensions);
+    // Create page with explicit dimensions for better compatibility
+    const page = pdfDoc.addPage([dimensions[0], dimensions[1]]);
     const { width, height } = page.getSize();
     console.log(`✅ Page created with actual size: ${width} x ${height}`);
+
+    // Verify dimensions match what we expect
+    if (Math.abs(width - dimensions[0]) > 1 || Math.abs(height - dimensions[1]) > 1) {
+      console.warn(`⚠️ Page size mismatch: expected ${dimensions[0]}x${dimensions[1]}, got ${width}x${height}`);
+    }
 
     // Add sheet title if requested
     if (options.includeSheetNames) {
@@ -676,99 +774,120 @@ export class ExcelToPDFGenerator {
     }
 
     const startY = options.includeSheetNames ? height - 80 : height - 50;
-    const columnPadding = 10; // Add padding between columns
-    const usableWidth = width - 100 - (columnPadding * (columns.length - 1)); // Account for padding
+    const columnPadding = 10;
+    const pageMargins = 50; // Left and right margins
+    const usableWidth = width - (pageMargins * 2) - (columnPadding * Math.max(0, columns.length - 1));
 
-    // Use original Excel column widths
+    console.log(`📐 Layout calculations:
+      - Page width: ${width}
+      - Page margins: ${pageMargins * 2}
+      - Column padding total: ${columnPadding * Math.max(0, columns.length - 1)}
+      - Usable width: ${usableWidth}`);
+
+    // Calculate column widths with better error handling
     const columnWidths = this.getOriginalColumnWidths(sheet, columns, usableWidth);
+    console.log(`📏 Column widths: [${columnWidths.map(w => Math.round(w)).join(', ')}]`);
 
     let currentY = startY;
     let currentPage = page;
 
-    // Helper function to draw headers
+    // Helper function to draw headers with proper positioning
     const drawHeaders = (targetPage: any, yPosition: number) => {
-      let headerX = 50; // Local variable for header positioning
+      let headerX = pageMargins;
+
       columns.forEach((col, index) => {
-        // Don't truncate headers, use full text
         const headerText = fontResult.needsTransliteration ?
           this.sanitizeTextForPDF(col.header) : col.header;
 
-        // Ensure header fits within column width
-        const availableWidth = columnWidths[index] - columnPadding;
-        const maxChars = Math.floor(availableWidth / 7);
+        // Calculate max characters that fit in this column
+        const availableWidth = columnWidths[index];
+        const avgCharWidth = (options.fontSize + 1) * 0.6;
+        const maxChars = Math.floor(availableWidth / avgCharWidth);
         const displayHeader = headerText.length > maxChars ?
-          headerText.substring(0, maxChars - 3) + '...' : headerText;
+          headerText.substring(0, Math.max(1, maxChars - 3)) + '...' : headerText;
 
-        targetPage.drawText(displayHeader, {
-          x: headerX,
-          y: yPosition,
-          size: options.fontSize + 1,
-          font: fontResult.font,
-          color: rgb(0, 0, 0)
-        });
+        console.log(`📝 Drawing header "${displayHeader}" at x=${headerX}, y=${yPosition}`);
+
+        try {
+          targetPage.drawText(displayHeader, {
+            x: headerX,
+            y: yPosition,
+            size: options.fontSize + 1,
+            font: fontResult.font,
+            color: rgb(0, 0, 0)
+          });
+        } catch (error) {
+          console.error(`Failed to draw header "${displayHeader}":`, error);
+        }
+
         headerX += columnWidths[index] + columnPadding;
       });
     };
 
     // Draw initial headers
+    console.log(`🎯 Drawing headers at y=${currentY}`);
     drawHeaders(currentPage, currentY);
-    currentY -= 25; // More space after headers
+    currentY -= 25;
 
-    // Draw data rows with better text handling
-    tableData.forEach(row => {
-      let currentX = 50; // Declare currentX at the right scope
-      let maxLinesInRow = 1; // Track maximum lines needed in this row
+    // Draw data rows with improved error handling and positioning
+    tableData.forEach((row, rowIndex) => {
+      console.log(`📊 Processing row ${rowIndex + 1}/${tableData.length}`);
 
-      // First pass: determine how many lines we need for this row
+      let maxLinesInRow = 1;
       const cellLines: string[][] = [];
-      columns.forEach((col, index) => {
+
+      // First pass: prepare all cell content
+      columns.forEach((col, colIndex) => {
         const cellValue = row[col.dataKey] || '';
         let displayValue = cellValue.toString();
 
-        // Apply transliteration if needed
         if (fontResult.needsTransliteration) {
           displayValue = this.sanitizeTextForPDF(displayValue);
         }
 
-        // Calculate max characters based on column width and font size
+        // Calculate text wrapping
         const avgCharWidth = options.fontSize * 0.6;
-        const availableWidth = columnWidths[index] - columnPadding;
+        const availableWidth = columnWidths[colIndex];
         const maxChars = Math.floor(availableWidth / avgCharWidth);
+        const lines = this.wrapText(displayValue, Math.max(1, maxChars));
 
-        // Split long text into multiple lines
-        const lines = this.wrapText(displayValue, maxChars);
         cellLines.push(lines);
         maxLinesInRow = Math.max(maxLinesInRow, lines.length);
       });
 
       // Second pass: render all lines for this row
       for (let lineIndex = 0; lineIndex < maxLinesInRow; lineIndex++) {
-        let lineX = 50; // Local variable for each line
+        let lineX = pageMargins;
 
         columns.forEach((col, colIndex) => {
           const lines = cellLines[colIndex];
-          const textToRender = lines[lineIndex] || ''; // Empty if no more lines
+          const textToRender = lines[lineIndex] || '';
 
-          if (textToRender) {
-            // Safe text rendering with error handling
+          if (textToRender.trim()) {
+            const yPos = currentY - (lineIndex * 12);
+
             try {
               currentPage.drawText(textToRender, {
                 x: lineX,
-                y: currentY - (lineIndex * 12), // Stack lines vertically
+                y: yPos,
                 size: options.fontSize,
                 font: fontResult.font,
                 color: rgb(0, 0, 0)
               });
-            } catch (textError) {
-              console.warn(`Text rendering failed for "${textToRender}", using transliteration`);
-              const safeText = this.sanitizeTextForPDF(textToRender);
-              currentPage.drawText(safeText, {
-                x: lineX,
-                y: currentY - (lineIndex * 12),
-                size: options.fontSize,
-                font: fontResult.font,
-                color: rgb(0, 0, 0)
-              });
+            } catch (error) {
+              console.warn(`Text rendering failed for "${textToRender}", using fallback`);
+              try {
+                const safeText = this.sanitizeTextForPDF(textToRender);
+                currentPage.drawText(safeText, {
+                  x: lineX,
+                  y: yPos,
+                  size: options.fontSize,
+                  font: fontResult.font,
+                  color: rgb(0, 0, 0)
+                });
+              } catch (fallbackError) {
+                console.error(`Even fallback text rendering failed:`, fallbackError);
+              }
             }
           }
 
@@ -776,22 +895,32 @@ export class ExcelToPDFGenerator {
         });
       }
 
-      // Move to next row position (accounting for multiple lines)
-      currentY -= Math.max(18, maxLinesInRow * 12 + 6);
+      // Move to next row position
+      const rowHeight = Math.max(18, maxLinesInRow * 12 + 6);
+      currentY -= rowHeight;
 
-      if (currentY < 50) {
-        currentPage = pdfDoc.addPage(dimensions);
+      // Check if we need a new page
+      if (currentY < 70) { // Leave more margin at bottom
+        console.log(`📄 Creating new page (currentY=${currentY})`);
+        const newDimensions = this.getPageDimensions(options.pageSize, options.orientation);
+        currentPage = pdfDoc.addPage([newDimensions[0], newDimensions[1]]);
         currentY = currentPage.getSize().height - 50;
 
-        // Repeat headers on new page using helper function
+        // Draw headers on new page
         drawHeaders(currentPage, currentY);
         currentY -= 25;
       }
     });
+
+    console.log(`✅ Sheet "${sheet.name}" processed successfully`);
   }
 
   private wrapText(text: string, maxChars: number): string[] {
-    if (!text || maxChars < 3) return [text.substring(0, 3) + '..'];
+    if (!text) return [''];
+
+    // Handle very small maxChars
+    if (maxChars < 1) return [''];
+    if (maxChars < 3) return [text.substring(0, maxChars)];
 
     if (text.length <= maxChars) {
       return [text];
@@ -802,34 +931,41 @@ export class ExcelToPDFGenerator {
     let currentLine = '';
 
     for (const word of words) {
-      // If single word is too long, truncate it
+      // If single word is too long, truncate it appropriately
       if (word.length > maxChars) {
-        if (currentLine) {
+        if (currentLine.trim()) {
           lines.push(currentLine.trim());
           currentLine = '';
         }
-        lines.push(word.substring(0, maxChars - 2) + '..');
+
+        // For very long words, truncate with ellipsis if there's room
+        if (maxChars > 3) {
+          lines.push(word.substring(0, maxChars - 2) + '..');
+        } else {
+          lines.push(word.substring(0, maxChars));
+        }
         continue;
       }
 
-      // If adding this word would exceed maxChars, start new line
-      if (currentLine.length + word.length + 1 > maxChars) {
-        if (currentLine) {
+      // Check if adding this word would exceed maxChars
+      const testLine = currentLine + word;
+      if (testLine.length > maxChars) {
+        if (currentLine.trim()) {
           lines.push(currentLine.trim());
         }
         currentLine = word + ' ';
       } else {
-        currentLine += word + ' ';
+        currentLine = testLine + ' ';
       }
     }
 
-    // Add the last line
+    // Add the last line if it has content
     if (currentLine.trim()) {
       lines.push(currentLine.trim());
     }
 
-    // Limit to maximum 2 lines to avoid very tall cells
-    return lines.slice(0, 2);
+    // Return empty array if no content, otherwise limit to 2 lines max
+    return lines.length > 0 ? lines.slice(0, 2) : [''];
   }
 
   private getOriginalColumnWidths(sheet: ExcelSheet, columns: AutoTableColumn[], usableWidth: number): number[] {

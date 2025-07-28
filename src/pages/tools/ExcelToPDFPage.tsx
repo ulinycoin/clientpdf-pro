@@ -125,51 +125,6 @@ export const ExcelToPDFPage: React.FC = () => {
           </div>
 
           <div className="mt-12">
-            <div className="bg-white rounded-lg shadow-lg p-8">
-              <h2 className="text-2xl font-bold mb-6">
-                {t('seo.tools.excelToPdf.features.title')}
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="text-center">
-                  <h3 className="text-lg font-semibold mb-2">
-                    {t('seo.tools.excelToPdf.features.privacy.title')}
-                  </h3>
-                  <p className="text-gray-600">
-                    {t('seo.tools.excelToPdf.features.privacy.description')}
-                  </p>
-                </div>
-
-                <div className="text-center">
-                  <h3 className="text-lg font-semibold mb-2">
-                    {t('seo.tools.excelToPdf.features.multiSheet.title')}
-                  </h3>
-                  <p className="text-gray-600">
-                    {t('seo.tools.excelToPdf.features.multiSheet.description')}
-                  </p>
-                </div>
-
-                <div className="text-center">
-                  <h3 className="text-lg font-semibold mb-2">
-                    {t('seo.tools.excelToPdf.features.international.title')}
-                  </h3>
-                  <p className="text-gray-600">
-                    {t('seo.tools.excelToPdf.features.international.description')}
-                  </p>
-                </div>
-
-                <div className="text-center">
-                  <h3 className="text-lg font-semibold mb-2">
-                    {t('seo.tools.excelToPdf.features.formatting.title')}
-                  </h3>
-                  <p className="text-gray-600">
-                    {t('seo.tools.excelToPdf.features.formatting.description')}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-12">
             <RelatedTools tools={relatedTools} />
           </div>
         </div>

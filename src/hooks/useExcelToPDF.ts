@@ -17,6 +17,14 @@ interface UseExcelToPDFState {
   error: string | null;
   result: ConversionResult | null;
   availableFonts: FontSubset[];
+  showPreview: boolean;
+  tableAnalysis: {
+    isOverflowing: boolean;
+    recommendedOrientation?: 'landscape' | 'portrait';
+    recommendedPageSize?: string;
+    columnCount: number;
+    scaleFactor?: number;
+  } | null;
 }
 
 interface UseExcelToPDFActions {
@@ -25,6 +33,8 @@ interface UseExcelToPDFActions {
   downloadPDF: (pdfFile: { name: string; data: Uint8Array }) => void;
   downloadAllPDFs: () => void;
   reset: () => void;
+  togglePreview: () => void;
+  analyzeTable: (options: ConversionOptions) => void;
 }
 
 const DEFAULT_OPTIONS: ConversionOptions = {
@@ -51,7 +61,9 @@ export function useExcelToPDF(): UseExcelToPDFState & UseExcelToPDFActions {
     progress: null,
     error: null,
     result: null,
-    availableFonts: fontManager.getAvailableFonts()
+    availableFonts: fontManager.getAvailableFonts(),
+    showPreview: false,
+    tableAnalysis: null
   });
 
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -123,16 +135,21 @@ export function useExcelToPDF(): UseExcelToPDFState & UseExcelToPDFActions {
   }, [setError]);
 
   const convertToPDF = useCallback(async (options: ConversionOptions) => {
+    console.log('🚀 Starting convertToPDF with options:', options);
+
     if (!state.workbook) {
+      console.error('❌ No Excel file loaded');
       setError('No Excel file loaded');
       return;
     }
 
     if (options.selectedSheets.length === 0) {
+      console.error('❌ No sheets selected');
       setError('Please select at least one sheet to convert');
       return;
     }
 
+    console.log('✅ Validation passed, starting conversion...');
     setState(prev => ({
       ...prev,
       isProcessing: true,
@@ -183,6 +200,8 @@ export function useExcelToPDF(): UseExcelToPDFState & UseExcelToPDFActions {
         options.selectedSheets.includes(sheet.name)
       );
 
+      console.log('📊 Converting sheets:', selectedSheets.map(s => s.name));
+
       const result = await excelToPDFGenerator.generatePDF(
         selectedSheets,
         options,
@@ -196,11 +215,22 @@ export function useExcelToPDF(): UseExcelToPDFState & UseExcelToPDFActions {
         }
       );
 
+      console.log('🎉 Conversion result:', {
+        success: result.success,
+        hasFiles: !!result.pdfFiles,
+        filesCount: result.pdfFiles?.length,
+        error: result.error,
+        firstFileName: result.pdfFiles?.[0]?.name,
+        firstFileSize: result.pdfFiles?.[0]?.data?.length
+      });
+
       if (result.success) {
+        console.log('✅ Setting state with result and showPreview=true');
         setState(prev => ({
           ...prev,
           result,
           isProcessing: false,
+          showPreview: true, // Automatically show preview after successful conversion
           progress: {
             stage: 'complete',
             progress: 100,
@@ -208,14 +238,18 @@ export function useExcelToPDF(): UseExcelToPDFState & UseExcelToPDFActions {
           }
         }));
 
+        console.log('🔄 State should now have showPreview=true and result with files');
+
         setTimeout(() => {
           setState(prev => ({ ...prev, progress: null }));
         }, 2000);
       } else {
+        console.error('❌ Conversion failed:', result.error);
         setError(result.error || 'Conversion failed');
       }
 
     } catch (error) {
+      console.error('❌ Conversion error:', error);
       setError(error instanceof Error ? error.message : 'Conversion failed');
     }
   }, [state.workbook, setError, setProgress]);
@@ -260,9 +294,50 @@ export function useExcelToPDF(): UseExcelToPDFState & UseExcelToPDFActions {
       progress: null,
       error: null,
       result: null,
-      availableFonts: fontManager.getAvailableFonts()
+      availableFonts: fontManager.getAvailableFonts(),
+      showPreview: false,
+      tableAnalysis: null
     });
   }, []);
+
+  const togglePreview = useCallback(() => {
+    setState(prev => ({ ...prev, showPreview: !prev.showPreview }));
+  }, []);
+
+  const analyzeTable = useCallback((options: ConversionOptions) => {
+    if (!state.workbook || options.selectedSheets.length === 0) {
+      setState(prev => ({ ...prev, tableAnalysis: null }));
+      return;
+    }
+
+    try {
+      // Analyze the first selected sheet for overflow
+      const selectedSheet = state.workbook.sheets.find(sheet =>
+        options.selectedSheets.includes(sheet.name)
+      );
+
+      if (!selectedSheet) {
+        setState(prev => ({ ...prev, tableAnalysis: null }));
+        return;
+      }
+
+      const analysis = excelToPDFGenerator.analyzeTableLayout(selectedSheet, options);
+
+      setState(prev => ({
+        ...prev,
+        tableAnalysis: {
+          isOverflowing: analysis.isOverflowing,
+          recommendedOrientation: analysis.recommendedOrientation,
+          recommendedPageSize: analysis.recommendedPageSize,
+          columnCount: analysis.columnCount,
+          scaleFactor: analysis.scaleFactor
+        }
+      }));
+    } catch (error) {
+      console.warn('Table analysis failed:', error);
+      setState(prev => ({ ...prev, tableAnalysis: null }));
+    }
+  }, [state.workbook]);
 
   return {
     ...state,
@@ -270,7 +345,9 @@ export function useExcelToPDF(): UseExcelToPDFState & UseExcelToPDFActions {
     convertToPDF,
     downloadPDF,
     downloadAllPDFs,
-    reset
+    reset,
+    togglePreview,
+    analyzeTable
   };
 }
 

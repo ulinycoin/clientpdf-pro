@@ -3,9 +3,7 @@ import { useI18n } from '../../hooks/useI18n';
 import FileUploadZone from '../molecules/FileUploadZone';
 import ProgressBar from '../atoms/ProgressBar';
 import Button from '../atoms/Button';
-import TestDataGenerator from '../molecules/TestDataGenerator';
-import FontDiagnostics from '../molecules/FontDiagnostics';
-import DebugControls from '../molecules/DebugControls';
+import ExcelPreview from '../molecules/ExcelPreview';
 import { useExcelToPDF, DEFAULT_OPTIONS } from '../../hooks/useExcelToPDF';
 import { ConversionOptions } from '../../types/excelToPdf.types';
 
@@ -170,11 +168,15 @@ export const ExcelToPDFTool: React.FC = () => {
     progress,
     error,
     result,
+    showPreview,
+    tableAnalysis,
     parseFile,
     convertToPDF,
     downloadPDF,
     downloadAllPDFs,
-    reset
+    reset,
+    togglePreview,
+    analyzeTable
   } = useExcelToPDF();
 
   const [options, setOptions] = React.useState<ConversionOptions>({
@@ -191,18 +193,32 @@ export const ExcelToPDFTool: React.FC = () => {
     }
   }, [workbook]);
 
+  // Analyze table when options change
+  React.useEffect(() => {
+    if (workbook && options.selectedSheets.length > 0) {
+      analyzeTable(options);
+    }
+  }, [workbook, options, analyzeTable]);
+
   const handleFileSelect = async (files: File[]) => {
     if (files.length > 0) {
       await parseFile(files[0]);
     }
   };
 
-  const handleGeneratedFile = async (file: File) => {
-    await parseFile(file);
+  const handleConvert = async () => {
+    console.log('🔥 handleConvert called with options:', options);
+    console.log('📋 Current state:', {
+      hasWorkbook: !!workbook,
+      selectedSheets: options.selectedSheets,
+      isProcessing
+    });
+    await convertToPDF(options);
   };
 
-  const handleConvert = async () => {
-    await convertToPDF(options);
+  const handleOrientationToggle = () => {
+    const newOrientation = options.orientation === 'portrait' ? 'landscape' : 'portrait';
+    setOptions(prev => ({ ...prev, orientation: newOrientation }));
   };
 
   if (error) {
@@ -222,60 +238,8 @@ export const ExcelToPDFTool: React.FC = () => {
     );
   }
 
-  if (result) {
-    return (
-      <div className="max-w-4xl mx-auto p-6">
-        <div className="bg-green-50 border border-green-200 rounded-lg p-6 text-center">
-          <h3 className="text-lg font-semibold text-green-800 mb-4">
-            Conversion Completed Successfully!
-          </h3>
-
-          <div className="space-y-4">
-            {result.pdfFiles && result.pdfFiles.length > 1 ? (
-              <div>
-                <Button onClick={downloadAllPDFs} className="mr-4">
-                  Download All PDFs ({result.pdfFiles.length} files)
-                </Button>
-                <div className="mt-4 space-y-2">
-                  {result.pdfFiles.map((file, index) => (
-                    <div key={index} className="flex items-center justify-between p-2 bg-white rounded">
-                      <span className="text-sm">{file.name}</span>
-                      <Button
-                        onClick={() => downloadPDF(file)}
-                        size="sm"
-                        variant="secondary"
-                      >
-                        Download
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ) : result.pdfFiles && result.pdfFiles[0] ? (
-              <Button onClick={() => downloadPDF(result.pdfFiles![0])}>
-                Download PDF
-              </Button>
-            ) : null}
-
-            <div className="text-sm text-gray-600 mt-4">
-              {result.metadata && (
-                <div>
-                  File size: {Math.round(result.metadata.fileSize / 1024)} KB
-                </div>
-              )}
-            </div>
-          </div>
-
-          <Button onClick={reset} variant="secondary" className="mt-6">
-            Convert Another File
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <div className="max-w-7xl mx-auto p-6">
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-4">
           Excel to PDF Converter
@@ -285,73 +249,133 @@ export const ExcelToPDFTool: React.FC = () => {
         </p>
       </div>
 
-      {!workbook ? (
-        <>
-          <TestDataGenerator onFileGenerated={handleGeneratedFile} />
-
-          <FontDiagnostics />
-
-          <DebugControls />
-
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <FileUploadZone
-              onFilesSelected={handleFileSelect}
-              accept=".xlsx,.xls"
-              acceptedTypes={['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel']}
-              maxSize={100 * 1024 * 1024}
-              multiple={false}
-            />
-          </div>
-        </>
-      ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-xl font-semibold mb-4">File Information</h2>
-            <div className="space-y-2 text-sm">
-              <div><strong>File:</strong> {workbook.metadata.fileName}</div>
-              <div><strong>Size:</strong> {Math.round(workbook.metadata.fileSize / 1024)} KB</div>
-              <div><strong>Sheets:</strong> {workbook.metadata.totalSheets}</div>
-              <div><strong>Languages:</strong> {workbook.metadata.detectedLanguages.join(', ') || 'English'}</div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Left Panel - Upload and Settings */}
+        <div className="space-y-6">
+          {!workbook ? (
+            <div className="bg-white rounded-lg shadow-lg p-6">
+              <FileUploadZone
+                onFilesSelected={handleFileSelect}
+                accept=".xlsx,.xls"
+                acceptedTypes={['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel']}
+                maxSize={100 * 1024 * 1024}
+                multiple={false}
+              />
             </div>
-
-            {workbook.metadata.detectedLanguages.length > 1 && (
-              <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                <div className="text-sm text-blue-800">
-                  Multiple languages detected. Appropriate fonts will be loaded automatically.
+          ) : (
+            <>
+              {/* Success Message */}
+              {result?.success && (
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                  <div className="flex items-center">
+                    <div className="text-green-600 mr-2">✅</div>
+                    <div>
+                      <h3 className="text-green-800 font-medium">Conversion Completed!</h3>
+                      <p className="text-green-700 text-sm">
+                        {result.pdfFiles?.length === 1
+                          ? 'PDF is ready for download'
+                          : `${result.pdfFiles?.length} PDF files generated`
+                        }
+                      </p>
+                    </div>
+                  </div>
                 </div>
+              )}
+
+              {/* File Information */}
+              <div className="bg-white rounded-lg shadow-lg p-6">
+                <h2 className="text-xl font-semibold mb-4">File Information</h2>
+                <div className="space-y-2 text-sm">
+                  <div><strong>File:</strong> {workbook.metadata.fileName}</div>
+                  <div><strong>Size:</strong> {Math.round(workbook.metadata.fileSize / 1024)} KB</div>
+                  <div><strong>Sheets:</strong> {workbook.metadata.totalSheets}</div>
+                  <div><strong>Languages:</strong> {workbook.metadata.detectedLanguages.join(', ') || 'English'}</div>
+                </div>
+
+                {workbook.metadata.detectedLanguages.length > 1 && (
+                  <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                    <div className="text-sm text-blue-800">
+                      Multiple languages detected. Appropriate fonts will be loaded automatically.
+                    </div>
+                  </div>
+                )}
+
+                <button
+                  onClick={reset}
+                  className="mt-4 text-sm text-red-600 hover:text-red-800 underline"
+                >
+                  Choose Different File
+                </button>
               </div>
-            )}
-          </div>
 
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-xl font-semibold mb-4">Conversion Settings</h2>
-            <ConversionSettings
-              workbook={workbook}
-              options={options}
-              onOptionsChange={setOptions}
-              onConvert={handleConvert}
-              isProcessing={isProcessing}
-            />
+              {/* Conversion Settings */}
+              <div className="bg-white rounded-lg shadow-lg p-6">
+                <h2 className="text-xl font-semibold mb-4">Conversion Settings</h2>
+                <ConversionSettings
+                  workbook={workbook}
+                  options={options}
+                  onOptionsChange={setOptions}
+                  onConvert={handleConvert}
+                  isProcessing={isProcessing}
+                />
+              </div>
+            </>
+          )}
+
+          {/* Progress */}
+          {progress && (
+            <div className="bg-white rounded-lg shadow-lg p-6">
+              <div className="mb-2 flex justify-between">
+                <span className="text-sm font-medium text-gray-700">
+                  {progress.message}
+                </span>
+                <span className="text-sm text-gray-500">
+                  {Math.round(progress.progress)}%
+                </span>
+              </div>
+              <ProgressBar
+                progress={progress.progress}
+                className="h-2 bg-gray-200 rounded-full"
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Right Panel - Preview */}
+        <div className="space-y-6">
+          <div className="bg-white rounded-lg shadow-lg overflow-hidden min-h-[600px]">
+            {(() => {
+              // Debug logging
+              console.log('🔍 ExcelToPDFTool Preview Data:', {
+                result: result ? { success: result.success, hasFiles: !!result.pdfFiles, filesCount: result.pdfFiles?.length } : null,
+                showPreview,
+                isProcessing,
+                workbook: !!workbook,
+                tableAnalysis
+              });
+
+              return (
+                <ExcelPreview
+                  result={result}
+                  fileName={workbook?.metadata.fileName || 'excel-document.pdf'}
+                  onDownload={() => result?.pdfFiles?.[0] && downloadPDF(result.pdfFiles[0])}
+                  onDownloadAll={result?.pdfFiles && result.pdfFiles.length > 1 ? downloadAllPDFs : undefined}
+                  isGenerating={isProcessing}
+                  onRegenerate={workbook ? handleConvert : undefined}
+                  onOrientationToggle={handleOrientationToggle}
+                  tableOverflowWarning={tableAnalysis ? {
+                    isOverflowing: tableAnalysis.isOverflowing,
+                    recommendedOrientation: tableAnalysis.recommendedOrientation,
+                    recommendedPageSize: tableAnalysis.recommendedPageSize,
+                    columnCount: tableAnalysis.columnCount,
+                    scaleFactor: tableAnalysis.scaleFactor
+                  } : undefined}
+                />
+              );
+            })()}
           </div>
         </div>
-      )}
-
-      {progress && (
-        <div className="mt-6 bg-white rounded-lg shadow-lg p-6">
-          <div className="mb-2 flex justify-between">
-            <span className="text-sm font-medium text-gray-700">
-              {progress.message}
-            </span>
-            <span className="text-sm text-gray-500">
-              {Math.round(progress.progress)}%
-            </span>
-          </div>
-          <ProgressBar
-            progress={progress.progress}
-            className="h-2 bg-gray-200 rounded-full"
-          />
-        </div>
-      )}
+      </div>
     </div>
   );
 };

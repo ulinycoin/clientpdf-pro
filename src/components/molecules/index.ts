@@ -6,3 +6,4 @@ export { default as ToolCard } from './ToolCard';
 export { default as LanguageSwitcher } from './LanguageSwitcher';
 export { default as EnhancedPDFProcessor } from './EnhancedPDFProcessor';
 export { default as TestDataGenerator } from './TestDataGenerator';
+export { default as ExcelPreview } from './ExcelPreview';

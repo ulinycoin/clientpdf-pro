@@ -94,51 +94,6 @@ const ExcelToPDFPage: React.FC = () => {
         </div>
 
         <div className="mt-12">
-          <div className="bg-white rounded-lg shadow-lg p-8">
-            <h2 className="text-2xl font-bold mb-6">
-              Why Choose Our Excel to PDF Converter?
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="text-center">
-                <h3 className="text-lg font-semibold mb-2">
-                  🔒 Privacy First
-                </h3>
-                <p className="text-gray-600">
-                  Your spreadsheets never leave your device. All conversion happens locally in your browser.
-                </p>
-              </div>
-
-              <div className="text-center">
-                <h3 className="text-lg font-semibold mb-2">
-                  📊 Multiple Sheets
-                </h3>
-                <p className="text-gray-600">
-                  Convert single or multiple sheets to PDF. Create separate files or combine into one.
-                </p>
-              </div>
-
-              <div className="text-center">
-                <h3 className="text-lg font-semibold mb-2">
-                  🌍 International Support
-                </h3>
-                <p className="text-gray-600">
-                  Automatic language detection and font loading for proper text rendering.
-                </p>
-              </div>
-
-              <div className="text-center">
-                <h3 className="text-lg font-semibold mb-2">
-                  ✨ Preserve Formatting
-                </h3>
-                <p className="text-gray-600">
-                  Maintains cell formatting, borders, colors, and column widths.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-12">
           <div className="bg-white rounded-lg shadow-lg p-6">
             <h2 className="text-xl font-bold mb-4">Related Tools</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
