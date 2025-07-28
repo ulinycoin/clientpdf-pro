@@ -21,6 +21,21 @@ interface AutoTableData {
 
 export class ExcelToPDFGenerator {
   private fontCache = new Map<string, any>();
+  private currentPdfDocId: string | null = null;
+
+  // Clear font cache when starting with a new PDF document
+  private clearFontCacheIfNeeded(pdfDoc: PDFDocument): void {
+    // Create a unique identifier for this PDF document
+    const pdfDocId = (pdfDoc as any)._id || `pdf_${Date.now()}_${Math.random()}`;
+
+    if (this.currentPdfDocId !== pdfDocId) {
+      console.log('🧹 Clearing font cache for new PDF document');
+      this.fontCache.clear();
+      this.currentPdfDocId = pdfDocId;
+      // Store the ID on the document for future reference
+      (pdfDoc as any)._id = pdfDocId;
+    }
+  }
 
   async loadCyrillicFont(pdfDoc: PDFDocument, language: string): Promise<any> {
     // Register fontkit for custom font support
@@ -74,9 +89,14 @@ export class ExcelToPDFGenerator {
   async loadFont(pdfDoc: PDFDocument, language: string, isCyrillic: boolean = false): Promise<FontLoadResult> {
     console.log(`🔤 Loading font for language: ${language}, isCyrillic: ${isCyrillic}`);
 
+    // Clear font cache if this is a new PDF document
+    this.clearFontCacheIfNeeded(pdfDoc);
+
     try {
-      // Check cache first
-      const cacheKey = `${language}-${isCyrillic}`;
+      // Check cache first with PDF document-specific key
+      const pdfDocId = (pdfDoc as any)._id || this.currentPdfDocId;
+      const cacheKey = `${pdfDocId}-${language}-${isCyrillic}`;
+
       if (this.fontCache.has(cacheKey)) {
         console.log(`💾 Using cached font for ${cacheKey}`);
         const cachedData = this.fontCache.get(cacheKey);
@@ -127,7 +147,7 @@ export class ExcelToPDFGenerator {
         console.log('✅ Helvetica font loaded');
       }
 
-      // Cache the loaded font with metadata
+      // Cache the loaded font with metadata using document-specific key
       this.fontCache.set(cacheKey, {
         font,
         fontName,
@@ -135,7 +155,7 @@ export class ExcelToPDFGenerator {
         needsTransliteration
       });
 
-      console.log(`💾 Font result cached: ${fontName} (supportsCyrillic: ${supportsCyrillic}, needsTransliteration: ${needsTransliteration})`);
+      console.log(`💾 Font result cached: ${fontName} (key: ${cacheKey}, supportsCyrillic: ${supportsCyrillic}, needsTransliteration: ${needsTransliteration})`);
 
       return {
         font,
