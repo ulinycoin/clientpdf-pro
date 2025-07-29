@@ -47,6 +47,7 @@ const ToolCard: React.FC<ToolCardProps> = ({
       'pdf-to-image': 'from-blue-500 to-blue-600', // Синий: технологии
       'images-to-pdf': 'from-green-500 to-green-600', // Зеленый: безопасность
       'word-to-pdf': 'from-blue-600 to-indigo-600', // Синий: технологии
+      'excel-to-pdf': 'from-emerald-500 to-green-600', // Зеленый: Excel ассоциация
       'ocr-pdf': 'from-purple-500 to-violet-600' // Фиолетовый: инновации
     };
 

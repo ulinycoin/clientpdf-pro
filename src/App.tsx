@@ -18,7 +18,7 @@ const ExtractTextPDFPage = React.lazy(() => import('./pages/tools/ExtractTextPDF
 const PDFToImagePage = React.lazy(() => import('./pages/tools/PDFToImagePage'));
 const ImageToPDFPage = React.lazy(() => import('./pages/tools/ImageToPDFPage'));
 const WordToPDFPage = React.lazy(() => import('./pages/tools/WordToPDFPage'));
-const ExcelToPDFPage = React.lazy(() => import('./pages/tools/ExcelToPDFPageSimplified'));
+const ExcelToPDFPage = React.lazy(() => import('./pages/tools/ExcelToPDFPage'));
 const OCRPDFPage = React.lazy(() => import('./pages/tools/OCRPDFPage'));
 const EnhancedPDFProcessorPage = React.lazy(() => import('./pages/EnhancedPDFProcessorPage'));
 

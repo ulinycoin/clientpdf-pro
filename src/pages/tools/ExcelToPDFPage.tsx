@@ -1,133 +1,154 @@
-import React from 'react';
-import { Helmet } from 'react-helmet-async';
-import { useI18n } from '../../hooks/useI18n';
+import React, { useEffect } from 'react';
+import { SEOHead } from '../../components/SEO/SEOHead';
+import { Header, Footer } from '../../components/organisms';
 import ExcelToPDFTool from '../../components/organisms/ExcelToPDFTool';
-import SEOHead from '../../components/SEO/SEOHead';
-import Breadcrumbs from '../../components/common/Breadcrumbs';
-import RelatedTools from '../../components/common/RelatedTools';
+import { Breadcrumbs } from '../../components/common';
+import { RelatedTools } from '../../components/common';
+import { toolsSEOData } from '../../data/seoData';
+import { useTranslation, useI18n } from '../../hooks/useI18n';
 
-export const ExcelToPDFPage: React.FC = () => {
-  const { t } = useI18n();
+const ExcelToPDFPage: React.FC = () => {
+  const { t } = useTranslation();
+  const { currentLanguage } = useI18n();
+  const seoData = toolsSEOData.excelToPdf;
+
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const breadcrumbItems = [
-    { label: t('seo.tools.excelToPdf.breadcrumbs.home'), href: '/' },
-    { label: t('seo.tools.excelToPdf.breadcrumbs.excelToPdf') }
-  ];
-
-  const relatedTools = [
-    {
-      name: 'Word to PDF',
-      description: 'Convert Word documents to PDF',
-      href: '/tools/word-to-pdf',
-      icon: '📄'
-    },
-    {
-      name: 'Image to PDF',
-      description: 'Convert images to PDF format',
-      href: '/tools/image-to-pdf',
-      icon: '🖼️'
-    },
-    {
-      name: 'Merge PDF',
-      description: 'Combine multiple PDF files',
-      href: '/tools/merge-pdf',
-      icon: '📑'
-    },
-    {
-      name: 'Split PDF',
-      description: 'Split PDF into separate files',
-      href: '/tools/split-pdf',
-      icon: '✂️'
-    }
+    { label: t('common.home'), href: '/' },
+    { label: t('tools.excelToPdf.title'), href: '/excel-to-pdf' }
   ];
 
   return (
     <>
       <SEOHead
-        title={t('seo.tools.excelToPdf.seo.title')}
-        description={t('seo.tools.excelToPdf.seo.description')}
-        keywords={t('seo.tools.excelToPdf.seo.keywords')}
-        structuredData={{
-          '@context': 'https://schema.org',
-          '@type': 'WebApplication',
-          name: t('seo.tools.excelToPdf.seo.structuredData.name'),
-          description: t('seo.tools.excelToPdf.seo.structuredData.description'),
-          url: 'https://localpdf.online/tools/excel-to-pdf',
-          applicationCategory: 'Utility',
-          operatingSystem: 'Any',
-          permissions: t('seo.tools.excelToPdf.seo.structuredData.permissions'),
-          offers: {
-            '@type': 'Offer',
-            price: '0',
-            priceCurrency: 'USD'
-          }
-        }}
+        title={seoData.title}
+        description={seoData.description}
+        keywords={seoData.keywords}
+        canonical={seoData.canonical}
+        structuredData={seoData.structuredData}
       />
 
-      <div className="min-h-screen bg-gray-50">
-        <div className="container mx-auto px-4 py-8">
+      <div className="min-h-screen bg-gradient-mesh flex flex-col">
+        <Header />
+
+        <main className="flex-grow container mx-auto px-4 pt-20 pb-8">
           <Breadcrumbs items={breadcrumbItems} />
 
-          <div className="mb-8 text-center">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              {t('seo.tools.excelToPdf.pageTitle')}
+          <div className="text-center mb-8">
+            <h1 className="text-3xl md:text-4xl font-bold text-secondary-900 mb-4">
+              <span className="text-gradient-blue">{t('tools.excelToPdf.title')}</span>
             </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              {t('seo.tools.excelToPdf.pageDescription')}
+            <p className="text-lg text-secondary-600 max-w-3xl mx-auto">
+              {t('tools.excelToPdf.description')} - Convert your Excel spreadsheets to professional PDF documents with support for multiple sheets, wide tables, and international text. All processing happens locally for maximum privacy.
             </p>
           </div>
 
           <ExcelToPDFTool />
 
-          <div className="mt-16">
-            <div className="bg-white rounded-lg shadow-lg p-8">
-              <h2 className="text-2xl font-bold mb-6">
-                {t('seo.tools.excelToPdf.howTo.title')}
+          <div className="mt-12 max-w-4xl mx-auto">
+            <div className="pdf-processing-card rounded-3xl p-8">
+              <h2 className="text-2xl font-bold text-secondary-900 mb-6">
+                How to Convert Excel to PDF
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+              <div className="grid md:grid-cols-3 gap-6 mb-8">
                 <div className="text-center">
-                  <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span className="text-2xl">📊</span>
+                  <div className="w-16 h-16 bg-primary-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <span className="text-3xl">📊</span>
                   </div>
-                  <h3 className="text-lg font-semibold mb-2">
-                    {t('seo.tools.excelToPdf.howTo.steps.upload.title')}
-                  </h3>
-                  <p className="text-gray-600">
-                    {t('seo.tools.excelToPdf.howTo.steps.upload.description')}
+                  <h3 className="font-semibold text-secondary-900 mb-2">Upload Excel File</h3>
+                  <p className="text-secondary-600 text-sm">
+                    Select your Excel file (.xlsx or .xls) from your device. Files are processed locally for maximum privacy.
                   </p>
                 </div>
 
                 <div className="text-center">
-                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span className="text-2xl">⚙️</span>
+                  <div className="w-16 h-16 bg-success-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <span className="text-3xl">⚙️</span>
                   </div>
-                  <h3 className="text-lg font-semibold mb-2">
-                    {t('seo.tools.excelToPdf.howTo.steps.configure.title')}
-                  </h3>
-                  <p className="text-gray-600">
-                    {t('seo.tools.excelToPdf.howTo.steps.configure.description')}
+                  <h3 className="font-semibold text-secondary-900 mb-2">Configure Settings</h3>
+                  <p className="text-secondary-600 text-sm">
+                    Choose which sheets to convert, set orientation, and adjust formatting options to match your needs.
                   </p>
                 </div>
 
                 <div className="text-center">
-                  <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span className="text-2xl">📥</span>
+                  <div className="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <span className="text-3xl">📥</span>
                   </div>
-                  <h3 className="text-lg font-semibold mb-2">
-                    {t('seo.tools.excelToPdf.howTo.steps.download.title')}
-                  </h3>
-                  <p className="text-gray-600">
-                    {t('seo.tools.excelToPdf.howTo.steps.download.description')}
+                  <h3 className="font-semibold text-secondary-900 mb-2">Download PDF</h3>
+                  <p className="text-secondary-600 text-sm">
+                    Get your converted PDF files instantly. Each sheet can be saved as a separate PDF or combined into one.
                   </p>
+                </div>
+              </div>
+
+              <div className="border-t border-white/20 pt-8">
+                <h3 className="text-xl font-semibold text-secondary-900 mb-4">
+                  Why Choose LocalPDF Excel Converter?
+                </h3>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <h4 className="font-semibold text-secondary-900 mb-2 flex items-center">
+                      <span className="w-8 h-8 bg-success-100 rounded-lg flex items-center justify-center mr-3">
+                        🔒
+                      </span>
+                      100% Private & Secure
+                    </h4>
+                    <p className="text-secondary-600 text-sm">
+                      Your Excel files never leave your device. All conversion happens locally in your browser for maximum privacy and security.
+                    </p>
+                  </div>
+
+                  <div>
+                    <h4 className="font-semibold text-secondary-900 mb-2 flex items-center">
+                      <span className="w-8 h-8 bg-primary-100 rounded-lg flex items-center justify-center mr-3">
+                        ⚡
+                      </span>
+                      Lightning Fast Processing
+                    </h4>
+                    <p className="text-secondary-600 text-sm">
+                      Convert Excel files to PDF instantly without waiting for uploads or downloads. Works offline too.
+                    </p>
+                  </div>
+
+                  <div>
+                    <h4 className="font-semibold text-secondary-900 mb-2 flex items-center">
+                      <span className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                        📋
+                      </span>
+                      Multiple Formats Support
+                    </h4>
+                    <p className="text-secondary-600 text-sm">
+                      Works with both .xlsx and .xls files. Supports multiple sheets, complex formulas, and international text.
+                    </p>
+                  </div>
+
+                  <div>
+                    <h4 className="font-semibold text-secondary-900 mb-2 flex items-center">
+                      <span className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center mr-3">
+                        🆓
+                      </span>
+                      Completely Free
+                    </h4>
+                    <p className="text-secondary-600 text-sm">
+                      No limits, no watermarks, no hidden fees. Convert unlimited Excel files to PDF for free, forever.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="mt-12">
-            <RelatedTools tools={relatedTools} />
-          </div>
-        </div>
+          <RelatedTools currentTool="excel-to-pdf" />
+        </main>
+
+        <Footer />
       </div>
     </>
   );

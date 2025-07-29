@@ -16,15 +16,15 @@ interface ToolInfo {
   icon: string;
 }
 
-export const RelatedTools: React.FC<RelatedToolsProps> = ({ 
-  currentTool, 
-  className = '' 
+export const RelatedTools: React.FC<RelatedToolsProps> = ({
+  currentTool,
+  className = ''
 }) => {
   const { t } = useI18n();
-  
+
   const getToolInfo = (toolKey: string): ToolInfo => {
     const toolData = toolsSEOData[toolKey as keyof typeof toolsSEOData];
-    
+
     const toolIcons: Record<string, string> = {
       merge: '📄',
       split: '✂️',
@@ -34,7 +34,10 @@ export const RelatedTools: React.FC<RelatedToolsProps> = ({
       rotate: '🔄',
       extractPages: '📑',
       extractText: '📝',
-      pdfToImage: '🖼️'
+      pdfToImage: '🖼️',
+      'word-to-pdf': '📄',
+      'excel-to-pdf': '📊',
+      'images-to-pdf': '🖼️'
     };
 
     const toolPaths: Record<string, string> = {
@@ -46,7 +49,10 @@ export const RelatedTools: React.FC<RelatedToolsProps> = ({
       rotate: '/rotate-pdf',
       extractPages: '/extract-pages-pdf',
       extractText: '/extract-text-pdf',
-      pdfToImage: '/pdf-to-image'
+      pdfToImage: '/pdf-to-image',
+      'word-to-pdf': '/word-to-pdf',
+      'excel-to-pdf': '/excel-to-pdf',
+      'images-to-pdf': '/images-to-pdf'
     };
 
     return {
@@ -62,17 +68,17 @@ export const RelatedTools: React.FC<RelatedToolsProps> = ({
     // Try to get the specific action text for this tool combination
     const actionKey = `components.relatedTools.actions.${fromTool}.${toTool}` as any;
     const actionText = t(actionKey);
-    
+
     // If no specific action text exists, return a generic one
     if (actionKey === actionText) {
       return t(`components.relatedTools.toolNames.${toTool}` as any) || `use ${toTool} tool`;
     }
-    
+
     return actionText;
   };
 
   const related = relatedTools[currentTool as keyof typeof relatedTools];
-  
+
   if (!related || related.length === 0) {
     return null;
   }
@@ -85,12 +91,12 @@ export const RelatedTools: React.FC<RelatedToolsProps> = ({
       <p className="text-gray-600 mb-4">
         {t('components.relatedTools.subtitle')}
       </p>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {related.map((toolKey) => {
           const tool = getToolInfo(toolKey);
           const actionText = getActionText(currentTool, toolKey);
-          
+
           return (
             <Link
               key={toolKey}

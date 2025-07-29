@@ -161,6 +161,13 @@ const ToolsGrid: React.FC<ToolsGridProps> = React.memo(({
       operationType: 'word-to-pdf'
     },
     {
+      id: 'excelToPdf',
+      title: t('tools.excelToPdf.title'),
+      description: t('tools.excelToPdf.description'),
+      icon: '📊',
+      operationType: 'excel-to-pdf'
+    },
+    {
       id: 'ocr',
       title: t('tools.ocr.title'),
       description: t('tools.ocr.description'),
@@ -172,7 +179,7 @@ const ToolsGrid: React.FC<ToolsGridProps> = React.memo(({
   // Memoized statistics data
   const statistics = useMemo(() => [
     {
-      value: 12,
+      value: 13,
       label: t('home.tools.whyChoose.stats.tools'),
       description: t('home.tools.whyChoose.stats.toolsDesc'),
       color: 'text-primary-600'

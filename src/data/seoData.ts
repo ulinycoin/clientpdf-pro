@@ -457,5 +457,6 @@ export const relatedTools = {
   rotate: ['addText', 'watermark', 'split'],
   extractPages: ['split', 'merge', 'pdfToImage'],
   extractText: ['addText', 'extractPages', 'pdfToImage'],
-  pdfToImage: ['extractPages', 'extractText', 'rotate']
+  pdfToImage: ['extractPages', 'extractText', 'rotate'],
+  'excel-to-pdf': ['word-to-pdf', 'images-to-pdf', 'merge']
 };

@@ -35,6 +35,8 @@ export const ru: Translations = {
     remove: 'Удалить',
     clearAll: 'Очистить все',
     or: 'или',
+    home: 'Главная',
+    free: 'Бесплатно',
   },
 
   header: {
@@ -166,6 +168,10 @@ export const ru: Translations = {
       title: 'Word в PDF',
       description: 'Конвертировать документы Word (.docx) в формат PDF',
     },
+    excelToPdf: {
+      title: 'Excel в PDF',
+      description: 'Конвертировать таблицы Excel (.xlsx, .xls) в формат PDF',
+    },
     ocr: {
       title: 'OCR распознавание',
       description: 'Извлечь текст из отсканированных PDF и изображений',
@@ -207,6 +213,9 @@ export const ru: Translations = {
         extractPages: 'Извлечь страницы',
         extractText: 'Извлечь текст',
         pdfToImage: 'PDF в изображения',
+        'word-to-pdf': 'Word в PDF',
+        'excel-to-pdf': 'Excel в PDF',
+        'images-to-pdf': 'Изображения в PDF',
       },
       toolDescriptions: {
         merge: 'Объединить несколько PDF-файлов в один',
@@ -218,6 +227,9 @@ export const ru: Translations = {
         extractPages: 'Извлечь определенные страницы',
         extractText: 'Получить текстовое содержимое из PDF',
         pdfToImage: 'Конвертировать PDF в изображения',
+        'word-to-pdf': 'Конвертировать документы Word в PDF',
+        'excel-to-pdf': 'Конвертировать таблицы Excel в PDF',
+        'images-to-pdf': 'Конвертировать изображения в формат PDF',
       },
       actions: {
         merge: {

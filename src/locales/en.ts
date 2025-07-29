@@ -35,6 +35,8 @@ export const en: Translations = {
     remove: 'Remove',
     clearAll: 'Clear All',
     or: 'or',
+    home: 'Home',
+    free: 'Free',
   },
 
   header: {
@@ -166,6 +168,10 @@ export const en: Translations = {
       title: 'Word to PDF',
       description: 'Convert Word documents (.docx) to PDF format',
     },
+    excelToPdf: {
+      title: 'Excel to PDF',
+      description: 'Convert Excel spreadsheets (.xlsx, .xls) to PDF format',
+    },
     ocr: {
       title: 'OCR Recognition',
       description: 'Extract text from scanned PDFs and images',
@@ -207,6 +213,9 @@ export const en: Translations = {
         extractPages: 'Extract Pages',
         extractText: 'Extract Text',
         pdfToImage: 'PDF to Images',
+        'word-to-pdf': 'Word to PDF',
+        'excel-to-pdf': 'Excel to PDF',
+        'images-to-pdf': 'Images to PDF',
       },
       toolDescriptions: {
         merge: 'Combine multiple PDF files into one',
@@ -218,6 +227,9 @@ export const en: Translations = {
         extractPages: 'Extract specific pages',
         extractText: 'Get text content from PDFs',
         pdfToImage: 'Convert PDF to images',
+        'word-to-pdf': 'Convert Word documents to PDF',
+        'excel-to-pdf': 'Convert Excel spreadsheets to PDF',
+        'images-to-pdf': 'Convert images to PDF format',
       },
       actions: {
         merge: {
