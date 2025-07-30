@@ -14,13 +14,13 @@ const FAQPage: React.FC = () => {
         <meta name="description" content="Get answers to common questions about LocalPDF's privacy-first PDF tools. Learn about security, features, and how to use our tools effectively." />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://localpdf.online/faq" />
-        
+
         {/* Open Graph */}
         <meta property="og:title" content={`${t('pages.faq.title')} - LocalPDF`} />
         <meta property="og:description" content="Everything you need to know about LocalPDF's privacy-first PDF tools" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://localpdf.online/faq" />
-        
+
         {/* Twitter Cards */}
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:title" content={`${t('pages.faq.title')} - LocalPDF`} />
@@ -29,10 +29,10 @@ const FAQPage: React.FC = () => {
 
       <div className="min-h-screen bg-gradient-mesh flex flex-col">
         <Header />
-        
+
         <main className="flex-grow max-w-4xl mx-auto px-4 py-16">
           <div className="glass rounded-2xl shadow-soft border border-white/20 p-8">
-            
+
             {/* Hero Section */}
             <div className="text-center mb-12">
               <h1 className="text-4xl md:text-5xl font-bold text-secondary-900 mb-4">
@@ -44,35 +44,35 @@ const FAQPage: React.FC = () => {
             </div>
 
             <div className="space-y-12">
-              
+
               {/* General Questions */}
               <section>
                 <h2 className="text-2xl font-semibold text-secondary-800 mb-8 flex items-center">
                   <span className="w-8 h-8 bg-primary-100 rounded-lg flex items-center justify-center mr-3">
                     📋
                   </span>
-                  General Questions
+                  {t('pages.faq.sections.general.title')}
                 </h2>
-                
+
                 <div className="space-y-6">
                   <div className="pdf-processing-card border-l-4 border-blue-500 p-6">
-                    <h3 className="text-lg font-semibold text-blue-800 mb-3">❓ What is LocalPDF?</h3>
+                    <h3 className="text-lg font-semibold text-blue-800 mb-3">❓ {t('pages.faq.sections.general.questions.whatIs.question')}</h3>
                     <p className="text-blue-700">
-                      LocalPDF is a free, privacy-first web application that provides 12 powerful PDF tools for merging, splitting, compressing, editing, and converting PDF files. All processing happens entirely in your browser - no uploads, no registration, no tracking.
+                      {t('pages.faq.sections.general.questions.whatIs.answer')}
                     </p>
                   </div>
 
                   <div className="pdf-processing-card border-l-4 border-success-500 p-6">
-                    <h3 className="text-lg font-semibold text-success-800 mb-3">❓ Is LocalPDF really free?</h3>
+                    <h3 className="text-lg font-semibold text-success-800 mb-3">❓ {t('pages.faq.sections.general.questions.free.question')}</h3>
                     <p className="text-success-700">
-                      Yes! LocalPDF is completely free to use with no limitations, ads, or hidden fees. We believe essential PDF tools should be accessible to everyone.
+                      {t('pages.faq.sections.general.questions.free.answer')}
                     </p>
                   </div>
 
                   <div className="pdf-processing-card border-l-4 border-purple-500 p-6">
-                    <h3 className="text-lg font-semibold text-purple-800 mb-3">❓ Do I need to create an account?</h3>
+                    <h3 className="text-lg font-semibold text-purple-800 mb-3">❓ {t('pages.faq.sections.general.questions.account.question')}</h3>
                     <p className="text-purple-700">
-                      No account required! Simply visit LocalPDF and start using any tool immediately.
+                      {t('pages.faq.sections.general.questions.account.answer')}
                     </p>
                   </div>
                 </div>
@@ -84,28 +84,28 @@ const FAQPage: React.FC = () => {
                   <span className="w-8 h-8 bg-success-100 rounded-lg flex items-center justify-center mr-3">
                     🔒
                   </span>
-                  Privacy & Security
+                  {t('pages.faq.sections.privacy.title')}
                 </h2>
-                
+
                 <div className="space-y-6">
                   <div className="pdf-processing-card border-l-4 border-error-500 p-6">
-                    <h3 className="text-lg font-semibold text-error-800 mb-3">❓ Are my files uploaded to your servers?</h3>
+                    <h3 className="text-lg font-semibold text-error-800 mb-3">❓ {t('pages.faq.sections.privacy.questions.uploaded.question')}</h3>
                     <p className="text-error-700">
-                      <strong>No!</strong> This is LocalPDF's core feature - all processing happens in your browser. Your files never leave your device. We cannot see, access, or store your documents.
+                      {t('pages.faq.sections.privacy.questions.uploaded.answer')}
                     </p>
                   </div>
 
                   <div className="pdf-processing-card border-l-4 border-yellow-500 p-6">
-                    <h3 className="text-lg font-semibold text-yellow-800 mb-3">❓ What happens to my files after I use LocalPDF?</h3>
+                    <h3 className="text-lg font-semibold text-yellow-800 mb-3">❓ {t('pages.faq.sections.privacy.questions.afterUse.question')}</h3>
                     <p className="text-yellow-700">
-                      Your files are processed in your browser's memory and automatically cleared when you close the page or navigate away. Nothing is stored permanently.
+                      {t('pages.faq.sections.privacy.questions.afterUse.answer')}
                     </p>
                   </div>
 
                   <div className="pdf-processing-card border-l-4 border-success-500 p-6">
-                    <h3 className="text-lg font-semibold text-success-800 mb-3">❓ Is LocalPDF safe for confidential documents?</h3>
+                    <h3 className="text-lg font-semibold text-success-800 mb-3">❓ {t('pages.faq.sections.privacy.questions.confidential.question')}</h3>
                     <p className="text-success-700">
-                      Yes! Since all processing is local and we don't collect any data, LocalPDF is ideal for confidential, sensitive, or private documents.
+                      {t('pages.faq.sections.privacy.questions.confidential.answer')}
                     </p>
                   </div>
                 </div>
@@ -117,34 +117,33 @@ const FAQPage: React.FC = () => {
                   <span className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
                     🛠️
                   </span>
-                  Technical Questions
+                  {t('pages.faq.sections.technical.title')}
                 </h2>
-                
+
                 <div className="space-y-6">
                   <div className="pdf-processing-card border-l-4 border-blue-500 p-6">
-                    <h3 className="text-lg font-semibold text-blue-800 mb-3">❓ What browsers support LocalPDF?</h3>
+                    <h3 className="text-lg font-semibold text-blue-800 mb-3">❓ {t('pages.faq.sections.technical.questions.browsers.question')}</h3>
                     <div className="text-blue-700">
-                      LocalPDF works on all modern browsers:
+                      {t('pages.faq.sections.technical.questions.browsers.answer')}
                       <ul className="mt-3 ml-4 space-y-1">
-                        <li>• <strong>Chrome</strong> 90+</li>
-                        <li>• <strong>Firefox</strong> 90+</li>
-                        <li>• <strong>Safari</strong> 14+</li>
-                        <li>• <strong>Edge</strong> 90+</li>
+                        {((t('pages.faq.sections.technical.questions.browsers.browsers') as string[]) || []).map((browser: string, index: number) => (
+                          <li key={index}>• {browser}</li>
+                        ))}
                       </ul>
                     </div>
                   </div>
 
                   <div className="pdf-processing-card border-l-4 border-orange-500 p-6">
-                    <h3 className="text-lg font-semibold text-orange-800 mb-3">❓ What's the maximum file size I can process?</h3>
+                    <h3 className="text-lg font-semibold text-orange-800 mb-3">❓ {t('pages.faq.sections.technical.questions.fileSize.question')}</h3>
                     <p className="text-orange-700">
-                      LocalPDF can handle files up to <strong>100MB</strong>. For very large files, processing may take longer depending on your device's performance.
+                      {t('pages.faq.sections.technical.questions.fileSize.answer')}
                     </p>
                   </div>
 
                   <div className="pdf-processing-card border-l-4 border-secondary-500 p-6">
-                    <h3 className="text-lg font-semibold text-secondary-800 mb-3">❓ Does LocalPDF work offline?</h3>
+                    <h3 className="text-lg font-semibold text-secondary-800 mb-3">❓ {t('pages.faq.sections.technical.questions.offline.question')}</h3>
                     <p className="text-secondary-700">
-                      Yes! After your first visit, LocalPDF works offline. Your browser caches the application, so you can use it without an internet connection.
+                      {t('pages.faq.sections.technical.questions.offline.answer')}
                     </p>
                   </div>
                 </div>
@@ -156,16 +155,16 @@ const FAQPage: React.FC = () => {
                   <span className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center mr-3">
                     📄
                   </span>
-                  PDF Tools
+                  {t('pages.faq.sections.tools.title')}
                 </h2>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
                   <div className="pdf-processing-card p-4 text-center">
                     <div className="text-2xl mb-2">🔗</div>
                     <h3 className="font-semibold text-primary-800 mb-1">{t('tools.merge.title')}</h3>
                     <p className="text-secondary-600 text-sm">{t('tools.merge.description')}</p>
                   </div>
-                  
+
                   <div className="pdf-processing-card p-4 text-center">
                     <div className="text-2xl mb-2">✂️</div>
                     <h3 className="font-semibold text-primary-800 mb-1">{t('tools.split.title')}</h3>
@@ -198,9 +197,9 @@ const FAQPage: React.FC = () => {
                 </div>
 
                 <div className="pdf-processing-card border-l-4 border-teal-500 p-6">
-                  <h3 className="text-lg font-semibold text-teal-800 mb-3">❓ Can I edit existing text in PDFs?</h3>
+                  <h3 className="text-lg font-semibold text-teal-800 mb-3">❓ {t('pages.faq.sections.tools.editText.question')}</h3>
                   <p className="text-teal-700">
-                    Currently, LocalPDF allows <strong>adding new text</strong> to PDFs but not editing existing text. You can add text overlays, signatures, notes, and annotations.
+                    {t('pages.faq.sections.tools.editText.answer')}
                   </p>
                 </div>
               </section>
@@ -211,43 +210,43 @@ const FAQPage: React.FC = () => {
                   <span className="w-8 h-8 bg-primary-100 rounded-lg flex items-center justify-center mr-3">
                     📞
                   </span>
-                  Still Need Help?
+                  {t('pages.faq.sections.support.title')}
                 </h2>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="glass p-6 rounded-xl">
                     <h3 className="font-semibold text-secondary-800 mb-3 flex items-center">
                       <span className="mr-2">🆘</span>
-                      Getting Support
+                      {t('pages.faq.sections.support.gettingSupport.title')}
                     </h3>
                     <ul className="text-secondary-600 space-y-2 text-sm">
-                      <li>• GitHub Issues: Technical problems and bug reports</li>
-                      <li>• GitHub Discussions: General questions and community help</li>
-                      <li>• Documentation: Complete guides and tutorials</li>
+                      {((t('pages.faq.sections.support.gettingSupport.items') as string[]) || []).map((item: string, index: number) => (
+                        <li key={index}>• {item}</li>
+                      ))}
                     </ul>
                   </div>
-                  
+
                   <div className="glass p-6 rounded-xl">
                     <h3 className="font-semibold text-secondary-800 mb-3 flex items-center">
                       <span className="mr-2">📧</span>
-                      Contact Information
+                      {t('pages.faq.sections.support.contact.title')}
                     </h3>
                     <div className="space-y-3 text-sm">
-                      <a 
-                        href="https://github.com/ulinycoin/clientpdf-pro/issues" 
-                        target="_blank" 
+                      <a
+                        href="https://github.com/ulinycoin/clientpdf-pro/issues"
+                        target="_blank"
                         rel="noopener noreferrer"
                         className="block text-primary-600 hover:text-primary-700 transition-colors"
                       >
-                        Report Issues on GitHub
+                        {t('pages.faq.sections.support.contact.github')}
                       </a>
-                      <a 
-                        href="https://github.com/ulinycoin/clientpdf-pro/discussions" 
-                        target="_blank" 
+                      <a
+                        href="https://github.com/ulinycoin/clientpdf-pro/discussions"
+                        target="_blank"
                         rel="noopener noreferrer"
                         className="block text-primary-600 hover:text-primary-700 transition-colors"
                       >
-                        Join Community Discussions
+                        {t('pages.faq.sections.support.contact.discussions')}
                       </a>
                     </div>
                   </div>

@@ -82,7 +82,7 @@ const ToolCard: React.FC<ToolCardProps> = ({
   return (
     <CardWrapper {...cardProps}>
       {/* Glass effect background с улучшенным дизайном */}
-      <div className="pdf-processing-card rounded-2xl p-6 h-full w-full min-h-[180px]">
+      <div className="pdf-processing-card rounded-2xl p-4 sm:p-6 h-full w-full min-h-[160px] sm:min-h-[180px] max-w-full overflow-hidden">
         {/* Subtle gradient border effect on hover */}
         <div className={`
           absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-all duration-200
@@ -92,7 +92,7 @@ const ToolCard: React.FC<ToolCardProps> = ({
         </div>
 
         {/* Content */}
-        <div className="relative z-10 flex flex-col h-full justify-between">
+        <div className="relative z-10 flex flex-col h-full justify-between max-w-full">
           {/* Coming Soon Badge */}
           {comingSoon && (
             <div className="absolute -top-3 -right-3 z-20">
@@ -103,9 +103,9 @@ const ToolCard: React.FC<ToolCardProps> = ({
           )}
 
           {/* Top section - Icon */}
-          <div className="flex justify-center mb-4">
+          <div className="flex justify-center mb-3 sm:mb-4">
             <div className={`
-              w-14 h-14 rounded-xl flex items-center justify-center text-white text-xl font-medium
+              w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center text-white text-lg sm:text-xl font-medium
               bg-gradient-to-br ${getGradientColors(operationType)}
               transform group-hover:scale-110 transition-all duration-200
               shadow-soft group-hover:shadow-glow
@@ -115,11 +115,11 @@ const ToolCard: React.FC<ToolCardProps> = ({
           </div>
 
           {/* Middle section - Title and Description */}
-          <div className="text-center flex-grow flex flex-col justify-center mb-4">
-            <h3 className="text-lg font-semibold text-secondary-900 group-hover:text-primary-700 transition-colors mb-2 leading-tight">
+          <div className="text-center flex-grow flex flex-col justify-center mb-3 sm:mb-4 px-1">
+            <h3 className="text-base sm:text-lg font-semibold text-secondary-900 group-hover:text-primary-700 transition-colors mb-1 sm:mb-2 leading-tight break-words">
               {title}
             </h3>
-            <p className="text-sm text-secondary-600 leading-relaxed line-clamp-2">
+            <p className="text-xs sm:text-sm text-secondary-600 leading-relaxed line-clamp-2 break-words">
               {description}
             </p>
           </div>
@@ -127,8 +127,8 @@ const ToolCard: React.FC<ToolCardProps> = ({
           {/* Bottom section - Trust indicator */}
           {!isDisabled && (
             <div className="flex items-center justify-center">
-              <div className="flex items-center text-xs text-secondary-500 bg-white/50 px-3 py-1 rounded-full backdrop-blur-sm">
-                <div className="w-2 h-2 rounded-full mr-2 bg-success-400 pdf-status-indicator"></div>
+              <div className="flex items-center text-xs text-secondary-500 bg-white/50 px-2 sm:px-3 py-1 rounded-full backdrop-blur-sm">
+                <div className="w-2 h-2 rounded-full mr-1 sm:mr-2 bg-success-400 pdf-status-indicator"></div>
                 <span className="font-medium">Ready</span>
               </div>
             </div>

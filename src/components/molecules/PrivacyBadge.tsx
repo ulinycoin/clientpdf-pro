@@ -34,29 +34,30 @@ export const PrivacyBadge: React.FC<PrivacyBadgeProps> = ({
 
   const iconColors = {
     success: 'text-success-600',
-    primary: 'text-primary-600', 
+    primary: 'text-primary-600',
     blue: 'text-blue-600'
   };
 
   return (
     <div
       className={`
-        inline-flex items-center space-x-3 px-4 py-3 rounded-xl border backdrop-blur-sm
-        ${variantClasses[variant]} 
-        ${animated ? 'trust-badge' : ''} 
-        pdf-trust-indicator
+        inline-flex items-center space-x-2 sm:space-x-3 px-3 sm:px-4 py-2 sm:py-3 rounded-xl border backdrop-blur-sm
+        ${variantClasses[variant]}
+        ${animated ? 'trust-badge' : ''}
+        pdf-trust-indicator mobile-safe
         transition-all duration-200 hover:scale-105 hover:shadow-medium
+        max-w-full flex-shrink-1
         ${className}
       `}
       role="status"
       aria-label={`${title}: ${subtitle}`}
     >
-      <div className={`w-8 h-8 flex items-center justify-center bg-white rounded-lg shadow-soft ${animated ? 'animate-pulse' : ''}`}>
-        <IconComponent className={`w-5 h-5 ${iconColors[variant]}`} />
+      <div className={`w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center bg-white rounded-lg shadow-soft ${animated ? 'animate-pulse' : ''}`}>
+        <IconComponent className={`w-4 h-4 sm:w-5 sm:h-5 ${iconColors[variant]}`} />
       </div>
-      <div>
-        <div className="font-semibold text-sm leading-tight">{title}</div>
-        <div className="text-xs opacity-80 leading-tight">{subtitle}</div>
+      <div className="min-w-0 flex-1">
+        <div className="font-semibold text-xs sm:text-sm leading-tight truncate">{title}</div>
+        <div className="text-xs opacity-80 leading-tight truncate">{subtitle}</div>
       </div>
     </div>
   );

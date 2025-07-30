@@ -78,7 +78,7 @@ const HomePage: React.FC = () => {
 
       <main className="flex-grow">
         {/* Enhanced Hero Section */}
-        <div className="max-w-6xl mx-auto px-4 py-16">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           {/* Enhanced Hero Header */}
           <div className="text-center mb-16 relative">
             {/* Background decoration */}
@@ -87,64 +87,64 @@ const HomePage: React.FC = () => {
             </div>
 
             {/* Main hero content */}
-            <div className="relative px-8 py-8">
+            <div className="relative px-4 sm:px-8 py-8">
               {/* Main title with gradient */}
-              <h1 className="text-4xl md:text-6xl font-bold mb-6">
+              <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-6">
                 <span className="text-gradient-blue">
                   {t('home.hero.title')}
                 </span>
                 <br />
-                <span className="text-secondary-800 text-2xl md:text-3xl font-semibold">
+                <span className="text-secondary-800 text-xl sm:text-2xl md:text-3xl font-semibold">
                   {t('home.hero.subtitle')}
                 </span>
               </h1>
 
               {/* Enhanced description */}
               <div className="max-w-4xl mx-auto mb-8">
-                <p className="text-xl md:text-2xl text-secondary-700 mb-4 leading-relaxed">
+                <p className="text-lg sm:text-xl md:text-2xl text-secondary-700 mb-4 leading-relaxed">
                   {t('home.hero.description')}
                 </p>
-                <p className="text-lg text-secondary-600">
+                <p className="text-base sm:text-lg text-secondary-600">
                   {t('home.hero.descriptionSecondary')}
                 </p>
               </div>
 
               {/* Enhanced feature highlights */}
-              <div className="flex flex-wrap justify-center items-center gap-4 mb-8">
+              <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-4 mb-8 max-w-full">
                 <PrivacyBadge
                   icon="shield"
-                  title="Your files never leave your device"
-                  subtitle="100% local processing"
+                  title={t('home.hero.features.privacy.title')}
+                  subtitle={t('home.hero.features.privacy.subtitle')}
                   variant="success"
                   animated={true}
                 />
                 <PrivacyBadge
                   icon="zap"
-                  title="Lightning fast processing"
-                  subtitle="No server delays"
+                  title={t('home.hero.features.speed.title')}
+                  subtitle={t('home.hero.features.speed.subtitle')}
                   variant="primary"
                 />
                 <PrivacyBadge
                   icon="heart"
-                  title="Completely free, no limits"
-                  subtitle="Open source forever"
+                  title={t('home.hero.features.free.title')}
+                  subtitle={t('home.hero.features.free.subtitle')}
                   variant="blue"
                 />
               </div>
 
               {/* Trust indicators */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto text-sm text-secondary-500">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 max-w-2xl mx-auto text-xs sm:text-sm text-secondary-500">
                 <div className="flex items-center justify-center space-x-2">
                   <span className="w-2 h-2 bg-success-500 rounded-full pdf-status-indicator"></span>
-                  <span>No registration required</span>
+                  <span>{t('home.hero.trustIndicators.noRegistration')}</span>
                 </div>
                 <div className="flex items-center justify-center space-x-2">
                   <span className="w-2 h-2 bg-primary-500 rounded-full pdf-status-indicator"></span>
-                  <span>Works offline</span>
+                  <span>{t('home.hero.trustIndicators.worksOffline')}</span>
                 </div>
                 <div className="flex items-center justify-center space-x-2">
                   <span className="w-2 h-2 bg-purple-500 rounded-full pdf-status-indicator"></span>
-                  <span>Open source</span>
+                  <span>{t('home.hero.trustIndicators.openSource')}</span>
                 </div>
               </div>
             </div>
@@ -152,7 +152,7 @@ const HomePage: React.FC = () => {
         </div>
 
         {/* Tools Grid */}
-        <div className="max-w-7xl mx-auto px-4 pb-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
           <ToolsGrid disabledTools={[]} />
         </div>
         </main>

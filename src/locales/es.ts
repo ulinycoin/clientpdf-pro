@@ -356,10 +356,157 @@ export const es: Translations = {
     privacy: {
       title: 'Política de privacidad',
       subtitle: 'Tu privacidad es nuestra máxima prioridad',
+      lastUpdated: 'Última actualización: 20 de julio de 2025',
+      sections: {
+        commitment: {
+          title: 'Nuestro compromiso con la privacidad',
+          content: 'LocalPDF está diseñado con la privacidad como base. Creemos que tus documentos y datos deben permanecer tuyos y solo tuyos. Esta Política de privacidad explica cómo LocalPDF protege tu privacidad y garantiza que tus datos nunca abandonen tu dispositivo.'
+        },
+        simpleAnswer: {
+          title: 'La respuesta simple',
+          main: 'LocalPDF no recopila, almacena, transmite ni tiene acceso a ninguno de tus datos, archivos o información personal.',
+          sub: 'Todo el procesamiento de PDF ocurre completamente dentro de tu navegador web. Tus archivos nunca abandonan tu dispositivo.'
+        },
+        whatWeDont: {
+          title: 'Lo que NO hacemos',
+          noDataCollection: {
+            title: 'Sin recopilación de datos',
+            items: ['Sin información personal', 'Sin seguimiento de uso', 'Sin cookies analíticas', 'Sin cuentas de usuario']
+          },
+          noFileAccess: {
+            title: 'Sin acceso a archivos',
+            items: ['Sin subidas al servidor', 'Sin almacenamiento de archivos', 'Sin copias de documentos', 'Sin historial de procesamiento']
+          }
+        },
+        howItWorks: {
+          title: 'Cómo funciona LocalPDF',
+          clientSide: {
+            title: 'Procesamiento del lado del cliente',
+            description: 'Todas las operaciones PDF ocurren directamente en tu navegador web usando:',
+            items: ['Bibliotecas JavaScript PDF (pdf-lib, PDF.js, jsPDF)', 'Web Workers para optimización de rendimiento', 'Memoria local para procesamiento temporal', 'Exclusivamente los recursos de tu dispositivo']
+          },
+          process: {
+            title: 'El proceso completo',
+            steps: [
+              'Seleccionas un archivo PDF desde tu dispositivo',
+              'El archivo se carga en la memoria del navegador (nunca se sube)',
+              'El procesamiento ocurre localmente usando JavaScript',
+              'El resultado se genera en tu navegador',
+              'Descargas el archivo procesado directamente',
+              'Todos los datos se borran de la memoria cuando cierras la página'
+            ]
+          }
+        },
+        analytics: {
+          title: 'Analíticas con privacidad primero',
+          description: 'LocalPDF usa Vercel Analytics para entender cómo se usan nuestras herramientas y mejorar la experiencia del usuario. Nuestro enfoque de analíticas mantiene nuestra filosofía de privacidad primero:',
+          whatWeTrack: {
+            title: 'Lo que rastreamos (anónimamente)',
+            items: ['Visitas a páginas - qué herramientas son más populares', 'Uso de herramientas - métricas básicas como conteos de procesamiento de archivos', 'Datos de rendimiento - tiempos de carga y errores', 'Ubicación general - solo país/región (para optimización de idioma)']
+          },
+          protections: {
+            title: 'Protecciones de privacidad',
+            items: ['Sin cookies - las analíticas funcionan sin cookies de seguimiento', 'Sin datos personales - nunca vemos tus archivos o información personal', 'Anonimización de IP - tu dirección IP exacta nunca se almacena', 'DNT respetado - respetamos las configuraciones del navegador "No rastrear"', 'Cumplimiento GDPR - todas las analíticas cumplen con las regulaciones de privacidad']
+          }
+        },
+        compliance: {
+          title: 'Cumplimiento internacional de privacidad',
+          gdpr: {
+            title: 'GDPR',
+            description: 'Totalmente cumpliente - no se procesan datos personales'
+          },
+          ccpa: {
+            title: 'CCPA',
+            description: 'Cumpliente - sin recopilación o venta de datos'
+          },
+          global: {
+            title: 'Global',
+            description: 'El diseño con privacidad primero asegura cumplimiento mundial'
+          }
+        },
+        summary: {
+          title: 'Resumen',
+          main: 'LocalPDF está diseñado para ser completamente privado por defecto. Tus archivos, datos y privacidad están protegidos porque simplemente no recopilamos, almacenamos o transmitimos ninguna de tu información.',
+          sub: 'Esto no es solo una promesa de política: está integrado en la arquitectura fundamental de cómo funciona LocalPDF.'
+        }
+      }
     },
     faq: {
       title: 'Preguntas frecuentes',
       subtitle: 'Todo lo que necesitas saber sobre LocalPDF',
+      sections: {
+        general: {
+          title: 'Preguntas generales',
+          questions: {
+            whatIs: {
+              question: '¿Qué es LocalPDF?',
+              answer: 'LocalPDF es una aplicación web gratuita con privacidad primero que proporciona 12 herramientas PDF poderosas para combinar, dividir, comprimir, editar y convertir archivos PDF. Todo el procesamiento ocurre completamente en tu navegador - sin subidas, sin registro, sin seguimiento.'
+            },
+            free: {
+              question: '¿Es LocalPDF realmente gratis?',
+              answer: '¡Sí! LocalPDF es completamente gratis de usar sin limitaciones, anuncios o tarifas ocultas. Creemos que las herramientas PDF esenciales deben ser accesibles para todos.'
+            },
+            account: {
+              question: '¿Necesito crear una cuenta?',
+              answer: '¡No se requiere cuenta! Simplemente visita LocalPDF y comienza a usar cualquier herramienta inmediatamente.'
+            }
+          }
+        },
+        privacy: {
+          title: 'Privacidad y seguridad',
+          questions: {
+            uploaded: {
+              question: '¿Se suben mis archivos a vuestros servidores?',
+              answer: '¡No! Esta es la característica principal de LocalPDF - todo el procesamiento ocurre en tu navegador. Tus archivos nunca abandonan tu dispositivo. No podemos ver, acceder o almacenar tus documentos.'
+            },
+            afterUse: {
+              question: '¿Qué pasa con mis archivos después de usar LocalPDF?',
+              answer: 'Tus archivos se procesan en la memoria de tu navegador y se borran automáticamente cuando cierras la página o navegas fuera. Nada se almacena permanentemente.'
+            },
+            confidential: {
+              question: '¿Es LocalPDF seguro para documentos confidenciales?',
+              answer: '¡Sí! Dado que todo el procesamiento es local y no recopilamos ningún dato, LocalPDF es ideal para documentos confidenciales, sensibles o privados.'
+            }
+          }
+        },
+        technical: {
+          title: 'Preguntas técnicas',
+          questions: {
+            browsers: {
+              question: '¿Qué navegadores soportan LocalPDF?',
+              answer: 'LocalPDF funciona en todos los navegadores modernos:',
+              browsers: ['Chrome 90+', 'Firefox 90+', 'Safari 14+', 'Edge 90+']
+            },
+            fileSize: {
+              question: '¿Cuál es el tamaño máximo de archivo que puedo procesar?',
+              answer: 'LocalPDF puede manejar archivos de hasta 100MB. Para archivos muy grandes, el procesamiento puede tardar más dependiendo del rendimiento de tu dispositivo.'
+            },
+            offline: {
+              question: '¿Funciona LocalPDF sin conexión?',
+              answer: '¡Sí! Después de tu primera visita, LocalPDF funciona sin conexión. Tu navegador almacena en caché la aplicación, por lo que puedes usarla sin conexión a internet.'
+            }
+          }
+        },
+        tools: {
+          title: 'Herramientas PDF',
+          editText: {
+            question: '¿Puedo editar texto existente en PDFs?',
+            answer: 'Actualmente, LocalPDF permite agregar nuevo texto a PDFs pero no editar texto existente. Puedes agregar superposiciones de texto, firmas, notas y anotaciones.'
+          }
+        },
+        support: {
+          title: '¿Aún necesitas ayuda?',
+          gettingSupport: {
+            title: 'Obtener soporte',
+            items: ['GitHub Issues: Problemas técnicos y reportes de errores', 'GitHub Discussions: Preguntas generales y ayuda de la comunidad', 'Documentación: Guías completas y tutoriales']
+          },
+          contact: {
+            title: 'Información de contacto',
+            github: 'Reportar problemas en GitHub',
+            discussions: 'Unirse a las discusiones de la comunidad'
+          }
+        }
+      }
     },
     notFound: {
       title: 'Página no encontrada',

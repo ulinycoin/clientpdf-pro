@@ -42,7 +42,7 @@ const PrivacyPage: React.FC = () => {
                 {t('pages.privacy.subtitle')}
               </p>
               <p className="text-sm text-secondary-500">
-                Last Updated: July 20, 2025
+                {t('pages.privacy.lastUpdated')}
               </p>
             </div>
 
@@ -54,12 +54,10 @@ const PrivacyPage: React.FC = () => {
                   <span className="w-8 h-8 bg-primary-100 rounded-lg flex items-center justify-center mr-3">
                     🔒
                   </span>
-                  Our Privacy Commitment
+                  {t('pages.privacy.sections.commitment.title')}
                 </h2>
                 <p className="text-secondary-600 mb-4 text-lg leading-relaxed">
-                  LocalPDF is designed with <strong className="text-primary-600">privacy as the foundation</strong>.
-                  We believe your documents and data should remain yours and yours alone. This Privacy Policy
-                  explains how LocalPDF protects your privacy and ensures your data never leaves your device.
+                  {t('pages.privacy.sections.commitment.content')}
                 </p>
               </section>
 
@@ -69,14 +67,14 @@ const PrivacyPage: React.FC = () => {
                   <span className="w-8 h-8 bg-success-100 rounded-lg flex items-center justify-center mr-3">
                     📍
                   </span>
-                  The Simple Answer
+                  {t('pages.privacy.sections.simpleAnswer.title')}
                 </h2>
                 <div className="pdf-processing-card border-l-4 border-success-500 p-6 mb-6">
                   <p className="text-success-800 font-semibold text-lg mb-3">
-                    LocalPDF does not collect, store, transmit, or have access to any of your data, files, or personal information.
+                    {t('pages.privacy.sections.simpleAnswer.main')}
                   </p>
                   <p className="text-success-700">
-                    All PDF processing happens entirely within your web browser. Your files never leave your device.
+                    {t('pages.privacy.sections.simpleAnswer.sub')}
                   </p>
                 </div>
               </section>
@@ -87,31 +85,29 @@ const PrivacyPage: React.FC = () => {
                   <span className="w-8 h-8 bg-error-100 rounded-lg flex items-center justify-center mr-3">
                     🛡️
                   </span>
-                  What We DON'T Do
+                  {t('pages.privacy.sections.whatWeDont.title')}
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                   <div className="pdf-processing-card border-l-4 border-error-500 p-6">
                     <h3 className="font-semibold text-error-800 mb-3 flex items-center">
                       <span className="mr-2">❌</span>
-                      No Data Collection
+                      {t('pages.privacy.sections.whatWeDont.noDataCollection.title')}
                     </h3>
                     <ul className="text-error-700 space-y-2">
-                      <li>• No personal information</li>
-                      <li>• No usage tracking</li>
-                      <li>• No analytics cookies</li>
-                      <li>• No user accounts</li>
+                      {((t('pages.privacy.sections.whatWeDont.noDataCollection.items') as string[]) || []).map((item: string, index: number) => (
+                        <li key={index}>• {item}</li>
+                      ))}
                     </ul>
                   </div>
                   <div className="pdf-processing-card border-l-4 border-error-500 p-6">
                     <h3 className="font-semibold text-error-800 mb-3 flex items-center">
                       <span className="mr-2">❌</span>
-                      No File Access
+                      {t('pages.privacy.sections.whatWeDont.noFileAccess.title')}
                     </h3>
                     <ul className="text-error-700 space-y-2">
-                      <li>• No server uploads</li>
-                      <li>• No file storage</li>
-                      <li>• No document copies</li>
-                      <li>• No processing history</li>
+                      {((t('pages.privacy.sections.whatWeDont.noFileAccess.items') as string[]) || []).map((item: string, index: number) => (
+                        <li key={index}>• {item}</li>
+                      ))}
                     </ul>
                   </div>
                 </div>
@@ -123,35 +119,31 @@ const PrivacyPage: React.FC = () => {
                   <span className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
                     ✅
                   </span>
-                  How LocalPDF Works
+                  {t('pages.privacy.sections.howItWorks.title')}
                 </h2>
 
                 <div className="pdf-processing-card border-l-4 border-blue-500 p-6 mb-6">
                   <h3 className="font-semibold text-blue-800 mb-3 flex items-center">
                     <span className="mr-2">🖥️</span>
-                    Client-Side Processing
+                    {t('pages.privacy.sections.howItWorks.clientSide.title')}
                   </h3>
-                  <p className="text-blue-700 mb-3">All PDF operations happen directly in your web browser using:</p>
+                  <p className="text-blue-700 mb-3">{t('pages.privacy.sections.howItWorks.clientSide.description')}</p>
                   <ul className="text-blue-700 space-y-2">
-                    <li>• <strong>JavaScript PDF libraries</strong> (pdf-lib, PDF.js, jsPDF)</li>
-                    <li>• <strong>Web Workers</strong> for performance optimization</li>
-                    <li>• <strong>Local memory</strong> for temporary processing</li>
-                    <li>• <strong>Your device's resources</strong> exclusively</li>
+                    {((t('pages.privacy.sections.howItWorks.clientSide.items') as string[]) || []).map((item: string, index: number) => (
+                      <li key={index}>• {item}</li>
+                    ))}
                   </ul>
                 </div>
 
                 <div className="pdf-processing-card border-l-4 border-success-500 p-6">
                   <h3 className="font-semibold text-success-800 mb-3 flex items-center">
                     <span className="mr-2">🔄</span>
-                    The Complete Process
+                    {t('pages.privacy.sections.howItWorks.process.title')}
                   </h3>
                   <ol className="text-success-700 space-y-2">
-                    <li><strong>1.</strong> You select a PDF file from your device</li>
-                    <li><strong>2.</strong> File loads into browser memory (never uploaded)</li>
-                    <li><strong>3.</strong> Processing happens locally using JavaScript</li>
-                    <li><strong>4.</strong> Result is generated in your browser</li>
-                    <li><strong>5.</strong> You download the processed file directly</li>
-                    <li><strong>6.</strong> All data is cleared from memory when you close the page</li>
+                    {((t('pages.privacy.sections.howItWorks.process.steps') as string[]) || []).map((step: string, index: number) => (
+                      <li key={index}><strong>{index + 1}.</strong> {step}</li>
+                    ))}
                   </ol>
                 </div>
               </section>
@@ -162,31 +154,28 @@ const PrivacyPage: React.FC = () => {
                   <span className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center mr-3">
                     📊
                   </span>
-                  Privacy-First Analytics
+                  {t('pages.privacy.sections.analytics.title')}
                 </h2>
                 <div className="mb-6">
                   <p className="text-secondary-700 mb-4">
-                    LocalPDF uses <strong>Vercel Analytics</strong> to understand how our tools are used and improve user experience. Our analytics approach maintains our privacy-first philosophy:
+                    {t('pages.privacy.sections.analytics.description')}
                   </p>
 
                   <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-6 mb-4">
-                    <h3 className="font-semibold text-indigo-800 mb-3">What We Track (Anonymously)</h3>
+                    <h3 className="font-semibold text-indigo-800 mb-3">{t('pages.privacy.sections.analytics.whatWeTrack.title')}</h3>
                     <ul className="text-indigo-700 space-y-2">
-                      <li>• <strong>Page visits</strong> - which tools are most popular</li>
-                      <li>• <strong>Tool usage</strong> - basic metrics like file processing counts</li>
-                      <li>• <strong>Performance data</strong> - loading times and errors</li>
-                      <li>• <strong>General location</strong> - country/region only (for language optimization)</li>
+                      {((t('pages.privacy.sections.analytics.whatWeTrack.items') as string[]) || []).map((item: string, index: number) => (
+                        <li key={index}>• {item}</li>
+                      ))}
                     </ul>
                   </div>
 
                   <div className="bg-green-50 border border-green-200 rounded-lg p-6">
-                    <h3 className="font-semibold text-green-800 mb-3">Privacy Protections</h3>
+                    <h3 className="font-semibold text-green-800 mb-3">{t('pages.privacy.sections.analytics.protections.title')}</h3>
                     <ul className="text-green-700 space-y-2">
-                      <li>• <strong>No cookies</strong> - analytics work without tracking cookies</li>
-                      <li>• <strong>No personal data</strong> - we never see your files or personal information</li>
-                      <li>• <strong>IP anonymization</strong> - your exact IP address is never stored</li>
-                      <li>• <strong>DNT respected</strong> - we honor "Do Not Track" browser settings</li>
-                      <li>• <strong>GDPR compliant</strong> - all analytics are privacy-regulation compliant</li>
+                      {((t('pages.privacy.sections.analytics.protections.items') as string[]) || []).map((item: string, index: number) => (
+                        <li key={index}>• {item}</li>
+                      ))}
                     </ul>
                   </div>
                 </div>
@@ -198,23 +187,23 @@ const PrivacyPage: React.FC = () => {
                   <span className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center mr-3">
                     🌍
                   </span>
-                  International Privacy Compliance
+                  {t('pages.privacy.sections.compliance.title')}
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="pdf-processing-card text-center p-6">
                     <div className="text-3xl mb-3">🇪🇺</div>
-                    <h3 className="font-semibold text-purple-800 mb-2">GDPR</h3>
-                    <p className="text-purple-700 text-sm">Fully compliant - no personal data processed</p>
+                    <h3 className="font-semibold text-purple-800 mb-2">{t('pages.privacy.sections.compliance.gdpr.title')}</h3>
+                    <p className="text-purple-700 text-sm">{t('pages.privacy.sections.compliance.gdpr.description')}</p>
                   </div>
                   <div className="pdf-processing-card text-center p-6">
                     <div className="text-3xl mb-3">🇺🇸</div>
-                    <h3 className="font-semibold text-purple-800 mb-2">CCPA</h3>
-                    <p className="text-purple-700 text-sm">Compliant - no data collection or sale</p>
+                    <h3 className="font-semibold text-purple-800 mb-2">{t('pages.privacy.sections.compliance.ccpa.title')}</h3>
+                    <p className="text-purple-700 text-sm">{t('pages.privacy.sections.compliance.ccpa.description')}</p>
                   </div>
                   <div className="pdf-processing-card text-center p-6">
                     <div className="text-3xl mb-3">🌐</div>
-                    <h3 className="font-semibold text-purple-800 mb-2">Global</h3>
-                    <p className="text-purple-700 text-sm">Privacy-first design ensures worldwide compliance</p>
+                    <h3 className="font-semibold text-purple-800 mb-2">{t('pages.privacy.sections.compliance.global.title')}</h3>
+                    <p className="text-purple-700 text-sm">{t('pages.privacy.sections.compliance.global.description')}</p>
                   </div>
                 </div>
               </section>
@@ -223,13 +212,13 @@ const PrivacyPage: React.FC = () => {
               <section className="pdf-processing-card border-l-4 border-success-500 p-8">
                 <h2 className="text-2xl font-semibold text-success-800 mb-4 flex items-center">
                   <span className="mr-3">🎯</span>
-                  Summary
+                  {t('pages.privacy.sections.summary.title')}
                 </h2>
                 <p className="text-success-700 text-lg mb-4">
-                  <strong>LocalPDF is designed to be completely private by default. Your files, data, and privacy are protected because we simply don't collect, store, or transmit any of your information.</strong>
+                  {t('pages.privacy.sections.summary.main')}
                 </p>
                 <p className="text-success-600">
-                  This isn't just a policy promise—it's built into the fundamental architecture of how LocalPDF works.
+                  {t('pages.privacy.sections.summary.sub')}
                 </p>
               </section>
             </div>
