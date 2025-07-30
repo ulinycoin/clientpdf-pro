@@ -43,7 +43,7 @@ const ExcelToPDFPage: React.FC = () => {
               <span className="text-gradient-blue">{t('tools.excelToPdf.title')}</span>
             </h1>
             <p className="text-lg text-secondary-600 max-w-3xl mx-auto">
-              {t('tools.excelToPdf.description')} - Convert your Excel spreadsheets to professional PDF documents with support for multiple sheets, wide tables, and international text. All processing happens locally for maximum privacy.
+              {t('tools.excelToPdf.pageDescription')}
             </p>
           </div>
 
@@ -52,7 +52,7 @@ const ExcelToPDFPage: React.FC = () => {
           <div className="mt-12 max-w-4xl mx-auto">
             <div className="pdf-processing-card rounded-3xl p-8">
               <h2 className="text-2xl font-bold text-secondary-900 mb-6">
-                How to Convert Excel to PDF
+                {t('tools.excelToPdf.howToTitle')}
               </h2>
 
               <div className="grid md:grid-cols-3 gap-6 mb-8">
@@ -60,9 +60,9 @@ const ExcelToPDFPage: React.FC = () => {
                   <div className="w-16 h-16 bg-primary-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
                     <span className="text-3xl">📊</span>
                   </div>
-                  <h3 className="font-semibold text-secondary-900 mb-2">Upload Excel File</h3>
+                  <h3 className="font-semibold text-secondary-900 mb-2">{t('tools.excelToPdf.uploadTitle')}</h3>
                   <p className="text-secondary-600 text-sm">
-                    Select your Excel file (.xlsx or .xls) from your device. Files are processed locally for maximum privacy.
+                    {t('tools.excelToPdf.uploadDescription')}
                   </p>
                 </div>
 
@@ -70,9 +70,9 @@ const ExcelToPDFPage: React.FC = () => {
                   <div className="w-16 h-16 bg-success-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
                     <span className="text-3xl">⚙️</span>
                   </div>
-                  <h3 className="font-semibold text-secondary-900 mb-2">Configure Settings</h3>
+                  <h3 className="font-semibold text-secondary-900 mb-2">{t('tools.excelToPdf.configureTitle')}</h3>
                   <p className="text-secondary-600 text-sm">
-                    Choose which sheets to convert, set orientation, and adjust formatting options to match your needs.
+                    {t('tools.excelToPdf.configureDescription')}
                   </p>
                 </div>
 
@@ -80,16 +80,16 @@ const ExcelToPDFPage: React.FC = () => {
                   <div className="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
                     <span className="text-3xl">📥</span>
                   </div>
-                  <h3 className="font-semibold text-secondary-900 mb-2">Download PDF</h3>
+                  <h3 className="font-semibold text-secondary-900 mb-2">{t('tools.excelToPdf.downloadTitle')}</h3>
                   <p className="text-secondary-600 text-sm">
-                    Get your converted PDF files instantly. Each sheet can be saved as a separate PDF or combined into one.
+                    {t('tools.excelToPdf.downloadDescription')}
                   </p>
                 </div>
               </div>
 
               <div className="border-t border-white/20 pt-8">
                 <h3 className="text-xl font-semibold text-secondary-900 mb-4">
-                  Why Choose LocalPDF Excel Converter?
+                  {t('tools.excelToPdf.featuresTitle')}
                 </h3>
 
                 <div className="grid md:grid-cols-2 gap-6">
@@ -98,10 +98,10 @@ const ExcelToPDFPage: React.FC = () => {
                       <span className="w-8 h-8 bg-success-100 rounded-lg flex items-center justify-center mr-3">
                         🔒
                       </span>
-                      100% Private & Secure
+                      {t('tools.excelToPdf.privacyTitle')}
                     </h4>
                     <p className="text-secondary-600 text-sm">
-                      Your Excel files never leave your device. All conversion happens locally in your browser for maximum privacy and security.
+                      {t('tools.excelToPdf.privacyDescription')}
                     </p>
                   </div>
 
@@ -110,10 +110,10 @@ const ExcelToPDFPage: React.FC = () => {
                       <span className="w-8 h-8 bg-primary-100 rounded-lg flex items-center justify-center mr-3">
                         ⚡
                       </span>
-                      Lightning Fast Processing
+                      {t('tools.excelToPdf.fastTitle')}
                     </h4>
                     <p className="text-secondary-600 text-sm">
-                      Convert Excel files to PDF instantly without waiting for uploads or downloads. Works offline too.
+                      {t('tools.excelToPdf.fastDescription')}
                     </p>
                   </div>
 
@@ -122,10 +122,10 @@ const ExcelToPDFPage: React.FC = () => {
                       <span className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
                         📋
                       </span>
-                      Multiple Formats Support
+                      {t('tools.excelToPdf.multiFormatTitle')}
                     </h4>
                     <p className="text-secondary-600 text-sm">
-                      Works with both .xlsx and .xls files. Supports multiple sheets, complex formulas, and international text.
+                      {t('tools.excelToPdf.multiFormatDescription')}
                     </p>
                   </div>
 
@@ -134,10 +134,10 @@ const ExcelToPDFPage: React.FC = () => {
                       <span className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center mr-3">
                         🆓
                       </span>
-                      Completely Free
+                      {t('tools.excelToPdf.freeTitle')}
                     </h4>
                     <p className="text-secondary-600 text-sm">
-                      No limits, no watermarks, no hidden fees. Convert unlimited Excel files to PDF for free, forever.
+                      {t('tools.excelToPdf.freeDescription')}
                     </p>
                   </div>
                 </div>

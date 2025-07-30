@@ -44,21 +44,21 @@ const ConversionSettings: React.FC<ConversionSettingsProps> = ({
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold mb-4">Select Sheets</h3>
+        <h3 className="text-lg font-semibold mb-4">{t('tools.excelToPdf.selectSheets')}</h3>
         <div className="flex gap-2 mb-4">
           <Button
             onClick={selectAllSheets}
             variant="secondary"
             size="sm"
           >
-            Select All
+            {t('tools.excelToPdf.selectAll')}
           </Button>
           <Button
             onClick={deselectAllSheets}
             variant="secondary"
             size="sm"
           >
-            Deselect All
+            {t('tools.excelToPdf.deselectAll')}
           </Button>
         </div>
 
@@ -77,7 +77,10 @@ const ConversionSettings: React.FC<ConversionSettingsProps> = ({
               <div className="flex-1">
                 <div className="font-medium">{sheet.name}</div>
                 <div className="text-sm text-gray-500">
-                  {sheet.metadata?.totalRows || 0} rows × {sheet.metadata?.totalColumns || 0} columns
+                  {t('tools.excelToPdf.rowsColumns', {
+                    rows: sheet.metadata?.totalRows || 0,
+                    columns: sheet.metadata?.totalColumns || 0
+                  })}
                 </div>
               </div>
             </label>
@@ -87,19 +90,19 @@ const ConversionSettings: React.FC<ConversionSettingsProps> = ({
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium mb-2">Page Orientation</label>
+          <label className="block text-sm font-medium mb-2">{t('tools.excelToPdf.pageOrientation')}</label>
           <select
             value={options.orientation}
             onChange={(e) => onOptionsChange({ ...options, orientation: e.target.value as any })}
             className="w-full border rounded-lg px-3 py-2"
           >
-            <option value="portrait">Portrait</option>
-            <option value="landscape">Landscape</option>
+            <option value="portrait">{t('tools.excelToPdf.portrait')}</option>
+            <option value="landscape">{t('tools.excelToPdf.landscape')}</option>
           </select>
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-2">Page Size</label>
+          <label className="block text-sm font-medium mb-2">{t('tools.excelToPdf.pageSize')}</label>
           <select
             value={options.pageSize}
             onChange={(e) => onOptionsChange({ ...options, pageSize: e.target.value as any })}
@@ -113,7 +116,7 @@ const ConversionSettings: React.FC<ConversionSettingsProps> = ({
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-2">Font Size</label>
+          <label className="block text-sm font-medium mb-2">{t('tools.excelToPdf.fontSize')}</label>
           <input
             type="number"
             min="6"
@@ -125,14 +128,14 @@ const ConversionSettings: React.FC<ConversionSettingsProps> = ({
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-2">Output Format</label>
+          <label className="block text-sm font-medium mb-2">{t('tools.excelToPdf.outputFormat')}</label>
           <select
             value={options.outputFormat}
             onChange={(e) => onOptionsChange({ ...options, outputFormat: e.target.value as any })}
             className="w-full border rounded-lg px-3 py-2"
           >
-            <option value="single-pdf">Single PDF file</option>
-            <option value="separate-pdfs">Separate PDF files</option>
+            <option value="single-pdf">{t('tools.excelToPdf.singlePdf')}</option>
+            <option value="separate-pdfs">{t('tools.excelToPdf.separatePdfs')}</option>
           </select>
         </div>
       </div>
@@ -145,7 +148,7 @@ const ConversionSettings: React.FC<ConversionSettingsProps> = ({
             onChange={(e) => onOptionsChange({ ...options, includeSheetNames: e.target.checked })}
             className="w-4 h-4 text-blue-600 rounded"
           />
-          <span className="text-sm font-medium">Include Sheet Names</span>
+          <span className="text-sm font-medium">{t('tools.excelToPdf.includeSheetNames')}</span>
         </label>
       </div>
 
@@ -154,7 +157,7 @@ const ConversionSettings: React.FC<ConversionSettingsProps> = ({
         disabled={isProcessing || options.selectedSheets.length === 0}
         className="w-full"
       >
-        {isProcessing ? 'Converting...' : 'Convert to PDF'}
+        {isProcessing ? t('tools.excelToPdf.converting') : t('tools.excelToPdf.convertToPdf')}
       </Button>
     </div>
   );
@@ -240,86 +243,57 @@ export const ExcelToPDFTool: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto p-6">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">
-          Excel to PDF Converter
-        </h1>
-        <p className="text-lg text-gray-600">
-          Convert Excel files (.xlsx, .xls) to PDF format with support for multiple sheets and international text
-        </p>
-      </div>
+      {!workbook ? (
+        <div className="max-w-2xl mx-auto">
+          <div className="bg-white rounded-lg shadow-lg p-8 mb-6">
+            <FileUploadZone
+              onFilesSelected={handleFileSelect}
+              accept=".xlsx,.xls"
+              acceptedTypes={['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel']}
+              maxSize={100 * 1024 * 1024}
+              multiple={false}
+            >
+              <div className="text-center">
+                <div className="text-6xl mb-4">📊</div>
+                <h3 className="text-xl font-semibold text-gray-700 mb-2">
+                  {t('tools.excelToPdf.chooseExcelFile')}
+                </h3>
+                <p className="text-gray-500 mb-6">
+                  {t('tools.excelToPdf.dragDropSubtitle')}
+                </p>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Left Panel - Upload and Settings */}
+                <div className="mt-6 text-sm text-gray-400">
+                  <p>{t('tools.excelToPdf.supportedFormats')}</p>
+                </div>
+
+                <div className="mt-4 text-xs text-gray-400 space-y-1">
+                  <p>✓ {t('tools.excelToPdf.multipleSheets')}</p>
+                  <p>✓ {t('tools.excelToPdf.complexFormulas')}</p>
+                  <p>✓ {t('tools.excelToPdf.internationalText')}</p>
+                  <p>✓ {t('tools.excelToPdf.localProcessing')}</p>
+                </div>
+              </div>
+            </FileUploadZone>
+          </div>
+        </div>
+      ) : (
         <div className="space-y-6">
-          {!workbook ? (
-            <div className="bg-white rounded-lg shadow-lg p-6">
-              <FileUploadZone
-                onFilesSelected={handleFileSelect}
-                accept=".xlsx,.xls"
-                acceptedTypes={['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel']}
-                maxSize={100 * 1024 * 1024}
-                multiple={false}
-              />
+          {/* Success Message */}
+          {result?.success && (
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+              <div className="flex items-center">
+                <div className="text-green-600 mr-2">✅</div>
+                <div>
+                  <h3 className="text-green-800 font-medium">{t('tools.excelToPdf.conversionCompleted')}</h3>
+                  <p className="text-green-700 text-sm">
+                    {result.pdfFiles?.length === 1
+                      ? t('tools.excelToPdf.pdfReady')
+                      : t('tools.excelToPdf.multipleFiles', { count: result.pdfFiles?.length })
+                    }
+                  </p>
+                </div>
+              </div>
             </div>
-          ) : (
-            <>
-              {/* Success Message */}
-              {result?.success && (
-                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                  <div className="flex items-center">
-                    <div className="text-green-600 mr-2">✅</div>
-                    <div>
-                      <h3 className="text-green-800 font-medium">Conversion Completed!</h3>
-                      <p className="text-green-700 text-sm">
-                        {result.pdfFiles?.length === 1
-                          ? 'PDF is ready for download'
-                          : `${result.pdfFiles?.length} PDF files generated`
-                        }
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* File Information */}
-              <div className="bg-white rounded-lg shadow-lg p-6">
-                <h2 className="text-xl font-semibold mb-4">File Information</h2>
-                <div className="space-y-2 text-sm">
-                  <div><strong>File:</strong> {workbook.metadata.fileName}</div>
-                  <div><strong>Size:</strong> {Math.round(workbook.metadata.fileSize / 1024)} KB</div>
-                  <div><strong>Sheets:</strong> {workbook.metadata.totalSheets}</div>
-                  <div><strong>Languages:</strong> {workbook.metadata.detectedLanguages.join(', ') || 'English'}</div>
-                </div>
-
-                {workbook.metadata.detectedLanguages.length > 1 && (
-                  <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                    <div className="text-sm text-blue-800">
-                      Multiple languages detected. Appropriate fonts will be loaded automatically.
-                    </div>
-                  </div>
-                )}
-
-                <button
-                  onClick={reset}
-                  className="mt-4 text-sm text-red-600 hover:text-red-800 underline"
-                >
-                  Choose Different File
-                </button>
-              </div>
-
-              {/* Conversion Settings */}
-              <div className="bg-white rounded-lg shadow-lg p-6">
-                <h2 className="text-xl font-semibold mb-4">Conversion Settings</h2>
-                <ConversionSettings
-                  workbook={workbook}
-                  options={options}
-                  onOptionsChange={setOptions}
-                  onConvert={handleConvert}
-                  isProcessing={isProcessing}
-                />
-              </div>
-            </>
           )}
 
           {/* Progress */}
@@ -339,43 +313,89 @@ export const ExcelToPDFTool: React.FC = () => {
               />
             </div>
           )}
-        </div>
 
-        {/* Right Panel - Preview */}
-        <div className="space-y-6">
-          <div className="bg-white rounded-lg shadow-lg overflow-hidden min-h-[600px]">
-            {(() => {
-              // Debug logging
-              console.log('🔍 ExcelToPDFTool Preview Data:', {
-                result: result ? { success: result.success, hasFiles: !!result.pdfFiles, filesCount: result.pdfFiles?.length } : null,
-                showPreview,
-                isProcessing,
-                workbook: !!workbook,
-                tableAnalysis
-              });
+          {/* Preview and Settings Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Left Panel - Preview */}
+            <div className="space-y-6">
+              <div className="bg-white rounded-lg shadow-lg overflow-hidden h-[600px]"> {/* Fixed height */}
+                {(() => {
+                  // Debug logging
+                  console.log('🔍 ExcelToPDFTool Preview Data:', {
+                    result: result ? { success: result.success, hasFiles: !!result.pdfFiles, filesCount: result.pdfFiles?.length } : null,
+                    showPreview,
+                    isProcessing,
+                    workbook: !!workbook,
+                    tableAnalysis
+                  });
 
-              return (
-                <ExcelPreview
-                  result={result}
-                  fileName={workbook?.metadata.fileName || 'excel-document.pdf'}
-                  onDownload={() => result?.pdfFiles?.[0] && downloadPDF(result.pdfFiles[0])}
-                  onDownloadAll={result?.pdfFiles && result.pdfFiles.length > 1 ? downloadAllPDFs : undefined}
-                  isGenerating={isProcessing}
-                  onRegenerate={workbook ? handleConvert : undefined}
-                  onOrientationToggle={handleOrientationToggle}
-                  tableOverflowWarning={tableAnalysis ? {
-                    isOverflowing: tableAnalysis.isOverflowing,
-                    recommendedOrientation: tableAnalysis.recommendedOrientation,
-                    recommendedPageSize: tableAnalysis.recommendedPageSize,
-                    columnCount: tableAnalysis.columnCount,
-                    scaleFactor: tableAnalysis.scaleFactor
-                  } : undefined}
-                />
-              );
-            })()}
+                  return (
+                    <ExcelPreview
+                      result={result}
+                      fileName={workbook?.metadata.fileName || 'excel-document.pdf'}
+                      onDownload={() => result?.pdfFiles?.[0] && downloadPDF(result.pdfFiles[0])}
+                      onDownloadAll={result?.pdfFiles && result.pdfFiles.length > 1 ? downloadAllPDFs : undefined}
+                      isGenerating={isProcessing}
+                      onRegenerate={workbook ? handleConvert : undefined}
+                      onOrientationToggle={handleOrientationToggle}
+                      tableOverflowWarning={tableAnalysis ? {
+                        isOverflowing: tableAnalysis.isOverflowing,
+                        recommendedOrientation: tableAnalysis.recommendedOrientation,
+                        recommendedPageSize: tableAnalysis.recommendedPageSize,
+                        columnCount: tableAnalysis.columnCount,
+                        scaleFactor: tableAnalysis.scaleFactor
+                      } : undefined}
+                    />
+                  );
+                })()}
+              </div>
+            </div>
+
+            {/* Right Panel - Conversion Settings */}
+            <div className="space-y-6">
+              <div className="bg-white rounded-lg shadow-lg p-6 h-[600px] flex flex-col"> {/* Fixed height with flex */}
+                <h2 className="text-xl font-semibold mb-4">{t('tools.excelToPdf.conversionSettings')}</h2>
+
+                <div className="flex-1 overflow-y-auto"> {/* Scrollable content area */}
+                  <ConversionSettings
+                    workbook={workbook}
+                    options={options}
+                    onOptionsChange={setOptions}
+                    onConvert={handleConvert}
+                    isProcessing={isProcessing}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* File Information - Full Width Below */}
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <h2 className="text-xl font-semibold mb-4">{t('tools.excelToPdf.fileInformation')}</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
+              <div><strong>{t('tools.excelToPdf.file')}:</strong> {workbook.metadata.fileName}</div>
+              <div><strong>{t('tools.excelToPdf.size')}:</strong> {Math.round(workbook.metadata.fileSize / 1024)} KB</div>
+              <div><strong>{t('tools.excelToPdf.sheets')}:</strong> {workbook.metadata.totalSheets}</div>
+              <div><strong>{t('tools.excelToPdf.languages')}:</strong> {workbook.metadata.detectedLanguages.join(', ') || 'English'}</div>
+            </div>
+
+            {workbook.metadata.detectedLanguages.length > 1 && (
+              <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="text-sm text-blue-800">
+                  {t('tools.excelToPdf.multiLanguageNote')}
+                </div>
+              </div>
+            )}
+
+            <button
+              onClick={reset}
+              className="mt-4 text-sm text-red-600 hover:text-red-800 underline"
+            >
+              {t('tools.excelToPdf.chooseDifferentFile')}
+            </button>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

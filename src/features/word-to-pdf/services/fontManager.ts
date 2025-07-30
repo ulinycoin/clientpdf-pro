@@ -61,17 +61,10 @@ export class FontManager {
     try {
       const fontName = this.selectBestFont(language, isCyrillic);
 
-      // Check cache first
-      const cacheKey = `${fontName}-${language}`;
-      if (this.fontCache.has(cacheKey)) {
-        const cachedData = this.fontCache.get(cacheKey);
-        return {
-          font: cachedData.font,
-          fontName,
-          supportsCyrillic: cachedData.supportsCyrillic,
-          needsTransliteration: cachedData.needsTransliteration
-        };
-      }
+      // Create a document-specific cache key to avoid cross-document font reuse issues
+      // PDF-lib font objects are bound to specific documents and can't be reused
+      const documentId = Math.random().toString(36).substr(2, 9); // Generate unique ID for each document
+      const cacheKey = `${fontName}-${language}-${documentId}`;
 
       let font;
       let supportsCyrillic = false;
@@ -100,12 +93,15 @@ export class FontManager {
         needsTransliteration = false;
       }
 
-      // Cache the loaded font with metadata
+      // Cache the loaded font with metadata (but with document-specific key)
       this.fontCache.set(cacheKey, {
         font,
         supportsCyrillic,
         needsTransliteration
       });
+
+      // Clean up old cache entries to prevent memory leaks
+      this.cleanupOldCacheEntries();
 
       return {
         font,
@@ -295,5 +291,20 @@ export class FontManager {
   // Clear font cache
   clearCache(): void {
     this.fontCache.clear();
+  }
+
+  // Clean up old cache entries to prevent memory leaks
+  private cleanupOldCacheEntries(): void {
+    // Keep only recent entries (limit cache size to prevent memory leaks)
+    const MAX_CACHE_SIZE = 20;
+    if (this.fontCache.size > MAX_CACHE_SIZE) {
+      const entries = Array.from(this.fontCache.entries());
+      // Remove oldest entries (first half)
+      const entriesToRemove = entries.slice(0, Math.floor(entries.length / 2));
+      entriesToRemove.forEach(([key]) => {
+        this.fontCache.delete(key);
+      });
+      console.log(`🧹 Cleaned up ${entriesToRemove.length} old font cache entries`);
+    }
   }
 }
