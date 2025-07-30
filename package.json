@@ -41,6 +41,7 @@
     "franc": "^6.2.0",
     "html2canvas": "^1.4.1",
     "jspdf": "^2.5.1",
+    "jspdf-autotable": "^5.0.2",
     "lucide-react": "^0.263.1",
     "mammoth": "^1.9.1",
     "pdf-lib": "^1.17.1",
