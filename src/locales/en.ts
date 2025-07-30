@@ -358,10 +358,157 @@ export const en: Translations = {
     privacy: {
       title: 'Privacy Policy',
       subtitle: 'Your privacy is our top priority',
+      lastUpdated: 'Last Updated: July 20, 2025',
+      sections: {
+        commitment: {
+          title: 'Our Privacy Commitment',
+          content: 'LocalPDF is designed with privacy as the foundation. We believe your documents and data should remain yours and yours alone. This Privacy Policy explains how LocalPDF protects your privacy and ensures your data never leaves your device.'
+        },
+        simpleAnswer: {
+          title: 'The Simple Answer',
+          main: 'LocalPDF does not collect, store, transmit, or have access to any of your data, files, or personal information.',
+          sub: 'All PDF processing happens entirely within your web browser. Your files never leave your device.'
+        },
+        whatWeDont: {
+          title: 'What We DON\'T Do',
+          noDataCollection: {
+            title: 'No Data Collection',
+            items: ['No personal information', 'No usage tracking', 'No analytics cookies', 'No user accounts']
+          },
+          noFileAccess: {
+            title: 'No File Access',
+            items: ['No server uploads', 'No file storage', 'No document copies', 'No processing history']
+          }
+        },
+        howItWorks: {
+          title: 'How LocalPDF Works',
+          clientSide: {
+            title: 'Client-Side Processing',
+            description: 'All PDF operations happen directly in your web browser using:',
+            items: ['JavaScript PDF libraries (pdf-lib, PDF.js, jsPDF)', 'Web Workers for performance optimization', 'Local memory for temporary processing', 'Your device\'s resources exclusively']
+          },
+          process: {
+            title: 'The Complete Process',
+            steps: [
+              'You select a PDF file from your device',
+              'File loads into browser memory (never uploaded)',
+              'Processing happens locally using JavaScript',
+              'Result is generated in your browser',
+              'You download the processed file directly',
+              'All data is cleared from memory when you close the page'
+            ]
+          }
+        },
+        analytics: {
+          title: 'Privacy-First Analytics',
+          description: 'LocalPDF uses Vercel Analytics to understand how our tools are used and improve user experience. Our analytics approach maintains our privacy-first philosophy:',
+          whatWeTrack: {
+            title: 'What We Track (Anonymously)',
+            items: ['Page visits - which tools are most popular', 'Tool usage - basic metrics like file processing counts', 'Performance data - loading times and errors', 'General location - country/region only (for language optimization)']
+          },
+          protections: {
+            title: 'Privacy Protections',
+            items: ['No cookies - analytics work without tracking cookies', 'No personal data - we never see your files or personal information', 'IP anonymization - your exact IP address is never stored', 'DNT respected - we honor "Do Not Track" browser settings', 'GDPR compliant - all analytics are privacy-regulation compliant']
+          }
+        },
+        compliance: {
+          title: 'International Privacy Compliance',
+          gdpr: {
+            title: 'GDPR',
+            description: 'Fully compliant - no personal data processed'
+          },
+          ccpa: {
+            title: 'CCPA',
+            description: 'Compliant - no data collection or sale'
+          },
+          global: {
+            title: 'Global',
+            description: 'Privacy-first design ensures worldwide compliance'
+          }
+        },
+        summary: {
+          title: 'Summary',
+          main: 'LocalPDF is designed to be completely private by default. Your files, data, and privacy are protected because we simply don\'t collect, store, or transmit any of your information.',
+          sub: 'This isn\'t just a policy promise—it\'s built into the fundamental architecture of how LocalPDF works.'
+        }
+      }
     },
     faq: {
       title: 'Frequently Asked Questions',
       subtitle: 'Everything you need to know about LocalPDF',
+      sections: {
+        general: {
+          title: 'General Questions',
+          questions: {
+            whatIs: {
+              question: 'What is LocalPDF?',
+              answer: 'LocalPDF is a free, privacy-first web application that provides 12 powerful PDF tools for merging, splitting, compressing, editing, and converting PDF files. All processing happens entirely in your browser - no uploads, no registration, no tracking.'
+            },
+            free: {
+              question: 'Is LocalPDF really free?',
+              answer: 'Yes! LocalPDF is completely free to use with no limitations, ads, or hidden fees. We believe essential PDF tools should be accessible to everyone.'
+            },
+            account: {
+              question: 'Do I need to create an account?',
+              answer: 'No account required! Simply visit LocalPDF and start using any tool immediately.'
+            }
+          }
+        },
+        privacy: {
+          title: 'Privacy & Security',
+          questions: {
+            uploaded: {
+              question: 'Are my files uploaded to your servers?',
+              answer: 'No! This is LocalPDF\'s core feature - all processing happens in your browser. Your files never leave your device. We cannot see, access, or store your documents.'
+            },
+            afterUse: {
+              question: 'What happens to my files after I use LocalPDF?',
+              answer: 'Your files are processed in your browser\'s memory and automatically cleared when you close the page or navigate away. Nothing is stored permanently.'
+            },
+            confidential: {
+              question: 'Is LocalPDF safe for confidential documents?',
+              answer: 'Yes! Since all processing is local and we don\'t collect any data, LocalPDF is ideal for confidential, sensitive, or private documents.'
+            }
+          }
+        },
+        technical: {
+          title: 'Technical Questions',
+          questions: {
+            browsers: {
+              question: 'What browsers support LocalPDF?',
+              answer: 'LocalPDF works on all modern browsers:',
+              browsers: ['Chrome 90+', 'Firefox 90+', 'Safari 14+', 'Edge 90+']
+            },
+            fileSize: {
+              question: 'What\'s the maximum file size I can process?',
+              answer: 'LocalPDF can handle files up to 100MB. For very large files, processing may take longer depending on your device\'s performance.'
+            },
+            offline: {
+              question: 'Does LocalPDF work offline?',
+              answer: 'Yes! After your first visit, LocalPDF works offline. Your browser caches the application, so you can use it without an internet connection.'
+            }
+          }
+        },
+        tools: {
+          title: 'PDF Tools',
+          editText: {
+            question: 'Can I edit existing text in PDFs?',
+            answer: 'Currently, LocalPDF allows adding new text to PDFs but not editing existing text. You can add text overlays, signatures, notes, and annotations.'
+          }
+        },
+        support: {
+          title: 'Still Need Help?',
+          gettingSupport: {
+            title: 'Getting Support',
+            items: ['GitHub Issues: Technical problems and bug reports', 'GitHub Discussions: General questions and community help', 'Documentation: Complete guides and tutorials']
+          },
+          contact: {
+            title: 'Contact Information',
+            github: 'Report Issues on GitHub',
+            discussions: 'Join Community Discussions'
+          }
+        }
+      }
     },
     notFound: {
       title: 'Page Not Found',

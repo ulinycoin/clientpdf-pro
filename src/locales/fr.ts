@@ -263,6 +263,9 @@ export const fr: Translations = {
         extractPages: 'Extraire des pages',
         extractText: 'Extraire le texte',
         pdfToImage: 'PDF vers Images',
+        'word-to-pdf': 'Word vers PDF',
+        'excel-to-pdf': 'Excel vers PDF',
+        'images-to-pdf': 'Images vers PDF',
       },
       toolDescriptions: {
         merge: 'Combiner plusieurs fichiers PDF en un seul',
@@ -274,6 +277,9 @@ export const fr: Translations = {
         extractPages: 'Extraire des pages spécifiques',
         extractText: 'Obtenir le contenu textuel des PDFs',
         pdfToImage: 'Convertir PDF en images',
+        'word-to-pdf': 'Convertir des documents Word en PDF',
+        'excel-to-pdf': 'Convertir des feuilles Excel en PDF',
+        'images-to-pdf': 'Convertir des images au format PDF',
       },
       actions: {
         merge: {
@@ -350,10 +356,157 @@ export const fr: Translations = {
     privacy: {
       title: 'Politique de confidentialité',
       subtitle: 'Votre confidentialité est notre priorité absolue',
+      lastUpdated: 'Dernière mise à jour : 20 juillet 2025',
+      sections: {
+        commitment: {
+          title: 'Notre engagement de confidentialité',
+          content: 'LocalPDF est conçu avec la confidentialité comme fondement. Nous croyons que vos documents et données devraient rester les vôtres et seulement les vôtres. Cette Politique de confidentialité explique comment LocalPDF protège votre vie privée et assure que vos données ne quittent jamais votre appareil.'
+        },
+        simpleAnswer: {
+          title: 'La réponse simple',
+          main: 'LocalPDF ne collecte pas, ne stocke pas, ne transmet pas ou n\'a pas accès à vos données, fichiers ou informations personnelles.',
+          sub: 'Tout le traitement PDF se fait entièrement dans votre navigateur web. Vos fichiers ne quittent jamais votre appareil.'
+        },
+        whatWeDont: {
+          title: 'Ce que nous ne faisons PAS',
+          noDataCollection: {
+            title: 'Aucune collecte de données',
+            items: ['Aucune information personnelle', 'Aucun suivi d\'utilisation', 'Aucun cookie analytique', 'Aucun compte utilisateur']
+          },
+          noFileAccess: {
+            title: 'Aucun accès aux fichiers',
+            items: ['Aucun téléversement sur serveur', 'Aucun stockage de fichiers', 'Aucune copie de documents', 'Aucun historique de traitement']
+          }
+        },
+        howItWorks: {
+          title: 'Comment fonctionne LocalPDF',
+          clientSide: {
+            title: 'Traitement côté client',
+            description: 'Toutes les opérations PDF se déroulent directement dans votre navigateur web en utilisant :',
+            items: ['Bibliothèques JavaScript PDF (pdf-lib, PDF.js, jsPDF)', 'Web Workers pour l\'optimisation des performances', 'Mémoire locale pour le traitement temporaire', 'Exclusivement les ressources de votre appareil']
+          },
+          process: {
+            title: 'Le processus complet',
+            steps: [
+              'Vous sélectionnez un fichier PDF depuis votre appareil',
+              'Le fichier se charge dans la mémoire du navigateur (jamais téléversé)',
+              'Le traitement se fait localement avec JavaScript',
+              'Le résultat est généré dans votre navigateur',
+              'Vous téléchargez le fichier traité directement',
+              'Toutes les données sont effacées de la mémoire quand vous fermez la page'
+            ]
+          }
+        },
+        analytics: {
+          title: 'Analytique axée sur la confidentialité',
+          description: 'LocalPDF utilise Vercel Analytics pour comprendre comment nos outils sont utilisés et améliorer l\'expérience utilisateur. Notre approche analytique maintient notre philosophie de confidentialité d\'abord :',
+          whatWeTrack: {
+            title: 'Ce que nous suivons (anonymement)',
+            items: ['Visites de pages - quels outils sont les plus populaires', 'Utilisation des outils - métriques de base comme le nombre de fichiers traités', 'Données de performance - temps de chargement et erreurs', 'Localisation générale - pays/région seulement (pour l\'optimisation des langues)']
+          },
+          protections: {
+            title: 'Protections de la confidentialité',
+            items: ['Aucun cookie - l\'analytique fonctionne sans cookies de suivi', 'Aucune donnée personnelle - nous ne voyons jamais vos fichiers ou informations personnelles', 'Anonymisation IP - votre adresse IP exacte n\'est jamais stockée', 'DNT respecté - nous honorons les paramètres "Do Not Track" du navigateur', 'Conforme RGPD - toute l\'analytique est conforme aux réglementations de confidentialité']
+          }
+        },
+        compliance: {
+          title: 'Conformité internationale de confidentialité',
+          gdpr: {
+            title: 'RGPD',
+            description: 'Entièrement conforme - aucune donnée personnelle traitée'
+          },
+          ccpa: {
+            title: 'CCPA',
+            description: 'Conforme - aucune collecte ou vente de données'
+          },
+          global: {
+            title: 'Global',
+            description: 'La conception axée sur la confidentialité assure la conformité mondiale'
+          }
+        },
+        summary: {
+          title: 'Résumé',
+          main: 'LocalPDF est conçu pour être complètement privé par défaut. Vos fichiers, données et confidentialité sont protégés parce que nous ne collectons, stockons ou transmettons simplement aucune de vos informations.',
+          sub: 'Ce n\'est pas juste une promesse de politique - c\'est intégré dans l\'architecture fondamentale de comment LocalPDF fonctionne.'
+        }
+      }
     },
     faq: {
       title: 'Questions fréquemment posées',
       subtitle: 'Tout ce que vous devez savoir sur LocalPDF',
+      sections: {
+        general: {
+          title: 'Questions générales',
+          questions: {
+            whatIs: {
+              question: 'Qu\'est-ce que LocalPDF ?',
+              answer: 'LocalPDF est une application web gratuite, axée sur la confidentialité, qui fournit 12 outils PDF puissants pour fusionner, diviser, compresser, éditer et convertir des fichiers PDF. Tout le traitement se fait entièrement dans votre navigateur - pas de téléversements, pas d\'inscription, pas de suivi.'
+            },
+            free: {
+              question: 'LocalPDF est-il vraiment gratuit ?',
+              answer: 'Oui ! LocalPDF est complètement gratuit à utiliser sans limitations, publicités ou frais cachés. Nous croyons que les outils PDF essentiels devraient être accessibles à tous.'
+            },
+            account: {
+              question: 'Dois-je créer un compte ?',
+              answer: 'Aucun compte requis ! Visitez simplement LocalPDF et commencez à utiliser n\'importe quel outil immédiatement.'
+            }
+          }
+        },
+        privacy: {
+          title: 'Confidentialité et sécurité',
+          questions: {
+            uploaded: {
+              question: 'Mes fichiers sont-ils téléversés sur vos serveurs ?',
+              answer: 'Non ! C\'est la fonctionnalité principale de LocalPDF - tout le traitement se fait dans votre navigateur. Vos fichiers ne quittent jamais votre appareil. Nous ne pouvons pas voir, accéder ou stocker vos documents.'
+            },
+            afterUse: {
+              question: 'Qu\'arrive-t-il à mes fichiers après avoir utilisé LocalPDF ?',
+              answer: 'Vos fichiers sont traités dans la mémoire de votre navigateur et automatiquement effacés quand vous fermez la page ou naviguez ailleurs. Rien n\'est stocké de façon permanente.'
+            },
+            confidential: {
+              question: 'LocalPDF est-il sûr pour les documents confidentiels ?',
+              answer: 'Oui ! Puisque tout le traitement est local et nous ne collectons aucune donnée, LocalPDF est idéal pour les documents confidentiels, sensibles ou privés.'
+            }
+          }
+        },
+        technical: {
+          title: 'Questions techniques',
+          questions: {
+            browsers: {
+              question: 'Quels navigateurs supportent LocalPDF ?',
+              answer: 'LocalPDF fonctionne sur tous les navigateurs modernes :',
+              browsers: ['Chrome 90+', 'Firefox 90+', 'Safari 14+', 'Edge 90+']
+            },
+            fileSize: {
+              question: 'Quelle est la taille maximale de fichier que je peux traiter ?',
+              answer: 'LocalPDF peut gérer des fichiers jusqu\'à 100MB. Pour de très gros fichiers, le traitement peut prendre plus de temps selon les performances de votre appareil.'
+            },
+            offline: {
+              question: 'LocalPDF fonctionne-t-il hors ligne ?',
+              answer: 'Oui ! Après votre première visite, LocalPDF fonctionne hors ligne. Votre navigateur met en cache l\'application, donc vous pouvez l\'utiliser sans connexion internet.'
+            }
+          }
+        },
+        tools: {
+          title: 'Outils PDF',
+          editText: {
+            question: 'Puis-je éditer le texte existant dans les PDF ?',
+            answer: 'Actuellement, LocalPDF permet d\'ajouter du nouveau texte aux PDF mais pas d\'éditer le texte existant. Vous pouvez ajouter des superpositions de texte, signatures, notes et annotations.'
+          }
+        },
+        support: {
+          title: 'Besoin d\'aide ?',
+          gettingSupport: {
+            title: 'Obtenir de l\'aide',
+            items: ['GitHub Issues : Problèmes techniques et rapports de bugs', 'GitHub Discussions : Questions générales et aide communautaire', 'Documentation : Guides complets et tutoriels']
+          },
+          contact: {
+            title: 'Informations de contact',
+            github: 'Signaler des problèmes sur GitHub',
+            discussions: 'Rejoindre les discussions communautaires'
+          }
+        }
+      }
     },
     notFound: {
       title: 'Page non trouvée',
@@ -938,6 +1091,65 @@ export const fr: Translations = {
           upload: 'Étape 1 : Téléversez votre fichier PDF',
           format: 'Étape 2 : Choisissez le format de sortie (PNG, JPG, WEBP)',
           download: 'Étape 3 : Téléchargez vos images converties',
+        },
+      },
+      excelToPdf: {
+        seo: {
+          title: 'Convertisseur Excel vers PDF - Convertir XLSX vers PDF en ligne gratuitement | LocalPDF',
+          description: 'Convertissez les fichiers Excel (.xlsx, .xls) au format PDF gratuitement. Support pour plusieurs feuilles, tableaux larges et langues internationales. Rapide, sécurisé et privé.',
+          keywords: 'excel vers pdf, xlsx vers pdf, xls vers pdf, tableur vers pdf, convertisseur excel',
+          structuredData: {
+            name: 'Convertisseur Excel vers PDF',
+            description: 'Convertissez les feuilles de calcul Excel au format PDF en ligne gratuitement',
+            permissions: 'Aucun téléversement de fichier requis',
+          },
+        },
+        breadcrumbs: {
+          home: 'Accueil',
+          excelToPdf: 'Excel vers PDF',
+        },
+        pageTitle: 'Convertisseur Excel vers PDF',
+        pageDescription: 'Convertissez vos fichiers Excel (.xlsx, .xls) au format PDF avec support pour plusieurs feuilles, tableaux larges et texte international. Tout le traitement se fait localement.',
+        howTo: {
+          title: 'Comment Convertir Excel vers PDF',
+          steps: {
+            upload: {
+              title: 'Téléverser le Fichier Excel',
+              description: 'Sélectionnez votre fichier Excel (.xlsx ou .xls) depuis votre appareil. Les fichiers sont traités localement pour une confidentialité maximale.',
+            },
+            configure: {
+              title: 'Configurer les Paramètres',
+              description: 'Choisissez les feuilles à convertir, définissez l\'orientation et ajustez les options de formatage selon vos besoins.',
+            },
+            download: {
+              title: 'Télécharger PDF',
+              description: 'Obtenez vos fichiers PDF convertis instantanément. Chaque feuille peut être sauvegardée comme PDF séparé ou combinée en un seul.',
+            },
+          },
+        },
+        features: {
+          title: 'Pourquoi Choisir le Convertisseur Excel LocalPDF ?',
+          privacy: {
+            title: '100% Privé et Sécurisé',
+            description: 'Vos fichiers Excel ne quittent jamais votre appareil. Toute la conversion se fait localement dans votre navigateur pour une confidentialité et sécurité maximales.',
+          },
+          fast: {
+            title: 'Traitement Ultra-Rapide',
+            description: 'Convertissez les fichiers Excel vers PDF instantanément sans attendre de téléversements ou téléchargements. Fonctionne aussi hors ligne.',
+          },
+          multiFormat: {
+            title: 'Support de Multiples Formats',
+            description: 'Fonctionne avec les fichiers .xlsx et .xls. Supporte plusieurs feuilles, formules complexes et texte international.',
+          },
+          free: {
+            title: 'Complètement Gratuit',
+            description: 'Aucune limite, aucun filigrane, aucun frais caché. Convertissez un nombre illimité de fichiers Excel vers PDF gratuitement, pour toujours.',
+          },
+        },
+        steps: {
+          upload: 'Étape 1 : Téléversez votre fichier Excel (.xlsx ou .xls)',
+          configure: 'Étape 2 : Sélectionnez les feuilles et configurez les paramètres de conversion',
+          download: 'Étape 3 : Téléchargez vos fichiers PDF convertis',
         },
       },
     },
