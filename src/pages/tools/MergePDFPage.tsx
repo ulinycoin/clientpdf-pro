@@ -7,11 +7,15 @@ import MergeTool from '../../components/organisms/MergeTool';
 import UploadSection from '../../components/molecules/UploadSection';
 import { useFileUpload } from '../../hooks/useFileUpload';
 import { useI18n } from '../../hooks/useI18n';
+import { useDynamicSEO } from '../../hooks/useDynamicSEO';
 
 const MergePDFPage: React.FC = () => {
   const { t } = useI18n();
   const seoData = toolsSEOData.merge;
   const [toolActive, setToolActive] = useState(false);
+
+  // Dynamic SEO updates
+  useDynamicSEO('merge');
 
   // Scroll to top when component mounts
   useEffect(() => {
