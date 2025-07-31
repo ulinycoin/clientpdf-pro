@@ -1,6 +1,11 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 
+interface FAQSchemaItem {
+  question: string;
+  answer: string;
+}
+
 interface SEOHeadProps {
   title: string;
   description: string;
@@ -9,6 +14,7 @@ interface SEOHeadProps {
   ogImage?: string;
   ogType?: 'website' | 'article';
   structuredData?: object;
+  faqSchema?: FAQSchemaItem[];
   noindex?: boolean;
 }
 
@@ -20,17 +26,32 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
   ogImage = '/og-image.png',
   ogType = 'website',
   structuredData,
+  faqSchema,
   noindex = false
 }) => {
   // Ensure title includes LocalPDF branding
   const fullTitle = title.includes('LocalPDF') ? title : `${title} | LocalPDF`;
-  
+
   // Get canonical URL - use provided or current location
   const canonicalUrl = canonical || (typeof window !== 'undefined' ? window.location.href : 'https://localpdf.online');
-  
+
   // Full image URLs
   const fullOgImage = `https://localpdf.online${ogImage}`;
-  
+
+  // Generate FAQ Schema if provided
+  const faqSchemaData = faqSchema && faqSchema.length > 0 ? {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": faqSchema.map(faq => ({
+      "@type": "Question",
+      "name": faq.question,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": faq.answer.replace(/<[^>]*>/g, '') // Strip HTML tags for schema
+      }
+    }))
+  } : null;
+
   return (
     <Helmet>
       {/* Basic SEO */}
@@ -38,17 +59,17 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
       <meta name="description" content={description} />
       {keywords && <meta name="keywords" content={keywords} />}
       <meta name="author" content="LocalPDF" />
-      
+
       {/* Robots directive */}
       {noindex ? (
         <meta name="robots" content="noindex, nofollow" />
       ) : (
         <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
       )}
-      
+
       {/* Canonical URL */}
       <link rel="canonical" href={canonicalUrl} />
-      
+
       {/* Open Graph */}
       <meta property="og:type" content={ogType} />
       <meta property="og:title" content={fullTitle} />
@@ -59,7 +80,7 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
       <meta property="og:image:height" content="630" />
       <meta property="og:site_name" content="LocalPDF" />
       <meta property="og:locale" content="en_US" />
-      
+
       {/* Twitter Card */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={fullTitle} />
@@ -67,31 +88,38 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
       <meta name="twitter:image" content={fullOgImage} />
       <meta name="twitter:creator" content="@LocalPDF" />
       <meta name="twitter:site" content="@LocalPDF" />
-      
+
       {/* Additional SEO Meta Tags */}
       <meta name="language" content="English" />
       <meta name="revisit-after" content="7 days" />
       <meta name="distribution" content="global" />
       <meta name="rating" content="general" />
-      
+
       {/* Mobile Web App */}
       <meta name="mobile-web-app-capable" content="yes" />
       <meta name="apple-mobile-web-app-capable" content="yes" />
       <meta name="apple-mobile-web-app-status-bar-style" content="default" />
       <meta name="apple-mobile-web-app-title" content="LocalPDF" />
-      
+
       {/* Theme */}
       <meta name="theme-color" content="#3B82F6" />
       <meta name="msapplication-TileColor" content="#3B82F6" />
-      
+
       {/* Performance Hints */}
       <link rel="dns-prefetch" href="//localpdf.online" />
       <link rel="preconnect" href="https://localpdf.online" />
-      
+
       {/* Structured Data */}
       {structuredData && (
         <script type="application/ld+json">
           {JSON.stringify(structuredData)}
+        </script>
+      )}
+
+      {/* FAQ Schema */}
+      {faqSchemaData && (
+        <script type="application/ld+json">
+          {JSON.stringify(faqSchemaData)}
         </script>
       )}
     </Helmet>

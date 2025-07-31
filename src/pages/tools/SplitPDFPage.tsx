@@ -3,10 +3,12 @@ import { toolsSEOData } from '../../data/seoData';
 import SEOHead from '../../components/SEO/SEOHead';
 import { Header, Footer } from '../../components/organisms';
 import RelatedTools from '../../components/common/RelatedTools';
+import FAQSection from '../../components/common/FAQSection';
 import SplitTool from '../../components/organisms/SplitTool';
 import UploadSection from '../../components/molecules/UploadSection';
 import { useFileUpload } from '../../hooks/useFileUpload';
 import { useI18n } from '../../hooks/useI18n';
+import { getCombinedFAQs } from '../../data/faqData';
 import { PDFProcessingResult } from '../../types';
 import { downloadBlob, generateFilename, createZipFromBlobs } from '../../utils/fileHelpers';
 
@@ -14,6 +16,9 @@ const SplitPDFPage: React.FC = () => {
   const { t } = useI18n();
   const seoData = toolsSEOData.split;
   const [toolActive, setToolActive] = useState(false);
+
+  // Get FAQ data for SEO schema
+  const splitFAQs = getCombinedFAQs('split');
 
   // Scroll to top when component mounts
   useEffect(() => {
@@ -113,6 +118,10 @@ const SplitPDFPage: React.FC = () => {
         keywords={seoData.keywords}
         canonical={seoData.canonical}
         structuredData={seoData.structuredData}
+        faqSchema={splitFAQs.map(faq => ({
+          question: faq.question,
+          answer: faq.answer
+        }))}
       />
 
       <div className="min-h-screen bg-gradient-mesh flex flex-col">
@@ -179,39 +188,14 @@ const SplitPDFPage: React.FC = () => {
           )}
         </section>
 
-        {/* Features Section - only show when tool is not active */}
+        {/* FAQ Section - only show when tool is not active */}
         {!toolActive && (
-          <section className="mb-12">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-6">
-              {t('pages.tools.split.features.title')}
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div className="bg-white p-6 rounded-lg shadow-md">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                  {t('pages.tools.split.features.pageRanges.title')}
-                </h3>
-                <p className="text-gray-600">
-                  {t('pages.tools.split.features.pageRanges.description')}
-                </p>
-              </div>
-              <div className="bg-white p-6 rounded-lg shadow-md">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                  {t('pages.tools.split.features.batchProcessing.title')}
-                </h3>
-                <p className="text-gray-600">
-                  {t('pages.tools.split.features.batchProcessing.description')}
-                </p>
-              </div>
-              <div className="bg-white p-6 rounded-lg shadow-md">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                  {t('pages.tools.split.features.previewMode.title')}
-                </h3>
-                <p className="text-gray-600">
-                  {t('pages.tools.split.features.previewMode.description')}
-                </p>
-              </div>
-            </div>
-          </section>
+          <FAQSection
+            title="Frequently Asked Questions about PDF Splitting"
+            faqs={splitFAQs}
+            className="mb-8"
+            defaultOpen={false}
+          />
         )}
 
         {/* Related Tools - only show when tool is not active */}

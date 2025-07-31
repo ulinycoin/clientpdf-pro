@@ -3,16 +3,21 @@ import { toolsSEOData } from '../../data/seoData';
 import SEOHead from '../../components/SEO/SEOHead';
 import { Header, Footer } from '../../components/organisms';
 import RelatedTools from '../../components/common/RelatedTools';
+import FAQSection from '../../components/common/FAQSection';
 import MergeTool from '../../components/organisms/MergeTool';
 import UploadSection from '../../components/molecules/UploadSection';
 import { useFileUpload } from '../../hooks/useFileUpload';
 import { useI18n } from '../../hooks/useI18n';
 import { useDynamicSEO } from '../../hooks/useDynamicSEO';
+import { getCombinedFAQs } from '../../data/faqData';
 
 const MergePDFPage: React.FC = () => {
   const { t } = useI18n();
   const seoData = toolsSEOData.merge;
   const [toolActive, setToolActive] = useState(false);
+
+  // Get FAQ data for SEO schema
+  const mergeFAQs = getCombinedFAQs('merge');
 
   // Dynamic SEO updates
   useDynamicSEO('merge');
@@ -53,6 +58,10 @@ const MergePDFPage: React.FC = () => {
         keywords={seoData.keywords}
         canonical={seoData.canonical}
         structuredData={seoData.structuredData}
+        faqSchema={mergeFAQs.map(faq => ({
+          question: faq.question,
+          answer: faq.answer
+        }))}
       />
 
       <div className="min-h-screen bg-gradient-mesh flex flex-col">
@@ -129,78 +138,54 @@ const MergePDFPage: React.FC = () => {
           )}
         </section>
 
-        {/* Features Section - only show when tool is not active */}
+        {/* How-to Section - only show when tool is not active */}
         {!toolActive && (
-          <>
-            <section className="mb-12">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-6">
-                {t('pages.tools.merge.features.title')}
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div className="bg-white p-6 rounded-lg shadow-md">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                    {t('pages.tools.merge.features.private.title')}
-                  </h3>
-                  <p className="text-gray-600">
-                    {t('pages.tools.merge.features.private.description')}
-                  </p>
-                </div>
-                <div className="bg-white p-6 rounded-lg shadow-md">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                    {t('pages.tools.merge.features.fast.title')}
-                  </h3>
-                  <p className="text-gray-600">
-                    {t('pages.tools.merge.features.fast.description')}
-                  </p>
-                </div>
-                <div className="bg-white p-6 rounded-lg shadow-md">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                    {t('pages.tools.merge.features.free.title')}
-                  </h3>
-                  <p className="text-gray-600">
-                    {t('pages.tools.merge.features.free.description')}
-                  </p>
-                </div>
-              </div>
-            </section>
+          <section className="mb-12">
+            <h2 className="text-2xl font-semibold text-gray-900 mb-6">
+              {t('pages.tools.merge.howTo.title')}
+            </h2>
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <ol className="space-y-4">
+                <li className="flex items-start">
+                  <span className="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-semibold mr-4">
+                    1
+                  </span>
+                  <div>
+                    <h3 className="font-semibold text-gray-900">{t('pages.tools.merge.howTo.steps.upload.title')}</h3>
+                    <p className="text-gray-600">{t('pages.tools.merge.howTo.steps.upload.description')}</p>
+                  </div>
+                </li>
+                <li className="flex items-start">
+                  <span className="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-semibold mr-4">
+                    2
+                  </span>
+                  <div>
+                    <h3 className="font-semibold text-gray-900">{t('pages.tools.merge.howTo.steps.arrange.title')}</h3>
+                    <p className="text-gray-600">{t('pages.tools.merge.howTo.steps.arrange.description')}</p>
+                  </div>
+                </li>
+                <li className="flex items-start">
+                  <span className="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-semibold mr-4">
+                    3
+                  </span>
+                  <div>
+                    <h3 className="font-semibold text-gray-900">{t('pages.tools.merge.howTo.steps.download.title')}</h3>
+                    <p className="text-gray-600">{t('pages.tools.merge.howTo.steps.download.description')}</p>
+                  </div>
+                </li>
+              </ol>
+            </div>
+          </section>
+        )}
 
-            <section className="mb-12">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-6">
-                {t('pages.tools.merge.howTo.title')}
-              </h2>
-              <div className="bg-white rounded-lg shadow-md p-6">
-                <ol className="space-y-4">
-                  <li className="flex items-start">
-                    <span className="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-semibold mr-4">
-                      1
-                    </span>
-                    <div>
-                      <h3 className="font-semibold text-gray-900">{t('pages.tools.merge.howTo.steps.upload.title')}</h3>
-                      <p className="text-gray-600">{t('pages.tools.merge.howTo.steps.upload.description')}</p>
-                    </div>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-semibold mr-4">
-                      2
-                    </span>
-                    <div>
-                      <h3 className="font-semibold text-gray-900">{t('pages.tools.merge.howTo.steps.arrange.title')}</h3>
-                      <p className="text-gray-600">{t('pages.tools.merge.howTo.steps.arrange.description')}</p>
-                    </div>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-semibold mr-4">
-                      3
-                    </span>
-                    <div>
-                      <h3 className="font-semibold text-gray-900">{t('pages.tools.merge.howTo.steps.download.title')}</h3>
-                      <p className="text-gray-600">{t('pages.tools.merge.howTo.steps.download.description')}</p>
-                    </div>
-                  </li>
-                </ol>
-              </div>
-            </section>
-          </>
+        {/* FAQ Section - only show when tool is not active */}
+        {!toolActive && (
+          <FAQSection
+            title="Frequently Asked Questions about PDF Merging"
+            faqs={getCombinedFAQs('merge')}
+            className="mb-8"
+            defaultOpen={false}
+          />
         )}
 
         {/* Related Tools - only show when tool is not active */}
