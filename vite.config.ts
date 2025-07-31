@@ -91,7 +91,11 @@ function generateSitemap() {
     { url: '/pdf-to-image', priority: '0.8', changefreq: 'monthly' },
     { url: '/images-to-pdf', priority: '0.8', changefreq: 'monthly' },
     { url: '/word-to-pdf', priority: '0.8', changefreq: 'monthly' },
-    { url: '/ocr-pdf', priority: '0.8', changefreq: 'monthly' }
+    { url: '/excel-to-pdf', priority: '0.8', changefreq: 'monthly' },
+    { url: '/ocr-pdf', priority: '0.8', changefreq: 'monthly' },
+    { url: '/privacy', priority: '0.6', changefreq: 'yearly' },
+    { url: '/faq', priority: '0.7', changefreq: 'monthly' },
+    { url: '/how-to-use', priority: '0.6', changefreq: 'monthly' }
   ];
 
   return `<?xml version="1.0" encoding="UTF-8"?>

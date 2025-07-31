@@ -13,12 +13,16 @@ Allow: /extract-text-pdf
 Allow: /pdf-to-image
 Allow: /images-to-pdf
 Allow: /word-to-pdf
+Allow: /excel-to-pdf
 Allow: /ocr-pdf
 
 # Information pages
 Allow: /privacy
 Allow: /faq
-Allow: /how-to-use
+
+# Block non-indexable pages
+Disallow: /demo
+Disallow: /how-to-use
 
 # Block development and system files
 Disallow: /src/
