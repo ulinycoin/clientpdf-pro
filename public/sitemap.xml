@@ -77,6 +77,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://localpdf.online/excel-to-pdf</loc>
+    <lastmod>2025-07-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://localpdf.online/ocr-pdf</loc>
     <lastmod>2025-07-31</lastmod>
     <changefreq>monthly</changefreq>
@@ -93,6 +99,12 @@
     <lastmod>2025-07-31</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://localpdf.online/how-to-use</loc>
+    <lastmod>2025-07-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
   </url>
 
 </urlset>
