@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
-import fs from 'fs';
-import path from 'path';
+// Generate updated sitemap with correct routes
+const fs = require('fs');
+const path = require('path');
 
 const baseUrl = 'https://localpdf.online';
 const currentDate = new Date().toISOString().slice(0, 10);
@@ -22,8 +23,8 @@ const pages = [
   { url: '/excel-to-pdf', priority: '0.8', changefreq: 'monthly' },
   { url: '/ocr-pdf', priority: '0.8', changefreq: 'monthly' },
   { url: '/privacy', priority: '0.6', changefreq: 'yearly' },
-  { url: '/faq', priority: '0.7', changefreq: 'monthly' },
-  { url: '/how-to-use', priority: '0.6', changefreq: 'monthly' }
+  { url: '/faq', priority: '0.7', changefreq: 'monthly' }
+  // Исключены: /demo, /how-to-use
 ];
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
@@ -46,11 +47,11 @@ const publicPath = path.join(process.cwd(), 'public', 'sitemap.xml');
 const distPath = path.join(process.cwd(), 'dist', 'sitemap.xml');
 
 fs.writeFileSync(publicPath, sitemap);
-console.log('✅ Generated sitemap.xml in public/');
+console.log('✅ Generated corrected sitemap.xml in public/');
 
 if (fs.existsSync(path.dirname(distPath))) {
   fs.writeFileSync(distPath, sitemap);
-  console.log('✅ Generated sitemap.xml in dist/');
+  console.log('✅ Generated corrected sitemap.xml in dist/');
 }
 
-console.log(`📊 Generated sitemap with ${pages.length} pages`);
+console.log(`📊 Generated sitemap with ${pages.length} pages (including /excel-to-pdf and /how-to-use)`);

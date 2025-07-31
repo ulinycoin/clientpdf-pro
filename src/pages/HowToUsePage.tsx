@@ -10,19 +10,20 @@ const HowToUsePage: React.FC = () => {
         <title>How to Use LocalPDF - Complete Guide to Free PDF Tools</title>
         <meta name="description" content="Complete guide on how to use LocalPDF's 9 free PDF tools. Step-by-step instructions for merging, splitting, compressing, editing and converting PDFs in your browser." />
         <meta name="keywords" content="how to use LocalPDF, PDF tools guide, PDF tutorial, merge PDF tutorial, split PDF guide, compress PDF instructions" />
+        <meta name="robots" content="noindex, nofollow" />
         <link rel="canonical" href="https://localpdf.online/how-to-use" />
-        
+
         {/* Open Graph */}
         <meta property="og:title" content="How to Use LocalPDF - Complete Guide to Free PDF Tools" />
         <meta property="og:description" content="Step-by-step guide on using LocalPDF's privacy-first PDF tools. Learn to merge, split, compress and edit PDFs in your browser." />
         <meta property="og:url" content="https://localpdf.online/how-to-use" />
         <meta property="og:type" content="article" />
-        
+
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="How to Use LocalPDF - Complete Guide to Free PDF Tools" />
         <meta name="twitter:description" content="Step-by-step guide on using LocalPDF's privacy-first PDF tools." />
-        
+
         {/* Structured Data */}
         <script type="application/ld+json">
           {JSON.stringify({
@@ -38,7 +39,7 @@ const HowToUsePage: React.FC = () => {
                 "name": "PDF files to process"
               },
               {
-                "@type": "HowToSupply", 
+                "@type": "HowToSupply",
                 "name": "Modern web browser"
               }
             ],
@@ -56,7 +57,7 @@ const HowToUsePage: React.FC = () => {
                 "image": "https://localpdf.online/favicon.svg"
               },
               {
-                "@type": "HowToStep", 
+                "@type": "HowToStep",
                 "name": "Choose PDF tool",
                 "text": "Select the appropriate tool for your needs (merge, split, compress, etc.)",
                 "image": "https://localpdf.online/favicon.svg"
@@ -80,7 +81,7 @@ const HowToUsePage: React.FC = () => {
 
       <div className="min-h-screen bg-gray-50 flex flex-col">
         <Header />
-        
+
         <main className="flex-grow max-w-5xl mx-auto px-4 py-16">
           <div className="bg-white rounded-lg shadow-lg p-8">
             <header className="text-center mb-12">
@@ -95,7 +96,7 @@ const HowToUsePage: React.FC = () => {
               <h2 className="text-3xl font-semibold text-gray-800 mb-8 border-b border-gray-200 pb-3">
                 🚀 Quick Start Guide
               </h2>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
                 <div className="text-center">
                   <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -104,7 +105,7 @@ const HowToUsePage: React.FC = () => {
                   <h3 className="font-semibold text-gray-900 mb-2">1. Upload Files</h3>
                   <p className="text-sm text-gray-600">Drag & drop or click to select your PDF files</p>
                 </div>
-                
+
                 <div className="text-center">
                   <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <span className="text-green-600 text-2xl">🛠️</span>
@@ -112,7 +113,7 @@ const HowToUsePage: React.FC = () => {
                   <h3 className="font-semibold text-gray-900 mb-2">2. Choose Tool</h3>
                   <p className="text-sm text-gray-600">Select from 9 powerful PDF processing tools</p>
                 </div>
-                
+
                 <div className="text-center">
                   <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <span className="text-purple-600 text-2xl">⚙️</span>
@@ -120,7 +121,7 @@ const HowToUsePage: React.FC = () => {
                   <h3 className="font-semibold text-gray-900 mb-2">3. Configure</h3>
                   <p className="text-sm text-gray-600">Adjust settings and options as needed</p>
                 </div>
-                
+
                 <div className="text-center">
                   <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <span className="text-orange-600 text-2xl">💾</span>
@@ -136,7 +137,7 @@ const HowToUsePage: React.FC = () => {
                   <div>
                     <h3 className="font-semibold text-blue-800 mb-2">Key Benefits</h3>
                     <p className="text-blue-700">
-                      All processing happens in your browser - no uploads, no registration, no tracking. 
+                      All processing happens in your browser - no uploads, no registration, no tracking.
                       Your files never leave your device, ensuring complete privacy and security.
                     </p>
                   </div>
@@ -151,7 +152,7 @@ const HowToUsePage: React.FC = () => {
               </h2>
 
               <div className="space-y-8">
-                
+
                 {/* Merge PDFs */}
                 <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-6">
                   <div className="flex items-start">
@@ -266,7 +267,7 @@ const HowToUsePage: React.FC = () => {
               <h2 className="text-3xl font-semibold text-gray-800 mb-8 border-b border-gray-200 pb-3">
                 💡 Advanced Tips & Tricks
               </h2>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="bg-gray-50 p-6 rounded-lg">
                   <h3 className="font-semibold text-gray-800 mb-3">🚀 Performance Tips</h3>
@@ -277,7 +278,7 @@ const HowToUsePage: React.FC = () => {
                     <li>• Process very large files in smaller batches</li>
                   </ul>
                 </div>
-                
+
                 <div className="bg-gray-50 p-6 rounded-lg">
                   <h3 className="font-semibold text-gray-800 mb-3">⌨️ Keyboard Shortcuts</h3>
                   <ul className="space-y-2 text-sm text-gray-600">
@@ -287,7 +288,7 @@ const HowToUsePage: React.FC = () => {
                     <li>• <strong>Tab</strong> - Navigate interface elements</li>
                   </ul>
                 </div>
-                
+
                 <div className="bg-gray-50 p-6 rounded-lg">
                   <h3 className="font-semibold text-gray-800 mb-3">📱 Mobile Usage</h3>
                   <ul className="space-y-2 text-sm text-gray-600">
@@ -297,7 +298,7 @@ const HowToUsePage: React.FC = () => {
                     <li>• Files can be opened from cloud storage apps</li>
                   </ul>
                 </div>
-                
+
                 <div className="bg-gray-50 p-6 rounded-lg">
                   <h3 className="font-semibold text-gray-800 mb-3">🔧 Troubleshooting</h3>
                   <ul className="space-y-2 text-sm text-gray-600">
@@ -315,7 +316,7 @@ const HowToUsePage: React.FC = () => {
               <h2 className="text-3xl font-semibold text-gray-800 mb-8 border-b border-gray-200 pb-3">
                 📋 File Format Support
               </h2>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="bg-green-50 p-6 rounded-lg border border-green-200">
                   <h3 className="font-semibold text-green-800 mb-3">✅ Supported Input</h3>
@@ -327,7 +328,7 @@ const HowToUsePage: React.FC = () => {
                     <li>• Files up to 100MB</li>
                   </ul>
                 </div>
-                
+
                 <div className="bg-blue-50 p-6 rounded-lg border border-blue-200">
                   <h3 className="font-semibold text-blue-800 mb-3">📤 Output Formats</h3>
                   <ul className="space-y-1 text-sm text-blue-700">
@@ -338,7 +339,7 @@ const HowToUsePage: React.FC = () => {
                     <li>• TXT (extracted text)</li>
                   </ul>
                 </div>
-                
+
                 <div className="bg-yellow-50 p-6 rounded-lg border border-yellow-200">
                   <h3 className="font-semibold text-yellow-800 mb-3">⚠️ Limitations</h3>
                   <ul className="space-y-1 text-sm text-yellow-700">
@@ -356,7 +357,7 @@ const HowToUsePage: React.FC = () => {
               <h2 className="text-3xl font-semibold text-gray-800 mb-8 border-b border-gray-200 pb-3">
                 🔒 Privacy & Security Guide
               </h2>
-              
+
               <div className="bg-green-50 border border-green-200 rounded-lg p-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div>
@@ -369,7 +370,7 @@ const HowToUsePage: React.FC = () => {
                       <li>• Open source and transparent</li>
                     </ul>
                   </div>
-                  
+
                   <div>
                     <h3 className="font-semibold text-green-800 mb-4">❌ What LocalPDF Never Does</h3>
                     <ul className="space-y-2 text-sm text-green-700">
@@ -381,10 +382,10 @@ const HowToUsePage: React.FC = () => {
                     </ul>
                   </div>
                 </div>
-                
+
                 <div className="mt-6 p-4 bg-green-100 rounded-lg">
                   <p className="text-sm text-green-800">
-                    <strong>Perfect for confidential documents:</strong> Since all processing is local, LocalPDF is ideal for 
+                    <strong>Perfect for confidential documents:</strong> Since all processing is local, LocalPDF is ideal for
                     sensitive documents, legal files, financial records, or any confidential PDFs.
                   </p>
                 </div>
@@ -394,41 +395,41 @@ const HowToUsePage: React.FC = () => {
             {/* Need Help Section */}
             <section className="bg-gray-100 p-8 rounded-lg">
               <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">🆘 Need Additional Help?</h2>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="bg-white p-6 rounded-lg text-center">
                   <div className="text-blue-500 text-3xl mb-4">📖</div>
                   <h3 className="font-semibold text-gray-800 mb-3">Documentation</h3>
                   <p className="text-gray-600 text-sm mb-4">Comprehensive guides and tutorials for all PDF tools</p>
-                  <a 
-                    href="/faq" 
+                  <a
+                    href="/faq"
                     className="inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm"
                   >
                     View FAQ
                   </a>
                 </div>
-                
+
                 <div className="bg-white p-6 rounded-lg text-center">
                   <div className="text-green-500 text-3xl mb-4">💬</div>
                   <h3 className="font-semibold text-gray-800 mb-3">Community Support</h3>
                   <p className="text-gray-600 text-sm mb-4">Get help from the LocalPDF community</p>
-                  <a 
-                    href="https://github.com/ulinycoin/clientpdf-pro/discussions" 
-                    target="_blank" 
+                  <a
+                    href="https://github.com/ulinycoin/clientpdf-pro/discussions"
+                    target="_blank"
                     rel="noopener noreferrer"
                     className="inline-block px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors text-sm"
                   >
                     Join Discussions
                   </a>
                 </div>
-                
+
                 <div className="bg-white p-6 rounded-lg text-center">
                   <div className="text-red-500 text-3xl mb-4">🐛</div>
                   <h3 className="font-semibold text-gray-800 mb-3">Report Issues</h3>
                   <p className="text-gray-600 text-sm mb-4">Found a bug or have a suggestion?</p>
-                  <a 
-                    href="https://github.com/ulinycoin/clientpdf-pro/issues" 
-                    target="_blank" 
+                  <a
+                    href="https://github.com/ulinycoin/clientpdf-pro/issues"
+                    target="_blank"
                     rel="noopener noreferrer"
                     className="inline-block px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors text-sm"
                   >
@@ -436,10 +437,10 @@ const HowToUsePage: React.FC = () => {
                   </a>
                 </div>
               </div>
-              
+
               <div className="mt-8 text-center">
                 <p className="text-gray-600">
-                  LocalPDF is open source software maintained by the community. 
+                  LocalPDF is open source software maintained by the community.
                   Your feedback helps us improve the tools for everyone.
                 </p>
               </div>

@@ -8,6 +8,7 @@ const EnhancedPDFProcessorPage: React.FC = () => {
       <Helmet>
         <title>Enhanced PDF Processor Demo | LocalPDF</title>
         <meta name="description" content="Демонстрация Enhanced PDF Processor с Web Workers и улучшенным UX" />
+        <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-mesh py-8">
