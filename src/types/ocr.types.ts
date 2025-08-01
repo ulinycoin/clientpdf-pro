@@ -72,7 +72,7 @@ export interface OCRProcessingOptions {
 export interface ProcessedOCRResult {
   originalFile: File;
   result: OCRResult;
-  processedBlob?: Blob;
-  downloadUrl?: string;
+  processedBlob: Blob;
+  downloadUrl: string;
   processingTime: number;
 }

@@ -214,15 +214,20 @@ class OCRService {
       const pageResult = ocrResult.pages[i] || ocrResult.pages[0];
 
       // Add invisible text layer for searchability
-      pageResult.words.forEach(word => {
-        const fontSize = Math.abs(word.bbox.y1 - word.bbox.y0) * 0.8;
-        page.drawText(word.text, {
-          x: word.bbox.x0,
-          y: images[i].height - word.bbox.y1,
-          size: fontSize,
-          color: rgb(0, 0, 0),
-          opacity: 0, // Invisible text
-        });
+      const pageWords = pageResult.blocks?.flatMap(block => block.words || []) || [];
+      console.log(`🔍 Adding ${pageWords.length} words to page ${i + 1} for searchability`);
+
+      pageWords.forEach(word => {
+        if (word && word.bbox && word.text) {
+          const fontSize = Math.abs(word.bbox.y1 - word.bbox.y0) * 0.8;
+          page.drawText(word.text, {
+            x: word.bbox.x0,
+            y: images[i].height - word.bbox.y1,
+            size: fontSize > 0 ? fontSize : 12, // Ensure positive font size
+            color: rgb(0, 0, 0),
+            opacity: 0, // Invisible text
+          });
+        }
       });
 
       // Add the original image as background
@@ -263,6 +268,15 @@ class OCRService {
     try {
       const { file, options: ocrOptions, onProgress, onError } = options;
 
+      console.log('🔍 OCR Service - Starting processing:', {
+        fileName: file.name,
+        fileType: file.type,
+        language: ocrOptions.language,
+        outputFormat: ocrOptions.outputFormat,
+        hasOnError: typeof onError === 'function',
+        hasOnProgress: typeof onProgress === 'function'
+      });
+
       // Initialize progress
       onProgress?.({
         status: 'initializing',
@@ -274,40 +288,55 @@ class OCRService {
 
       // Handle different file types
       if (file.type === 'application/pdf') {
-        onProgress?.({
-          status: 'processing',
-          progress: 10,
-        });
-
-        images = await this.pdfToImages(file);
-
-        onProgress?.({
-          status: 'loading language',
-          progress: 30,
-        });
-
-        // Process each page
-        const pageResults: OCRResult[] = [];
-        for (let i = 0; i < images.length; i++) {
+        try {
           onProgress?.({
-            status: 'recognizing text',
-            progress: 30 + (i / images.length) * 60,
-            currentPage: i + 1,
-            totalPages: images.length,
+            status: 'processing',
+            progress: 10,
           });
 
-          const pageResult = await this.processImage(images[i], ocrOptions, onProgress);
-          pageResults.push(pageResult);
-        }
+          console.log('🔍 Converting PDF to images...');
+          images = await this.pdfToImages(file);
+          console.log('✅ PDF converted to images:', images.length, 'pages');
 
-        // Combine results
-        ocrResult = {
-          text: pageResults.map(r => r.text).join('\n\n'),
-          confidence: pageResults.reduce((sum, r) => sum + r.confidence, 0) / pageResults.length,
-          words: pageResults.flatMap(r => r.words),
-          blocks: pageResults.flatMap(r => r.blocks),
-          pages: pageResults.map(r => r.pages[0]),
-        };
+          onProgress?.({
+            status: 'loading language',
+            progress: 30,
+          });
+
+          // Process each page
+          const pageResults: OCRResult[] = [];
+          for (let i = 0; i < images.length; i++) {
+            try {
+              onProgress?.({
+                status: 'recognizing text',
+                progress: 30 + (i / images.length) * 60,
+                currentPage: i + 1,
+                totalPages: images.length,
+              });
+
+              console.log(`🔍 Processing page ${i + 1}/${images.length}...`);
+              const pageResult = await this.processImage(images[i], ocrOptions, onProgress);
+              pageResults.push(pageResult);
+              console.log(`✅ Page ${i + 1} processed, confidence: ${pageResult.confidence}%`);
+            } catch (pageError) {
+              console.error(`❌ Error processing page ${i + 1}:`, pageError);
+              throw pageError;
+            }
+          }
+
+          // Combine results
+          ocrResult = {
+            text: pageResults.map(r => r.text).join('\n\n'),
+            confidence: pageResults.reduce((sum, r) => sum + r.confidence, 0) / pageResults.length,
+            words: pageResults.flatMap(r => r.words),
+            blocks: pageResults.flatMap(r => r.blocks),
+            pages: pageResults.map(r => r.pages[0]),
+          };
+
+        } catch (pdfError) {
+          console.error('❌ PDF processing failed:', pdfError);
+          throw pdfError;
+        }
 
       } else if (file.type.startsWith('image/')) {
         onProgress?.({
@@ -321,6 +350,30 @@ class OCRService {
         });
 
         ocrResult = await this.processImage(file, ocrOptions, onProgress);
+
+        // For searchable PDF creation, we need to convert image to ImageData
+        if (ocrOptions.outputFormat === 'searchable-pdf') {
+          const img = new Image();
+          const imageUrl = URL.createObjectURL(file);
+
+          await new Promise<void>((resolve, reject) => {
+            img.onload = () => {
+              const canvas = document.createElement('canvas');
+              const ctx = canvas.getContext('2d')!;
+              canvas.width = img.width;
+              canvas.height = img.height;
+              ctx.drawImage(img, 0, 0);
+
+              const imageData = ctx.getImageData(0, 0, img.width, img.height);
+              images.push(imageData);
+
+              URL.revokeObjectURL(imageUrl);
+              resolve();
+            };
+            img.onerror = reject;
+            img.src = imageUrl;
+          });
+        }
       } else {
         throw new Error('Unsupported file type. Please upload a PDF or image file.');
       }
@@ -331,8 +384,8 @@ class OCRService {
       });
 
       // Generate output based on format
-      let processedBlob: Blob | undefined;
-      let downloadUrl: string | undefined;
+      let processedBlob: Blob;
+      let downloadUrl: string;
 
       switch (ocrOptions.outputFormat) {
         case 'text':
@@ -341,8 +394,22 @@ class OCRService {
           break;
 
         case 'searchable-pdf':
-          if (images.length > 0) {
-            processedBlob = await this.createSearchablePDF(file, ocrResult, images);
+          try {
+            if (images.length > 0) {
+              console.log('🔍 Creating searchable PDF with', images.length, 'images');
+              processedBlob = await this.createSearchablePDF(file, ocrResult, images);
+              downloadUrl = URL.createObjectURL(processedBlob);
+              console.log('✅ Searchable PDF created successfully');
+            } else {
+              console.warn('⚠️ No images available for searchable PDF, falling back to text');
+              // Fallback to text if no images available
+              processedBlob = new Blob([ocrResult.text], { type: 'text/plain' });
+              downloadUrl = URL.createObjectURL(processedBlob);
+            }
+          } catch (pdfCreationError) {
+            console.error('❌ Searchable PDF creation failed, falling back to text:', pdfCreationError);
+            // Fallback to text format if PDF creation fails
+            processedBlob = new Blob([ocrResult.text], { type: 'text/plain' });
             downloadUrl = URL.createObjectURL(processedBlob);
           }
           break;
@@ -368,13 +435,37 @@ class OCRService {
       };
 
     } catch (error) {
+      console.error('❌ OCR Service - Processing failed:', {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : undefined,
+        fileName: options.file?.name,
+        fileType: options.file?.type,
+        errorType: typeof error,
+        errorConstructor: error?.constructor?.name,
+        fullError: error
+      });
+
+      // Log the full error object to understand what's happening
+      console.error('Full error object:', error);
+
       const ocrError: OCRError = {
         message: error instanceof Error ? error.message : 'Unknown OCR error',
         code: 'OCR_PROCESSING_ERROR',
         details: error,
       };
 
-      onError?.(ocrError);
+      // Safely call onError if provided
+      try {
+        if (options.onError && typeof options.onError === 'function') {
+          console.log('🔧 OCR Service - Calling onError callback');
+          options.onError(ocrError);
+        } else {
+          console.warn('⚠️ OCR Service - No onError callback provided');
+        }
+      } catch (callbackError) {
+        console.error('💥 OCR Service - Error in onError callback:', callbackError);
+      }
+
       throw ocrError;
     } finally {
       this.isProcessing = false;

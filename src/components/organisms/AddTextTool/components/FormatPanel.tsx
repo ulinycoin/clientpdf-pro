@@ -77,7 +77,7 @@ const FormatPanel: React.FC<FormatPanelProps> = ({
 
   if (!selectedElement) {
     return (
-      <div className="w-64 bg-white border-r p-4">
+      <div className="w-64 bg-white border-r p-4 overflow-y-auto" style={{ maxHeight: '600px' }}>
         <h3 className="text-lg font-semibold mb-4">Format Panel</h3>
         <div className="text-gray-500 text-center py-8">
           <div className="mb-2">🎨</div>
@@ -88,7 +88,7 @@ const FormatPanel: React.FC<FormatPanelProps> = ({
   }
 
   return (
-    <div className="w-64 bg-white border-r p-4 space-y-4">
+    <div className="w-64 bg-white border-r p-4 space-y-4 overflow-y-auto" style={{ maxHeight: '600px' }}>
       <h3 className="text-lg font-semibold mb-4">Format Panel</h3>
 
       {/* Text Content */}

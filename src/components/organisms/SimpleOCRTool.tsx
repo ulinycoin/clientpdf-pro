@@ -259,11 +259,9 @@ const SimpleOCRTool: React.FC<SimpleOCRToolProps> = ({ onFileSelect }) => {
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-800">OCR Results</h3>
             <div className="flex gap-2">
-              {result.downloadUrl && (
-                <Button variant="primary" onClick={downloadResult}>
-                  Download {options.outputFormat === 'text' ? 'Text' : 'PDF'}
-                </Button>
-              )}
+              <Button variant="primary" onClick={downloadResult}>
+                Download {options.outputFormat === 'text' ? 'Text' : 'PDF'}
+              </Button>
               <Button variant="secondary" onClick={handleReset}>
                 Process Another File
               </Button>

@@ -157,7 +157,10 @@ const AddTextPDFPage: React.FC = () => {
           />
         )}
 
-        <RelatedTools currentTool="addText" className="mb-8" />
+        {/* Related Tools - only show when tool is not active */}
+        {!showTool && (
+          <RelatedTools currentTool="addText" className="mb-8" />
+        )}
       </main>
 
       <Footer />

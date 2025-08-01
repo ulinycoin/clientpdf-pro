@@ -137,7 +137,7 @@ export const useOCR = (): UseOCRReturn => {
 
     try {
       // Use simple, reliable OCR service
-      console.log('🚀 Starting OCR processing with:', options.options?.language || 'eng');
+      console.log('🚀 Starting OCR processing with:', options.language || 'eng');
 
       const processedResult = await ocrService.processOCR({
         file,
@@ -193,7 +193,7 @@ export const useOCR = (): UseOCRReturn => {
 
   // Download result
   const downloadResult = useCallback(() => {
-    if (!result?.downloadUrl) return;
+    if (!result) return;
 
     const link = document.createElement('a');
     link.href = result.downloadUrl;

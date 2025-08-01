@@ -21,28 +21,28 @@ const AddTextTool: React.FC<AddTextToolProps> = ({
     scale,
     toolMode,
     isProcessing,
-    
+
     // History
     canUndo,
     canRedo,
-    
+
     // Actions
     addTextElement,
     updateTextElement,
     deleteTextElement,
     selectElement,
     moveElement,
-    
+
     // Navigation
     goToPage,
     setTotalPages,
     setScale,
     setToolMode,
-    
+
     // History
     undo,
     redo,
-    
+
     // File operations
     savePDF,
     reset,
@@ -50,7 +50,7 @@ const AddTextTool: React.FC<AddTextToolProps> = ({
 
   // Get the first PDF file
   const pdfFile = files?.find(file => file.type === 'application/pdf') || null;
-  
+
   // Get selected element
   const selectedElement = textElements.find(el => el.id === selectedElementId) || null;
 
@@ -74,7 +74,7 @@ const AddTextTool: React.FC<AddTextToolProps> = ({
   // Handle save
   const handleSave = useCallback(async () => {
     if (!pdfFile) return;
-    
+
     try {
       const result = await savePDF(pdfFile);
       onComplete(result);
@@ -88,7 +88,7 @@ const AddTextTool: React.FC<AddTextToolProps> = ({
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       // Prevent shortcuts when typing in inputs
-      if (event.target instanceof HTMLInputElement || 
+      if (event.target instanceof HTMLInputElement ||
           event.target instanceof HTMLTextAreaElement) {
         return;
       }
@@ -163,7 +163,7 @@ const AddTextTool: React.FC<AddTextToolProps> = ({
     return (
       <div className={`bg-white rounded-lg shadow-lg p-6 ${className}`}>
         <div className="flex items-center justify-between mb-6">
-          <button 
+          <button
             onClick={onClose}
             className="p-2 hover:bg-gray-100 rounded-lg transition-colors flex items-center space-x-2"
           >
@@ -172,7 +172,7 @@ const AddTextTool: React.FC<AddTextToolProps> = ({
           </button>
           <h2 className="text-2xl font-bold text-gray-900">Add Text to PDF</h2>
         </div>
-        
+
         <div className="text-center py-12">
           <div className="mb-4">📄</div>
           <h3 className="text-lg font-medium text-gray-900 mb-2">No PDF File Selected</h3>
@@ -191,10 +191,10 @@ const AddTextTool: React.FC<AddTextToolProps> = ({
   }
 
   return (
-    <div className={`bg-white rounded-lg shadow-lg ${className}`} style={{ height: '90vh' }}>
+    <div className={`bg-white rounded-lg shadow-lg ${className} flex flex-col`} style={{ height: 'calc(100vh - 120px)', maxHeight: '800px' }}>
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b">
-        <button 
+      <div className="flex items-center justify-between p-4 border-b flex-shrink-0">
+        <button
           onClick={onClose}
           className="p-2 hover:bg-gray-100 rounded-lg transition-colors flex items-center space-x-2"
         >
@@ -208,46 +208,52 @@ const AddTextTool: React.FC<AddTextToolProps> = ({
       </div>
 
       {/* Toolbar */}
-      <Toolbar
-        currentPage={currentPage}
-        totalPages={totalPages}
-        scale={scale}
-        canUndo={canUndo}
-        canRedo={canRedo}
-        toolMode={toolMode}
-        onPageChange={goToPage}
-        onScaleChange={setScale}
-        onUndo={undo}
-        onRedo={redo}
-        onToolModeChange={setToolMode}
-        onSave={handleSave}
-      />
+      <div className="flex-shrink-0">
+        <Toolbar
+          currentPage={currentPage}
+          totalPages={totalPages}
+          scale={scale}
+          canUndo={canUndo}
+          canRedo={canRedo}
+          toolMode={toolMode}
+          onPageChange={goToPage}
+          onScaleChange={setScale}
+          onUndo={undo}
+          onRedo={redo}
+          onToolModeChange={setToolMode}
+          onSave={handleSave}
+        />
+      </div>
 
       {/* Main content */}
       <div className="flex flex-1 overflow-hidden">
         {/* Format panel */}
-        <FormatPanel
-          selectedElement={selectedElement}
-          onElementUpdate={updateTextElement}
-        />
+        <div className="flex-shrink-0">
+          <FormatPanel
+            selectedElement={selectedElement}
+            onElementUpdate={updateTextElement}
+          />
+        </div>
 
         {/* Canvas area */}
         <div className="flex-1 flex flex-col">
-          <Canvas
-            pdfFile={pdfFile}
-            currentPage={currentPage}
-            textElements={textElements}
-            selectedElementId={selectedElementId}
-            scale={scale}
-            onCanvasClick={handleCanvasClick}
-            onElementSelect={handleElementSelect}
-            onElementMove={handleElementMove}
-            onPageChange={goToPage}
-            onTotalPagesChange={setTotalPages}
-          />
-          
+          <div className="flex-1 overflow-hidden">
+            <Canvas
+              pdfFile={pdfFile}
+              currentPage={currentPage}
+              textElements={textElements}
+              selectedElementId={selectedElementId}
+              scale={scale}
+              onCanvasClick={handleCanvasClick}
+              onElementSelect={handleElementSelect}
+              onElementMove={handleElementMove}
+              onPageChange={goToPage}
+              onTotalPagesChange={setTotalPages}
+            />
+          </div>
+
           {/* Status bar */}
-          <div className="p-2 border-t bg-gray-50 text-xs text-gray-600 flex justify-between">
+          <div className="p-2 border-t bg-gray-50 text-xs text-gray-600 flex justify-between flex-shrink-0">
             <div>
               Mode: {toolMode === 'add' ? '✏️ Add Text' : '👆 Select'}
               {selectedElement && ` | Selected: "${selectedElement.text.slice(0, 20)}${selectedElement.text.length > 20 ? '...' : ''}"`}
