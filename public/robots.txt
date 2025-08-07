@@ -20,10 +20,6 @@ Allow: /ocr-pdf
 Allow: /privacy
 Allow: /faq
 
-# Block non-indexable pages
-Disallow: /demo
-Disallow: /how-to-use
-
 # Block development and system files
 Disallow: /src/
 Disallow: /node_modules/
