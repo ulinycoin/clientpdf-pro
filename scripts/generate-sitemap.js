@@ -7,7 +7,7 @@ const baseUrl = 'https://localpdf.online';
 const currentDate = new Date().toISOString().slice(0, 10);
 
 const pages = [
-  { url: '', priority: '1.0', changefreq: 'weekly' },
+  { url: '/', priority: '1.0', changefreq: 'weekly' },
   { url: '/merge-pdf', priority: '0.9', changefreq: 'monthly' },
   { url: '/split-pdf', priority: '0.9', changefreq: 'monthly' },
   { url: '/compress-pdf', priority: '0.9', changefreq: 'monthly' },
@@ -21,9 +21,8 @@ const pages = [
   { url: '/word-to-pdf', priority: '0.8', changefreq: 'monthly' },
   { url: '/excel-to-pdf', priority: '0.8', changefreq: 'monthly' },
   { url: '/ocr-pdf', priority: '0.8', changefreq: 'monthly' },
-  { url: '/privacy', priority: '0.6', changefreq: 'yearly' },
-  { url: '/faq', priority: '0.7', changefreq: 'monthly' },
-  { url: '/how-to-use', priority: '0.6', changefreq: 'monthly' }
+  { url: '/privacy', priority: '0.3', changefreq: 'yearly' },
+  { url: '/faq', priority: '0.6', changefreq: 'monthly' }
 ];
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
