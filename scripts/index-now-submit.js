@@ -94,15 +94,59 @@ async function submitToIndexNow(endpoint, urls) {
 }
 
 /**
- * Submit URLs to all IndexNow endpoints
+ * Submit sitemap to Google via ping
+ */
+async function submitToGoogle() {
+  return new Promise((resolve, reject) => {
+    const sitemapUrl = encodeURIComponent(`${SITE_URL}/sitemap.xml`);
+    const googlePingUrl = `https://www.google.com/ping?sitemap=${sitemapUrl}`;
+
+    const options = {
+      hostname: 'www.google.com',
+      port: 443,
+      path: `/ping?sitemap=${sitemapUrl}`,
+      method: 'GET',
+      headers: {
+        'User-Agent': 'LocalPDF-GooglePing-Bot/1.0'
+      }
+    };
+
+    const req = https.request(options, (res) => {
+      let data = '';
+
+      res.on('data', (chunk) => {
+        data += chunk;
+      });
+
+      res.on('end', () => {
+        console.log(`✅ Google Ping: Status ${res.statusCode}`);
+        if (res.statusCode === 200) {
+          resolve({ endpoint: 'Google', status: 'success', statusCode: res.statusCode });
+        } else {
+          resolve({ endpoint: 'Google', status: 'error', statusCode: res.statusCode, response: data });
+        }
+      });
+    });
+
+    req.on('error', (error) => {
+      console.error(`❌ Error submitting to Google:`, error.message);
+      reject({ endpoint: 'Google', status: 'error', error: error.message });
+    });
+
+    req.end();
+  });
+}
+/**
+ * Submit URLs to all IndexNow endpoints and Google
  */
 async function submitToAllEndpoints() {
-  console.log('🚀 Starting IndexNow submission...');
-  console.log(`📋 Submitting ${URLS_TO_INDEX.length} URLs to ${INDEX_NOW_ENDPOINTS.length} endpoints`);
+  console.log('🚀 Starting sitemap submission...');
+  console.log(`📋 Submitting ${URLS_TO_INDEX.length} URLs to ${INDEX_NOW_ENDPOINTS.length} IndexNow endpoints + Google`);
   console.log('');
 
   const results = [];
 
+  // Submit to IndexNow endpoints
   for (const endpoint of INDEX_NOW_ENDPOINTS) {
     try {
       console.log(`📡 Submitting to ${endpoint}...`);
@@ -114,6 +158,15 @@ async function submitToAllEndpoints() {
     } catch (error) {
       results.push(error);
     }
+  }
+
+  // Submit sitemap to Google
+  try {
+    console.log(`📡 Submitting sitemap to Google...`);
+    const googleResult = await submitToGoogle();
+    results.push(googleResult);
+  } catch (error) {
+    results.push(error);
   }
 
   return results;
@@ -182,11 +235,11 @@ async function main() {
 
     console.log('');
     console.log(`📈 Summary: ${successCount} successful, ${errorCount} errors`);
-    console.log(`🔄 ${URLS_TO_INDEX.length} URLs submitted to ${INDEX_NOW_ENDPOINTS.length} search engines`);
+    console.log(`🔄 ${URLS_TO_INDEX.length} URLs submitted to ${INDEX_NOW_ENDPOINTS.length} IndexNow endpoints + Google sitemap ping`);
 
     if (successCount > 0) {
       console.log('');
-      console.log('🎉 IndexNow submission completed!');
+      console.log('🎉 Sitemap submission completed!');
       console.log('⏰ Pages should be crawled within 24-48 hours');
       console.log('💡 Monitor Google Search Console and Bing Webmaster Tools for indexing status');
     }
