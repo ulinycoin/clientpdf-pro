@@ -1,26 +1,82 @@
 #!/usr/bin/env node
-
 /**
- * Translation validation script
- * Checks for missing translation keys across all language files
+ * Скрипт для валидации переводов
+ * Проверяет, что все ключи из типов i18n присутствуют во всех языковых файлах
  */
 
-const fs = require('fs');
-const path = require('path');
+import { readFileSync } from 'fs';
+import { join } from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
-const LOCALES_DIR = path.join(__dirname, '../src/locales');
-const TYPES_FILE = path.join(__dirname, '../src/types/i18n.ts');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-// Extract all translation keys from a nested object
-function extractKeys(obj, prefix = '') {
+const projectRoot = join(__dirname, '..');
+const localesPath = join(projectRoot, 'src', 'locales');
+const typesPath = join(projectRoot, 'src', 'types', 'i18n.ts');
+
+// Поддерживаемые языки
+const LANGUAGES = ['en', 'ru', 'de', 'fr', 'es'];
+
+// Функция для извлечения всех ключей из типов
+function extractKeysFromInterface(content) {
+  const keys = [];
+  const lines = content.split('\n');
+  let currentPath = [];
+  let braceCount = 0;
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+
+    // Пропускаем комментарии и пустые строки
+    if (trimmed.startsWith('//') || trimmed.startsWith('/*') || trimmed === '') {
+      continue;
+    }
+
+    // Ищем объявления интерфейсов и свойств
+    const interfaceMatch = trimmed.match(/interface\s+(\w+)/);
+    if (interfaceMatch) {
+      continue;
+    }
+
+    // Обрабатываем открывающие скобки
+    const openBraces = (trimmed.match(/{/g) || []).length;
+    const closeBraces = (trimmed.match(/}/g) || []).length;
+
+    // Ищем ключи свойств
+    const keyMatch = trimmed.match(/^(\w+):\s*{/);
+    if (keyMatch) {
+      currentPath.push(keyMatch[1]);
+      braceCount += openBraces - closeBraces;
+    } else {
+      const simpleKeyMatch = trimmed.match(/^(\w+):\s*string;?/);
+      if (simpleKeyMatch) {
+        const fullKey = [...currentPath, simpleKeyMatch[1]].join('.');
+        keys.push(fullKey);
+      }
+    }
+
+    // Обрабатываем закрывающие скобки
+    braceCount += openBraces - closeBraces;
+    if (braceCount < currentPath.length) {
+      currentPath = currentPath.slice(0, braceCount);
+    }
+  }
+
+  return keys;
+}
+
+// Функция для извлечения ключей из файла переводов
+function extractKeysFromTranslation(obj, prefix = '') {
   const keys = [];
 
   for (const [key, value] of Object.entries(obj)) {
     const fullKey = prefix ? `${prefix}.${key}` : key;
 
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      keys.push(...extractKeys(value, fullKey));
-    } else {
+    if (typeof value === 'object' && value !== null) {
+      keys.push(...extractKeysFromTranslation(value, fullKey));
+    } else if (typeof value === 'string') {
       keys.push(fullKey);
     }
   }
@@ -28,125 +84,114 @@ function extractKeys(obj, prefix = '') {
   return keys;
 }
 
-// Load and parse a TypeScript translation file
-function loadTranslationFile(filepath) {
+// Основная функция валидации
+async function validateTranslations() {
+  console.log('🔍 Валидация переводов...\n');
+
+  // Читаем типы
+  let typesContent;
   try {
-    const content = fs.readFileSync(filepath, 'utf-8');
-
-    // Basic extraction of the export object
-    // This is a simplified parser - for full TypeScript parsing we'd need a proper AST parser
-    const exportMatch = content.match(/export const \w+: Translations = ({[\s\S]*});/);
-    if (!exportMatch) {
-      throw new Error(`Could not find translation export in ${filepath}`);
-    }
-
-    // Use eval to parse the object (unsafe but works for our controlled case)
-    // In production, use a proper TypeScript parser
-    const objString = exportMatch[1];
-
-    // Remove TypeScript-style comments
-    const cleanObjString = objString.replace(/\/\/.*$/gm, '');
-
-    // This is a hack - we'd need proper parsing for production
-    const obj = eval('(' + cleanObjString + ')');
-
-    return obj;
+    typesContent = readFileSync(typesPath, 'utf8');
   } catch (error) {
-    console.error(`Error loading ${filepath}:`, error.message);
-    return null;
+    console.error(`❌ Ошибка чтения файла типов: ${error.message}`);
+    process.exit(1);
   }
-}
 
-// Get all language files
-function getLanguageFiles() {
-  const files = fs.readdirSync(LOCALES_DIR)
-    .filter(file => file.endsWith('.ts') && file !== 'index.ts' && file !== 'README.md')
-    .map(file => ({
-      lang: file.replace('.ts', ''),
-      path: path.join(LOCALES_DIR, file)
-    }));
+  // Извлекаем все ключи из типов
+  console.log('📋 Извлечение ключей из типов...');
+  const expectedKeys = extractKeysFromInterface(typesContent);
+  console.log(`Найдено ${expectedKeys.length} ключей в типах\n`);
 
-  return files;
-}
+  // Проверяем каждый язык
+  const results = {};
 
-// Validate translations
-function validateTranslations() {
-  console.log('🔍 Validating translations...\n');
+  for (const lang of LANGUAGES) {
+    console.log(`🌐 Проверка языка: ${lang}`);
 
-  const languageFiles = getLanguageFiles();
-  const allLanguageKeys = {};
-  const errors = [];
+    try {
+      // Динамический импорт модуля перевода
+      const modulePath = `file://${join(localesPath, `${lang}.js`)}`;
+      const module = await import(modulePath);
+      const translations = module[lang];
 
-  // Load all translation files
-  for (const { lang, path: filepath } of languageFiles) {
-    console.log(`📖 Loading ${lang} translations...`);
-    const translations = loadTranslationFile(filepath);
+      if (!translations) {
+        console.error(`❌ Переводы для ${lang} не найдены`);
+        continue;
+      }
 
-    if (translations) {
-      allLanguageKeys[lang] = extractKeys(translations);
-      console.log(`✅ Found ${allLanguageKeys[lang].length} keys in ${lang}`);
-    } else {
-      errors.push(`❌ Failed to load ${lang} translations`);
+      // Извлекаем ключи из переводов
+      const actualKeys = extractKeysFromTranslation(translations);
+
+      // Находим отсутствующие ключи
+      const missingKeys = expectedKeys.filter(key => !actualKeys.includes(key));
+      const extraKeys = actualKeys.filter(key => !expectedKeys.includes(key));
+
+      results[lang] = {
+        totalExpected: expectedKeys.length,
+        totalActual: actualKeys.length,
+        missing: missingKeys,
+        extra: extraKeys
+      };
+
+      console.log(`  ✅ Найдено: ${actualKeys.length} ключей`);
+      console.log(`  ❌ Отсутствует: ${missingKeys.length} ключей`);
+      console.log(`  ➕ Лишних: ${extraKeys.length} ключей\n`);
+
+    } catch (error) {
+      console.error(`❌ Ошибка загрузки переводов для ${lang}: ${error.message}\n`);
+      results[lang] = { error: error.message };
     }
   }
 
-  if (errors.length > 0) {
-    console.log('\n🚨 Loading errors:');
-    errors.forEach(error => console.log(error));
-    return;
+  // Выводим детальный отчет
+  console.log('\n📊 ДЕТАЛЬНЫЙ ОТЧЕТ\n');
+
+  for (const [lang, result] of Object.entries(results)) {
+    if (result.error) {
+      console.log(`${lang}: ОШИБКА - ${result.error}`);
+      continue;
+    }
+
+    console.log(`${lang}:`);
+    console.log(`  Покрытие: ${result.totalActual}/${result.totalExpected} (${Math.round(result.totalActual/result.totalExpected*100)}%)`);
+
+    if (result.missing.length > 0) {
+      console.log(`  Отсутствующие ключи:`);
+      result.missing.slice(0, 10).forEach(key => console.log(`    - ${key}`));
+      if (result.missing.length > 10) {
+        console.log(`    ... и еще ${result.missing.length - 10} ключей`);
+      }
+    }
+
+    if (result.extra.length > 0) {
+      console.log(`  Лишние ключи:`);
+      result.extra.slice(0, 5).forEach(key => console.log(`    + ${key}`));
+      if (result.extra.length > 5) {
+        console.log(`    ... и еще ${result.extra.length - 5} ключей`);
+      }
+    }
+    console.log('');
   }
 
-  // Find the reference language (usually 'en')
-  const referenceLang = 'en';
-  if (!allLanguageKeys[referenceLang]) {
-    console.error(`❌ Reference language '${referenceLang}' not found`);
-    return;
-  }
+  // Проверяем критические отсутствующие секции
+  console.log('🚨 КРИТИЧЕСКИЕ ПРОБЛЕМЫ:\n');
 
-  const referenceKeys = new Set(allLanguageKeys[referenceLang]);
-  console.log(`\n📋 Using ${referenceLang} as reference (${referenceKeys.size} keys)`);
+  for (const [lang, result] of Object.entries(results)) {
+    if (result.error) continue;
 
-  // Check each language against the reference
-  let hasIssues = false;
+    const criticalMissing = result.missing.filter(key =>
+      key.startsWith('components.') ||
+      key.includes('relatedTools') ||
+      key.includes('excelToPdf')
+    );
 
-  for (const [lang, keys] of Object.entries(allLanguageKeys)) {
-    if (lang === referenceLang) continue;
-
-    const langKeys = new Set(keys);
-    const missingKeys = [...referenceKeys].filter(key => !langKeys.has(key));
-    const extraKeys = [...langKeys].filter(key => !referenceKeys.has(key));
-
-    if (missingKeys.length > 0 || extraKeys.length > 0) {
-      hasIssues = true;
-      console.log(`\n⚠️  Issues in ${lang}:`);
-
-      if (missingKeys.length > 0) {
-        console.log(`  Missing ${missingKeys.length} keys:`);
-        missingKeys.forEach(key => console.log(`    - ${key}`));
-      }
-
-      if (extraKeys.length > 0) {
-        console.log(`  Extra ${extraKeys.length} keys:`);
-        extraKeys.forEach(key => console.log(`    + ${key}`));
-      }
-    } else {
-      console.log(`✅ ${lang}: All keys match reference`);
+    if (criticalMissing.length > 0) {
+      console.log(`${lang}: ${criticalMissing.length} критических ключей отсутствует`);
+      criticalMissing.forEach(key => console.log(`  ❌ ${key}`));
+      console.log('');
     }
   }
-
-  if (!hasIssues) {
-    console.log('\n🎉 All translations are in sync!');
-  } else {
-    console.log('\n🔧 Please fix the translation issues above.');
-  }
-
-  return !hasIssues;
 }
 
-// Run validation
-if (require.main === module) {
-  const isValid = validateTranslations();
-  process.exit(isValid ? 0 : 1);
-}
-
-module.exports = { validateTranslations };
+// Запускаем валидацию
+validateTranslations().catch(console.error);

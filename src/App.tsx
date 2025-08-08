@@ -11,7 +11,7 @@ import { setupScrollDiagnostics } from './utils/scrollDiagnostics';
 
 // Lazy load tool pages for better performance
 const MergePDFPage = React.lazy(() => import('./pages/tools/MergePDFPage'));
-const SplitPDFPage = React.lazy(() => import('./pages/tools/SplitPDFPage'));
+const SplitPDFPage = React.lazy(() => import('./pages/tools/SplitPDFPage-standardized'));
 const CompressPDFPage = React.lazy(() => import('./pages/tools/CompressPDFPage'));
 const AddTextPDFPage = React.lazy(() => import('./pages/tools/AddTextPDFPage'));
 const WatermarkPDFPage = React.lazy(() => import('./pages/tools/WatermarkPDFPage'));

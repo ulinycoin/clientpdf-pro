@@ -154,6 +154,65 @@ export const fr: Translations = {
       title: 'Extraire le texte',
       description: 'Extraire le contenu textuel des fichiers PDF',
     },
+    split: {
+      title: 'Diviser PDF',
+      description: 'Diviser des PDF en pages ou plages séparées',
+      pageTitle: 'Diviser des fichiers PDF gratuitement',
+      pageDescription: 'Divisez des fichiers PDF par pages ou plages gratuitement. Extrayez des pages spécifiques de documents PDF. Division PDF privée et sécurisée dans votre navigateur.',
+      uploadTitle: 'Téléverser un PDF à diviser',
+      buttons: {
+        startSplitting: 'Commencer la division',
+      },
+      seo: {
+        title: 'Diviser des fichiers PDF gratuit - Extraire des pages en ligne | LocalPDF',
+        description: 'Divisez des fichiers PDF par pages ou plages gratuitement. Extrayez des pages spécifiques de documents PDF. Division PDF privée et sécurisée dans votre navigateur.',
+        keywords: 'diviser pdf, extraire pages pdf, extracteur de pages pdf, diviseur pdf gratuit, séparer pdf',
+      },
+      breadcrumbs: {
+        home: 'Accueil',
+        split: 'Diviser PDF',
+      },
+      howTo: {
+        title: 'Comment diviser des fichiers PDF',
+        steps: {
+          upload: {
+            title: 'Téléverser PDF',
+            description: 'Cliquez sur "Choisir fichier" ou glissez-déposez votre document PDF dans la zone de téléversement.',
+            icon: '📤',
+          },
+          configure: {
+            title: 'Sélectionner les pages',
+            description: 'Choisissez quelles pages extraire - pages individuelles, plages de pages ou sections multiples.',
+            icon: '✂️',
+          },
+          download: {
+            title: 'Télécharger les pages',
+            description: 'Vos pages PDF divisées seront prêtes au téléchargement instantanément.',
+            icon: '📥',
+          },
+        },
+      },
+      features: {
+        title: 'Pourquoi choisir notre diviseur PDF ?',
+        privacy: {
+          title: '100% Privé',
+          description: 'Votre PDF est traité localement dans votre navigateur. Aucun téléversement vers des serveurs, confidentialité complète garantie.',
+        },
+        fast: {
+          title: 'Ultra-rapide',
+          description: 'Division PDF instantanée avec notre moteur optimisé. Aucune attente pour les téléversements ou files de traitement.',
+        },
+        quality: {
+          title: 'Haute qualité',
+          description: 'Préservez la qualité et la mise en forme PDF d\'origine. Les pages divisées conservent une clarté et structure parfaites.',
+        },
+        free: {
+          title: 'Complètement gratuit',
+          description: 'Divisez des PDFs illimités gratuitement. Aucune inscription, aucun filigrane, aucune limitation cachée.',
+        },
+      },
+      faqTitle: 'Questions fréquemment posées sur la division PDF',
+    },
     pdfToImage: {
       title: 'PDF vers Images',
       description: 'Convertir les pages PDF en PNG ou JPEG',
@@ -638,29 +697,6 @@ export const fr: Translations = {
             good: '• **70-90% :** Bonne qualité, réduction significative de la taille',
             acceptable: '• **50-70% :** Qualité acceptable, compression maximale',
             low: '• **Moins de 50% :** Perte notable de qualité, fichiers les plus petits',
-          },
-        },
-      },
-      split: {
-        pageTitle: 'Diviser des fichiers PDF gratuitement',
-        pageDescription: 'Divisez des fichiers PDF par pages ou plages gratuitement. Extrayez des pages spécifiques de documents PDF. Division PDF privée et sécurisée dans votre navigateur.',
-        uploadTitle: 'Téléverser un PDF à diviser',
-        buttons: {
-          startSplitting: 'Commencer la division',
-        },
-        features: {
-          title: 'Fonctionnalités avancées de division PDF',
-          pageRanges: {
-            title: '📄 Plages de pages',
-            description: 'Divisez par plages de pages spécifiques (ex. 1-5, 10-15) ou extrayez des pages individuelles avec précision.',
-          },
-          batchProcessing: {
-            title: '⚡ Traitement par lots',
-            description: 'Traitez plusieurs plages de pages à la fois. Créez plusieurs PDFs à partir d\'un document source efficacement.',
-          },
-          previewMode: {
-            title: '👁️ Mode aperçu',
-            description: 'Prévisualisez les pages avant de diviser pour vous assurer d\'extraire le bon contenu de votre PDF.',
           },
         },
       },
@@ -1157,6 +1193,135 @@ export const fr: Translations = {
           configure: 'Étape 2 : Sélectionnez les feuilles et configurez les paramètres de conversion',
           download: 'Étape 3 : Téléchargez vos fichiers PDF convertis',
         },
+      },
+    },
+  },
+
+  // Erreurs et messages
+  errors: {
+    fileNotSupported: 'Format de fichier non supporté',
+    fileTooLarge: 'Taille de fichier trop importante',
+    processingFailed: 'Échec du traitement',
+    noFilesSelected: 'Aucun fichier sélectionné',
+    invalidFormat: 'Format de fichier invalide',
+    networkError: 'Erreur réseau',
+    unknownError: 'Erreur inconnue',
+  },
+
+  // Pied de page
+  footer: {
+    description: 'LocalPDF - Outils PDF axés sur la confidentialité qui fonctionnent entièrement dans votre navigateur',
+    links: {
+      privacy: 'Politique de Confidentialité',
+      faq: 'FAQ',
+      github: 'GitHub',
+    },
+    copyright: '© 2024 LocalPDF. Tous droits réservés.',
+  },
+
+  // Composants
+  components: {
+    relatedTools: {
+      title: 'Outils Connexes',
+      subtitle: 'Découvrez d\'autres outils PDF utiles pour améliorer votre flux de travail',
+      viewAllTools: 'Voir Tous les Outils',
+      toolNames: {
+        merge: 'Fusionner PDF',
+        split: 'Diviser PDF',
+        compress: 'Compresser PDF',
+        addText: 'Ajouter Texte',
+        watermark: 'Filigrane',
+        rotate: 'Faire Pivoter PDF',
+        extractPages: 'Extraire Pages',
+        extractText: 'Extraire Texte',
+        pdfToImage: 'PDF vers Image',
+        'word-to-pdf': 'Word vers PDF',
+        'excel-to-pdf': 'Excel vers PDF',
+        'images-to-pdf': 'Images vers PDF',
+      },
+      toolDescriptions: {
+        merge: 'Combiner plusieurs fichiers PDF en un seul document',
+        split: 'Diviser les fichiers PDF en pages ou sections séparées',
+        compress: 'Réduire la taille du fichier PDF tout en maintenant la qualité',
+        addText: 'Ajouter du texte personnalisé, des signatures et des annotations',
+        watermark: 'Ajouter des filigranes de texte ou d\'image pour protéger les documents',
+        rotate: 'Faire pivoter les pages PDF pour corriger l\'orientation',
+        extractPages: 'Extraire des pages spécifiques des documents PDF',
+        extractText: 'Extraire le contenu textuel des fichiers PDF',
+        pdfToImage: 'Convertir les pages PDF en formats d\'image',
+      },
+      actions: {
+        merge: {
+          split: 'Besoin de diviser ? Essayez notre outil de division',
+          compress: 'Fichier fusionné volumineux ? Compressez-le maintenant',
+          extractPages: 'Extraire des pages spécifiques du PDF fusionné',
+        },
+        split: {
+          merge: 'Voulez fusionner ? Utilisez notre outil de fusion',
+          rotate: 'Faire pivoter les pages après division',
+          extractPages: 'Extraire seulement des pages spécifiques',
+        },
+        compress: {
+          merge: 'Fusionner les fichiers compressés ensemble',
+          split: 'Diviser le PDF compressé en parties',
+          watermark: 'Ajouter un filigrane au PDF compressé',
+        },
+        addText: {
+          watermark: 'Ajouter un filigrane pour une protection supplémentaire',
+          rotate: 'Faire pivoter les pages avec texte ajouté',
+          extractText: 'Extraire le texte du PDF modifié',
+        },
+        watermark: {
+          addText: 'Ajouter plus de texte au PDF avec filigrane',
+          compress: 'Compresser le fichier PDF avec filigrane',
+          rotate: 'Faire pivoter les pages avec filigrane',
+        },
+        rotate: {
+          addText: 'Ajouter du texte aux pages pivotées',
+          watermark: 'Ajouter un filigrane au PDF pivoté',
+          split: 'Diviser le PDF pivoté en parties',
+        },
+        extractPages: {
+          merge: 'Fusionner les pages extraites avec d\'autres PDFs',
+          rotate: 'Faire pivoter les pages extraites',
+          pdfToImage: 'Convertir les pages extraites en images',
+        },
+        extractText: {
+          addText: 'Ajouter du nouveau texte au PDF',
+          extractPages: 'Extraire seulement des pages spécifiques',
+          pdfToImage: 'Convertir le PDF en images',
+        },
+        pdfToImage: {
+          extractPages: 'Extraire d\'abord des pages spécifiques',
+          extractText: 'Extraire le texte avant conversion',
+          rotate: 'Faire pivoter les pages avant conversion',
+        },
+        'excel-to-pdf': {
+          'word-to-pdf': 'Convertir aussi les documents Word',
+          'images-to-pdf': 'Combiner avec des images',
+          merge: 'Fusionner avec d\'autres PDFs',
+        },
+      },
+    },
+    fileUploadZone: {
+      dropActive: 'Déposer les fichiers ici',
+      chooseFiles: 'Choisir Fichiers',
+      dragAndDrop: 'Glisser et déposer les fichiers ici',
+      maxFileSize: 'Taille max fichier: 100MB',
+      selectFiles: 'Sélectionner Fichiers',
+      trustFeatures: {
+        private: 'Privé',
+        fast: 'Rapide',
+        free: 'Gratuit',
+      },
+      trustMessage: '100% confidentialité • Pas d\'uploads • Pas de limites',
+      alerts: {
+        unsupportedFiles: 'Certains fichiers ne sont pas supportés',
+        fileLimit: 'Limite de taille de fichier dépassée',
+      },
+      accessibility: {
+        uploadArea: 'Zone de téléchargement de fichiers',
+        selectFiles: 'Sélectionner des fichiers à télécharger',
       },
     },
   },

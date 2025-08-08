@@ -127,10 +127,103 @@ export const en: Translations = {
     merge: {
       title: 'Merge PDFs',
       description: 'Combine multiple PDF files into one document',
+      pageDescription: 'Combine multiple PDF files into a single document. Drag, drop, reorder pages and merge PDFs instantly in your browser.',
+      howTo: {
+        title: 'How to Merge PDF Files',
+        steps: {
+          upload: {
+            title: 'Upload PDF Files',
+            description: 'Select multiple PDF files from your device or drag and drop them into the upload area.',
+          },
+          configure: {
+            title: 'Arrange Pages',
+            description: 'Reorder pages by dragging them. Preview how your merged PDF will look.',
+          },
+          download: {
+            title: 'Download Merged PDF',
+            description: 'Get your combined PDF file with all pages in the order you specified.',
+          },
+        },
+      },
+      features: {
+        title: 'Why choose our PDF merge tool?',
+        privacy: {
+          title: '100% Private & Secure',
+          description: 'Your files never leave your device. All processing happens locally in your browser for maximum privacy and security.',
+        },
+        fast: {
+          title: 'Lightning Fast Processing',
+          description: 'Merge PDF files instantly without waiting for uploads or downloads. Works offline too.',
+        },
+        quality: {
+          title: 'Perfect Page Order',
+          description: 'Drag and drop to arrange pages exactly how you want them in the final merged document.',
+        },
+        free: {
+          title: 'Completely Free',
+          description: 'No limits, no watermarks, no hidden fees. Merge unlimited PDF files for free, forever.',
+        },
+      },
+      faqTitle: 'Frequently Asked Questions about PDF Merging',
     },
     split: {
       title: 'Split PDF',
       description: 'Split PDF into separate pages or ranges',
+      pageTitle: 'Split PDF Files Free',
+      pageDescription: 'Split PDF files by pages or ranges for free. Extract specific pages from PDF documents. Private and secure PDF splitting in your browser.',
+      uploadTitle: 'Upload PDF to Split',
+      buttons: {
+        startSplitting: 'Start Splitting',
+      },
+      seo: {
+        title: 'Split PDF Files Free - Extract Pages Online | LocalPDF',
+        description: 'Split PDF files by pages or ranges for free. Extract specific pages from PDF documents. Private and secure PDF splitting in your browser.',
+        keywords: 'split pdf, extract pdf pages, pdf page extractor, pdf splitter free, divide pdf',
+      },
+      breadcrumbs: {
+        home: 'Home',
+        split: 'Split PDF',
+      },
+      howTo: {
+        title: 'How to Split PDF Files',
+        steps: {
+          upload: {
+            title: 'Upload PDF',
+            description: 'Click "Choose File" or drag and drop your PDF document into the upload area.',
+            icon: '📤',
+          },
+          configure: {
+            title: 'Select Pages',
+            description: 'Choose which pages to extract - individual pages, page ranges, or multiple sections.',
+            icon: '✂️',
+          },
+          download: {
+            title: 'Download Pages',
+            description: 'Your split PDF pages will be ready for download instantly.',
+            icon: '📥',
+          },
+        },
+      },
+      features: {
+        title: 'Why Choose Our PDF Splitter?',
+        privacy: {
+          title: '100% Private',
+          description: 'Your PDF is processed locally in your browser. No uploads to servers, complete privacy guaranteed.',
+        },
+        fast: {
+          title: 'Lightning Fast',
+          description: 'Instant PDF splitting with our optimized engine. No waiting for uploads or processing queues.',
+        },
+        quality: {
+          title: 'High Quality',
+          description: 'Preserve original PDF quality and formatting. Split pages maintain perfect clarity and structure.',
+        },
+        free: {
+          title: 'Completely Free',
+          description: 'Split unlimited PDFs for free. No registration, no watermarks, no hidden limitations.',
+        },
+      },
+      faqTitle: 'Frequently Asked Questions about PDF Splitting',
     },
     compress: {
       title: 'Compress PDF',
@@ -643,29 +736,6 @@ export const en: Translations = {
           },
         },
       },
-      split: {
-        pageTitle: 'Split PDF Files Free',
-        pageDescription: 'Split PDF files by pages or ranges for free. Extract specific pages from PDF documents. Private and secure PDF splitting in your browser.',
-        uploadTitle: 'Upload PDF to Split',
-        buttons: {
-          startSplitting: 'Start Splitting',
-        },
-        features: {
-          title: 'Advanced PDF Splitting Features',
-          pageRanges: {
-            title: '📄 Page Ranges',
-            description: 'Split by specific page ranges (e.g., 1-5, 10-15) or extract individual pages with precision.',
-          },
-          batchProcessing: {
-            title: '⚡ Batch Processing',
-            description: 'Process multiple page ranges at once. Create several PDFs from one source document efficiently.',
-          },
-          previewMode: {
-            title: '👁️ Preview Mode',
-            description: 'Preview pages before splitting to ensure you\'re extracting the right content from your PDF.',
-          },
-        },
-      },
       imageToPdf: {
         seo: {
           title: 'Images to PDF Converter - Free Online Tool | LocalPDF',
@@ -1159,6 +1229,135 @@ export const en: Translations = {
           configure: 'Step 2: Select sheets and configure conversion settings',
           download: 'Step 3: Download your converted PDF files',
         },
+      },
+    },
+  },
+
+  // Errors and messages
+  errors: {
+    fileNotSupported: 'File format not supported',
+    fileTooLarge: 'File size too large',
+    processingFailed: 'Processing failed',
+    noFilesSelected: 'No files selected',
+    invalidFormat: 'Invalid file format',
+    networkError: 'Network error',
+    unknownError: 'Unknown error occurred',
+  },
+
+  // Footer
+  footer: {
+    description: 'LocalPDF - Privacy-first PDF tools that work entirely in your browser',
+    links: {
+      privacy: 'Privacy Policy',
+      faq: 'FAQ',
+      github: 'GitHub',
+    },
+    copyright: '© 2024 LocalPDF. All rights reserved.',
+  },
+
+  // Components
+  components: {
+    relatedTools: {
+      title: 'Related Tools',
+      subtitle: 'Discover other helpful PDF tools to enhance your workflow',
+      viewAllTools: 'View All Tools',
+      toolNames: {
+        merge: 'Merge PDF',
+        split: 'Split PDF',
+        compress: 'Compress PDF',
+        addText: 'Add Text',
+        watermark: 'Watermark PDF',
+        rotate: 'Rotate PDF',
+        extractPages: 'Extract Pages',
+        extractText: 'Extract Text',
+        pdfToImage: 'PDF to Image',
+        'word-to-pdf': 'Word to PDF',
+        'excel-to-pdf': 'Excel to PDF',
+        'images-to-pdf': 'Images to PDF',
+      },
+      toolDescriptions: {
+        merge: 'Combine multiple PDF files into one document',
+        split: 'Split PDF files into separate pages or sections',
+        compress: 'Reduce PDF file size while maintaining quality',
+        addText: 'Add custom text, signatures, and annotations',
+        watermark: 'Add text or image watermarks to protect documents',
+        rotate: 'Rotate PDF pages to fix orientation',
+        extractPages: 'Extract specific pages from PDF documents',
+        extractText: 'Extract text content from PDF files',
+        pdfToImage: 'Convert PDF pages to image formats',
+      },
+      actions: {
+        merge: {
+          split: 'Need to split instead? Try our split tool',
+          compress: 'Large merged file? Compress it now',
+          extractPages: 'Extract specific pages from merged PDF',
+        },
+        split: {
+          merge: 'Want to merge instead? Use our merge tool',
+          rotate: 'Rotate pages after splitting',
+          extractPages: 'Extract specific pages only',
+        },
+        compress: {
+          merge: 'Merge compressed files together',
+          split: 'Split compressed PDF into parts',
+          watermark: 'Add watermark to compressed PDF',
+        },
+        addText: {
+          watermark: 'Add watermark for extra protection',
+          rotate: 'Rotate pages with added text',
+          extractText: 'Extract text from modified PDF',
+        },
+        watermark: {
+          addText: 'Add more text to watermarked PDF',
+          compress: 'Compress watermarked PDF file',
+          rotate: 'Rotate watermarked pages',
+        },
+        rotate: {
+          addText: 'Add text to rotated pages',
+          watermark: 'Add watermark to rotated PDF',
+          split: 'Split rotated PDF into parts',
+        },
+        extractPages: {
+          merge: 'Merge extracted pages with other PDFs',
+          rotate: 'Rotate extracted pages',
+          pdfToImage: 'Convert extracted pages to images',
+        },
+        extractText: {
+          addText: 'Add new text to PDF',
+          extractPages: 'Extract specific pages only',
+          pdfToImage: 'Convert PDF to images',
+        },
+        pdfToImage: {
+          extractPages: 'Extract specific pages first',
+          extractText: 'Extract text before converting',
+          rotate: 'Rotate pages before conversion',
+        },
+        'excel-to-pdf': {
+          'word-to-pdf': 'Also convert Word documents',
+          'images-to-pdf': 'Combine with images',
+          merge: 'Merge with other PDFs',
+        },
+      },
+    },
+    fileUploadZone: {
+      dropActive: 'Drop files here',
+      chooseFiles: 'Choose Files',
+      dragAndDrop: 'Drag and drop files here',
+      maxFileSize: 'Max file size: 100MB',
+      selectFiles: 'Select Files',
+      trustFeatures: {
+        private: 'Private',
+        fast: 'Fast',
+        free: 'Free',
+      },
+      trustMessage: '100% privacy • No uploads • No limits',
+      alerts: {
+        unsupportedFiles: 'Some files are not supported',
+        fileLimit: 'File size limit exceeded',
+      },
+      accessibility: {
+        uploadArea: 'File upload area',
+        selectFiles: 'Select files for upload',
       },
     },
   },
