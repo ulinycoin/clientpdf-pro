@@ -7,15 +7,15 @@ import { RelatedTools } from '../../components/common';
 import FAQSection from '../../components/common/FAQSection';
 import { toolsSEOData } from '../../data/seoData';
 import { useTranslation, useI18n } from '../../hooks/useI18n';
-import { getCombinedFAQs } from '../../data/faqData';
+import { getTranslatedFAQs } from '../../data/faqTranslations';
 
 const ExcelToPDFPage: React.FC = () => {
   const { t } = useTranslation();
   const { currentLanguage } = useI18n();
   const seoData = toolsSEOData.excelToPdf;
 
-  // Get FAQ data for SEO schema
-  const excelFAQs = getCombinedFAQs('excel-to-pdf');
+  // Get FAQ data for SEO schema and display
+  const excelFAQs = getTranslatedFAQs('excel-to-pdf', currentLanguage);
 
   // Scroll to top when component mounts
   useEffect(() => {
@@ -101,7 +101,7 @@ const ExcelToPDFPage: React.FC = () => {
 
           {/* FAQ Section */}
           <FAQSection
-            title="Frequently Asked Questions about Excel to PDF Conversion"
+            title={t('tools.excelToPdf.faqTitle')}
             faqs={excelFAQs}
             className="mb-8"
             defaultOpen={false}

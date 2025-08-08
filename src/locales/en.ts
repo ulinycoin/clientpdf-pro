@@ -223,6 +223,7 @@ export const en: Translations = {
       includeSheetNames: 'Include Sheet Names',
       convertToPdf: 'Convert to PDF',
       converting: 'Converting...',
+      faqTitle: 'Frequently Asked Questions about Excel to PDF Conversion',
     },
     ocr: {
       title: 'OCR Recognition',
@@ -328,6 +329,11 @@ export const en: Translations = {
           extractPages: 'extract more pages',
           extractText: 'get text content',
           rotate: 'rotate before converting',
+        },
+        'excel-to-pdf': {
+          'word-to-pdf': 'convert documents to PDF',
+          'images-to-pdf': 'convert images to PDF',
+          merge: 'merge multiple PDFs',
         },
       },
     },

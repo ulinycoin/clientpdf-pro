@@ -1,0 +1,172 @@
+// src/data/faqTranslations.ts
+import { FAQItem } from './faqData';
+import { SupportedLanguage } from '../types/i18n';
+
+export interface TranslatedFAQs {
+  [key: string]: {
+    [lang in SupportedLanguage]: FAQItem[];
+  };
+}
+
+export const faqTranslations: TranslatedFAQs = {
+  'excel-to-pdf': {
+    en: [
+      {
+        id: 'excel-to-pdf-privacy',
+        question: 'Is Excel to PDF conversion private and secure?',
+        answer: 'Absolutely! LocalPDF converts Excel spreadsheets to PDF entirely in your browser. Your financial data, business reports, and spreadsheets <strong>never leave your device</strong>, providing complete privacy for sensitive business information.'
+      },
+      {
+        id: 'excel-to-pdf-formatting',
+        question: 'Are Excel charts and formatting preserved in PDF?',
+        answer: 'Yes! LocalPDF preserves all Excel elements including: <ul><li><strong>Charts and graphs:</strong> All chart types maintained</li><li><strong>Cell formatting:</strong> Colors, borders, fonts</li><li><strong>Page layout:</strong> Headers, footers, margins</li><li><strong>Multiple sheets:</strong> Convert entire workbook</li></ul>'
+      },
+      {
+        id: 'excel-to-pdf-sheets',
+        question: 'Can I convert specific Excel sheets to PDF?',
+        answer: 'Yes, LocalPDF allows you to select which sheets to include in your PDF conversion. Convert individual worksheets or combine multiple sheets into a single PDF document based on your requirements.'
+      }
+    ],
+    ru: [
+      {
+        id: 'excel-to-pdf-privacy',
+        question: 'Безопасна ли конвертация Excel в PDF?',
+        answer: 'Абсолютно! LocalPDF конвертирует таблицы Excel в PDF полностью в вашем браузере. Ваши финансовые данные, бизнес-отчёты и таблицы <strong>никогда не покидают ваше устройство</strong>, обеспечивая полную конфиденциальность для чувствительной деловой информации.'
+      },
+      {
+        id: 'excel-to-pdf-formatting',
+        question: 'Сохраняются ли диаграммы и форматирование Excel в PDF?',
+        answer: 'Да! LocalPDF сохраняет все элементы Excel, включая: <ul><li><strong>Диаграммы и графики:</strong> Все типы диаграмм сохраняются</li><li><strong>Форматирование ячеек:</strong> Цвета, границы, шрифты</li><li><strong>Макет страницы:</strong> Заголовки, колонтитулы, поля</li><li><strong>Множественные листы:</strong> Конвертация всей книги</li></ul>'
+      },
+      {
+        id: 'excel-to-pdf-sheets',
+        question: 'Могу ли я конвертировать определённые листы Excel в PDF?',
+        answer: 'Да, LocalPDF позволяет вам выбирать, какие листы включить в конвертацию в PDF. Конвертируйте отдельные листы или объединяйте несколько листов в один PDF документ в соответствии с вашими требованиями.'
+      }
+    ],
+    de: [
+      {
+        id: 'excel-to-pdf-privacy',
+        question: 'Ist die Excel zu PDF Konvertierung privat und sicher?',
+        answer: 'Absolut! LocalPDF konvertiert Excel-Tabellen vollständig in Ihrem Browser zu PDF. Ihre Finanzdaten, Geschäftsberichte und Tabellen <strong>verlassen niemals Ihr Gerät</strong> und bieten vollständige Privatsphäre für sensible Geschäftsinformationen.'
+      },
+      {
+        id: 'excel-to-pdf-formatting',
+        question: 'Werden Excel-Diagramme und Formatierungen in PDF erhalten?',
+        answer: 'Ja! LocalPDF bewahrt alle Excel-Elemente einschließlich: <ul><li><strong>Diagramme und Grafiken:</strong> Alle Diagrammtypen bleiben erhalten</li><li><strong>Zellenformatierung:</strong> Farben, Rahmen, Schriftarten</li><li><strong>Seitenlayout:</strong> Kopf-, Fußzeilen, Ränder</li><li><strong>Mehrere Blätter:</strong> Ganze Arbeitsmappe konvertieren</li></ul>'
+      },
+      {
+        id: 'excel-to-pdf-sheets',
+        question: 'Kann ich spezifische Excel-Blätter zu PDF konvertieren?',
+        answer: 'Ja, LocalPDF ermöglicht es Ihnen, auszuwählen, welche Blätter in Ihre PDF-Konvertierung einbezogen werden sollen. Konvertieren Sie einzelne Arbeitsblätter oder kombinieren Sie mehrere Blätter in ein einziges PDF-Dokument basierend auf Ihren Anforderungen.'
+      }
+    ],
+    fr: [
+      {
+        id: 'excel-to-pdf-privacy',
+        question: 'La conversion Excel vers PDF est-elle privée et sécurisée ?',
+        answer: 'Absolument ! LocalPDF convertit les feuilles de calcul Excel en PDF entièrement dans votre navigateur. Vos données financières, rapports d\'affaires et feuilles de calcul <strong>ne quittent jamais votre appareil</strong>, offrant une confidentialité complète pour les informations commerciales sensibles.'
+      },
+      {
+        id: 'excel-to-pdf-formatting',
+        question: 'Les graphiques et formatages Excel sont-ils préservés en PDF ?',
+        answer: 'Oui ! LocalPDF préserve tous les éléments Excel y compris : <ul><li><strong>Graphiques et diagrammes :</strong> Tous les types de graphiques maintenus</li><li><strong>Formatage des cellules :</strong> Couleurs, bordures, polices</li><li><strong>Mise en page :</strong> En-têtes, pieds de page, marges</li><li><strong>Feuilles multiples :</strong> Convertir tout le classeur</li></ul>'
+      },
+      {
+        id: 'excel-to-pdf-sheets',
+        question: 'Puis-je convertir des feuilles Excel spécifiques en PDF ?',
+        answer: 'Oui, LocalPDF vous permet de sélectionner quelles feuilles inclure dans votre conversion PDF. Convertissez des feuilles de calcul individuelles ou combinez plusieurs feuilles en un seul document PDF selon vos besoins.'
+      }
+    ],
+    es: [
+      {
+        id: 'excel-to-pdf-privacy',
+        question: '¿Es privada y segura la conversión de Excel a PDF?',
+        answer: '¡Absolutamente! LocalPDF convierte hojas de cálculo Excel a PDF completamente en su navegador. Sus datos financieros, informes comerciales y hojas de cálculo <strong>nunca abandonan su dispositivo</strong>, proporcionando privacidad completa para información comercial sensible.'
+      },
+      {
+        id: 'excel-to-pdf-formatting',
+        question: '¿Se preservan los gráficos y formato de Excel en PDF?',
+        answer: '¡Sí! LocalPDF preserva todos los elementos de Excel incluyendo: <ul><li><strong>Gráficos y diagramas:</strong> Todos los tipos de gráficos mantenidos</li><li><strong>Formato de celdas:</strong> Colores, bordes, fuentes</li><li><strong>Diseño de página:</strong> Encabezados, pies de página, márgenes</li><li><strong>Múltiples hojas:</strong> Convertir libro completo</li></ul>'
+      },
+      {
+        id: 'excel-to-pdf-sheets',
+        question: '¿Puedo convertir hojas específicas de Excel a PDF?',
+        answer: 'Sí, LocalPDF le permite seleccionar qué hojas incluir en su conversión a PDF. Convierta hojas de trabajo individuales o combine múltiples hojas en un solo documento PDF según sus requisitos.'
+      }
+    ]
+  }
+};
+
+// General privacy FAQs in different languages
+export const generalPrivacyFAQTranslations: {
+  [lang in SupportedLanguage]: FAQItem[];
+} = {
+  en: [
+    {
+      id: 'general-privacy',
+      question: 'How does LocalPDF ensure my privacy?',
+      answer: 'LocalPDF is designed with privacy-first principles: <ul><li><strong>No uploads:</strong> All processing happens in your browser</li><li><strong>No data collection:</strong> We don\'t track or store any user data</li><li><strong>No cookies:</strong> No tracking cookies or analytics</li><li><strong>Open source:</strong> Code is transparent and auditable</li><li><strong>GDPR compliant:</strong> Meets European privacy standards</li></ul>'
+    },
+    {
+      id: 'general-vs-competitors',
+      question: 'How is LocalPDF different from other PDF tools?',
+      answer: 'LocalPDF is the only PDF tool that processes everything locally in your browser: <ul><li><strong>Other online tools:</strong> Upload files to their servers</li><li><strong>Desktop software:</strong> Requires expensive subscriptions</li><li><strong>LocalPDF:</strong> 100% private, free, and secure</li></ul>Your files never leave your device, making LocalPDF the most secure option available.'
+    }
+  ],
+  ru: [
+    {
+      id: 'general-privacy',
+      question: 'Как LocalPDF обеспечивает мою конфиденциальность?',
+      answer: 'LocalPDF разработан с принципами конфиденциальности в приоритете: <ul><li><strong>Без загрузок:</strong> Вся обработка происходит в вашем браузере</li><li><strong>Без сбора данных:</strong> Мы не отслеживаем и не храним пользовательские данные</li><li><strong>Без куки:</strong> Нет отслеживающих куки или аналитики</li><li><strong>Открытый исходный код:</strong> Код прозрачен и проверяем</li><li><strong>Соответствие GDPR:</strong> Соответствует европейским стандартам конфиденциальности</li></ul>'
+    },
+    {
+      id: 'general-vs-competitors',
+      question: 'Чем LocalPDF отличается от других PDF инструментов?',
+      answer: 'LocalPDF — единственный PDF инструмент, который обрабатывает всё локально в вашем браузере: <ul><li><strong>Другие онлайн инструменты:</strong> Загружают файлы на свои серверы</li><li><strong>Десктопное ПО:</strong> Требует дорогих подписок</li><li><strong>LocalPDF:</strong> 100% приватный, бесплатный и безопасный</li></ul>Ваши файлы никогда не покидают ваше устройство, делая LocalPDF самым безопасным доступным вариантом.'
+    }
+  ],
+  de: [
+    {
+      id: 'general-privacy',
+      question: 'Wie gewährleistet LocalPDF meine Privatsphäre?',
+      answer: 'LocalPDF ist mit datenschutzorientierten Prinzipien entwickelt: <ul><li><strong>Keine Uploads:</strong> Alle Verarbeitung erfolgt in Ihrem Browser</li><li><strong>Keine Datensammlung:</strong> Wir verfolgen oder speichern keine Benutzerdaten</li><li><strong>Keine Cookies:</strong> Keine Tracking-Cookies oder Analytics</li><li><strong>Open Source:</strong> Code ist transparent und prüfbar</li><li><strong>DSGVO-konform:</strong> Erfüllt europäische Datenschutzstandards</li></ul>'
+    },
+    {
+      id: 'general-vs-competitors',
+      question: 'Wie unterscheidet sich LocalPDF von anderen PDF-Tools?',
+      answer: 'LocalPDF ist das einzige PDF-Tool, das alles lokal in Ihrem Browser verarbeitet: <ul><li><strong>Andere Online-Tools:</strong> Laden Dateien auf ihre Server hoch</li><li><strong>Desktop-Software:</strong> Benötigt teure Abonnements</li><li><strong>LocalPDF:</strong> 100% privat, kostenlos und sicher</li></ul>Ihre Dateien verlassen niemals Ihr Gerät, was LocalPDF zur sichersten verfügbaren Option macht.'
+    }
+  ],
+  fr: [
+    {
+      id: 'general-privacy',
+      question: 'Comment LocalPDF assure-t-il ma confidentialité ?',
+      answer: 'LocalPDF est conçu avec des principes de confidentialité d\'abord : <ul><li><strong>Pas de téléchargements :</strong> Tout le traitement se fait dans votre navigateur</li><li><strong>Pas de collecte de données :</strong> Nous ne suivons ni ne stockons aucune donnée utilisateur</li><li><strong>Pas de cookies :</strong> Pas de cookies de suivi ou d\'analytiques</li><li><strong>Open source :</strong> Le code est transparent et vérifiable</li><li><strong>Conforme RGPD :</strong> Répond aux normes européennes de confidentialité</li></ul>'
+    },
+    {
+      id: 'general-vs-competitors',
+      question: 'En quoi LocalPDF diffère-t-il des autres outils PDF ?',
+      answer: 'LocalPDF est le seul outil PDF qui traite tout localement dans votre navigateur : <ul><li><strong>Autres outils en ligne :</strong> Téléchargent les fichiers sur leurs serveurs</li><li><strong>Logiciel de bureau :</strong> Nécessite des abonnements coûteux</li><li><strong>LocalPDF :</strong> 100% privé, gratuit et sécurisé</li></ul>Vos fichiers ne quittent jamais votre appareil, faisant de LocalPDF l\'option la plus sécurisée disponible.'
+    }
+  ],
+  es: [
+    {
+      id: 'general-privacy',
+      question: '¿Cómo LocalPDF asegura mi privacidad?',
+      answer: 'LocalPDF está diseñado con principios de privacidad primero: <ul><li><strong>Sin subidas:</strong> Todo el procesamiento ocurre en su navegador</li><li><strong>Sin recolección de datos:</strong> No rastreamos ni almacenamos datos de usuario</li><li><strong>Sin cookies:</strong> Sin cookies de seguimiento o analíticas</li><li><strong>Código abierto:</strong> El código es transparente y auditable</li><li><strong>Cumple GDPR:</strong> Cumple con los estándares europeos de privacidad</li></ul>'
+    },
+    {
+      id: 'general-vs-competitors',
+      question: '¿Cómo es LocalPDF diferente de otras herramientas PDF?',
+      answer: 'LocalPDF es la única herramienta PDF que procesa todo localmente en su navegador: <ul><li><strong>Otras herramientas en línea:</strong> Suben archivos a sus servidores</li><li><strong>Software de escritorio:</strong> Requiere suscripciones costosas</li><li><strong>LocalPDF:</strong> 100% privado, gratuito y seguro</li></ul>Sus archivos nunca dejan su dispositivo, haciendo de LocalPDF la opción más segura disponible.'
+    }
+  ]
+};
+
+// Get translated FAQs for a tool
+export const getTranslatedFAQs = (toolName: string, language: SupportedLanguage): FAQItem[] => {
+  const toolFAQs = faqTranslations[toolName]?.[language] || [];
+  const generalFAQs = generalPrivacyFAQTranslations[language]?.slice(0, 2) || [];
+  return [...toolFAQs, ...generalFAQs];
+};

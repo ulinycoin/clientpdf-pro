@@ -221,6 +221,7 @@ export const de: Translations = {
       includeSheetNames: 'Blattnamen einschließen',
       convertToPdf: 'Zu PDF konvertieren',
       converting: 'Konvertierung...',
+      faqTitle: 'Häufig gestellte Fragen zur Excel zu PDF Konvertierung',
     },
     ocr: {
       title: 'OCR-Erkennung',
@@ -326,6 +327,11 @@ export const de: Translations = {
           extractPages: 'mehr Seiten extrahieren',
           extractText: 'Textinhalt abrufen',
           rotate: 'vor Konvertierung drehen',
+        },
+        'excel-to-pdf': {
+          'word-to-pdf': 'Dokumente zu PDF konvertieren',
+          'images-to-pdf': 'Bilder zu PDF konvertieren',
+          merge: 'mehrere PDFs zusammenführen',
         },
       },
     },

@@ -45,6 +45,8 @@ export interface Translations {
     remove: string;
     clearAll: string;
     or: string;
+    home: string;
+    free: string;
   };
 
   // Заголовок сайта
@@ -183,6 +185,61 @@ export interface Translations {
       title: string;
       description: string;
     };
+    excelToPdf: {
+      title: string;
+      description: string;
+      pageDescription: string;
+      howToTitle: string;
+      uploadTitle: string;
+      uploadDescription: string;
+      configureTitle: string;
+      configureDescription: string;
+      downloadTitle: string;
+      downloadDescription: string;
+      featuresTitle: string;
+      privacyTitle: string;
+      privacyDescription: string;
+      fastTitle: string;
+      fastDescription: string;
+      multiFormatTitle: string;
+      multiFormatDescription: string;
+      freeTitle: string;
+      freeDescription: string;
+      chooseExcelFile: string;
+      dragDropSubtitle: string;
+      supportedFormats: string;
+      multipleSheets: string;
+      complexFormulas: string;
+      internationalText: string;
+      localProcessing: string;
+      conversionCompleted: string;
+      pdfReady: string;
+      multipleFiles: string;
+      fileInformation: string;
+      file: string;
+      size: string;
+      sheets: string;
+      languages: string;
+      multiLanguageNote: string;
+      chooseDifferentFile: string;
+      conversionSettings: string;
+      selectSheets: string;
+      selectAll: string;
+      deselectAll: string;
+      rowsColumns: string;
+      pageOrientation: string;
+      portrait: string;
+      landscape: string;
+      pageSize: string;
+      fontSize: string;
+      outputFormat: string;
+      singlePdf: string;
+      separatePdfs: string;
+      includeSheetNames: string;
+      convertToPdf: string;
+      converting: string;
+      faqTitle: string;
+    };
   };
 
   // Ошибки и сообщения
@@ -280,6 +337,11 @@ export interface Translations {
           extractPages: string;
           extractText: string;
           rotate: string;
+        };
+        "excel-to-pdf": {
+          "word-to-pdf": string;
+          "images-to-pdf": string;
+          merge: string;
         };
       };
     };

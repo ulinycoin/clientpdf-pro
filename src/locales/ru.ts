@@ -223,6 +223,7 @@ export const ru: Translations = {
       includeSheetNames: 'Включить названия листов',
       convertToPdf: 'Конвертировать в PDF',
       converting: 'Конвертация...',
+      faqTitle: 'Часто задаваемые вопросы о конвертации Excel в PDF',
     },
     ocr: {
       title: 'OCR распознавание',
@@ -328,6 +329,11 @@ export const ru: Translations = {
           extractPages: 'извлечь больше страниц',
           extractText: 'получить текстовое содержимое',
           rotate: 'повернуть перед конвертацией',
+        },
+        'excel-to-pdf': {
+          'word-to-pdf': 'конвертировать документы в PDF',
+          'images-to-pdf': 'конвертировать изображения в PDF',
+          merge: 'объединить несколько PDF',
         },
       },
     },
