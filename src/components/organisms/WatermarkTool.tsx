@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useWatermark } from '../../hooks/useWatermark';
 import { WatermarkOptions, WatermarkService } from '../../services/watermarkService';
+import { downloadBlob, generateFilename } from '../../utils/fileHelpers';
 import Button from '../atoms/Button';
 import ProgressBar from '../atoms/ProgressBar';
 
@@ -29,20 +30,21 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
     getPreview
   } = useWatermark();
 
+  const watermarkService = WatermarkService.getInstance();
+
   const [options, setOptions] = useState<WatermarkOptions>(getDefaultOptions());
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const [showPreview, setShowPreview] = useState(false);
   const [nonAsciiWarning, setNonAsciiWarning] = useState<string | null>(null);
-
-  const watermarkService = WatermarkService.getInstance();
+  const [availableFonts, setAvailableFonts] = useState(() => watermarkService.getAvailableFonts());
 
   // Validate options and check for non-ASCII characters on change
   useEffect(() => {
     const validation = validateOptions(options);
     setValidationErrors(validation.errors);
     
-    // Check for non-ASCII characters
-    const warning = watermarkService.getNonAsciiWarning(options.text);
+    // Check for non-ASCII characters with current font selection
+    const warning = watermarkService.getNonAsciiWarning(options.text, options.fontName);
     setNonAsciiWarning(warning);
   }, [options, validateOptions, watermarkService]);
 
@@ -96,12 +98,15 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
     { name: 'Bottom Right', value: 'bottom-right' }
   ];
 
-  // Get position style for preview (fix duplicate transform issue)
+  // Get position style for preview (optimized for new larger preview)
   const getPositionStyle = (position: WatermarkOptions['position'], rotation: number) => {
     const baseStyle = {
       color: `rgb(${options.color.r}, ${options.color.g}, ${options.color.b})`,
       opacity: options.opacity / 100,
-      fontSize: `${Math.max(8, options.fontSize / 4)}px`,
+      fontSize: `${Math.max(12, options.fontSize / 3)}px`, // Larger size for better visibility
+      fontWeight: 'bold',
+      userSelect: 'none' as const,
+      pointerEvents: 'none' as const,
     };
 
     switch (position) {
@@ -151,9 +156,9 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
   };
 
   return (
-    <div className={`bg-white rounded-lg shadow-lg p-6 ${className}`}>
+    <div className={`bg-white rounded-lg shadow-lg ${className}`}>
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between p-6 border-b border-gray-200">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Add Watermark</h2>
           <p className="text-gray-600 mt-1">
@@ -165,32 +170,101 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
         </Button>
       </div>
 
-      {/* File Info */}
-      {currentFile && (
-        <div className="mb-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">File to watermark:</h3>
-          
-          <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-            <div className="flex items-center space-x-3">
-              <div className="text-2xl">📄</div>
-              <div className="flex-1">
-                <p className="font-medium text-gray-900">{currentFile.name}</p>
-                <p className="text-sm text-gray-500">
-                  {formatFileSize(currentFile.size)}
-                </p>
+      {/* Main Content - Two Column Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-6 min-h-[600px]">
+        
+        {/* Left Column - Preview */}
+        <div className="space-y-6 lg:border-r lg:border-gray-200 lg:pr-6">
+          {/* File Info */}
+          {currentFile && (
+            <div>
+              <h3 className="text-lg font-medium text-gray-900 mb-4">PDF Preview</h3>
+              
+              <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 mb-6">
+                <div className="flex items-center space-x-3">
+                  <div className="text-2xl">📄</div>
+                  <div className="flex-1">
+                    <p className="font-medium text-gray-900">{currentFile.name}</p>
+                    <p className="text-sm text-gray-500">
+                      {formatFileSize(currentFile.size)}
+                    </p>
+                  </div>
+                </div>
               </div>
+            </div>
+          )}
+
+          {/* Enhanced Preview */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h4 className="text-lg font-medium text-gray-900">Watermark Preview</h4>
+              {!options.text.trim() && (
+                <span className="text-sm text-gray-500">Enter text to see preview</span>
+              )}
+            </div>
+            
+            {/* Always show preview container */}
+            <div className="bg-gray-50 rounded-lg border-2 border-dashed border-gray-300 p-6">
+              <div className="flex justify-center">
+                <div 
+                  className="relative bg-white border border-gray-300 rounded-lg shadow-sm"
+                  style={{ 
+                    width: '280px', 
+                    height: '360px',
+                    aspectRatio: '210/297' // A4 aspect ratio
+                  }}
+                >
+                  {/* Page representation */}
+                  <div className="absolute inset-2 border border-gray-100 rounded">
+                    {/* Grid pattern to simulate page content */}
+                    <div className="absolute inset-4 opacity-20">
+                      {Array.from({ length: 20 }, (_, i) => (
+                        <div 
+                          key={i}
+                          className="h-2 bg-gray-200 rounded mb-2"
+                          style={{ width: `${Math.random() * 60 + 40}%` }}
+                        />
+                      ))}
+                    </div>
+                    
+                    {/* Watermark overlay */}
+                    {options.text.trim() && (
+                      <div
+                        className="absolute pointer-events-none select-none font-bold"
+                        style={getPositionStyle(options.position, options.rotation)}
+                      >
+                        {options.text}
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* Page label */}
+                  <div className="absolute -bottom-6 left-0 text-xs text-gray-500">
+                    Page 1
+                  </div>
+                </div>
+              </div>
+              
+              {options.text.trim() ? (
+                <p className="text-xs text-gray-500 mt-4 text-center">
+                  Live preview of watermark placement and styling
+                </p>
+              ) : (
+                <p className="text-sm text-gray-400 mt-4 text-center">
+                  Preview will appear when you enter watermark text
+                </p>
+              )}
             </div>
           </div>
         </div>
-      )}
 
-      {/* Watermark Settings */}
-      <div className="mb-6">
-        <h3 className="text-lg font-medium text-gray-900 mb-4">Watermark Settings:</h3>
+        {/* Right Column - Settings */}
+        <div className="space-y-6 lg:pl-2">
+          <h3 className="text-lg font-medium text-gray-900">Watermark Settings</h3>
         
-        <div className="space-y-6">
-          {/* Watermark Text */}
-          <div>
+          <div className="space-y-6">
+            {/* Watermark Text */}
+            <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Watermark Text *
             </label>
@@ -209,21 +283,42 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
             
             {/* Non-ASCII Character Warning */}
             {nonAsciiWarning && (
-              <div className="mt-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                 <div className="flex items-start">
-                  <div className="text-yellow-400 mr-2 mt-0.5">⚠️</div>
+                  <div className="text-blue-400 mr-2 mt-0.5">💡</div>
                   <div>
-                    <h4 className="text-yellow-800 font-medium text-sm">Character Conversion Notice</h4>
-                    <p className="text-yellow-700 text-sm mt-1">
+                    <h4 className="text-blue-800 font-medium text-sm">Font Recommendation</h4>
+                    <p className="text-blue-700 text-sm mt-1">
                       {nonAsciiWarning}
-                    </p>
-                    <p className="text-yellow-700 text-xs mt-1">
-                      For example: "с" will become "s", "А" will become "A"
                     </p>
                   </div>
                 </div>
               </div>
             )}
+          </div>
+
+          {/* Font Selection */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Font Family
+            </label>
+            <select
+              value={options.fontName || 'Helvetica'}
+              onChange={(e) => setOptions(prev => ({ ...prev, fontName: e.target.value }))}
+              disabled={isProcessing}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+            >
+              {availableFonts.map((font) => (
+                <option key={font.name} value={font.name}>
+                  {font.displayName} {font.supportsCyrillic ? '(Supports Cyrillic)' : ''}
+                </option>
+              ))}
+            </select>
+            <p className="text-xs text-gray-500 mt-1">
+              {watermarkService.fontSupportsText(options.fontName || 'Helvetica', options.text) 
+                ? '✅ This font supports your text' 
+                : '⚠️ This font may not support all characters in your text'}
+            </p>
           </div>
 
           {/* Font Size */}
@@ -345,42 +440,13 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
               ))}
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* Preview Button */}
-      <div className="mb-6">
-        <Button
-          variant="outline"
-          onClick={() => setShowPreview(!showPreview)}
-          disabled={isProcessing || !options.text.trim()}
-          className="w-full"
-        >
-          {showPreview ? 'Hide Preview' : 'Show Preview'}
-        </Button>
-      </div>
-
-      {/* Preview */}
-      {showPreview && options.text.trim() && (
-        <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
-          <h4 className="text-sm font-medium text-gray-900 mb-3">Preview:</h4>
-          <div className="relative bg-white border border-gray-300 rounded" style={{ height: '200px', width: '150px' }}>
-            <div
-              className="absolute pointer-events-none"
-              style={getPositionStyle(options.position, options.rotation)}
-            >
-              {options.text}
-            </div>
           </div>
-          <p className="text-xs text-gray-500 mt-2">
-            This is a simplified preview. Actual watermark will be properly scaled for your PDF.
-          </p>
         </div>
-      )}
+      </div>
 
       {/* Progress */}
       {isProcessing && (
-        <div className="mb-6">
+        <div className="px-6 mb-6">
           <ProgressBar
             value={progress}
             className="mb-2"
@@ -394,7 +460,7 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
 
       {/* Errors */}
       {(error || validationErrors.length > 0) && (
-        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+        <div className="mx-6 mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
           <div className="flex items-start">
             <div className="text-red-400 mr-2 mt-0.5">⚠️</div>
             <div>
@@ -409,7 +475,7 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
       )}
 
       {/* Info Box */}
-      <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+      <div className="mx-6 mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
         <div className="flex items-start">
           <div className="text-blue-400 mr-2 mt-0.5">ℹ️</div>
           <div>
@@ -422,23 +488,56 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
         </div>
       </div>
 
+      {/* Success Result */}
+      {result && result.success && result.data && (
+        <div className="mx-6 mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+          <div className="flex items-start">
+            <div className="text-green-400 mr-2 mt-0.5">✅</div>
+            <div className="flex-1">
+              <h4 className="text-green-800 font-medium">Watermark Added Successfully!</h4>
+              <p className="text-green-700 text-sm mt-1">
+                Your watermarked PDF has been downloaded automatically.
+              </p>
+              <div className="mt-3">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    const filename = generateFilename(
+                      currentFile?.name || 'watermarked',
+                      'watermarked',
+                      'pdf'
+                    );
+                    downloadBlob(result.data!, filename);
+                  }}
+                  className="text-green-700 border-green-300 hover:bg-green-100"
+                >
+                  📥 Download Again
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Actions */}
-      <div className="flex justify-end space-x-3">
+      <div className="flex justify-end space-x-3 px-6 pb-6 border-t border-gray-200 pt-6">
         <Button
           variant="outline"
           onClick={onClose}
           disabled={isProcessing}
         >
-          Cancel
+          {result && result.success ? 'Process Another File' : 'Cancel'}
         </Button>
-        <Button
-          variant="primary"
-          onClick={handleAddWatermark}
-          disabled={files.length === 0 || isProcessing || validationErrors.length > 0 || !options.text.trim()}
-          loading={isProcessing}
-        >
-          {isProcessing ? 'Adding Watermark...' : 'Add Watermark'}
-        </Button>
+        {(!result || !result.success) && (
+          <Button
+            variant="primary"
+            onClick={handleAddWatermark}
+            disabled={files.length === 0 || isProcessing || validationErrors.length > 0 || !options.text.trim()}
+            loading={isProcessing}
+          >
+            {isProcessing ? 'Adding Watermark...' : 'Add Watermark'}
+          </Button>
+        )}
       </div>
     </div>
   );

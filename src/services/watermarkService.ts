@@ -1,5 +1,7 @@
 import { PDFDocument, rgb, StandardFonts, degrees } from 'pdf-lib';
+import fontkit from '@pdf-lib/fontkit';
 import { PDFProcessingResult } from '../types';
+import { WatermarkFontManager } from './watermarkFontManager';
 
 export interface WatermarkOptions {
   text: string;
@@ -8,10 +10,16 @@ export interface WatermarkOptions {
   rotation: number;
   position: 'center' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
   color: { r: number; g: number; b: number };
+  fontName?: string; // New optional font selection
 }
 
 export class WatermarkService {
   private static instance: WatermarkService;
+  private fontManager: WatermarkFontManager;
+
+  constructor() {
+    this.fontManager = WatermarkFontManager.getInstance();
+  }
 
   static getInstance(): WatermarkService {
     if (!this.instance) {
@@ -46,18 +54,19 @@ export class WatermarkService {
       // Load PDF
       const arrayBuffer = await file.arrayBuffer();
       const pdfDoc = await PDFDocument.load(arrayBuffer);
+      
+      // Register fontkit for custom font support
+      pdfDoc.registerFontkit(fontkit);
 
       onProgress?.(40);
 
-      // Load font with Unicode support
-      let font;
-      try {
-        // Try to use a font that supports more characters
-        font = await pdfDoc.embedFont(StandardFonts.Helvetica);
-      } catch (fontError) {
-        console.warn('[WatermarkService] Font loading failed, using fallback');
-        font = await pdfDoc.embedFont(StandardFonts.Helvetica);
-      }
+      // Determine best font based on text and user selection
+      const selectedFontName = options.fontName || this.fontManager.getBestFont(options.text);
+      
+      // Load font with proper Unicode support
+      const fontResult = await this.fontManager.loadFont(pdfDoc, selectedFontName, options.text);
+      const font = fontResult.font;
+      const supportsCyrillic = fontResult.supportsCyrillic;
 
       onProgress?.(50);
 
@@ -70,21 +79,21 @@ export class WatermarkService {
         const page = pages[i];
         const { width, height } = page.getSize();
 
-        // Calculate position with safe text handling
+        // Use original text if font supports it, otherwise sanitize
+        const textToRender = supportsCyrillic ? options.text : this.sanitizeText(options.text);
+
+        // Calculate position using the actual text that will be rendered
         const position = this.calculatePosition(
           options.position,
           width,
           height,
-          options.text,
+          textToRender, // Use the same text that will be rendered
           options.fontSize,
           font
         );
 
-        // Sanitize text for pdf-lib compatibility
-        const sanitizedText = this.sanitizeText(options.text);
-
         // Draw watermark with corrected rotation
-        page.drawText(sanitizedText, {
+        page.drawText(textToRender, {
           x: position.x,
           y: position.y,
           size: options.fontSize,
@@ -182,9 +191,8 @@ export class WatermarkService {
     font: any
   ): { x: number; y: number } {
     try {
-      // Use sanitized text for width calculation
-      const sanitizedText = this.sanitizeText(text);
-      const textWidth = font.widthOfTextAtSize(sanitizedText, fontSize);
+      // Use the provided text as-is (it's already been processed by the caller)
+      const textWidth = font.widthOfTextAtSize(text, fontSize);
       const textHeight = fontSize;
 
       switch (position) {
@@ -266,7 +274,8 @@ export class WatermarkService {
       opacity: 30,
       rotation: 45,
       position: 'center',
-      color: { r: 128, g: 128, b: 128 }
+      color: { r: 128, g: 128, b: 128 },
+      fontName: 'Helvetica' // Default font
     };
   }
 
@@ -305,11 +314,38 @@ export class WatermarkService {
     return /[^\x00-\x7F]/.test(text);
   }
 
-  // Get warning message for non-ASCII text
-  getNonAsciiWarning(text: string): string | null {
-    if (this.hasNonAsciiCharacters(text)) {
-      return 'Your text contains non-ASCII characters that will be transliterated to ASCII equivalents for PDF compatibility.';
+  // Get available fonts
+  getAvailableFonts() {
+    return this.fontManager.getAvailableFonts();
+  }
+
+  // Get font recommendations for text
+  getFontRecommendations(text: string) {
+    return this.fontManager.getFontRecommendations(text);
+  }
+
+  // Check if font supports text
+  fontSupportsText(fontName: string, text: string): boolean {
+    return this.fontManager.fontSupportsText(fontName, text);
+  }
+
+  // Get warning message for non-ASCII text (updated logic)
+  getNonAsciiWarning(text: string, fontName?: string): string | null {
+    if (!text) return null;
+    
+    const selectedFont = fontName || this.fontManager.getBestFont(text);
+    const supportsText = this.fontManager.fontSupportsText(selectedFont, text);
+    
+    // If font supports the text, no warning needed
+    if (supportsText) {
+      return null;
     }
+
+    // Check for non-ASCII characters
+    if (this.hasNonAsciiCharacters(text)) {
+      return 'Select a font that supports these characters or they will be transliterated.';
+    }
+    
     return null;
   }
 }

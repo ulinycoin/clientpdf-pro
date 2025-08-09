@@ -35,25 +35,19 @@ const SimpleOCRTool: React.FC<SimpleOCRToolProps> = ({ onFileSelect }) => {
 
       // Простое правило: если это изображение, автоматически ставим русский
       if (file.type.startsWith('image/')) {
-        console.log('🖼️ Image detected - setting Russian as default language');
         updateOptions({ language: 'rus' });
       } else {
-        console.log('📄 PDF detected - keeping English as default');
         updateOptions({ language: 'eng' });
       }
     }
   };
 
   const handleLanguageChange = (language: string) => {
-    console.log('🔄 User changed language to:', language);
     updateOptions({ language });
   };
 
   const handleProcess = async () => {
     if (!selectedFile) return;
-
-    console.log('🚀 Starting OCR with language:', options.language);
-    console.log('📄 File:', selectedFile.name, 'Type:', selectedFile.type);
 
     await processFile(selectedFile);
   };
@@ -70,14 +64,15 @@ const SimpleOCRTool: React.FC<SimpleOCRToolProps> = ({ onFileSelect }) => {
     <div className="max-w-4xl mx-auto">
       {/* Upload Section */}
       {!selectedFile && (
-        <div className="bg-white rounded-lg shadow-lg p-8 mb-6">
-          <FileUploadZone
-            onFilesSelected={handleFileSelect}
-            accept="application/pdf,image/*"
-            acceptedTypes={['application/pdf', 'image/*']}
-            maxSize={50 * 1024 * 1024}
-            multiple={false}
-          >
+        <div className="max-w-2xl mx-auto">
+          <div className="bg-white rounded-lg shadow-lg p-8 mb-6">
+            <FileUploadZone
+              onFilesSelected={handleFileSelect}
+              accept="application/pdf,image/*"
+              acceptedTypes={['application/pdf', 'image/*']}
+              maxSize={50 * 1024 * 1024}
+              multiple={false}
+            >
             <div className="text-center">
               <div className="text-6xl mb-4">📄</div>
               <h3 className="text-xl font-semibold text-gray-700 mb-2">
@@ -90,7 +85,8 @@ const SimpleOCRTool: React.FC<SimpleOCRToolProps> = ({ onFileSelect }) => {
                 Supports PDF, JPG, PNG, WebP up to 50MB
               </p>
             </div>
-          </FileUploadZone>
+            </FileUploadZone>
+          </div>
         </div>
       )}
 

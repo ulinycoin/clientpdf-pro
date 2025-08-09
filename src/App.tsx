@@ -4,10 +4,6 @@ import { HelmetProvider } from 'react-helmet-async';
 import { Analytics } from '@vercel/analytics/react';
 import { I18nProvider } from './hooks/useI18n';
 import { HomePage, PrivacyPage, FAQPage, HowToUsePage, NotFoundPage } from './pages';
-import Breadcrumbs from './components/common/Breadcrumbs';
-
-// Import scroll diagnostics for development
-import { setupScrollDiagnostics } from './utils/scrollDiagnostics';
 
 // Lazy load tool pages for better performance
 const MergePDFPage = React.lazy(() => import('./pages/tools/MergePDFPage'));
@@ -23,7 +19,6 @@ const ImageToPDFPage = React.lazy(() => import('./pages/tools/ImageToPDFPage'));
 const WordToPDFPage = React.lazy(() => import('./pages/tools/WordToPDFPage'));
 const ExcelToPDFPage = React.lazy(() => import('./pages/tools/ExcelToPDFPage'));
 const OCRPDFPage = React.lazy(() => import('./pages/tools/OCRPDFPage'));
-const EnhancedPDFProcessorPage = React.lazy(() => import('./pages/EnhancedPDFProcessorPage'));
 
 // Loading component
 const LoadingSpinner: React.FC = () => {
@@ -39,13 +34,6 @@ const LoadingSpinner: React.FC = () => {
 };
 
 function App() {
-  // Setup scroll diagnostics in development
-  React.useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
-      setupScrollDiagnostics();
-    }
-  }, []);
-
   return (
     <HelmetProvider>
       <I18nProvider>
@@ -77,8 +65,6 @@ function App() {
                 <Route path="/excel-to-pdf" element={<ExcelToPDFPage />} />
                 <Route path="/ocr-pdf" element={<OCRPDFPage />} />
 
-                {/* Demo page */}
-                <Route path="/demo" element={<EnhancedPDFProcessorPage />} />
 
                 {/* Information pages */}
                 <Route path="/privacy" element={<PrivacyPage />} />

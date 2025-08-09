@@ -21,7 +21,8 @@ const Button: React.FC<ButtonProps> = memo(({
     secondary: 'bg-white border border-secondary-200 text-secondary-700 shadow-soft hover:bg-secondary-50 hover:border-secondary-300 hover:scale-[1.01]',
     outline: 'border border-secondary-300 text-secondary-700 hover:bg-secondary-50 hover:border-blue-300 hover:text-blue-700 focus-visible:ring-secondary-500 transition-all duration-200',
     ghost: 'text-secondary-600 hover:bg-secondary-100 hover:text-secondary-900 hover:scale-[1.02]',
-    danger: 'bg-gradient-to-r from-red-500 to-red-600 text-white shadow-soft hover:scale-[1.02] hover:shadow-medium hover:from-red-600 hover:to-red-700'
+    danger: 'bg-gradient-to-r from-red-500 to-red-600 text-white shadow-soft hover:scale-[1.02] hover:shadow-medium hover:from-red-600 hover:to-red-700',
+    success: 'bg-gradient-to-r from-green-500 to-green-600 text-white shadow-soft hover:scale-[1.02] hover:shadow-medium hover:from-green-600 hover:to-green-700'
   } as const;
 
   // Touch-оптимизированные размеры

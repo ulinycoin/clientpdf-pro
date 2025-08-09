@@ -46,11 +46,11 @@ export default defineConfig({
 
           // PDF processing (split large libraries)
           'pdf-lib-vendor': ['pdf-lib'],
-          'jspdf-vendor': ['jspdf', 'jspdf-autotable'],
+          'jspdf-vendor': ['jspdf'],
           'pdfjs-vendor': ['pdfjs-dist'],
 
           // Heavy processing tools
-          'word-vendor': ['mammoth', 'html2canvas'],
+          'word-vendor': ['mammoth'],
           'ocr-vendor': ['tesseract.js'],
           'excel-vendor': ['xlsx'],
 
@@ -69,7 +69,7 @@ export default defineConfig({
     include: [
       'react', 'react-dom', 'react-router-dom', 'react-helmet-async',
       'pdf-lib', 'jspdf', 'pdfjs-dist', 'lucide-react',
-      'mammoth', 'html2canvas', 'tesseract.js'
+      'mammoth', 'tesseract.js'
     ]
   }
 });

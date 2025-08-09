@@ -25,6 +25,8 @@ export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items, className = '' 
 
     if (pathSegments.length > 0) {
       const currentPath = pathSegments[0];
+      
+      if (!currentPath) return breadcrumbs;
 
       // Tool names mapping for better UX
       const toolLabels: Record<string, string> = {
@@ -44,9 +46,10 @@ export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items, className = '' 
         'how-to-use': 'How to Use'
       };
 
-      if (toolLabels[currentPath]) {
+      const toolLabel = toolLabels[currentPath];
+      if (toolLabel) {
         breadcrumbs.push({
-          label: toolLabels[currentPath],
+          label: toolLabel,
           current: true
         });
       } else {

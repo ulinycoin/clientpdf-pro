@@ -4,13 +4,13 @@
  */
 import React from 'react';
 import { StandardToolPageTemplate } from '../../utils/StandardToolPageTemplate';
-import SplitPDFToolWrapper from '../../components/organisms/SplitPDFToolWrapper';
+import SplitTool from '../../components/organisms/SplitTool';
 
 const SplitPDFPageStandardized: React.FC = () => {
   return (
     <StandardToolPageTemplate
       toolKey="split"
-      ToolComponent={SplitPDFToolWrapper}
+      ToolComponent={SplitTool}
     />
   );
 };
