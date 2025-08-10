@@ -1362,3 +1362,4 @@ export const en: Translations = {
     },
   },
 };
+export default en;

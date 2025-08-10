@@ -126,10 +126,6 @@ export const de: Translations = {
       title: 'PDFs zusammenführen',
       description: 'Mehrere PDF-Dateien zu einem Dokument kombinieren',
     },
-    split: {
-      title: 'PDF aufteilen',
-      description: 'PDF in separate Seiten oder Bereiche aufteilen',
-    },
     compress: {
       title: 'PDF komprimieren',
       description: 'PDF-Dateigröße reduzieren bei gleichbleibender Qualität',
@@ -1197,132 +1193,7 @@ export const de: Translations = {
     },
   },
 
-  // Fehler und Nachrichten
-  errors: {
-    fileNotSupported: 'Dateiformat nicht unterstützt',
-    fileTooLarge: 'Dateigröße zu groß',
-    processingFailed: 'Verarbeitung fehlgeschlagen',
-    noFilesSelected: 'Keine Dateien ausgewählt',
-    invalidFormat: 'Ungültiges Dateiformat',
-    networkError: 'Netzwerkfehler',
-    unknownError: 'Unbekannter Fehler aufgetreten',
-  },
 
-  // Fußzeile
-  footer: {
-    description: 'LocalPDF - Datenschutzorientierte PDF-Tools, die vollständig in Ihrem Browser funktionieren',
-    links: {
-      privacy: 'Datenschutzrichtlinie',
-      faq: 'FAQ',
-      github: 'GitHub',
-    },
-    copyright: '© 2024 LocalPDF. Alle Rechte vorbehalten.',
-  },
-
-  // Komponenten
-  components: {
-    relatedTools: {
-      title: 'Verwandte Tools',
-      subtitle: 'Entdecken Sie andere hilfreiche PDF-Tools zur Verbesserung Ihres Workflows',
-      viewAllTools: 'Alle Tools Anzeigen',
-      toolNames: {
-        merge: 'PDF Zusammenführen',
-        split: 'PDF Teilen',
-        compress: 'PDF Komprimieren',
-        addText: 'Text Hinzufügen',
-        watermark: 'Wasserzeichen',
-        rotate: 'PDF Drehen',
-        extractPages: 'Seiten Extrahieren',
-        extractText: 'Text Extrahieren',
-        pdfToImage: 'PDF zu Bild',
-        'word-to-pdf': 'Word zu PDF',
-        'excel-to-pdf': 'Excel zu PDF',
-        'images-to-pdf': 'Bilder zu PDF',
-      },
-      toolDescriptions: {
-        merge: 'Mehrere PDF-Dateien zu einem Dokument zusammenführen',
-        split: 'PDF-Dateien in separate Seiten oder Abschnitte aufteilen',
-        compress: 'PDF-Dateigröße reduzieren bei gleichbleibendem Qualität',
-        addText: 'Benutzerdefinierten Text, Signaturen und Anmerkungen hinzufügen',
-        watermark: 'Text- oder Bildwasserzeichen zum Schutz von Dokumenten hinzufügen',
-        rotate: 'PDF-Seiten drehen um Ausrichtung zu korrigieren',
-        extractPages: 'Bestimmte Seiten aus PDF-Dokumenten extrahieren',
-        extractText: 'Textinhalt aus PDF-Dateien extrahieren',
-        pdfToImage: 'PDF-Seiten in Bildformate konvertieren',
-      },
-      actions: {
-        merge: {
-          split: 'Müssen teilen? Probieren Sie unser Teilungs-Tool',
-          compress: 'Große zusammengeführte Datei? Komprimieren Sie jetzt',
-          extractPages: 'Bestimmte Seiten aus zusammengeführter PDF extrahieren',
-        },
-        split: {
-          merge: 'Möchten zusammenführen? Nutzen Sie unser Zusammenführungs-Tool',
-          rotate: 'Seiten nach dem Teilen drehen',
-          extractPages: 'Nur bestimmte Seiten extrahieren',
-        },
-        compress: {
-          merge: 'Komprimierte Dateien zusammenführen',
-          split: 'Komprimierte PDF in Teile aufteilen',
-          watermark: 'Wasserzeichen zu komprimierter PDF hinzufügen',
-        },
-        addText: {
-          watermark: 'Wasserzeichen für zusätzlichen Schutz hinzufügen',
-          rotate: 'Seiten mit hinzugefügtem Text drehen',
-          extractText: 'Text aus geänderter PDF extrahieren',
-        },
-        watermark: {
-          addText: 'Mehr Text zu PDF mit Wasserzeichen hinzufügen',
-          compress: 'PDF-Datei mit Wasserzeichen komprimieren',
-          rotate: 'Seiten mit Wasserzeichen drehen',
-        },
-        rotate: {
-          addText: 'Text zu gedrehten Seiten hinzufügen',
-          watermark: 'Wasserzeichen zu gedrehter PDF hinzufügen',
-          split: 'Gedrehte PDF in Teile aufteilen',
-        },
-        extractPages: {
-          merge: 'Extrahierte Seiten mit anderen PDFs zusammenführen',
-          rotate: 'Extrahierte Seiten drehen',
-          pdfToImage: 'Extrahierte Seiten zu Bildern konvertieren',
-        },
-        extractText: {
-          addText: 'Neuen Text zu PDF hinzufügen',
-          extractPages: 'Nur bestimmte Seiten extrahieren',
-          pdfToImage: 'PDF zu Bildern konvertieren',
-        },
-        pdfToImage: {
-          extractPages: 'Zuerst bestimmte Seiten extrahieren',
-          extractText: 'Text vor Konvertierung extrahieren',
-          rotate: 'Seiten vor Konvertierung drehen',
-        },
-        'excel-to-pdf': {
-          'word-to-pdf': 'Auch Word-Dokumente konvertieren',
-          'images-to-pdf': 'Mit Bildern kombinieren',
-          merge: 'Mit anderen PDFs zusammenführen',
-        },
-      },
-    },
-    fileUploadZone: {
-      dropActive: 'Dateien hier ablegen',
-      chooseFiles: 'Dateien Auswählen',
-      dragAndDrop: 'Dateien hier hinziehen und ablegen',
-      maxFileSize: 'Max Dateigröße: 100MB',
-      selectFiles: 'Dateien Auswählen',
-      trustFeatures: {
-        private: 'Privat',
-        fast: 'Schnell',
-        free: 'Kostenlos',
-      },
-      trustMessage: '100% Privatsphäre • Keine Uploads • Keine Limits',
-      alerts: {
-        unsupportedFiles: 'Einige Dateien werden nicht unterstützt',
-        fileLimit: 'Dateigrößenlimit überschritten',
-      },
-      accessibility: {
-        uploadArea: 'Datei-Upload-Bereich',
-        selectFiles: 'Dateien zum Upload auswählen',
-      },
-    },
-  },
 };
+
+export default de;

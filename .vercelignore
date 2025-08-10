@@ -1,0 +1,9 @@
+# Vercel ignore file
+node_modules
+.git
+scripts/*.js
+e2e
+tests
+*.md
+.env.example
+.github

@@ -110,3 +110,4 @@ ocr-integration-test.js
 
 # CodeMCP config
 codemcp.toml
+.vercel
