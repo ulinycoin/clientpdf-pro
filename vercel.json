@@ -1,1 +1,79 @@
-{"rewrites": [{"source": "/((?!api/.*).*)", "destination": "/index.html"}], "headers": [{"source": "/(.*)", "headers": [{"key": "X-Content-Type-Options", "value": "nosniff"}, {"key": "X-Frame-Options", "value": "DENY"}, {"key": "X-XSS-Protection", "value": "1; mode=block"}]}]}
+{
+  "rewrites": [
+    {
+      "source": "/de",
+      "destination": "/de/index.html"
+    },
+    {
+      "source": "/de/(.*)",
+      "destination": "/de/$1.html"
+    },
+    {
+      "source": "/ru",
+      "destination": "/ru/index.html"
+    },
+    {
+      "source": "/ru/(.*)",
+      "destination": "/ru/$1.html"
+    },
+    {
+      "source": "/fr",
+      "destination": "/fr/index.html"
+    },
+    {
+      "source": "/fr/(.*)",
+      "destination": "/fr/$1.html"
+    },
+    {
+      "source": "/es",
+      "destination": "/es/index.html"
+    },
+    {
+      "source": "/es/(.*)",
+      "destination": "/es/$1.html"
+    },
+    {
+      "source": "/((?!api|assets|_next|favicon|robots|sitemap|.*\\.).*)",
+      "destination": "/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {"key": "X-Content-Type-Options", "value": "nosniff"},
+        {"key": "X-Frame-Options", "value": "DENY"},
+        {"key": "X-XSS-Protection", "value": "1; mode=block"},
+        {"key": "Referrer-Policy", "value": "strict-origin-when-cross-origin"},
+        {"key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()"}
+      ]
+    },
+    {
+      "source": "/(.*\\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2))",
+      "headers": [
+        {"key": "Cache-Control", "value": "public, max-age=31536000, immutable"}
+      ]
+    },
+    {
+      "source": "/sitemap*.xml",
+      "headers": [
+        {"key": "Content-Type", "value": "application/xml; charset=utf-8"},
+        {"key": "Cache-Control", "value": "public, max-age=86400"}
+      ]
+    },
+    {
+      "source": "/robots.txt",
+      "headers": [
+        {"key": "Content-Type", "value": "text/plain; charset=utf-8"},
+        {"key": "Cache-Control", "value": "public, max-age=86400"}
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/sitemap-multilingual.xml",
+      "destination": "/sitemap.xml",
+      "permanent": false
+    }
+  ]
+}
