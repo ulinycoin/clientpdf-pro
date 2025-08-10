@@ -80,22 +80,22 @@ function generateSitemap() {
   const languages = ['en', 'de', 'fr', 'es', 'ru'];
 
   const pages = [
-    { url: '/', priority: '1.0', changefreq: 'weekly' },
-    { url: '/merge-pdf', priority: '0.9', changefreq: 'monthly' },
-    { url: '/split-pdf', priority: '0.9', changefreq: 'monthly' },
-    { url: '/compress-pdf', priority: '0.9', changefreq: 'monthly' },
-    { url: '/add-text-pdf', priority: '0.8', changefreq: 'monthly' },
-    { url: '/watermark-pdf', priority: '0.8', changefreq: 'monthly' },
-    { url: '/rotate-pdf', priority: '0.8', changefreq: 'monthly' },
-    { url: '/extract-pages-pdf', priority: '0.8', changefreq: 'monthly' },
-    { url: '/extract-text-pdf', priority: '0.8', changefreq: 'monthly' },
-    { url: '/pdf-to-image', priority: '0.8', changefreq: 'monthly' },
-    { url: '/images-to-pdf', priority: '0.8', changefreq: 'monthly' },
-    { url: '/word-to-pdf', priority: '0.8', changefreq: 'monthly' },
-    { url: '/excel-to-pdf', priority: '0.8', changefreq: 'monthly' },
-    { url: '/ocr-pdf', priority: '0.8', changefreq: 'monthly' },
-    { url: '/privacy', priority: '0.3', changefreq: 'yearly' },
-    { url: '/faq', priority: '0.6', changefreq: 'monthly' }
+    { url: '/', name: 'Главная', priority: '1.0', changefreq: 'weekly' },
+    { url: '/merge-pdf', name: 'merge-pdf', priority: '0.9', changefreq: 'monthly' },
+    { url: '/split-pdf', name: 'split-pdf', priority: '0.9', changefreq: 'monthly' },
+    { url: '/compress-pdf', name: 'compress-pdf', priority: '0.9', changefreq: 'monthly' },
+    { url: '/add-text-pdf', name: 'add-text-pdf', priority: '0.8', changefreq: 'monthly' },
+    { url: '/watermark-pdf', name: 'watermark-pdf', priority: '0.8', changefreq: 'monthly' },
+    { url: '/rotate-pdf', name: 'rotate-pdf', priority: '0.8', changefreq: 'monthly' },
+    { url: '/extract-pages-pdf', name: 'extract-pages-pdf', priority: '0.8', changefreq: 'monthly' },
+    { url: '/extract-text-pdf', name: 'extract-text-pdf', priority: '0.8', changefreq: 'monthly' },
+    { url: '/pdf-to-image', name: 'pdf-to-image', priority: '0.8', changefreq: 'monthly' },
+    { url: '/images-to-pdf', name: 'images-to-pdf', priority: '0.8', changefreq: 'monthly' },
+    { url: '/word-to-pdf', name: 'word-to-pdf', priority: '0.8', changefreq: 'monthly' },
+    { url: '/excel-to-pdf', name: 'excel-to-pdf', priority: '0.8', changefreq: 'monthly' },
+    { url: '/ocr-pdf', name: 'ocr-pdf', priority: '0.8', changefreq: 'monthly' },
+    { url: '/privacy', name: 'privacy', priority: '0.3', changefreq: 'yearly' },
+    { url: '/faq', name: 'faq', priority: '0.6', changefreq: 'monthly' }
   ];
 
   // Generate hreflang links for a given page
@@ -105,36 +105,30 @@ function generateSitemap() {
         ? `${baseUrl}${basePage}`
         : `${baseUrl}/${lang}${basePage}`;
       return `    <xhtml:link rel="alternate" hreflang="${lang}" href="${href}"/>`;
-    }).join('\n') + '\n' +
-    `    <xhtml:link rel="alternate" hreflang="x-default" href="${baseUrl}${basePage}"/>`;
+    }).join('\n');
   };
 
-  // Generate multilingual URLs
+  // Generate entries per page (not per language)
   let sitemapEntries = [];
 
   for (const page of pages) {
-    // Generate entry for each language
-    for (const lang of languages) {
-      const url = lang === 'en' ? page.url : `/${lang}${page.url}`;
-      const canonicalUrl = lang === 'en' ? `${baseUrl}${page.url}` : `${baseUrl}/${lang}${page.url}`;
-      
-      sitemapEntries.push(`  <url>
+    const canonicalUrl = `${baseUrl}${page.url}`;
+    
+    sitemapEntries.push(`  <!-- ${page.name} -->
+  <url>
     <loc>${canonicalUrl}</loc>
     <lastmod>${currentDate}</lastmod>
     <changefreq>${page.changefreq}</changefreq>
     <priority>${page.priority}</priority>
 ${generateHreflangLinks(page.url)}
   </url>`);
-    }
   }
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
-        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+        
+${sitemapEntries.join('\n\n')}
 
-${sitemapEntries.join('\n')}
 </urlset>`;
 }
