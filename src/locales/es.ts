@@ -126,10 +126,6 @@ export const es: Translations = {
       title: 'Combinar PDFs',
       description: 'Combinar múltiples archivos PDF en un solo documento',
     },
-    split: {
-      title: 'Dividir PDF',
-      description: 'Dividir PDF en páginas separadas o rangos',
-    },
     compress: {
       title: 'Comprimir PDF',
       description: 'Reducir el tamaño del archivo PDF manteniendo la calidad',
@@ -1196,27 +1192,6 @@ export const es: Translations = {
       },
     },
   },
+};
 
-  // Errores y mensajes
-  errors: {
-    fileNotSupported: 'Formato de archivo no compatible',
-    fileTooLarge: 'Tamaño de archivo demasiado grande',
-    processingFailed: 'Error en el procesamiento',
-    noFilesSelected: 'No se han seleccionado archivos',
-    invalidFormat: 'Formato de archivo inválido',
-    networkError: 'Error de red',
-    unknownError: 'Error desconocido',
-  },
-
-  // Pie de página
-  footer: {
-    description: 'LocalPDF - Herramientas PDF centradas en la privacidad que funcionan completamente en su navegador',
-    links: {
-      privacy: 'Política de Privacidad',
-      faq: 'FAQ',
-      github: 'GitHub',
-    },
-    copyright: '© 2024 LocalPDF. Todos los derechos reservados.',
-  },
-
-}
+export default es;

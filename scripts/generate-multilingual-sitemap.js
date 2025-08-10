@@ -114,14 +114,14 @@ function generateSitemaps() {
   fs.writeFileSync(path.join(publicPath, 'sitemap-multilingual.xml'), multilingualSitemap);
   console.log('✅ Generated multilingual sitemap: public/sitemap-multilingual.xml');
   
-  // Обновляем основной sitemap (пока оставляем простой для совместимости)
-  fs.writeFileSync(path.join(publicPath, 'sitemap.xml'), simpleSitemap);
-  console.log('✅ Updated main sitemap: public/sitemap.xml');
+  // Обновляем основной sitemap с полными многоязычными данными
+  fs.writeFileSync(path.join(publicPath, 'sitemap.xml'), multilingualSitemap);
+  console.log('✅ Updated main sitemap with multilingual data: public/sitemap.xml');
 
   // Копируем в dist если существует
   if (fs.existsSync(distPath)) {
     fs.writeFileSync(path.join(distPath, 'sitemap-multilingual.xml'), multilingualSitemap);
-    fs.writeFileSync(path.join(distPath, 'sitemap.xml'), simpleSitemap);
+    fs.writeFileSync(path.join(distPath, 'sitemap.xml'), multilingualSitemap);
     console.log('✅ Copied sitemaps to dist/');
   }
 

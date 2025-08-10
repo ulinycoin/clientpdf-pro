@@ -77,6 +77,7 @@ export default defineConfig({
 function generateSitemap() {
   const baseUrl = 'https://localpdf.online';
   const currentDate = new Date().toISOString().slice(0, 10);
+  const languages = ['en', 'de', 'fr', 'es', 'ru'];
 
   const pages = [
     { url: '/', priority: '1.0', changefreq: 'weekly' },
@@ -97,13 +98,43 @@ function generateSitemap() {
     { url: '/faq', priority: '0.6', changefreq: 'monthly' }
   ];
 
-  return `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${pages.map(page => `  <url>
-    <loc>${baseUrl}${page.url}</loc>
+  // Generate hreflang links for a given page
+  const generateHreflangLinks = (basePage: string) => {
+    return languages.map(lang => {
+      const href = lang === 'en' 
+        ? `${baseUrl}${basePage}`
+        : `${baseUrl}/${lang}${basePage}`;
+      return `    <xhtml:link rel="alternate" hreflang="${lang}" href="${href}"/>`;
+    }).join('\n') + '\n' +
+    `    <xhtml:link rel="alternate" hreflang="x-default" href="${baseUrl}${basePage}"/>`;
+  };
+
+  // Generate multilingual URLs
+  let sitemapEntries = [];
+
+  for (const page of pages) {
+    // Generate entry for each language
+    for (const lang of languages) {
+      const url = lang === 'en' ? page.url : `/${lang}${page.url}`;
+      const canonicalUrl = lang === 'en' ? `${baseUrl}${page.url}` : `${baseUrl}/${lang}${page.url}`;
+      
+      sitemapEntries.push(`  <url>
+    <loc>${canonicalUrl}</loc>
     <lastmod>${currentDate}</lastmod>
     <changefreq>${page.changefreq}</changefreq>
     <priority>${page.priority}</priority>
-  </url>`).join('\n')}
+${generateHreflangLinks(page.url)}
+  </url>`);
+    }
+  }
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+
+${sitemapEntries.join('\n')}
 </urlset>`;
 }
