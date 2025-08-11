@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useI18n } from '../../hooks/useI18n';
 import ImageToPDFTool from './ImageToPDFTool';
 import FileUploadZone from '../molecules/FileUploadZone';
 
 const ImageToPDFToolWrapper: React.FC = () => {
-  const { t } = useTranslation();
+  const { t } = useI18n();
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [showTool, setShowTool] = useState(false);
 
