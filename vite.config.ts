@@ -37,32 +37,61 @@ export default defineConfig({
   },
 
   build: {
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          // React core
-          'react-vendor': ['react', 'react-dom'],
-          'router-vendor': ['react-router-dom', 'react-helmet-async'],
-
-          // PDF processing (split large libraries)
-          'pdf-lib-vendor': ['pdf-lib'],
-          'jspdf-vendor': ['jspdf'],
-          'pdfjs-vendor': ['pdfjs-dist'],
-
-          // Heavy processing tools
-          'word-vendor': ['mammoth'],
-          'ocr-vendor': ['tesseract.js'],
-          'excel-vendor': ['xlsx'],
-
-          // UI and utilities
-          'ui-vendor': ['lucide-react'],
-          'utils-vendor': ['franc']
-        }
-      }
-    },
     target: 'es2020',
     minify: 'esbuild',
-    chunkSizeWarningLimit: 600
+    chunkSizeWarningLimit: 500,
+    sourcemap: false,
+    
+    rollupOptions: {
+      output: {
+        manualChunks: (id) => {
+          if (id.includes('node_modules')) {
+            // Core React dependencies
+            if (id.includes('react') && !id.includes('router')) {
+              return 'react-vendor';
+            }
+            if (id.includes('react-router') || id.includes('react-helmet')) {
+              return 'router-vendor';
+            }
+            
+            // Heavy PDF processing libraries
+            if (id.includes('pdf-lib')) {
+              return 'pdf-lib-vendor';
+            }
+            if (id.includes('jspdf')) {
+              return 'jspdf-vendor';
+            }
+            if (id.includes('pdfjs')) {
+              return 'pdfjs-vendor';
+            }
+            
+            // Document processing
+            if (id.includes('mammoth')) {
+              return 'word-vendor';
+            }
+            if (id.includes('tesseract')) {
+              return 'ocr-vendor';
+            }
+            if (id.includes('xlsx')) {
+              return 'excel-vendor';
+            }
+            
+            // UI components
+            if (id.includes('lucide')) {
+              return 'ui-vendor';
+            }
+            
+            // Language detection and utilities
+            if (id.includes('franc')) {
+              return 'utils-vendor';
+            }
+            
+            // All other dependencies
+            return 'vendor';
+          }
+        }
+      }
+    }
   },
 
   optimizeDeps: {

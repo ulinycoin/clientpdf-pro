@@ -1,5 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
+import HreflangTags from './HreflangTags';
 
 interface FAQSchemaItem {
   question: string;
@@ -16,6 +17,7 @@ interface SEOHeadProps {
   structuredData?: object;
   faqSchema?: FAQSchemaItem[];
   noindex?: boolean;
+  includeHreflang?: boolean;
 }
 
 export const SEOHead: React.FC<SEOHeadProps> = ({
@@ -27,7 +29,8 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
   ogType = 'website',
   structuredData,
   faqSchema,
-  noindex = false
+  noindex = false,
+  includeHreflang = true
 }) => {
   // Ensure title includes LocalPDF branding
   const fullTitle = title.includes('LocalPDF') ? title : `${title} | LocalPDF`;
@@ -53,22 +56,23 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
   } : null;
 
   return (
-    <Helmet>
-      {/* Basic SEO */}
-      <title>{fullTitle}</title>
-      <meta name="description" content={description} />
-      {keywords && <meta name="keywords" content={keywords} />}
-      <meta name="author" content="LocalPDF" />
+    <>
+      <Helmet>
+        {/* Basic SEO */}
+        <title>{fullTitle}</title>
+        <meta name="description" content={description} />
+        {keywords && <meta name="keywords" content={keywords} />}
+        <meta name="author" content="LocalPDF" />
 
-      {/* Robots directive */}
-      {noindex ? (
-        <meta name="robots" content="noindex, nofollow" />
-      ) : (
-        <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
-      )}
+        {/* Robots directive */}
+        {noindex ? (
+          <meta name="robots" content="noindex, nofollow" />
+        ) : (
+          <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+        )}
 
-      {/* Canonical URL */}
-      <link rel="canonical" href={canonicalUrl} />
+        {/* Canonical URL */}
+        <link rel="canonical" href={canonicalUrl} />
 
       {/* Open Graph */}
       <meta property="og:type" content={ogType} />
@@ -122,7 +126,11 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
           {JSON.stringify(faqSchemaData)}
         </script>
       )}
-    </Helmet>
+      </Helmet>
+      
+      {/* Hreflang Tags */}
+      {includeHreflang && <HreflangTags />}
+    </>
   );
 };
 
