@@ -22,7 +22,7 @@ const SplitTool: React.FC<SplitToolProps> = ({ files, onComplete, onClose }) => 
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
 
-  const selectedFile = files[0]; // Split works with single file
+  const selectedFile = files?.[0]; // Split works with single file
 
   const handleSplit = async () => {
     if (!selectedFile) return;

@@ -65,10 +65,10 @@ export const StandardToolPageTemplate: React.FC<StandardToolPageProps> = ({
         keywords={seoData?.keywords}
         canonical={seoData?.canonical}
         structuredData={seoData?.structuredData}
-        faqSchema={faqs?.map(faq => ({
+        faqSchema={faqs && faqs.length > 0 ? faqs.map(faq => ({
           question: faq.question,
           answer: faq.answer
-        }))}
+        })) : undefined}
       />
 
       <div className="min-h-screen bg-gradient-mesh flex flex-col">
@@ -200,7 +200,7 @@ export const StandardToolPageTemplate: React.FC<StandardToolPageProps> = ({
           </div>
 
           {/* FAQ SECTION */}
-          {faqs && faqs.length > 0 && (
+          {faqs && Array.isArray(faqs) && faqs.length > 0 && (
             <FAQSection
               title={t(`tools.${toolKey}.faqTitle`)}
               faqs={faqs}

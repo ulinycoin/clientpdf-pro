@@ -165,8 +165,15 @@ export const generalPrivacyFAQTranslations: {
 };
 
 // Get translated FAQs for a tool
-export const getTranslatedFAQs = (toolName: string, language: SupportedLanguage): FAQItem[] => {
+export const getTranslatedFAQs = (toolName: string, language: SupportedLanguage): FAQItem[] | null => {
+  if (!toolName || !language) {
+    return null;
+  }
+  
   const toolFAQs = faqTranslations[toolName]?.[language] || [];
   const generalFAQs = generalPrivacyFAQTranslations[language]?.slice(0, 2) || [];
-  return [...toolFAQs, ...generalFAQs];
+  const combinedFAQs = [...toolFAQs, ...generalFAQs];
+  
+  // Return null if no FAQs found for this tool and language
+  return combinedFAQs.length > 0 ? combinedFAQs : null;
 };
