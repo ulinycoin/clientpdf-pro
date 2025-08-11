@@ -452,7 +452,7 @@ export const toolsSEOData = {
 
 export const homepageSEOData = {
   title: "LocalPDF - Privacy-First PDF Tools | Merge, Split, Compress",
-  description: "13 powerful PDF tools in your browser. Merge, split, compress, add text, watermark, OCR. 100% private - no uploads, no tracking. Free forever."
+  description: "13 powerful PDF tools in your browser. Merge, split, compress, add text, watermark, OCR. 100% private - no uploads, no tracking. Free forever.",
   keywords: "PDF tools, merge PDF, split PDF, compress PDF, add text PDF, watermark PDF, rotate PDF, extract pages, PDF to image, images to PDF, Word to PDF, Excel to PDF, OCR PDF, privacy, local processing, browser PDF editor, free PDF tools",
   canonical: "https://localpdf.online/",
   structuredData: {
