@@ -35,22 +35,29 @@ export default defineConfig({
           '/faq'
         ];
 
-        const languages = ['', '/de', '/fr', '/es', '/ru']; // '' = English
-
-        // Generate English pages first
-        baseRoutes.forEach(route => {
-          const toolKey = route.replace('/', '').replace(/-/g, '');
-          const fileName = route.slice(1) + '.html';
-          
-          this.emitFile({
-            type: 'asset',
-            fileName,
-            source: generatePrerenderedHTML(route, toolKey, 'en')
+        // Generate multilingual pages
+        const languages = ['en', 'de', 'fr', 'es', 'ru'];
+        
+        languages.forEach(lang => {
+          baseRoutes.forEach(route => {
+            const toolKey = route.replace('/', '').replace(/-/g, '');
+            let fileName;
+            
+            if (lang === 'en') {
+              // English files in root
+              fileName = route.slice(1) + '.html';
+            } else {
+              // Other languages in subdirectories
+              fileName = `${lang}${route}.html`;
+            }
+            
+            this.emitFile({
+              type: 'asset',
+              fileName,
+              source: generatePrerenderedHTML(route, toolKey, lang)
+            });
           });
         });
-
-        // TODO: Add multilingual pre-rendering in next phase
-        // Currently focusing on English pages for immediate SEO fix
       }
     }
   ],
@@ -145,9 +152,123 @@ export default defineConfig({
   }
 });
 
+// Hardcoded multilingual SEO data since we can't load translations at build time
+const multilingualSeoData: Record<string, Record<string, any>> = {
+  en: {
+    'mergepdf': {
+      title: "Merge PDF Free - Privacy-First PDF Combiner | LocalPDF",
+      description: "Merge PDF files online without uploading to servers. 100% private PDF merger works in your browser. Combine multiple PDFs instantly - no registration required."
+    },
+    'splitpdf': {
+      title: "Split PDF Free - Privacy-First Page Extractor | LocalPDF", 
+      description: "Split PDF files without uploading to servers. 100% private PDF splitter works in your browser. Extract specific pages or ranges from PDF documents instantly."
+    },
+    'compresspdf': {
+      title: "Compress PDF Free - Privacy-First Size Reducer | LocalPDF",
+      description: "Compress PDF files without uploading to servers. 100% private PDF compressor works in your browser. Reduce file size while maintaining quality instantly."
+    },
+    'privacy': {
+      title: "Privacy Policy - LocalPDF | 100% Private PDF Processing",
+      description: "LocalPDF privacy policy. Learn how we protect your privacy with 100% local PDF processing. No uploads, no tracking, no data collection."
+    },
+    'faq': {
+      title: "FAQ - Frequently Asked Questions | LocalPDF",
+      description: "Get answers to common questions about LocalPDF. Learn about our privacy-first PDF tools, browser compatibility, and how to use our features."
+    }
+  },
+  de: {
+    'mergepdf': {
+      title: "PDF zusammenführen kostenlos - Datenschutz-erste PDF Combiner | LocalPDF",
+      description: "PDF-Dateien online zusammenführen ohne Server-Upload. 100% private PDF-Fusion funktioniert in Ihrem Browser. Mehrere PDFs sofort kombinieren - keine Registrierung erforderlich."
+    },
+    'splitpdf': {
+      title: "PDF aufteilen kostenlos - Datenschutz-erste Seiten-Extraktor | LocalPDF",
+      description: "PDF-Dateien ohne Server-Upload aufteilen. 100% private PDF-Aufteilung funktioniert in Ihrem Browser. Spezifische Seiten oder Bereiche aus PDF-Dokumenten sofort extrahieren."
+    },
+    'compresspdf': {
+      title: "PDF komprimieren kostenlos - Datenschutz-erste Größenreduzierer | LocalPDF",
+      description: "PDF-Dateien ohne Server-Upload komprimieren. 100% private PDF-Kompression in Ihrem Browser. Dateigröße reduzieren bei gleichbleibender Qualität."
+    },
+    'privacy': {
+      title: "Datenschutzerklärung - LocalPDF | 100% Private PDF-Verarbeitung",
+      description: "LocalPDF Datenschutzerklärung. Erfahren Sie, wie wir Ihre Privatsphäre mit 100% lokaler PDF-Verarbeitung schützen. Keine Uploads, kein Tracking, keine Datensammlung."
+    },
+    'faq': {
+      title: "FAQ - Häufig gestellte Fragen | LocalPDF",
+      description: "Antworten auf häufige Fragen zu LocalPDF. Erfahren Sie mehr über unsere datenschutzfokussierten PDF-Tools, Browser-Kompatibilität und Funktionen."
+    }
+  },
+  fr: {
+    'mergepdf': {
+      title: "Fusionner PDF gratuit - Combinateur PDF sécurisé | LocalPDF",
+      description: "Fusionnez des fichiers PDF en ligne sans téléchargement sur serveur. Fusion PDF 100% privée dans votre navigateur. Combinez plusieurs PDFs instantanément - sans inscription."
+    },
+    'splitpdf': {
+      title: "Diviser PDF gratuit - Extracteur de pages sécurisé | LocalPDF",
+      description: "Divisez des fichiers PDF sans téléchargement sur serveur. Division PDF 100% privée dans votre navigateur. Extrayez des pages spécifiques instantanément."
+    },
+    'compresspdf': {
+      title: "Compresser PDF gratuit - Réducteur de taille sécurisé | LocalPDF",
+      description: "Compressez des fichiers PDF sans téléchargement sur serveur. Compression PDF 100% privée dans votre navigateur. Réduisez la taille en maintenant la qualité."
+    },
+    'privacy': {
+      title: "Politique de confidentialité - LocalPDF | Traitement PDF 100% privé",
+      description: "Politique de confidentialité LocalPDF. Découvrez comment nous protégeons votre vie privée avec un traitement PDF 100% local. Pas de téléchargements, pas de suivi, pas de collecte de données."
+    },
+    'faq': {
+      title: "FAQ - Questions fréquemment posées | LocalPDF",
+      description: "Obtenez des réponses aux questions courantes sur LocalPDF. Découvrez nos outils PDF axés sur la confidentialité, la compatibilité des navigateurs et les fonctionnalités."
+    }
+  },
+  es: {
+    'mergepdf': {
+      title: "Combinar PDF gratis - Combinador PDF privado | LocalPDF",
+      description: "Combine archivos PDF en línea sin subir a servidores. Fusión PDF 100% privada en su navegador. Combine múltiples PDFs al instante - sin registro requerido."
+    },
+    'splitpdf': {
+      title: "Dividir PDF gratis - Extractor de páginas privado | LocalPDF",
+      description: "Divida archivos PDF sin subir a servidores. División PDF 100% privada en su navegador. Extraiga páginas específicas al instante."
+    },
+    'compresspdf': {
+      title: "Comprimir PDF gratis - Reductor de tamaño privado | LocalPDF",
+      description: "Comprima archivos PDF sin subir a servidores. Compresión PDF 100% privada en su navegador. Reduzca el tamaño manteniendo la calidad."
+    },
+    'privacy': {
+      title: "Política de privacidad - LocalPDF | Procesamiento PDF 100% privado",
+      description: "Política de privacidad de LocalPDF. Aprenda cómo protegemos su privacidad con procesamiento PDF 100% local. Sin subidas, sin seguimiento, sin recopilación de datos."
+    },
+    'faq': {
+      title: "FAQ - Preguntas frecuentes | LocalPDF",
+      description: "Obtenga respuestas a preguntas comunes sobre LocalPDF. Conozca nuestras herramientas PDF centradas en la privacidad, compatibilidad del navegador y características."
+    }
+  },
+  ru: {
+    'mergepdf': {
+      title: "Объединить PDF бесплатно - Приватный объединитель PDF | LocalPDF",
+      description: "Объединяйте PDF файлы онлайн без загрузки на серверы. 100% приватное объединение PDF в вашем браузере. Комбинируйте несколько PDF мгновенно - без регистрации."
+    },
+    'splitpdf': {
+      title: "Разделить PDF бесплатно - Приватный экстрактор страниц | LocalPDF",
+      description: "Разделяйте PDF файлы без загрузки на серверы. 100% приватное разделение PDF в вашем браузере. Извлекайте конкретные страницы мгновенно."
+    },
+    'compresspdf': {
+      title: "Сжать PDF бесплатно - Приватный компрессор PDF | LocalPDF",
+      description: "Сжимайте PDF файлы без загрузки на серверы. 100% приватное сжатие PDF в вашем браузере. Уменьшайте размер с сохранением качества."
+    },
+    'privacy': {
+      title: "Политика конфиденциальности - LocalPDF | 100% приватная обработка PDF",
+      description: "Политика конфиденциальности LocalPDF. Узнайте, как мы защищаем вашу конфиденциальность с помощью 100% локальной обработки PDF. Без загрузок, без отслеживания, без сбора данных."
+    },
+    'faq': {
+      title: "FAQ - Часто задаваемые вопросы | LocalPDF",
+      description: "Получите ответы на общие вопросы о LocalPDF. Узнайте о наших PDF инструментах, ориентированных на конфиденциальность, совместимости браузеров и функциях."
+    }
+  }
+};
+
 function generatePrerenderedHTML(route: string, toolKey: string, language: string = 'en') {
-  // SEO data mapping (English only for now)
-  const seoData: Record<string, any> = {
+  // Fallback SEO data mapping (English as fallback)
+  const fallbackSeoData: Record<string, any> = {
     'mergepdf': {
       title: "Merge PDF Free - Privacy-First PDF Combiner | LocalPDF",
       description: "Merge PDF files online without uploading to servers. 100% private PDF merger works in your browser. Combine multiple PDFs instantly - no registration required.",
@@ -225,7 +346,16 @@ function generatePrerenderedHTML(route: string, toolKey: string, language: strin
     }
   };
 
-  const pageData = seoData[toolKey] || seoData['mergepdf'];
+  // Get SEO data from multilingual data or fallback
+  const languageData = multilingualSeoData[language] || multilingualSeoData['en'];
+  const toolData = languageData[toolKey] || languageData['mergepdf'] || fallbackSeoData[toolKey] || fallbackSeoData['mergepdf'];
+  
+  const baseUrl = language === 'en' ? 'https://localpdf.online' : `https://localpdf.online/${language}`;
+  const pageData = {
+    title: toolData.title,
+    description: toolData.description,
+    canonical: `${baseUrl}${route}`
+  };
   
   return `<!DOCTYPE html>
 <html lang="${language}">
