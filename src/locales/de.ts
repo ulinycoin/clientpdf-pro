@@ -238,6 +238,41 @@ export const de: Translations = {
         },
       },
       faqTitle: 'Häufig gestellte Fragen zur PDF-Aufteilung',
+      seoContent: {
+        title: 'Vollständiger Leitfaden zur PDF-Aufteilung',
+        introduction: 'Das Aufteilen von PDF-Dateien ist eine grundlegende Aufgabe der Dokumentenverwaltung. Ob Sie bestimmte Seiten extrahieren, Kapitel trennen oder ein großes Dokument in kleinere, besser handhabbare Dateien aufteilen müssen - unser datenschutzorientierter PDF-Teiler bietet die perfekte Lösung. Im Gegensatz zu Online-Diensten, die Datei-Uploads erfordern, verarbeitet LocalPDF alles lokal in Ihrem Browser für maximale Sicherheit.',
+        whyChoose: {
+          title: 'Warum LocalPDF PDF-Teiler wählen?',
+          privacy: {
+            title: '100% Datenschutz garantiert',
+            text: 'Ihr PDF wird vollständig in Ihrem Browser verarbeitet. Keine Server-Uploads, keine Datensammlung, vollständiger Datenschutz für sensible Dokumente.',
+          },
+          speed: {
+            title: 'Blitzschnelle Verarbeitung',
+            text: 'Sofortige PDF-Aufteilung mit unserer optimierten Browser-Engine. Kein Warten auf Uploads, Downloads oder Server-Verarbeitungsschlangen.',
+          },
+          quality: {
+            title: 'Perfekte Qualitätserhaltung',
+            text: 'Behalten Sie die ursprüngliche PDF-Qualität, Formatierung, Schriftarten und Struktur bei. Aufgeteilte Seiten behalten perfekte Klarheit und alle Dokumenteigenschaften.',
+          },
+          free: {
+            title: 'Völlig kostenlos für immer',
+            text: 'Teilen Sie unbegrenzt PDFs ohne Registrierung, Wasserzeichen, Dateigrößenbeschränkungen oder versteckte Gebühren auf. Professionelle Ergebnisse ohne Kosten.',
+          },
+        },
+        compatibility: {
+          title: 'Browser-Kompatibilität & Systemanforderungen',
+          text: 'LocalPDF funktioniert auf allen modernen Browsern einschließlich Chrome 90+, Firefox 90+, Safari 14+ und Edge 90+. Kompatibel mit Windows, macOS, Linux, iOS und Android-Geräten. Keine Softwareinstallation erforderlich - öffnen Sie einfach Ihren Browser und beginnen Sie mit der PDF-Aufteilung.',
+        },
+        technical: {
+          title: 'Fortschrittliche PDF-Verarbeitungstechnologie',
+          text: 'Entwickelt mit modernsten JavaScript-PDF-Bibliotheken einschließlich PDF.js und pdf-lib, liefert LocalPDF professionelle PDF-Aufteilungsfunktionen direkt in Ihrem Browser. Unsere optimierten Algorithmen handhaben komplexe PDF-Strukturen, bewahren die Dokumentintegrität und unterstützen Dateien bis zu 100MB.',
+        },
+        security: {
+          title: 'Unternehmensgerechte Sicherheit',
+          text: 'DSGVO-konform, CCPA-konform und entspricht internationalen Datenschutzstandards. Ihre Dokumente verlassen niemals Ihr Gerät und gewährleisten vollständige Vertraulichkeit für Geschäfts-, Rechts- und persönliche Dateien.',
+        },
+      },
     },
     pdfToImage: {
       title: 'PDF zu Bildern',

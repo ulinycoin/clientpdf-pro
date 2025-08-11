@@ -238,6 +238,41 @@ export const es: Translations = {
         },
       },
       faqTitle: 'Preguntas frecuentes sobre división de PDF',
+      seoContent: {
+        title: 'Guía completa para dividir PDF',
+        introduction: 'La división de archivos PDF es una tarea fundamental de la gestión documental. Ya sea que necesites extraer páginas específicas, separar capítulos o dividir un documento grande en archivos más pequeños y manejables, nuestro divisor PDF centrado en la privacidad ofrece la solución perfecta. A diferencia de los servicios en línea que requieren subir archivos, LocalPDF procesa todo localmente en tu navegador para máxima seguridad.',
+        whyChoose: {
+          title: '¿Por qué elegir el divisor PDF LocalPDF?',
+          privacy: {
+            title: '100% privacidad garantizada',
+            text: 'Tu PDF se procesa completamente en tu navegador. Sin subidas a servidores, sin recolección de datos, protección completa de privacidad para documentos sensibles.',
+          },
+          speed: {
+            title: 'Procesamiento ultrarrápido',
+            text: 'División PDF instantánea con nuestro motor de navegador optimizado. Sin esperas para subidas, descargas o colas de procesamiento del servidor.',
+          },
+          quality: {
+            title: 'Preservación perfecta de la calidad',
+            text: 'Mantén la calidad, formato, fuentes y estructura PDF original. Las páginas divididas conservan claridad perfecta y todas las propiedades del documento.',
+          },
+          free: {
+            title: 'Completamente gratis para siempre',
+            text: 'Divide PDFs ilimitados sin registro, marcas de agua, limitaciones de tamaño de archivo o tarifas ocultas. Resultados profesionales sin costo.',
+          },
+        },
+        compatibility: {
+          title: 'Compatibilidad de navegador y requisitos del sistema',
+          text: 'LocalPDF funciona en todos los navegadores modernos incluyendo Chrome 90+, Firefox 90+, Safari 14+ y Edge 90+. Compatible con dispositivos Windows, macOS, Linux, iOS y Android. No se requiere instalación de software - simplemente abre tu navegador y comienza a dividir PDFs.',
+        },
+        technical: {
+          title: 'Tecnología avanzada de procesamiento PDF',
+          text: 'Construido con bibliotecas PDF JavaScript de vanguardia incluyendo PDF.js y pdf-lib, LocalPDF ofrece capacidades de división PDF de grado profesional directamente en tu navegador. Nuestros algoritmos optimizados manejan estructuras PDF complejas, preservan la integridad del documento y soportan archivos hasta 100MB.',
+        },
+        security: {
+          title: 'Seguridad de grado empresarial',
+          text: 'Cumple con GDPR, cumple con CCPA y sigue estándares internacionales de privacidad. Tus documentos nunca salen de tu dispositivo, asegurando confidencialidad completa para archivos empresariales, legales y personales.',
+        },
+      },
     },
     pdfToImage: {
       title: 'PDF a imágenes',
