@@ -254,6 +254,41 @@ export const en: Translations = {
         },
       },
       faqTitle: 'Frequently Asked Questions about PDF Splitting',
+      seoContent: {
+        title: 'Complete Guide to PDF Splitting',
+        introduction: 'Splitting PDF files is a fundamental task for document management. Whether you need to extract specific pages, separate chapters, or divide a large document into smaller, more manageable files, our privacy-first PDF splitter provides the perfect solution. Unlike online services that require file uploads, LocalPDF processes everything locally in your browser for maximum security.',
+        whyChoose: {
+          title: 'Why Choose LocalPDF PDF Splitter?',
+          privacy: {
+            title: '100% Privacy Guaranteed',
+            text: 'Your PDF is processed entirely in your browser. No server uploads, no data collection, complete privacy protection for sensitive documents.',
+          },
+          speed: {
+            title: 'Lightning Fast Processing',
+            text: 'Instant PDF splitting with our optimized browser engine. No waiting for uploads, downloads, or server processing queues.',
+          },
+          quality: {
+            title: 'Perfect Quality Preservation',
+            text: 'Maintain original PDF quality, formatting, fonts, and structure. Split pages retain perfect clarity and all document properties.',
+          },
+          free: {
+            title: 'Completely Free Forever',
+            text: 'Split unlimited PDFs with no registration, watermarks, file size limits, or hidden fees. Professional results at no cost.',
+          },
+        },
+        compatibility: {
+          title: 'Browser Compatibility & System Requirements',
+          text: 'LocalPDF works on all modern browsers including Chrome 90+, Firefox 90+, Safari 14+, and Edge 90+. Compatible with Windows, macOS, Linux, iOS, and Android devices. No software installation required - just open your browser and start splitting PDFs.',
+        },
+        technical: {
+          title: 'Advanced PDF Processing Technology',
+          text: 'Built using cutting-edge JavaScript PDF libraries including PDF.js and pdf-lib, LocalPDF delivers professional-grade PDF splitting capabilities directly in your browser. Our optimized algorithms handle complex PDF structures, preserve document integrity, and support files up to 100MB.',
+        },
+        security: {
+          title: 'Enterprise-Grade Security',
+          text: 'GDPR compliant, CCPA compliant, and follows international privacy standards. Your documents never leave your device, ensuring complete confidentiality for business, legal, and personal files.',
+        },
+      },
     },
     compress: {
       title: 'Compress PDF',
