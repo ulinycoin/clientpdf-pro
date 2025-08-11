@@ -65,12 +65,9 @@ export default defineConfig({
               return 'pdfjs-vendor';
             }
             
-            // Document processing
+            // Document processing - avoid bundling Tesseract.js 
             if (id.includes('mammoth')) {
               return 'word-vendor';
-            }
-            if (id.includes('tesseract')) {
-              return 'ocr-vendor';
             }
             if (id.includes('xlsx')) {
               return 'excel-vendor';
@@ -98,8 +95,9 @@ export default defineConfig({
     include: [
       'react', 'react-dom', 'react-router-dom', 'react-helmet-async',
       'pdf-lib', 'jspdf', 'pdfjs-dist', 'lucide-react',
-      'mammoth', 'tesseract.js'
-    ]
+      'mammoth'
+    ],
+    exclude: ['tesseract.js']
   }
 });
 
