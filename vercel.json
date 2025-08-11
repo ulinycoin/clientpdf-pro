@@ -1,7 +1,15 @@
 {
   "rewrites": [
     {
-      "source": "/((?!api|assets|_next|favicon|robots|sitemap|.*\\.).*)",
+      "source": "/(de|fr|es|ru)/(.*).html",
+      "destination": "/$1/$2.html"
+    },
+    {
+      "source": "/(de|fr|es|ru)/(.*)",
+      "destination": "/$1/$2.html"
+    },
+    {
+      "source": "/((?!api|assets|_next|favicon|robots|sitemap|de|fr|es|ru|.*\\.).*)",
       "destination": "/index.html"
     }
   ],
