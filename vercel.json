@@ -1,38 +1,6 @@
 {
   "rewrites": [
     {
-      "source": "/de",
-      "destination": "/de/index.html"
-    },
-    {
-      "source": "/de/(.*)",
-      "destination": "/de/$1.html"
-    },
-    {
-      "source": "/ru",
-      "destination": "/ru/index.html"
-    },
-    {
-      "source": "/ru/(.*)",
-      "destination": "/ru/$1.html"
-    },
-    {
-      "source": "/fr",
-      "destination": "/fr/index.html"
-    },
-    {
-      "source": "/fr/(.*)",
-      "destination": "/fr/$1.html"
-    },
-    {
-      "source": "/es",
-      "destination": "/es/index.html"
-    },
-    {
-      "source": "/es/(.*)",
-      "destination": "/es/$1.html"
-    },
-    {
       "source": "/((?!api|assets|_next|favicon|robots|sitemap|.*\\.).*)",
       "destination": "/index.html"
     }

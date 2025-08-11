@@ -41,14 +41,28 @@ const getBrowserLanguage = (): SupportedLanguage => {
   return DEFAULT_LANGUAGE;
 };
 
-// Функция для определения языка из URL (опционально)
+// Функция для определения языка из URL path
 const getLanguageFromURL = (): SupportedLanguage | null => {
   if (typeof window === 'undefined') return null;
 
+  // Проверяем URL параметр в query string
   const urlParams = new URLSearchParams(window.location.search);
   const langParam = urlParams.get('lang') as SupportedLanguage;
+  
+  if (SUPPORTED_LANGUAGES.some(lang => lang.code === langParam)) {
+    return langParam;
+  }
 
-  return SUPPORTED_LANGUAGES.some(lang => lang.code === langParam) ? langParam : null;
+  // Проверяем путь URL (например, /de/, /fr/, etc.)
+  const pathParts = window.location.pathname.split('/').filter(Boolean);
+  if (pathParts.length > 0) {
+    const possibleLang = pathParts[0] as SupportedLanguage;
+    if (SUPPORTED_LANGUAGES.some(lang => lang.code === possibleLang)) {
+      return possibleLang;
+    }
+  }
+
+  return null;
 };
 
 // Функция для загрузки сохраненного языка с приоритетом
