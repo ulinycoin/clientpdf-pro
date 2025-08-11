@@ -17,7 +17,7 @@ export default defineConfig({
         });
 
         // Generate pre-rendered HTML pages with proper SEO tags
-        const routes = [
+        const baseRoutes = [
           '/merge-pdf',
           '/split-pdf', 
           '/compress-pdf',
@@ -35,16 +35,22 @@ export default defineConfig({
           '/faq'
         ];
 
-        routes.forEach(route => {
+        const languages = ['', '/de', '/fr', '/es', '/ru']; // '' = English
+
+        // Generate English pages first
+        baseRoutes.forEach(route => {
           const toolKey = route.replace('/', '').replace(/-/g, '');
           const fileName = route.slice(1) + '.html';
           
           this.emitFile({
             type: 'asset',
             fileName,
-            source: generatePrerenderedHTML(route, toolKey)
+            source: generatePrerenderedHTML(route, toolKey, 'en')
           });
         });
+
+        // TODO: Add multilingual pre-rendering in next phase
+        // Currently focusing on English pages for immediate SEO fix
       }
     }
   ],
@@ -139,8 +145,8 @@ export default defineConfig({
   }
 });
 
-function generatePrerenderedHTML(route: string, toolKey: string) {
-  // SEO data mapping
+function generatePrerenderedHTML(route: string, toolKey: string, language: string = 'en') {
+  // SEO data mapping (English only for now)
   const seoData: Record<string, any> = {
     'mergepdf': {
       title: "Merge PDF Free - Privacy-First PDF Combiner | LocalPDF",
@@ -222,7 +228,7 @@ function generatePrerenderedHTML(route: string, toolKey: string) {
   const pageData = seoData[toolKey] || seoData['mergepdf'];
   
   return `<!DOCTYPE html>
-<html lang="en">
+<html lang="${language}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
