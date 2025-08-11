@@ -19,31 +19,40 @@ const HreflangTags: React.FC<HreflangTagsProps> = ({ currentPath }) => {
   const basePath = getBasePath(path);
   const baseUrl = 'https://localpdf.online';
 
+  // Ensure URLs are canonical and properly formatted
+  const ensureCanonical = (url: string): string => {
+    // Remove trailing slash except for root
+    if (url !== baseUrl && url.endsWith('/')) {
+      url = url.slice(0, -1);
+    }
+    return url;
+  };
+
   // Generate hreflang URLs for all supported languages
   const hreflangLinks = [
     {
       lang: 'en',
-      url: basePath === '/' ? baseUrl : `${baseUrl}${basePath}`
+      url: ensureCanonical(basePath === '/' ? baseUrl : `${baseUrl}${basePath}`)
     },
     {
       lang: 'de', 
-      url: basePath === '/' ? `${baseUrl}/de` : `${baseUrl}/de${basePath}`
+      url: ensureCanonical(basePath === '/' ? `${baseUrl}/de` : `${baseUrl}/de${basePath}`)
     },
     {
       lang: 'fr',
-      url: basePath === '/' ? `${baseUrl}/fr` : `${baseUrl}/fr${basePath}`
+      url: ensureCanonical(basePath === '/' ? `${baseUrl}/fr` : `${baseUrl}/fr${basePath}`)
     },
     {
       lang: 'es',
-      url: basePath === '/' ? `${baseUrl}/es` : `${baseUrl}/es${basePath}`
+      url: ensureCanonical(basePath === '/' ? `${baseUrl}/es` : `${baseUrl}/es${basePath}`)
     },
     {
       lang: 'ru',
-      url: basePath === '/' ? `${baseUrl}/ru` : `${baseUrl}/ru${basePath}`
+      url: ensureCanonical(basePath === '/' ? `${baseUrl}/ru` : `${baseUrl}/ru${basePath}`)
     },
     {
       lang: 'x-default',
-      url: basePath === '/' ? baseUrl : `${baseUrl}${basePath}`
+      url: ensureCanonical(basePath === '/' ? baseUrl : `${baseUrl}${basePath}`)
     }
   ];
 

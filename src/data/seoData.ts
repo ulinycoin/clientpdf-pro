@@ -1,7 +1,7 @@
 // SEO data for different pages and tools
 export const toolsSEOData = {
   merge: {
-    title: "Merge PDF Online Free - Privacy-First PDF Combiner | LocalPDF",
+    title: "Merge PDF Free - Privacy-First PDF Combiner | LocalPDF",
     description: "Merge PDF files online without uploading to servers. 100% private PDF merger works in your browser. Combine multiple PDFs instantly - no registration required.",
     keywords: "merge pdf online, combine pdf files, pdf merger free, merge pdf without uploading, private pdf merger, secure pdf combiner, join pdf files browser, merge pdf no registration",
     canonical: "https://localpdf.online/merge-pdf",
@@ -43,7 +43,7 @@ export const toolsSEOData = {
   },
 
   split: {
-    title: "Split PDF Online Free - Privacy-First PDF Page Extractor | LocalPDF",
+    title: "Split PDF Free - Privacy-First Page Extractor | LocalPDF",
     description: "Split PDF files without uploading to servers. 100% private PDF splitter works in your browser. Extract specific pages or ranges from PDF documents instantly.",
     keywords: "split pdf online, extract pdf pages, pdf splitter free, split pdf without uploading, private pdf splitter, separate pdf pages browser, divide pdf no registration",
     canonical: "https://localpdf.online/split-pdf",
@@ -87,7 +87,7 @@ export const toolsSEOData = {
   },
 
   compress: {
-    title: "Compress PDF Online Free - Privacy-First PDF Size Reducer | LocalPDF",
+    title: "Compress PDF Free - Privacy-First Size Reducer | LocalPDF",
     description: "Compress PDF files without uploading to servers. 100% private PDF compressor works in your browser. Reduce file size while maintaining quality instantly.",
     keywords: "compress pdf online, reduce pdf size, pdf compressor free, compress pdf without uploading, private pdf compressor, shrink pdf browser, optimize pdf no registration",
     canonical: "https://localpdf.online/compress-pdf",
@@ -130,8 +130,8 @@ export const toolsSEOData = {
   },
 
   addText: {
-    title: "Add Text to PDF Online Free - Privacy-First PDF Text Editor | LocalPDF",
-    description: "Add text to PDF files without uploading to servers. 100% private PDF text editor works in your browser. Fill forms, add signatures, and annotate documents instantly.",
+    title: "Add Text to PDF Free - Privacy-First PDF Editor | LocalPDF",
+    description: "Add text to PDF files without uploads. 100% private PDF text editor works in your browser. Fill forms and add signatures instantly.",
     keywords: "add text to pdf online, pdf text editor free, add text pdf without uploading, fill pdf forms online, private pdf editor, pdf annotation browser, insert text pdf no registration",
     canonical: "https://localpdf.online/add-text-pdf",
     structuredData: {
@@ -377,8 +377,8 @@ export const toolsSEOData = {
   },
 
   ocrPdf: {
-    title: "OCR PDF Text Recognition Free - Extract Text from PDF & Images",
-    description: "Extract text from PDF files and images using advanced OCR technology. Support for 10+ languages including enhanced Russian recognition. 100% private OCR processing.",
+    title: "OCR PDF Free - Extract Text from PDF & Images | LocalPDF",
+    description: "Extract text from PDF files and images using advanced OCR. Support for 10+ languages including Russian. 100% private OCR processing.",
     keywords: "OCR PDF, text recognition, extract text PDF, PDF OCR, image to text, Russian OCR, Tesseract OCR, scan to text",
     canonical: "https://localpdf.online/ocr-pdf",
     structuredData: {
@@ -406,8 +406,8 @@ export const toolsSEOData = {
   },
 
   excelToPdf: {
-    title: "Excel to PDF Online Free - Privacy-First XLSX Converter | LocalPDF",
-    description: "Convert Excel files to PDF without uploading to servers. 100% private XLSX to PDF converter works in your browser. Support for multiple sheets, charts, and formatting.",
+    title: "Excel to PDF Free - Privacy-First XLSX Converter | LocalPDF",
+    description: "Convert Excel files to PDF without uploads. 100% private XLSX converter works in your browser. Support for sheets, charts, and formatting.",
     keywords: "excel to pdf online, xlsx to pdf converter, convert excel pdf without uploading, private excel converter, secure xlsx to pdf, excel pdf browser, excel converter no registration",
     canonical: "https://localpdf.online/excel-to-pdf",
     structuredData: {
@@ -451,8 +451,8 @@ export const toolsSEOData = {
 };
 
 export const homepageSEOData = {
-  title: "LocalPDF - Free Privacy-First PDF Tools | Merge, Split, Compress",
-  description: "13 powerful PDF tools that work entirely in your browser. Merge, split, compress, add text, watermark, OCR, convert Excel to PDF. 100% private - no uploads, no tracking. Free forever.",
+  title: "LocalPDF - Privacy-First PDF Tools | Merge, Split, Compress",
+  description: "13 powerful PDF tools in your browser. Merge, split, compress, add text, watermark, OCR. 100% private - no uploads, no tracking. Free forever."
   keywords: "PDF tools, merge PDF, split PDF, compress PDF, add text PDF, watermark PDF, rotate PDF, extract pages, PDF to image, images to PDF, Word to PDF, Excel to PDF, OCR PDF, privacy, local processing, browser PDF editor, free PDF tools",
   canonical: "https://localpdf.online/",
   structuredData: {
