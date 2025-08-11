@@ -354,6 +354,29 @@ export const ru: Translations = {
     },
   },
 
+  imagesToPdf: {
+    uploadTitle: 'Загрузить изображения для конвертации',
+    uploadDescription: 'Конвертировать несколько изображений в одно PDF-документ',
+    selectFiles: 'Выбрать файлы изображений',
+    supportedFiles: 'Поддерживаемые: JPG, PNG, WEBP, GIF файлы до 50МБ каждый',
+    successTitle: 'PDF успешно создан!',
+    howToTitle: 'Как конвертировать изображения в PDF:',
+    howTo: {
+      uploadImages: {
+        title: 'Загрузить изображения',
+        description: 'Выберите несколько файлов изображений с вашего устройства'
+      },
+      configureSettings: {
+        title: 'Настроить параметры',
+        description: 'Выберите размер страницы, ориентацию и опции размещения изображений'
+      },
+      generatePdf: {
+        title: 'Создать PDF',
+        description: 'Нажмите конвертировать, чтобы создать ваш PDF со всеми изображениями'
+      }
+    }
+  },
+
   errors: {
     fileNotSupported: 'Формат файла не поддерживается',
     fileTooLarge: 'Размер файла превышает максимальный лимит',

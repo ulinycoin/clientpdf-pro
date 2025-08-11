@@ -314,6 +314,29 @@ export const fr: Translations = {
     },
   },
 
+  imagesToPdf: {
+    uploadTitle: 'Télécharger des images à convertir',
+    uploadDescription: 'Convertir plusieurs images en un seul document PDF',
+    selectFiles: 'Sélectionner les fichiers d’images',
+    supportedFiles: 'Supportés: fichiers JPG, PNG, WEBP, GIF jusqu’à 50MB chacun',
+    successTitle: 'PDF créé avec succès !',
+    howToTitle: 'Comment convertir des images en PDF :',
+    howTo: {
+      uploadImages: {
+        title: 'Télécharger les images',
+        description: 'Sélectionnez plusieurs fichiers d’images depuis votre appareil'
+      },
+      configureSettings: {
+        title: 'Configurer les paramètres',
+        description: 'Choisissez la taille de page, l’orientation et les options de mise en page des images'
+      },
+      generatePdf: {
+        title: 'Générer le PDF',
+        description: 'Cliquez sur convertir pour créer votre PDF avec toutes les images'
+      }
+    }
+  },
+
   errors: {
     fileNotSupported: 'Format de fichier non supporté',
     fileTooLarge: 'La taille du fichier dépasse la limite maximale',

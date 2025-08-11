@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { SEOHead } from '../../components/SEO/SEOHead';
 import { Header, Footer } from '../../components/organisms';
-import ImageToPDFTool from '../../components/organisms/ImageToPDFTool';
+import ImageToPDFToolWrapper from '../../components/organisms/ImageToPDFToolWrapper';
 import Breadcrumbs from '../../components/common/Breadcrumbs';
 import { toolsSEOData } from '../../data/seoData';
 import { useI18n } from '../../hooks/useI18n';
@@ -48,7 +48,7 @@ const ImageToPDFPage: React.FC = () => {
           </div>
 
           {/* Tool Component */}
-          <ImageToPDFTool />
+          <ImageToPDFToolWrapper />
 
           {/* Features Section */}
           <div className="mt-16 bg-white rounded-lg shadow-sm border border-gray-200 p-8">
