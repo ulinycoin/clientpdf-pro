@@ -172,6 +172,16 @@ export const ru: Translations = {
       pageTitle: 'Разделить PDF файлы бесплатно',
       pageDescription: 'Разделяйте PDF файлы по страницам или диапазонам бесплатно. Извлекайте определенные страницы из PDF документов. Приватное и безопасное разделение PDF в вашем браузере.',
       uploadTitle: 'Загрузите PDF для разделения',
+      uploadDescription: 'Разделите ваш PDF на отдельные страницы или извлеките определенные диапазоны страниц',
+      selectFile: 'Выбрать PDF файл',
+      supportedFiles: 'Поддерживается: PDF файлы до 100МБ',
+      successTitle: 'PDF успешно разделен!',
+      successDescription: 'Ваш PDF был разделен на {count} отдельных файлов.',
+      downloadAllZip: 'Скачать все страницы в ZIP ({count} файлов)',
+      downloadIndividual: 'Скачать отдельные страницы:',
+      pageNumber: 'Страница {page}',
+      splitAnother: 'Разделить другой PDF',
+      howToTitle: 'Как разделить PDF:',
       buttons: {
         startSplitting: 'Начать разделение',
       },
@@ -186,6 +196,26 @@ export const ru: Translations = {
       },
       howTo: {
         title: 'Как разделить PDF файлы',
+        individualPages: {
+          title: 'Отдельные страницы',
+          description: 'Разделить каждую страницу в отдельный PDF файл',
+        },
+        pageRange: {
+          title: 'Диапазон страниц',
+          description: 'Извлечь определенный диапазон страниц (например, страницы 5-10)',
+        },
+        specificPages: {
+          title: 'Определенные страницы',
+          description: 'Выбрать отдельные страницы для извлечения (например, 1, 3, 5-7, 10)',
+        },
+        zipOption: {
+          title: 'ZIP архив',
+          description: 'Упаковать несколько файлов в один ZIP архив',
+        },
+        privacy: {
+          title: 'Конфиденциальность',
+          description: 'Вся обработка происходит локально в вашем браузере',
+        },
         steps: {
           upload: {
             title: 'Загрузить PDF',

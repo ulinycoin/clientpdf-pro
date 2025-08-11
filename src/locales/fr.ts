@@ -156,6 +156,16 @@ export const fr: Translations = {
       pageTitle: 'Diviser des fichiers PDF gratuitement',
       pageDescription: 'Divisez des fichiers PDF par pages ou plages gratuitement. Extrayez des pages spécifiques de documents PDF. Division PDF privée et sécurisée dans votre navigateur.',
       uploadTitle: 'Téléverser un PDF à diviser',
+      uploadDescription: 'Divisez votre PDF en pages individuelles ou extrayez des plages de pages spécifiques',
+      selectFile: 'Sélectionner un fichier PDF',
+      supportedFiles: 'Pris en charge : fichiers PDF jusqu\'à 100MB',
+      successTitle: 'PDF divisé avec succès !',
+      successDescription: 'Votre PDF a été divisé en {count} fichiers séparés.',
+      downloadAllZip: 'Télécharger toutes les pages en ZIP ({count} fichiers)',
+      downloadIndividual: 'Télécharger les pages individuellement :',
+      pageNumber: 'Page {page}',
+      splitAnother: 'Diviser un autre PDF',
+      howToTitle: 'Comment diviser un PDF :',
       buttons: {
         startSplitting: 'Commencer la division',
       },
@@ -170,6 +180,26 @@ export const fr: Translations = {
       },
       howTo: {
         title: 'Comment diviser des fichiers PDF',
+        individualPages: {
+          title: 'Pages individuelles',
+          description: 'Diviser chaque page en fichiers PDF séparés',
+        },
+        pageRange: {
+          title: 'Plage de pages',
+          description: 'Extraire une plage spécifique de pages (ex: pages 5-10)',
+        },
+        specificPages: {
+          title: 'Pages spécifiques',
+          description: 'Sélectionner des pages individuelles à extraire (ex: 1, 3, 5-7, 10)',
+        },
+        zipOption: {
+          title: 'Option ZIP',
+          description: 'Emballer plusieurs fichiers en un seul téléchargement ZIP',
+        },
+        privacy: {
+          title: 'Confidentialité',
+          description: 'Tout le traitement se fait localement dans votre navigateur',
+        },
         steps: {
           upload: {
             title: 'Téléverser PDF',

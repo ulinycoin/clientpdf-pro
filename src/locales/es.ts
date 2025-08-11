@@ -156,6 +156,16 @@ export const es: Translations = {
       pageTitle: 'Dividir archivos PDF gratis',
       pageDescription: 'Divide archivos PDF por páginas o rangos gratis. Extrae páginas específicas de documentos PDF. División privada y segura de PDF en tu navegador.',
       uploadTitle: 'Subir PDF para dividir',
+      uploadDescription: 'Divide tu PDF en páginas individuales o extrae rangos de páginas específicas',
+      selectFile: 'Seleccionar archivo PDF',
+      supportedFiles: 'Compatibles: archivos PDF hasta 100MB',
+      successTitle: '¡PDF dividido exitosamente!',
+      successDescription: 'Tu PDF ha sido dividido en {count} archivos separados.',
+      downloadAllZip: 'Descargar todas las páginas en ZIP ({count} archivos)',
+      downloadIndividual: 'Descargar páginas individuales:',
+      pageNumber: 'Página {page}',
+      splitAnother: 'Dividir otro PDF',
+      howToTitle: 'Cómo dividir PDF:',
       buttons: {
         startSplitting: 'Comenzar división',
       },
@@ -170,6 +180,26 @@ export const es: Translations = {
       },
       howTo: {
         title: 'Cómo dividir archivos PDF',
+        individualPages: {
+          title: 'Páginas individuales',
+          description: 'Dividir cada página en archivos PDF separados',
+        },
+        pageRange: {
+          title: 'Rango de páginas',
+          description: 'Extraer un rango específico de páginas (ej: páginas 5-10)',
+        },
+        specificPages: {
+          title: 'Páginas específicas',
+          description: 'Seleccionar páginas individuales para extraer (ej: 1, 3, 5-7, 10)',
+        },
+        zipOption: {
+          title: 'Opción ZIP',
+          description: 'Empaquetar múltiples archivos en una sola descarga ZIP',
+        },
+        privacy: {
+          title: 'Privacidad',
+          description: 'Todo el procesamiento ocurre localmente en tu navegador',
+        },
         steps: {
           upload: {
             title: 'Subir PDF',

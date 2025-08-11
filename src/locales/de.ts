@@ -156,6 +156,16 @@ export const de: Translations = {
       pageTitle: 'PDF-Dateien kostenlos aufteilen',
       pageDescription: 'Teilen Sie PDF-Dateien kostenlos nach Seiten oder Bereichen auf. Extrahieren Sie bestimmte Seiten aus PDF-Dokumenten. Private und sichere PDF-Aufteilung in Ihrem Browser.',
       uploadTitle: 'PDF zum Aufteilen hochladen',
+      uploadDescription: 'Teilen Sie Ihr PDF in einzelne Seiten auf oder extrahieren Sie bestimmte Seitenbereiche',
+      selectFile: 'PDF-Datei auswählen',
+      supportedFiles: 'Unterstützt: PDF-Dateien bis zu 100MB',
+      successTitle: 'PDF erfolgreich aufgeteilt!',
+      successDescription: 'Ihr PDF wurde in {count} separate Dateien aufgeteilt.',
+      downloadAllZip: 'Alle Seiten als ZIP herunterladen ({count} Dateien)',
+      downloadIndividual: 'Einzelne Seiten herunterladen:',
+      pageNumber: 'Seite {page}',
+      splitAnother: 'Weitere PDF aufteilen',
+      howToTitle: 'So teilen Sie PDF auf:',
       buttons: {
         startSplitting: 'Aufteilung starten',
       },
@@ -170,6 +180,26 @@ export const de: Translations = {
       },
       howTo: {
         title: 'So teilen Sie PDF-Dateien auf',
+        individualPages: {
+          title: 'Einzelne Seiten',
+          description: 'Jede Seite in separate PDF-Dateien aufteilen',
+        },
+        pageRange: {
+          title: 'Seitenbereich',
+          description: 'Einen bestimmten Bereich von Seiten extrahieren (z.B. Seiten 5-10)',
+        },
+        specificPages: {
+          title: 'Bestimmte Seiten',
+          description: 'Einzelne Seiten zum Extrahieren auswählen (z.B. 1, 3, 5-7, 10)',
+        },
+        zipOption: {
+          title: 'ZIP-Option',
+          description: 'Mehrere Dateien in einen einzigen ZIP-Download verpacken',
+        },
+        privacy: {
+          title: 'Datenschutz',
+          description: 'Alle Verarbeitung erfolgt lokal in Ihrem Browser',
+        },
         steps: {
           upload: {
             title: 'PDF hochladen',

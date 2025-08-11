@@ -19,17 +19,6 @@ export default defineConfig({
     }
   ],
 
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
-      '@/components': path.resolve(__dirname, './src/components'),
-      '@/services': path.resolve(__dirname, './src/services'),
-      '@/utils': path.resolve(__dirname, './src/utils'),
-      '@/types': path.resolve(__dirname, './src/types'),
-      '@/hooks': path.resolve(__dirname, './src/hooks'),
-      '@/data': path.resolve(__dirname, './src/data'),
-    }
-  },
 
   server: {
     host: true,
@@ -91,6 +80,11 @@ export default defineConfig({
     }
   },
 
+  define: {
+    global: 'globalThis',
+    'process.env': {}
+  },
+
   optimizeDeps: {
     include: [
       'react', 'react-dom', 'react-router-dom', 'react-helmet-async',
@@ -98,6 +92,20 @@ export default defineConfig({
       'mammoth'
     ],
     exclude: ['tesseract.js']
+  },
+
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+      '@/components': path.resolve(__dirname, './src/components'),
+      '@/services': path.resolve(__dirname, './src/services'),
+      '@/utils': path.resolve(__dirname, './src/utils'),
+      '@/types': path.resolve(__dirname, './src/types'),
+      '@/hooks': path.resolve(__dirname, './src/hooks'),
+      '@/data': path.resolve(__dirname, './src/data'),
+      // Prevent Tesseract.js from loading in development
+      'tesseract.js': path.resolve(__dirname, './src/utils/tesseract-stub.ts')
+    }
   }
 });
 

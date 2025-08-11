@@ -172,6 +172,16 @@ export const en: Translations = {
       pageTitle: 'Split PDF Files Free',
       pageDescription: 'Split PDF files by pages or ranges for free. Extract specific pages from PDF documents. Private and secure PDF splitting in your browser.',
       uploadTitle: 'Upload PDF to Split',
+      uploadDescription: 'Split your PDF into individual pages or extract specific page ranges',
+      selectFile: 'Select PDF File',
+      supportedFiles: 'Supported: PDF files up to 100MB',
+      successTitle: 'PDF Split Successfully!',
+      successDescription: 'Your PDF has been split into {count} separate files.',
+      downloadAllZip: 'Download All Pages as ZIP ({count} files)',
+      downloadIndividual: 'Download Individual Pages:',
+      pageNumber: 'Page {page}',
+      splitAnother: 'Split Another PDF',
+      howToTitle: 'How to Split PDF:',
       buttons: {
         startSplitting: 'Start Splitting',
       },
@@ -186,6 +196,26 @@ export const en: Translations = {
       },
       howTo: {
         title: 'How to Split PDF Files',
+        individualPages: {
+          title: 'Individual Pages',
+          description: 'Split every page into separate PDF files',
+        },
+        pageRange: {
+          title: 'Page Range',
+          description: 'Extract a specific range of pages (e.g., pages 5-10)',
+        },
+        specificPages: {
+          title: 'Specific Pages',
+          description: 'Select individual pages to extract (e.g., 1, 3, 5-7, 10)',
+        },
+        zipOption: {
+          title: 'ZIP Option',
+          description: 'Package multiple files into a single ZIP download',
+        },
+        privacy: {
+          title: 'Privacy',
+          description: 'All processing happens locally in your browser',
+        },
         steps: {
           upload: {
             title: 'Upload PDF',
