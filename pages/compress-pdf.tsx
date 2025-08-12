@@ -6,6 +6,7 @@ import Footer from '../src/components/organisms/Footer';
 import CompressionTool from '../src/components/organisms/CompressionTool';
 import { RelatedTools } from '../src/components/common/RelatedTools';
 import { Breadcrumbs } from '../src/components/common/Breadcrumbs';
+import { TwitterCardImage } from '../src/components/TwitterCardImage';
 
 interface CompressPDFPageProps {
   seoData: typeof toolsSEOData.compress;
@@ -33,9 +34,9 @@ export default function CompressPDFPage({ seoData }: CompressPDFPageProps) {
         <meta property="og:image" content="https://localpdf.online/og-compress-pdf.png" />
 
         {/* Twitter Card */}
-        <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={seoData.title} />
         <meta name="twitter:description" content={seoData.description} />
+        <TwitterCardImage toolId="compress-pdf" />
 
         {/* Structured Data */}
         <script

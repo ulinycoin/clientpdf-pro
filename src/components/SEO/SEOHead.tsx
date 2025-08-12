@@ -1,6 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import HreflangTags from './HreflangTags';
+import { TwitterCardImage } from '../TwitterCardImage';
 
 interface FAQSchemaItem {
   question: string;
@@ -18,6 +19,8 @@ interface SEOHeadProps {
   faqSchema?: FAQSchemaItem[];
   noindex?: boolean;
   includeHreflang?: boolean;
+  toolId?: string;
+  twitterCardImage?: string;
 }
 
 export const SEOHead: React.FC<SEOHeadProps> = ({
@@ -30,7 +33,9 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
   structuredData,
   faqSchema,
   noindex = false,
-  includeHreflang = true
+  includeHreflang = true,
+  toolId,
+  twitterCardImage
 }) => {
   // Ensure title includes LocalPDF branding
   const fullTitle = title.includes('LocalPDF') ? title : `${title} | LocalPDF`;
@@ -87,12 +92,20 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
       <meta property="og:locale" content="en_US" />
 
       {/* Twitter Card */}
-      <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={description} />
-      <meta name="twitter:image" content={fullOgImage} />
       <meta name="twitter:creator" content="@localpdf" />
       <meta name="twitter:site" content="@localpdf" />
+      
+      {/* Twitter Card Image - handled by TwitterCardImage component if toolId provided */}
+      {toolId ? (
+        <TwitterCardImage toolId={toolId} customImage={twitterCardImage} />
+      ) : (
+        <>
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:image" content={twitterCardImage || fullOgImage} />
+        </>
+      )}
 
       {/* Additional SEO Meta Tags */}
       <meta name="language" content="English" />

@@ -6,6 +6,7 @@ import Footer from '../src/components/organisms/Footer';
 import MergeTool from '../src/components/organisms/MergeTool';
 import { RelatedTools } from '../src/components/common/RelatedTools';
 import { Breadcrumbs } from '../src/components/common/Breadcrumbs';
+import { TwitterCardImage } from '../src/components/TwitterCardImage';
 
 interface MergePDFPageProps {
   seoData: typeof toolsSEOData.merge;
@@ -33,9 +34,9 @@ export default function MergePDFPage({ seoData }: MergePDFPageProps) {
         <meta property="og:image" content="https://localpdf.online/og-merge-pdf.png" />
 
         {/* Twitter Card */}
-        <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={seoData.title} />
         <meta name="twitter:description" content={seoData.description} />
+        <TwitterCardImage toolId="merge-pdf" />
 
         {/* Structured Data */}
         <script

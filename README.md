@@ -148,6 +148,26 @@ LocalPDF supports multiple languages:
 
 Adding new languages is straightforward - contribute translations in `/src/locales/`.
 
+## 🎨 Twitter Cards & Social Media
+
+LocalPDF includes automatically generated Twitter Card images for better social media sharing:
+
+- **30 unique images**: 6 tools × 5 languages
+- **Professional design**: Gradient backgrounds, modern typography
+- **Optimized dimensions**: 1200×630px for Twitter, Facebook, LinkedIn
+- **Privacy branding**: Clear "Privacy First" messaging
+
+### Generate Twitter Cards
+```bash
+# Generate all cards
+npm run generate-twitter-cards
+
+# Generate missing cards only  
+node scripts/generate-missing-cards.js
+```
+
+Cards are automatically integrated into page meta tags via the `TwitterCardImage` component.
+
 ---
 
 ## 🔧 Development

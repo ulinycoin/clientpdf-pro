@@ -1,0 +1,51 @@
+{
+  "generated": "2025-08-12T19:40:27.926Z",
+  "tools": [
+    "merge-pdf",
+    "split-pdf",
+    "compress-pdf",
+    "pdf-to-jpg",
+    "word-to-pdf",
+    "excel-to-pdf"
+  ],
+  "languages": [
+    "en",
+    "ru",
+    "de",
+    "fr",
+    "es"
+  ],
+  "total": 30,
+  "files": [
+    "merge-pdf-en.png",
+    "merge-pdf-ru.png",
+    "merge-pdf-de.png",
+    "merge-pdf-fr.png",
+    "merge-pdf-es.png",
+    "split-pdf-en.png",
+    "split-pdf-ru.png",
+    "split-pdf-de.png",
+    "split-pdf-fr.png",
+    "split-pdf-es.png",
+    "compress-pdf-en.png",
+    "compress-pdf-ru.png",
+    "compress-pdf-de.png",
+    "compress-pdf-fr.png",
+    "compress-pdf-es.png",
+    "pdf-to-jpg-en.png",
+    "pdf-to-jpg-ru.png",
+    "pdf-to-jpg-de.png",
+    "pdf-to-jpg-fr.png",
+    "pdf-to-jpg-es.png",
+    "word-to-pdf-en.png",
+    "word-to-pdf-ru.png",
+    "word-to-pdf-de.png",
+    "word-to-pdf-fr.png",
+    "word-to-pdf-es.png",
+    "excel-to-pdf-en.png",
+    "excel-to-pdf-ru.png",
+    "excel-to-pdf-de.png",
+    "excel-to-pdf-fr.png",
+    "excel-to-pdf-es.png"
+  ]
+}

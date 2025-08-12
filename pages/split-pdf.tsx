@@ -6,6 +6,7 @@ import Footer from '../src/components/organisms/Footer';
 import SplitTool from '../src/components/organisms/SplitTool';
 import { RelatedTools } from '../src/components/common/RelatedTools';
 import { Breadcrumbs } from '../src/components/common/Breadcrumbs';
+import { TwitterCardImage } from '../src/components/TwitterCardImage';
 
 interface SplitPDFPageProps {
   seoData: typeof toolsSEOData.split;
@@ -33,9 +34,9 @@ export default function SplitPDFPage({ seoData }: SplitPDFPageProps) {
         <meta property="og:image" content="https://localpdf.online/og-split-pdf.png" />
 
         {/* Twitter Card */}
-        <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={seoData.title} />
         <meta name="twitter:description" content={seoData.description} />
+        <TwitterCardImage toolId="split-pdf" />
 
         {/* Structured Data */}
         <script
