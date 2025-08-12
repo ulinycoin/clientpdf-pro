@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
+import { useTranslation } from '../../hooks/useI18n';
 
 interface FAQItem {
   question: string;
@@ -15,11 +16,12 @@ interface FAQSectionProps {
 }
 
 const FAQSection: React.FC<FAQSectionProps> = ({
-  title = "Frequently Asked Questions",
+  title,
   faqs,
   className = "",
   defaultOpen = false
 }) => {
+  const { t } = useTranslation();
   const [openItems, setOpenItems] = useState<Set<string>>(new Set());
   const [sectionOpen, setSectionOpen] = useState(defaultOpen);
 
@@ -49,7 +51,7 @@ const FAQSection: React.FC<FAQSectionProps> = ({
           aria-expanded={sectionOpen}
         >
           <h2 className="text-2xl font-semibold text-gray-900">
-            {title}
+            {title || t('common.faqTitle')}
           </h2>
           {sectionOpen ? (
             <ChevronUpIcon className="h-6 w-6 text-gray-500 flex-shrink-0" />

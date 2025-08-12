@@ -42,6 +42,20 @@ const Footer: React.FC = () => {
             </a>
             <span className="text-gray-600">•</span>
             <a 
+              href="/terms" 
+              className="text-gray-400 hover:text-white transition-colors"
+            >
+              {t('footer.links.terms')}
+            </a>
+            <span className="text-gray-600">•</span>
+            <a 
+              href="/gdpr" 
+              className="text-gray-400 hover:text-white transition-colors"
+            >
+              GDPR
+            </a>
+            <span className="text-gray-600">•</span>
+            <a 
               href="/faq" 
               className="text-gray-400 hover:text-white transition-colors"
             >

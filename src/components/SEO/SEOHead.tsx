@@ -91,8 +91,8 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={fullOgImage} />
-      <meta name="twitter:creator" content="@LocalPDF" />
-      <meta name="twitter:site" content="@LocalPDF" />
+      <meta name="twitter:creator" content="@localpdf" />
+      <meta name="twitter:site" content="@localpdf" />
 
       {/* Additional SEO Meta Tags */}
       <meta name="language" content="English" />

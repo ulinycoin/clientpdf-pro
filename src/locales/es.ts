@@ -35,6 +35,10 @@ export const es: Translations = {
     remove: 'Eliminar',
     clearAll: 'Limpiar todo',
     or: 'o',
+    selectFile: 'Por favor seleccione al menos un archivo',
+    unexpectedError: 'Ocurrió un error inesperado',
+    pdfFiles: 'Archivos PDF',
+    faqTitle: 'Preguntas frecuentes',
   },
 
   header: {
@@ -129,6 +133,23 @@ export const es: Translations = {
     compress: {
       title: 'Comprimir PDF',
       description: 'Reducir el tamaño del archivo PDF manteniendo la calidad',
+      starting: 'Iniciando compresión...',
+      failed: 'Compresión falló',
+      fileToCompress: 'Archivo a comprimir',
+      smaller: 'más pequeño',
+      estimated: 'estimado',
+      compressing: 'Comprimiendo...',
+      howItWorks: 'Cómo funciona',
+      howItWorksDescription: 'La compresión PDF elimina datos redundantes y optimiza la estructura del contenido. Configuraciones de calidad más bajas proporcionan archivos más pequeños pero pueden afectar la fidelidad visual.',
+      settings: {
+        title: 'Configuraciones de compresión',
+        qualityLevel: 'Nivel de calidad',
+        smallerFile: 'Archivo más pequeño',
+        betterQuality: 'Mejor calidad',
+        compressImages: 'Comprimir imágenes (puede reducir significativamente el tamaño del archivo)',
+        removeMetadata: 'Eliminar metadatos (autor, título, fecha de creación)',
+        optimizeForWeb: 'Optimizar para visualización web (carga más rápida)',
+      },
     },
     addText: {
       title: 'Añadir texto',
@@ -386,6 +407,7 @@ export const es: Translations = {
     description: 'Hecho con ❤️ para usuarios conscientes de la privacidad en todo el mundo',
     links: {
       privacy: 'Privacidad',
+      terms: 'Términos',
       faq: 'FAQ',
       github: 'GitHub',
     },
@@ -709,6 +731,7 @@ export const es: Translations = {
         pageDescription: 'Comprime archivos PDF para reducir el tamaño sin perder calidad. Herramienta gratuita de compresión PDF que funciona en tu navegador con configuraciones de calidad personalizables.',
         uploadTitle: 'Subir PDF para comprimir',
         uploadSubtitle: 'Selecciona un archivo PDF para reducir su tamaño',
+        faqTitle: 'Preguntas frecuentes sobre compresión de PDF',
         buttons: {
           uploadDifferent: '← Subir PDF diferente',
         },
@@ -782,6 +805,30 @@ export const es: Translations = {
             acceptable: '• **50-70%:** Calidad aceptable, compresión máxima',
             low: '• **Menos del 50%:** Pérdida notable de calidad, archivos más pequeños',
           },
+        },
+        faq: {
+          items: [
+            {
+              id: 'compress-privacy',
+              question: '¿Es segura y privada la compresión de PDF?',
+              answer: 'Sí, la compresión de LocalPDF es completamente privada y segura. Toda la compresión ocurre directamente en tu navegador - tus archivos nunca se suben a ningún servidor. Esto asegura que tus documentos confidenciales permanezcan privados mientras logras una reducción óptima del tamaño del archivo.'
+            },
+            {
+              id: 'compress-quality',
+              question: '¿Cuánto puedo comprimir PDFs sin perder calidad?',
+              answer: 'LocalPDF utiliza algoritmos de compresión avanzados que pueden reducir los tamaños de archivos PDF en un 50-90% mientras mantienen una excelente calidad visual. Nuestra compresión inteligente analiza cada documento y aplica configuraciones óptimas para la mejor relación tamaño-calidad.'
+            },
+            {
+              id: 'compress-vs-others',
+              question: '¿Por qué elegir LocalPDF para la compresión de PDF?',
+              answer: 'LocalPDF ofrece compresión superior: Sin límites de tamaño de archivo - Comprime PDFs de cualquier tamaño; Múltiples niveles de compresión - Elige entre calidad y tamaño; Compresión por lotes - Procesa múltiples archivos; 100% Privacidad - No se requieren cargas de servidor; Completamente gratis - Sin marcas de agua o restricciones.'
+            },
+            {
+              id: 'compress-algorithms',
+              question: '¿Qué tecnología de compresión utiliza LocalPDF?',
+              answer: 'LocalPDF utiliza técnicas de optimización PDF estándar de la industria incluyendo compresión de imágenes, optimización de fuentes y eliminación de metadatos. Todo el procesamiento ocurre en tu navegador usando bibliotecas JavaScript avanzadas para máxima compatibilidad y rendimiento.'
+            }
+          ]
         },
       },
       imageToPdf: {
@@ -954,6 +1001,61 @@ export const es: Translations = {
             title: '✨ Alta calidad',
             description: 'Preserva el formato original, fuentes y diseño para resultados profesionales.',
           },
+        },
+        tool: {
+          uploadTitle: 'Elegir documento Word',
+          uploadSubtitle: 'Haz clic aquí o arrastra y suelta tu archivo .docx',
+          supportedFormats: 'Soporta Microsoft Word (.docx) hasta 50MB',
+          compatibility: {
+            msWord: '✓ Funciona con archivos .docx de Microsoft Word',
+            googleDocs: '✓ Funciona con archivos .docx de Google Docs',
+            docWarning: '⚠️ Los archivos .doc necesitan ser convertidos a .docx primero',
+            localProcessing: '✓ El procesamiento ocurre localmente en tu navegador'
+          },
+          messages: {
+            conversionCompleted: '¡Conversión completada!',
+            conversionFailed: 'Error en la conversión'
+          },
+          preview: {
+            title: 'Vista previa del PDF',
+            description: 'Convierte tu documento para ver la vista previa aquí'
+          },
+          settings: {
+            title: 'Configuraciones de conversión'
+          },
+          buttons: {
+            converting: 'Convirtiendo...',
+            convertToPdf: 'Convertir a PDF',
+            chooseDifferent: 'Elegir archivo diferente'
+          },
+          fileInfo: {
+            title: 'Información del archivo',
+            fileName: 'Archivo',
+            fileSize: 'Tamaño',
+            fileType: 'Tipo',
+            microsoftWord: 'Microsoft Word (.docx)',
+            privacyNote: 'Todo el procesamiento ocurre localmente en tu navegador para máxima privacidad'
+          },
+          faqTitle: 'Preguntas frecuentes sobre la conversión de Word a PDF'
+        },
+        faq: {
+          items: [
+            {
+              id: 'word-to-pdf-privacy',
+              question: '¿Es segura la conversión de Word a PDF?',
+              answer: '¡Sí, completamente segura! LocalPDF convierte documentos Word a PDF completamente en tu navegador. Tus documentos nunca se suben a ningún servidor, garantizando confidencialidad completa para documentos comerciales, currículums, contratos o archivos personales.'
+            },
+            {
+              id: 'word-to-pdf-formatting',
+              question: '¿LocalPDF preserva el formato de los documentos Word?',
+              answer: 'LocalPDF mantiene todo el formato, fuentes, imágenes, tablas y diseño de tu documento Word original. El PDF resultante se ve exactamente como tu documento Word, haciéndolo perfecto para documentos profesionales y presentaciones oficiales.'
+            },
+            {
+              id: 'word-to-pdf-compatibility',
+              question: '¿Qué formatos de documentos Word son compatibles?',
+              answer: 'LocalPDF soporta formatos modernos de Word incluyendo: .docx (Word 2007 y más reciente), .doc (documentos Word heredados), .docm (documentos con macros habilitadas). Todas las versiones mantienen compatibilidad y formato completos.'
+            }
+          ]
         },
       },
       ocr: {
@@ -1279,6 +1381,174 @@ export const es: Translations = {
         },
       },
     },
+    gdpr: {
+      title: 'Cumplimiento GDPR - LocalPDF | Procesamiento PDF centrado en privacidad',
+      description: 'Conozca el cumplimiento GDPR de LocalPDF. Garantizamos protección completa de datos con procesamiento 100% local, sin cargas y con privacidad completa del usuario.',
+      lastUpdated: 'Última actualización',
+      sections: {
+        introduction: {
+          title: 'Introducción al Cumplimiento GDPR',
+          content: 'El Reglamento General de Protección de Datos (GDPR) es una ley integral de protección de datos que entró en vigor el 25 de mayo de 2018. LocalPDF está diseñado desde cero para superar los requisitos del GDPR garantizando privacidad completa de datos a través del procesamiento local.'
+        },
+        localProcessing: {
+          title: 'Procesamiento Local y Protección de Datos',
+          content: 'LocalPDF opera completamente dentro de su navegador, garantizando que sus documentos y datos personales nunca salgan de su dispositivo:',
+          benefits: [
+            'No hay cargas de archivos a servidores externos',
+            'No hay recolección o almacenamiento de datos personales',
+            'Control completo sobre sus documentos',
+            'Procesamiento instantáneo sin dependencia de internet'
+          ]
+        },
+        rights: {
+          title: 'Sus Derechos GDPR',
+          content: 'Bajo el GDPR, tiene derechos específicos respecto a sus datos personales. Con LocalPDF, la mayoría de estos derechos están automáticamente protegidos:',
+          list: {
+            access: {
+              title: 'Derecho de Acceso',
+              description: 'Como no recopilamos datos, no hay nada a lo que acceder.'
+            },
+            portability: {
+              title: 'Portabilidad de Datos',
+              description: 'Sus datos permanecen en su dispositivo y son completamente portables.'
+            },
+            erasure: {
+              title: 'Derecho al Olvido',
+              description: 'Limpie la caché de su navegador para eliminar cualquier dato temporal.'
+            },
+            objection: {
+              title: 'Derecho de Oposición',
+              description: 'Usted controla todo el procesamiento - no ocurre procesamiento externo.'
+            }
+          }
+        },
+        minimization: {
+          title: 'Principio de Minimización de Datos',
+          content: 'El GDPR requiere procesar solo los datos mínimos necesarios. LocalPDF va más allá al no procesar NINGÚN dato personal.',
+          emphasis: 'Recopilamos cero información personal, rastreamos cero comportamiento de usuario y almacenamos cero datos de usuario.'
+        },
+        legalBasis: {
+          title: 'Base Legal para el Procesamiento',
+          content: 'Cuando se requiere procesamiento, nos basamos en las siguientes bases legales compatibles con GDPR:',
+          bases: {
+            consent: {
+              title: 'Consentimiento',
+              description: 'Cuando elige usar nuestras herramientas, proporciona consentimiento implícito para el procesamiento local.'
+            },
+            legitimate: {
+              title: 'Interés Legítimo',
+              description: 'Proporcionar herramientas PDF sin comprometer su privacidad sirve a nuestro interés comercial legítimo.'
+            }
+          }
+        },
+        contact: {
+          title: 'Contacto del Oficial de Protección de Datos',
+          content: 'Para cualquier pregunta o inquietud relacionada con GDPR, por favor contáctenos:'
+        }
+      }
+    },
+    terms: {
+      title: 'Términos de Servicio',
+      subtitle: 'Términos claros y justos para usar LocalPDF',
+      lastUpdated: 'Última actualización: 15 de enero de 2025',
+      sections: {
+        introduction: {
+          title: 'Introducción',
+          content: 'Bienvenido a LocalPDF, la plataforma de procesamiento PDF centrada en la privacidad. Estos Términos de Servicio rigen su uso de nuestras herramientas PDF gratuitas y de código abierto que procesan archivos completamente dentro de su navegador para máxima seguridad y privacidad.'
+        },
+        acceptance: {
+          title: 'Aceptación de Términos',
+          content: 'Al acceder o usar LocalPDF, usted acepta estar obligado por estos Términos de Servicio y nuestra Política de Privacidad. Si no está de acuerdo con estos términos, por favor no use nuestro servicio.'
+        },
+        serviceDescription: {
+          title: 'Descripción del Servicio',
+          content: 'LocalPDF proporciona herramientas gratuitas de procesamiento PDF basadas en navegador incluyendo fusión, división, compresión, conversión y funcionalidades de edición. Todo el procesamiento ocurre localmente en su navegador sin cargas de archivos.',
+          features: {
+            title: 'Nuestras Herramientas Incluyen:',
+            list: [
+              'Fusión PDF - Combinar múltiples PDFs en uno',
+              'División PDF - Extraer páginas o dividir documentos',
+              'Compresión PDF - Reducir tamaño de archivo manteniendo calidad',
+              'Word a PDF - Convertir documentos a formato PDF',
+              'Agregar Texto y Marcas de Agua - Personalizar sus documentos',
+              'Conversión de Imágenes - Convertir entre PDF y formatos de imagen',
+              'Reconocimiento de Texto OCR - Extraer texto de documentos escaneados',
+              'Y más herramientas PDF centradas en privacidad'
+            ]
+          }
+        },
+        usageRules: {
+          title: 'Reglas de Uso',
+          allowed: {
+            title: 'Usted Puede:',
+            items: [
+              'Usar todas las herramientas para propósitos personales y comerciales',
+              'Procesar archivos y tamaños de archivo ilimitados',
+              'Acceder al servicio desde cualquier dispositivo o navegador',
+              'Contribuir al proyecto de código abierto en GitHub',
+              'Bifurcar y modificar el código bajo nuestra licencia',
+              'Usar sin conexión cuando se haya cargado previamente'
+            ]
+          },
+          prohibited: {
+            title: 'No Debe:',
+            items: [
+              'Cargar archivos maliciosos o malware',
+              'Intentar ingeniería inversa de nuestros algoritmos de procesamiento',
+              'Usar el servicio para actividades ilegales',
+              'Intentar sobrecargar o atacar nuestra infraestructura',
+              'Violar cualquier ley o regulación aplicable',
+              'Infringir derechos de propiedad intelectual'
+            ]
+          }
+        },
+        privacy: {
+          title: 'Privacidad y Protección de Datos',
+          localProcessing: 'LocalPDF procesa todos los archivos localmente en su navegador. Sus archivos nunca abandonan su dispositivo.',
+          noDataCollection: 'No recopilamos, almacenamos ni tenemos acceso a sus archivos o datos personales. Vea nuestra Política de Privacidad para detalles completos.',
+          privacyPolicyLink: 'Leer nuestra Política de Privacidad completa →'
+        },
+        intellectualProperty: {
+          title: 'Propiedad Intelectual',
+          openSource: {
+            title: 'Licencia de Código Abierto',
+            content: 'LocalPDF es software de código abierto disponible bajo la licencia MIT. Usted es libre de usar, modificar y distribuir el código.',
+            githubLink: 'Ver código fuente en GitHub →'
+          },
+          userContent: {
+            title: 'Su Contenido',
+            content: 'Usted mantiene todos los derechos sobre los archivos que procesa con LocalPDF. Dado que el procesamiento ocurre localmente, nunca accedemos a su contenido.'
+          }
+        },
+        disclaimers: {
+          title: 'Descargos de Responsabilidad',
+          asIs: 'LocalPDF se proporciona "tal como está" sin garantías de ningún tipo.',
+          noWarranties: 'Aunque nos esforzamos por la confiabilidad, no podemos garantizar servicio ininterrumpido o libre de errores.',
+          limitations: [
+            'La disponibilidad del servicio puede variar según la compatibilidad del navegador',
+            'La velocidad de procesamiento depende de las capacidades de su dispositivo',
+            'Los archivos grandes pueden causar problemas de rendimiento en dispositivos más antiguos',
+            'No somos responsables por corrupción de archivos o pérdida de datos'
+          ]
+        },
+        liability: {
+          title: 'Limitación de Responsabilidad',
+          limitation: 'LocalPDF y sus desarrolladores no serán responsables por ningún daño que surja del uso del servicio.',
+          maxLiability: 'Nuestra responsabilidad está limitada al máximo permitido por la ley.'
+        },
+        changes: {
+          title: 'Cambios a los Términos',
+          notification: 'Podemos actualizar estos términos ocasionalmente. Los cambios se publicarán en esta página con una fecha actualizada.',
+          effective: 'El uso continuo de LocalPDF después de los cambios constituye aceptación de los nuevos términos.'
+        },
+        contact: {
+          title: 'Información de Contacto',
+          description: '¿Preguntas sobre estos términos? Estamos aquí para ayudar.',
+          github: 'Problemas y Soporte',
+          website: 'Sitio Web'
+        }
+      }
+    }
   },
 };
 

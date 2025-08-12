@@ -4,6 +4,9 @@ import { HelmetProvider } from 'react-helmet-async';
 import { Analytics } from '@vercel/analytics/react';
 import { I18nProvider } from './hooks/useI18n';
 import { HomePage, PrivacyPage, FAQPage, HowToUsePage, NotFoundPage } from './pages';
+import TermsPage from './pages/TermsPage';
+import GDPRPage from './pages/GDPRPage';
+import ScrollToTop from './components/ScrollToTop';
 
 // Lazy load tool pages for better performance
 const MergePDFPage = React.lazy(() => import('./pages/tools/MergePDFPage'));
@@ -43,6 +46,7 @@ function App() {
             v7_relativeSplatPath: true
           }}
         >
+          <ScrollToTop />
           <div className="min-h-screen bg-gradient-mesh no-horizontal-scroll">
             {/* Main content with suspense for lazy loading */}
             <React.Suspense fallback={<LoadingSpinner />}>
@@ -134,17 +138,27 @@ function App() {
 
                 {/* Information pages - English */}
                 <Route path="/privacy" element={<PrivacyPage />} />
+                <Route path="/terms" element={<TermsPage />} />
+                <Route path="/gdpr" element={<GDPRPage />} />
                 <Route path="/faq" element={<FAQPage />} />
                 <Route path="/how-to-use" element={<HowToUsePage />} />
 
                 {/* Information pages - Multilingual */}
                 <Route path="/de/privacy" element={<PrivacyPage />} />
+                <Route path="/de/terms" element={<TermsPage />} />
+                <Route path="/de/gdpr" element={<GDPRPage />} />
                 <Route path="/de/faq" element={<FAQPage />} />
                 <Route path="/fr/privacy" element={<PrivacyPage />} />
+                <Route path="/fr/terms" element={<TermsPage />} />
+                <Route path="/fr/gdpr" element={<GDPRPage />} />
                 <Route path="/fr/faq" element={<FAQPage />} />
                 <Route path="/es/privacy" element={<PrivacyPage />} />
+                <Route path="/es/terms" element={<TermsPage />} />
+                <Route path="/es/gdpr" element={<GDPRPage />} />
                 <Route path="/es/faq" element={<FAQPage />} />
                 <Route path="/ru/privacy" element={<PrivacyPage />} />
+                <Route path="/ru/terms" element={<TermsPage />} />
+                <Route path="/ru/gdpr" element={<GDPRPage />} />
                 <Route path="/ru/faq" element={<FAQPage />} />
 
                 {/* 404 page - professional LocalPDF branded error page */}

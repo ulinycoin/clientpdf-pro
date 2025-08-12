@@ -10,30 +10,50 @@ const __dirname = path.dirname(__filename);
 const INDEX_NOW_KEY = 'be13ab7c5d7548a1b51e5ce3c969af42';
 const SITE_URL = 'https://localpdf.online';
 
-// All URLs to submit for indexing
-const URLS_TO_INDEX = [
-  // Main pages
-  `${SITE_URL}/`,
-  `${SITE_URL}/privacy`,
-  `${SITE_URL}/faq`,
+// Generate multilingual URLs
+const generateMultilingualUrls = () => {
+  const languages = ['en', 'de', 'fr', 'es', 'ru'];
+  const pages = [
+    '/merge-pdf',
+    '/split-pdf', 
+    '/compress-pdf',
+    '/add-text-pdf',
+    '/watermark-pdf',
+    '/rotate-pdf',
+    '/extract-pages-pdf',
+    '/extract-text-pdf',
+    '/pdf-to-image',
+    '/images-to-pdf',
+    '/word-to-pdf',
+    '/excel-to-pdf',
+    '/ocr-pdf',
+    '/privacy',
+    '/faq'
+  ];
 
-  // PDF Tools - High Priority
-  `${SITE_URL}/merge-pdf`,
-  `${SITE_URL}/split-pdf`,
-  `${SITE_URL}/compress-pdf`,
-  `${SITE_URL}/pdf-to-image`,
-  `${SITE_URL}/images-to-pdf`,
-  `${SITE_URL}/word-to-pdf`,
-  `${SITE_URL}/excel-to-pdf`,
+  const urls = [];
+  
+  // Add homepage
+  urls.push(`${SITE_URL}/`);
+  
+  // Add all language-page combinations
+  languages.forEach(lang => {
+    pages.forEach(page => {
+      if (lang === 'en') {
+        // English pages in root
+        urls.push(`${SITE_URL}${page}`);
+      } else {
+        // Other languages in subdirectories
+        urls.push(`${SITE_URL}/${lang}${page}`);
+      }
+    });
+  });
+  
+  return urls;
+};
 
-  // PDF Tools - Secondary
-  `${SITE_URL}/add-text-pdf`,
-  `${SITE_URL}/watermark-pdf`,
-  `${SITE_URL}/rotate-pdf`,
-  `${SITE_URL}/extract-pages-pdf`,
-  `${SITE_URL}/extract-text-pdf`,
-  `${SITE_URL}/ocr-pdf`
-];
+// All URLs to submit for indexing (76 multilingual URLs)
+const URLS_TO_INDEX = generateMultilingualUrls();
 
 // IndexNow API endpoints
 const INDEX_NOW_ENDPOINTS = [

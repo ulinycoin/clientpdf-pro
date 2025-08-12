@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { CompressionToolProps, PDFProcessingResult, CompressionOptions } from '../../types';
 import { compressionService } from '../../services/compressionService';
+import { useTranslation } from '../../hooks/useI18n';
 import Button from '../atoms/Button';
 import ProgressBar from '../atoms/ProgressBar';
 
@@ -10,6 +11,7 @@ const CompressionTool: React.FC<CompressionToolProps> = ({
   onClose,
   className = ''
 }) => {
+  const { t } = useTranslation();
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [progressMessage, setProgressMessage] = useState('');
@@ -29,13 +31,13 @@ const CompressionTool: React.FC<CompressionToolProps> = ({
 
   const handleCompress = async () => {
     if (files.length === 0) {
-      setError('Please select at least one file to compress');
+      setError(t('common.selectFile'));
       return;
     }
 
     setIsProcessing(true);
     setProgress(0);
-    setProgressMessage('Starting compression...');
+    setProgressMessage(t('tools.compress.starting'));
     setError(null);
 
     try {
@@ -53,10 +55,10 @@ const CompressionTool: React.FC<CompressionToolProps> = ({
       if (result.success) {
         onComplete(result);
       } else {
-        setError(result.error?.message || 'Compression failed');
+        setError(result.error?.message || t('tools.compress.failed'));
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An unexpected error occurred');
+      setError(err instanceof Error ? err.message : t('common.unexpectedError'));
     } finally {
       setIsProcessing(false);
     }
@@ -81,9 +83,9 @@ const CompressionTool: React.FC<CompressionToolProps> = ({
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Compress PDF</h2>
+          <h2 className="text-2xl font-bold text-gray-900">{t('tools.compress.title')}</h2>
           <p className="text-gray-600 mt-1">
-            Reduce file size while maintaining quality
+            {t('tools.compress.description')}
           </p>
         </div>
         <Button variant="ghost" onClick={onClose}>
@@ -94,7 +96,7 @@ const CompressionTool: React.FC<CompressionToolProps> = ({
       {/* File Info */}
       {currentFile && (
         <div className="mb-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">File to compress:</h3>
+          <h3 className="text-lg font-medium text-gray-900 mb-4">{t('tools.compress.fileToCompress')}:</h3>
           
           <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
             <div className="flex items-center space-x-3">
@@ -108,9 +110,9 @@ const CompressionTool: React.FC<CompressionToolProps> = ({
               {estimatedSavings > 0 && (
                 <div className="text-right">
                   <p className="text-sm font-medium text-green-600">
-                    ~{estimatedSavings}% smaller
+                    ~{estimatedSavings}% {t('tools.compress.smaller')}
                   </p>
-                  <p className="text-xs text-gray-500">estimated</p>
+                  <p className="text-xs text-gray-500">{t('tools.compress.estimated')}</p>
                 </div>
               )}
             </div>
@@ -120,13 +122,13 @@ const CompressionTool: React.FC<CompressionToolProps> = ({
 
       {/* Compression Settings */}
       <div className="mb-6">
-        <h3 className="text-lg font-medium text-gray-900 mb-4">Compression Settings:</h3>
+        <h3 className="text-lg font-medium text-gray-900 mb-4">{t('tools.compress.settings.title')}:</h3>
         
         <div className="space-y-4">
           {/* Quality Slider */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Quality Level: {Math.round(options.quality * 100)}%
+              {t('tools.compress.settings.qualityLevel')}: {Math.round(options.quality * 100)}%
             </label>
             <input
               type="range"
@@ -139,8 +141,8 @@ const CompressionTool: React.FC<CompressionToolProps> = ({
               className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
             />
             <div className="flex justify-between text-xs text-gray-500 mt-1">
-              <span>Smaller file</span>
-              <span>Better quality</span>
+              <span>{t('tools.compress.settings.smallerFile')}</span>
+              <span>{t('tools.compress.settings.betterQuality')}</span>
             </div>
           </div>
 
@@ -155,7 +157,7 @@ const CompressionTool: React.FC<CompressionToolProps> = ({
                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
               />
               <span className="ml-3 text-sm text-gray-700">
-                Compress images (can significantly reduce file size)
+                {t('tools.compress.settings.compressImages')}
               </span>
             </label>
             
@@ -168,7 +170,7 @@ const CompressionTool: React.FC<CompressionToolProps> = ({
                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
               />
               <span className="ml-3 text-sm text-gray-700">
-                Remove metadata (author, title, creation date)
+                {t('tools.compress.settings.removeMetadata')}
               </span>
             </label>
             
@@ -181,7 +183,7 @@ const CompressionTool: React.FC<CompressionToolProps> = ({
                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
               />
               <span className="ml-3 text-sm text-gray-700">
-                Optimize for web viewing (faster loading)
+                {t('tools.compress.settings.optimizeForWeb')}
               </span>
             </label>
           </div>
@@ -208,7 +210,7 @@ const CompressionTool: React.FC<CompressionToolProps> = ({
           <div className="flex items-center">
             <div className="text-red-400 mr-2">⚠️</div>
             <div>
-              <h4 className="text-red-800 font-medium">Compression Failed</h4>
+              <h4 className="text-red-800 font-medium">{t('tools.compress.failed')}</h4>
               <p className="text-red-600 text-sm mt-1">{error}</p>
             </div>
           </div>
@@ -220,10 +222,9 @@ const CompressionTool: React.FC<CompressionToolProps> = ({
         <div className="flex items-start">
           <div className="text-blue-400 mr-2 mt-0.5">ℹ️</div>
           <div>
-            <h4 className="text-blue-800 font-medium">How it works</h4>
+            <h4 className="text-blue-800 font-medium">{t('tools.compress.howItWorks')}</h4>
             <p className="text-blue-700 text-sm mt-1">
-              PDF compression removes redundant data and optimizes content structure. 
-              Lower quality settings provide smaller files but may affect visual fidelity.
+              {t('tools.compress.howItWorksDescription')}
             </p>
           </div>
         </div>
@@ -236,7 +237,7 @@ const CompressionTool: React.FC<CompressionToolProps> = ({
           onClick={onClose}
           disabled={isProcessing}
         >
-          Cancel
+          {t('common.cancel')}
         </Button>
         <Button
           variant="primary"
@@ -244,7 +245,7 @@ const CompressionTool: React.FC<CompressionToolProps> = ({
           disabled={files.length === 0 || isProcessing}
           loading={isProcessing}
         >
-          {isProcessing ? 'Compressing...' : 'Compress PDF'}
+          {isProcessing ? t('tools.compress.compressing') : t('tools.compress.title')}
         </Button>
       </div>
     </div>

@@ -11,7 +11,7 @@ import { downloadBlob } from '../../utils/fileHelpers';
 import { generateFilename } from '../../utils/fileHelpers';
 import { useScrollToTop } from '../../hooks/useScrollBehavior';
 import { useI18n } from '../../hooks/useI18n';
-import { getCombinedFAQs } from '../../data/faqData';
+// import { getCombinedFAQs } from '../../data/faqData';
 
 const CompressPDFPage: React.FC = () => {
   const { t } = useI18n();
@@ -19,8 +19,8 @@ const CompressPDFPage: React.FC = () => {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [showTool, setShowTool] = useState(false);
 
-  // Get FAQ data for SEO schema
-  const compressFAQs = getCombinedFAQs('compress');
+  // Get FAQ data from translations
+  const compressFAQs = t('pages.tools.compress.faq.items');
 
   // Scroll to top when component mounts using custom hook
   useScrollToTop();
@@ -88,7 +88,7 @@ const CompressPDFPage: React.FC = () => {
                 title={t('pages.tools.compress.uploadTitle')}
                 subtitle={t('pages.tools.compress.uploadSubtitle')}
                 emoji="🗜️"
-                supportedFormats="PDF files"
+                supportedFormats={t('common.pdfFiles')}
               />
 
               <div className="mt-8 grid md:grid-cols-2 gap-6 text-sm text-gray-600">
@@ -180,7 +180,7 @@ const CompressPDFPage: React.FC = () => {
 
         {/* FAQ Section */}
         <FAQSection
-          title="Frequently Asked Questions about PDF Compression"
+          title={t('pages.tools.compress.faqTitle')}
           faqs={compressFAQs}
           className="mb-8"
           defaultOpen={false}

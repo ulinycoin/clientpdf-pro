@@ -4,8 +4,11 @@ import { useWordToPDF } from '../hooks/useWordToPDF';
 import { ConversionSettings } from '../types/wordToPdf.types';
 import { ConversionSettingsPanel } from './ConversionSettingsPanel';
 import { PDFPreview } from './PDFPreview';
+import { useTranslation } from '../../../hooks/useI18n';
 
 export const WordToPDFTool: React.FC = () => {
+  const { t } = useTranslation();
+  
   // All useState hooks first, in consistent order - never change this order!
   const [currentFile, setCurrentFile] = useState<File | null>(null);
   const [showSettings, setShowSettings] = useState(true); // Changed to true so settings are visible by default
@@ -95,21 +98,21 @@ export const WordToPDFTool: React.FC = () => {
             >
               <div className="text-6xl mb-4">📝</div>
               <h3 className="text-xl font-semibold text-gray-700 mb-2">
-                Choose Word Document
+                {t('pages.tools.wordToPdf.tool.uploadTitle')}
               </h3>
               <p className="text-gray-500 mb-6">
-                Click here or drag and drop your .docx file
+                {t('pages.tools.wordToPdf.tool.uploadSubtitle')}
               </p>
 
               <div className="mt-6 text-sm text-gray-400">
-                <p>Supports Microsoft Word (.docx) up to 50MB</p>
+                <p>{t('pages.tools.wordToPdf.tool.supportedFormats')}</p>
               </div>
 
               <div className="mt-4 text-xs text-gray-400 space-y-1">
-                <p>✓ Works with .docx files from Microsoft Word</p>
-                <p>✓ Works with .docx files from Google Docs</p>
-                <p>⚠️ .doc files need to be converted to .docx first</p>
-                <p>✓ Processing happens locally in your browser</p>
+                <p>{t('pages.tools.wordToPdf.tool.compatibility.msWord')}</p>
+                <p>{t('pages.tools.wordToPdf.tool.compatibility.googleDocs')}</p>
+                <p>{t('pages.tools.wordToPdf.tool.compatibility.docWarning')}</p>
+                <p>{t('pages.tools.wordToPdf.tool.compatibility.localProcessing')}</p>
               </div>
             </div>
           </div>
@@ -122,7 +125,7 @@ export const WordToPDFTool: React.FC = () => {
               <div className="flex items-center">
                 <CheckCircle className="w-5 h-5 text-green-500 mr-2" />
                 <div>
-                  <h3 className="text-green-800 font-medium">Conversion Completed!</h3>
+                  <h3 className="text-green-800 font-medium">{t('pages.tools.wordToPdf.tool.messages.conversionCompleted')}</h3>
                   <p className="text-green-700 text-sm">
                     PDF is ready for download ({result.pdfBytes ? Math.round(result.pdfBytes.length / 1024) : '0'} KB)
                   </p>
@@ -137,7 +140,7 @@ export const WordToPDFTool: React.FC = () => {
               <div className="flex items-center">
                 <AlertCircle className="w-5 h-5 text-red-500 mr-2" />
                 <div>
-                  <h3 className="text-red-800 font-medium">Conversion Failed</h3>
+                  <h3 className="text-red-800 font-medium">{t('pages.tools.wordToPdf.tool.messages.conversionFailed')}</h3>
                   <p className="text-red-700 text-sm">{result.error}</p>
                 </div>
               </div>
@@ -160,15 +163,15 @@ export const WordToPDFTool: React.FC = () => {
                 ) : (
                   <div className="p-8 text-center text-gray-500 flex flex-col items-center justify-center h-full">
                     <Eye className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                    <h3 className="text-xl font-medium mb-2">PDF Preview</h3>
-                    <p className="text-sm mb-4">Convert your document to see preview here</p>
+                    <h3 className="text-xl font-medium mb-2">{t('pages.tools.wordToPdf.tool.preview.title')}</h3>
+                    <p className="text-sm mb-4">{t('pages.tools.wordToPdf.tool.preview.description')}</p>
                     {currentFile && !result && (
                       <button
                         onClick={handleConvert}
                         disabled={isConverting}
                         className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
                       >
-                        {isConverting ? 'Converting...' : 'Convert to PDF'}
+                        {isConverting ? t('pages.tools.wordToPdf.tool.buttons.converting') : t('pages.tools.wordToPdf.tool.buttons.convertToPdf')}
                       </button>
                     )}
                   </div>
@@ -179,7 +182,7 @@ export const WordToPDFTool: React.FC = () => {
             {/* Right Panel - Conversion Settings */}
             <div className="space-y-6">
               <div className="bg-white rounded-lg shadow-lg p-6 h-[600px] flex flex-col"> {/* Fixed height with flex */}
-                <h2 className="text-xl font-semibold mb-4">Conversion Settings</h2>
+                <h2 className="text-xl font-semibold mb-4">{t('pages.tools.wordToPdf.tool.settings.title')}</h2>
 
                 <div className="flex-1 overflow-y-auto"> {/* Scrollable content area */}
                   <ConversionSettingsPanel
@@ -204,10 +207,10 @@ export const WordToPDFTool: React.FC = () => {
                     {isConverting ? (
                       <span className="flex items-center justify-center">
                         <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                        Converting...
+                        {t('pages.tools.wordToPdf.tool.buttons.converting')}
                       </span>
                     ) : (
-                      'Convert to PDF'
+                      t('pages.tools.wordToPdf.tool.buttons.convertToPdf')
                     )}
                   </button>
                 </div>
@@ -217,16 +220,16 @@ export const WordToPDFTool: React.FC = () => {
 
           {/* File Information - Full Width Below */}
           <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-xl font-semibold mb-4">File Information</h2>
+            <h2 className="text-xl font-semibold mb-4">{t('pages.tools.wordToPdf.tool.fileInfo.title')}</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-              <div><strong>File:</strong> {currentFile.name}</div>
-              <div><strong>Size:</strong> {Math.round(currentFile.size / 1024)} KB</div>
-              <div><strong>Type:</strong> Microsoft Word (.docx)</div>
+              <div><strong>{t('pages.tools.wordToPdf.tool.fileInfo.fileName')}:</strong> {currentFile.name}</div>
+              <div><strong>{t('pages.tools.wordToPdf.tool.fileInfo.fileSize')}:</strong> {Math.round(currentFile.size / 1024)} KB</div>
+              <div><strong>{t('pages.tools.wordToPdf.tool.fileInfo.fileType')}:</strong> {t('pages.tools.wordToPdf.tool.fileInfo.microsoftWord')}</div>
             </div>
 
             <div className="mt-4 flex items-center justify-between">
               <div className="text-sm text-gray-600">
-                All processing happens locally in your browser for maximum privacy
+                {t('pages.tools.wordToPdf.tool.fileInfo.privacyNote')}
               </div>
               <button
                 onClick={() => {
@@ -237,7 +240,7 @@ export const WordToPDFTool: React.FC = () => {
                 className="text-sm text-red-600 hover:text-red-800 underline"
                 disabled={isConverting}
               >
-                Choose Different File
+                {t('pages.tools.wordToPdf.tool.buttons.chooseDifferent')}
               </button>
             </div>
           </div>

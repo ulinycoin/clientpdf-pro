@@ -45,21 +45,21 @@ const getBrowserLanguage = (): SupportedLanguage => {
 const getLanguageFromURL = (): SupportedLanguage | null => {
   if (typeof window === 'undefined') return null;
 
-  // Проверяем URL параметр в query string
-  const urlParams = new URLSearchParams(window.location.search);
-  const langParam = urlParams.get('lang') as SupportedLanguage;
-  
-  if (SUPPORTED_LANGUAGES.some(lang => lang.code === langParam)) {
-    return langParam;
-  }
-
-  // Проверяем путь URL (например, /de/, /fr/, etc.)
+  // Проверяем путь URL в первую очередь (например, /de/, /fr/, etc.)
   const pathParts = window.location.pathname.split('/').filter(Boolean);
   if (pathParts.length > 0) {
     const possibleLang = pathParts[0] as SupportedLanguage;
     if (SUPPORTED_LANGUAGES.some(lang => lang.code === possibleLang)) {
       return possibleLang;
     }
+  }
+
+  // Fallback: проверяем URL параметр в query string
+  const urlParams = new URLSearchParams(window.location.search);
+  const langParam = urlParams.get('lang') as SupportedLanguage;
+  
+  if (SUPPORTED_LANGUAGES.some(lang => lang.code === langParam)) {
+    return langParam;
   }
 
   return null;
@@ -145,6 +145,31 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
       document.documentElement.lang = currentLanguage;
     }
   }, []);
+
+  // Отслеживаем изменения URL для автоматического определения языка
+  useEffect(() => {
+    const handleLocationChange = () => {
+      const urlLang = getLanguageFromURL();
+      if (urlLang && urlLang !== currentLanguage) {
+        setCurrentLanguage(urlLang);
+        // Обновляем HTML lang атрибут
+        if (typeof document !== 'undefined') {
+          document.documentElement.lang = urlLang;
+        }
+      }
+    };
+
+    // Слушаем изменения URL в SPA
+    const handlePopState = () => handleLocationChange();
+    window.addEventListener('popstate', handlePopState);
+
+    // Также проверяем при каждом рендере (для случаев программной навигации)
+    handleLocationChange();
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [currentLanguage]);
 
   // Обновляем переводы при смене языка
   useEffect(() => {

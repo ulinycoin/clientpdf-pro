@@ -4,12 +4,16 @@ import { Header, Footer } from '../../components/organisms';
 import { WordToPDFTool } from '../../features/word-to-pdf';
 import { Breadcrumbs } from '../../components/common';
 import { RelatedTools } from '../../components/common';
+import FAQSection from '../../components/common/FAQSection';
 import { toolsSEOData } from '../../data/seoData';
 import { useI18n } from '../../hooks/useI18n';
 
 const WordToPDFPage: React.FC = () => {
   const { t } = useI18n();
   const seoData = toolsSEOData.wordToPdf;
+
+  // Get FAQ data from translations
+  const wordToPdfFAQs = t('pages.tools.wordToPdf.faq.items');
 
   // Scroll to top when component mounts
   useEffect(() => {
@@ -105,6 +109,14 @@ const WordToPDFPage: React.FC = () => {
               </div>
             </div>
           </div>
+
+          {/* FAQ Section */}
+          <FAQSection
+            title={t('pages.tools.wordToPdf.tool.faqTitle')}
+            faqs={wordToPdfFAQs}
+            className="mb-8"
+            defaultOpen={false}
+          />
 
           <RelatedTools currentTool="word-to-pdf" />
         </main>
