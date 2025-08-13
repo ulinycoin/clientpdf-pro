@@ -28,7 +28,9 @@
   "scripts": {
     "dev": "vite",
     "build": "SKIP_TYPE_CHECK=1 vite build",
+    "build:ssg": "SKIP_TYPE_CHECK=1 vite build && node scripts/generate-ssg.js",
     "build:full": "SKIP_TYPE_CHECK=1 vite build && npm run prerender-multilingual && npm run generate-multilingual-sitemap && npm run submit-indexnow",
+    "build:full-ssg": "npm run build:ssg && npm run generate-multilingual-sitemap && npm run submit-indexnow",
     "preview": "vite preview",
     "generate-sitemap": "node scripts/generate-sitemap.js",
     "submit-indexnow": "node scripts/index-now-submit.js",
@@ -69,10 +71,11 @@
     "@testing-library/user-event": "^14.5.1",
     "@types/node": "^20.19.10",
     "@types/react": "^18.2.0",
-    "@types/react-dom": "^18.2.0",
+    "@types/react-dom": "^18.3.7",
     "@typescript-eslint/eslint-plugin": "^8.37.0",
     "@typescript-eslint/parser": "^8.37.0",
     "@vitejs/plugin-react": "^4.0.0",
+    "@vitejs/plugin-react-swc": "^4.0.0",
     "autoprefixer": "^10.4.16",
     "eslint": "^9.31.0",
     "eslint-plugin-react-hooks": "^5.2.0",
@@ -84,6 +87,7 @@
     "tailwindcss": "^3.3.6",
     "typescript": "^5.0.0",
     "vite": "^4.5.0",
+    "vite-plugin-ssr": "^0.4.142",
     "vitest": "^3.2.4"
   }
 }

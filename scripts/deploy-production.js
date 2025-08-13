@@ -74,8 +74,8 @@ function runCommand(command, description) {
   }
 }
 
-function validateBuild() {
-  log('\n🔍 Validating build output...', 'blue');
+function validateBuild(useSSG = false) {
+  log(`\n🔍 Validating build output ${useSSG ? '(SSG)' : '(Standard)'}...`, 'blue');
   
   const distPath = 'dist';
   if (!fs.existsSync(distPath)) {
@@ -139,13 +139,27 @@ async function main() {
   log('🚀 LocalPDF Production Deployment', 'green');
   log('===============================', 'green');
 
+  // Check for SSG flag
+  const useSSG = process.argv.includes('--ssg');
+  
+  if (useSSG) {
+    log('🎯 Using Static Site Generation (SSG)', 'blue');
+  } else {
+    log('📄 Using standard pre-rendering', 'blue');
+  }
+
   checkRequirements();
   
   // Skip TypeScript check for production deploy (errors present but app works)
   log('⚠️ Skipping TypeScript check (known issues, but functionality works)', 'yellow');
-  runCommand('npm run build', 'Production build with multilingual prerendering');
   
-  validateBuild();
+  if (useSSG) {
+    runCommand('npm run build:full-ssg', 'SSG build with full static generation');
+  } else {
+    runCommand('npm run build:full', 'Production build with multilingual prerendering');
+  }
+  
+  validateBuild(useSSG);
   showDeploymentInfo();
 }
 
