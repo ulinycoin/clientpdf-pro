@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useI18n } from '../../hooks/useI18n';
 
 interface TwitterCardGeneratorProps {
   toolId: string;
@@ -117,13 +117,13 @@ export const TwitterCardGenerator: React.FC<TwitterCardGeneratorProps> = ({
   onGenerate
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { t, i18n } = useTranslation();
+  const { t, currentLanguage: currentLang, setLanguage } = useI18n();
   const [isGenerating, setIsGenerating] = useState(false);
 
   useEffect(() => {
     // Change language for translation
-    i18n.changeLanguage(language);
-  }, [language, i18n]);
+    setLanguage(language as any);
+  }, [language, setLanguage]);
 
   const generateCard = async () => {
     if (!canvasRef.current) return;

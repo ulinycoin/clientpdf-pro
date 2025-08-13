@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import { useI18n } from '../../hooks/useI18n';
 
 interface TwitterCardImageProps {
   toolId: string;
@@ -12,8 +12,8 @@ export const TwitterCardImage: React.FC<TwitterCardImageProps> = ({
   language,
   customImage
 }) => {
-  const { i18n } = useTranslation();
-  const currentLanguage = language || i18n.language || 'en';
+  const { currentLanguage: currentLang } = useI18n();
+  const currentLanguage = language || currentLang || 'en';
   
   // Generate Twitter Card image URL
   const getTwitterCardUrl = () => {
