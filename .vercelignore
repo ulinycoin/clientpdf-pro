@@ -1,7 +1,11 @@
 # Vercel ignore file
 node_modules
 .git
-scripts/*.js
+# Allow SSG scripts but block others
+scripts/prerender*.js
+scripts/deploy*.js
+scripts/test*.js
+scripts/twitter*.js
 e2e
 tests
 *.md
