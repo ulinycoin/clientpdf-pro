@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+        
+  <!-- Главная -->
+  <url>
+    <loc>https://localpdf.online/</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://localpdf.online/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://localpdf.online/de/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://localpdf.online/fr/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://localpdf.online/es/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://localpdf.online/ru/"/>
+  </url>
+
+  <!-- merge-pdf -->
+  <url>
+    <loc>https://localpdf.online/merge-pdf</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://localpdf.online/merge-pdf"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://localpdf.online/de/merge-pdf"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://localpdf.online/fr/merge-pdf"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://localpdf.online/es/merge-pdf"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://localpdf.online/ru/merge-pdf"/>
+  </url>
+
+  <!-- split-pdf -->
+  <url>
+    <loc>https://localpdf.online/split-pdf</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://localpdf.online/split-pdf"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://localpdf.online/de/split-pdf"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://localpdf.online/fr/split-pdf"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://localpdf.online/es/split-pdf"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://localpdf.online/ru/split-pdf"/>
+  </url>
+
+  <!-- compress-pdf -->
+  <url>
+    <loc>https://localpdf.online/compress-pdf</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://localpdf.online/compress-pdf"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://localpdf.online/de/compress-pdf"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://localpdf.online/fr/compress-pdf"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://localpdf.online/es/compress-pdf"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://localpdf.online/ru/compress-pdf"/>
+  </url>
+
+  <!-- add-text-pdf -->
+  <url>
+    <loc>https://localpdf.online/add-text-pdf</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://localpdf.online/add-text-pdf"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://localpdf.online/de/add-text-pdf"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://localpdf.online/fr/add-text-pdf"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://localpdf.online/es/add-text-pdf"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://localpdf.online/ru/add-text-pdf"/>
+  </url>
+
+  <!-- watermark-pdf -->
+  <url>
+    <loc>https://localpdf.online/watermark-pdf</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://localpdf.online/watermark-pdf"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://localpdf.online/de/watermark-pdf"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://localpdf.online/fr/watermark-pdf"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://localpdf.online/es/watermark-pdf"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://localpdf.online/ru/watermark-pdf"/>
+  </url>
+
+  <!-- rotate-pdf -->
+  <url>
+    <loc>https://localpdf.online/rotate-pdf</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://localpdf.online/rotate-pdf"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://localpdf.online/de/rotate-pdf"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://localpdf.online/fr/rotate-pdf"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://localpdf.online/es/rotate-pdf"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://localpdf.online/ru/rotate-pdf"/>
+  </url>
+
+  <!-- extract-pages-pdf -->
+  <url>
+    <loc>https://localpdf.online/extract-pages-pdf</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://localpdf.online/extract-pages-pdf"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://localpdf.online/de/extract-pages-pdf"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://localpdf.online/fr/extract-pages-pdf"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://localpdf.online/es/extract-pages-pdf"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://localpdf.online/ru/extract-pages-pdf"/>
+  </url>
+
+  <!-- extract-text-pdf -->
+  <url>
+    <loc>https://localpdf.online/extract-text-pdf</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://localpdf.online/extract-text-pdf"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://localpdf.online/de/extract-text-pdf"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://localpdf.online/fr/extract-text-pdf"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://localpdf.online/es/extract-text-pdf"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://localpdf.online/ru/extract-text-pdf"/>
+  </url>
+
+  <!-- pdf-to-image -->
+  <url>
+    <loc>https://localpdf.online/pdf-to-image</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://localpdf.online/pdf-to-image"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://localpdf.online/de/pdf-to-image"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://localpdf.online/fr/pdf-to-image"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://localpdf.online/es/pdf-to-image"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://localpdf.online/ru/pdf-to-image"/>
+  </url>
+
+  <!-- images-to-pdf -->
+  <url>
+    <loc>https://localpdf.online/images-to-pdf</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://localpdf.online/images-to-pdf"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://localpdf.online/de/images-to-pdf"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://localpdf.online/fr/images-to-pdf"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://localpdf.online/es/images-to-pdf"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://localpdf.online/ru/images-to-pdf"/>
+  </url>
+
+  <!-- word-to-pdf -->
+  <url>
+    <loc>https://localpdf.online/word-to-pdf</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://localpdf.online/word-to-pdf"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://localpdf.online/de/word-to-pdf"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://localpdf.online/fr/word-to-pdf"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://localpdf.online/es/word-to-pdf"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://localpdf.online/ru/word-to-pdf"/>
+  </url>
+
+  <!-- excel-to-pdf -->
+  <url>
+    <loc>https://localpdf.online/excel-to-pdf</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://localpdf.online/excel-to-pdf"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://localpdf.online/de/excel-to-pdf"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://localpdf.online/fr/excel-to-pdf"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://localpdf.online/es/excel-to-pdf"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://localpdf.online/ru/excel-to-pdf"/>
+  </url>
+
+  <!-- ocr-pdf -->
+  <url>
+    <loc>https://localpdf.online/ocr-pdf</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://localpdf.online/ocr-pdf"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://localpdf.online/de/ocr-pdf"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://localpdf.online/fr/ocr-pdf"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://localpdf.online/es/ocr-pdf"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://localpdf.online/ru/ocr-pdf"/>
+  </url>
+
+  <!-- privacy -->
+  <url>
+    <loc>https://localpdf.online/privacy</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://localpdf.online/privacy"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://localpdf.online/de/privacy"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://localpdf.online/fr/privacy"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://localpdf.online/es/privacy"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://localpdf.online/ru/privacy"/>
+  </url>
+
+  <!-- terms -->
+  <url>
+    <loc>https://localpdf.online/terms</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://localpdf.online/terms"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://localpdf.online/de/terms"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://localpdf.online/fr/terms"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://localpdf.online/es/terms"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://localpdf.online/ru/terms"/>
+  </url>
+
+  <!-- gdpr -->
+  <url>
+    <loc>https://localpdf.online/gdpr</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://localpdf.online/gdpr"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://localpdf.online/de/gdpr"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://localpdf.online/fr/gdpr"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://localpdf.online/es/gdpr"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://localpdf.online/ru/gdpr"/>
+  </url>
+
+  <!-- faq -->
+  <url>
+    <loc>https://localpdf.online/faq</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://localpdf.online/faq"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://localpdf.online/de/faq"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://localpdf.online/fr/faq"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://localpdf.online/es/faq"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://localpdf.online/ru/faq"/>
+  </url>
+
+</urlset>

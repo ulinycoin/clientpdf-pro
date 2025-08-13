@@ -1,0 +1,41 @@
+{
+  "name": "LocalPDF - Free Privacy-First PDF Tools",
+  "short_name": "LocalPDF",
+  "description": "9 powerful PDF tools that work entirely in your browser. 100% private, no uploads required.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3B82F6",
+  "orientation": "portrait-primary",
+  "categories": ["productivity", "business", "utilities"],
+  "lang": "en",
+  "dir": "ltr",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/vite.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Merge PDF",
+      "short_name": "Merge",
+      "description": "Combine multiple PDF files",
+      "url": "/merge-pdf"
+    },
+    {
+      "name": "Split PDF", 
+      "short_name": "Split",
+      "description": "Split PDF into separate files",
+      "url": "/split-pdf"
+    },
+    {
+      "name": "Compress PDF",
+      "short_name": "Compress", 
+      "description": "Reduce PDF file size",
+      "url": "/compress-pdf"
+    }
+  ]
+}
