@@ -3,6 +3,7 @@ import { SEOHead } from '../../components/SEO/SEOHead';
 import { Header, Footer } from '../../components/organisms';
 import SimpleOCRTool from '../../components/organisms/SimpleOCRTool';
 import Breadcrumbs from '../../components/common/Breadcrumbs';
+import TwitterCardImage from '../../components/TwitterCardImage/TwitterCardImage';
 import { toolsSEOData } from '../../data/seoData';
 import { useI18n } from '../../hooks/useI18n';
 
@@ -24,6 +25,7 @@ const OCRPDFPage: React.FC = () => {
         canonical={seoData.canonical}
         structuredData={seoData.structuredData}
       />
+      <TwitterCardImage toolId="ocr-pdf" />
 
       <Header />
 

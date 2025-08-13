@@ -5,6 +5,7 @@ import { Header, Footer } from '../../components/organisms';
 import RelatedTools from '../../components/common/RelatedTools';
 import UploadSection from '../../components/molecules/UploadSection';
 import RotateTool from '../../components/organisms/RotateTool';
+import TwitterCardImage from '../../components/TwitterCardImage/TwitterCardImage';
 import Button from '../../components/atoms/Button';
 import { downloadBlob } from '../../utils/fileHelpers';
 import { generateFilename } from '../../utils/fileHelpers';
@@ -56,6 +57,7 @@ const RotatePDFPage: React.FC = () => {
         canonical={seoData.canonical}
         structuredData={seoData.structuredData}
       />
+      <TwitterCardImage toolId="rotate-pdf" />
 
       <div className="min-h-screen bg-gradient-mesh flex flex-col">
         <Header />

@@ -5,6 +5,7 @@ import { Header, Footer } from '../../components/organisms';
 import RelatedTools from '../../components/common/RelatedTools';
 import WatermarkTool from '../../components/organisms/WatermarkTool';
 import UploadSection from '../../components/molecules/UploadSection';
+import TwitterCardImage from '../../components/TwitterCardImage/TwitterCardImage';
 import { useI18n } from '../../hooks/useI18n';
 
 const WatermarkPDFPage: React.FC = () => {
@@ -45,6 +46,7 @@ const WatermarkPDFPage: React.FC = () => {
         canonical={seoData.canonical}
         structuredData={seoData.structuredData}
       />
+      <TwitterCardImage toolId="watermark-pdf" />
 
       <div className="min-h-screen bg-gradient-mesh flex flex-col">
         <Header />

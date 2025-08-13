@@ -3,6 +3,7 @@ import { SEOHead } from '../../components/SEO/SEOHead';
 import { Header, Footer } from '../../components/organisms';
 import ImageToPDFToolWrapper from '../../components/organisms/ImageToPDFToolWrapper';
 import Breadcrumbs from '../../components/common/Breadcrumbs';
+import TwitterCardImage from '../../components/TwitterCardImage/TwitterCardImage';
 import { toolsSEOData } from '../../data/seoData';
 import { useI18n } from '../../hooks/useI18n';
 
@@ -24,6 +25,7 @@ const ImageToPDFPage: React.FC = () => {
         canonical={seoData.canonical}
         structuredData={seoData.structuredData}
       />
+      <TwitterCardImage toolId="images-to-pdf" />
 
       <Header />
 

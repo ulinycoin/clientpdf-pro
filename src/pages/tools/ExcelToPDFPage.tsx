@@ -5,6 +5,7 @@ import ExcelToPDFTool from '../../components/organisms/ExcelToPDFTool';
 import { Breadcrumbs } from '../../components/common';
 import { RelatedTools } from '../../components/common';
 import FAQSection from '../../components/common/FAQSection';
+import TwitterCardImage from '../../components/TwitterCardImage/TwitterCardImage';
 import { toolsSEOData } from '../../data/seoData';
 import { useTranslation, useI18n } from '../../hooks/useI18n';
 import { getTranslatedFAQs } from '../../data/faqTranslations';
@@ -40,6 +41,7 @@ const ExcelToPDFPage: React.FC = () => {
           answer: faq.answer
         }))}
       />
+      <TwitterCardImage toolId="excel-to-pdf" language={currentLanguage} />
 
       <div className="min-h-screen bg-gradient-mesh flex flex-col">
         <Header />

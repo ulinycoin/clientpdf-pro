@@ -6,6 +6,7 @@ import RelatedTools from '../../components/common/RelatedTools';
 import FAQSection from '../../components/common/FAQSection';
 import MergeTool from '../../components/organisms/MergeTool';
 import UploadSection from '../../components/molecules/UploadSection';
+import TwitterCardImage from '../../components/TwitterCardImage/TwitterCardImage';
 import { useFileUpload } from '../../hooks/useFileUpload';
 import { useI18n } from '../../hooks/useI18n';
 import { useDynamicSEO } from '../../hooks/useDynamicSEO';
@@ -63,6 +64,7 @@ const MergePDFPage: React.FC = () => {
           answer: faq.answer
         }))}
       />
+      <TwitterCardImage toolId="merge-pdf" />
 
       <div className="min-h-screen bg-gradient-mesh flex flex-col">
         <Header />

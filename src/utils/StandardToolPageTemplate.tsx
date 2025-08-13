@@ -8,6 +8,7 @@ import { Header, Footer } from '../components/organisms';
 import { Breadcrumbs } from '../components/common';
 import { RelatedTools } from '../components/common';
 import FAQSection from '../components/common/FAQSection';
+import TwitterCardImage from '../components/TwitterCardImage/TwitterCardImage';
 import { toolsSEOData } from '../data/seoData';
 import { useTranslation, useI18n } from '../hooks/useI18n';
 import { getTranslatedFAQs } from '../data/faqTranslations';
@@ -46,6 +47,19 @@ export const StandardToolPageTemplate: React.FC<StandardToolPageProps> = ({
   // Get FAQ data for SEO schema and display
   const faqs = getTranslatedFAQs(toolKey, currentLanguage);
 
+  // Map toolKey to Twitter Card toolId
+  const getTwitterCardToolId = (key: string): string => {
+    const mapping: Record<string, string> = {
+      'split': 'split-pdf',
+      'merge': 'merge-pdf', 
+      'compress': 'compress-pdf',
+      'excelToPdf': 'excel-to-pdf',
+      'wordToPdf': 'word-to-pdf',
+      'pdfToImage': 'pdf-to-jpg'
+    };
+    return mapping[key] || `${key}-pdf`;
+  };
+
   // Scroll to top when component mounts
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -70,6 +84,7 @@ export const StandardToolPageTemplate: React.FC<StandardToolPageProps> = ({
           answer: faq.answer
         })) : undefined}
       />
+      <TwitterCardImage toolId={getTwitterCardToolId(toolKey)} language={currentLanguage} />
 
       <div className="min-h-screen bg-gradient-mesh flex flex-col">
         {/* HEADER */}

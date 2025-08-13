@@ -5,6 +5,7 @@ import { WordToPDFTool } from '../../features/word-to-pdf';
 import { Breadcrumbs } from '../../components/common';
 import { RelatedTools } from '../../components/common';
 import FAQSection from '../../components/common/FAQSection';
+import TwitterCardImage from '../../components/TwitterCardImage/TwitterCardImage';
 import { toolsSEOData } from '../../data/seoData';
 import { useI18n } from '../../hooks/useI18n';
 
@@ -34,6 +35,7 @@ const WordToPDFPage: React.FC = () => {
         canonical={seoData.canonical}
         structuredData={seoData.structuredData}
       />
+      <TwitterCardImage toolId="word-to-pdf" />
 
       <div className="min-h-screen bg-gradient-mesh flex flex-col">
         <Header />

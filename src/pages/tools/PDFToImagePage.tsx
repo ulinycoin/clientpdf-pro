@@ -5,6 +5,7 @@ import { Header, Footer } from '../../components/organisms';
 import RelatedTools from '../../components/common/RelatedTools';
 import PdfToImageTool from '../../components/organisms/PdfToImageTool';
 import UploadSection from '../../components/molecules/UploadSection';
+import TwitterCardImage from '../../components/TwitterCardImage/TwitterCardImage';
 import { useI18n } from '../../hooks/useI18n';
 
 const PDFToImagePage: React.FC = () => {
@@ -44,6 +45,7 @@ const PDFToImagePage: React.FC = () => {
         canonical={seoData.canonical}
         structuredData={seoData.structuredData}
       />
+      <TwitterCardImage toolId="pdf-to-jpg" />
 
       <div className="min-h-screen bg-gradient-mesh flex flex-col">
         <Header />

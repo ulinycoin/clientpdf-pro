@@ -6,6 +6,7 @@ import RelatedTools from '../../components/common/RelatedTools';
 import FAQSection from '../../components/common/FAQSection';
 import AddTextTool from '../../components/organisms/AddTextTool';
 import UploadSection from '../../components/molecules/UploadSection';
+import TwitterCardImage from '../../components/TwitterCardImage/TwitterCardImage';
 import { useI18n } from '../../hooks/useI18n';
 import { getCombinedFAQs } from '../../data/faqData';
 
@@ -53,6 +54,7 @@ const AddTextPDFPage: React.FC = () => {
           answer: faq.answer
         }))}
       />
+      <TwitterCardImage toolId="add-text-pdf" />
 
       <div className="min-h-screen bg-gradient-mesh flex flex-col">
         <Header />

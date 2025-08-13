@@ -6,6 +6,7 @@ import RelatedTools from '../../components/common/RelatedTools';
 import FAQSection from '../../components/common/FAQSection';
 import UploadSection from '../../components/molecules/UploadSection';
 import CompressionTool from '../../components/organisms/CompressionTool';
+import TwitterCardImage from '../../components/TwitterCardImage/TwitterCardImage';
 import Button from '../../components/atoms/Button';
 import { downloadBlob } from '../../utils/fileHelpers';
 import { generateFilename } from '../../utils/fileHelpers';
@@ -64,6 +65,7 @@ const CompressPDFPage: React.FC = () => {
           answer: faq.answer
         }))}
       />
+      <TwitterCardImage toolId="compress-pdf" />
 
       <div className="min-h-screen bg-gradient-mesh flex flex-col">
         <Header />
