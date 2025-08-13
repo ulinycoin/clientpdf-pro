@@ -1,4 +1,5 @@
 {
+  "buildCommand": "npm run build:ssg",
   "rewrites": [
     {
       "source": "/(de|fr|es|ru)/(.*).html",
