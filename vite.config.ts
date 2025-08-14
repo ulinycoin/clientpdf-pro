@@ -613,6 +613,17 @@ function generatePrerenderedHTML(route: string, toolKey: string, language: strin
   return `<!DOCTYPE html>
 <html lang="${language}">
 <head>
+  <!-- Critical polyfills MUST come first -->
+  <script>
+    // Fix for 'global is not defined' - must be first!
+    if (typeof global === 'undefined') {
+      window.global = globalThis;
+    }
+    if (typeof process === 'undefined') {
+      window.process = { env: { NODE_ENV: 'production' }, browser: true };
+    }
+  </script>
+  
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${pageData.title}</title>
@@ -645,17 +656,6 @@ function generatePrerenderedHTML(route: string, toolKey: string, language: strin
   
   <!-- Security headers -->
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
-  
-  <!-- Browser compatibility polyfills -->
-  <script>
-    // Fix for 'global is not defined' in production
-    if (typeof global === 'undefined') {
-      window.global = globalThis;
-    }
-    if (typeof process === 'undefined') {
-      window.process = { env: { NODE_ENV: 'production' }, browser: true };
-    }
-  </script>
   
   <script type="module" crossorigin src="/assets/index-5d1cc039.js"></script>
   <link rel="stylesheet" href="/assets/index-76a4743d.css">
