@@ -2,6 +2,7 @@
   "buildCommand": "npm run build:full",
   "cleanUrls": true,
   "trailingSlash": false,
+  "toolbar": false,
   "headers": [
     {
       "source": "/(.*)",
