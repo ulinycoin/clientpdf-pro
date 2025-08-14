@@ -47,5 +47,95 @@
       "destination": "/sitemap.xml",
       "permanent": false
     }
+  ],
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/merge-pdf",
+      "destination": "/merge-pdf.html"
+    },
+    {
+      "source": "/split-pdf", 
+      "destination": "/split-pdf.html"
+    },
+    {
+      "source": "/compress-pdf",
+      "destination": "/compress-pdf.html"
+    },
+    {
+      "source": "/add-text-pdf",
+      "destination": "/add-text-pdf.html"
+    },
+    {
+      "source": "/watermark-pdf",
+      "destination": "/watermark-pdf.html"
+    },
+    {
+      "source": "/rotate-pdf",
+      "destination": "/rotate-pdf.html"
+    },
+    {
+      "source": "/extract-pages-pdf",
+      "destination": "/extract-pages-pdf.html"
+    },
+    {
+      "source": "/extract-text-pdf",
+      "destination": "/extract-text-pdf.html"
+    },
+    {
+      "source": "/pdf-to-image",
+      "destination": "/pdf-to-image.html"
+    },
+    {
+      "source": "/images-to-pdf",
+      "destination": "/images-to-pdf.html"
+    },
+    {
+      "source": "/word-to-pdf",
+      "destination": "/word-to-pdf.html"
+    },
+    {
+      "source": "/excel-to-pdf",
+      "destination": "/excel-to-pdf.html"
+    },
+    {
+      "source": "/ocr-pdf",
+      "destination": "/ocr-pdf.html"
+    },
+    {
+      "source": "/privacy",
+      "destination": "/privacy.html"
+    },
+    {
+      "source": "/terms",
+      "destination": "/terms.html"
+    },
+    {
+      "source": "/gdpr",
+      "destination": "/gdpr.html"
+    },
+    {
+      "source": "/faq",
+      "destination": "/faq.html"
+    },
+    {
+      "source": "/de/(.*)",
+      "destination": "/de/$1.html"
+    },
+    {
+      "source": "/fr/(.*)",
+      "destination": "/fr/$1.html"
+    },
+    {
+      "source": "/es/(.*)",
+      "destination": "/es/$1.html"
+    },
+    {
+      "source": "/ru/(.*)",
+      "destination": "/ru/$1.html"
+    }
   ]
 }
