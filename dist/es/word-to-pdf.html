@@ -10,6 +10,30 @@
     if (typeof process === 'undefined') {
       window.process = { env: { NODE_ENV: 'production' }, browser: true };
     }
+    
+    // Hide Vercel toolbar for production users
+    (function() {
+      function hideVercelToolbar() {
+        const toolbar = document.querySelector('[data-vercel-toolbar]') || 
+                       document.querySelector('[class*="vercel-toolbar"]') ||
+                       document.querySelector('iframe[src*="vercel.live"]');
+        if (toolbar) {
+          toolbar.style.display = 'none';
+          toolbar.remove();
+        }
+      }
+      
+      // Hide immediately if already present
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', hideVercelToolbar);
+      } else {
+        hideVercelToolbar();
+      }
+      
+      // Hide if appears later
+      setTimeout(hideVercelToolbar, 1000);
+      setTimeout(hideVercelToolbar, 3000);
+    })();
   </script>
   
   <meta charset="UTF-8">
