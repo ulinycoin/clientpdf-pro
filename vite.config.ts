@@ -646,8 +646,8 @@ function generatePrerenderedHTML(route: string, toolKey: string, language: strin
   <!-- Security headers -->
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
   
-  <script type="module" crossorigin src="/assets/index.js"></script>
-  <link rel="stylesheet" href="/assets/index.css">
+  <script type="module" crossorigin src="/assets/index-5d1cc039.js"></script>
+  <link rel="stylesheet" href="/assets/index-76a4743d.css">
 </head>
 <body>
   <div id="root"></div>
