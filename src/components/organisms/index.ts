@@ -4,11 +4,26 @@ export { default as Footer } from './Footer';
 export { default as ToolsGrid } from './ToolsGrid';
 export { default as ToolCard } from './ToolCard';
 
+// Modern layout components
+export { default as ModernHeader } from './ModernHeader';
+export { default as ModernFooter } from './ModernFooter';
+export { default as ModernToolsGrid } from './ModernToolsGrid';
+export { default as InteractiveHeroSection } from './InteractiveHeroSection';
+
+// New modern sections
+export { default as PrivacyBenefitsSection } from './PrivacyBenefitsSection';
+export { default as QuickStartSection } from './QuickStartSection';
+export { default as TrustSignalsSection } from './TrustSignalsSection';
+
 // PDF Tools - all consistently exported as default
 export { default as MergeTool } from './MergeTool';
+export { default as ModernMergeTool } from './ModernMergeTool';
 export { default as CompressionTool } from './CompressionTool';
+export { default as ModernCompressionTool } from './ModernCompressionTool';
 export { default as SplitTool } from './SplitTool';
+export { default as ModernSplitTool } from './ModernSplitTool';
 export { default as RotateTool } from './RotateTool';
+export { default as ModernRotateTool } from './ModernRotateTool';
 export { default as WatermarkTool } from './WatermarkTool';
 export { default as ExtractTextTool } from './ExtractTextTool';
 export { default as PdfToImageTool } from './PdfToImageTool';

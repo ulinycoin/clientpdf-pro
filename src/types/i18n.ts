@@ -47,6 +47,10 @@ export interface Translations {
     or: string;
     home: string;
     free: string;
+    selectFile: string;
+    unexpectedError: string;
+    pdfFiles: string;
+    faqTitle: string;
   };
 
   // Заголовок сайта
@@ -78,6 +82,13 @@ export interface Translations {
       subtitle: string;
       description: string;
       descriptionSecondary: string;
+      badges: Array<{
+        icon: string;
+        text: string;
+        description: string;
+      }>;
+      getStarted: string;
+      learnMore: string;
       features: {
         privacy: {
           title: string;
@@ -132,6 +143,78 @@ export interface Translations {
         };
       };
       trustMessage: string;
+      whyChooseTitle: string;
+      whyChooseSubtitle: string;
+      stats: {
+        tools: string;
+        toolsDescription: string;
+      };
+    };
+    // Trust signals section
+    trustSignals: {
+      title: string;
+      subtitle: string;
+      stats: {
+        filesProcessed: string;
+        filesDescription: string;
+        happyUsers: string;
+        usersDescription: string;
+        countriesUsing: string;
+        countriesDescription: string;
+      };
+      security: {
+        title: string;
+        sslSecured: string;
+        gdprCompliant: string;
+        localProcessing: string;
+        openSource: string;
+      };
+    };
+    // Quick start section
+    quickStart: {
+      title: string;
+      subtitle: string;
+      steps: {
+        step1: {
+          title: string;
+          description: string;
+        };
+        step2: {
+          title: string;
+          description: string;
+        };
+        step3: {
+          title: string;
+          description: string;
+        };
+      };
+      stats: {
+        averageTime: string;
+        dataSentToServers: string;
+        privacyGuaranteed: string;
+      };
+    };
+    // Privacy benefits section
+    privacyBenefits: {
+      benefits: {
+        privacy: {
+          title: string;
+          description: string;
+        };
+        speed: {
+          title: string;
+          description: string;
+        };
+        offline: {
+          title: string;
+          description: string;
+        };
+        unlimited: {
+          title: string;
+          description: string;
+        };
+      };
+      cta: string;
     };
   };
 
@@ -841,6 +924,73 @@ export interface Translations {
           format: string;
           download: string;
         };
+      };
+    };
+  };
+
+  // Tool page template translations
+  toolTemplate: {
+    breadcrumbs: {
+      home: string;
+    };
+    quickSteps: {
+      title: string;
+      subtitle: string;
+      steps: {
+        upload: {
+          title: string;
+          description: string;
+        };
+        process: {
+          title: string;
+          description: string;
+        };
+        download: {
+          title: string;
+          description: string;
+        };
+      };
+    };
+    benefits: {
+      advantages: {
+        title: string;
+        items: {
+          speed: string;
+          quality: string;
+          simplicity: string;
+          universal: string;
+        };
+      };
+      security: {
+        title: string;
+        items: {
+          local: string;
+          noUpload: string;
+          noRegistration: string;
+          autoDelete: string;
+        };
+      };
+      technical: {
+        title: string;
+        items: {
+          technology: string;
+          crossplatform: string;
+          quality: string;
+          metadata: string;
+        };
+      };
+    };
+    detailed: {
+      title: string;
+      business: {
+        title: string;
+        description1: string;
+        description2: string;
+      };
+      personal: {
+        title: string;
+        description1: string;
+        description2: string;
       };
     };
   };

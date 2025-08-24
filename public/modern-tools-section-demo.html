@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LocalPDF - Современная секция PDF инструментов</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Complete design system */
+        :root {
+            /* Ocean Color Palette */
+            --color-seafoam-green: #4ECDC4;
+            --color-ocean-blue: #45B7D1;
+            --color-sandy-beige: #F4E4BC;
+            
+            /* Background System */
+            --color-bg-primary: #ffffff;
+            --color-bg-secondary: #f8fafc;
+            --color-bg-tertiary: #f1f5f9;
+            --color-bg-accent: rgba(78, 205, 196, 0.05);
+            
+            /* Text System */
+            --color-text-primary: #1e293b;
+            --color-text-secondary: #64748b;
+            --color-text-muted: #94a3b8;
+            --color-text-inverse: #ffffff;
+            
+            /* Privacy-focused colors */
+            --color-privacy-accent: var(--color-seafoam-green);
+            --color-privacy-subtle: rgba(78, 205, 196, 0.1);
+            --color-privacy-border: rgba(78, 205, 196, 0.2);
+            
+            /* Dopamine colors */
+            --color-electric-blue: #00BFFF;
+            --color-bright-green: #00FF7F;
+            --color-hover-primary: var(--color-electric-blue);
+            --color-success-action: var(--color-bright-green);
+            --color-focus-ring: rgba(0, 191, 255, 0.3);
+            
+            /* Font size multiplier for accessibility */
+            --font-size-multiplier: 1;
+        }
+        
+        [data-theme="dark"] {
+            --color-bg-primary: #1a1a2e;
+            --color-bg-secondary: #121212;
+            --color-bg-tertiary: #1e1e2e;
+            --color-text-primary: #f1f5f9;
+            --color-text-secondary: #cbd5e1;
+            --color-text-muted: #94a3b8;
+            --color-text-inverse: #1e293b;
+            --color-privacy-accent: #0d4f3c;
+            --color-privacy-subtle: rgba(13, 79, 60, 0.15);
+            --color-privacy-border: rgba(13, 79, 60, 0.3);
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: var(--color-bg-primary);
+            color: var(--color-text-primary);
+            transition: all 0.3s ease;
+            font-size: calc(16px * var(--font-size-multiplier));
+        }
+        
+        /* Privacy Card */
+        .privacy-card {
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-privacy-border);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 20px var(--color-privacy-subtle);
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--color-privacy-accent);
+        }
+        
+        .privacy-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 40px var(--color-privacy-subtle);
+            border-color: var(--color-privacy-accent);
+        }
+        
+        /* Text gradients */
+        .text-gradient-ocean {
+            background: linear-gradient(135deg, #4ECDC4 0%, #45B7D1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Animations */
+        @keyframes gentle-float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .gentle-float {
+            animation: gentle-float 3s ease-in-out infinite;
+        }
+        
+        @keyframes smooth-reveal {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .smooth-reveal {
+            animation: smooth-reveal 0.6s ease-out forwards;
+        }
+        
+        /* Tool Cards */
+        .modern-tool-card {
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-privacy-border);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 20px var(--color-privacy-subtle);
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--color-privacy-accent);
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+        }
+        
+        .modern-tool-card:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 8px 40px var(--color-privacy-subtle);
+            border-color: var(--color-privacy-accent);
+            background: rgba(248, 250, 252, 0.8);
+        }
+        
+        .tool-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            padding: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            margin: 0 auto 16px auto;
+        }
+        
+        .tool-icon:hover {
+            transform: scale(1.1) rotate(3deg);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+        
+        .category-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .category-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, rgba(78, 205, 196, 0.1), rgba(69, 183, 209, 0.1));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        /* Floating particles */
+        .floating-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(78, 205, 196, 0.3);
+            border-radius: 50%;
+            animation: gentle-float 3s ease-in-out infinite;
+        }
+        
+        /* Trust indicators */
+        .trust-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            backdrop-filter: blur(12px);
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .trust-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* Interactive features */
+        .interactive-demo {
+            position: relative;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen interactive-demo">
+        
+        <!-- Background particles -->
+        <div class="floating-particle" style="left: 10%; top: 20%; animation-delay: 0s;"></div>
+        <div class="floating-particle" style="left: 80%; top: 30%; animation-delay: 1s;"></div>
+        <div class="floating-particle" style="left: 60%; top: 70%; animation-delay: 2s;"></div>
+        <div class="floating-particle" style="left: 20%; top: 80%; animation-delay: 1.5s;"></div>
+        
+        <!-- Header -->
+        <header class="py-12 text-center">
+            <h1 class="text-5xl font-bold text-gradient-ocean mb-4">
+                Современные PDF инструменты
+            </h1>
+            <p class="text-xl text-privacy-600 max-w-3xl mx-auto mb-8">
+                Полностью переработанная секция с новыми значками и современным дизайном
+            </p>
+            
+            <!-- Trust indicators -->
+            <div class="flex flex-wrap justify-center gap-4">
+                <div class="trust-indicator">
+                    <div class="trust-dot bg-green-500"></div>
+                    <span>100% Приватно</span>
+                </div>
+                <div class="trust-indicator">
+                    <div class="trust-dot bg-blue-500" style="animation-delay: 0.5s;"></div>
+                    <span>Без загрузки</span>
+                </div>
+                <div class="trust-indicator">
+                    <div class="trust-dot bg-purple-500" style="animation-delay: 1s;"></div>
+                    <span>Без ограничений</span>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Modern Tools Section -->
+        <section class="py-16 px-8">
+            <div class="max-w-7xl mx-auto">
+                
+                <!-- Core Tools -->
+                <div class="mb-16">
+                    <div class="category-badge text-center mb-8">
+                        <div class="category-icon mx-auto">🎯</div>
+                        <div>
+                            <h2 class="text-2xl font-bold text-privacy-900">Основные инструменты</h2>
+                            <p class="text-privacy-600">Самые популярные операции с PDF</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        
+                        <!-- Merge -->
+                        <div class="modern-tool-card smooth-reveal" style="animation-delay: 0ms;">
+                            <div class="tool-icon" style="background: linear-gradient(135deg, #4ECDC4, #45B7D1);">
+                                <svg viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8">
+                                    <path d="M19 11H13V5h-2v6H5v2h6v6h2v-6h6v-2z"/>
+                                    <path d="M8.5 15L12 18.5L15.5 15M8.5 9L12 5.5L15.5 9" opacity="0.7"/>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-semibold text-center mb-2">Объединить PDF</h3>
+                            <p class="text-sm text-privacy-600 text-center flex-1">
+                                Объединяйте несколько PDF файлов в один документ
+                            </p>
+                            <div class="trust-indicator mt-4 mx-auto">
+                                <div class="trust-dot bg-green-500"></div>
+                                <span class="text-xs">★ Популярно</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Split -->
+                        <div class="modern-tool-card smooth-reveal" style="animation-delay: 100ms;">
+                            <div class="tool-icon" style="background: linear-gradient(135deg, #45B7D1, #4ECDC4);">
+                                <svg viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8">
+                                    <path d="M19 13H5v-2h14v2z"/>
+                                    <path d="M14 16L12 18L10 16M14 8L12 6L10 8"/>
+                                    <rect x="3" y="4" width="6" height="16" rx="2" opacity="0.5"/>
+                                    <rect x="15" y="4" width="6" height="16" rx="2" opacity="0.5"/>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-semibold text-center mb-2">Разделить PDF</h3>
+                            <p class="text-sm text-privacy-600 text-center flex-1">
+                                Разделяйте PDF на отдельные страницы или диапазоны
+                            </p>
+                            <div class="trust-indicator mt-4 mx-auto">
+                                <div class="trust-dot bg-blue-500"></div>
+                                <span class="text-xs">Готов к использованию</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Compress -->
+                        <div class="modern-tool-card smooth-reveal" style="animation-delay: 200ms;">
+                            <div class="tool-icon" style="background: linear-gradient(135deg, #0d4f3c, #4ECDC4);">
+                                <svg viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8">
+                                    <path d="M20 6h-2.5L15 3.5V2h-2v1.5L10.5 6H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM12 18l-4-4h3V9h2v5h3l-4 4z"/>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-semibold text-center mb-2">Сжать PDF</h3>
+                            <p class="text-sm text-privacy-600 text-center flex-1">
+                                Уменьшайте размер PDF файлов без потери качества
+                            </p>
+                            <div class="trust-indicator mt-4 mx-auto">
+                                <div class="trust-dot bg-green-500"></div>
+                                <span class="text-xs">Готов к использованию</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Rotate -->
+                        <div class="modern-tool-card smooth-reveal" style="animation-delay: 300ms;">
+                            <div class="tool-icon" style="background: linear-gradient(135deg, #4ECDC4, #0d4f3c);">
+                                <svg viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8">
+                                    <path d="M12 6v3l4-4-4-4v3c-4.42 0-8 3.58-8 8 0 1.57.46 3.03 1.24 4.26L6.7 14.8c-.45-.83-.7-1.79-.7-2.8 0-3.31 2.69-6 6-6z"/>
+                                    <path d="M18.76 7.74L17.3 9.2c.44.84.7 1.79.7 2.8 0 3.31-2.69 6-6 6v-3l-4 4 4 4v-3c4.42 0 8-3.58 8-8 0-1.57-.46-3.03-1.24-4.26z"/>
+                                    <rect x="8" y="8" width="8" height="8" rx="1" opacity="0.3"/>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-semibold text-center mb-2">Повернуть PDF</h3>
+                            <p class="text-sm text-privacy-600 text-center flex-1">
+                                Поворачивайте страницы PDF на 90, 180 или 270 градусов
+                            </p>
+                            <div class="trust-indicator mt-4 mx-auto">
+                                <div class="trust-dot bg-blue-500"></div>
+                                <span class="text-xs">Готов к использованию</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Advanced Tools -->
+                <div class="mb-16">
+                    <div class="category-badge text-center mb-8">
+                        <div class="category-icon mx-auto">🚀</div>
+                        <div>
+                            <h2 class="text-2xl font-bold text-privacy-900">Продвинутые функции</h2>
+                            <p class="text-privacy-600">Мощные инструменты для профессиональной работы</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        
+                        <!-- Extract Pages -->
+                        <div class="modern-tool-card smooth-reveal" style="animation-delay: 400ms;">
+                            <div class="tool-icon" style="background: linear-gradient(135deg, #0d4f3c, #45B7D1);">
+                                <svg viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8">
+                                    <path d="M16 1H8C6.9 1 6 1.9 6 3v14l3-3 3 3 3-3 3 3V3c0-1.1-.9-2-2-2z"/>
+                                    <path d="M20 7H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2z" opacity="0.7"/>
+                                    <rect x="6" y="9" width="10" height="2" opacity="0.5"/>
+                                    <rect x="6" y="13" width="10" height="2" opacity="0.5"/>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-semibold text-center mb-2">Извлечь страницы</h3>
+                            <p class="text-sm text-privacy-600 text-center flex-1">
+                                Извлекайте определенные страницы из PDF документов
+                            </p>
+                            <div class="trust-indicator mt-4 mx-auto">
+                                <div class="trust-dot bg-purple-500"></div>
+                                <span class="text-xs">Готов к использованию</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Extract Text -->
+                        <div class="modern-tool-card smooth-reveal" style="animation-delay: 500ms;">
+                            <div class="tool-icon" style="background: linear-gradient(135deg, #4ECDC4, #0d4f3c);">
+                                <svg viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8">
+                                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z" opacity="0.3"/>
+                                    <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6z"/>
+                                    <path d="M14 8h4l-4-4v4z" opacity="0.7"/>
+                                    <rect x="8" y="12" width="6" height="2"/>
+                                    <rect x="8" y="16" width="4" height="2"/>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-semibold text-center mb-2">Извлечь текст</h3>
+                            <p class="text-sm text-privacy-600 text-center flex-1">
+                                Извлекайте текстовый контент из PDF документов
+                            </p>
+                            <div class="trust-indicator mt-4 mx-auto">
+                                <div class="trust-dot bg-green-500"></div>
+                                <span class="text-xs">Готов к использованию</span>
+                            </div>
+                        </div>
+                        
+                        <!-- OCR -->
+                        <div class="modern-tool-card smooth-reveal" style="animation-delay: 600ms;">
+                            <div class="tool-icon" style="background: linear-gradient(135deg, #45B7D1, #0d4f3c);">
+                                <svg viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8">
+                                    <path d="M20 6H12l-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2z" opacity="0.3"/>
+                                    <circle cx="15" cy="15" r="4"/>
+                                    <path d="M13.5 13.5l3 3 1.5-1.5" stroke="white" strokeWidth="1.5" fill="none"/>
+                                    <rect x="6" y="10" width="6" height="2" opacity="0.7"/>
+                                    <rect x="6" y="14" width="4" height="2" opacity="0.7"/>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-semibold text-center mb-2">OCR распознавание</h3>
+                            <p class="text-sm text-privacy-600 text-center flex-1">
+                                Распознавание текста из отсканированных PDF
+                            </p>
+                            <div class="trust-indicator mt-4 mx-auto">
+                                <div class="trust-dot bg-orange-500"></div>
+                                <span class="text-xs">★ Популярно</span>
+                            </div>
+                        </div>
+                        
+                        <!-- PDF to Image -->
+                        <div class="modern-tool-card smooth-reveal" style="animation-delay: 700ms;">
+                            <div class="tool-icon" style="background: linear-gradient(135deg, #0d4f3c, #4ECDC4);">
+                                <svg viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8">
+                                    <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2z"/>
+                                    <circle cx="9" cy="9" r="2" fill="white"/>
+                                    <path d="m15.5 11-4.5 6-2-2.5L5 18h14l-3.5-7z" fill="white"/>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-semibold text-center mb-2">PDF в изображения</h3>
+                            <p class="text-sm text-privacy-600 text-center flex-1">
+                                Конвертируйте страницы PDF в изображения
+                            </p>
+                            <div class="trust-indicator mt-4 mx-auto">
+                                <div class="trust-dot bg-blue-500"></div>
+                                <span class="text-xs">Готов к использованию</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Statistics -->
+                <div class="privacy-card text-center mt-20">
+                    <h3 class="text-2xl font-bold text-privacy-900 mb-8">
+                        Почему выбирают LocalPDF?
+                    </h3>
+                    
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
+                        <div>
+                            <div class="text-3xl font-bold text-seafoam-600 mb-2">13</div>
+                            <div class="text-privacy-700 font-medium">Инструментов</div>
+                            <div class="text-sm text-privacy-500">Все необходимые функции</div>
+                        </div>
+                        
+                        <div>
+                            <div class="text-3xl font-bold text-ocean-600 mb-2">100%</div>
+                            <div class="text-privacy-700 font-medium">Приватность</div>
+                            <div class="text-sm text-privacy-500">Данные не покидают устройство</div>
+                        </div>
+                        
+                        <div>
+                            <div class="text-3xl font-bold text-purple-600 mb-2">0</div>
+                            <div class="text-privacy-700 font-medium">Данных собрано</div>
+                            <div class="text-sm text-privacy-500">Полная конфиденциальность</div>
+                        </div>
+                        
+                        <div>
+                            <div class="text-3xl font-bold text-green-600 mb-2">∞</div>
+                            <div class="text-privacy-700 font-medium">Использований</div>
+                            <div class="text-sm text-privacy-500">Без лимитов и подписок</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Privacy Promise -->
+                    <div class="pt-8 border-t border-privacy-200">
+                        <div class="flex items-center justify-center gap-3 mb-4">
+                            <svg class="w-6 h-6 text-privacy-accent" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12,1L21,5V11C21,16.55 17.16,21.74 12,23C6.84,21.74 3,16.55 3,11V5L12,1Z" />
+                            </svg>
+                            <span class="text-lg font-semibold text-privacy-800">
+                                Ваши файлы никогда не покидают ваше устройство
+                            </span>
+                        </div>
+                        <p class="text-privacy-600 max-w-2xl mx-auto">
+                            Все операции выполняются локально в браузере. Никаких серверов, никаких загрузок, полная приватность.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <script>
+        // Инициализация анимаций при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.modern-tool-card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 100}ms`;
+                
+                // Добавляем интерактивность
+                card.addEventListener('click', function() {
+                    const title = this.querySelector('h3').textContent;
+                    alert(`Открыть инструмент: ${title}\n\nВ реальном приложении здесь откроется страница инструмента.`);
+                });
+            });
+        });
+        
+        // Демонстрационные эффекты наведения
+        document.querySelectorAll('.modern-tool-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-8px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>

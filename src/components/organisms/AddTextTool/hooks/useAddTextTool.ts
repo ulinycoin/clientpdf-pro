@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef } from 'react';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
+import fontkit from '@pdf-lib/fontkit';
 
 // Define TextElement locally if not available in main types
 interface TextElement {
@@ -84,7 +85,7 @@ export const useAddTextTool = (): UseAddTextToolReturn => {
       x,
       y,
       fontSize: 16,
-      fontFamily: 'Arial',
+      fontFamily: 'Open Sans', // Default to Unicode-compatible font
       color: '#000000',
       isSelected: false,
       pageNumber: currentPage
@@ -178,34 +179,19 @@ export const useAddTextTool = (): UseAddTextToolReturn => {
     } : { r: 0, g: 0, b: 0 };
   };
 
-  // Helper function to sanitize text for PDF (remove unsupported characters)
-  const sanitizeTextForPDF = (text: string) => {
-    // Replace common problematic characters with similar ones
+  // Helper function to prepare text for PDF (preserve Unicode)
+  const prepareTextForPDF = (text: string) => {
+    // Only replace problematic punctuation, keep all Unicode characters
     return text
       .replace(/[""]/g, '"')  // Smart quotes to regular quotes
       .replace(/['']/g, "'")  // Smart apostrophes to regular apostrophes
       .replace(/[–—]/g, '-')  // Em/en dashes to hyphens
       .replace(/[…]/g, '...')  // Ellipsis to three dots
-      // For Cyrillic - try to keep what we can, replace what we can't
-      .replace(/[^\x00-\x7F]/g, (char) => {
-        // Keep basic Cyrillic that might work
-        const basicCyrillicMap: Record<string, string> = {
-          'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'yo',
-          'ж': 'zh', 'з': 'z', 'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm',
-          'н': 'n', 'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u',
-          'ф': 'f', 'х': 'h', 'ц': 'c', 'ч': 'ch', 'ш': 'sh', 'щ': 'sch',
-          'ъ': '', 'ы': 'y', 'ь': '', 'э': 'e', 'ю': 'yu', 'я': 'ya',
-          'А': 'A', 'Б': 'B', 'В': 'V', 'Г': 'G', 'Д': 'D', 'Е': 'E', 'Ё': 'Yo',
-          'Ж': 'Zh', 'З': 'Z', 'И': 'I', 'Й': 'Y', 'К': 'K', 'Л': 'L', 'М': 'M',
-          'Н': 'N', 'О': 'O', 'П': 'P', 'Р': 'R', 'С': 'S', 'Т': 'T', 'У': 'U',
-          'Ф': 'F', 'Х': 'H', 'Ц': 'C', 'Ч': 'Ch', 'Ш': 'Sh', 'Щ': 'Sch',
-          'Ъ': '', 'Ы': 'Y', 'Ь': '', 'Э': 'E', 'Ю': 'Yu', 'Я': 'Ya'
-        };
-        return basicCyrillicMap[char] || '?';
-      });
+      // Keep all other characters including Cyrillic
+      ;
   };
 
-  // Helper function to draw multiline text on PDF
+  // Helper function to draw multiline text with Unicode font
   const drawMultilineText = (page: any, text: string, x: number, y: number, options: any) => {
     const lines = text.split('\n');
     const lineHeight = options.size * 1.2; // 120% line height
@@ -213,25 +199,128 @@ export const useAddTextTool = (): UseAddTextToolReturn => {
     lines.forEach((line, index) => {
       if (line.trim()) { // Only draw non-empty lines
         const lineY = y - (index * lineHeight);
-        const sanitizedLine = sanitizeTextForPDF(line);
+        
         try {
-          page.drawText(sanitizedLine, {
+          // With proper Unicode font, this should work directly
+          page.drawText(line, {
             ...options,
             x,
             y: lineY,
           });
+          
+          // If we got here, the text was drawn successfully
+          console.log(`✅ Successfully drew line: "${line}"`);
+          
         } catch (error) {
-          console.warn(`Could not draw line "${line}", using fallback`);
-          // Final fallback - remove all non-ASCII
-          const asciiLine = line.replace(/[^\x00-\x7F]/g, '?');
-          page.drawText(asciiLine, {
-            ...options,
-            x,
-            y: lineY,
-          });
+          console.warn(`❌ Failed to draw line "${line}":`, error);
+          
+          // Fallback: Try with cleaned text (remove problematic punctuation)
+          try {
+            const cleanedLine = prepareTextForPDF(line);
+            page.drawText(cleanedLine, {
+              ...options,
+              x,
+              y: lineY,
+            });
+            console.log(`⚠️ Drew cleaned line: "${cleanedLine}"`);
+          } catch (secondError) {
+            console.error(`❌ Even cleaned text failed for "${line}":`, secondError);
+            
+            // Final fallback: Replace with '?'
+            const fallbackLine = line.replace(/[^\x00-\x7F]/g, '?');
+            try {
+              page.drawText(fallbackLine, {
+                ...options,
+                x,
+                y: lineY,
+              });
+              console.warn(`⚠️ Used ASCII fallback: "${fallbackLine}"`);
+            } catch (finalError) {
+              console.error('Complete failure to draw text:', finalError);
+            }
+          }
         }
       }
     });
+  };
+
+  // Function to download font from URL
+  const downloadFont = async (url: string): Promise<ArrayBuffer> => {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Failed to download font: ${response.statusText}`);
+    }
+    return response.arrayBuffer();
+  };
+
+  // Function to get fonts with REAL Unicode support
+  const getCyrillicFonts = async (pdfDoc: any) => {
+    // Register fontkit for custom font support
+    pdfDoc.registerFontkit(fontkit);
+    
+    // Standard fonts as base
+    const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
+    const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
+    const courierFont = await pdfDoc.embedFont(StandardFonts.Courier);
+    
+    // Try to load actual Unicode fonts that support Cyrillic
+    const fonts: Record<string, any> = {};
+    
+    // Reliable CDN sources for Unicode fonts
+    const fontSources = [
+      {
+        name: 'DejaVu Sans',
+        url: 'https://cdn.jsdelivr.net/npm/dejavu-fonts-ttf@2.37.3/ttf/DejaVuSans.ttf'
+      },
+      {
+        name: 'Liberation Sans', 
+        url: 'https://github.com/liberationfonts/liberation-fonts/releases/download/2.1.5/liberation-fonts-ttf-2.1.5.tar.gz'
+      },
+      {
+        name: 'Noto Sans',
+        url: 'https://fonts.gstatic.com/s/notosans/v28/o-0IIpQlx3QUlC5A4PNr5TRASf6M7VBj.woff2'
+      }
+    ];
+
+    // Try to load the first available Unicode font
+    let unicodeFont = helveticaFont;
+    
+    for (const fontSource of fontSources) {
+      try {
+        console.log(`Attempting to load Unicode font: ${fontSource.name}`);
+        const response = await fetch(fontSource.url);
+        if (response.ok) {
+          const fontBytes = await response.arrayBuffer();
+          unicodeFont = await pdfDoc.embedFont(fontBytes);
+          fonts['Unicode'] = unicodeFont;
+          console.log(`✅ Successfully loaded Unicode font: ${fontSource.name}`);
+          break;
+        }
+      } catch (error) {
+        console.warn(`❌ Failed to load ${fontSource.name}:`, error);
+        continue;
+      }
+    }
+
+    // If no Unicode font loaded, use Helvetica with a warning
+    if (!fonts['Unicode']) {
+      console.warn('⚠️ No Unicode fonts available - Cyrillic text may not display correctly');
+      fonts['Unicode'] = helveticaFont;
+    }
+
+    // Font mapping prioritizing Unicode font
+    return {
+      'Arial': fonts['Unicode'] || helveticaFont,
+      'Helvetica': fonts['Unicode'] || helveticaFont,
+      'Open Sans': fonts['Unicode'] || helveticaFont,
+      'Roboto': fonts['Unicode'] || helveticaFont,
+      'PT Sans': fonts['Unicode'] || helveticaFont,
+      'Noto Sans': fonts['Unicode'] || helveticaFont,
+      'Times': timesRomanFont,
+      'Times New Roman': timesRomanFont,
+      'Courier': courierFont,
+      'Courier New': courierFont,
+    };
   };
 
   // Save PDF with text elements
@@ -242,21 +331,8 @@ export const useAddTextTool = (): UseAddTextToolReturn => {
       const arrayBuffer = await originalFile.arrayBuffer();
       const pdfDoc = await PDFDocument.load(arrayBuffer);
 
-      // Embed standard fonts (these work reliably)
-      const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
-      const helveticaBoldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-      const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
-      const courierFont = await pdfDoc.embedFont(StandardFonts.Courier);
-
-      // Font mapping
-      const fontMap: Record<string, any> = {
-        'Arial': helveticaFont,
-        'Helvetica': helveticaFont,
-        'Times': timesRomanFont,
-        'Times New Roman': timesRomanFont,
-        'Courier': courierFont,
-        'Courier New': courierFont,
-      };
+      // Get fonts with Cyrillic support
+      const fontMap = await getCyrillicFonts(pdfDoc);
 
       // Group elements by page
       const elementsByPage = textElements.reduce((acc, element) => {
@@ -279,7 +355,8 @@ export const useAddTextTool = (): UseAddTextToolReturn => {
           const color = hexToRgb(element.color);
           const font = fontMap[element.fontFamily] || helveticaFont;
 
-          // Draw multiline text with sanitization
+          // Draw multiline text with Unicode support
+          console.log(`🎨 Drawing text "${element.text}" with font: ${element.fontFamily}`);
           drawMultilineText(page, element.text, element.x, height - element.y - element.fontSize, {
             size: element.fontSize,
             color: rgb(color.r, color.g, color.b),

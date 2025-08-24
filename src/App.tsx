@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { Analytics } from '@vercel/analytics/react';
 import { I18nProvider } from './hooks/useI18n';
+import { DarkModeProvider } from './components/providers/DarkModeProvider';
 import { HomePage, PrivacyPage, FAQPage, HowToUsePage, NotFoundPage } from './pages';
 import TermsPage from './pages/TermsPage';
 import GDPRPage from './pages/GDPRPage';
@@ -10,7 +11,7 @@ import ScrollToTop from './components/ScrollToTop';
 
 // Lazy load tool pages for better performance
 const MergePDFPage = React.lazy(() => import('./pages/tools/MergePDFPage'));
-const SplitPDFPage = React.lazy(() => import('./pages/tools/SplitPDFPage-standardized'));
+const SplitPDFPage = React.lazy(() => import('./pages/tools/SplitPDFPage'));
 const CompressPDFPage = React.lazy(() => import('./pages/tools/CompressPDFPage'));
 const AddTextPDFPage = React.lazy(() => import('./pages/tools/AddTextPDFPage'));
 const WatermarkPDFPage = React.lazy(() => import('./pages/tools/WatermarkPDFPage'));
@@ -39,13 +40,14 @@ const LoadingSpinner: React.FC = () => {
 function App() {
   return (
     <HelmetProvider>
-      <I18nProvider>
+      <DarkModeProvider>
         <Router
           future={{
             v7_startTransition: true,
             v7_relativeSplatPath: true
           }}
         >
+          <I18nProvider>
           <ScrollToTop />
           <div className="min-h-screen bg-gradient-mesh no-horizontal-scroll">
             {/* Main content with suspense for lazy loading */}
@@ -53,6 +55,7 @@ function App() {
               <Routes>
                 {/* Home page - English (default) */}
                 <Route path="/" element={<HomePage />} />
+
 
                 {/* Multilingual home pages */}
                 <Route path="/de" element={<HomePage />} />
@@ -169,8 +172,9 @@ function App() {
 
           {/* Vercel Analytics - Privacy-compliant analytics */}
           <Analytics />
+        </I18nProvider>
         </Router>
-      </I18nProvider>
+      </DarkModeProvider>
     </HelmetProvider>
   );
 }

@@ -2,11 +2,15 @@ import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useTranslation, useI18n } from '../hooks/useI18n';
 import {
-  Header,
-  Footer,
-  ToolsGrid
+  ModernHeader,
+  ModernFooter,
+  ModernToolsGrid,
+  InteractiveHeroSection,
+  PrivacyBenefitsSection,
+  QuickStartSection,
+  TrustSignalsSection
 } from '../components/organisms';
-import PrivacyBadge from '../components/molecules/PrivacyBadge';
+// Removed PrivacyBadge - using InteractiveHeroSection instead
 
 const HomePage: React.FC = () => {
   const { t } = useTranslation();
@@ -73,91 +77,33 @@ const HomePage: React.FC = () => {
         </script>
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-mesh flex flex-col">
-      <Header />
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 dark:from-gray-950 dark:via-blue-950 dark:to-purple-950 flex flex-col">
+      <ModernHeader />
 
       <main className="flex-grow">
-        {/* Enhanced Hero Section */}
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          {/* Enhanced Hero Header */}
-          <div className="text-center mb-16 relative">
-            {/* Background decoration */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-full h-px bg-gradient-to-r from-transparent via-primary-200 to-transparent"></div>
-            </div>
+        {/* Enhanced Interactive Hero Section */}
+        <InteractiveHeroSection
+          title={t('home.hero.title')}
+          subtitle={t('home.hero.subtitle')}
+          description={t('home.hero.description')}
+          showStats={true}
+          animated={true}
+        />
 
-            {/* Main hero content */}
-            <div className="relative px-4 sm:px-8 py-8">
-              {/* Main title with gradient */}
-              <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-6">
-                <span className="text-gradient-blue">
-                  {t('home.hero.title')}
-                </span>
-                <br />
-                <span className="text-secondary-800 text-xl sm:text-2xl md:text-3xl font-semibold">
-                  {t('home.hero.subtitle')}
-                </span>
-              </h1>
+        {/* Privacy Benefits Section */}
+        <PrivacyBenefitsSection animated={true} />
 
-              {/* Enhanced description */}
-              <div className="max-w-4xl mx-auto mb-8">
-                <p className="text-lg sm:text-xl md:text-2xl text-secondary-700 mb-4 leading-relaxed">
-                  {t('home.hero.description')}
-                </p>
-                <p className="text-base sm:text-lg text-secondary-600">
-                  {t('home.hero.descriptionSecondary')}
-                </p>
-              </div>
+        {/* Quick Start Guide Section */}
+        <QuickStartSection animated={true} />
 
-              {/* Enhanced feature highlights */}
-              <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-4 mb-8 max-w-full">
-                <PrivacyBadge
-                  icon="shield"
-                  title={t('home.hero.features.privacy.title')}
-                  subtitle={t('home.hero.features.privacy.subtitle')}
-                  variant="success"
-                  animated={true}
-                />
-                <PrivacyBadge
-                  icon="zap"
-                  title={t('home.hero.features.speed.title')}
-                  subtitle={t('home.hero.features.speed.subtitle')}
-                  variant="primary"
-                />
-                <PrivacyBadge
-                  icon="heart"
-                  title={t('home.hero.features.free.title')}
-                  subtitle={t('home.hero.features.free.subtitle')}
-                  variant="blue"
-                />
-              </div>
+        {/* Modern Tools Grid */}
+        <ModernToolsGrid disabledTools={[]} />
 
-              {/* Trust indicators */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 max-w-2xl mx-auto text-xs sm:text-sm text-secondary-500">
-                <div className="flex items-center justify-center space-x-2">
-                  <span className="w-2 h-2 bg-success-500 rounded-full pdf-status-indicator"></span>
-                  <span>{t('home.hero.trustIndicators.noRegistration')}</span>
-                </div>
-                <div className="flex items-center justify-center space-x-2">
-                  <span className="w-2 h-2 bg-primary-500 rounded-full pdf-status-indicator"></span>
-                  <span>{t('home.hero.trustIndicators.worksOffline')}</span>
-                </div>
-                <div className="flex items-center justify-center space-x-2">
-                  <span className="w-2 h-2 bg-purple-500 rounded-full pdf-status-indicator"></span>
-                  <span>{t('home.hero.trustIndicators.openSource')}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Tools Grid */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-          <ToolsGrid disabledTools={[]} />
-        </div>
+        {/* Trust & Social Proof Section */}
+        <TrustSignalsSection animated={true} />
         </main>
 
-        <Footer />
+        <ModernFooter />
       </div>
     </>
   );

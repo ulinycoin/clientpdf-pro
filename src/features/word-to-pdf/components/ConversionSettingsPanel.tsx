@@ -27,44 +27,56 @@ export const ConversionSettingsPanel: React.FC<ConversionSettingsPanelProps> = (
       {/* Settings Toggle */}
       <button
         onClick={onToggle}
-        className="flex items-center gap-2 w-full p-3 text-left text-gray-700 hover:bg-gray-50 rounded-lg border border-gray-200 transition-colors"
+        className="flex items-center gap-3 w-full p-4 text-left bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl hover:bg-white/90 dark:hover:bg-gray-700/90 transition-all duration-300 shadow-lg"
       >
-        <Settings className="w-4 h-4" />
-        <span className="font-medium">Conversion Settings</span>
-        <span className="ml-auto text-sm text-gray-500">
+        <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-lg flex items-center justify-center text-white shadow-lg">
+          <Settings className="w-4 h-4" />
+        </div>
+        <span className="font-black text-black dark:text-white">Conversion Settings</span>
+        <span className="ml-auto text-sm font-bold text-gray-600 dark:text-gray-300 bg-white/80 dark:bg-gray-600/80 px-3 py-1 rounded-full">
           {isVisible ? 'Hide' : 'Show'}
         </span>
       </button>
 
       {/* Settings Panel */}
       {isVisible && (
-        <div className="mt-3 p-4 bg-gray-50 rounded-lg border border-gray-200 space-y-4">
+        <div className="mt-4 p-6 bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-white/20 dark:border-gray-600/20 rounded-2xl shadow-2xl space-y-6">
 
-          {/* Page Size */}
-          <div className="space-y-2">
-            <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
-              <FileText className="w-4 h-4" />
-              Page Size
-            </label>
-            <select
-              value={settings.pageSize}
-              onChange={(e) => handleSettingChange('pageSize', e.target.value as ConversionSettings['pageSize'])}
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            >
-              <option value="A4">A4 (210 × 297 mm)</option>
-              <option value="Letter">Letter (8.5 × 11 in)</option>
-              <option value="A3">A3 (297 × 420 mm)</option>
-            </select>
+          {/* Page Setup Section */}
+          <div className="bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl p-4 shadow-lg">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-6 h-6 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-lg flex items-center justify-center text-white shadow-sm">
+                <FileText className="w-4 h-4" />
+              </div>
+              <h3 className="font-black text-black dark:text-white">Page Setup</h3>
+            </div>
+            
+            <div className="space-y-3">
+              <label className="block text-sm font-black text-black dark:text-white mb-2">Page Size</label>
+              <select
+                value={settings.pageSize}
+                onChange={(e) => handleSettingChange('pageSize', e.target.value as ConversionSettings['pageSize'])}
+                className="w-full px-4 py-3 border border-gray-300/80 dark:border-gray-600/20 rounded-xl bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg text-black dark:text-white font-medium focus:ring-2 focus:ring-seafoam-500/50 focus:border-seafoam-500 transition-all duration-200 shadow-sm"
+              >
+                <option value="A4">A4 (210 × 297 mm)</option>
+                <option value="Letter">Letter (8.5 × 11 in)</option>
+                <option value="A3">A3 (297 × 420 mm)</option>
+              </select>
+            </div>
           </div>
 
-          {/* Margins */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">
-              Margins (mm)
-            </label>
+          {/* Margins Section */}
+          <div className="bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl p-4 shadow-lg">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-6 h-6 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg flex items-center justify-center text-white shadow-sm">
+                📐
+              </div>
+              <h3 className="font-black text-black dark:text-white">Margins (mm)</h3>
+            </div>
+            
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-xs text-gray-600">Top</label>
+                <label className="text-xs font-bold text-gray-600 dark:text-gray-300 mb-2 block">Top</label>
                 <input
                   type="number"
                   min="0"
@@ -74,11 +86,11 @@ export const ConversionSettingsPanel: React.FC<ConversionSettingsPanelProps> = (
                     ...settings.margins,
                     top: parseInt(e.target.value) || 20
                   })}
-                  className="w-full p-2 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 text-sm border border-gray-300/80 dark:border-gray-600/20 rounded-lg bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg text-black dark:text-white font-medium focus:ring-2 focus:ring-seafoam-500/50 focus:border-seafoam-500 transition-all duration-200 shadow-sm"
                 />
               </div>
               <div>
-                <label className="text-xs text-gray-600">Bottom</label>
+                <label className="text-xs font-bold text-gray-600 dark:text-gray-300 mb-2 block">Bottom</label>
                 <input
                   type="number"
                   min="0"
@@ -88,11 +100,11 @@ export const ConversionSettingsPanel: React.FC<ConversionSettingsPanelProps> = (
                     ...settings.margins,
                     bottom: parseInt(e.target.value) || 20
                   })}
-                  className="w-full p-2 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 text-sm border border-gray-300/80 dark:border-gray-600/20 rounded-lg bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg text-black dark:text-white font-medium focus:ring-2 focus:ring-seafoam-500/50 focus:border-seafoam-500 transition-all duration-200 shadow-sm"
                 />
               </div>
               <div>
-                <label className="text-xs text-gray-600">Left</label>
+                <label className="text-xs font-bold text-gray-600 dark:text-gray-300 mb-2 block">Left</label>
                 <input
                   type="number"
                   min="0"
@@ -102,11 +114,11 @@ export const ConversionSettingsPanel: React.FC<ConversionSettingsPanelProps> = (
                     ...settings.margins,
                     left: parseInt(e.target.value) || 20
                   })}
-                  className="w-full p-2 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 text-sm border border-gray-300/80 dark:border-gray-600/20 rounded-lg bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg text-black dark:text-white font-medium focus:ring-2 focus:ring-seafoam-500/50 focus:border-seaforam-500 transition-all duration-200 shadow-sm"
                 />
               </div>
               <div>
-                <label className="text-xs text-gray-600">Right</label>
+                <label className="text-xs font-bold text-gray-600 dark:text-gray-300 mb-2 block">Right</label>
                 <input
                   type="number"
                   min="0"
@@ -116,64 +128,77 @@ export const ConversionSettingsPanel: React.FC<ConversionSettingsPanelProps> = (
                     ...settings.margins,
                     right: parseInt(e.target.value) || 20
                   })}
-                  className="w-full p-2 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 text-sm border border-gray-300/80 dark:border-gray-600/20 rounded-lg bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg text-black dark:text-white font-medium focus:ring-2 focus:ring-seafoam-500/50 focus:border-seafoam-500 transition-all duration-200 shadow-sm"
                 />
               </div>
             </div>
           </div>
 
-          {/* Font Size */}
-          <div className="space-y-2">
-            <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
-              <Palette className="w-4 h-4" />
-              Font Size
-            </label>
-            <select
-              value={settings.fontSize || 12}
-              onChange={(e) => handleSettingChange('fontSize', parseInt(e.target.value))}
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            >
-              <option value={10}>10pt (Small)</option>
-              <option value={11}>11pt</option>
-              <option value={12}>12pt (Normal)</option>
-              <option value={14}>14pt (Large)</option>
-              <option value={16}>16pt (Extra Large)</option>
-            </select>
+          {/* Typography Section */}
+          <div className="bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl p-4 shadow-lg">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-6 h-6 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center text-white shadow-sm">
+                <Palette className="w-4 h-4" />
+              </div>
+              <h3 className="font-black text-black dark:text-white">Typography</h3>
+            </div>
+            
+            <div className="space-y-3">
+              <label className="block text-sm font-black text-black dark:text-white mb-2">Font Size</label>
+              <select
+                value={settings.fontSize || 12}
+                onChange={(e) => handleSettingChange('fontSize', parseInt(e.target.value))}
+                className="w-full px-4 py-3 border border-gray-300/80 dark:border-gray-600/20 rounded-xl bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg text-black dark:text-white font-medium focus:ring-2 focus:ring-seafoam-500/50 focus:border-seafoam-500 transition-all duration-200 shadow-sm"
+              >
+                <option value={10}>10pt (Small)</option>
+                <option value={11}>11pt</option>
+                <option value={12}>12pt (Normal)</option>
+                <option value={14}>14pt (Large)</option>
+                <option value={16}>16pt (Extra Large)</option>
+              </select>
+            </div>
           </div>
 
           {/* Advanced Options */}
-          <div className="space-y-3">
-            <h4 className="text-sm font-medium text-gray-700">Advanced Options</h4>
-
-            <div className="flex items-center gap-3">
-              <input
-                type="checkbox"
-                id="embedFonts"
-                checked={settings.embedFonts}
-                onChange={(e) => handleSettingChange('embedFonts', e.target.checked)}
-                className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-              />
-              <label htmlFor="embedFonts" className="text-sm text-gray-700">
-                Embed fonts for better compatibility
-              </label>
+          <div className="bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl p-4 shadow-lg">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-6 h-6 bg-gradient-to-br from-orange-500 to-red-500 rounded-lg flex items-center justify-center text-white shadow-sm">
+                ⚙️
+              </div>
+              <h3 className="font-black text-black dark:text-white">Advanced Options</h3>
             </div>
 
-            <div className="flex items-center gap-3">
-              <input
-                type="checkbox"
-                id="compression"
-                checked={settings.compression || false}
-                onChange={(e) => handleSettingChange('compression', e.target.checked)}
-                className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-              />
-              <label htmlFor="compression" className="text-sm text-gray-700">
-                Compress PDF (smaller file size)
-              </label>
+            <div className="space-y-4">
+              <div className="flex items-center gap-3 p-3 bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg rounded-xl border border-white/20 dark:border-gray-600/20">
+                <input
+                  type="checkbox"
+                  id="embedFonts"
+                  checked={settings.embedFonts}
+                  onChange={(e) => handleSettingChange('embedFonts', e.target.checked)}
+                  className="w-5 h-5 text-seafoam-600 rounded-lg focus:ring-2 focus:ring-seafoam-500/50 focus:ring-offset-2"
+                />
+                <label htmlFor="embedFonts" className="text-sm font-medium text-black dark:text-white">
+                  Embed fonts for better compatibility
+                </label>
+              </div>
+
+              <div className="flex items-center gap-3 p-3 bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg rounded-xl border border-white/20 dark:border-gray-600/20">
+                <input
+                  type="checkbox"
+                  id="compression"
+                  checked={settings.compression || false}
+                  onChange={(e) => handleSettingChange('compression', e.target.checked)}
+                  className="w-5 h-5 text-seafoam-600 rounded-lg focus:ring-2 focus:ring-seafoam-500/50 focus:ring-offset-2"
+                />
+                <label htmlFor="compression" className="text-sm font-medium text-black dark:text-white">
+                  Compress PDF (smaller file size)
+                </label>
+              </div>
             </div>
           </div>
 
           {/* Reset Settings */}
-          <div className="pt-3 border-t border-gray-200">
+          <div className="pt-4 border-t border-white/20 dark:border-gray-600/20">
             <button
               onClick={() => onSettingsChange({
                 pageSize: 'A4',
@@ -182,9 +207,9 @@ export const ConversionSettingsPanel: React.FC<ConversionSettingsPanelProps> = (
                 fontSize: 12,
                 compression: false
               })}
-              className="text-sm text-blue-600 hover:text-blue-800 transition-colors"
+              className="w-full px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border border-blue-300/80 dark:border-blue-600/20 rounded-lg text-blue-600 dark:text-blue-400 font-bold hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 shadow-lg"
             >
-              Reset to defaults
+              🔄 Reset to defaults
             </button>
           </div>
         </div>

@@ -45,26 +45,26 @@ const Toolbar: React.FC<ToolbarProps> = ({
   };
 
   return (
-    <div className="flex items-center justify-between p-4 bg-gray-50 border-b">
+    <div className="flex items-center justify-between px-4 py-3 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-b border-white/20 dark:border-gray-600/20">
       {/* Left side - Tool modes */}
       <div className="flex items-center space-x-4">
-        <div className="flex bg-white rounded-lg border">
+        <div className="flex bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg rounded-xl border border-white/20 dark:border-gray-600/20 shadow-lg">
           <button
             onClick={() => onToolModeChange('add')}
-            className={`px-4 py-2 text-sm font-medium rounded-l-lg transition-colors ${
+            className={`px-4 py-2 text-sm font-medium rounded-l-xl transition-all duration-200 ${
               toolMode === 'add'
-                ? 'bg-blue-500 text-white'
-                : 'text-gray-700 hover:bg-gray-100'
+                ? 'bg-gradient-to-br from-seafoam-500 to-ocean-500 text-white shadow-lg'
+                : 'text-black dark:text-white hover:bg-seafoam-50 dark:hover:bg-seafoam-900/20'
             }`}
           >
             ✏️ Add Text
           </button>
           <button
             onClick={() => onToolModeChange('select')}
-            className={`px-4 py-2 text-sm font-medium rounded-r-lg transition-colors ${
+            className={`px-4 py-2 text-sm font-medium rounded-r-xl transition-all duration-200 ${
               toolMode === 'select'
-                ? 'bg-blue-500 text-white'
-                : 'text-gray-700 hover:bg-gray-100'
+                ? 'bg-gradient-to-br from-seafoam-500 to-ocean-500 text-white shadow-lg'
+                : 'text-black dark:text-white hover:bg-seafoam-50 dark:hover:bg-seafoam-900/20'
             }`}
           >
             👆 Select
@@ -76,7 +76,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
           <button
             onClick={onUndo}
             disabled={!canUndo}
-            className="p-2 text-gray-600 hover:text-gray-900 disabled:text-gray-300 disabled:cursor-not-allowed"
+            className="p-2 text-gray-800 dark:text-gray-200 hover:text-seafoam-600 dark:hover:text-seafoam-400 hover:bg-seafoam-50 dark:hover:bg-seafoam-900/20 disabled:text-gray-300 disabled:cursor-not-allowed rounded-lg transition-all duration-200"
             title="Undo (Ctrl+Z)"
           >
             ↶
@@ -84,7 +84,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
           <button
             onClick={onRedo}
             disabled={!canRedo}
-            className="p-2 text-gray-600 hover:text-gray-900 disabled:text-gray-300 disabled:cursor-not-allowed"
+            className="p-2 text-gray-800 dark:text-gray-200 hover:text-seafoam-600 dark:hover:text-seafoam-400 hover:bg-seafoam-50 dark:hover:bg-seafoam-900/20 disabled:text-gray-300 disabled:cursor-not-allowed rounded-lg transition-all duration-200"
             title="Redo (Ctrl+Y)"
           >
             ↷
@@ -97,28 +97,28 @@ const Toolbar: React.FC<ToolbarProps> = ({
         <button
           onClick={() => onPageChange(Math.max(1, currentPage - 1))}
           disabled={currentPage <= 1}
-          className="p-2 text-gray-600 hover:text-gray-900 disabled:text-gray-300 disabled:cursor-not-allowed"
+          className="p-2 text-gray-800 dark:text-gray-200 hover:text-seafoam-600 dark:hover:text-seafoam-400 hover:bg-seafoam-50 dark:hover:bg-seafoam-900/20 disabled:text-gray-300 disabled:cursor-not-allowed rounded-lg transition-all duration-200"
         >
           ◀️
         </button>
         
-        <div className="flex items-center space-x-2">
-          <span className="text-sm text-gray-600">Page</span>
+        <div className="flex items-center space-x-2 bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg border border-white/20 dark:border-gray-600/20 rounded-xl px-3 py-2 shadow-lg">
+          <span className="text-sm font-medium text-black dark:text-white">Page</span>
           <input
             type="number"
             min={1}
             max={totalPages}
             value={currentPage}
             onChange={handlePageInputChange}
-            className="w-16 px-2 py-1 text-center border rounded"
+            className="w-16 px-2 py-1 text-center border border-white/20 dark:border-gray-600/20 rounded-lg bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg text-black dark:text-white font-medium focus:ring-2 focus:ring-seafoam-500/50 focus:border-seafoam-500 transition-all duration-200"
           />
-          <span className="text-sm text-gray-600">of {totalPages}</span>
+          <span className="text-sm font-medium text-black dark:text-white">of {totalPages}</span>
         </div>
 
         <button
           onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
           disabled={currentPage >= totalPages}
-          className="p-2 text-gray-600 hover:text-gray-900 disabled:text-gray-300 disabled:cursor-not-allowed"
+          className="p-2 text-gray-800 dark:text-gray-200 hover:text-seafoam-600 dark:hover:text-seafoam-400 hover:bg-seafoam-50 dark:hover:bg-seafoam-900/20 disabled:text-gray-300 disabled:cursor-not-allowed rounded-lg transition-all duration-200"
         >
           ▶️
         </button>
@@ -127,10 +127,10 @@ const Toolbar: React.FC<ToolbarProps> = ({
       {/* Right side - Zoom and actions */}
       <div className="flex items-center space-x-4">
         {/* Zoom controls */}
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-2 bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg border border-white/20 dark:border-gray-600/20 rounded-xl px-3 py-2 shadow-lg">
           <button
             onClick={() => onScaleChange(Math.max(0.25, scale - 0.25))}
-            className="p-1 text-gray-600 hover:text-gray-900"
+            className="p-1 text-gray-800 dark:text-gray-200 hover:text-seafoam-600 dark:hover:text-seafoam-400 hover:bg-seafoam-50 dark:hover:bg-seafoam-900/20 rounded-lg transition-all duration-200"
             title="Zoom out (-)"
           >
             🔍-
@@ -139,7 +139,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
           <select
             value={scale}
             onChange={handleScaleChange}
-            className="px-2 py-1 text-sm border rounded"
+            className="px-2 py-1 text-sm border border-white/20 dark:border-gray-600/20 rounded-lg bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg text-black dark:text-white font-medium focus:ring-2 focus:ring-seafoam-500/50 focus:border-seafoam-500 transition-all duration-200"
           >
             {scaleOptions.map(option => (
               <option key={option} value={option}>
@@ -151,7 +151,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
           
           <button
             onClick={() => onScaleChange(Math.min(5, scale + 0.25))}
-            className="p-1 text-gray-600 hover:text-gray-900"
+            className="p-1 text-gray-800 dark:text-gray-200 hover:text-seafoam-600 dark:hover:text-seafoam-400 hover:bg-seafoam-50 dark:hover:bg-seafoam-900/20 rounded-lg transition-all duration-200"
             title="Zoom in (+)"
           >
             🔍+
@@ -159,13 +159,13 @@ const Toolbar: React.FC<ToolbarProps> = ({
         </div>
 
         {/* Save button */}
-        <Button
+        <button
           onClick={onSave}
-          variant="primary"
-          size="sm"
+          className="btn-privacy-modern text-sm px-6 py-2 ripple-effect btn-press flex items-center space-x-2"
         >
-          💾 Save PDF
-        </Button>
+          <span>💾</span>
+          <span>Save PDF</span>
+        </button>
       </div>
     </div>
   );

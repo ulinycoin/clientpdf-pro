@@ -83,36 +83,51 @@ export const WordToPDFTool: React.FC = () => {
     <div className="max-w-7xl mx-auto p-6">
       {!currentFile ? (
         <div className="max-w-2xl mx-auto">
-          <div className="bg-white rounded-lg shadow-lg p-8 mb-6">
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-              onChange={handleFileSelect}
-              className="hidden"
-            />
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            onChange={handleFileSelect}
+            className="hidden"
+          />
 
-            <div
-              onClick={handleClick}
-              className="text-center cursor-pointer p-6 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-400 hover:bg-blue-50 transition-colors"
-            >
-              <div className="text-6xl mb-4">📝</div>
-              <h3 className="text-xl font-semibold text-gray-700 mb-2">
+          <div
+            onClick={handleClick}
+            className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-white/20 dark:border-gray-600/20 rounded-2xl shadow-2xl p-12 cursor-pointer hover:shadow-3xl hover:scale-105 transition-all duration-300 group"
+          >
+            <div className="text-center">
+              <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-2xl flex items-center justify-center text-white text-4xl mx-auto mb-8 shadow-2xl group-hover:scale-110 transition-transform duration-300">
+                📝
+              </div>
+              
+              <h3 className="text-2xl font-black text-black dark:text-white mb-4">
                 {t('pages.tools.wordToPdf.tool.uploadTitle')}
               </h3>
-              <p className="text-gray-500 mb-6">
+              <p className="text-lg font-medium text-gray-600 dark:text-gray-300 mb-8">
                 {t('pages.tools.wordToPdf.tool.uploadSubtitle')}
               </p>
 
-              <div className="mt-6 text-sm text-gray-400">
-                <p>{t('pages.tools.wordToPdf.tool.supportedFormats')}</p>
+              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200/60 dark:border-blue-600/20 rounded-xl p-4 mb-6 backdrop-blur-sm">
+                <p className="text-sm font-medium text-blue-700 dark:text-blue-300">{t('pages.tools.wordToPdf.tool.supportedFormats')}</p>
               </div>
 
-              <div className="mt-4 text-xs text-gray-400 space-y-1">
-                <p>{t('pages.tools.wordToPdf.tool.compatibility.msWord')}</p>
-                <p>{t('pages.tools.wordToPdf.tool.compatibility.googleDocs')}</p>
-                <p>{t('pages.tools.wordToPdf.tool.compatibility.docWarning')}</p>
-                <p>{t('pages.tools.wordToPdf.tool.compatibility.localProcessing')}</p>
+              <div className="grid gap-3 text-left">
+                <div className="flex items-center gap-3">
+                  <span className="w-2 h-2 bg-seafoam-500 rounded-full"></span>
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('pages.tools.wordToPdf.tool.compatibility.msWord')}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="w-2 h-2 bg-seafoam-500 rounded-full"></span>
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('pages.tools.wordToPdf.tool.compatibility.googleDocs')}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="w-2 h-2 bg-amber-500 rounded-full"></span>
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('pages.tools.wordToPdf.tool.compatibility.docWarning')}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('pages.tools.wordToPdf.tool.compatibility.localProcessing')}</span>
+                </div>
               </div>
             </div>
           </div>
@@ -121,12 +136,14 @@ export const WordToPDFTool: React.FC = () => {
         <div className="space-y-6">
           {/* Success Message */}
           {result?.success && (
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-              <div className="flex items-center">
-                <CheckCircle className="w-5 h-5 text-green-500 mr-2" />
+            <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-200/60 dark:border-green-600/20 rounded-2xl p-6 backdrop-blur-sm shadow-xl">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center text-white shadow-lg">
+                  <CheckCircle className="w-6 h-6" />
+                </div>
                 <div>
-                  <h3 className="text-green-800 font-medium">{t('pages.tools.wordToPdf.tool.messages.conversionCompleted')}</h3>
-                  <p className="text-green-700 text-sm">
+                  <h3 className="text-green-800 dark:text-green-200 font-black text-lg">{t('pages.tools.wordToPdf.tool.messages.conversionCompleted')}</h3>
+                  <p className="text-green-700 dark:text-green-300 text-sm font-medium">
                     PDF is ready for download ({result.pdfBytes ? Math.round(result.pdfBytes.length / 1024) : '0'} KB)
                   </p>
                 </div>
@@ -136,12 +153,14 @@ export const WordToPDFTool: React.FC = () => {
 
           {/* Error Message */}
           {result && !result.success && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-              <div className="flex items-center">
-                <AlertCircle className="w-5 h-5 text-red-500 mr-2" />
+            <div className="bg-gradient-to-r from-red-50 to-pink-50 dark:from-red-900/20 dark:to-pink-900/20 border border-red-200/60 dark:border-red-600/20 rounded-2xl p-6 backdrop-blur-sm shadow-xl">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-pink-500 rounded-2xl flex items-center justify-center text-white shadow-lg">
+                  <AlertCircle className="w-6 h-6" />
+                </div>
                 <div>
-                  <h3 className="text-red-800 font-medium">{t('pages.tools.wordToPdf.tool.messages.conversionFailed')}</h3>
-                  <p className="text-red-700 text-sm">{result.error}</p>
+                  <h3 className="text-red-800 dark:text-red-200 font-black text-lg">{t('pages.tools.wordToPdf.tool.messages.conversionFailed')}</h3>
+                  <p className="text-red-700 dark:text-red-300 text-sm font-medium">{result.error}</p>
                 </div>
               </div>
             </div>
@@ -151,7 +170,7 @@ export const WordToPDFTool: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Left Panel - Preview */}
             <div className="space-y-6">
-              <div className="bg-white rounded-lg shadow-lg overflow-hidden h-[600px]"> {/* Fixed height */}
+              <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-white/20 dark:border-gray-600/20 rounded-2xl shadow-2xl overflow-hidden min-h-[600px] h-fit"> {/* Dynamic height */}
                 {showPreview ? (
                   <PDFPreview
                     pdfBytes={result?.success ? result.pdfBytes || null : null}
@@ -161,17 +180,26 @@ export const WordToPDFTool: React.FC = () => {
                     onRegenerate={currentFile ? () => handleConvert() : undefined}
                   />
                 ) : (
-                  <div className="p-8 text-center text-gray-500 flex flex-col items-center justify-center h-full">
-                    <Eye className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                    <h3 className="text-xl font-medium mb-2">{t('pages.tools.wordToPdf.tool.preview.title')}</h3>
-                    <p className="text-sm mb-4">{t('pages.tools.wordToPdf.tool.preview.description')}</p>
+                  <div className="p-8 text-center flex flex-col items-center justify-center h-full">
+                    <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-blue-500 rounded-2xl flex items-center justify-center text-white mb-6 shadow-xl">
+                      <Eye className="w-8 h-8" />
+                    </div>
+                    <h3 className="text-xl font-black text-black dark:text-white mb-3">{t('pages.tools.wordToPdf.tool.preview.title')}</h3>
+                    <p className="text-sm font-medium text-gray-600 dark:text-gray-300 mb-6">{t('pages.tools.wordToPdf.tool.preview.description')}</p>
                     {currentFile && !result && (
                       <button
                         onClick={handleConvert}
                         disabled={isConverting}
-                        className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+                        className="btn-privacy-modern bg-gradient-to-br from-seafoam-500 to-ocean-500 hover:from-seafoam-600 hover:to-ocean-600 disabled:from-gray-400 disabled:to-gray-500 text-white font-black px-8 py-3 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 disabled:hover:scale-100 transition-all duration-300 disabled:opacity-50"
                       >
-                        {isConverting ? t('pages.tools.wordToPdf.tool.buttons.converting') : t('pages.tools.wordToPdf.tool.buttons.convertToPdf')}
+                        {isConverting ? (
+                          <span className="flex items-center gap-2">
+                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                            {t('pages.tools.wordToPdf.tool.buttons.converting')}
+                          </span>
+                        ) : (
+                          t('pages.tools.wordToPdf.tool.buttons.convertToPdf')
+                        )}
                       </button>
                     )}
                   </div>
@@ -181,10 +209,15 @@ export const WordToPDFTool: React.FC = () => {
 
             {/* Right Panel - Conversion Settings */}
             <div className="space-y-6">
-              <div className="bg-white rounded-lg shadow-lg p-6 h-[600px] flex flex-col"> {/* Fixed height with flex */}
-                <h2 className="text-xl font-semibold mb-4">{t('pages.tools.wordToPdf.tool.settings.title')}</h2>
+              <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-white/20 dark:border-gray-600/20 rounded-2xl shadow-2xl p-6 min-h-[600px] h-fit flex flex-col"> {/* Dynamic height with flex */}
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-lg flex items-center justify-center text-white shadow-lg">
+                    <Settings className="w-5 h-5" />
+                  </div>
+                  <h2 className="text-xl font-black text-black dark:text-white">{t('pages.tools.wordToPdf.tool.settings.title')}</h2>
+                </div>
 
-                <div className="flex-1 overflow-y-auto"> {/* Scrollable content area */}
+                <div className="flex-1 overflow-y-auto max-h-[400px]"> {/* Limited scrollable content area */}
                   <ConversionSettingsPanel
                     settings={settings}
                     onSettingsChange={handleSettingsChange}
@@ -194,42 +227,73 @@ export const WordToPDFTool: React.FC = () => {
                 </div>
 
                 {/* Convert Button - Always at bottom */}
-                <div className="mt-6 pt-6 border-t flex-shrink-0">
+                <div className="mt-6 pt-6 border-t border-white/20 dark:border-gray-600/20 flex-shrink-0">
                   <button
                     onClick={handleConvert}
                     disabled={!currentFile || isConverting}
-                    className={`w-full py-3 px-4 font-medium rounded-lg transition-colors ${
-                      !currentFile || isConverting
-                        ? 'bg-gray-400 cursor-not-allowed text-white'
-                        : 'bg-green-600 hover:bg-green-700 text-white'
-                    }`}
+                    className="w-full btn-privacy-modern bg-gradient-to-br from-seafoam-500 to-ocean-500 hover:from-seafoam-600 hover:to-ocean-600 disabled:from-gray-400 disabled:to-gray-500 text-white font-black py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 disabled:hover:scale-100 transition-all duration-300 disabled:opacity-50"
                   >
                     {isConverting ? (
-                      <span className="flex items-center justify-center">
-                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                      <span className="flex items-center justify-center gap-2">
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
                         {t('pages.tools.wordToPdf.tool.buttons.converting')}
                       </span>
                     ) : (
-                      t('pages.tools.wordToPdf.tool.buttons.convertToPdf')
+                      <>🔄 {t('pages.tools.wordToPdf.tool.buttons.convertToPdf')}</>
                     )}
                   </button>
+                  
+                  <div className="mt-3 text-center space-y-2">
+                    <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                      💡 After conversion, use Download button in preview panel
+                    </p>
+                    {result?.success && (
+                      <button
+                        onClick={handlePreviewToggle}
+                        className="text-xs font-medium text-seafoam-600 dark:text-seafoam-400 hover:text-seafoam-700 dark:hover:text-seafoam-300 underline transition-colors duration-200"
+                      >
+                        {showPreview ? 'Hide Preview' : 'Show Preview & Download'}
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
           {/* File Information - Full Width Below */}
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-xl font-semibold mb-4">{t('pages.tools.wordToPdf.tool.fileInfo.title')}</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-              <div><strong>{t('pages.tools.wordToPdf.tool.fileInfo.fileName')}:</strong> {currentFile.name}</div>
-              <div><strong>{t('pages.tools.wordToPdf.tool.fileInfo.fileSize')}:</strong> {Math.round(currentFile.size / 1024)} KB</div>
-              <div><strong>{t('pages.tools.wordToPdf.tool.fileInfo.fileType')}:</strong> {t('pages.tools.wordToPdf.tool.fileInfo.microsoftWord')}</div>
+          <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-white/20 dark:border-gray-600/20 rounded-2xl shadow-2xl p-6">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-blue-500 rounded-lg flex items-center justify-center text-white shadow-lg">
+                <FileText className="w-5 h-5" />
+              </div>
+              <h2 className="text-xl font-black text-black dark:text-white">{t('pages.tools.wordToPdf.tool.fileInfo.title')}</h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-xl p-4 border border-white/20 dark:border-gray-600/20">
+                <div className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{t('pages.tools.wordToPdf.tool.fileInfo.fileName')}</div>
+                <div className="font-black text-black dark:text-white truncate" title={currentFile.name}>{currentFile.name}</div>
+              </div>
+              <div className="bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-xl p-4 border border-white/20 dark:border-gray-600/20">
+                <div className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{t('pages.tools.wordToPdf.tool.fileInfo.fileSize')}</div>
+                <div className="font-black text-black dark:text-white">{Math.round(currentFile.size / 1024)} KB</div>
+              </div>
+              <div className="bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-xl p-4 border border-white/20 dark:border-gray-600/20">
+                <div className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{t('pages.tools.wordToPdf.tool.fileInfo.fileType')}</div>
+                <div className="font-black text-black dark:text-white">{t('pages.tools.wordToPdf.tool.fileInfo.microsoftWord')}</div>
+              </div>
             </div>
 
-            <div className="mt-4 flex items-center justify-between">
-              <div className="text-sm text-gray-600">
-                {t('pages.tools.wordToPdf.tool.fileInfo.privacyNote')}
+            <div className="mt-6 flex items-center justify-between">
+              <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-200/60 dark:border-green-600/20 rounded-xl p-4 backdrop-blur-sm flex-1 mr-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-6 h-6 bg-green-500 rounded-lg flex items-center justify-center text-white text-sm">
+                    🔒
+                  </div>
+                  <div className="text-sm font-medium text-green-700 dark:text-green-300">
+                    {t('pages.tools.wordToPdf.tool.fileInfo.privacyNote')}
+                  </div>
+                </div>
               </div>
               <button
                 onClick={() => {
@@ -237,7 +301,7 @@ export const WordToPDFTool: React.FC = () => {
                   setShowPreview(false);
                   reset();
                 }}
-                className="text-sm text-red-600 hover:text-red-800 underline"
+                className="px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border border-red-300/80 dark:border-red-600/20 rounded-lg text-red-600 dark:text-red-400 font-bold hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-200 shadow-lg disabled:opacity-50"
                 disabled={isConverting}
               >
                 {t('pages.tools.wordToPdf.tool.buttons.chooseDifferent')}

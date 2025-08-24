@@ -161,22 +161,24 @@ const AddTextTool: React.FC<AddTextToolProps> = ({
 
   if (!pdfFile) {
     return (
-      <div className={`bg-white rounded-lg shadow-lg p-6 ${className}`}>
+      <div className={`bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg border border-white/20 dark:border-gray-600/20 rounded-2xl shadow-lg hover:shadow-xl p-8 ${className} transition-all duration-300`}>
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors flex items-center space-x-2"
+            className="p-2 hover:bg-seafoam-50 dark:hover:bg-seafoam-900/20 rounded-lg transition-all duration-200 flex items-center space-x-2"
           >
             <span>←</span>
-            <span>Back to Tools</span>
+            <span className="font-medium text-black dark:text-white">Back to Tools</span>
           </button>
-          <h2 className="text-2xl font-bold text-gray-900">Add Text to PDF</h2>
+          <h2 className="text-2xl font-black text-black dark:text-white">Add Text to PDF</h2>
         </div>
 
         <div className="text-center py-12">
-          <div className="mb-4">📄</div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No PDF File Selected</h3>
-          <p className="text-gray-600 mb-6">Please upload a PDF file to add text</p>
+          <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg mx-auto mb-6">
+            📄
+          </div>
+          <h3 className="text-lg font-black text-black dark:text-white mb-2">No PDF File Selected</h3>
+          <p className="text-gray-800 dark:text-gray-100 font-medium mb-6">Please upload a PDF file to add text</p>
           <FileUploadZone
             onFileUpload={(files) => {
               // This would need to be handled by parent component
@@ -191,19 +193,21 @@ const AddTextTool: React.FC<AddTextToolProps> = ({
   }
 
   return (
-    <div className={`bg-white rounded-lg shadow-lg ${className} flex flex-col`} style={{ height: 'calc(100vh - 120px)', maxHeight: '800px' }}>
+    <div className={`bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg border border-white/20 dark:border-gray-600/20 rounded-2xl shadow-lg hover:shadow-xl ${className} flex flex-col transition-all duration-300`} style={{ height: 'calc(100vh - 120px)', minHeight: '800px' }}>
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b flex-shrink-0">
+      <div className="flex items-center justify-between px-4 py-2 border-b border-white/20 dark:border-gray-600/20 flex-shrink-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
         <button
           onClick={onClose}
-          className="p-2 hover:bg-gray-100 rounded-lg transition-colors flex items-center space-x-2"
+          className="p-2 hover:bg-seafoam-50 dark:hover:bg-seafoam-900/20 rounded-lg transition-all duration-200 flex items-center space-x-2 text-sm"
         >
           <span>←</span>
-          <span>Back to Tools</span>
+          <span className="font-medium text-black dark:text-white">Back to Tools</span>
         </button>
-        <h2 className="text-xl font-bold text-gray-900">Add Text to PDF</h2>
-        <div className="text-sm text-gray-500">
-          {textElements.length} text element{textElements.length !== 1 ? 's' : ''}
+        <h2 className="text-lg font-black text-black dark:text-white">Add Text to PDF</h2>
+        <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg border border-white/20 dark:border-gray-600/20 rounded-lg px-3 py-1">
+          <div className="text-xs font-medium text-black dark:text-white">
+            {textElements.length} text element{textElements.length !== 1 ? 's' : ''}
+          </div>
         </div>
       </div>
 
@@ -268,9 +272,10 @@ const AddTextTool: React.FC<AddTextToolProps> = ({
       {/* Processing overlay */}
       {isProcessing && (
         <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"></div>
-            <p className="text-gray-700">Processing PDF...</p>
+          <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-lg border border-white/20 dark:border-gray-600/20 rounded-2xl p-8 text-center shadow-2xl">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-seafoam-500 mx-auto mb-6"></div>
+            <p className="text-black dark:text-white font-black text-lg mb-2">Processing PDF with Cyrillic support...</p>
+            <p className="text-gray-800 dark:text-gray-100 font-medium text-sm">Loading Unicode fonts and generating document</p>
           </div>
         </div>
       )}

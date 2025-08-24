@@ -67,11 +67,14 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({
 
   if (isGenerating) {
     return (
-      <div className="border border-gray-200 rounded-lg p-6 bg-gray-50">
+      <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-white/20 dark:border-gray-600/20 rounded-2xl shadow-2xl p-8">
         <div className="flex items-center justify-center h-64">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-3"></div>
-            <p className="text-gray-600">Generating PDF preview...</p>
+            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-2xl flex items-center justify-center text-white mb-6 shadow-xl mx-auto">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+            </div>
+            <p className="font-black text-black dark:text-white text-lg mb-2">Generating PDF preview...</p>
+            <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Please wait while we prepare your document</p>
           </div>
         </div>
       </div>
@@ -80,12 +83,14 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({
 
   if (!pdfBytes) {
     return (
-      <div className="border border-gray-200 rounded-lg p-6 bg-gray-50">
+      <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-white/20 dark:border-gray-600/20 rounded-2xl shadow-2xl p-8">
         <div className="flex items-center justify-center h-64">
-          <div className="text-center text-gray-500">
-            <Eye className="w-12 h-12 mx-auto mb-3 opacity-50" />
-            <p>PDF preview will appear here</p>
-            <p className="text-sm">Upload a Word document to get started</p>
+          <div className="text-center">
+            <div className="w-16 h-16 bg-gradient-to-br from-gray-400 to-gray-500 rounded-2xl flex items-center justify-center text-white mb-6 shadow-xl mx-auto">
+              <Eye className="w-8 h-8" />
+            </div>
+            <p className="font-black text-black dark:text-white text-lg mb-2">PDF preview will appear here</p>
+            <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Upload a Word document to get started</p>
           </div>
         </div>
       </div>
@@ -94,16 +99,18 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({
 
   if (error) {
     return (
-      <div className="border border-red-200 rounded-lg p-6 bg-red-50">
+      <div className="bg-gradient-to-r from-red-50 to-pink-50 dark:from-red-900/20 dark:to-pink-900/20 border border-red-200/60 dark:border-red-600/20 rounded-2xl p-8 backdrop-blur-sm shadow-xl">
         <div className="flex items-center justify-center h-64">
-          <div className="text-center text-red-600">
-            <AlertCircle className="w-12 h-12 mx-auto mb-3" />
-            <p className="font-medium">Preview Error</p>
-            <p className="text-sm">{error}</p>
+          <div className="text-center">
+            <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-pink-500 rounded-2xl flex items-center justify-center text-white mb-6 shadow-xl mx-auto">
+              <AlertCircle className="w-8 h-8" />
+            </div>
+            <p className="font-black text-red-800 dark:text-red-200 text-lg mb-2">Preview Error</p>
+            <p className="text-sm font-medium text-red-700 dark:text-red-300 mb-4">{error}</p>
             {onRegenerate && (
               <button
                 onClick={onRegenerate}
-                className="mt-3 text-sm text-red-600 hover:text-red-800 underline"
+                className="btn-privacy-modern bg-gradient-to-br from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-black px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
               >
                 Try again
               </button>
@@ -115,49 +122,51 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({
   }
 
   return (
-    <div className="border border-gray-200 rounded-lg overflow-hidden bg-white">
+    <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-white/20 dark:border-gray-600/20 rounded-2xl shadow-2xl overflow-hidden">
       {/* Preview Header */}
-      <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <FileText className="w-5 h-5 text-gray-500" />
-            <div>
-              <h3 className="font-medium text-gray-900">{fileName}</h3>
-              <p className="text-sm text-gray-500">PDF Preview</p>
+      <div className="bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm px-3 py-2 border-b border-white/20 dark:border-gray-600/20">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2 flex-1 min-w-0">
+            <div className="w-6 h-6 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-md flex items-center justify-center text-white shadow-md flex-shrink-0">
+              <FileText className="w-3 h-3" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <h3 className="font-bold text-black dark:text-white text-sm truncate">{fileName}</h3>
+              <p className="text-xs text-gray-600 dark:text-gray-400">PDF Preview</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 flex-shrink-0">
             {/* Zoom Controls */}
-            <div className="flex items-center gap-1 bg-white border border-gray-300 rounded">
+            <div className="flex items-center bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/40 dark:border-gray-600/40 rounded-md overflow-hidden shadow-sm text-xs">
               <button
                 onClick={handleZoomOut}
                 disabled={scale <= 0.5}
-                className="p-1 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-1.5 py-1 hover:bg-gray-50 dark:hover:bg-gray-700/60 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                 title="Zoom out"
               >
-                <ZoomOut className="w-4 h-4" />
+                <ZoomOut className="w-3 h-3 text-gray-600 dark:text-gray-400" />
               </button>
-              <span className="px-2 text-sm font-mono">
+              <span className="px-2 py-1 text-xs font-semibold text-black dark:text-white border-x border-white/40 dark:border-gray-600/40 min-w-[2.5rem] text-center">
                 {Math.round(scale * 100)}%
               </span>
               <button
                 onClick={handleZoomIn}
                 disabled={scale >= 2}
-                className="p-1 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-1.5 py-1 hover:bg-gray-50 dark:hover:bg-gray-700/60 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                 title="Zoom in"
               >
-                <ZoomIn className="w-4 h-4" />
+                <ZoomIn className="w-3 h-3 text-gray-600 dark:text-gray-400" />
               </button>
             </div>
 
             {/* Download Button */}
             <button
               onClick={onDownload}
-              className="flex items-center gap-2 px-3 py-1.5 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+              className="flex items-center gap-1 bg-gradient-to-br from-seafoam-500 to-ocean-500 hover:from-seafoam-600 hover:to-ocean-600 text-white font-semibold px-2.5 py-1.5 rounded-md shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-300 text-xs"
             >
-              <Download className="w-4 h-4" />
-              <span className="text-sm font-medium">Download</span>
+              <Download className="w-3.5 h-3.5" />
+              <span className="hidden md:inline">Download</span>
             </button>
           </div>
         </div>
@@ -197,10 +206,17 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({
       </div>
 
       {/* Footer Info */}
-      <div className="bg-gray-50 px-4 py-2 border-t border-gray-200">
-        <div className="flex items-center justify-between text-sm text-gray-600">
-          <span>Preview may differ slightly from final PDF</span>
-          <span>{pdfBytes ? `${Math.round(pdfBytes.length / 1024)} KB` : ''}</span>
+      <div className="bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm px-4 py-2 border-t border-white/20 dark:border-gray-600/20">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-1.5">
+            <div className="w-1.5 h-1.5 bg-blue-500 rounded-full flex-shrink-0"></div>
+            <span className="text-xs text-gray-600 dark:text-gray-400">Preview may differ from final PDF</span>
+          </div>
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 border border-blue-200/60 dark:border-blue-600/20 rounded-md px-2 py-0.5 backdrop-blur-sm flex-shrink-0">
+            <span className="text-xs font-semibold text-blue-700 dark:text-blue-300">
+              {pdfBytes ? `${Math.round(pdfBytes.length / 1024)} KB` : ''}
+            </span>
+          </div>
         </div>
       </div>
     </div>

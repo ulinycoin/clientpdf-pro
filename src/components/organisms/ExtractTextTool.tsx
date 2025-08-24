@@ -84,31 +84,37 @@ const ExtractTextTool: React.FC<ExtractTextToolProps> = ({
   const showComparison = result?.success && result.data?.formattedText && result.data?.text !== result.data?.formattedText;
 
   return (
-    <div className={`bg-white rounded-lg shadow-lg p-6 ${className}`}>
+    <div className={`bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-white/20 dark:border-gray-600/20 rounded-2xl shadow-2xl p-8 ${className} transition-all duration-300`}>
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-8">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">{t('pages.tools.extractText.tool.title')}</h2>
-          <p className="text-gray-600 mt-1">
+          <h2 className="text-2xl font-black text-black dark:text-white">{t('pages.tools.extractText.tool.title')}</h2>
+          <p className="text-gray-800 dark:text-gray-100 font-medium mt-2">
             {t('pages.tools.extractText.tool.description')}
           </p>
         </div>
-        <Button variant="ghost" onClick={onClose}>
-          ✕
-        </Button>
+        <button
+          onClick={onClose}
+          className="p-2 hover:bg-seafoam-50 dark:hover:bg-seafoam-900/20 rounded-lg transition-all duration-200 flex items-center space-x-2"
+        >
+          <span>←</span>
+          <span className="font-medium text-black dark:text-white">Back to Tools</span>
+        </button>
       </div>
 
       {/* File Info */}
       {currentFile && (
-        <div className="mb-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">{t('pages.tools.extractText.tool.fileToExtract')}</h3>
+        <div className="mb-8">
+          <h3 className="text-lg font-black text-black dark:text-white mb-4">{t('pages.tools.extractText.tool.fileToExtract')}</h3>
 
-          <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-            <div className="flex items-center space-x-3">
-              <div className="text-2xl">📄</div>
+          <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl p-6 shadow-lg">
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl flex items-center justify-center text-white text-xl shadow-lg">
+                📄
+              </div>
               <div className="flex-1">
-                <p className="font-medium text-gray-900">{currentFile.name}</p>
-                <p className="text-sm text-gray-500">
+                <p className="font-black text-black dark:text-white">{currentFile.name}</p>
+                <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mt-1">
                   {formatFileSize(currentFile.size)}
                 </p>
               </div>
@@ -118,42 +124,42 @@ const ExtractTextTool: React.FC<ExtractTextToolProps> = ({
       )}
 
       {/* Extraction Options */}
-      <div className="mb-6">
-        <h3 className="text-lg font-medium text-gray-900 mb-4">{t('pages.tools.extractText.tool.extractionOptions')}</h3>
+      <div className="mb-8">
+        <h3 className="text-lg font-black text-black dark:text-white mb-6">{t('pages.tools.extractText.tool.extractionOptions')}</h3>
 
-        <div className="space-y-4">
+        <div className="space-y-6">
           {/* Smart Formatting Toggle */}
-          <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <div className="bg-gradient-to-br from-seafoam-50 to-ocean-50 dark:from-seafoam-900/20 dark:to-ocean-900/20 backdrop-blur-sm border border-seafoam-200/60 dark:border-seafoam-600/20 rounded-xl p-6 shadow-lg">
             <label className="flex items-center">
               <input
                 type="checkbox"
                 checked={options.enableSmartFormatting}
                 onChange={(e) => setOptions(prev => ({ ...prev, enableSmartFormatting: e.target.checked }))}
                 disabled={isProcessing}
-                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                className="w-5 h-5 text-seafoam-600 bg-white/90 border-seafoam-300/80 rounded focus:ring-2 focus:ring-seafoam-500/50 transition-all duration-200"
               />
-              <span className="ml-3 text-sm font-medium text-blue-900">
+              <span className="ml-4 text-base font-black text-black dark:text-white">
                 ✨ {t('pages.tools.extractText.tool.smartFormatting')}
               </span>
             </label>
-            <p className="ml-7 text-xs text-blue-700 mt-1">
+            <p className="ml-9 text-sm font-medium text-gray-800 dark:text-gray-100 mt-2">
               {t('pages.tools.extractText.tool.smartFormattingDesc')}
             </p>
           </div>
 
           {/* Formatting Level */}
           {options.enableSmartFormatting && (
-            <div className="ml-4 space-y-3">
-              <label className="block text-sm font-medium text-gray-700">
+            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl p-6 ml-4 shadow-lg">
+              <label className="block text-sm font-black text-black dark:text-white mb-4">
                 {t('pages.tools.extractText.tool.formattingLevel')}
               </label>
-              <div className="space-y-2">
+              <div className="space-y-4">
                 {[
                   { value: 'minimal', label: t('pages.tools.extractText.tool.levels.minimal.title'), desc: t('pages.tools.extractText.tool.levels.minimal.desc') },
                   { value: 'standard', label: t('pages.tools.extractText.tool.levels.standard.title'), desc: t('pages.tools.extractText.tool.levels.standard.desc') },
                   { value: 'advanced', label: t('pages.tools.extractText.tool.levels.advanced.title'), desc: t('pages.tools.extractText.tool.levels.advanced.desc') }
                 ].map((level) => (
-                  <label key={level.value} className="flex items-start">
+                  <label key={level.value} className="flex items-start cursor-pointer hover:bg-seafoam-50 dark:hover:bg-seafoam-900/20 p-3 rounded-lg transition-all duration-200">
                     <input
                       type="radio"
                       name="formattingLevel"
@@ -161,11 +167,11 @@ const ExtractTextTool: React.FC<ExtractTextToolProps> = ({
                       checked={options.formattingLevel === level.value}
                       onChange={(e) => setOptions(prev => ({ ...prev, formattingLevel: e.target.value as any }))}
                       disabled={isProcessing}
-                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 mt-0.5"
+                      className="w-5 h-5 text-seafoam-600 bg-white/90 border-seafoam-300/80 focus:ring-2 focus:ring-seafoam-500/50 mt-0.5 transition-all duration-200"
                     />
-                    <div className="ml-3">
-                      <span className="text-sm font-medium text-gray-900">{level.label}</span>
-                      <p className="text-xs text-gray-600">{level.desc}</p>
+                    <div className="ml-4">
+                      <span className="text-sm font-black text-black dark:text-white">{level.label}</span>
+                      <p className="text-xs font-medium text-gray-700 dark:text-gray-300 mt-1">{level.desc}</p>
                     </div>
                   </label>
                 ))}
@@ -174,58 +180,64 @@ const ExtractTextTool: React.FC<ExtractTextToolProps> = ({
           )}
 
           {/* Include Metadata */}
-          <label className="flex items-center">
-            <input
-              type="checkbox"
-              checked={options.includeMetadata}
-              onChange={(e) => setOptions(prev => ({ ...prev, includeMetadata: e.target.checked }))}
-              disabled={isProcessing}
-              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
-            />
-            <span className="ml-3 text-sm text-gray-700">
-              {t('pages.tools.extractText.tool.includeMetadata')}
-            </span>
-          </label>
+          <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl p-4 shadow-lg">
+            <label className="flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                checked={options.includeMetadata}
+                onChange={(e) => setOptions(prev => ({ ...prev, includeMetadata: e.target.checked }))}
+                disabled={isProcessing}
+                className="w-5 h-5 text-seafoam-600 bg-white/90 border-seafoam-300/80 rounded focus:ring-2 focus:ring-seafoam-500/50 transition-all duration-200"
+              />
+              <span className="ml-4 text-sm font-black text-black dark:text-white">
+                {t('pages.tools.extractText.tool.includeMetadata')}
+              </span>
+            </label>
+          </div>
 
           {/* Preserve Formatting */}
-          <label className="flex items-center">
-            <input
-              type="checkbox"
-              checked={options.preserveFormatting}
-              onChange={(e) => setOptions(prev => ({ ...prev, preserveFormatting: e.target.checked }))}
-              disabled={isProcessing}
-              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
-            />
-            <span className="ml-3 text-sm text-gray-700">
-              {t('pages.tools.extractText.tool.preserveFormatting')}
-            </span>
-          </label>
+          <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl p-4 shadow-lg">
+            <label className="flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                checked={options.preserveFormatting}
+                onChange={(e) => setOptions(prev => ({ ...prev, preserveFormatting: e.target.checked }))}
+                disabled={isProcessing}
+                className="w-5 h-5 text-seafoam-600 bg-white/90 border-seafoam-300/80 rounded focus:ring-2 focus:ring-seafoam-500/50 transition-all duration-200"
+              />
+              <span className="ml-4 text-sm font-black text-black dark:text-white">
+                {t('pages.tools.extractText.tool.preserveFormatting')}
+              </span>
+            </label>
+          </div>
 
           {/* Page Range Toggle */}
-          <label className="flex items-center">
-            <input
-              type="checkbox"
-              checked={showRangeOptions}
-              onChange={(e) => {
-                setShowRangeOptions(e.target.checked);
-                if (!e.target.checked) {
-                  setOptions(prev => ({ ...prev, pageRange: undefined }));
-                }
-              }}
-              disabled={isProcessing}
-              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
-            />
-            <span className="ml-3 text-sm text-gray-700">
-              {t('pages.tools.extractText.tool.pageRange')}
-            </span>
-          </label>
+          <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl p-4 shadow-lg">
+            <label className="flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                checked={showRangeOptions}
+                onChange={(e) => {
+                  setShowRangeOptions(e.target.checked);
+                  if (!e.target.checked) {
+                    setOptions(prev => ({ ...prev, pageRange: undefined }));
+                  }
+                }}
+                disabled={isProcessing}
+                className="w-5 h-5 text-seafoam-600 bg-white/90 border-seafoam-300/80 rounded focus:ring-2 focus:ring-seafoam-500/50 transition-all duration-200"
+              />
+              <span className="ml-4 text-sm font-black text-black dark:text-white">
+                {t('pages.tools.extractText.tool.pageRange')}
+              </span>
+            </label>
+          </div>
 
           {/* Page Range Options */}
           {showRangeOptions && (
-            <div className="ml-7 space-y-3 p-4 bg-gray-50 rounded-lg">
-              <div className="grid grid-cols-2 gap-4">
+            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl p-6 ml-4 shadow-lg">
+              <div className="grid grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-black text-black dark:text-white mb-3">
                     {t('pages.tools.extractText.tool.pageRangeFields.startPage')}
                   </label>
                   <input
@@ -240,11 +252,11 @@ const ExtractTextTool: React.FC<ExtractTextToolProps> = ({
                       }
                     }))}
                     disabled={isProcessing}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300/80 dark:border-gray-600/20 rounded-xl bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg text-black dark:text-white font-medium focus:ring-2 focus:ring-seafoam-500/50 focus:border-seafoam-500 transition-all duration-200 shadow-sm"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-black text-black dark:text-white mb-3">
                     {t('pages.tools.extractText.tool.pageRangeFields.endPage')}
                   </label>
                   <input
@@ -259,11 +271,11 @@ const ExtractTextTool: React.FC<ExtractTextToolProps> = ({
                       }
                     }))}
                     disabled={isProcessing}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300/80 dark:border-gray-600/20 rounded-xl bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg text-black dark:text-white font-medium focus:ring-2 focus:ring-seafoam-500/50 focus:border-seafoam-500 transition-all duration-200 shadow-sm"
                   />
                 </div>
               </div>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs font-medium text-gray-700 dark:text-gray-300 mt-4">
                 {t('pages.tools.extractText.tool.pageRangeFields.note')}
               </p>
             </div>
@@ -404,22 +416,21 @@ const ExtractTextTool: React.FC<ExtractTextToolProps> = ({
       </div>
 
       {/* Actions */}
-      <div className="flex justify-end space-x-3">
-        <Button
-          variant="outline"
+      <div className="flex justify-end space-x-4 pt-4">
+        <button
           onClick={onClose}
           disabled={isProcessing}
+          className="px-6 py-3 bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border border-gray-300/80 dark:border-gray-600/20 rounded-xl text-black dark:text-white font-bold hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg"
         >
           {t('common.cancel')}
-        </Button>
-        <Button
-          variant="primary"
+        </button>
+        <button
           onClick={handleExtractText}
           disabled={files.length === 0 || isProcessing || validationErrors.length > 0}
-          loading={isProcessing}
+          className="btn-privacy-modern text-lg px-8 py-3 min-w-[200px] ripple-effect btn-press disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isProcessing ? t('pages.tools.extractText.tool.buttons.extracting') : t('pages.tools.extractText.tool.buttons.extractText')}
-        </Button>
+          {isProcessing ? t('pages.tools.extractText.tool.buttons.extracting') : t('pages.tools.extractText.tool.buttons.extractText')} 📄
+        </button>
       </div>
     </div>
   );

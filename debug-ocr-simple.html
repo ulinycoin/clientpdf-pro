@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Simple OCR Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-box { 
+            background: white; 
+            padding: 30px; 
+            border: 2px solid #333; 
+            margin: 20px 0; 
+            font-size: 24px; 
+            font-weight: bold; 
+            text-align: center;
+            width: 400px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        button { 
+            padding: 10px 20px; 
+            margin: 10px; 
+            font-size: 16px; 
+            cursor: pointer; 
+            background: #4ECDC4; 
+            color: white; 
+            border: none; 
+            border-radius: 5px; 
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Simple OCR Debug Test</h1>
+    
+    <div class="test-box" id="testText">
+        HELLO WORLD
+        TEST OCR
+        123456789
+    </div>
+    
+    <button onclick="downloadImage()">📸 Download Test Image</button>
+    <button onclick="runOCRTest()">🔍 Test OCR Direct</button>
+    
+    <div id="results" style="margin-top: 20px; padding: 20px; background: #f0f0f0; border-radius: 5px;"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+    
+    <script>
+        function downloadImage() {
+            html2canvas(document.getElementById('testText')).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'simple-ocr-test.png';
+                link.href = canvas.toDataURL();
+                link.click();
+            });
+        }
+        
+        async function runOCRTest() {
+            const results = document.getElementById('results');
+            results.innerHTML = '<p>🔄 Testing OCR directly with Tesseract.js...</p>';
+            
+            try {
+                // Create canvas from test text
+                const canvas = await html2canvas(document.getElementById('testText'));
+                
+                // Create worker
+                results.innerHTML += '<p>✅ Canvas created, initializing Tesseract worker...</p>';
+                const worker = await Tesseract.createWorker('eng');
+                
+                results.innerHTML += '<p>✅ Worker created, starting recognition...</p>';
+                
+                // Recognize text
+                const result = await worker.recognize(canvas);
+                
+                results.innerHTML += `<p>✅ OCR completed!</p>`;
+                results.innerHTML += `<p><strong>Recognized text:</strong></p>`;
+                results.innerHTML += `<pre style="background: white; padding: 10px; border: 1px solid #ccc;">"${result.data.text}"</pre>`;
+                results.innerHTML += `<p><strong>Confidence:</strong> ${result.data.confidence}%</p>`;
+                results.innerHTML += `<p><strong>Text length:</strong> ${result.data.text.length} characters</p>`;
+                
+                // Test file creation
+                const blob = new Blob([result.data.text], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'ocr-result.txt';
+                link.textContent = 'Download OCR Result';
+                results.appendChild(link);
+                
+                await worker.terminate();
+                
+            } catch (error) {
+                results.innerHTML += `<p>❌ Error: ${error.message}</p>`;
+                console.error('OCR Test Error:', error);
+            }
+        }
+    </script>
+</body>
+</html>

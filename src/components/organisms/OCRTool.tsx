@@ -117,13 +117,15 @@ const OCRTool: React.FC<OCRToolProps> = ({ onFileSelect }) => {
   const fileInfo = selectedFile ? getFileTypeInfo(selectedFile) : null;
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg">
+    <div className="max-w-4xl mx-auto p-6 bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-white/20 dark:border-gray-600/20 rounded-2xl shadow-2xl">
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-800 mb-2 flex items-center gap-2">
-          <FileText className="w-6 h-6 text-blue-600" />
+        <h2 className="text-2xl font-black text-black dark:text-white mb-2 flex items-center gap-3">
+          <div className="w-10 h-10 bg-gradient-to-br from-seafoam-500 to-ocean-500 rounded-xl flex items-center justify-center text-white shadow-lg">
+            <FileText className="w-5 h-5" />
+          </div>
           OCR Text Recognition
         </h2>
-        <p className="text-gray-600">
+        <p className="text-gray-800 dark:text-gray-100 font-medium">
           Extract text from PDFs and images using advanced OCR technology.
           All processing happens locally in your browser.
         </p>
@@ -179,14 +181,16 @@ const OCRTool: React.FC<OCRToolProps> = ({ onFileSelect }) => {
 
       {/* Loading state for file processing and analysis */}
       {(isLoadingFile || isAnalyzing) && (
-        <div className="mb-6 p-8 bg-blue-50 rounded-lg text-center">
+        <div className="mb-6 p-8 bg-seafoam-50/90 dark:bg-seafoam-900/20 backdrop-blur-lg border border-seafoam-200/50 dark:border-seafoam-600/30 rounded-2xl text-center shadow-lg">
           <div className="flex items-center justify-center mb-4">
-            <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+            <div className="w-12 h-12 bg-gradient-to-br from-seafoam-500 to-ocean-500 rounded-xl flex items-center justify-center text-white shadow-lg">
+              <Loader2 className="w-6 h-6 animate-spin" />
+            </div>
           </div>
-          <h3 className="text-lg font-semibold text-blue-800 mb-2">
+          <h3 className="text-lg font-black text-seafoam-800 dark:text-seafoam-200 mb-2">
             {isAnalyzing ? 'Analyzing Document Content...' : 'Processing File...'}
           </h3>
-          <p className="text-blue-600">
+          <p className="text-seafoam-700 dark:text-seafoam-300 font-medium">
             {isAnalyzing ? (
               <span className="flex items-center justify-center gap-2">
                 <Zap className="w-4 h-4" />
@@ -206,47 +210,54 @@ const OCRTool: React.FC<OCRToolProps> = ({ onFileSelect }) => {
 
       {/* Selected File Info */}
       {selectedFile && (
-        <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-          <div className="flex items-center justify-between mb-2">
-            <h3 className="font-semibold text-gray-800">Selected File</h3>
+        <div className="mb-6 p-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border border-white/20 dark:border-gray-600/20 rounded-2xl shadow-lg">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-black text-black dark:text-white flex items-center gap-2">
+              <div className="w-6 h-6 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-lg flex items-center justify-center text-white text-xs">
+                📄
+              </div>
+              Selected File
+            </h3>
             <Button
               variant="ghost"
               size="sm"
               onClick={handleReset}
-              className="text-red-600 hover:text-red-700"
+              className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 px-3 py-1 rounded-lg transition-colors"
             >
               Change File
             </Button>
           </div>
-          <p className="text-sm text-gray-600 mb-2">
-            <strong>Name:</strong> {selectedFile.name}
+          <p className="text-sm text-gray-800 dark:text-gray-100 font-medium mb-2">
+            <strong className="text-black dark:text-white">Name:</strong> {selectedFile.name}
           </p>
-          <p className="text-sm text-gray-600 mb-2">
-            <strong>Size:</strong> {(selectedFile.size / (1024 * 1024)).toFixed(1)} MB
+          <p className="text-sm text-gray-800 dark:text-gray-100 font-medium mb-2">
+            <strong className="text-black dark:text-white">Size:</strong> {(selectedFile.size / (1024 * 1024)).toFixed(1)} MB
           </p>
 
           {/* Enhanced Language Detection Info */}
-          <div className="mb-3">
+          <div className="mb-3 bg-white/60 dark:bg-gray-700/60 backdrop-blur-sm border border-white/30 dark:border-gray-600/30 rounded-xl p-4">
             <div className="flex items-center gap-2 mb-2">
-              <Brain className="w-4 h-4 text-blue-600" />
-              <span className="text-sm font-medium text-gray-700">Language Detection:</span>
+              <div className="w-6 h-6 bg-gradient-to-br from-brain-500 to-purple-500 rounded-lg flex items-center justify-center text-white">
+                <Brain className="w-3 h-3" />
+              </div>
+              <span className="text-sm font-black text-black dark:text-white">Language Detection:</span>
 
               {isAnalyzing ? (
                 <div className="flex items-center gap-2">
-                  <Loader2 className="w-4 h-4 animate-spin text-blue-600" />
-                  <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm font-medium">
+                  <div className="w-5 h-5 border-2 border-seafoam-500 border-t-transparent rounded-full animate-spin"></div>
+                  <span className="px-3 py-1 bg-seafoam-100/90 dark:bg-seafoam-900/30 text-seafoam-800 dark:text-seafoam-200 rounded-lg text-sm font-medium backdrop-blur-sm">
                     Analyzing content...
                   </span>
                 </div>
               ) : (
                 <>
-                  <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm font-medium">
+                  <span className="px-3 py-1 bg-ocean-100/90 dark:bg-ocean-900/30 text-ocean-800 dark:text-ocean-200 rounded-lg text-sm font-medium backdrop-blur-sm">
                     {supportedLanguages.find(lang => lang.code === options.language)?.name || 'English'}
                   </span>
-                  <span className={`text-xs px-2 py-1 rounded ${
-                    languageDetection?.confidence === 'high' ? 'bg-green-100 text-green-700' :
-                    languageDetection?.confidence === 'medium' ? 'bg-yellow-100 text-yellow-700' :
-                    'bg-red-100 text-red-700'
+                  <span className={`text-xs px-2 py-1 rounded-lg font-medium backdrop-blur-sm ${
+                    languageDetection?.confidence === 'high' ? 'bg-green-100/90 dark:bg-green-900/30 text-green-700 dark:text-green-300' :
+                    languageDetection?.confidence === 'medium' ? 'bg-yellow-100/90 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300' :
+                    'bg-red-100/90 dark:bg-red-900/30 text-red-700 dark:text-red-300'
                   }`}>
                     {languageDetection?.confidence === 'high' ? 'High Confidence' :
                      languageDetection?.confidence === 'medium' ? 'Medium Confidence' :
@@ -303,17 +314,23 @@ const OCRTool: React.FC<OCRToolProps> = ({ onFileSelect }) => {
 
       {/* Settings Panel */}
       <div className="mb-6">
-        <Button
-          variant="outline"
+        <button
           onClick={() => setShowSettings(!showSettings)}
-          className="flex items-center gap-2"
+          className="flex items-center gap-3 px-4 py-3 bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border border-white/20 dark:border-gray-600/20 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
         >
-          <Settings className="w-4 h-4" />
-          OCR Settings
-        </Button>
+          <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-lg flex items-center justify-center text-white shadow-lg">
+            <Settings className="w-4 h-4" />
+          </div>
+          <span className="font-black text-black dark:text-white">OCR Settings</span>
+          <div className={`w-4 h-4 transform transition-transform duration-200 ${showSettings ? 'rotate-180' : ''}`}>
+            <svg className="w-4 h-4 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
+        </button>
 
         {showSettings && (
-          <div className="mt-4 p-4 bg-gray-50 rounded-lg space-y-4">
+          <div className="mt-4 p-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border border-white/20 dark:border-gray-600/20 rounded-2xl shadow-lg space-y-6">
             {/* Enhanced Language Selection Warning */}
             <div className={`p-3 border rounded-lg ${
               languageDetection?.confidence === 'high' ? 'bg-green-50 border-green-200' :
@@ -367,14 +384,17 @@ const OCRTool: React.FC<OCRToolProps> = ({ onFileSelect }) => {
             </div>
 
             {/* Language Selection */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+            <div className="bg-white/60 dark:bg-gray-700/60 backdrop-blur-sm border border-white/30 dark:border-gray-600/30 rounded-xl p-4">
+              <label className="block text-sm font-black text-black dark:text-white mb-3 flex items-center gap-2">
+                <div className="w-5 h-5 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-800 dark:to-blue-700 rounded flex items-center justify-center text-xs">
+                  🌐
+                </div>
                 OCR Recognition Language
               </label>
               <select
                 value={options.language}
                 onChange={(e) => updateOptions({ language: e.target.value })}
-                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-3 bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg border border-white/30 dark:border-gray-600/30 rounded-xl focus:ring-2 focus:ring-seafoam-500/50 focus:border-seafoam-500 transition-all duration-300 font-medium text-black dark:text-white"
               >
                 {supportedLanguages.map((lang) => (
                   <option key={lang.code} value={lang.code}>
@@ -382,65 +402,71 @@ const OCRTool: React.FC<OCRToolProps> = ({ onFileSelect }) => {
                   </option>
                 ))}
               </select>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-gray-600 dark:text-gray-300 font-medium mt-2">
                 Choose the primary language of your document. Correct language selection significantly improves OCR accuracy.
               </p>
             </div>
 
             {/* Output Format */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+            <div className="bg-white/60 dark:bg-gray-700/60 backdrop-blur-sm border border-white/30 dark:border-gray-600/30 rounded-xl p-4">
+              <label className="block text-sm font-black text-black dark:text-white mb-3 flex items-center gap-2">
+                <div className="w-5 h-5 bg-gradient-to-br from-green-100 to-green-200 dark:from-green-800 dark:to-green-700 rounded flex items-center justify-center text-xs">
+                  📄
+                </div>
                 Output Format
               </label>
-              <div className="space-y-2">
-                <label className="flex items-center">
+              <div className="space-y-3">
+                <label className="flex items-center p-2 hover:bg-white/50 dark:hover:bg-gray-600/50 rounded-lg transition-colors cursor-pointer">
                   <input
                     type="radio"
                     name="outputFormat"
                     value="text"
                     checked={options.outputFormat === 'text'}
                     onChange={(e) => updateOptions({ outputFormat: e.target.value as any })}
-                    className="mr-2"
+                    className="w-4 h-4 text-seafoam-500 bg-white/90 border-gray-300 focus:ring-seafoam-500 focus:ring-2 mr-3"
                   />
-                  <span className="text-sm">Plain Text (.txt)</span>
+                  <span className="text-sm font-medium text-black dark:text-white">Plain Text (.txt)</span>
                 </label>
-                <label className="flex items-center">
+                <label className="flex items-center p-2 hover:bg-white/50 dark:hover:bg-gray-600/50 rounded-lg transition-colors cursor-pointer">
                   <input
                     type="radio"
                     name="outputFormat"
                     value="searchable-pdf"
                     checked={options.outputFormat === 'searchable-pdf'}
                     onChange={(e) => updateOptions({ outputFormat: e.target.value as any })}
-                    className="mr-2"
+                    className="w-4 h-4 text-seafoam-500 bg-white/90 border-gray-300 focus:ring-seafoam-500 focus:ring-2 mr-3"
                   />
-                  <span className="text-sm">Searchable PDF (with text layer)</span>
+                  <span className="text-sm font-medium text-black dark:text-white">Searchable PDF (with text layer)</span>
                 </label>
               </div>
             </div>
 
             {/* Advanced Options */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+            <div className="bg-white/60 dark:bg-gray-700/60 backdrop-blur-sm border border-white/30 dark:border-gray-600/30 rounded-xl p-4">
+              <label className="block text-sm font-black text-black dark:text-white mb-3 flex items-center gap-2">
+                <div className="w-5 h-5 bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-800 dark:to-purple-700 rounded flex items-center justify-center text-xs">
+                  ⚙️
+                </div>
                 Advanced Options
               </label>
-              <div className="space-y-2">
-                <label className="flex items-center">
+              <div className="space-y-3">
+                <label className="flex items-center p-2 hover:bg-white/50 dark:hover:bg-gray-600/50 rounded-lg transition-colors cursor-pointer">
                   <input
                     type="checkbox"
                     checked={options.preserveLayout}
                     onChange={(e) => updateOptions({ preserveLayout: e.target.checked })}
-                    className="mr-2"
+                    className="w-4 h-4 text-seafoam-500 bg-white/90 border-gray-300 focus:ring-seafoam-500 focus:ring-2 mr-3 rounded"
                   />
-                  <span className="text-sm">Preserve Layout</span>
+                  <span className="text-sm font-medium text-black dark:text-white">Preserve Layout</span>
                 </label>
-                <label className="flex items-center">
+                <label className="flex items-center p-2 hover:bg-white/50 dark:hover:bg-gray-600/50 rounded-lg transition-colors cursor-pointer">
                   <input
                     type="checkbox"
                     checked={options.imagePreprocessing}
                     onChange={(e) => updateOptions({ imagePreprocessing: e.target.checked })}
-                    className="mr-2"
+                    className="w-4 h-4 text-seafoam-500 bg-white/90 border-gray-300 focus:ring-seafoam-500 focus:ring-2 mr-3 rounded"
                   />
-                  <span className="text-sm">Image Preprocessing</span>
+                  <span className="text-sm font-medium text-black dark:text-white">Image Preprocessing</span>
                 </label>
               </div>
             </div>

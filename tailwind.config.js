@@ -4,6 +4,7 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  darkMode: 'class', // Enable class-based dark mode
   theme: {
     extend: {
       fontFamily: {
@@ -11,7 +12,44 @@ export default {
         display: ['Inter', 'system-ui', 'sans-serif'],
       },
       colors: {
-        // Современная цветовая палитра
+        // Modern Ocean/Privacy Palette
+        seafoam: {
+          50: '#f0fdf4',
+          100: '#dcfce7',
+          200: '#bbf7d0',
+          300: '#86efac',
+          400: '#4ade80',
+          500: '#4ECDC4', // Main seafoam color
+          600: '#16a34a',
+          700: '#15803d',
+          800: '#166534',
+          900: '#14532d',
+        },
+        ocean: {
+          50: '#eff6ff',
+          100: '#dbeafe',
+          200: '#bfdbfe',
+          300: '#93c5fd',
+          400: '#60a5fa',
+          500: '#45B7D1', // Main ocean color
+          600: '#2563eb',
+          700: '#1d4ed8',
+          800: '#1e40af',
+          900: '#1e3a8a',
+        },
+        privacy: {
+          50: '#f8fafc',
+          100: '#f1f5f9',
+          200: '#e2e8f0',
+          300: '#cbd5e1',
+          400: '#94a3b8',
+          500: '#64748b',
+          600: '#475569',
+          700: '#334155',
+          800: '#1e293b',
+          900: '#0f172a',
+        },
+        // Legacy colors (for backward compatibility)
         primary: {
           50: '#eff6ff',
           100: '#dbeafe',
@@ -105,6 +143,9 @@ export default {
         'fade-in': 'fadeIn 0.5s ease-out',
         'scale-in': 'scaleIn 0.3s ease-out',
         'pulse-slow': 'pulse 3s ease-in-out infinite',
+        'gradient-x': 'gradient-x 15s ease infinite',
+        'gentle-float': 'gentleFloat 3s ease-in-out infinite',
+        'smooth-reveal': 'smoothReveal 0.8s ease-out forwards',
       },
       keyframes: {
         float: {
@@ -130,6 +171,18 @@ export default {
         scaleIn: {
           '0%': { transform: 'scale(0.9)', opacity: '0' },
           '100%': { transform: 'scale(1)', opacity: '1' },
+        },
+        'gradient-x': {
+          '0%, 100%': { transform: 'translateX(-100%)' },
+          '50%': { transform: 'translateX(100%)' },
+        },
+        gentleFloat: {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-10px)' },
+        },
+        smoothReveal: {
+          '0%': { opacity: '0', transform: 'translateY(20px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
         },
       },
       backdropBlur: {
@@ -182,6 +235,21 @@ export default {
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
           backgroundClip: 'text',
+        },
+        '.text-gradient-ocean': {
+          background: 'linear-gradient(135deg, #45B7D1 0%, #4ECDC4 50%, #8b5cf6 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text',
+        },
+        '.privacy-card': {
+          background: 'rgba(255, 255, 255, 0.6)',
+          backdropFilter: 'blur(16px)',
+          border: '1px solid rgba(255, 255, 255, 0.2)',
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.05)',
+        },
+        '.staggered-reveal': {
+          animationDelay: '0.2s',
         },
       }
       addUtilities(newUtilities)

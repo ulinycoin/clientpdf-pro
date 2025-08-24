@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug i18n System</title>
+    <style>
+        body { font-family: monospace; padding: 20px; }
+        .debug { background: #f0f0f0; padding: 10px; margin: 10px 0; border-radius: 4px; }
+        .error { background: #ffe6e6; color: #d00; }
+        .success { background: #e6ffe6; color: #080; }
+    </style>
+</head>
+<body>
+    <h1>🔍 i18n System Debug</h1>
+    
+    <div class="debug">
+        <h3>Current URL Analysis:</h3>
+        <p><strong>URL:</strong> <span id="current-url"></span></p>
+        <p><strong>Pathname:</strong> <span id="pathname"></span></p>
+        <p><strong>Expected Language:</strong> <span id="expected-lang"></span></p>
+    </div>
+
+    <div class="debug">
+        <h3>Language Detection Test:</h3>
+        <p>Testing URL language detection function...</p>
+        <div id="lang-test-result"></div>
+    </div>
+
+    <div class="debug">
+        <h3>React App Test:</h3>
+        <iframe src="http://localhost:3000" width="100%" height="300" style="border: 1px solid #ccc;"></iframe>
+    </div>
+
+    <div class="debug">
+        <h3>Test Different Languages:</h3>
+        <ul>
+            <li><a href="http://localhost:3000" target="_blank">English (default)</a></li>
+            <li><a href="http://localhost:3000/de" target="_blank">German</a></li>
+            <li><a href="http://localhost:3000/fr" target="_blank">French</a></li>
+            <li><a href="http://localhost:3000/es" target="_blank">Spanish</a></li>
+            <li><a href="http://localhost:3000/ru" target="_blank">Russian</a></li>
+        </ul>
+    </div>
+
+    <script>
+        // Current URL info
+        document.getElementById('current-url').textContent = window.location.href;
+        document.getElementById('pathname').textContent = window.location.pathname;
+        
+        // Language detection logic (copied from useI18n.tsx)
+        const getLanguageFromURL = () => {
+            const pathParts = window.location.pathname.split('/').filter(Boolean);
+            if (pathParts.length > 0) {
+                const possibleLang = pathParts[0];
+                const supportedLangs = ['en', 'de', 'fr', 'es', 'ru'];
+                if (supportedLangs.includes(possibleLang)) {
+                    return possibleLang;
+                }
+            }
+            return 'en'; // default
+        };
+
+        const expectedLang = getLanguageFromURL();
+        document.getElementById('expected-lang').textContent = expectedLang;
+        
+        // Test language detection
+        const testResult = document.getElementById('lang-test-result');
+        if (expectedLang === 'en' && window.location.pathname === '/debug-i18n.html') {
+            testResult.innerHTML = '<span class="success">✅ Correct: Default English detected</span>';
+        } else if (expectedLang !== 'en') {
+            testResult.innerHTML = '<span class="success">✅ Correct: Language detected as ' + expectedLang + '</span>';
+        } else {
+            testResult.innerHTML = '<span class="error">❌ Issue: Language detection may be incorrect</span>';
+        }
+
+        // Monitor React app for translation issues
+        setTimeout(() => {
+            const iframe = document.querySelector('iframe');
+            try {
+                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                const hasTranslationKeys = iframeDoc.body.innerHTML.includes('home.whyChoose');
+                if (hasTranslationKeys) {
+                    console.error('❌ Translation keys found in rendered content!');
+                }
+            } catch(e) {
+                console.log('Cannot access iframe content (CORS)');
+            }
+        }, 2000);
+    </script>
+</body>
+</html>

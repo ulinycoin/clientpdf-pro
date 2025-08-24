@@ -1,6 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import FileUploadZone from '../molecules/FileUploadZone';
-import Button from '../atoms/Button';
+import ModernUploadZone from '../molecules/ModernUploadZone';
 import ProgressBar from '../atoms/ProgressBar';
 import { PdfToImageService } from '../../services/pdfToImageService';
 import { 
@@ -132,216 +131,302 @@ export const PdfToImageTool: React.FC<PdfToImageToolProps> = ({ onClose, initial
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">PDF to Image Converter</h2>
-        {onClose && (
-          <Button variant="outline" onClick={onClose}>
-            Close
-          </Button>
+    <div className="max-w-4xl mx-auto space-y-8">
+      {/* Modern Header */}
+      <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg border border-white/20 dark:border-gray-600/20 rounded-2xl shadow-lg p-8">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg">
+              🖼️
+            </div>
+            <div>
+              <h2 className="text-3xl font-black text-black dark:text-white">PDF to Image Converter</h2>
+              <p className="text-gray-800 dark:text-gray-100 font-medium">
+                Конвертируйте PDF страницы в высококачественные изображения
+              </p>
+            </div>
+          </div>
+          {onClose && (
+            <button
+              onClick={onClose}
+              className="p-3 text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl transition-all duration-200"
+              title="Закрыть"
+            >
+              <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
+              </svg>
+            </button>
+          )}
+        </div>
+
+        {!file && (
+          <div className="text-center">
+            <ModernUploadZone
+              onFilesSelected={handleFileSelect}
+              accept="application/pdf"
+              acceptedTypes={['application/pdf']}
+              multiple={false}
+              maxSize={100 * 1024 * 1024} // 100MB
+              disabled={isProcessing}
+              title="Загрузите PDF файл для конвертации"
+              subtitle="Конвертируйте страницы PDF в высококачественные изображения PNG или JPEG"
+              supportedFormats="PDF файлы"
+            />
+            <div className="mt-6 p-4 bg-white/60 dark:bg-gray-800/60 backdrop-blur-lg border border-white/20 dark:border-gray-600/20 rounded-xl">
+              <p className="text-gray-800 dark:text-gray-100 font-medium flex items-center justify-center gap-2">
+                <span className="w-2 h-2 bg-purple-500 rounded-full"></span>
+                Поддерживаются файлы до 100MB • PNG, JPEG форматы • Высокое качество
+              </p>
+            </div>
+          </div>
         )}
       </div>
 
-      {!file && (
-        <div className="mb-6">
-          <FileUploadZone
-            onFilesSelected={handleFileSelect}
-            accept="application/pdf"
-            multiple={false}
-            maxSize={100 * 1024 * 1024} // 100MB
-            disabled={isProcessing}
-            className="mb-4"
-          />
-          <p className="text-sm text-gray-600 text-center">
-            Upload a PDF file to convert its pages to images
-          </p>
-        </div>
-      )}
-
       {file && !result && (
-        <div className="space-y-6">
+        <div className="space-y-8">
           {/* File Info */}
-          <div className="bg-gray-50 rounded-lg p-4">
-            <h3 className="font-medium text-gray-900 mb-2">Selected File</h3>
-            <div className="flex items-center space-x-3">
-              <div className="text-red-500">📄</div>
-              <div>
-                <p className="font-medium">{file.name}</p>
-                <p className="text-sm text-gray-500">
-                  {(file.size / 1024 / 1024).toFixed(2)} MB
-                </p>
+          <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg border border-white/20 dark:border-gray-600/20 rounded-2xl shadow-lg p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-800 dark:to-blue-700 rounded-xl flex items-center justify-center text-lg">
+                📄
+              </div>
+              <h3 className="text-xl font-black text-black dark:text-white">Выбранный файл</h3>
+            </div>
+            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl p-4">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-gradient-to-br from-red-100 to-red-200 dark:from-red-800 dark:to-red-700 rounded-lg flex items-center justify-center text-sm">
+                  📄
+                </div>
+                <div>
+                  <p className="font-black text-black dark:text-white">{file.name}</p>
+                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    {(file.size / 1024 / 1024).toFixed(2)} MB
+                  </p>
+                </div>
               </div>
             </div>
           </div>
 
           {/* Conversion Options */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Format Selection */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Output Format
-              </label>
-              <select
-                value={format}
-                onChange={(e) => setFormat(e.target.value as ImageFormat)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="png">PNG</option>
-                <option value="jpeg">JPEG</option>
-              </select>
-              <p className="text-xs text-gray-500 mt-1">
-                {FORMAT_DESCRIPTIONS[format]}
-              </p>
+          <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg border border-white/20 dark:border-gray-600/20 rounded-2xl shadow-lg p-6">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-gradient-to-br from-green-100 to-green-200 dark:from-green-800 dark:to-green-700 rounded-xl flex items-center justify-center text-lg">
+                ⚙️
+              </div>
+              <h3 className="text-xl font-black text-black dark:text-white">Настройки конвертации</h3>
             </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Format Selection */}
+              <div>
+                <label className="block text-sm font-black text-black dark:text-white mb-3 flex items-center gap-2">
+                  <span className="w-5 h-5 bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-800 dark:to-purple-700 rounded flex items-center justify-center text-xs">
+                    🖼️
+                  </span>
+                  Output Format
+                </label>
+                <select
+                  value={format}
+                  onChange={(e) => setFormat(e.target.value as ImageFormat)}
+                  className="w-full px-4 py-3 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl text-black dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                >
+                  <option value="png">PNG</option>
+                  <option value="jpeg">JPEG</option>
+                </select>
+                <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mt-2 flex items-center gap-1">
+                  <span className="w-1 h-1 bg-purple-500 rounded-full"></span>
+                  {FORMAT_DESCRIPTIONS[format]}
+                </p>
+              </div>
 
-            {/* Quality Selection */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Quality
-              </label>
-              <select
-                value={quality}
-                onChange={(e) => setQuality(e.target.value as ImageQuality)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                {Object.entries(QUALITY_SETTINGS).map(([key, settings]) => (
-                  <option key={key} value={key}>
-                    {key.charAt(0).toUpperCase() + key.slice(1)} ({settings.resolution} DPI)
-                  </option>
-                ))}
-              </select>
-              <p className="text-xs text-gray-500 mt-1">
-                {QUALITY_SETTINGS[quality].description}
-              </p>
+              {/* Quality Selection */}
+              <div>
+                <label className="block text-sm font-black text-black dark:text-white mb-3 flex items-center gap-2">
+                  <span className="w-5 h-5 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-800 dark:to-blue-700 rounded flex items-center justify-center text-xs">
+                    ⭐
+                  </span>
+                  Quality
+                </label>
+                <select
+                  value={quality}
+                  onChange={(e) => setQuality(e.target.value as ImageQuality)}
+                  className="w-full px-4 py-3 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl text-black dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                >
+                  {Object.entries(QUALITY_SETTINGS).map(([key, settings]) => (
+                    <option key={key} value={key}>
+                      {key.charAt(0).toUpperCase() + key.slice(1)} ({settings.resolution} DPI)
+                    </option>
+                  ))}
+                </select>
+                <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mt-2 flex items-center gap-1">
+                  <span className="w-1 h-1 bg-blue-500 rounded-full"></span>
+                  {QUALITY_SETTINGS[quality].description}
+                </p>
+              </div>
             </div>
           </div>
 
           {/* Page Selection */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Pages to Convert
-            </label>
-            <div className="space-y-3">
-              <label className="flex items-center">
-                <input
-                  type="radio"
-                  name="pageSelection"
-                  value="all"
-                  checked={pageSelection === 'all'}
-                  onChange={(e) => setPageSelection(e.target.value as any)}
-                  className="mr-2"
-                />
-                All pages
-              </label>
-              
-              <label className="flex items-center">
-                <input
-                  type="radio"
-                  name="pageSelection"
-                  value="range"
-                  checked={pageSelection === 'range'}
-                  onChange={(e) => setPageSelection(e.target.value as any)}
-                  className="mr-2"
-                />
-                Page range
-              </label>
-              
-              {pageSelection === 'range' && (
-                <div className="ml-6 flex items-center space-x-2">
+          <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg border border-white/20 dark:border-gray-600/20 rounded-2xl shadow-lg p-6">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-gradient-to-br from-orange-100 to-orange-200 dark:from-orange-800 dark:to-orange-700 rounded-xl flex items-center justify-center text-lg">
+                📑
+              </div>
+              <h3 className="text-xl font-black text-black dark:text-white">Выбор страниц</h3>
+            </div>
+            
+            <div className="space-y-4">
+              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl p-4">
+                <label className="flex items-center cursor-pointer">
                   <input
-                    type="number"
-                    min={1}
-                    value={pageRange.start}
-                    onChange={(e) => setPageRange(prev => ({ ...prev, start: parseInt(e.target.value) || 1 }))}
-                    className="w-16 px-2 py-1 border border-gray-300 rounded text-sm"
-                    placeholder="From"
+                    type="radio"
+                    name="pageSelection"
+                    value="all"
+                    checked={pageSelection === 'all'}
+                    onChange={(e) => setPageSelection(e.target.value as any)}
+                    className="w-4 h-4 text-orange-500 bg-white/80 border-gray-300 focus:ring-orange-500 focus:ring-2 mr-3"
                   />
-                  <span className="text-gray-500">to</span>
-                  <input
-                    type="number"
-                    min={pageRange.start}
-                    value={pageRange.end}
-                    onChange={(e) => setPageRange(prev => ({ ...prev, end: parseInt(e.target.value) || 1 }))}
-                    className="w-16 px-2 py-1 border border-gray-300 rounded text-sm"
-                    placeholder="To"
-                  />
-                </div>
-              )}
+                  <span className="font-black text-black dark:text-white">Все страницы</span>
+                </label>
+              </div>
               
-              <label className="flex items-center">
-                <input
-                  type="radio"
-                  name="pageSelection"
-                  value="specific"
-                  checked={pageSelection === 'specific'}
-                  onChange={(e) => setPageSelection(e.target.value as any)}
-                  className="mr-2"
-                />
-                Specific pages
-              </label>
-              
-              {pageSelection === 'specific' && (
-                <div className="ml-6">
+              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl p-4">
+                <label className="flex items-center cursor-pointer mb-3">
                   <input
-                    type="text"
-                    value={specificPages}
-                    onChange={(e) => setSpecificPages(e.target.value)}
-                    placeholder="e.g., 1, 3, 5-7, 10"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                    type="radio"
+                    name="pageSelection"
+                    value="range"
+                    checked={pageSelection === 'range'}
+                    onChange={(e) => setPageSelection(e.target.value as any)}
+                    className="w-4 h-4 text-orange-500 bg-white/80 border-gray-300 focus:ring-orange-500 focus:ring-2 mr-3"
                   />
-                  <p className="text-xs text-gray-500 mt-1">
-                    Enter page numbers separated by commas
-                  </p>
-                </div>
-              )}
+                  <span className="font-black text-black dark:text-white">Диапазон страниц</span>
+                </label>
+                
+                {pageSelection === 'range' && (
+                  <div className="ml-7 flex items-center space-x-3">
+                    <input
+                      type="number"
+                      min={1}
+                      value={pageRange.start}
+                      onChange={(e) => setPageRange(prev => ({ ...prev, start: parseInt(e.target.value) || 1 }))}
+                      className="w-20 px-3 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-lg text-black dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-orange-500"
+                      placeholder="От"
+                    />
+                    <span className="text-gray-600 dark:text-gray-400 font-medium">до</span>
+                    <input
+                      type="number"
+                      min={pageRange.start}
+                      value={pageRange.end}
+                      onChange={(e) => setPageRange(prev => ({ ...prev, end: parseInt(e.target.value) || 1 }))}
+                      className="w-20 px-3 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-lg text-black dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-orange-500"
+                      placeholder="До"
+                    />
+                  </div>
+                )}
+              </div>
+              
+              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl p-4">
+                <label className="flex items-center cursor-pointer mb-3">
+                  <input
+                    type="radio"
+                    name="pageSelection"
+                    value="specific"
+                    checked={pageSelection === 'specific'}
+                    onChange={(e) => setPageSelection(e.target.value as any)}
+                    className="w-4 h-4 text-orange-500 bg-white/80 border-gray-300 focus:ring-orange-500 focus:ring-2 mr-3"
+                  />
+                  <span className="font-black text-black dark:text-white">Конкретные страницы</span>
+                </label>
+                
+                {pageSelection === 'specific' && (
+                  <div className="ml-7">
+                    <input
+                      type="text"
+                      value={specificPages}
+                      onChange={(e) => setSpecificPages(e.target.value)}
+                      placeholder="например: 1, 3, 5-7, 10"
+                      className="w-full px-4 py-3 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl text-black dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+                    />
+                    <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mt-2 flex items-center gap-1">
+                      <span className="w-1 h-1 bg-orange-500 rounded-full"></span>
+                      Введите номера страниц через запятую
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
           {/* Background Color for JPEG */}
           {format === 'jpeg' && (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Background Color (for JPEG)
-              </label>
-              <div className="flex items-center space-x-3">
+            <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg border border-white/20 dark:border-gray-600/20 rounded-2xl shadow-lg p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-gradient-to-br from-yellow-100 to-yellow-200 dark:from-yellow-800 dark:to-yellow-700 rounded-xl flex items-center justify-center text-lg">
+                  🎨
+                </div>
+                <h3 className="text-xl font-black text-black dark:text-white">Цвет фона (для JPEG)</h3>
+              </div>
+              <div className="flex items-center space-x-4">
                 <input
                   type="color"
                   value={backgroundColor}
                   onChange={(e) => setBackgroundColor(e.target.value)}
-                  className="w-12 h-8 border border-gray-300 rounded cursor-pointer"
+                  className="w-16 h-12 border border-white/20 dark:border-gray-600/20 rounded-xl cursor-pointer bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm"
                 />
-                <span className="text-sm text-gray-600">{backgroundColor}</span>
+                <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl px-4 py-3">
+                  <span className="text-sm font-black text-black dark:text-white">{backgroundColor}</span>
+                </div>
               </div>
             </div>
           )}
 
           {/* Action Buttons */}
-          <div className="flex space-x-4">
-            <Button
-              onClick={handleConvert}
-              disabled={isProcessing}
-              loading={isProcessing}
-              className="flex-1"
-            >
-              Convert to Images
-            </Button>
-            <Button
-              variant="outline"
-              onClick={handleReset}
-              disabled={isProcessing}
-            >
-              Select Different File
-            </Button>
+          <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg border border-white/20 dark:border-gray-600/20 rounded-2xl shadow-lg p-6">
+            <div className="flex flex-col sm:flex-row gap-4">
+              <button
+                onClick={handleConvert}
+                disabled={isProcessing}
+                className="flex-1 btn-privacy-modern text-lg px-8 py-4 min-h-[56px] ripple-effect btn-press disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isProcessing ? (
+                  <div className="flex items-center justify-center gap-3">
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    Конвертация...
+                  </div>
+                ) : (
+                  'Конвертировать в изображения 🖼️'
+                )}
+              </button>
+              <button
+                onClick={handleReset}
+                disabled={isProcessing}
+                className="btn-privacy-secondary text-lg px-8 py-4 min-h-[56px] disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Выбрать другой файл
+              </button>
+            </div>
           </div>
         </div>
       )}
 
       {/* Progress */}
       {isProcessing && progress && (
-        <div className="mb-6">
+        <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg border border-white/20 dark:border-gray-600/20 rounded-2xl shadow-lg p-8">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl flex items-center justify-center text-white text-xl shadow-lg animate-pulse">
+              ⚡
+            </div>
+            <div>
+              <h3 className="text-xl font-black text-black dark:text-white">Конвертация в процессе</h3>
+              <p className="text-gray-800 dark:text-gray-100 font-medium">
+                {progress.message || `Обработка страницы ${progress.currentPage} из ${progress.totalPages}`}
+              </p>
+            </div>
+          </div>
           <ProgressBar
             progress={progress.percentage}
-            label={progress.message || `Converting page ${progress.currentPage} of ${progress.totalPages}`}
+            label=""
             showPercentage
           />
         </div>
@@ -349,46 +434,85 @@ export const PdfToImageTool: React.FC<PdfToImageToolProps> = ({ onClose, initial
 
       {/* Results */}
       {result && (
-        <div className="space-y-6">
+        <div className="space-y-8">
           {result.success ? (
             <>
               {/* Conversion Summary */}
-              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                <h3 className="font-medium text-green-900 mb-2">✅ Conversion Successful!</h3>
-                <div className="text-sm text-green-700 space-y-1">
-                  <p>Converted {result.images.length} pages to {format.toUpperCase()}</p>
-                  <p>
-                    Quality: {quality} ({result.metadata?.resolution} DPI) • 
-                    Processing time: {((result.metadata?.processingTime || 0) / 1000).toFixed(1)}s
-                  </p>
-                  <p>
-                    Total size: {(result.convertedSize / 1024 / 1024).toFixed(2)} MB
-                  </p>
+              <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg border border-white/20 dark:border-gray-600/20 rounded-2xl shadow-lg p-8">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center text-white text-xl shadow-lg">
+                    ✅
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-black text-green-800 dark:text-green-200">
+                      Конвертация завершена успешно!
+                    </h3>
+                    <p className="text-gray-800 dark:text-gray-100 font-medium text-sm">
+                      Все страницы PDF преобразованы в изображения
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl p-4 text-center">
+                    <div className="text-2xl font-black text-green-600 dark:text-green-400 mb-1">
+                      {result.images.length}
+                    </div>
+                    <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Страниц конвертировано
+                    </p>
+                  </div>
+                  
+                  <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl p-4 text-center">
+                    <div className="text-2xl font-black text-blue-600 dark:text-blue-400 mb-1">
+                      {format.toUpperCase()}
+                    </div>
+                    <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Формат • {quality} ({result.metadata?.resolution} DPI)
+                    </p>
+                  </div>
+                  
+                  <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl p-4 text-center">
+                    <div className="text-2xl font-black text-purple-600 dark:text-purple-400 mb-1">
+                      {(result.convertedSize / 1024 / 1024).toFixed(1)}MB
+                    </div>
+                    <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Общий размер • {((result.metadata?.processingTime || 0) / 1000).toFixed(1)}с
+                    </p>
+                  </div>
                 </div>
               </div>
 
               {/* Preview Images */}
               {previewImages.length > 0 && (
-                <div>
-                  <h3 className="font-medium text-gray-900 mb-3">Preview</h3>
+                <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg border border-white/20 dark:border-gray-600/20 rounded-2xl shadow-lg p-6">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-10 h-10 bg-gradient-to-br from-pink-100 to-pink-200 dark:from-pink-800 dark:to-pink-700 rounded-xl flex items-center justify-center text-lg">
+                      👁️
+                    </div>
+                    <h3 className="text-xl font-black text-black dark:text-white">Предварительный просмотр</h3>
+                  </div>
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                     {previewImages.map((preview, index) => (
-                      <div key={index} className="bg-gray-100 rounded-lg p-2">
+                      <div key={index} className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl p-3 hover:scale-105 transition-transform duration-200">
                         <img 
                           src={preview} 
                           alt={`Page ${index + 1}`}
-                          className="w-full h-24 object-contain rounded"
+                          className="w-full h-24 object-contain rounded-lg mb-2"
                         />
-                        <p className="text-xs text-gray-600 text-center mt-1">
-                          Page {result.images[index]?.pageNumber}
+                        <p className="text-xs font-black text-black dark:text-white text-center">
+                          Страница {result.images[index]?.pageNumber}
                         </p>
                       </div>
                     ))}
                     {result.images.length > 5 && (
-                      <div className="bg-gray-100 rounded-lg p-2 flex items-center justify-center">
-                        <p className="text-xs text-gray-600 text-center">
-                          +{result.images.length - 5} more
-                        </p>
+                      <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl p-3 flex items-center justify-center">
+                        <div className="text-center">
+                          <div className="text-2xl mb-1">📄</div>
+                          <p className="text-xs font-black text-black dark:text-white">
+                            +{result.images.length - 5} ещё
+                          </p>
+                        </div>
                       </div>
                     )}
                   </div>
@@ -396,31 +520,47 @@ export const PdfToImageTool: React.FC<PdfToImageToolProps> = ({ onClose, initial
               )}
 
               {/* Download Options */}
-              <div className="space-y-4">
-                <div className="flex space-x-4">
-                  <Button onClick={handleDownloadAll} className="flex-1">
-                    Download All Images ({result.images.length})
-                  </Button>
-                  <Button variant="outline" onClick={handleReset}>
-                    Convert Another PDF
-                  </Button>
+              <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg border border-white/20 dark:border-gray-600/20 rounded-2xl shadow-lg p-6">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 bg-gradient-to-br from-green-100 to-green-200 dark:from-green-800 dark:to-green-700 rounded-xl flex items-center justify-center text-lg">
+                    📥
+                  </div>
+                  <h3 className="text-xl font-black text-black dark:text-white">Скачать изображения</h3>
+                </div>
+                
+                <div className="flex flex-col sm:flex-row gap-4 mb-6">
+                  <button 
+                    onClick={handleDownloadAll} 
+                    className="flex-1 btn-privacy-modern text-lg px-8 py-4 min-h-[56px] ripple-effect btn-press"
+                  >
+                    Скачать все изображения ({result.images.length}) 📦
+                  </button>
+                  <button 
+                    onClick={handleReset}
+                    className="btn-privacy-secondary text-lg px-8 py-4 min-h-[56px]"
+                  >
+                    Конвертировать другой PDF
+                  </button>
                 </div>
 
                 {/* Individual Download Buttons */}
                 {result.images.length > 1 && (
                   <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Download Individual Images</h4>
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                    <h4 className="text-sm font-black text-black dark:text-white mb-4 flex items-center gap-2">
+                      <span className="w-5 h-5 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-800 dark:to-blue-700 rounded flex items-center justify-center text-xs">
+                        📄
+                      </span>
+                      Скачать отдельные изображения
+                    </h4>
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                       {result.images.map((image, index) => (
-                        <Button
+                        <button
                           key={index}
-                          variant="outline"
-                          size="sm"
                           onClick={() => handleDownloadSingle(index)}
-                          className="text-xs"
+                          className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl px-4 py-3 text-black dark:text-white font-medium hover:bg-white dark:hover:bg-gray-700 hover:scale-105 transition-all duration-200 hover:shadow-lg"
                         >
-                          Page {image.pageNumber}
-                        </Button>
+                          Страница {image.pageNumber}
+                        </button>
                       ))}
                     </div>
                   </div>
@@ -430,18 +570,39 @@ export const PdfToImageTool: React.FC<PdfToImageToolProps> = ({ onClose, initial
           ) : (
             <>
               {/* Error Message */}
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                <h3 className="font-medium text-red-900 mb-2">❌ Conversion Failed</h3>
-                <p className="text-sm text-red-700">{result.error}</p>
-              </div>
+              <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg border border-white/20 dark:border-gray-600/20 rounded-2xl shadow-lg p-8">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-pink-500 rounded-xl flex items-center justify-center text-white text-xl shadow-lg">
+                    ❌
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-black text-red-800 dark:text-red-200">
+                      Ошибка конвертации
+                    </h3>
+                    <p className="text-gray-800 dark:text-gray-100 font-medium text-sm">
+                      Не удалось преобразовать PDF в изображения
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="bg-red-50/80 dark:bg-red-900/20 backdrop-blur-sm border border-red-200/50 dark:border-red-700/30 rounded-xl p-4 mb-6">
+                  <p className="text-red-700 dark:text-red-300 font-medium">{result.error}</p>
+                </div>
 
-              <div className="flex space-x-4">
-                <Button onClick={handleConvert} className="flex-1">
-                  Try Again
-                </Button>
-                <Button variant="outline" onClick={handleReset}>
-                  Select Different File
-                </Button>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <button 
+                    onClick={handleConvert} 
+                    className="flex-1 btn-privacy-modern text-lg px-8 py-4 min-h-[56px] ripple-effect btn-press"
+                  >
+                    Попробовать снова 🔄
+                  </button>
+                  <button 
+                    onClick={handleReset}
+                    className="btn-privacy-secondary text-lg px-8 py-4 min-h-[56px]"
+                  >
+                    Выбрать другой файл
+                  </button>
+                </div>
               </div>
             </>
           )}

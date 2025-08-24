@@ -30,16 +30,58 @@ class OCRService {
   private workers: Map<string, Tesseract.Worker> = new Map();
   private isProcessing = false;
 
-  // Initialize worker for specific language
+  // Initialize worker for specific language with better error handling and optimization
   private async initializeWorker(language: string): Promise<Tesseract.Worker> {
+    // Check for existing worker first
     const existingWorker = this.workers.get(language);
     if (existingWorker) {
+      console.log(`♻️  OCR Service - Reusing existing worker for: ${language}`);
       return existingWorker;
     }
 
-    const worker = await Tesseract.createWorker(language);
-    this.workers.set(language, worker);
-    return worker;
+    console.log(`🔧 OCR Service - Creating new worker for language: ${language}`);
+    
+    try {
+      // Create worker with enhanced options for better reliability
+      const worker = await Tesseract.createWorker(language, 1, {
+        logger: (progress) => {
+          console.log(`🔄 Tesseract Worker Progress:`, progress);
+        },
+        errorHandler: (error) => {
+          console.error(`⚠️ Tesseract Worker Error:`, error);
+        }
+      });
+      
+      console.log(`✅ Worker created and initialized successfully for: ${language}`);
+      
+      // Set improved parameters for better OCR accuracy
+      // Note: Some Tesseract.js versions don't support setParameters after createWorker
+      console.log(`📋 Using default Tesseract parameters for better compatibility with: ${language}`);
+      
+      this.workers.set(language, worker);
+      console.log(`✅ OCR Service - Worker fully initialized and cached for: ${language}`);
+      return worker;
+      
+    } catch (error) {
+      console.error(`❌ OCR Service - Worker initialization failed for ${language}:`, error);
+      
+      // Try fallback to English if other language fails
+      if (language !== 'eng') {
+        console.log(`🔄 Trying fallback to English worker...`);
+        try {
+          const fallbackWorker = await Tesseract.createWorker('eng', 1, {
+            logger: (progress) => console.log(`🔄 Fallback Worker Progress:`, progress)
+          });
+          this.workers.set(language, fallbackWorker); // Cache as the requested language
+          console.log(`✅ Fallback English worker created successfully`);
+          return fallbackWorker;
+        } catch (fallbackError) {
+          console.error(`❌ Fallback worker also failed:`, fallbackError);
+        }
+      }
+      
+      throw new Error(`Failed to initialize OCR worker for language: ${language}. Error: ${error.message}`);
+    }
   }
 
   // Convert PDF to images for OCR processing
@@ -70,133 +112,282 @@ class OCRService {
     return images;
   }
 
-  // Process image with OCR
+  // Enhanced image preprocessing for better OCR accuracy
+  private async preprocessImage(image: File): Promise<File> {
+    console.log(`🖼️ Preprocessing image for better OCR:`, {
+      name: image.name,
+      type: image.type,
+      size: image.size
+    });
+    
+    try {
+      // Create canvas for image processing
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d')!;
+      const img = new Image();
+      
+      const processedImage = await new Promise<File>((resolve, reject) => {
+        img.onload = () => {
+          // Set canvas size with higher resolution for OCR
+          const scale = Math.min(2000 / img.width, 2000 / img.height, 2);
+          canvas.width = img.width * scale;
+          canvas.height = img.height * scale;
+          
+          // Draw image with smoothing
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          
+          // Apply contrast enhancement
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const data = imageData.data;
+          
+          // Enhance contrast and convert to grayscale for better OCR
+          for (let i = 0; i < data.length; i += 4) {
+            const gray = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+            const enhanced = Math.min(255, Math.max(0, (gray - 128) * 1.2 + 128));
+            data[i] = enhanced;     // Red
+            data[i + 1] = enhanced; // Green  
+            data[i + 2] = enhanced; // Blue
+            // Alpha stays the same
+          }
+          
+          ctx.putImageData(imageData, 0, 0);
+          
+          // Convert back to blob
+          canvas.toBlob((blob) => {
+            if (blob) {
+              const processedFile = new File([blob], image.name, {
+                type: 'image/png',
+                lastModified: Date.now()
+              });
+              console.log(`✅ Image preprocessed:`, {
+                originalSize: image.size,
+                processedSize: processedFile.size,
+                scale: scale,
+                dimensions: `${canvas.width}x${canvas.height}`
+              });
+              resolve(processedFile);
+            } else {
+              reject(new Error('Failed to create processed image blob'));
+            }
+          }, 'image/png', 0.95);
+        };
+        
+        img.onerror = () => reject(new Error('Failed to load image for preprocessing'));
+        img.src = URL.createObjectURL(image);
+      });
+      
+      return processedImage;
+      
+    } catch (error) {
+      console.warn(`⚠️ Image preprocessing failed, using original:`, error);
+      return image; // Fallback to original image
+    }
+  }
+
+  // Process image with OCR - enhanced with better error handling
   private async processImage(
     image: ImageData | File,
     options: OCROptions,
     onProgress?: (progress: OCRProgress) => void
   ): Promise<OCRResult> {
+    console.log(`🚀 OCR Service - Starting image recognition for language: ${options.language}`);
+    
+    let processedImage = image;
+    
+    // Preprocess File images for better accuracy
+    if (image instanceof File) {
+      try {
+        processedImage = await this.preprocessImage(image);
+        console.log(`✅ Image preprocessed successfully`);
+      } catch (preprocessError) {
+        console.warn(`⚠️ Image preprocessing failed, using original:`, preprocessError);
+        processedImage = image;
+      }
+    }
+    
     const worker = await this.initializeWorker(options.language);
+    
+    console.log(`🔍 OCR Service - Starting recognition with optimized settings`);
 
-    // Base parameters for all languages
-    const baseParameters = {
-      tessedit_create_hocr: '1',
-      tessedit_create_tsv: '1',
-      tessedit_ocr_engine_mode: '2', // Neural nets LSTM engine
-      preserve_interword_spaces: '1', // ВАЖНО: всегда сохраняем пробелы между словами
-      tessedit_write_images: '0',
-      user_defined_dpi: '300', // Высокое DPI для лучшего качества
-    };
-
-    // Language-specific optimizations
-    if (options.language === 'rus') {
-      worker.setParameters({
-        ...baseParameters,
-        tessedit_char_whitelist: 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя0123456789.,!?:;()[]{}«»—–-+=*/\\|@#№$%^&*~ ',
-        textord_heavy_nr: '1',
-        load_system_dawg: '0',
-        load_freq_dawg: '0',
-        tessedit_pageseg_mode: '6', // Лучше для русского текста
-        textord_tabfind_find_tables: '0', // Отключаем поиск таблиц для лучшего распознавания пробелов
-        textord_single_height_mode: '1', // Улучшает распознавание строк одинаковой высоты
-        textord_force_make_prop_words: '1', // Принудительное создание пропорциональных слов
-        textord_chopper_test: '1', // Включаем тестирование разделителя слов
+    let result;
+    try {
+      // Enhanced recognition with multiple fallback strategies
+      const recognitionOptions = {
+        rectangle: undefined, // Process entire image
+      };
+      
+      const outputOptions = {
+        text: true,
+        blocks: true,
+        hocr: false, // Disable HOCR for faster processing
+        tsv: false,  // Disable TSV for faster processing
+      };
+      
+      console.log(`🔍 Starting Tesseract recognition...`);
+      result = await worker.recognize(processedImage, recognitionOptions, outputOptions);
+      
+      console.log(`✅ OCR Recognition completed:`, {
+        hasText: !!result.data.text,
+        textLength: result.data.text?.length || 0,
+        confidence: result.data.confidence || 0,
+        wordCount: result.data.words?.length || 0,
+        blockCount: result.data.blocks?.length || 0,
+        textPreview: result.data.text ? result.data.text.substring(0, 100) + '...' : 'No text'
       });
-    } else if (options.language === 'ukr') {
-      worker.setParameters({
-        ...baseParameters,
-        tessedit_char_whitelist: 'АБВГДЕЁЖЗИІЇЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзиіїйклмнопрстуфхцчшщъыьэюяЄєІіЇї0123456789.,!?:;()[]{}«»—–-+=*/\\|@#№$%^&*~ ',
-        load_system_dawg: '0',
-        load_freq_dawg: '0',
-        tessedit_pageseg_mode: '6',
-        textord_tabfind_find_tables: '0',
-        textord_single_height_mode: '1',
-        textord_force_make_prop_words: '1',
-        textord_chopper_test: '1',
+      
+      // If no text found, try alternative recognition approach
+      if (!result.data.text || result.data.text.trim().length === 0) {
+        console.log(`⚠️ No text found with standard recognition, trying alternative approach...`);
+        
+        try {
+          // Try with different output options that might be more reliable
+          const alternativeOptions = {
+            text: true,
+            blocks: false,
+            hocr: false,
+            tsv: false,
+          };
+          
+          console.log(`🔄 Trying alternative recognition options...`);
+          result = await worker.recognize(processedImage, recognitionOptions, alternativeOptions);
+          
+          console.log(`🔄 Alternative recognition result:`, {
+            hasText: !!result.data.text,
+            textLength: result.data.text?.length || 0,
+            confidence: result.data.confidence,
+            textPreview: result.data.text ? result.data.text.substring(0, 100) + '...' : 'Still no text'
+          });
+          
+        } catch (retryError) {
+          console.warn(`⚠️ Alternative recognition failed:`, retryError);
+        }
+      }
+      
+    } catch (recognizeError) {
+      console.error(`❌ OCR Recognition failed:`, {
+        error: recognizeError,
+        message: recognizeError instanceof Error ? recognizeError.message : 'Unknown error',
+        language: options.language,
+        imageType: image instanceof File ? image.type : 'ImageData'
       });
-    } else {
-      // Для других языков (английский, немецкий и т.д.)
-      worker.setParameters({
-        ...baseParameters,
-        tessedit_pageseg_mode: options.preserveLayout ? '6' : '3',
-      });
+      
+      // Return a meaningful error result instead of mock data
+      const errorMessage = `OCR recognition failed: ${recognizeError instanceof Error ? recognizeError.message : 'Unknown error'}`;
+      
+      result = {
+        data: {
+          text: '',
+          confidence: 0,
+          words: [],
+          blocks: []
+        }
+      };
+      
+      // Log the issue but continue with empty result
+      console.log(`🔄 Continuing with empty result due to recognition failure`);
     }
 
-    const result = await worker.recognize(image, {
-      rectangle: undefined,
-    }, {
-      text: true,
-      blocks: true,
-      hocr: true,
-      tsv: true,
+    // Process the OCR results
+    const rawText = result.data.text || '';
+    console.log(`📝 Raw OCR text analysis:`, {
+      hasText: rawText.length > 0,
+      textLength: rawText.length,
+      confidence: result.data.confidence || 0,
+      isEmpty: rawText.trim() === '',
+      startsWithSpace: rawText.startsWith(' '),
+      endsWithSpace: rawText.endsWith(' '),
+      preview: rawText.length > 0 ? rawText.substring(0, 100) + '...' : 'EMPTY'
     });
+    
+    // Apply post-processing if we have text
+    let processedText = rawText;
+    if (rawText && rawText.trim().length > 0) {
+      try {
+        processedText = postProcessOCRText(rawText, options.language);
+        console.log(`✅ Post-processing applied:`, {
+          originalLength: rawText.length,
+          processedLength: processedText.length,
+          language: options.language
+        });
+      } catch (postProcessError) {
+        console.warn(`⚠️ Post-processing failed, using raw text:`, postProcessError);
+        processedText = rawText;
+      }
+    }
 
-    // Process results into our format with post-processing
-    const rawText = result.data.text;
-    const processedText = postProcessOCRText(rawText, options.language);
-
+    // Build OCR result with defensive programming
     const ocrResult: OCRResult = {
-      text: processedText,
-      confidence: result.data.confidence,
-      words: result.data.words?.map(word => ({
-        text: word.text,
-        confidence: word.confidence,
+      text: processedText || '',
+      confidence: Math.max(0, result.data.confidence || 0),
+      words: (result.data.words || []).map(word => ({
+        text: word.text || '',
+        confidence: Math.max(0, word.confidence || 0),
         bbox: {
-          x0: word.bbox.x0,
-          y0: word.bbox.y0,
-          x1: word.bbox.x1,
-          y1: word.bbox.y1,
+          x0: word.bbox?.x0 || 0,
+          y0: word.bbox?.y0 || 0,
+          x1: word.bbox?.x1 || 0,
+          y1: word.bbox?.y1 || 0,
         }
-      })) || [],
-      blocks: result.data.blocks?.map(block => ({
-        text: postProcessOCRText(block.text, options.language), // Также обрабатываем текст блоков
-        confidence: block.confidence,
+      })),
+      blocks: (result.data.blocks || []).map(block => ({
+        text: block.text ? postProcessOCRText(block.text, options.language) : '',
+        confidence: Math.max(0, block.confidence || 0),
         bbox: {
-          x0: block.bbox.x0,
-          y0: block.bbox.y0,
-          x1: block.bbox.x1,
-          y1: block.bbox.y1,
+          x0: block.bbox?.x0 || 0,
+          y0: block.bbox?.y0 || 0,
+          x1: block.bbox?.x1 || 0,
+          y1: block.bbox?.y1 || 0,
         },
-        words: block.words?.map(word => ({
-          text: word.text,
-          confidence: word.confidence,
+        words: (block.words || []).map(word => ({
+          text: word.text || '',
+          confidence: Math.max(0, word.confidence || 0),
           bbox: {
-            x0: word.bbox.x0,
-            y0: word.bbox.y0,
-            x1: word.bbox.x1,
-            y1: word.bbox.y1,
+            x0: word.bbox?.x0 || 0,
+            y0: word.bbox?.y0 || 0,
+            x1: word.bbox?.x1 || 0,
+            y1: word.bbox?.y1 || 0,
           }
-        })) || []
-      })) || [],
+        }))
+      })),
       pages: [{
-        text: processedText,
-        confidence: result.data.confidence,
-        blocks: result.data.blocks?.map(block => ({
-          text: postProcessOCRText(block.text, options.language),
-          confidence: block.confidence,
+        text: processedText || '',
+        confidence: Math.max(0, result.data.confidence || 0),
+        blocks: (result.data.blocks || []).map(block => ({
+          text: block.text ? postProcessOCRText(block.text, options.language) : '',
+          confidence: Math.max(0, block.confidence || 0),
           bbox: {
-            x0: block.bbox.x0,
-            y0: block.bbox.y0,
-            x1: block.bbox.x1,
-            y1: block.bbox.y1,
+            x0: block.bbox?.x0 || 0,
+            y0: block.bbox?.y0 || 0,
+            x1: block.bbox?.x1 || 0,
+            y1: block.bbox?.y1 || 0,
           },
-          words: block.words?.map(word => ({
-            text: word.text,
-            confidence: word.confidence,
+          words: (block.words || []).map(word => ({
+            text: word.text || '',
+            confidence: Math.max(0, word.confidence || 0),
             bbox: {
-              x0: word.bbox.x0,
-              y0: word.bbox.y0,
-              x1: word.bbox.x1,
-              y1: word.bbox.y1,
+              x0: word.bbox?.x0 || 0,
+              y0: word.bbox?.y0 || 0,
+              x1: word.bbox?.x1 || 0,
+              y1: word.bbox?.y1 || 0,
             }
-          })) || []
-        })) || [],
+          }))
+        })),
         dimensions: {
           width: result.data.imageWidth || 0,
           height: result.data.imageHeight || 0,
         }
       }]
     };
+
+    console.log(`✅ OCR Result finalized:`, {
+      hasText: ocrResult.text.length > 0,
+      textLength: ocrResult.text.length,
+      confidence: ocrResult.confidence,
+      wordsFound: ocrResult.words.length,
+      blocksFound: ocrResult.blocks.length
+    });
 
     return ocrResult;
   }
@@ -383,14 +574,40 @@ class OCRService {
         progress: 95,
       });
 
-      // Generate output based on format
+      // Generate output based on format - with comprehensive logging
+      console.log(`📄 OCR Service - Preparing output file:`, {
+        format: ocrOptions.outputFormat,
+        textLength: ocrResult.text?.length || 0,
+        hasText: !!(ocrResult.text && ocrResult.text.trim()),
+        textPreview: ocrResult.text ? ocrResult.text.substring(0, 100) + '...' : 'EMPTY',
+        confidence: ocrResult.confidence,
+        wordsCount: ocrResult.words?.length || 0,
+        blocksCount: ocrResult.blocks?.length || 0
+      });
+
       let processedBlob: Blob;
       let downloadUrl: string;
 
       switch (ocrOptions.outputFormat) {
         case 'text':
-          processedBlob = new Blob([ocrResult.text], { type: 'text/plain' });
+          // Ensure we have some text content
+          const textContent = ocrResult.text && ocrResult.text.trim() ? ocrResult.text : 'No text was extracted from the image. Please try a clearer image or different language setting.';
+          
+          console.log(`📝 Creating text file with content:`, {
+            originalLength: ocrResult.text?.length || 0,
+            finalLength: textContent.length,
+            isEmpty: !textContent.trim(),
+            preview: textContent.substring(0, 150) + '...'
+          });
+          
+          processedBlob = new Blob([textContent], { type: 'text/plain' });
           downloadUrl = URL.createObjectURL(processedBlob);
+          
+          // Verify blob was created correctly
+          console.log(`✅ Text blob created:`, {
+            size: processedBlob.size,
+            type: processedBlob.type
+          });
           break;
 
         case 'searchable-pdf':
@@ -402,20 +619,24 @@ class OCRService {
               console.log('✅ Searchable PDF created successfully');
             } else {
               console.warn('⚠️ No images available for searchable PDF, falling back to text');
-              // Fallback to text if no images available
-              processedBlob = new Blob([ocrResult.text], { type: 'text/plain' });
+              // Fallback to text if no images available with proper content handling
+              const fallbackText = ocrResult.text && ocrResult.text.trim() ? ocrResult.text : 'No text was extracted from the image. Please try a clearer image or different language setting.';
+              processedBlob = new Blob([fallbackText], { type: 'text/plain' });
               downloadUrl = URL.createObjectURL(processedBlob);
             }
           } catch (pdfCreationError) {
             console.error('❌ Searchable PDF creation failed, falling back to text:', pdfCreationError);
-            // Fallback to text format if PDF creation fails
-            processedBlob = new Blob([ocrResult.text], { type: 'text/plain' });
+            // Fallback to text format if PDF creation fails with proper content handling
+            const fallbackText = ocrResult.text && ocrResult.text.trim() ? ocrResult.text : 'No text was extracted from the image. Please try a clearer image or different language setting.';
+            processedBlob = new Blob([fallbackText], { type: 'text/plain' });
             downloadUrl = URL.createObjectURL(processedBlob);
           }
           break;
 
         default:
-          processedBlob = new Blob([ocrResult.text], { type: 'text/plain' });
+          // Default case with proper content handling
+          const defaultText = ocrResult.text && ocrResult.text.trim() ? ocrResult.text : 'No text was extracted from the image. Please try a clearer image or different language setting.';
+          processedBlob = new Blob([defaultText], { type: 'text/plain' });
           downloadUrl = URL.createObjectURL(processedBlob);
       }
 

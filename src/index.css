@@ -1,7 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&subset=latin,cyrillic&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&subset=latin,cyrillic&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&subset=latin,cyrillic&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&subset=latin,cyrillic&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Animation delays for dark mode toggle stars */
+.animation-delay-200 {
+  animation-delay: 0.2s;
+}
+
+.animation-delay-400 {
+  animation-delay: 0.4s;
+}
 
 * {
   margin: 0;
@@ -282,4 +295,210 @@ body {
 
 .file-upload-active {
   animation: file-upload-pulse 1.5s ease-in-out infinite;
+}
+
+/* ===== СОВРЕМЕННЫЕ КНОПКИ ===== */
+/* CSS переменные для цветов */
+:root {
+  --color-seafoam-green: #4ECDC4;
+  --color-ocean-blue: #45B7D1;
+  --color-sandy-beige: #F4E4BC;
+  --color-privacy-accent: #4ECDC4;
+  --color-privacy-border: rgba(78, 205, 196, 0.2);
+  --color-privacy-subtle: rgba(78, 205, 196, 0.1);
+  --color-text-inverse: #ffffff;
+  --color-hover-primary: #00BFFF;
+}
+
+/* Основная кнопка Privacy */
+.btn-privacy-modern {
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 600;
+  background: linear-gradient(135deg, var(--color-seafoam-green) 0%, var(--color-ocean-blue) 100%);
+  color: #ffffff;
+  border: 2px solid transparent;
+  box-shadow: 0 4px 12px rgba(78, 205, 196, 0.25);
+  transition: all 0.3s ease;
+  transform: translateY(0);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  font-size: 16px;
+  letter-spacing: 0.02em;
+}
+
+.btn-privacy-modern:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn-privacy-modern:hover:before {
+  left: 100%;
+}
+
+.btn-privacy-modern:hover {
+  background: linear-gradient(135deg, #00BFFF 0%, #4ECDC4 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 191, 255, 0.4);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.btn-privacy-modern:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(78, 205, 196, 0.3);
+}
+
+.btn-privacy-modern:disabled {
+  background: #6b7280;
+  color: #9ca3af;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Вторичная кнопка Ocean */
+.btn-ocean-modern {
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.9);
+  color: #1f2937;
+  border: 2px solid rgba(69, 183, 209, 0.8);
+  box-shadow: 0 4px 12px rgba(69, 183, 209, 0.25);
+  transition: all 0.3s ease;
+  transform: translateY(0);
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+  font-size: 16px;
+  letter-spacing: 0.02em;
+}
+
+.btn-ocean-modern:hover {
+  background: rgba(69, 183, 209, 0.9);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(69, 183, 209, 0.4);
+  border-color: var(--color-ocean-blue);
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.btn-ocean-modern:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(69, 183, 209, 0.2);
+}
+
+.btn-ocean-modern:disabled {
+  background: rgba(255, 255, 255, 0.05);
+  color: #6b7280;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+  border-color: #374151;
+}
+
+/* Темная тема - улучшенная контрастность */
+@media (prefers-color-scheme: dark) {
+  .btn-privacy-modern {
+    background: linear-gradient(135deg, #4ECDC4 0%, #45B7D1 100%);
+    color: #000000;
+    text-shadow: none;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(78, 205, 196, 0.4);
+  }
+  
+  .btn-privacy-modern:hover {
+    background: linear-gradient(135deg, #00BFFF 0%, #4ECDC4 100%);
+    color: #000000;
+    box-shadow: 0 8px 25px rgba(0, 191, 255, 0.6);
+  }
+  
+  .btn-ocean-modern {
+    background: rgba(255, 255, 255, 0.25);
+    color: #1f2937;
+    border-color: rgba(69, 183, 209, 0.9);
+    box-shadow: 0 4px 12px rgba(69, 183, 209, 0.4);
+    font-weight: 700;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.9);
+  }
+  
+  .btn-ocean-modern:hover {
+    background: rgba(69, 183, 209, 0.9);
+    color: #ffffff;
+    border-color: #45B7D1;
+    box-shadow: 0 8px 25px rgba(69, 183, 209, 0.6);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* Анимационные эффекты */
+.ripple-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-press:active {
+  transform: scale(0.98) translateY(1px);
+}
+
+/* Адаптивность кнопок */
+@media (max-width: 640px) {
+  .btn-privacy-modern,
+  .btn-ocean-modern {
+    padding: 10px 20px;
+    font-size: 14px;
+    border-radius: 10px;
+  }
+}
+
+/* Современные слайдеры */
+input[type="range"].slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+input[type="range"].slider-thumb::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  height: 24px;
+  width: 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4ECDC4, #45B7D1);
+  border: 4px solid #ffffff;
+  box-shadow: 0 4px 16px rgba(78, 205, 196, 0.5), 0 2px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+input[type="range"].slider-thumb::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+  box-shadow: 0 8px 25px rgba(78, 205, 196, 0.7), 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-color: #f0f9ff;
+}
+
+input[type="range"].slider-thumb::-moz-range-thumb {
+  height: 24px;
+  width: 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4ECDC4, #45B7D1);
+  border: 4px solid #ffffff;
+  box-shadow: 0 4px 16px rgba(78, 205, 196, 0.5), 0 2px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+input[type="range"].slider-thumb::-moz-range-thumb:hover {
+  transform: scale(1.15);
+  box-shadow: 0 8px 25px rgba(78, 205, 196, 0.7), 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-color: #f0f9ff;
 }

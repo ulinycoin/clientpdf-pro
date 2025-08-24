@@ -41,6 +41,76 @@ export const en: Translations = {
     unexpectedError: 'An unexpected error occurred',
     pdfFiles: 'PDF files',
     faqTitle: 'Frequently Asked Questions',
+    readyToUse: 'Ready to use',
+    comingSoon: 'Coming Soon',
+    featured: 'Popular',
+  },
+
+  // Tool page template translations
+  toolTemplate: {
+    breadcrumbs: {
+      home: 'Home'
+    },
+    quickSteps: {
+      title: 'Three simple steps to perfect results',
+      subtitle: 'Fast and intuitive file processing workflow',
+      steps: {
+        upload: {
+          title: 'Upload Files',
+          description: 'Drag and drop files or click to select'
+        },
+        process: {
+          title: 'Process Document',
+          description: 'Run the required operation with one click'
+        },
+        download: {
+          title: 'Download Result',
+          description: 'Get your processed file instantly'
+        }
+      }
+    },
+    benefits: {
+      advantages: {
+        title: 'Tool Advantages',
+        items: {
+          speed: 'Fast processing: Instant results without waiting',
+          quality: 'High quality: Preserves original resolution',
+          simplicity: 'Ease of use: Intuitive interface',
+          universal: 'Universal: Supports all PDF standards'
+        }
+      },
+      security: {
+        title: 'Security and Privacy',
+        items: {
+          local: 'Local processing: Files never leave your browser',
+          noUpload: 'No server uploads: 100% data privacy',
+          noRegistration: 'No registration: Anonymous usage',
+          autoDelete: 'Auto-delete: Files removed when page is closed'
+        }
+      },
+      technical: {
+        title: 'How the Tool Works',
+        items: {
+          technology: 'PDF.js technology: Modern Mozilla library',
+          crossplatform: 'Cross-platform: Works in any browser',
+          quality: 'Quality preservation: No resolution loss',
+          metadata: 'Metadata support: Document properties preserved'
+        }
+      }
+    },
+    detailed: {
+      title: 'Professional PDF File Processing Online',
+      business: {
+        title: 'For Business and Work',
+        description1: 'Our PDF tool is perfect for working with documents, reports, and presentations. Process contracts, invoices, and technical specifications quickly and professionally.',
+        description2: 'Files of any size are supported, original quality and document formatting is preserved.'
+      },
+      personal: {
+        title: 'For Personal Use',
+        description1: 'Process documents for applications, creating portfolios, archiving important papers. The tool works completely offline and requires no software installation.',
+        description2: 'Intuitive interface makes it easy to work with documents and get the desired results.'
+      }
+    }
   },
 
   header: {
@@ -65,11 +135,21 @@ export const en: Translations = {
   },
 
   home: {
+    whyChooseTitle: 'Why Choose LocalPDF?',
+    whyChooseSubtitle: 'Modern approach to PDF processing with maximum data protection',
     hero: {
       title: 'LocalPDF',
       subtitle: 'Privacy-First PDF Tools',
       description: 'Professional PDF processing tools that work entirely in your browser',
       descriptionSecondary: 'No uploads • No tracking • No limits • Completely free forever',
+      badges: [
+        { icon: '🔐', text: 'Local Processing', description: 'Your files never leave your device' },
+        { icon: '⚡', text: 'Instant Results', description: 'No server uploads required' },
+        { icon: '🌐', text: 'Works Offline', description: 'Internet only needed for first load' },
+        { icon: '🔓', text: 'No Registration', description: 'Start using right away' }
+      ],
+      getStarted: 'Get Started',
+      learnMore: 'Learn More',
       features: {
         privacy: {
           title: 'Your files never leave your device',
@@ -102,7 +182,30 @@ export const en: Translations = {
     },
     tools: {
       title: 'Complete PDF toolkit',
-      subtitle: 'Choose the right tool for your needs. All operations are performed locally in your browser.',
+      subtitle: '{count} powerful PDF tools. Completely private, fast, and free',
+      categories: {
+        core: {
+          title: 'Core Tools',
+          description: 'Most popular PDF operations'
+        },
+        advanced: {
+          title: 'Advanced Features',
+          description: 'Powerful tools for professional work'
+        },
+        conversion: {
+          title: 'File Conversion',
+          description: 'Transform between different formats'
+        },
+        enhancement: {
+          title: 'Document Enhancement',
+          description: 'Add text, watermarks, and other elements'
+        }
+      },
+      trustIndicators: {
+        private: '100% Private',
+        noUploads: 'No Uploads',
+        unlimited: 'Unlimited'
+      },
       whyChoose: {
         title: 'Why Choose LocalPDF?',
         description: 'Built with privacy and performance in mind',
@@ -113,8 +216,8 @@ export const en: Translations = {
           privacyDesc: 'Local processing',
           dataCollection: 'Data collection',
           dataCollectionDesc: 'No tracking',
-          usageLimits: 'Usage limits',
-          usageLimitsDesc: 'Free forever',
+          usageLimits: 'Usage',
+          usageLimitsDesc: 'No limits or subscriptions',
         },
         features: {
           noRegistration: 'No registration required',
@@ -124,6 +227,76 @@ export const en: Translations = {
         },
       },
       trustMessage: 'Your files never leave your device',
+      stats: {
+        tools: 'Tools',
+        toolsDescription: 'All necessary functions',
+      },
+    },
+    // Trust signals section
+    trustSignals: {
+      title: 'Millions of Users Trust LocalPDF',
+      subtitle: 'Join the community of professionals who value privacy and speed',
+      stats: {
+        filesProcessed: 'Files Processed',
+        filesDescription: 'PDF documents processed without a single data leak',
+        happyUsers: 'Happy Users',
+        usersDescription: 'Professionals trust us with their documents',
+        countriesUsing: 'Countries Using',
+        countriesDescription: 'LocalPDF works worldwide',
+      },
+      security: {
+        title: 'Security and Compliance',
+        sslSecured: 'SSL Secured',
+        gdprCompliant: 'GDPR Compliant',
+        localProcessing: 'Local Processing',
+        openSource: 'Open Source',
+      },
+    },
+    // Quick start section
+    quickStart: {
+      title: 'How it works?',
+      subtitle: 'Three simple steps to perfect results',
+      steps: {
+        step1: {
+          title: 'Choose Tool',
+          description: 'Find the PDF tool you need from our collection',
+        },
+        step2: {
+          title: 'Upload Files',
+          description: 'Drag and drop files or click to select',
+        },
+        step3: {
+          title: 'Download Result',
+          description: 'Instantly get your processed files',
+        },
+      },
+      stats: {
+        averageTime: 'Average processing time',
+        dataSentToServers: 'Data sent to servers',
+        privacyGuaranteed: 'Privacy guaranteed',
+      },
+    },
+    // Privacy benefits section
+    privacyBenefits: {
+      benefits: {
+        privacy: {
+          title: 'Complete Privacy',
+          description: 'Your files are processed locally in the browser and never leave your device',
+        },
+        speed: {
+          title: 'Instant Speed',
+          description: 'File processing happens instantly without uploading to servers',
+        },
+        offline: {
+          title: 'Works Offline',
+          description: 'After first load, the site works without internet connection',
+        },
+        unlimited: {
+          title: 'No Limits',
+          description: '{{toolsCount}} tools for any task. Process unlimited number of files',
+        },
+      },
+      cta: 'Ready to start? Choose from {{toolsCount}} tools below',
     },
   },
 
@@ -444,14 +617,33 @@ export const en: Translations = {
   },
 
   footer: {
-    description: 'Made with ❤️ for privacy-conscious users worldwide',
+    description: 'Free PDF tools. Completely private, fast, and secure. All operations are performed locally in your browser.',
     links: {
       privacy: 'Privacy',
       terms: 'Terms',
       faq: 'FAQ',
       github: 'GitHub',
     },
-    copyright: 'No tracking • No ads • No data collection',
+    sections: {
+      product: {
+        title: 'Product',
+        allTools: 'All Tools'
+      },
+      company: {
+        title: 'Company',
+        about: 'About Project',
+        terms: 'Terms of Service'
+      },
+      developers: {
+        title: 'Developers',
+        apiDocs: 'API Documentation',
+        contribute: 'Contribute',
+        license: 'License'
+      }
+    },
+    copyright: '© {year} LocalPDF. Open Source Project.',
+    builtWith: 'Built with',
+    followProject: 'Follow the project:'
   },
 
   components: {
@@ -1589,7 +1781,7 @@ export const en: Translations = {
         }
       }
     }
-  },
+  }
 }
 
 export default en;

@@ -1,173 +1,152 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { toolsSEOData } from '../../data/seoData';
-import SEOHead from '../../components/SEO/SEOHead';
-import { Header, Footer } from '../../components/organisms';
-import RelatedTools from '../../components/common/RelatedTools';
-import FAQSection from '../../components/common/FAQSection';
+import { StandardToolPageTemplate } from '../../components/templates';
 import AddTextTool from '../../components/organisms/AddTextTool';
-import UploadSection from '../../components/molecules/UploadSection';
-import TwitterCardImage from '../../components/TwitterCardImage/TwitterCardImage';
+import { ModernUploadZone } from '../../components/molecules';
 import { useI18n } from '../../hooks/useI18n';
+import { useFileUpload } from '../../hooks/useFileUpload';
+import { useDynamicSEO } from '../../hooks/useDynamicSEO';
 import { getCombinedFAQs } from '../../data/faqData';
 
 const AddTextPDFPage: React.FC = () => {
   const { t } = useI18n();
   const seoData = toolsSEOData.addText;
-  const [files, setFiles] = useState<File[]>([]);
-  const [showTool, setShowTool] = useState(false);
+  const [toolActive, setToolActive] = useState(false);
 
   // Get FAQ data for SEO schema
   const addTextFAQs = getCombinedFAQs('add-text');
 
-  // Scroll to top when component mounts
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  // Dynamic SEO updates
+  useDynamicSEO('addText');
 
-  const handleFilesSelected = (selectedFiles: File[]) => {
-    const pdfFiles = selectedFiles.filter(file => file.type === 'application/pdf');
-    if (pdfFiles.length > 0) {
-      setFiles(pdfFiles);
-      setShowTool(true);
+  const {
+    files,
+    addFiles,
+    removeFile,
+    clearFiles
+  } = useFileUpload();
+
+  const handleFileSelect = (selectedFiles: File[]) => {
+    addFiles(selectedFiles);
+    if (selectedFiles.length > 0) {
+      setToolActive(true);
     }
   };
 
-  const handleToolComplete = (result: any) => {
+  const handleToolComplete = (result: Blob) => {
     console.log('Add text completed:', result);
+    
+    // Download the processed PDF
+    const url = URL.createObjectURL(result);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `text-added-${files[0]?.name || 'document.pdf'}`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    setToolActive(false);
+    clearFiles();
   };
 
   const handleToolClose = () => {
-    setShowTool(false);
-    setFiles([]);
+    setToolActive(false);
   };
 
-  return (
-    <>
-      <SEOHead
-        title={seoData.title}
-        description={seoData.description}
-        keywords={seoData.keywords}
-        canonical={seoData.canonical}
-        structuredData={seoData.structuredData}
-        faqSchema={addTextFAQs.map(faq => ({
-          question: faq.question,
-          answer: faq.answer
-        }))}
+  // Create the tool component based on state
+  const toolComponent = !toolActive ? (
+    <div className="max-w-4xl mx-auto space-y-8">
+      {/* Upload Zone */}
+      <ModernUploadZone
+        onFilesSelected={handleFileSelect}
+        accept="application/pdf"
+        acceptedTypes={['application/pdf']}
+        multiple={false}
+        maxSize={100 * 1024 * 1024}
+        disabled={false}
+        title={t('pages.tools.addText.uploadTitle') || 'Добавить текст в PDF'}
+        subtitle="Добавьте текстовые аннотации и подписи к вашим PDF документам"
+        supportedFormats="PDF файлы до 100MB"
+        icon="✏️"
       />
-      <TwitterCardImage toolId="add-text-pdf" />
-
-      <div className="min-h-screen bg-gradient-mesh flex flex-col">
-        <Header />
-
-        <main className="flex-grow container mx-auto px-4 pt-20 pb-8">
-        <header className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            {t('pages.tools.addText.pageTitle')}
-          </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            {t('pages.tools.addText.pageDescription')}
-          </p>
-        </header>
-
-        <section className="mb-12">
-          {!showTool ? (
-            <div className="max-w-2xl mx-auto">
-              <UploadSection
-                onFilesSelected={handleFilesSelected}
-                multiple={false}
-                accept="application/pdf"
-                acceptedTypes={['application/pdf']}
-                title={t('pages.tools.addText.pageTitle')}
-                subtitle="Add text overlays to your PDF documents"
-                emoji="✏️"
-                supportedFormats="PDF files"
-              />
-
-              <div className="text-center text-gray-600 mt-6">
-                <p className="mb-2">
-                  <strong>{t('pages.tools.addText.steps.upload')}</strong>
-                </p>
-                <p className="mb-2">
-                  <strong>{t('pages.tools.addText.steps.click')}</strong>
-                </p>
-                <p>
-                  <strong>{t('pages.tools.addText.steps.save')}</strong>
-                </p>
-              </div>
+      
+      {/* File List & Start Button */}
+      {files.length > 0 && (
+        <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg border border-white/20 dark:border-gray-600/20 rounded-2xl shadow-lg p-8 space-y-6">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center text-white text-xl shadow-lg">
+              ✏️
             </div>
-          ) : (
-            <AddTextTool
-              files={files}
-              onComplete={handleToolComplete}
-              onClose={handleToolClose}
-            />
-          )}
-        </section>
-
-        {/* How-to Section - only show when tool is not active */}
-        {!showTool && (
-          <section className="mb-12">
-            <div className="max-w-4xl mx-auto">
-              <div className="bg-white rounded-lg shadow-md p-8">
-                <h2 className="text-2xl font-semibold text-gray-900 mb-6 text-center">
-                  How to Add Text to PDF
-                </h2>
-
-                <div className="grid md:grid-cols-3 gap-6">
-                  <div className="text-center">
-                    <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                      <span className="text-3xl">📄</span>
-                    </div>
-                    <h3 className="font-semibold text-gray-900 mb-2">Upload PDF</h3>
-                    <p className="text-gray-600 text-sm">
-                      Select your PDF file to add text overlays
-                    </p>
+            <div>
+              <h3 className="text-xl font-black text-black dark:text-white">
+                Выбранный файл
+              </h3>
+              <p className="text-gray-800 dark:text-gray-100 font-medium text-sm">
+                Готов к редактированию
+              </p>
+            </div>
+          </div>
+          
+          <div className="space-y-3">
+            {files.map((file, index) => (
+              <div key={index} className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl p-4 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-red-100 to-red-200 dark:from-red-800 dark:to-red-700 rounded-xl flex items-center justify-center text-xl">
+                    📄
                   </div>
-
-                  <div className="text-center">
-                    <div className="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                      <span className="text-3xl">✏️</span>
-                    </div>
-                    <h3 className="font-semibold text-gray-900 mb-2">Add Text</h3>
-                    <p className="text-gray-600 text-sm">
-                      Click anywhere on PDF to add text, customize font and color
-                    </p>
-                  </div>
-
-                  <div className="text-center">
-                    <div className="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                      <span className="text-3xl">💾</span>
-                    </div>
-                    <h3 className="font-semibold text-gray-900 mb-2">Download</h3>
-                    <p className="text-gray-600 text-sm">
-                      Save your PDF with added text instantly
+                  <div>
+                    <p className="font-black text-black dark:text-white">{file.name}</p>
+                    <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      {(file.size / 1024 / 1024).toFixed(2)} МБ
                     </p>
                   </div>
                 </div>
+                <button
+                  onClick={() => removeFile(index)}
+                  className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all duration-200"
+                  title="Удалить файл"
+                >
+                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
+                  </svg>
+                </button>
               </div>
-            </div>
-          </section>
-        )}
-
-        {/* FAQ Section - only show when tool is not active */}
-        {!showTool && (
-          <FAQSection
-            title="Frequently Asked Questions about Adding Text to PDF"
-            faqs={addTextFAQs}
-            className="mb-8"
-            defaultOpen={false}
-          />
-        )}
-
-        {/* Related Tools - only show when tool is not active */}
-        {!showTool && (
-          <RelatedTools currentTool="addText" className="mb-8" />
-        )}
-      </main>
-
-      <Footer />
+            ))}
+          </div>
+          
+          <div className="flex justify-center pt-4">
+            <button
+              onClick={() => setToolActive(true)}
+              className="btn-privacy-modern text-lg px-8 py-4 min-w-[250px] ripple-effect btn-press"
+            >
+              Редактировать PDF ✏️
+            </button>
+          </div>
+        </div>
+      )}
     </div>
-    </>
+  ) : (
+    <AddTextTool
+      files={files}
+      onComplete={handleToolComplete}
+      onClose={handleToolClose}
+    />
+  );
+
+  return (
+    <StandardToolPageTemplate
+      seoData={seoData}
+      toolId="add-text-pdf"
+      faqSchema={addTextFAQs.map(faq => ({
+        question: faq.question,
+        answer: faq.answer
+      }))}
+      pageTitle={t('pages.tools.addText.pageTitle') || 'Добавить текст в PDF'}
+      pageDescription={t('pages.tools.addText.pageDescription') || 'Добавьте текстовые аннотации, подписи и заметки к вашим PDF документам онлайн'}
+      toolComponent={toolComponent}
+      breadcrumbKey="add-text-pdf"
+    />
   );
 };
 

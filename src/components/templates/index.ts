@@ -1,0 +1,1 @@
+export { default as StandardToolPageTemplate } from './StandardToolPageTemplate';

@@ -5,7 +5,7 @@
   <!-- Главная -->
   <url>
     <loc>https://localpdf.online/</loc>
-    <lastmod>2025-08-14</lastmod>
+    <lastmod>2025-08-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://localpdf.online/"/>
@@ -18,7 +18,7 @@
   <!-- merge-pdf -->
   <url>
     <loc>https://localpdf.online/merge-pdf</loc>
-    <lastmod>2025-08-14</lastmod>
+    <lastmod>2025-08-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://localpdf.online/merge-pdf"/>
@@ -31,7 +31,7 @@
   <!-- split-pdf -->
   <url>
     <loc>https://localpdf.online/split-pdf</loc>
-    <lastmod>2025-08-14</lastmod>
+    <lastmod>2025-08-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://localpdf.online/split-pdf"/>
@@ -44,7 +44,7 @@
   <!-- compress-pdf -->
   <url>
     <loc>https://localpdf.online/compress-pdf</loc>
-    <lastmod>2025-08-14</lastmod>
+    <lastmod>2025-08-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://localpdf.online/compress-pdf"/>
@@ -57,7 +57,7 @@
   <!-- add-text-pdf -->
   <url>
     <loc>https://localpdf.online/add-text-pdf</loc>
-    <lastmod>2025-08-14</lastmod>
+    <lastmod>2025-08-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://localpdf.online/add-text-pdf"/>
@@ -70,7 +70,7 @@
   <!-- watermark-pdf -->
   <url>
     <loc>https://localpdf.online/watermark-pdf</loc>
-    <lastmod>2025-08-14</lastmod>
+    <lastmod>2025-08-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://localpdf.online/watermark-pdf"/>
@@ -83,7 +83,7 @@
   <!-- rotate-pdf -->
   <url>
     <loc>https://localpdf.online/rotate-pdf</loc>
-    <lastmod>2025-08-14</lastmod>
+    <lastmod>2025-08-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://localpdf.online/rotate-pdf"/>
@@ -96,7 +96,7 @@
   <!-- extract-pages-pdf -->
   <url>
     <loc>https://localpdf.online/extract-pages-pdf</loc>
-    <lastmod>2025-08-14</lastmod>
+    <lastmod>2025-08-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://localpdf.online/extract-pages-pdf"/>
@@ -109,7 +109,7 @@
   <!-- extract-text-pdf -->
   <url>
     <loc>https://localpdf.online/extract-text-pdf</loc>
-    <lastmod>2025-08-14</lastmod>
+    <lastmod>2025-08-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://localpdf.online/extract-text-pdf"/>
@@ -122,7 +122,7 @@
   <!-- pdf-to-image -->
   <url>
     <loc>https://localpdf.online/pdf-to-image</loc>
-    <lastmod>2025-08-14</lastmod>
+    <lastmod>2025-08-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://localpdf.online/pdf-to-image"/>
@@ -135,7 +135,7 @@
   <!-- images-to-pdf -->
   <url>
     <loc>https://localpdf.online/images-to-pdf</loc>
-    <lastmod>2025-08-14</lastmod>
+    <lastmod>2025-08-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://localpdf.online/images-to-pdf"/>
@@ -148,7 +148,7 @@
   <!-- word-to-pdf -->
   <url>
     <loc>https://localpdf.online/word-to-pdf</loc>
-    <lastmod>2025-08-14</lastmod>
+    <lastmod>2025-08-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://localpdf.online/word-to-pdf"/>
@@ -161,7 +161,7 @@
   <!-- excel-to-pdf -->
   <url>
     <loc>https://localpdf.online/excel-to-pdf</loc>
-    <lastmod>2025-08-14</lastmod>
+    <lastmod>2025-08-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://localpdf.online/excel-to-pdf"/>
@@ -174,7 +174,7 @@
   <!-- ocr-pdf -->
   <url>
     <loc>https://localpdf.online/ocr-pdf</loc>
-    <lastmod>2025-08-14</lastmod>
+    <lastmod>2025-08-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://localpdf.online/ocr-pdf"/>
@@ -187,7 +187,7 @@
   <!-- privacy -->
   <url>
     <loc>https://localpdf.online/privacy</loc>
-    <lastmod>2025-08-14</lastmod>
+    <lastmod>2025-08-24</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://localpdf.online/privacy"/>
@@ -200,7 +200,7 @@
   <!-- terms -->
   <url>
     <loc>https://localpdf.online/terms</loc>
-    <lastmod>2025-08-14</lastmod>
+    <lastmod>2025-08-24</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://localpdf.online/terms"/>
@@ -213,7 +213,7 @@
   <!-- gdpr -->
   <url>
     <loc>https://localpdf.online/gdpr</loc>
-    <lastmod>2025-08-14</lastmod>
+    <lastmod>2025-08-24</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://localpdf.online/gdpr"/>
@@ -226,7 +226,7 @@
   <!-- faq -->
   <url>
     <loc>https://localpdf.online/faq</loc>
-    <lastmod>2025-08-14</lastmod>
+    <lastmod>2025-08-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://localpdf.online/faq"/>

@@ -1,5 +1,6 @@
 // src/hooks/useI18n.tsx
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { SupportedLanguage, Translations, DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES, TranslationParams } from '../types/i18n';
 import { getTranslations } from '../locales';
 
@@ -65,22 +66,18 @@ const getLanguageFromURL = (): SupportedLanguage | null => {
   return null;
 };
 
-// Функция для загрузки сохраненного языка с приоритетом
+// Функция для загрузки сохраненного языка (без URL приоритета)
 const getSavedLanguage = (): SupportedLanguage => {
   if (typeof window === 'undefined') return DEFAULT_LANGUAGE;
 
   try {
-    // 1. Проверяем URL параметр (высший приоритет)
-    const urlLang = getLanguageFromURL();
-    if (urlLang) return urlLang;
-
-    // 2. Проверяем localStorage
+    // 1. Проверяем localStorage
     const saved = localStorage.getItem(LANGUAGE_KEY) as SupportedLanguage;
     if (SUPPORTED_LANGUAGES.some(lang => lang.code === saved)) {
       return saved;
     }
 
-    // 3. Fallback на язык браузера
+    // 2. Fallback на язык браузера
     return getBrowserLanguage();
   } catch {
     return getBrowserLanguage();
@@ -104,8 +101,20 @@ const getNestedValue = (obj: any, path: string): string => {
 };
 
 export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
-  const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguage>(getSavedLanguage);
-  const [translations, setTranslations] = useState<Translations>(getTranslations(currentLanguage));
+  const location = useLocation();
+  const navigate = useNavigate();
+  
+  // Initialize language from URL first, then fallback to saved language
+  const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguage>(() => {
+    // Get language from URL first (highest priority)
+    const urlLang = getLanguageFromURL();
+    if (urlLang) return urlLang;
+    
+    // Fallback to saved language
+    return getSavedLanguage();
+  });
+  
+  const [translations, setTranslations] = useState<Translations>(() => getTranslations(currentLanguage));
 
   // Функция для смены языка
   const setLanguage = (language: SupportedLanguage) => {
@@ -123,6 +132,32 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
       // Обновляем lang атрибут HTML
       if (typeof document !== 'undefined') {
         document.documentElement.lang = language;
+      }
+
+      // Навигация к правильному URL
+      const currentPath = location.pathname;
+      const currentLangPrefix = getLanguageFromURL();
+      
+      let newPath: string;
+      if (language === DEFAULT_LANGUAGE) {
+        // Для английского убираем языковой префикс
+        if (currentLangPrefix) {
+          newPath = currentPath.replace(`/${currentLangPrefix}`, '') || '/';
+        } else {
+          newPath = currentPath;
+        }
+      } else {
+        // Для других языков добавляем/заменяем префикс
+        if (currentLangPrefix) {
+          newPath = currentPath.replace(`/${currentLangPrefix}`, `/${language}`);
+        } else {
+          newPath = `/${language}${currentPath === '/' ? '' : currentPath}`;
+        }
+      }
+      
+      // Навигация к новому URL
+      if (newPath !== currentPath) {
+        navigate(newPath);
       }
     }
   };
@@ -146,30 +181,31 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
     }
   }, []);
 
-  // Отслеживаем изменения URL для автоматического определения языка
+  // Отслеживаем изменения URL через React Router для автоматического определения языка
   useEffect(() => {
-    const handleLocationChange = () => {
-      const urlLang = getLanguageFromURL();
-      if (urlLang && urlLang !== currentLanguage) {
-        setCurrentLanguage(urlLang);
-        // Обновляем HTML lang атрибут
-        if (typeof document !== 'undefined') {
-          document.documentElement.lang = urlLang;
-        }
+    const pathParts = location.pathname.split('/').filter(Boolean);
+    const urlLang = pathParts.length > 0 && 
+      SUPPORTED_LANGUAGES.some(lang => lang.code === pathParts[0])
+        ? pathParts[0] as SupportedLanguage 
+        : 'en'; // Default to English for root path
+    
+    if (urlLang !== currentLanguage) {
+      setCurrentLanguage(urlLang);
+      setTranslations(getTranslations(urlLang));
+      
+      // Обновляем HTML lang атрибут
+      if (typeof document !== 'undefined') {
+        document.documentElement.lang = urlLang;
       }
-    };
-
-    // Слушаем изменения URL в SPA
-    const handlePopState = () => handleLocationChange();
-    window.addEventListener('popstate', handlePopState);
-
-    // Также проверяем при каждом рендере (для случаев программной навигации)
-    handleLocationChange();
-
-    return () => {
-      window.removeEventListener('popstate', handlePopState);
-    };
-  }, [currentLanguage]);
+      
+      // Сохраняем новый язык в localStorage
+      try {
+        localStorage.setItem(LANGUAGE_KEY, urlLang);
+      } catch (error) {
+        console.warn('Failed to save language preference:', error);
+      }
+    }
+  }, [location.pathname, currentLanguage]);
 
   // Обновляем переводы при смене языка
   useEffect(() => {

@@ -1,222 +1,150 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { toolsSEOData } from '../../data/seoData';
-import SEOHead from '../../components/SEO/SEOHead';
-import { Header, Footer } from '../../components/organisms';
-import RelatedTools from '../../components/common/RelatedTools';
-import UploadSection from '../../components/molecules/UploadSection';
+import { StandardToolPageTemplate } from '../../components/templates';
 import ExtractPagesTool from '../../components/organisms/ExtractPagesTool';
-import TwitterCardImage from '../../components/TwitterCardImage/TwitterCardImage';
-import Button from '../../components/atoms/Button';
-import { downloadBlob } from '../../utils/fileHelpers';
-import { generateFilename } from '../../utils/fileHelpers';
+import { ModernUploadZone } from '../../components/molecules';
 import { useI18n } from '../../hooks/useI18n';
+import { useFileUpload } from '../../hooks/useFileUpload';
+import { useDynamicSEO } from '../../hooks/useDynamicSEO';
+import { downloadBlob, generateFilename } from '../../utils/fileHelpers';
+import { getCombinedFAQs } from '../../data/faqData';
 
 const ExtractPagesPDFPage: React.FC = () => {
   const { t } = useI18n();
   const seoData = toolsSEOData.extractPages;
-  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
-  const [showTool, setShowTool] = useState(false);
+  const [toolActive, setToolActive] = useState(false);
 
-  // Scroll to top when component mounts
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  // Get FAQ data for SEO schema
+  const extractPagesFAQs = getCombinedFAQs('extract-pages');
 
-  const handleFilesSelected = (files: File[]) => {
-    setUploadedFiles(files);
-    setShowTool(true);
+  // Dynamic SEO updates
+  useDynamicSEO('extractPages');
+
+  const {
+    files,
+    addFiles,
+    removeFile,
+    clearFiles
+  } = useFileUpload();
+
+  const handleFileSelect = (selectedFiles: File[]) => {
+    addFiles(selectedFiles);
+    if (selectedFiles.length > 0) {
+      setToolActive(true);
+    }
   };
 
   const handleComplete = (result: any) => {
     if (result.success && result.data) {
       const filename = generateFilename(
-        uploadedFiles[0]?.name || 'document',
+        files[0]?.name || 'document',
         'extracted-pages',
         'pdf'
       );
       downloadBlob(result.data, filename);
     }
+    setToolActive(false);
+    clearFiles();
   };
 
-  const handleClose = () => {
-    setShowTool(false);
-    setUploadedFiles([]);
+  const handleToolClose = () => {
+    setToolActive(false);
   };
 
-  const handleReset = () => {
-    setShowTool(false);
-    setUploadedFiles([]);
-  };
+  // Create the tool component based on state
+  const toolComponent = !toolActive ? (
+    <div className="max-w-4xl mx-auto space-y-8">
+      {/* Upload Zone */}
+      <ModernUploadZone
+        onFilesSelected={handleFileSelect}
+        accept="application/pdf"
+        acceptedTypes={['application/pdf']}
+        multiple={false}
+        maxFiles={1}
+        maxSize={100 * 1024 * 1024}
+        disabled={false}
+        title={t('pages.tools.extractPages.uploadTitle') || 'Извлечь страницы из PDF'}
+        subtitle="Выберите конкретные страницы из PDF документа для создания нового файла"
+        supportedFormats="PDF файлы до 100MB"
+        icon="📑"
+      />
+      
+      {/* File List & Start Button */}
+      {files.length > 0 && (
+        <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg border border-white/20 dark:border-gray-600/20 rounded-2xl shadow-lg p-8 space-y-6">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center text-white text-xl shadow-lg">
+              📑
+            </div>
+            <div>
+              <h3 className="text-xl font-black text-black dark:text-white">
+                Выбранный файл
+              </h3>
+              <p className="text-gray-800 dark:text-gray-100 font-medium text-sm">
+                Готов к извлечению страниц
+              </p>
+            </div>
+          </div>
+          
+          <div className="space-y-3">
+            {files.map((file, index) => (
+              <div key={index} className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl p-4 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-red-100 to-red-200 dark:from-red-800 dark:to-red-700 rounded-xl flex items-center justify-center text-xl">
+                    📄
+                  </div>
+                  <div>
+                    <p className="font-black text-black dark:text-white">{file.name}</p>
+                    <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      {(file.size / 1024 / 1024).toFixed(2)} МБ
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => removeFile(index)}
+                  className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all duration-200"
+                  title="Удалить файл"
+                >
+                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
+                  </svg>
+                </button>
+              </div>
+            ))}
+          </div>
+          
+          <div className="flex justify-center pt-4">
+            <button
+              onClick={() => setToolActive(true)}
+              className="btn-privacy-modern text-lg px-8 py-4 min-w-[250px] ripple-effect btn-press"
+            >
+              Извлечь страницы 📑
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  ) : (
+    <ExtractPagesTool
+      files={files}
+      onComplete={handleComplete}
+      onClose={handleToolClose}
+    />
+  );
 
   return (
-    <>
-      <SEOHead
-        title={seoData.title}
-        description={seoData.description}
-        keywords={seoData.keywords}
-        canonical={seoData.canonical}
-        structuredData={seoData.structuredData}
-      />
-      <TwitterCardImage toolId="extract-pages-pdf" />
-
-      <div className="min-h-screen bg-gradient-mesh flex flex-col">
-        <Header />
-
-        <main className="flex-grow container mx-auto px-4 pt-20 pb-8">
-        <header className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            {t('pages.tools.extractPages.pageTitle')}
-          </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            {t('pages.tools.extractPages.pageDescription')}
-          </p>
-        </header>
-
-        {!showTool ? (
-          <section className="mb-12">
-            <div className="max-w-2xl mx-auto">
-              <UploadSection
-                onFilesSelected={handleFilesSelected}
-                acceptedTypes={['.pdf']}
-                maxFiles={1}
-                title={t('pages.tools.extractPages.uploadTitle')}
-                subtitle={t('pages.tools.extractPages.uploadSubtitle')}
-                emoji="📑"
-                supportedFormats="PDF files"
-              />
-
-              <div className="mt-8 grid md:grid-cols-2 gap-6 text-sm text-gray-600">
-                <div className="space-y-3">
-                  <h3 className="font-semibold text-gray-800">{t('pages.tools.extractPages.features.title')}</h3>
-                  <ul className="space-y-1">
-                    <li>{t('pages.tools.extractPages.features.items.individual')}</li>
-                    <li>{t('pages.tools.extractPages.features.items.custom')}</li>
-                    <li>{t('pages.tools.extractPages.features.items.preview')}</li>
-                    <li>{t('pages.tools.extractPages.features.items.quality')}</li>
-                  </ul>
-                </div>
-                <div className="space-y-3">
-                  <h3 className="font-semibold text-gray-800">{t('pages.tools.extractPages.privacy.title')}</h3>
-                  <ul className="space-y-1">
-                    <li>{t('pages.tools.extractPages.privacy.items.clientSide')}</li>
-                    <li>{t('pages.tools.extractPages.privacy.items.noUploads')}</li>
-                    <li>{t('pages.tools.extractPages.privacy.items.localProcessing')}</li>
-                    <li>{t('pages.tools.extractPages.privacy.items.instantProcessing')}</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </section>
-        ) : (
-          <section className="mb-12">
-            <div className="mb-4 flex justify-center">
-              <Button
-                variant="outline"
-                onClick={handleReset}
-                className="flex items-center"
-              >
-{t('pages.tools.extractPages.buttons.uploadDifferent')}
-              </Button>
-            </div>
-
-            <ExtractPagesTool
-              files={uploadedFiles}
-              onComplete={handleComplete}
-              onClose={handleClose}
-            />
-          </section>
-        )}
-
-        <RelatedTools currentTool="extractPages" className="mb-8" />
-
-        {/* Benefits Section */}
-        <section className="mt-16 bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl p-8">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">
-              {t('pages.tools.extractPages.benefits.title')}
-            </h2>
-
-            <div className="grid md:grid-cols-3 gap-6">
-              <div className="text-center">
-                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-purple-600 text-2xl">⚡</span>
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">{t('pages.tools.extractPages.benefits.fast.title')}</h3>
-                <p className="text-gray-600">
-                  {t('pages.tools.extractPages.benefits.fast.description')}
-                </p>
-              </div>
-
-              <div className="text-center">
-                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-blue-600 text-2xl">🎯</span>
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">{t('pages.tools.extractPages.benefits.precise.title')}</h3>
-                <p className="text-gray-600">
-                  {t('pages.tools.extractPages.benefits.precise.description')}
-                </p>
-              </div>
-
-              <div className="text-center">
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-green-600 text-2xl">🔒</span>
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">{t('pages.tools.extractPages.benefits.private.title')}</h3>
-                <p className="text-gray-600">
-                  {t('pages.tools.extractPages.benefits.private.description')}
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* How It Works Section */}
-        <section className="mt-16">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
-              {t('pages.tools.extractPages.howTo.title')}
-            </h2>
-
-            <div className="grid md:grid-cols-4 gap-6">
-              <div className="text-center">
-                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-blue-600 font-bold">1</span>
-                </div>
-                <h3 className="font-semibold text-gray-900 mb-2">{t('pages.tools.extractPages.howTo.steps.upload.title')}</h3>
-                <p className="text-sm text-gray-600">{t('pages.tools.extractPages.howTo.steps.upload.description')}</p>
-              </div>
-
-              <div className="text-center">
-                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-blue-600 font-bold">2</span>
-                </div>
-                <h3 className="font-semibold text-gray-900 mb-2">{t('pages.tools.extractPages.howTo.steps.select.title')}</h3>
-                <p className="text-sm text-gray-600">{t('pages.tools.extractPages.howTo.steps.select.description')}</p>
-              </div>
-
-              <div className="text-center">
-                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-blue-600 font-bold">3</span>
-                </div>
-                <h3 className="font-semibold text-gray-900 mb-2">{t('pages.tools.extractPages.howTo.steps.extract.title')}</h3>
-                <p className="text-sm text-gray-600">{t('pages.tools.extractPages.howTo.steps.extract.description')}</p>
-              </div>
-
-              <div className="text-center">
-                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-blue-600 font-bold">4</span>
-                </div>
-                <h3 className="font-semibold text-gray-900 mb-2">{t('pages.tools.extractPages.howTo.steps.download.title')}</h3>
-                <p className="text-sm text-gray-600">{t('pages.tools.extractPages.howTo.steps.download.description')}</p>
-              </div>
-            </div>
-          </div>
-        </section>
-      </main>
-
-      <Footer />
-    </div>
-    </>
+    <StandardToolPageTemplate
+      seoData={seoData}
+      toolId="extract-pages-pdf"
+      faqSchema={extractPagesFAQs.map(faq => ({
+        question: faq.question,
+        answer: faq.answer
+      }))}
+      pageTitle={t('pages.tools.extractPages.pageTitle') || 'Извлечь страницы из PDF'}
+      pageDescription={t('pages.tools.extractPages.pageDescription') || 'Извлекайте нужные страницы из PDF документов и создавайте новые файлы онлайн'}
+      toolComponent={toolComponent}
+      breadcrumbKey="extract-pages-pdf"
+    />
   );
 };
 

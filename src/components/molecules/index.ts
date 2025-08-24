@@ -1,4 +1,5 @@
 export { default as FileUploadZone } from './FileUploadZone';
+export { default as ModernUploadZone } from './ModernUploadZone';
 export { default as FileList } from './FileList';
 export { default as FileListDisplay } from './FileListDisplay';
 export { default as PrivacyBadge } from './PrivacyBadge';

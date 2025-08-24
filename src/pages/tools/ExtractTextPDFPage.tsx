@@ -1,106 +1,141 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { toolsSEOData } from '../../data/seoData';
-import SEOHead from '../../components/SEO/SEOHead';
-import { Header, Footer } from '../../components/organisms';
-import RelatedTools from '../../components/common/RelatedTools';
+import { StandardToolPageTemplate } from '../../components/templates';
 import ExtractTextTool from '../../components/organisms/ExtractTextTool';
-import UploadSection from '../../components/molecules/UploadSection';
-import TwitterCardImage from '../../components/TwitterCardImage/TwitterCardImage';
+import { ModernUploadZone } from '../../components/molecules';
 import { useI18n } from '../../hooks/useI18n';
+import { useFileUpload } from '../../hooks/useFileUpload';
+import { useDynamicSEO } from '../../hooks/useDynamicSEO';
+import { getCombinedFAQs } from '../../data/faqData';
 
 const ExtractTextPDFPage: React.FC = () => {
   const { t } = useI18n();
   const seoData = toolsSEOData.extractText;
-  const [files, setFiles] = useState<File[]>([]);
-  const [showTool, setShowTool] = useState(false);
+  const [toolActive, setToolActive] = useState(false);
 
-  // Scroll to top when component mounts
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  // Get FAQ data for SEO schema
+  const extractTextFAQs = getCombinedFAQs('extract-text');
 
-  const handleFilesSelected = (selectedFiles: File[]) => {
-    const pdfFiles = selectedFiles.filter(file => file.type === 'application/pdf');
-    if (pdfFiles.length > 0) {
-      setFiles(pdfFiles);
-      setShowTool(true);
+  // Dynamic SEO updates
+  useDynamicSEO('extractText');
+
+  const {
+    files,
+    addFiles,
+    removeFile,
+    clearFiles
+  } = useFileUpload();
+
+  const handleFileSelect = (selectedFiles: File[]) => {
+    addFiles(selectedFiles);
+    if (selectedFiles.length > 0) {
+      setToolActive(true);
     }
   };
 
   const handleToolComplete = (result: any) => {
     console.log('Extract text completed:', result);
+    setToolActive(false);
+    clearFiles();
   };
 
   const handleToolClose = () => {
-    setShowTool(false);
-    setFiles([]);
+    setToolActive(false);
   };
 
-  return (
-    <>
-      <SEOHead
-        title={seoData.title}
-        description={seoData.description}
-        keywords={seoData.keywords}
-        canonical={seoData.canonical}
-        structuredData={seoData.structuredData}
+  // Create the tool component based on state
+  const toolComponent = !toolActive ? (
+    <div className="max-w-4xl mx-auto space-y-8">
+      {/* Upload Zone */}
+      <ModernUploadZone
+        onFilesSelected={handleFileSelect}
+        accept="application/pdf"
+        acceptedTypes={['application/pdf']}
+        multiple={false}
+        maxSize={100 * 1024 * 1024}
+        disabled={false}
+        title={t('pages.tools.extractText.uploadTitle') || 'Извлечь текст из PDF'}
+        subtitle="Извлекайте весь текстовый контент из PDF документов одним кликом"
+        supportedFormats="PDF файлы до 100MB"
+        icon="📝"
       />
-      <TwitterCardImage toolId="extract-text-pdf" />
-
-      <div className="min-h-screen bg-gradient-mesh flex flex-col">
-        <Header />
-
-        <main className="flex-grow container mx-auto px-4 pt-20 pb-8">
-        <header className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            {t('pages.tools.extractText.pageTitle')}
-          </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            {t('pages.tools.extractText.pageDescription')}
-          </p>
-        </header>
-
-        <section className="mb-12">
-          {!showTool ? (
-            <div className="max-w-2xl mx-auto">
-              <UploadSection
-                onFilesSelected={handleFilesSelected}
-                multiple={false}
-                accept="application/pdf"
-                acceptedTypes={['application/pdf']}
-                title={t('pages.tools.extractText.pageTitle')}
-                subtitle="Extract text content from PDF documents"
-                emoji="📝"
-                supportedFormats="PDF files"
-              />
-
-              <div className="text-center text-gray-600 mt-6">
-                <p className="mb-2">
-                  <strong>{t('pages.tools.extractText.steps.upload')}</strong>
-                </p>
-                <p className="mb-2">
-                  <strong>{t('pages.tools.extractText.steps.choose')}</strong>
-                </p>
-                <p>
-                  <strong>{t('pages.tools.extractText.steps.download')}</strong>
-                </p>
-              </div>
+      
+      {/* File List & Start Button */}
+      {files.length > 0 && (
+        <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg border border-white/20 dark:border-gray-600/20 rounded-2xl shadow-lg p-8 space-y-6">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center text-white text-xl shadow-lg">
+              📝
             </div>
-          ) : (
-            <ExtractTextTool
-              files={files}
-              onComplete={handleToolComplete}
-              onClose={handleToolClose}
-            />
-          )}
-        </section>
-
-        <RelatedTools currentTool="extractText" className="mb-8" />
-      </main>
-
-      <Footer />
+            <div>
+              <h3 className="text-xl font-black text-black dark:text-white">
+                Выбранный файл
+              </h3>
+              <p className="text-gray-800 dark:text-gray-100 font-medium text-sm">
+                Готов к извлечению текста
+              </p>
+            </div>
+          </div>
+          
+          <div className="space-y-3">
+            {files.map((file, index) => (
+              <div key={index} className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl p-4 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-red-100 to-red-200 dark:from-red-800 dark:to-red-700 rounded-xl flex items-center justify-center text-xl">
+                    📄
+                  </div>
+                  <div>
+                    <p className="font-black text-black dark:text-white">{file.name}</p>
+                    <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      {(file.size / 1024 / 1024).toFixed(2)} МБ
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => removeFile(index)}
+                  className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all duration-200"
+                  title="Удалить файл"
+                >
+                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
+                  </svg>
+                </button>
+              </div>
+            ))}
+          </div>
+          
+          <div className="flex justify-center pt-4">
+            <button
+              onClick={() => setToolActive(true)}
+              className="btn-privacy-modern text-lg px-8 py-4 min-w-[250px] ripple-effect btn-press"
+            >
+              Извлечь текст 📝
+            </button>
+          </div>
+        </div>
+      )}
     </div>
-    </>
+  ) : (
+    <ExtractTextTool
+      files={files}
+      onComplete={handleToolComplete}
+      onClose={handleToolClose}
+    />
+  );
+
+  return (
+    <StandardToolPageTemplate
+      seoData={seoData}
+      toolId="extract-text-pdf"
+      faqSchema={extractTextFAQs.map(faq => ({
+        question: faq.question,
+        answer: faq.answer
+      }))}
+      pageTitle={t('pages.tools.extractText.pageTitle') || 'Извлечь текст из PDF'}
+      pageDescription={t('pages.tools.extractText.pageDescription') || 'Извлекайте весь текстовый контент из PDF документов в удобном формате'}
+      toolComponent={toolComponent}
+      breadcrumbKey="extract-text-pdf"
+    />
   );
 };
 

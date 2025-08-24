@@ -356,9 +356,8 @@ const Canvas: React.FC<CanvasProps> = ({
   return (
     <div
       ref={containerRef}
-      className="relative bg-gray-100 border rounded-lg overflow-auto"
+      className="relative bg-gray-100 border rounded-lg overflow-auto h-full"
       style={{
-        height: '500px',
         width: '100%',
         // Enhanced scrolling - CRITICAL FIX
         overflowX: 'auto',

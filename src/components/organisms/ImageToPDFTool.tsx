@@ -4,7 +4,7 @@ import { ImageToPDFOptions } from '../../services/imageToPDFService';
 import { downloadBlob, generateFilename } from '../../utils/fileHelpers';
 import Button from '../atoms/Button';
 import ProgressBar from '../atoms/ProgressBar';
-import UploadSection from '../molecules/UploadSection';
+import { ModernUploadZone } from '../molecules';
 import { useI18n } from '../../hooks/useI18n';
 
 interface ImageToPDFToolProps {
@@ -80,110 +80,118 @@ const ImageToPDFTool: React.FC<ImageToPDFToolProps> = ({
   };
 
   return (
-    <div className={`bg-white rounded-lg shadow-lg p-6 max-w-7xl mx-auto ${className}`}>
+    <div className={`max-w-7xl mx-auto bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-white/20 dark:border-gray-600/20 rounded-2xl shadow-2xl p-8 ${className} transition-all duration-300`}>
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-8">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">{t('pages.tools.imageToPdf.tool.title')}</h2>
-          <p className="text-gray-600 mt-1">
-            {t('pages.tools.imageToPdf.tool.description')}
+          <h2 className="text-2xl font-black text-black dark:text-white">{t('pages.tools.imageToPdf.tool.title') || 'Convert Images to PDF'}</h2>
+          <p className="text-gray-800 dark:text-gray-100 font-medium mt-2">
+            {t('pages.tools.imageToPdf.tool.description') || 'Transform multiple images into a single PDF document'}
           </p>
         </div>
         {onClose && (
-          <Button variant="ghost" onClick={onClose}>
-            ✕
-          </Button>
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-seafoam-50 dark:hover:bg-seafoam-900/20 rounded-lg transition-all duration-200 flex items-center space-x-2"
+          >
+            <span>←</span>
+            <span className="font-medium text-black dark:text-white">Back to Tools</span>
+          </button>
         )}
       </div>
 
       {/* Error Display */}
       {error && (
-        <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
+        <div className="mb-8 bg-gradient-to-br from-red-50 to-red-100 dark:from-red-900/20 dark:to-red-800/20 backdrop-blur-sm border border-red-200/60 dark:border-red-600/20 rounded-xl p-6 shadow-lg">
           <div className="flex items-center">
-            <svg className="w-5 h-5 text-red-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span className="text-sm text-red-800">{error}</span>
+            <div className="w-8 h-8 bg-red-500 rounded-lg flex items-center justify-center text-white mr-4">
+              ⚠️
+            </div>
+            <span className="text-red-800 dark:text-red-200 font-medium">{error}</span>
           </div>
         </div>
       )}
 
       {/* File Upload Zone */}
       {selectedFiles.length === 0 ? (
-        <div className="mb-6">
-          <UploadSection
+        <div className="mb-8">
+          <ModernUploadZone
             onFilesSelected={handleFileSelect}
+            accept="image/*"
             acceptedTypes={['image/*']}
             multiple={true}
             maxFiles={100}
-            title={t('pages.tools.imageToPdf.uploadSection.title')}
-            subtitle={t('pages.tools.imageToPdf.uploadSection.subtitle')}
-            emoji="🖼️"
-            supportedFormats={t('pages.tools.imageToPdf.uploadSection.supportedFormats')}
+            maxSize={50 * 1024 * 1024}
+            disabled={isProcessing}
+            title={t('pages.tools.imageToPdf.uploadSection.title') || 'Загрузить изображения'}
+            subtitle={t('pages.tools.imageToPdf.uploadSection.subtitle') || 'Преобразуем множественные изображения в один PDF документ'}
+            supportedFormats={t('pages.tools.imageToPdf.uploadSection.supportedFormats') || 'JPG, PNG, GIF, BMP, WebP файлы до 50МБ каждый'}
+            icon="🖼️"
           />
         </div>
       ) : (
         <>
           {/* Selected Files */}
-          <div className="mb-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-medium text-gray-900">
-                {t('pages.tools.imageToPdf.tool.selectedImages', { count: selectedFiles.length.toString() })}
+          <div className="mb-8">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-lg font-black text-black dark:text-white">
+                {t('pages.tools.imageToPdf.tool.selectedImages', { count: selectedFiles.length.toString() }) || `Selected Images (${selectedFiles.length})`}
               </h3>
-              <Button
-                variant="outline"
-                size="sm"
+              <button
                 onClick={() => setSelectedFiles([])}
                 disabled={isProcessing}
+                className="px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border border-gray-300/80 dark:border-gray-600/20 rounded-lg text-black dark:text-white font-bold hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg"
               >
-                {t('pages.tools.imageToPdf.tool.clearAll')}
-              </Button>
+                {t('pages.tools.imageToPdf.tool.clearAll') || 'Clear All'}
+              </button>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 max-h-96 overflow-y-auto p-2">
-              {selectedFiles.map((file, index) => (
-                <div key={`${file.name}-${index}`} className="relative group">
-                  <div className="bg-white rounded-xl p-3 border-2 border-gray-100 hover:border-blue-300 hover:shadow-lg transition-all duration-200">
-                    <div className="aspect-square bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg mb-3 overflow-hidden shadow-inner">
-                      <img
-                        src={URL.createObjectURL(file)}
-                        alt={file.name}
-                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-200"
-                        onLoad={(e) => URL.revokeObjectURL((e.target as HTMLImageElement).src)}
-                      />
-                    </div>
-                    <p className="text-xs font-medium text-gray-900 truncate mb-1" title={file.name}>{file.name}</p>
-                    <p className="text-xs text-gray-500 font-mono">{formatFileSize(file.size)}</p>
+            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl p-6 shadow-lg">
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 max-h-96 overflow-y-auto">
+                {selectedFiles.map((file, index) => (
+                  <div key={`${file.name}-${index}`} className="relative group">
+                    <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg border border-white/20 dark:border-gray-600/20 rounded-xl p-3 hover:border-seafoam-400 hover:shadow-xl hover:scale-105 transition-all duration-200">
+                      <div className="aspect-square bg-gradient-to-br from-seafoam-50 to-ocean-50 dark:from-seafoam-900/20 dark:to-ocean-900/20 rounded-lg mb-3 overflow-hidden shadow-lg">
+                        <img
+                          src={URL.createObjectURL(file)}
+                          alt={file.name}
+                          className="w-full h-full object-cover hover:scale-105 transition-transform duration-200"
+                          onLoad={(e) => URL.revokeObjectURL((e.target as HTMLImageElement).src)}
+                        />
+                      </div>
+                      <p className="text-xs font-black text-black dark:text-white truncate mb-1" title={file.name}>{file.name}</p>
+                      <p className="text-xs text-gray-700 dark:text-gray-300 font-medium">{formatFileSize(file.size)}</p>
 
-                    {!isProcessing && (
-                      <button
-                        onClick={() => removeFile(index)}
-                        className="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-7 h-7 flex items-center justify-center text-sm font-bold opacity-0 group-hover:opacity-100 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-110"
-                        title="Remove image"
-                      >
-                        ✕
-                      </button>
-                    )}
+                      {!isProcessing && (
+                        <button
+                          onClick={() => removeFile(index)}
+                          className="absolute -top-2 -right-2 bg-gradient-to-br from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-full w-7 h-7 flex items-center justify-center text-sm font-bold opacity-0 group-hover:opacity-100 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-110"
+                          title="Remove image"
+                        >
+                          ✕
+                        </button>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
 
           {/* Options Panel */}
-          <div className="mb-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">{t('pages.tools.imageToPdf.tool.pdfSettings')}</h3>
+          <div className="mb-8">
+            <h3 className="text-lg font-black text-black dark:text-white mb-6">{t('pages.tools.imageToPdf.tool.pdfSettings') || 'PDF Settings'}</h3>
 
-            <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
+            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl p-6 shadow-lg">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {/* Page Size */}
                 <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700">{t('pages.tools.imageToPdf.tool.pageSize')}</label>
+                  <label className="block text-sm font-black text-black dark:text-white mb-3">{t('pages.tools.imageToPdf.tool.pageSize') || 'Page Size'}</label>
                   <select
                     value={options.pageSize}
                     onChange={(e) => setOptions(prev => ({ ...prev, pageSize: e.target.value as any }))}
                     disabled={isProcessing}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 bg-white shadow-sm"
+                    className="w-full px-4 py-3 border border-gray-300/80 dark:border-gray-600/20 rounded-xl bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg text-black dark:text-white font-medium focus:ring-2 focus:ring-seafoam-500/50 focus:border-seafoam-500 disabled:opacity-50 transition-all duration-200 shadow-sm"
                   >
                     <option value="A4">{t('pages.tools.imageToPdf.tool.pageSizeOptions.a4')}</option>
                     <option value="Letter">{t('pages.tools.imageToPdf.tool.pageSizeOptions.letter')}</option>
@@ -193,12 +201,12 @@ const ImageToPDFTool: React.FC<ImageToPDFToolProps> = ({
 
                 {/* Orientation */}
                 <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700">{t('pages.tools.imageToPdf.tool.orientation')}</label>
+                  <label className="block text-sm font-black text-black dark:text-white mb-3">{t('pages.tools.imageToPdf.tool.orientation') || 'Orientation'}</label>
                   <select
                     value={options.orientation}
                     onChange={(e) => setOptions(prev => ({ ...prev, orientation: e.target.value as any }))}
                     disabled={isProcessing}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 bg-white shadow-sm"
+                    className="w-full px-4 py-3 border border-gray-300/80 dark:border-gray-600/20 rounded-xl bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg text-black dark:text-white font-medium focus:ring-2 focus:ring-seafoam-500/50 focus:border-seafoam-500 disabled:opacity-50 transition-all duration-200 shadow-sm"
                   >
                     <option value="Portrait">{t('pages.tools.imageToPdf.tool.orientationOptions.portrait')}</option>
                     <option value="Landscape">{t('pages.tools.imageToPdf.tool.orientationOptions.landscape')}</option>
@@ -207,12 +215,12 @@ const ImageToPDFTool: React.FC<ImageToPDFToolProps> = ({
 
                 {/* Layout */}
                 <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700">{t('pages.tools.imageToPdf.tool.imageLayout')}</label>
+                  <label className="block text-sm font-black text-black dark:text-white mb-3">{t('pages.tools.imageToPdf.tool.imageLayout') || 'Image Layout'}</label>
                   <select
                     value={options.layout}
                     onChange={(e) => setOptions(prev => ({ ...prev, layout: e.target.value as any }))}
                     disabled={isProcessing}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 bg-white shadow-sm"
+                    className="w-full px-4 py-3 border border-gray-300/80 dark:border-gray-600/20 rounded-xl bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg text-black dark:text-white font-medium focus:ring-2 focus:ring-seafoam-500/50 focus:border-seafoam-500 disabled:opacity-50 transition-all duration-200 shadow-sm"
                   >
                     <option value="FitToPage">{t('pages.tools.imageToPdf.tool.layoutOptions.fitToPage')}</option>
                     <option value="ActualSize">{t('pages.tools.imageToPdf.tool.layoutOptions.actualSize')}</option>
@@ -223,8 +231,8 @@ const ImageToPDFTool: React.FC<ImageToPDFToolProps> = ({
 
                 {/* Quality */}
                 <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700">
-                    {t('pages.tools.imageToPdf.tool.imageQuality', { quality: Math.round(options.quality * 100).toString() })}
+                  <label className="block text-sm font-black text-black dark:text-white mb-3">
+                    {t('pages.tools.imageToPdf.tool.imageQuality', { quality: Math.round(options.quality * 100).toString() }) || `Image Quality (${Math.round(options.quality * 100)}%)`}
                   </label>
                   <div className="px-2">
                     <input
@@ -235,19 +243,19 @@ const ImageToPDFTool: React.FC<ImageToPDFToolProps> = ({
                       value={options.quality}
                       onChange={(e) => setOptions(prev => ({ ...prev, quality: parseFloat(e.target.value) }))}
                       disabled={isProcessing}
-                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+                      className="w-full h-3 bg-gradient-to-r from-gray-300 to-seafoam-300 dark:from-gray-700 dark:to-seafoam-700 rounded-lg appearance-none cursor-pointer slider focus:ring-2 focus:ring-seafoam-500/50 transition-all duration-200"
                     />
-                    <div className="flex justify-between text-xs text-gray-500 mt-2">
-                      <span>{t('pages.tools.imageToPdf.tool.qualitySlider.lowerSize')}</span>
-                      <span>{t('pages.tools.imageToPdf.tool.qualitySlider.higherQuality')}</span>
+                    <div className="flex justify-between text-xs text-gray-700 dark:text-gray-300 font-medium mt-2">
+                      <span>{t('pages.tools.imageToPdf.tool.qualitySlider.lowerSize') || 'Lower Size'}</span>
+                      <span>{t('pages.tools.imageToPdf.tool.qualitySlider.higherQuality') || 'Higher Quality'}</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Margin */}
                 <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700">
-                    {t('pages.tools.imageToPdf.tool.pageMargin', { margin: (Math.round(options.margin / 72 * 100) / 100).toString() })}
+                  <label className="block text-sm font-black text-black dark:text-white mb-3">
+                    {t('pages.tools.imageToPdf.tool.pageMargin', { margin: (Math.round(options.margin / 72 * 100) / 100).toString() }) || `Page Margin (${(Math.round(options.margin / 72 * 100) / 100)}")`}
                   </label>
                   <div className="px-2">
                     <input
@@ -258,23 +266,23 @@ const ImageToPDFTool: React.FC<ImageToPDFToolProps> = ({
                       value={options.margin}
                       onChange={(e) => setOptions(prev => ({ ...prev, margin: parseInt(e.target.value) }))}
                       disabled={isProcessing}
-                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+                      className="w-full h-3 bg-gradient-to-r from-gray-300 to-seafoam-300 dark:from-gray-700 dark:to-seafoam-700 rounded-lg appearance-none cursor-pointer slider focus:ring-2 focus:ring-seafoam-500/50 transition-all duration-200"
                     />
-                    <div className="flex justify-between text-xs text-gray-500 mt-2">
-                      <span>{t('pages.tools.imageToPdf.tool.marginSlider.noMargin')}</span>
-                      <span>{t('pages.tools.imageToPdf.tool.marginSlider.twoInch')}</span>
+                    <div className="flex justify-between text-xs text-gray-700 dark:text-gray-300 font-medium mt-2">
+                      <span>{t('pages.tools.imageToPdf.tool.marginSlider.noMargin') || 'No Margin'}</span>
+                      <span>{t('pages.tools.imageToPdf.tool.marginSlider.twoInch') || '2 Inch'}</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Background */}
                 <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700">{t('pages.tools.imageToPdf.tool.background')}</label>
+                  <label className="block text-sm font-black text-black dark:text-white mb-3">{t('pages.tools.imageToPdf.tool.background') || 'Background'}</label>
                   <select
                     value={options.backgroundColor}
                     onChange={(e) => setOptions(prev => ({ ...prev, backgroundColor: e.target.value }))}
                     disabled={isProcessing}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 bg-white shadow-sm"
+                    className="w-full px-4 py-3 border border-gray-300/80 dark:border-gray-600/20 rounded-xl bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg text-black dark:text-white font-medium focus:ring-2 focus:ring-seafoam-500/50 focus:border-seafoam-500 disabled:opacity-50 transition-all duration-200 shadow-sm"
                   >
                     <option value="white">{t('pages.tools.imageToPdf.tool.backgroundOptions.white')}</option>
                     <option value="lightgray">{t('pages.tools.imageToPdf.tool.backgroundOptions.lightGray')}</option>
@@ -290,65 +298,79 @@ const ImageToPDFTool: React.FC<ImageToPDFToolProps> = ({
 
       {/* Progress Bar */}
       {isProcessing && (
-        <div className="mb-6">
-          <ProgressBar value={progress} animated={true} className="mb-2" />
-          <p className="text-sm text-gray-600 text-center">
-            {t('pages.tools.imageToPdf.tool.converting', { progress: Math.round(progress).toString() })}
-          </p>
+        <div className="mb-8">
+          <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl p-6 shadow-lg">
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-sm font-black text-black dark:text-white">Converting images...</span>
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{Math.round(progress)}%</span>
+            </div>
+            <ProgressBar value={progress} animated={true} />
+            <p className="text-sm text-gray-800 dark:text-gray-100 font-medium text-center mt-3">
+              {t('pages.tools.imageToPdf.tool.converting', { progress: Math.round(progress).toString() }) || `Converting... ${Math.round(progress)}%`}
+            </p>
+          </div>
         </div>
       )}
 
       {/* Actions */}
-      <div className="flex justify-between items-center">
-        <div className="text-sm text-gray-500">
+      <div className="flex justify-between items-center mb-8">
+        <div className="text-sm font-medium text-gray-800 dark:text-gray-100">
           {selectedFiles.length > 0 && (
-            <>
+            <span>
               {t('pages.tools.imageToPdf.tool.fileInfo', {
                 count: selectedFiles.length.toString(),
                 plural: selectedFiles.length !== 1 ? 'я' : '',
                 size: formatFileSize(selectedFiles.reduce((sum, file) => sum + file.size, 0))
-              })}
-            </>
+              }) || `${selectedFiles.length} files • ${formatFileSize(selectedFiles.reduce((sum, file) => sum + file.size, 0))}`}
+            </span>
           )}
         </div>
 
-        <div className="flex space-x-3">
-          <Button
-            variant="outline"
+        <div className="flex space-x-4">
+          <button
             onClick={() => {
               setSelectedFiles([]);
               reset();
             }}
             disabled={isProcessing}
+            className="px-6 py-3 bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border border-gray-300/80 dark:border-gray-600/20 rounded-xl text-black dark:text-white font-bold hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg"
           >
-            {t('pages.tools.imageToPdf.tool.buttons.reset')}
-          </Button>
+            {t('pages.tools.imageToPdf.tool.buttons.reset') || 'Reset'}
+          </button>
 
-          <Button
-            variant="primary"
+          <button
             onClick={handleConvert}
             disabled={selectedFiles.length === 0 || isProcessing}
-            loading={isProcessing}
+            className="btn-privacy-modern text-lg px-8 py-3 min-w-[200px] ripple-effect btn-press disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
           >
-            {isProcessing ? t('pages.tools.imageToPdf.tool.buttons.converting') : t('pages.tools.imageToPdf.tool.buttons.createPdf')}
-          </Button>
+            {isProcessing ? (
+              <>
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-3" />
+                {t('pages.tools.imageToPdf.tool.buttons.converting') || 'Converting...'}
+              </>
+            ) : (
+              <>
+                🖼️ {t('pages.tools.imageToPdf.tool.buttons.createPdf') || 'Create PDF'}
+              </>
+            )}
+          </button>
         </div>
       </div>
 
       {/* Help Section */}
-      <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+      <div className="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 backdrop-blur-sm border border-blue-200/60 dark:border-blue-600/20 rounded-xl p-6 shadow-lg">
         <div className="flex items-start">
-          <svg className="w-5 h-5 text-blue-400 mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
+          <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg flex items-center justify-center text-white mr-4 shadow-lg">
+            💡
+          </div>
           <div>
-            <h4 className="text-blue-800 font-medium mb-1">{t('pages.tools.imageToPdf.tool.help.title')}</h4>
-            <div className="text-sm text-blue-700 space-y-1">
-              <p>• <strong>Drag & Drop:</strong> {t('pages.tools.imageToPdf.tool.help.dragDrop')}</p>
-              <p>• <strong>Multiple Formats:</strong> {t('pages.tools.imageToPdf.tool.help.formats')}</p>
-              <p>• <strong>Custom Layout:</strong> {t('pages.tools.imageToPdf.tool.help.layout')}</p>
-              <p>• <strong>Quality Control:</strong> {t('pages.tools.imageToPdf.tool.help.quality')}</p>
-              <p>• <strong>Privacy:</strong> {t('pages.tools.imageToPdf.tool.help.privacy')}</p>
+            <h4 className="text-blue-800 dark:text-blue-200 font-black mb-4">{t('pages.tools.imageToPdf.tool.help.title') || 'Tips for Image to PDF Conversion:'}</h4>
+            <div className="text-sm text-blue-700 dark:text-blue-300 font-medium space-y-2">
+              <p>• <strong>Drag & Drop:</strong> {t('pages.tools.imageToPdf.tool.help.dragDrop') || 'Simply drag images directly into the upload area'}</p>
+              <p>• <strong>Multiple Formats:</strong> {t('pages.tools.imageToPdf.tool.help.formats') || 'Supports JPG, PNG, GIF, BMP, and WebP formats'}</p>
+              <p>• <strong>Custom Layout:</strong> {t('pages.tools.imageToPdf.tool.help.layout') || 'Choose how images fit on PDF pages (fit to page, actual size, etc.)'}</p>
+              <p>• <strong>Quality Control:</strong> {t('pages.tools.imageToPdf.tool.help.quality') || 'Adjust image quality to balance file size and visual quality'}</p>
+              <p>• <strong>Privacy:</strong> {t('pages.tools.imageToPdf.tool.help.privacy') || 'All processing happens locally - your images never leave your device'}</p>
             </div>
           </div>
         </div>

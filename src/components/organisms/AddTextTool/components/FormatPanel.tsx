@@ -23,6 +23,10 @@ const FormatPanel: React.FC<FormatPanelProps> = ({
   onElementUpdate
 }) => {
   const fontFamilies = [
+    'Open Sans', // Unicode-compatible, good for Cyrillic
+    'Roboto', // Google font with Cyrillic support
+    'PT Sans', // Specifically designed for Cyrillic
+    'Noto Sans', // Universal Unicode font
     'Arial',
     'Helvetica',
     'Times New Roman',
@@ -77,43 +81,45 @@ const FormatPanel: React.FC<FormatPanelProps> = ({
 
   if (!selectedElement) {
     return (
-      <div className="w-64 bg-white border-r p-4 overflow-y-auto" style={{ maxHeight: '600px' }}>
-        <h3 className="text-lg font-semibold mb-4">Format Panel</h3>
-        <div className="text-gray-500 text-center py-8">
-          <div className="mb-2">🎨</div>
-          <p>Select a text element to edit its properties</p>
+      <div className="w-64 bg-white/95 dark:bg-gray-800/90 backdrop-blur-lg border-r border-gray-200/60 dark:border-gray-600/20 p-6 h-full flex flex-col">
+        <h3 className="text-lg font-black text-black dark:text-white mb-6">Format Panel</h3>
+        <div className="text-center py-8">
+          <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg mx-auto mb-4">
+            🎨
+          </div>
+          <p className="text-gray-800 dark:text-gray-100 font-medium">Select a text element to edit its properties</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="w-64 bg-white border-r p-4 space-y-4 overflow-y-auto" style={{ maxHeight: '600px' }}>
-      <h3 className="text-lg font-semibold mb-4">Format Panel</h3>
+    <div className="w-64 bg-white/95 dark:bg-gray-800/90 backdrop-blur-lg border-r border-gray-200/60 dark:border-gray-600/20 p-6 space-y-6 h-full flex flex-col overflow-y-auto">
+      <h3 className="text-lg font-black text-black dark:text-white mb-6">Format Panel</h3>
 
       {/* Text Content */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+      <div className="bg-white/90 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200/50 dark:border-gray-600/20 rounded-xl p-4 shadow-sm">
+        <label className="block text-sm font-black text-black dark:text-white mb-3">
           Text Content
         </label>
         <textarea
           value={selectedElement.text}
           onChange={(e) => handleTextChange(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 border border-gray-300/80 dark:border-gray-500/50 rounded-lg bg-white dark:bg-gray-700/90 backdrop-blur-lg text-black dark:text-white font-medium focus:ring-2 focus:ring-seafoam-500/50 focus:border-seafoam-500 transition-all duration-200 shadow-lg placeholder-gray-500 dark:placeholder-gray-400"
           rows={3}
           placeholder="Enter text..."
         />
       </div>
 
       {/* Font Family */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+      <div className="bg-white/90 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200/50 dark:border-gray-600/20 rounded-xl p-4 shadow-sm">
+        <label className="block text-sm font-black text-black dark:text-white mb-3">
           Font Family
         </label>
         <select
           value={selectedElement.fontFamily}
           onChange={(e) => handleFontFamilyChange(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 border border-gray-300/80 dark:border-gray-500/50 rounded-lg bg-white dark:bg-gray-700/90 backdrop-blur-lg text-black dark:text-white font-medium focus:ring-2 focus:ring-seafoam-500/50 focus:border-seafoam-500 transition-all duration-200 shadow-lg"
         >
           {fontFamilies.map(font => (
             <option key={font} value={font} style={{ fontFamily: font }}>
@@ -124,15 +130,15 @@ const FormatPanel: React.FC<FormatPanelProps> = ({
       </div>
 
       {/* Font Size */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+      <div className="bg-white/90 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200/50 dark:border-gray-600/20 rounded-xl p-4 shadow-sm">
+        <label className="block text-sm font-black text-black dark:text-white mb-3">
           Font Size
         </label>
         <div className="flex space-x-2">
           <select
             value={selectedElement.fontSize}
             onChange={(e) => handleFontSizeChange(parseInt(e.target.value))}
-            className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="flex-1 px-3 py-2 border border-gray-300/80 dark:border-gray-500/50 rounded-lg bg-white dark:bg-gray-700/90 backdrop-blur-lg text-black dark:text-white font-medium focus:ring-2 focus:ring-seafoam-500/50 focus:border-seafoam-500 transition-all duration-200 shadow-lg"
           >
             {fontSizes.map(size => (
               <option key={size} value={size}>
@@ -146,23 +152,25 @@ const FormatPanel: React.FC<FormatPanelProps> = ({
             max="200"
             value={selectedElement.fontSize}
             onChange={(e) => handleFontSizeChange(parseInt(e.target.value) || 12)}
-            className="w-20 px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-20 px-2 py-2 border border-gray-300/80 dark:border-gray-500/50 rounded-lg bg-white dark:bg-gray-700/90 backdrop-blur-lg text-black dark:text-white font-medium focus:ring-2 focus:ring-seafoam-500/50 focus:border-seafoam-500 transition-all duration-200 shadow-lg"
           />
         </div>
       </div>
 
       {/* Color */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+      <div className="bg-white/90 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200/50 dark:border-gray-600/20 rounded-xl p-4 shadow-sm">
+        <label className="block text-sm font-black text-black dark:text-white mb-3">
           Text Color
         </label>
-        <div className="flex flex-wrap gap-1 mb-2">
+        <div className="flex flex-wrap gap-2 mb-3">
           {colors.map(color => (
             <button
               key={color}
               onClick={() => handleColorChange(color)}
-              className={`w-6 h-6 rounded border-2 ${
-                selectedElement.color === color ? 'border-gray-800' : 'border-gray-300'
+              className={`w-8 h-8 rounded-lg border-2 transition-all duration-200 hover:scale-110 shadow-lg ${
+                selectedElement.color === color 
+                  ? 'border-seafoam-500 ring-2 ring-seafoam-500/50' 
+                  : 'border-white/20 dark:border-gray-600/20 hover:border-seafoam-400'
               }`}
               style={{ backgroundColor: color }}
               title={color}
@@ -173,46 +181,46 @@ const FormatPanel: React.FC<FormatPanelProps> = ({
           type="color"
           value={selectedElement.color}
           onChange={(e) => handleColorChange(e.target.value)}
-          className="w-full h-8 border border-gray-300 rounded cursor-pointer"
+          className="w-full h-10 border border-gray-300/80 dark:border-gray-500/50 rounded-lg cursor-pointer bg-white dark:bg-gray-700/90 backdrop-blur-lg focus:ring-2 focus:ring-seafoam-500/50 transition-all duration-200 shadow-lg"
         />
       </div>
 
       {/* Position */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+      <div className="bg-white/90 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200/50 dark:border-gray-600/20 rounded-xl p-4 shadow-sm">
+        <label className="block text-sm font-black text-black dark:text-white mb-3">
           Position
         </label>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-xs text-gray-500 mb-1">X</label>
+            <label className="block text-xs font-medium text-gray-800 dark:text-gray-200 mb-2">X</label>
             <input
               type="number"
               min="0"
               value={Math.round(selectedElement.x)}
               onChange={(e) => handlePositionChange(parseInt(e.target.value) || 0, undefined)}
-              className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full px-3 py-2 text-sm border border-gray-300/80 dark:border-gray-500/50 rounded-lg bg-white dark:bg-gray-700/90 backdrop-blur-lg text-black dark:text-white font-medium focus:ring-2 focus:ring-seafoam-500/50 focus:border-seafoam-500 transition-all duration-200 shadow-lg"
             />
           </div>
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Y</label>
+            <label className="block text-xs font-medium text-gray-800 dark:text-gray-200 mb-2">Y</label>
             <input
               type="number"
               min="0"
               value={Math.round(selectedElement.y)}
               onChange={(e) => handlePositionChange(undefined, parseInt(e.target.value) || 0)}
-              className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full px-3 py-2 text-sm border border-gray-300/80 dark:border-gray-500/50 rounded-lg bg-white dark:bg-gray-700/90 backdrop-blur-lg text-black dark:text-white font-medium focus:ring-2 focus:ring-seafoam-500/50 focus:border-seafoam-500 transition-all duration-200 shadow-lg"
             />
           </div>
         </div>
       </div>
 
       {/* Preview with multiline support */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+      <div className="bg-white/90 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200/50 dark:border-gray-600/20 rounded-xl p-4 shadow-sm">
+        <label className="block text-sm font-black text-black dark:text-white mb-3">
           Preview
         </label>
         <div
-          className="p-3 border border-gray-300 rounded-md bg-gray-50 min-h-12"
+          className="p-3 border border-gray-300/80 dark:border-gray-500/50 rounded-lg bg-gray-50 dark:bg-gray-700/90 min-h-12 backdrop-blur-lg shadow-lg"
           style={{
             fontFamily: selectedElement.fontFamily,
             fontSize: `${Math.min(selectedElement.fontSize, 16)}px`,
@@ -226,8 +234,8 @@ const FormatPanel: React.FC<FormatPanelProps> = ({
       </div>
 
       {/* Element Info */}
-      <div className="pt-4 border-t border-gray-200">
-        <div className="text-xs text-gray-500 space-y-1">
+      <div className="pt-4 border-t border-gray-200/50 dark:border-gray-600/30">
+        <div className="text-xs text-gray-600 dark:text-gray-400 space-y-1 font-medium">
           <div>ID: {selectedElement.id.slice(0, 8)}...</div>
           <div>Page: {selectedElement.pageNumber}</div>
           <div>Lines: {selectedElement.text.split('\n').length}</div>
