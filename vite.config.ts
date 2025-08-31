@@ -80,6 +80,7 @@ export default defineConfig({
       external: (id) => {
         // Handle ALL core-js modules and commonjs queries
         if (id.includes('core-js') || id.includes('commonjs-external')) {
+          console.log(`🚫 Excluding from bundle: ${id}`);
           return true;
         }
         return false;
@@ -169,7 +170,11 @@ export default defineConfig({
       'crypto-browserify', 'path-browserify', 'os-browserify/browser', 
       'events', 'assert', 'url'
     ],
-    exclude: ['tesseract.js', 'core-js/internals/**']
+    exclude: [
+      'tesseract.js', 
+      'core-js',
+      '@babel/runtime'
+    ]
   },
 
   resolve: {

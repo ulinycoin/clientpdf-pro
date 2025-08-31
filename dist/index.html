@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Minimal polyfills moved to main.tsx for better control -->
+  
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover" />
 
@@ -120,71 +122,19 @@
       cookie_flags: 'SameSite=None;Secure'
     });
   </script>
-  <script type="module" crossorigin src="/assets/index-bf52362b.js"></script>
-  <link rel="modulepreload" crossorigin href="/assets/pdfjs-vendor-90fb417e.js">
-  <link rel="modulepreload" crossorigin href="/assets/vendor-3e438082.js">
-  <link rel="modulepreload" crossorigin href="/assets/react-vendor-0e4d809f.js">
-  <link rel="modulepreload" crossorigin href="/assets/router-vendor-c1770422.js">
-  <link rel="modulepreload" crossorigin href="/assets/pdf-lib-vendor-398b8452.js">
-  <link rel="modulepreload" crossorigin href="/assets/utils-vendor-ee6dca6a.js">
-  <link rel="modulepreload" crossorigin href="/assets/word-vendor-7391e302.js">
-  <link rel="stylesheet" href="/assets/index-a0c419ca.css">
+  <script type="module" crossorigin src="/assets/index-fde5a435.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/pdfjs-vendor-25ab14ae.js">
+  <link rel="modulepreload" crossorigin href="/assets/vendor-b62c75bd.js">
+  <link rel="modulepreload" crossorigin href="/assets/jspdf-vendor-30a65f1f.js">
+  <link rel="modulepreload" crossorigin href="/assets/react-vendor-92b5996d.js">
+  <link rel="modulepreload" crossorigin href="/assets/router-vendor-5eddcb7a.js">
+  <link rel="modulepreload" crossorigin href="/assets/pdf-lib-vendor-67e4baa6.js">
+  <link rel="modulepreload" crossorigin href="/assets/utils-vendor-5d86bb11.js">
+  <link rel="modulepreload" crossorigin href="/assets/word-vendor-f33da50f.js">
+  <link rel="stylesheet" href="/assets/index-3c14dfb7.css">
 </head>
 <body>
   <div id="root"></div>
-  <!-- Development polyfills for Node.js compatibility -->
-  <script>
-    // Always add polyfills for better compatibility
-    if (typeof global === 'undefined') {
-      window.global = globalThis;
-    }
-    if (typeof require === 'undefined') {
-      window.require = function(module) {
-        console.warn('require() called for module:', module, '- this is not supported in browser');
-        
-        // Return browser-compatible alternatives for common Node.js modules
-        if (module === 'stream') {
-          return {
-            Readable: class { constructor() {} },
-            Writable: class { constructor() {} },
-            Transform: class { constructor() {} },
-            PassThrough: class { constructor() {} }
-          };
-        }
-        if (module === 'buffer') {
-          return { Buffer: globalThis.Buffer || Uint8Array };
-        }
-        if (module === 'fs') {
-          return {
-            readFile: () => { throw new Error('fs not supported in browser'); },
-            writeFile: () => { throw new Error('fs not supported in browser'); },
-            existsSync: () => false
-          };
-        }
-        if (module === 'path') {
-          return {
-            join: (...args) => args.join('/'),
-            resolve: (...args) => args.join('/'),
-            dirname: (p) => p.split('/').slice(0, -1).join('/'),
-            basename: (p) => p.split('/').pop()
-          };
-        }
-        
-        return {};
-      };
-    }
-    if (typeof process === 'undefined') {
-      window.process = { 
-        env: { NODE_ENV: 'development' }, 
-        browser: true,
-        versions: { node: '18.0.0' },
-        nextTick: (cb) => setTimeout(cb, 0)
-      };
-    }
-    if (typeof Buffer === 'undefined') {
-      window.Buffer = Uint8Array;
-    }
-  </script>
   
   
 </body>
