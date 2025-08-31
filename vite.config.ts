@@ -77,6 +77,13 @@ export default defineConfig({
     sourcemap: false,
     
     rollupOptions: {
+      external: (id) => {
+        // Handle both direct imports and commonjs-external queries
+        if (id.includes('core-js/internals') || id.includes('commonjs-external')) {
+          return true;
+        }
+        return false;
+      },
       output: {
         manualChunks: (id) => {
           if (id.includes('node_modules')) {
@@ -121,6 +128,21 @@ export default defineConfig({
             return 'vendor';
           }
         },
+        globals: {
+          // Map external core-js modules to safe globals
+          'core-js/internals/define-globalThis-property': 'globalThis',
+          'core-js/internals/array-reduce': 'Array.prototype.reduce', 
+          'core-js/internals/array-method-is-strict': 'false',
+          'core-js/internals/globalThis-this': 'globalThis',
+          'core-js/internals/create-non-enumerable-property': '(()=>{})',
+          'core-js/internals/environment-v8-version': '""',
+          'core-js/internals/regexp-sticky-helpers': '{}',
+          'core-js/internals/string-trim': 'String.prototype.trim',
+          'core-js/internals/string-trim-forced': '(()=>{})',
+          'core-js/internals/array-includes': 'Array.prototype.includes',
+          'core-js/internals/is-array': 'Array.isArray',
+          'core-js/internals/function-name': '(()=>"")'
+        }
       }
     }
   },
