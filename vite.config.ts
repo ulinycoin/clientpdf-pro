@@ -5,6 +5,26 @@ import path from 'path'
 export default defineConfig({
   plugins: [
     react(),
+    // Core-js removal plugin - removes all core-js imports from bundle
+    {
+      name: 'remove-core-js',
+      transform(code, id) {
+        // Remove core-js imports from any file
+        if (code.includes('core-js')) {
+          console.log(`🚫 Removing core-js from: ${id}`);
+          const cleanedCode = code
+            .replace(/import\s+["']core-js\/[^"']+["'];?\s*/g, '// core-js import removed\n')
+            .replace(/import\s+[^"']*from\s+["']core-js\/[^"']+["'];?\s*/g, '// core-js import removed\n')
+            .replace(/require\s*\(\s*["']core-js\/[^"']+["']\s*\);?\s*/g, '// core-js require removed\n');
+          
+          if (cleanedCode !== code) {
+            console.log(`✅ Cleaned core-js imports from: ${id.split('/').pop()}`);
+            return cleanedCode;
+          }
+        }
+        return null;
+      }
+    },
     // Pre-render plugin for SEO
     {
       name: 'seo-prerender',
@@ -77,10 +97,15 @@ export default defineConfig({
     sourcemap: false,
     
     rollupOptions: {
-      external: (id) => {
-        // Handle ALL core-js modules and commonjs queries
-        if (id.includes('core-js') || id.includes('commonjs-external')) {
-          console.log(`🚫 Excluding from bundle: ${id}`);
+      external: (id, parent) => {
+        // Completely block ALL core-js modules from entering the bundle
+        if (id.includes('core-js')) {
+          console.log(`🚫 BLOCKED core-js external: ${id} (from ${parent})`);
+          return true;
+        }
+        // Block commonjs externals 
+        if (id.includes('commonjs-external')) {
+          console.log(`🚫 BLOCKED commonjs external: ${id}`);
           return true;
         }
         return false;
@@ -129,23 +154,39 @@ export default defineConfig({
             return 'vendor';
           }
         },
-        globals: {
-          // Map external core-js modules to safe globals
-          'core-js/internals/define-globalThis-property': 'globalThis',
-          'core-js/internals/array-reduce': 'Array.prototype.reduce', 
-          'core-js/internals/array-method-is-strict': 'false',
-          'core-js/internals/globalThis-this': 'globalThis',
-          'core-js/internals/create-non-enumerable-property': '(()=>{})',
-          'core-js/internals/environment-v8-version': '""',
-          'core-js/internals/regexp-sticky-helpers': '{}',
-          'core-js/internals/string-trim': 'String.prototype.trim',
-          'core-js/internals/string-trim-forced': '(()=>{})',
-          'core-js/internals/array-includes': 'Array.prototype.includes',
-          'core-js/internals/is-array': 'Array.isArray',
-          'core-js/internals/function-name': '(()=>"")',
-          // Add new problematic modules
-          'core-js/internals/export': '(()=>{})',
-          'core-js/internals/is-pure': 'false'
+        globals: (id) => {
+          // Map ALL core-js modules to window.coreJsStub or safe globals
+          if (id.includes('core-js')) {
+            console.log(`🔄 Mapping core-js global: ${id}`);
+            // Return a safe stub for any core-js module
+            return 'window.coreJsStub || {}';
+          }
+          
+          // Static mappings for specific modules
+          const staticGlobals = {
+            'core-js/internals/define-globalThis-property': 'globalThis',
+            'core-js/internals/array-reduce': 'Array.prototype.reduce', 
+            'core-js/internals/array-method-is-strict': 'false',
+            'core-js/internals/globalThis-this': 'globalThis',
+            'core-js/internals/create-non-enumerable-property': '(()=>{})',
+            'core-js/internals/environment-v8-version': '""',
+            'core-js/internals/regexp-sticky-helpers': '{}',
+            'core-js/internals/string-trim': 'String.prototype.trim',
+            'core-js/internals/string-trim-forced': '(()=>{})',
+            'core-js/internals/array-includes': 'Array.prototype.includes',
+            'core-js/internals/is-array': 'Array.isArray',
+            'core-js/internals/function-name': '(()=>"")',
+            'core-js/internals/export': '(()=>{})',
+            'core-js/internals/is-pure': 'false',
+            // ES modules
+            'core-js/modules/es.promise.js': 'Promise',
+            'core-js/modules/es.string.match.js': 'String.prototype.match',
+            'core-js/modules/es.string.replace.js': 'String.prototype.replace',
+            'core-js/modules/es.array.iterator.js': 'Array.prototype[Symbol.iterator]',
+            'core-js/modules/web.dom-collections.iterator.js': 'Array.prototype[Symbol.iterator]'
+          };
+          
+          return staticGlobals[id];
         }
       }
     }
@@ -682,6 +723,30 @@ function generatePrerenderedHTML(route: string, toolKey: string, language: strin
     if (typeof process === 'undefined') {
       window.process = { env: { NODE_ENV: 'production' }, browser: true };
     }
+    
+    // Global core-js stub - MUST be available before any modules load
+    window.coreJsStub = {
+      __esModule: true,
+      default: {},
+      // ES modules stubs
+      Promise: Promise,
+      'es.promise.js': Promise,
+      'es.string.match.js': String.prototype.match,
+      'es.string.replace.js': String.prototype.replace,
+      'es.array.iterator.js': Array.prototype[Symbol.iterator],
+      'web.dom-collections.iterator.js': Array.prototype[Symbol.iterator],
+      'es.string.starts-with.js': String.prototype.startsWith,
+      'es.array.reduce.js': Array.prototype.reduce,
+      'es.string.ends-with.js': String.prototype.endsWith,
+      'es.string.split.js': String.prototype.split,
+      'es.string.trim.js': String.prototype.trim,
+      'es.array.index-of.js': Array.prototype.indexOf,
+      'es.string.includes.js': String.prototype.includes,
+      'es.array.reverse.js': Array.prototype.reverse,
+      'es.regexp.to-string.js': RegExp.prototype.toString
+    };
+    console.log('🔄 Global coreJsStub initialized');
+    
     
     // Core-js runtime protection - intercept import() calls
     (function() {

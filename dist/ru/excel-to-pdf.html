@@ -11,6 +11,30 @@
       window.process = { env: { NODE_ENV: 'production' }, browser: true };
     }
     
+    // Global core-js stub - MUST be available before any modules load
+    window.coreJsStub = {
+      __esModule: true,
+      default: {},
+      // ES modules stubs
+      Promise: Promise,
+      'es.promise.js': Promise,
+      'es.string.match.js': String.prototype.match,
+      'es.string.replace.js': String.prototype.replace,
+      'es.array.iterator.js': Array.prototype[Symbol.iterator],
+      'web.dom-collections.iterator.js': Array.prototype[Symbol.iterator],
+      'es.string.starts-with.js': String.prototype.startsWith,
+      'es.array.reduce.js': Array.prototype.reduce,
+      'es.string.ends-with.js': String.prototype.endsWith,
+      'es.string.split.js': String.prototype.split,
+      'es.string.trim.js': String.prototype.trim,
+      'es.array.index-of.js': Array.prototype.indexOf,
+      'es.string.includes.js': String.prototype.includes,
+      'es.array.reverse.js': Array.prototype.reverse,
+      'es.regexp.to-string.js': RegExp.prototype.toString
+    };
+    console.log('🔄 Global coreJsStub initialized');
+    
+    
     // Core-js runtime protection - intercept import() calls
     (function() {
       const originalImport = window.__dynamicImportHandler__;
