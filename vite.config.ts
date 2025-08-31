@@ -77,6 +77,13 @@ export default defineConfig({
     sourcemap: false,
     
     rollupOptions: {
+      external: (id) => {
+        // Exclude ALL core-js internals from bundling
+        if (id.includes('core-js/internals')) {
+          return true;
+        }
+        return false;
+      },
       output: {
         manualChunks: (id) => {
           if (id.includes('node_modules')) {
@@ -121,6 +128,12 @@ export default defineConfig({
             return 'vendor';
           }
         },
+        globals: {
+          'core-js/internals/define-globalThis-property': 'globalThis',
+          'core-js/internals/array-reduce': 'Array.prototype.reduce',
+          'core-js/internals/array-method-is-strict': 'false',
+          'core-js/internals/globalThis-this': 'globalThis'
+        }
       }
     }
   },
@@ -144,7 +157,7 @@ export default defineConfig({
       'crypto-browserify', 'path-browserify', 'os-browserify/browser', 
       'events', 'assert', 'url'
     ],
-    exclude: ['tesseract.js']
+    exclude: ['tesseract.js', 'core-js/internals/**']
   },
 
   resolve: {
