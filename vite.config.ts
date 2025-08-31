@@ -78,8 +78,8 @@ export default defineConfig({
     
     rollupOptions: {
       external: (id) => {
-        // Handle both direct imports and commonjs-external queries
-        if (id.includes('core-js/internals') || id.includes('commonjs-external')) {
+        // Handle ALL core-js modules and commonjs queries
+        if (id.includes('core-js') || id.includes('commonjs-external')) {
           return true;
         }
         return false;
@@ -141,7 +141,10 @@ export default defineConfig({
           'core-js/internals/string-trim-forced': '(()=>{})',
           'core-js/internals/array-includes': 'Array.prototype.includes',
           'core-js/internals/is-array': 'Array.isArray',
-          'core-js/internals/function-name': '(()=>"")'
+          'core-js/internals/function-name': '(()=>"")',
+          // Add new problematic modules
+          'core-js/internals/export': '(()=>{})',
+          'core-js/internals/is-pure': 'false'
         }
       }
     }
@@ -195,8 +198,8 @@ export default defineConfig({
       { find: 'assert', replacement: 'assert' },
       { find: 'url', replacement: 'url' },
       
-      // CATCH-ALL for core-js internals - this will match ANY core-js/internals module
-      { find: /^core-js\/internals\/.*$/, replacement: path.resolve(__dirname, './src/utils/core-js-stubs.ts') }
+      // CATCH-ALL for ALL core-js modules - match any core-js import
+      { find: /^core-js\/.*$/, replacement: path.resolve(__dirname, './src/utils/core-js-stubs.ts') }
     ]
   }
 });
