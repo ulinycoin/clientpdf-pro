@@ -7,7 +7,7 @@
 export const watermark = {
   // Basic properties for tools grid
   title: 'Добавить водяной знак',
-  description: 'Добавить текстовые водяные знаки для защиты документов',
+  description: 'Добавить текстовые или графические водяные знаки для защиты документов',
   
   // Page metadata (SEO)
   pageTitle: 'Добавить водяной знак в PDF бесплатно - LocalPDF',
@@ -46,6 +46,7 @@ export const watermark = {
     preview: {
       title: 'Предварительный просмотр',
       enterTextPrompt: 'Введите текст водяного знака',
+      selectImagePrompt: 'Выберите файл изображения',
       pageLabel: 'Страница 1',
       livePreviewDescription: 'Превью показывает примерное расположение водяного знака',
       previewWillAppear: 'Предварительный просмотр появится после ввода текста'
@@ -53,6 +54,12 @@ export const watermark = {
     
     settings: {
       title: 'Настройки водяного знака',
+      
+      type: {
+        label: 'Тип водяного знака',
+        text: 'Текст',
+        image: 'Изображение'
+      },
       
       watermarkText: {
         label: 'Текст водяного знака',
@@ -115,6 +122,24 @@ export const watermark = {
       fontSupport: {
         supported: 'Выбранный шрифт поддерживает ваш текст',
         mayNotSupport: 'Шрифт может не полностью поддерживать введённые символы'
+      },
+      
+      imageFile: {
+        label: 'Выбрать изображение',
+        supportedFormats: 'Поддерживаемые форматы: PNG, JPEG'
+      },
+      
+      imageWidth: {
+        label: 'Ширина (точки)'
+      },
+      
+      imageHeight: {
+        label: 'Высота (точки)'
+      },
+      
+      maintainAspectRatio: {
+        label: 'Сохранять пропорции',
+        description: 'Сохранить оригинальные пропорции изображения'
       }
     },
     
@@ -135,6 +160,7 @@ export const watermark = {
     success: {
       title: 'Водяной знак добавлен успешно!',
       description: 'Ваш PDF документ теперь защищён водяным знаком',
+      download: 'Скачать PDF с водяным знаком',
       downloadAgain: 'Скачать ещё раз'
     },
     

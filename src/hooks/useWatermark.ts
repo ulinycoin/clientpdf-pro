@@ -47,14 +47,6 @@ export const useWatermark = (): UseWatermarkReturn => {
 
       if (result.success && result.data) {
         setResult(result);
-        
-        // Auto-download the watermarked PDF
-        const filename = generateFilename(
-          file.name,
-          'watermarked',
-          'pdf'
-        );
-        downloadBlob(result.data, filename);
       } else {
         setError(result.error?.message || 'Failed to add watermark');
       }

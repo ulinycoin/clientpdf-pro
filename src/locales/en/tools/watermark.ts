@@ -7,7 +7,7 @@
 export const watermark = {
   // Basic properties for tools grid
   title: 'Add Watermark',
-  description: 'Add text watermarks to protect documents',
+  description: 'Add text or image watermarks to protect documents',
   
   // Page metadata (SEO)
   pageTitle: 'Add Watermark to PDF for Free - LocalPDF',
@@ -46,6 +46,7 @@ export const watermark = {
     preview: {
       title: 'Preview',
       enterTextPrompt: 'Enter watermark text',
+      selectImagePrompt: 'Select an image file',
       pageLabel: 'Page 1',
       livePreviewDescription: 'Preview shows approximate watermark placement',
       previewWillAppear: 'Preview will appear after entering text'
@@ -53,6 +54,12 @@ export const watermark = {
     
     settings: {
       title: 'Watermark Settings',
+      
+      type: {
+        label: 'Watermark Type',
+        text: 'Text',
+        image: 'Image'
+      },
       
       watermarkText: {
         label: 'Watermark Text',
@@ -115,6 +122,24 @@ export const watermark = {
       fontSupport: {
         supported: 'Selected font supports your text',
         mayNotSupport: 'Font may not fully support entered characters'
+      },
+      
+      imageFile: {
+        label: 'Select Image',
+        supportedFormats: 'Supported formats: PNG, JPEG'
+      },
+      
+      imageWidth: {
+        label: 'Width (points)'
+      },
+      
+      imageHeight: {
+        label: 'Height (points)'
+      },
+      
+      maintainAspectRatio: {
+        label: 'Maintain aspect ratio',
+        description: 'Keep original image proportions'
       }
     },
     
@@ -135,6 +160,7 @@ export const watermark = {
     success: {
       title: 'Watermark Added Successfully!',
       description: 'Your PDF document is now protected with a watermark',
+      download: 'Download Watermarked PDF',
       downloadAgain: 'Download Again'
     },
     

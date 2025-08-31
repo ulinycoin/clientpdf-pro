@@ -71,6 +71,7 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
     await addWatermark(file, options);
   };
 
+
   const formatFileSize = (bytes: number): string => {
     if (bytes === 0) return '0 B';
     const k = 1024;
@@ -107,6 +108,65 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
       opacity: options.opacity / 100,
       fontSize: `${Math.max(12, options.fontSize / 3)}px`, // Larger size for better visibility
       fontWeight: 'bold',
+      userSelect: 'none' as const,
+      pointerEvents: 'none' as const,
+    };
+
+    switch (position) {
+      case 'center':
+        return {
+          ...baseStyle,
+          top: '50%',
+          left: '50%',
+          transform: `translate(-50%, -50%) rotate(${rotation}deg)`
+        };
+      case 'top-left':
+        return {
+          ...baseStyle,
+          top: '10px',
+          left: '10px',
+          transform: `rotate(${rotation}deg)`
+        };
+      case 'top-right':
+        return {
+          ...baseStyle,
+          top: '10px',
+          right: '10px',
+          transform: `rotate(${rotation}deg)`
+        };
+      case 'bottom-left':
+        return {
+          ...baseStyle,
+          bottom: '10px',
+          left: '10px',
+          transform: `rotate(${rotation}deg)`
+        };
+      case 'bottom-right':
+        return {
+          ...baseStyle,
+          bottom: '10px',
+          right: '10px',
+          transform: `rotate(${rotation}deg)`
+        };
+      default:
+        return {
+          ...baseStyle,
+          top: '50%',
+          left: '50%',
+          transform: `translate(-50%, -50%) rotate(${rotation}deg)`
+        };
+    }
+  };
+
+  // Get position style for image preview
+  const getImagePositionStyle = (position: WatermarkOptions['position'], rotation: number) => {
+    const width = Math.max(20, (options.imageWidth || 100) / 4); // Scale down for preview
+    const height = Math.max(20, (options.imageHeight || 100) / 4); // Scale down for preview
+    
+    const baseStyle = {
+      opacity: options.opacity / 100,
+      width: `${width}px`,
+      height: `${height}px`,
       userSelect: 'none' as const,
       pointerEvents: 'none' as const,
     };
@@ -248,12 +308,20 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
                     </div>
                     
                     {/* Watermark overlay */}
-                    {options.text.trim() && (
+                    {options.type === 'text' && options.text.trim() && (
                       <div
                         className="absolute pointer-events-none select-none font-bold"
                         style={getPositionStyle(options.position, options.rotation)}
                       >
                         {options.text}
+                      </div>
+                    )}
+                    {options.type === 'image' && options.imageFile && (
+                      <div
+                        className="absolute pointer-events-none select-none bg-gray-200 border border-gray-300 rounded flex items-center justify-center text-xs text-gray-600"
+                        style={getImagePositionStyle(options.position, options.rotation)}
+                      >
+                        🖼️ Image
                       </div>
                     )}
                   </div>
@@ -265,13 +333,16 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
                 </div>
               </div>
               
-              {options.text.trim() ? (
+              {(options.type === 'text' && options.text.trim()) || (options.type === 'image' && options.imageFile) ? (
                 <p className="text-xs font-medium text-gray-600 dark:text-gray-300 mt-4 text-center">
                   {t('tools.watermark.tool.preview.livePreviewDescription')}
                 </p>
               ) : (
                 <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-4 text-center">
-                  {t('tools.watermark.tool.preview.previewWillAppear')}
+                  {options.type === 'text' 
+                    ? t('tools.watermark.tool.preview.enterTextPrompt')
+                    : t('tools.watermark.tool.preview.selectImagePrompt')
+                  }
                 </p>
               )}
             </div>
@@ -289,8 +360,47 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
             </h3>
         
           <div className="space-y-6">
-            {/* Watermark Text */}
+            {/* Watermark Type Selector */}
             <div>
+              <label className="block text-sm font-black text-black dark:text-white mb-3 flex items-center gap-2">
+                <span className="w-5 h-5 bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-800 dark:to-purple-700 rounded flex items-center justify-center text-xs">
+                  🎯
+                </span>
+                {t('tools.watermark.tool.settings.type.label')}
+              </label>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  onClick={() => setOptions(prev => ({ ...prev, type: 'text' }))}
+                  disabled={isProcessing}
+                  className={`px-4 py-3 text-sm font-medium border rounded-xl transition-all duration-300 flex items-center gap-2 justify-center ${
+                    options.type === 'text'
+                      ? 'bg-gradient-to-br from-blue-500 to-cyan-500 text-white border-blue-500 shadow-lg scale-105'
+                      : 'bg-white/50 dark:bg-gray-700/50 text-black dark:text-white border-white/30 dark:border-gray-600/30 hover:bg-white/70 dark:hover:bg-gray-700/70 hover:scale-105'
+                  }`}
+                >
+                  <span>📝</span>
+                  {t('tools.watermark.tool.settings.type.text')}
+                </button>
+                <button
+                  onClick={() => setOptions(prev => ({ ...prev, type: 'image' }))}
+                  disabled={isProcessing}
+                  className={`px-4 py-3 text-sm font-medium border rounded-xl transition-all duration-300 flex items-center gap-2 justify-center ${
+                    options.type === 'image'
+                      ? 'bg-gradient-to-br from-blue-500 to-cyan-500 text-white border-blue-500 shadow-lg scale-105'
+                      : 'bg-white/50 dark:bg-gray-700/50 text-black dark:text-white border-white/30 dark:border-gray-600/30 hover:bg-white/70 dark:hover:bg-gray-700/70 hover:scale-105'
+                  }`}
+                >
+                  <span>🖼️</span>
+                  {t('tools.watermark.tool.settings.type.image')}
+                </button>
+              </div>
+            </div>
+
+            {/* Text Watermark Settings */}
+            {options.type === 'text' && (
+              <>
+                {/* Watermark Text */}
+                <div>
             <label className="block text-sm font-black text-black dark:text-white mb-3 flex items-center gap-2">
               <span className="w-5 h-5 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-800 dark:to-blue-700 rounded flex items-center justify-center text-xs">
                 ✏️
@@ -376,6 +486,103 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
               <span>{t('tools.watermark.tool.settings.fontSize.rangeLabels.large')}</span>
             </div>
           </div>
+              </>
+            )}
+
+            {/* Image Watermark Settings */}
+            {options.type === 'image' && (
+              <>
+                {/* Image File Upload */}
+                <div>
+                  <label className="block text-sm font-black text-black dark:text-white mb-3 flex items-center gap-2">
+                    <span className="w-5 h-5 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-800 dark:to-blue-700 rounded flex items-center justify-center text-xs">
+                      📁
+                    </span>
+                    {t('tools.watermark.tool.settings.imageFile.label')}
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/png,image/jpeg,image/jpg"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        setOptions(prev => ({ ...prev, imageFile: file }));
+                      }
+                    }}
+                    disabled={isProcessing}
+                    className="w-full px-4 py-3 bg-white/90 dark:bg-gray-700/50 backdrop-blur-sm border border-gray-300/80 dark:border-gray-600/30 rounded-xl focus:ring-2 focus:ring-seafoam-500/50 focus:border-seafoam-500 transition-all duration-300 font-medium text-black dark:text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-seafoam-50 file:text-seafoam-700 hover:file:bg-seafoam-100 cursor-pointer shadow-sm"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    {t('tools.watermark.tool.settings.imageFile.supportedFormats')}
+                  </p>
+                  {options.imageFile && (
+                    <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+                      <div className="flex items-center">
+                        <span className="text-green-600 mr-2">✓</span>
+                        <span className="text-green-700 text-sm font-medium">{options.imageFile.name}</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Image Size */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-black text-black dark:text-white mb-3 flex items-center gap-2">
+                      <span className="w-5 h-5 bg-gradient-to-br from-green-100 to-green-200 dark:from-green-800 dark:to-green-700 rounded flex items-center justify-center text-xs">
+                        📐
+                      </span>
+                      {t('tools.watermark.tool.settings.imageWidth.label')}
+                    </label>
+                    <input
+                      type="number"
+                      min="10"
+                      max="500"
+                      value={options.imageWidth || 100}
+                      onChange={(e) => setOptions(prev => ({ ...prev, imageWidth: parseInt(e.target.value) || 100 }))}
+                      disabled={isProcessing}
+                      className="w-full px-4 py-3 bg-white/90 dark:bg-gray-700/50 backdrop-blur-sm border border-gray-300/80 dark:border-gray-600/30 rounded-xl focus:ring-2 focus:ring-seafoam-500/50 focus:border-seafoam-500 transition-all duration-300 font-medium text-black dark:text-white shadow-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-black text-black dark:text-white mb-3 flex items-center gap-2">
+                      <span className="w-5 h-5 bg-gradient-to-br from-green-100 to-green-200 dark:from-green-800 dark:to-green-700 rounded flex items-center justify-center text-xs">
+                        📏
+                      </span>
+                      {t('tools.watermark.tool.settings.imageHeight.label')}
+                    </label>
+                    <input
+                      type="number"
+                      min="10"
+                      max="500"
+                      value={options.imageHeight || 100}
+                      onChange={(e) => setOptions(prev => ({ ...prev, imageHeight: parseInt(e.target.value) || 100 }))}
+                      disabled={isProcessing}
+                      className="w-full px-4 py-3 bg-white/90 dark:bg-gray-700/50 backdrop-blur-sm border border-gray-300/80 dark:border-gray-600/30 rounded-xl focus:ring-2 focus:ring-seafoam-500/50 focus:border-seafoam-500 transition-all duration-300 font-medium text-black dark:text-white shadow-sm"
+                    />
+                  </div>
+                </div>
+
+                {/* Maintain Aspect Ratio */}
+                <div>
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={options.maintainAspectRatio !== false}
+                      onChange={(e) => setOptions(prev => ({ ...prev, maintainAspectRatio: e.target.checked }))}
+                      disabled={isProcessing}
+                      className="w-5 h-5 text-seafoam-600 bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 rounded focus:ring-seafoam-500 dark:focus:ring-seafoam-600 focus:ring-2"
+                    />
+                    <span className="text-sm font-black text-black dark:text-white">
+                      {t('tools.watermark.tool.settings.maintainAspectRatio.label')}
+                    </span>
+                  </label>
+                  <p className="text-xs text-gray-500 mt-1 ml-8">
+                    {t('tools.watermark.tool.settings.maintainAspectRatio.description')}
+                  </p>
+                </div>
+              </>
+            )}
 
           {/* Opacity */}
           <div>
@@ -452,7 +659,8 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
             </div>
           </div>
 
-          {/* Color */}
+          {/* Color - только для текстовых водяных знаков */}
+          {options.type === 'text' && (
           <div>
             <label className="block text-sm font-black text-black dark:text-white mb-3 flex items-center gap-2">
               <span className="w-5 h-5 bg-gradient-to-br from-pink-100 to-pink-200 dark:from-pink-800 dark:to-pink-700 rounded flex items-center justify-center text-xs">
@@ -487,6 +695,7 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
               ))}
             </div>
           </div>
+          )}
         </div>
           </div>
         </div>
@@ -571,7 +780,7 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
                   }}
                   className="btn-privacy-modern text-sm px-6 py-3 flex items-center gap-2"
                 >
-                  {t('tools.watermark.tool.success.downloadAgain')}
+                  {t('tools.watermark.tool.success.download')}
                 </button>
               </div>
             </div>
@@ -592,7 +801,9 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
           {(!result || !result.success) && (
             <button
               onClick={handleAddWatermark}
-              disabled={files.length === 0 || isProcessing || validationErrors.length > 0 || !options.text.trim()}
+              disabled={files.length === 0 || isProcessing || validationErrors.length > 0 || 
+                       (options.type === 'text' && !options.text.trim()) ||
+                       (options.type === 'image' && !options.imageFile)}
               className="btn-privacy-modern px-8 py-3 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
               {isProcessing ? (

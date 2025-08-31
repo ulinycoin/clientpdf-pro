@@ -38,14 +38,11 @@ const WatermarkPDFPage: React.FC = () => {
   };
 
   const handleToolComplete = (result: any) => {
-    // WatermarkTool passes PDFProcessingResult, not Blob directly
-    if (result && result.success && result.data) {
-      setResult(result.data as Blob);
-    } else if (result instanceof Blob) {
-      // Fallback if it's already a Blob
-      setResult(result);
-    }
-    setToolActive(false);
+    // Let WatermarkTool handle its own success state and download
+    // Don't switch to parent page result view to allow auto-scroll to work
+    console.log('Tool completed with result:', result);
+    // The WatermarkTool will show its own success section with download button
+    // setToolActive(false); // Keep tool active to show success section
   };
 
   const handleReset = () => {
