@@ -77,13 +77,6 @@ export default defineConfig({
     sourcemap: false,
     
     rollupOptions: {
-      external: (id) => {
-        // Exclude ALL core-js internals from bundling
-        if (id.includes('core-js/internals')) {
-          return true;
-        }
-        return false;
-      },
       output: {
         manualChunks: (id) => {
           if (id.includes('node_modules')) {
@@ -128,12 +121,6 @@ export default defineConfig({
             return 'vendor';
           }
         },
-        globals: {
-          'core-js/internals/define-globalThis-property': 'globalThis',
-          'core-js/internals/array-reduce': 'Array.prototype.reduce',
-          'core-js/internals/array-method-is-strict': 'false',
-          'core-js/internals/globalThis-this': 'globalThis'
-        }
       }
     }
   },
@@ -161,34 +148,34 @@ export default defineConfig({
   },
 
   resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
-      '@/components': path.resolve(__dirname, './src/components'),
-      '@/services': path.resolve(__dirname, './src/services'),
-      '@/utils': path.resolve(__dirname, './src/utils'),
-      '@/types': path.resolve(__dirname, './src/types'),
-      '@/hooks': path.resolve(__dirname, './src/hooks'),
-      '@/data': path.resolve(__dirname, './src/data'),
+    alias: [
+      // Standard aliases
+      { find: '@', replacement: path.resolve(__dirname, './src') },
+      { find: '@/components', replacement: path.resolve(__dirname, './src/components') },
+      { find: '@/services', replacement: path.resolve(__dirname, './src/services') },
+      { find: '@/utils', replacement: path.resolve(__dirname, './src/utils') },
+      { find: '@/types', replacement: path.resolve(__dirname, './src/types') },
+      { find: '@/hooks', replacement: path.resolve(__dirname, './src/hooks') },
+      { find: '@/data', replacement: path.resolve(__dirname, './src/data') },
+      
       // Prevent Tesseract.js from loading in development
-      'tesseract.js': path.resolve(__dirname, './src/utils/tesseract-stub.ts'),
+      { find: 'tesseract.js', replacement: path.resolve(__dirname, './src/utils/tesseract-stub.ts') },
+      
       // Node.js polyfills for browser - Enhanced
-      'stream': 'stream-browserify',
-      'buffer': 'buffer',
-      'util': 'util',
-      'crypto': 'crypto-browserify',
-      'path': 'path-browserify',
-      'fs': path.resolve(__dirname, './src/utils/fs-stub.ts'),
-      'os': 'os-browserify/browser',
-      'events': 'events',
-      // Additional polyfills for PDF processing
-      'assert': 'assert',
-      'url': 'url',
-      // Fix core-js internal module resolution issues  
-      'core-js/internals/define-globalThis-property': path.resolve(__dirname, './src/utils/globalThis-stub.ts'),
-      'core-js/internals/array-reduce': path.resolve(__dirname, './src/utils/array-reduce-stub.ts'),
-      'core-js/internals/array-method-is-strict': path.resolve(__dirname, './src/utils/array-method-stub.ts'),
-      'core-js/internals/globalThis-this': path.resolve(__dirname, './src/utils/globalThis-stub.ts')
-    }
+      { find: 'stream', replacement: 'stream-browserify' },
+      { find: 'buffer', replacement: 'buffer' },
+      { find: 'util', replacement: 'util' },
+      { find: 'crypto', replacement: 'crypto-browserify' },
+      { find: 'path', replacement: 'path-browserify' },
+      { find: 'fs', replacement: path.resolve(__dirname, './src/utils/fs-stub.ts') },
+      { find: 'os', replacement: 'os-browserify/browser' },
+      { find: 'events', replacement: 'events' },
+      { find: 'assert', replacement: 'assert' },
+      { find: 'url', replacement: 'url' },
+      
+      // CATCH-ALL for core-js internals - this will match ANY core-js/internals module
+      { find: /^core-js\/internals\/.*$/, replacement: path.resolve(__dirname, './src/utils/core-js-stubs.ts') }
+    ]
   }
 });
 
