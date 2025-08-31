@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { toolsSEOData } from '../../data/seoData';
 import { StandardToolPageTemplate } from '../../components/templates';
-import { ModernCompressionTool } from '../../components/organisms';
+import { ModernCompressionTool, RelatedToolsSection } from '../../components/organisms';
 import { ModernUploadZone } from '../../components/molecules';
 import { useFileUpload } from '../../hooks/useFileUpload';
 import { useI18n } from '../../hooks/useI18n';
@@ -101,12 +101,12 @@ const CompressPDFPage: React.FC = () => {
               </div>
               <div>
                 <h3 className="text-xl font-black text-green-800 dark:text-green-200">
-                  PDF успешно сжат!
+                  {t('tools.compress.successTitle')}
                 </h3>
                 <p className="text-gray-800 dark:text-gray-100 font-medium text-sm">
                   {originalSize > 0 && compressedSize > 0
-                    ? `Размер уменьшен с ${(originalSize / 1024 / 1024).toFixed(2)} МБ до ${(compressedSize / 1024 / 1024).toFixed(2)} МБ`
-                    : 'Файл готов к скачиванию'
+                    ? `${t('tools.compress.sizeReduced')} ${(originalSize / 1024 / 1024).toFixed(2)} ${t('tools.compress.fileSizeUnit')} ${t('tools.compress.to')} ${(compressedSize / 1024 / 1024).toFixed(2)} ${t('tools.compress.fileSizeUnit')}`
+                    : t('tools.compress.readyForDownload')
                   }
                 </p>
               </div>
@@ -114,7 +114,7 @@ const CompressPDFPage: React.FC = () => {
 
             {/* Download Section */}
             <div className="space-y-4">
-              <h4 className="font-bold text-black dark:text-white">Скачать сжатый файл:</h4>
+              <h4 className="font-bold text-black dark:text-white">{t('tools.compress.downloadCompressed')}</h4>
               <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl p-4 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-gradient-to-br from-green-100 to-green-200 dark:from-green-800 dark:to-green-700 rounded-xl flex items-center justify-center text-xl">
@@ -125,7 +125,7 @@ const CompressPDFPage: React.FC = () => {
                       {files[0]?.name ? files[0].name.replace(/\.pdf$/i, '_compressed.pdf') : 'compressed.pdf'}
                     </p>
                     <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      {compressedSize > 0 ? `${(compressedSize / 1024 / 1024).toFixed(2)} МБ` : 'Готово к скачиванию'}
+                      {compressedSize > 0 ? `${(compressedSize / 1024 / 1024).toFixed(2)} ${t('tools.compress.fileSizeUnit')}` : t('tools.compress.readyForDownload')}
                     </p>
                   </div>
                 </div>
@@ -134,7 +134,7 @@ const CompressPDFPage: React.FC = () => {
                   className="btn-privacy-modern text-sm px-6 py-3 flex items-center gap-2"
                 >
                   <Download className="w-4 h-4" />
-                  Скачать
+                  {t('tools.compress.download')}
                 </button>
               </div>
             </div>
@@ -145,7 +145,7 @@ const CompressPDFPage: React.FC = () => {
                 onClick={handleReset}
                 className="btn-privacy-secondary text-lg px-8 py-4"
               >
-                Сжать другой файл
+                {t('tools.compress.compressAnother')}
               </button>
             </div>
           </div>
@@ -175,9 +175,9 @@ const CompressPDFPage: React.FC = () => {
           multiple={false}
           maxSize={100 * 1024 * 1024}
           disabled={false}
-          title="Загрузите PDF файл для сжатия"
-          subtitle="Уменьшите размер PDF документов без потери качества"
-          supportedFormats="PDF файлы"
+          title={t('tools.compress.uploadTitle')}
+          subtitle={t('tools.compress.uploadSubtitle')}
+          supportedFormats={t('tools.compress.supportedFormats')}
         />
         
         {/* File List & Start Button */}
@@ -189,10 +189,10 @@ const CompressPDFPage: React.FC = () => {
               </div>
               <div>
                 <h3 className="text-xl font-black text-black dark:text-white">
-                  Выбранный файл ({files.length})
+                  {t('tools.compress.selectedFile')} ({files.length})
                 </h3>
                 <p className="text-gray-800 dark:text-gray-100 font-medium text-sm">
-                  Готов к сжатию
+                  {t('tools.compress.readyToCompress')}
                 </p>
               </div>
             </div>
@@ -207,14 +207,14 @@ const CompressPDFPage: React.FC = () => {
                     <div>
                       <p className="font-black text-black dark:text-white">{file.name}</p>
                       <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                        {(file.size / 1024 / 1024).toFixed(2)} МБ
+                        {(file.size / 1024 / 1024).toFixed(2)} {t('tools.compress.fileSizeUnit')}
                       </p>
                     </div>
                   </div>
                   <button
                     onClick={() => removeFile(index)}
                     className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all duration-200"
-                    title="Удалить файл"
+                    title={t('tools.compress.removeFile')}
                   >
                     <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
@@ -229,7 +229,7 @@ const CompressPDFPage: React.FC = () => {
                 onClick={() => setToolActive(true)}
                 className="btn-privacy-modern text-lg px-8 py-4 min-w-[250px] ripple-effect btn-press"
               >
-                Сжать PDF файл 🗜️
+                {t('tools.compress.compressPdfFile')} 🗜️
               </button>
             </div>
           </div>
@@ -246,10 +246,11 @@ const CompressPDFPage: React.FC = () => {
         question: faq.question,
         answer: faq.answer
       }))}
-      pageTitle="Сжать PDF файл бесплатно"
-      pageDescription="Уменьшите размер PDF документов без потери качества. Быстро, безопасно, без загрузок на сервер."
+      pageTitle={t('tools.compress.pageTitle')}
+      pageDescription={t('tools.compress.pageDescription')}
       toolComponent={toolComponent}
       breadcrumbKey="compress-pdf"
+      relatedToolsSection={<RelatedToolsSection currentTool="compress-pdf" />}
     />
   );
 };

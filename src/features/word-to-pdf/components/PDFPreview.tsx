@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Eye, Download, FileText, Clock, AlertCircle, ZoomIn, ZoomOut } from 'lucide-react';
+import { useTranslation } from '../../../hooks/useI18n';
 
 interface PDFPreviewProps {
   pdfBytes: Uint8Array | null;
@@ -16,10 +17,12 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({
   isGenerating,
   onRegenerate
 }) => {
+  const { t } = useTranslation();
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [scale, setScale] = useState(1);
+
 
   useEffect(() => {
     if (pdfBytes) {
@@ -44,7 +47,7 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({
       setPreviewUrl(url);
     } catch (err) {
       console.error('Error generating preview:', err);
-      setError('Failed to generate preview');
+      setError(t('pages.tools.wordToPdf.tool.preview.error'));
     } finally {
       setIsLoading(false);
     }
@@ -73,8 +76,8 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({
             <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-2xl flex items-center justify-center text-white mb-6 shadow-xl mx-auto">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
             </div>
-            <p className="font-black text-black dark:text-white text-lg mb-2">Generating PDF preview...</p>
-            <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Please wait while we prepare your document</p>
+            <p className="font-black text-black dark:text-white text-lg mb-2">{t('pages.tools.wordToPdf.tool.preview.generating')}</p>
+            <p className="text-sm font-medium text-gray-600 dark:text-gray-300">{t('pages.tools.wordToPdf.tool.preview.waitMessage')}</p>
           </div>
         </div>
       </div>
@@ -89,8 +92,8 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({
             <div className="w-16 h-16 bg-gradient-to-br from-gray-400 to-gray-500 rounded-2xl flex items-center justify-center text-white mb-6 shadow-xl mx-auto">
               <Eye className="w-8 h-8" />
             </div>
-            <p className="font-black text-black dark:text-white text-lg mb-2">PDF preview will appear here</p>
-            <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Upload a Word document to get started</p>
+            <p className="font-black text-black dark:text-white text-lg mb-2">{t('pages.tools.wordToPdf.tool.preview.placeholder')}</p>
+            <p className="text-sm font-medium text-gray-600 dark:text-gray-300">{t('pages.tools.wordToPdf.tool.preview.uploadPrompt')}</p>
           </div>
         </div>
       </div>
@@ -105,14 +108,14 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({
             <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-pink-500 rounded-2xl flex items-center justify-center text-white mb-6 shadow-xl mx-auto">
               <AlertCircle className="w-8 h-8" />
             </div>
-            <p className="font-black text-red-800 dark:text-red-200 text-lg mb-2">Preview Error</p>
+            <p className="font-black text-red-800 dark:text-red-200 text-lg mb-2">{t('pages.tools.wordToPdf.tool.preview.errorTitle')}</p>
             <p className="text-sm font-medium text-red-700 dark:text-red-300 mb-4">{error}</p>
             {onRegenerate && (
               <button
                 onClick={onRegenerate}
                 className="btn-privacy-modern bg-gradient-to-br from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-black px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
               >
-                Try again
+{t('pages.tools.wordToPdf.tool.preview.tryAgain')}
               </button>
             )}
           </div>
@@ -132,7 +135,7 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({
             </div>
             <div className="min-w-0 flex-1">
               <h3 className="font-bold text-black dark:text-white text-sm truncate">{fileName}</h3>
-              <p className="text-xs text-gray-600 dark:text-gray-400">PDF Preview</p>
+              <p className="text-xs text-gray-600 dark:text-gray-400">{t('pages.tools.wordToPdf.tool.preview.title')}</p>
             </div>
           </div>
 
@@ -143,7 +146,7 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({
                 onClick={handleZoomOut}
                 disabled={scale <= 0.5}
                 className="px-1.5 py-1 hover:bg-gray-50 dark:hover:bg-gray-700/60 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
-                title="Zoom out"
+                title={t('pages.tools.wordToPdf.tool.preview.zoomOut')}
               >
                 <ZoomOut className="w-3 h-3 text-gray-600 dark:text-gray-400" />
               </button>
@@ -154,7 +157,7 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({
                 onClick={handleZoomIn}
                 disabled={scale >= 2}
                 className="px-1.5 py-1 hover:bg-gray-50 dark:hover:bg-gray-700/60 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
-                title="Zoom in"
+                title={t('pages.tools.wordToPdf.tool.preview.zoomIn')}
               >
                 <ZoomIn className="w-3 h-3 text-gray-600 dark:text-gray-400" />
               </button>
@@ -175,28 +178,28 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({
       {/* PDF Viewer */}
       <div className="p-4">
         {isLoading ? (
-          <div className="flex items-center justify-center h-96">
+          <div className="flex items-center justify-center h-[700px]">
             <div className="text-center">
               <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500 mx-auto mb-2"></div>
               <p className="text-sm text-gray-600">Loading preview...</p>
             </div>
           </div>
         ) : previewUrl ? (
-          <div className="relative overflow-auto max-h-96">
+          <div className="relative overflow-auto max-h-[700px]">
             <iframe
               src={`${previewUrl}#toolbar=0&navpanes=0&scrollbar=0`}
               className="w-full border border-gray-300 rounded"
               style={{
-                height: '400px',
+                height: '700px',
                 transform: `scale(${scale})`,
                 transformOrigin: 'top left',
                 width: `${100 / scale}%`
               }}
-              title="PDF Preview"
+              title={t('pages.tools.wordToPdf.tool.preview.title')}
             />
           </div>
         ) : (
-          <div className="flex items-center justify-center h-96 text-gray-500">
+          <div className="flex items-center justify-center h-[700px] text-gray-500">
             <div className="text-center">
               <Clock className="w-8 h-8 mx-auto mb-2" />
               <p>Preparing preview...</p>

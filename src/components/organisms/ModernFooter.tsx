@@ -1,30 +1,39 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useTranslation } from '../../hooks/useI18n';
+import { useTranslation, useI18n } from '../../hooks/useI18n';
 import { useMotionPreferences } from '../../hooks/useAccessibilityPreferences';
 
 const ModernFooter: React.FC = () => {
   const { t } = useTranslation();
+  const { currentLanguage } = useI18n();
   const { shouldAnimate } = useMotionPreferences();
   const currentYear = new Date().getFullYear();
+
+  // Helper function to create localized paths
+  const getLocalizedPath = (path: string) => {
+    if (currentLanguage === 'en') {
+      return path;
+    }
+    return `/${currentLanguage}${path}`;
+  };
 
   const footerLinks = [
     {
       title: t('footer.sections.product.title'),
       links: [
-        { name: t('footer.sections.product.allTools'), href: '/#tools-section', internal: true },
-        { name: t('tools.merge.title'), href: '/merge-pdf', internal: true },
-        { name: t('tools.split.title'), href: '/split-pdf', internal: true },
-        { name: t('tools.compress.title'), href: '/compress-pdf', internal: true }
+        { name: t('footer.sections.product.allTools'), href: getLocalizedPath('/#tools-section'), internal: true },
+        { name: t('tools.merge.title'), href: getLocalizedPath('/merge-pdf'), internal: true },
+        { name: t('tools.split.title'), href: getLocalizedPath('/split-pdf'), internal: true },
+        { name: t('tools.compress.title'), href: getLocalizedPath('/compress-pdf'), internal: true }
       ]
     },
     {
       title: t('footer.sections.company.title'),
       links: [
-        { name: t('footer.sections.company.about'), href: '/faq', internal: true },
-        { name: t('footer.links.privacy'), href: '/privacy', internal: true },
-        { name: t('footer.sections.company.terms'), href: '/terms', internal: true },
-        { name: 'GDPR', href: '/gdpr', internal: true }
+        { name: t('footer.sections.company.about'), href: getLocalizedPath('/faq'), internal: true },
+        { name: t('footer.links.privacy'), href: getLocalizedPath('/privacy'), internal: true },
+        { name: t('footer.sections.company.terms'), href: getLocalizedPath('/terms'), internal: true },
+        { name: 'GDPR', href: getLocalizedPath('/gdpr'), internal: true }
       ]
     },
     {
@@ -95,7 +104,7 @@ const ModernFooter: React.FC = () => {
               <h3 className="text-xl font-bold text-gradient-ocean">LocalPDF</h3>
             </div>
             
-            <p className="text-privacy-600 dark:text-privacy-400 mb-6 leading-relaxed">
+            <p className="text-gray-700 dark:text-privacy-400 mb-6 leading-relaxed">
               {t('footer.description')}
             </p>
 
@@ -113,7 +122,7 @@ const ModernFooter: React.FC = () => {
                     {link.internal ? (
                       <Link
                         to={link.href}
-                        className="text-privacy-600 dark:text-privacy-400 hover:text-seafoam-600 dark:hover:text-seafoam-400 transition-colors text-sm font-medium group"
+                        className="text-gray-700 dark:text-privacy-400 hover:text-seafoam-600 dark:hover:text-seafoam-400 transition-colors text-sm font-medium group"
                       >
                         <span className="border-b border-transparent group-hover:border-seafoam-400 transition-colors">
                           {link.name}
@@ -124,7 +133,7 @@ const ModernFooter: React.FC = () => {
                         href={link.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-privacy-600 dark:text-privacy-400 hover:text-ocean-600 dark:hover:text-ocean-400 transition-colors text-sm font-medium group flex items-center gap-1"
+                        className="text-gray-700 dark:text-privacy-400 hover:text-ocean-600 dark:hover:text-ocean-400 transition-colors text-sm font-medium group flex items-center gap-1"
                       >
                         <span className="border-b border-transparent group-hover:border-ocean-400 transition-colors">
                           {link.name}
@@ -148,10 +157,10 @@ const ModernFooter: React.FC = () => {
             
             {/* Copyright & Tech Stack */}
             <div className="text-center md:text-left">
-              <div className="text-privacy-600 dark:text-privacy-400 text-sm mb-2">
+              <div className="text-gray-700 dark:text-privacy-400 text-sm mb-2">
                 {t('footer.copyright', { year: currentYear })}
               </div>
-              <div className="flex flex-wrap items-center gap-2 text-xs text-privacy-500 dark:text-privacy-500">
+              <div className="flex flex-wrap items-center gap-2 text-xs text-gray-600 dark:text-privacy-500">
                 <span>{t('footer.builtWith')}</span>
                 <div className="flex items-center gap-1 px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full">
                   <span>React</span>
@@ -169,7 +178,7 @@ const ModernFooter: React.FC = () => {
 
             {/* Social Links */}
             <div className="flex items-center gap-4">
-              <span className="text-sm text-privacy-600 dark:text-privacy-400 font-medium">
+              <span className="text-sm text-gray-700 dark:text-privacy-400 font-medium">
                 {t('footer.followProject')}
               </span>
               <div className="flex gap-3">
@@ -179,7 +188,7 @@ const ModernFooter: React.FC = () => {
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-10 h-10 bg-white/60 dark:bg-privacy-900/60 backdrop-blur-sm rounded-lg flex items-center justify-center text-privacy-600 dark:text-privacy-400 hover:text-privacy-900 dark:hover:text-privacy-100 hover:bg-white/80 dark:hover:bg-privacy-800/60 border border-white/20 dark:border-privacy-700/30 transition-all duration-300 group"
+                    className="w-10 h-10 bg-white/60 dark:bg-privacy-900/60 backdrop-blur-sm rounded-lg flex items-center justify-center text-gray-700 dark:text-privacy-400 hover:text-privacy-900 dark:hover:text-privacy-100 hover:bg-white/80 dark:hover:bg-privacy-800/60 border border-white/20 dark:border-privacy-700/30 transition-all duration-300 group"
                     aria-label={social.name}
                   >
                     <div className={`transform ${shouldAnimate ? 'group-hover:scale-110' : ''} transition-transform`}>

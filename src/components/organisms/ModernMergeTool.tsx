@@ -50,16 +50,22 @@ const ModernMergeTool: React.FC<MergeToolProps> = React.memo(({
 
   const formatSize = (bytes: number): string => {
     const mb = bytes / (1024 * 1024);
-    return `${mb.toFixed(1)} МБ`;
+    return `${mb.toFixed(1)} ${t('common.fileSizeUnit')}`;
+  };
+
+  const getFileWord = (count: number): string => {
+    if (count === 1) return t('tools.merge.fileCount.single');
+    if (count > 1 && count <= 4) return t('tools.merge.fileCount.few');
+    return t('tools.merge.fileCount.many');
   };
 
   const handleMerge = async () => {
     if (!canMerge) {
-      setError('Выберите минимум 2 файла для объединения');
+      setError(t('tools.merge.errors.minFiles'));
       return;
     }
 
-    startProcessing('Объединение файлов...');
+    startProcessing(t('tools.merge.processing'));
 
     try {
       const result = await pdfService.mergePDFs(
@@ -82,10 +88,10 @@ const ModernMergeTool: React.FC<MergeToolProps> = React.memo(({
         // Notify parent
         onComplete(result);
       } else {
-        setError(result.error?.message || 'Ошибка при обработке файлов');
+        setError(result.error?.message || t('tools.merge.errors.processingError'));
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Неизвестная ошибка');
+      setError(err instanceof Error ? err.message : t('tools.merge.errors.unknownError'));
     }
   };
 
@@ -110,10 +116,10 @@ const ModernMergeTool: React.FC<MergeToolProps> = React.memo(({
             </div>
             <div>
               <h2 className="text-2xl font-black text-black dark:text-white">
-                Объединение PDF файлов
+                {t('tools.merge.toolTitle')}
               </h2>
               <p className="text-gray-800 dark:text-gray-100 font-medium">
-                {files.length} файл{files.length > 1 ? (files.length > 4 ? 'ов' : 'а') : ''} • {formatSize(totalSize)}
+                {files.length} {getFileWord(files.length)} • {formatSize(totalSize)}
               </p>
             </div>
           </div>
@@ -122,7 +128,7 @@ const ModernMergeTool: React.FC<MergeToolProps> = React.memo(({
             onClick={onClose}
             disabled={state.isProcessing}
             className="p-3 text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-white/50 dark:hover:bg-gray-700/50 rounded-xl transition-all duration-200 disabled:opacity-50"
-            aria-label="Закрыть"
+            aria-label={t('common.close')}
           >
             <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
               <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
@@ -135,7 +141,7 @@ const ModernMergeTool: React.FC<MergeToolProps> = React.memo(({
           <div className="flex items-center gap-2 px-4 py-2 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-full border border-white/20 dark:border-gray-600/20">
             <div className={`w-2 h-2 rounded-full bg-success-500 ${shouldAnimate ? 'animate-pulse' : ''}`}></div>
             <span className="text-sm font-medium text-gray-800 dark:text-gray-100">
-              Приватная обработка
+              {t('tools.merge.trustIndicators.private')}
             </span>
           </div>
           
@@ -144,7 +150,7 @@ const ModernMergeTool: React.FC<MergeToolProps> = React.memo(({
               <path d="M13,13H11V7H13M13,17H11V15H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" />
             </svg>
             <span className="text-sm font-medium text-gray-800 dark:text-gray-100">
-              Высокое качество
+              {t('tools.merge.trustIndicators.quality')}
             </span>
           </div>
         </div>
@@ -158,10 +164,10 @@ const ModernMergeTool: React.FC<MergeToolProps> = React.memo(({
           </div>
           <div>
             <h3 className="text-xl font-black text-black dark:text-white">
-              Порядок файлов
+              {t('tools.merge.orderTitle')}
             </h3>
             <p className="text-gray-800 dark:text-gray-100 font-medium text-sm">
-              Используйте стрелки для изменения порядка
+              {t('tools.merge.orderDescription')}
             </p>
           </div>
         </div>
@@ -196,7 +202,7 @@ const ModernMergeTool: React.FC<MergeToolProps> = React.memo(({
                     onClick={() => moveFile(index, Math.max(0, index - 1))}
                     disabled={index === 0 || state.isProcessing}
                     className="p-2 text-gray-600 hover:text-seafoam-600 hover:bg-seafoam-50 dark:text-gray-400 dark:hover:text-seafoam-400 dark:hover:bg-seafoam-900/20 rounded-lg transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed"
-                    title="Переместить вверх"
+                    title={t('tools.merge.controls.moveUp')}
                   >
                     <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M7.41,15.41L12,10.83L16.59,15.41L18,14L12,8L6,14L7.41,15.41Z" />
@@ -206,7 +212,7 @@ const ModernMergeTool: React.FC<MergeToolProps> = React.memo(({
                     onClick={() => moveFile(index, Math.min(orderedFiles.length - 1, index + 1))}
                     disabled={index === orderedFiles.length - 1 || state.isProcessing}
                     className="p-2 text-gray-600 hover:text-seafoam-600 hover:bg-seafoam-50 dark:text-gray-400 dark:hover:text-seafoam-400 dark:hover:bg-seafoam-900/20 rounded-lg transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed"
-                    title="Переместить вниз"
+                    title={t('tools.merge.controls.moveDown')}
                   >
                     <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
@@ -227,17 +233,17 @@ const ModernMergeTool: React.FC<MergeToolProps> = React.memo(({
               ⚡
             </div>
             <h3 className="text-xl font-black text-black dark:text-white mb-2">
-              Объединение в процессе
+              {t('tools.merge.processingTitle')}
             </h3>
             <p className="text-gray-800 dark:text-gray-100 font-medium">
-              {state.progressMessage || 'Обработка файлов...'}
+              {state.progressMessage || t('tools.merge.processingDescription')}
             </p>
           </div>
 
           {/* Progress Bar */}
           <div className="mb-6">
             <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Прогресс</span>
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('tools.merge.progress')}</span>
               <span className="text-sm font-bold text-seafoam-600 dark:text-seafoam-400">{Math.round(state.progress)}%</span>
             </div>
             <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
@@ -262,7 +268,7 @@ const ModernMergeTool: React.FC<MergeToolProps> = React.memo(({
               ⚠️
             </div>
             <div className="flex-1">
-              <h4 className="font-bold text-red-800 dark:text-red-200 mb-1">Ошибка обработки</h4>
+              <h4 className="font-bold text-red-800 dark:text-red-200 mb-1">{t('tools.merge.errors.errorTitle')}</h4>
               <p className="text-red-700 dark:text-red-300 font-medium">{state.error}</p>
             </div>
             <button
@@ -292,10 +298,10 @@ const ModernMergeTool: React.FC<MergeToolProps> = React.memo(({
             {state.isProcessing ? (
               <div className="flex items-center justify-center gap-2">
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                Обработка...
+                {t('tools.merge.actions.merging')}
               </div>
             ) : (
-              `Объединить ${files.length} файл${files.length > 1 ? (files.length > 4 ? 'ов' : 'а') : ''}`
+              t('tools.merge.actions.merge', { count: files.length, fileWord: getFileWord(files.length) })
             )}
           </button>
           
@@ -304,7 +310,7 @@ const ModernMergeTool: React.FC<MergeToolProps> = React.memo(({
             disabled={state.isProcessing}
             className="btn-ocean-modern text-lg px-8 py-4 flex-1 sm:flex-none min-w-[200px]"
           >
-            {state.isProcessing ? 'Отменить' : 'Назад'}
+            {state.isProcessing ? t('tools.merge.actions.cancel') : t('common.back')}
           </button>
         </div>
       </div>

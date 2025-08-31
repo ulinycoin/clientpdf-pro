@@ -76,7 +76,7 @@ const ModernToolsGrid: React.FC<ModernToolsGridProps> = ({
           <h2 className="text-4xl sm:text-5xl font-bold text-gradient-ocean mb-6">
             {t('home.tools.title')}
           </h2>
-          <p className="text-xl text-privacy-600 dark:text-privacy-400 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-xl text-gray-300 dark:text-privacy-400 max-w-3xl mx-auto leading-relaxed">
             {t('home.tools.subtitle', { count: pdfTools.length })}
           </p>
           
@@ -116,11 +116,11 @@ const ModernToolsGrid: React.FC<ModernToolsGridProps> = ({
                   <div className="w-12 h-12 bg-gradient-to-br from-seafoam-100 to-ocean-100 dark:from-privacy-800 dark:to-privacy-700 rounded-2xl flex items-center justify-center text-2xl">
                     {categoryInfo[category as keyof typeof categoryInfo].icon}
                   </div>
-                  <h3 className="text-2xl font-bold text-privacy-900 dark:text-privacy-100">
+                  <h3 className="text-2xl font-bold text-white dark:text-privacy-100">
                     {categoryInfo[category as keyof typeof categoryInfo].title}
                   </h3>
                 </div>
-                <p className="text-privacy-600 dark:text-privacy-400 max-w-2xl mx-auto">
+                <p className="text-gray-300 dark:text-privacy-400 max-w-2xl mx-auto">
                   {categoryInfo[category as keyof typeof categoryInfo].description}
                 </p>
               </div>
@@ -157,63 +157,6 @@ const ModernToolsGrid: React.FC<ModernToolsGridProps> = ({
           ))}
         </div>
 
-        {/* Enhanced Statistics Section */}
-        <div className="mt-20 relative overflow-hidden text-center">
-          {/* Modern gradient background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-seafoam-50 via-white to-ocean-50 dark:from-privacy-900 dark:via-privacy-800 dark:to-ocean-900 rounded-2xl" />
-          <div className="absolute inset-0 bg-white/40 dark:bg-gray-800/40 backdrop-blur-sm rounded-2xl border border-white/20 dark:border-gray-700/30" />
-          
-          {/* Floating decoration elements */}
-          <div className="absolute -top-4 -right-4 w-16 h-16 bg-gradient-to-br from-seafoam-200/20 to-ocean-200/20 rounded-full blur-xl" />
-          <div className="absolute -bottom-4 -left-4 w-12 h-12 bg-gradient-to-br from-privacy-200/20 to-seafoam-200/20 rounded-full blur-lg" />
-          
-          <div className="relative z-10 p-8">
-          <h3 className="text-2xl font-bold text-privacy-900 dark:text-privacy-100 mb-8">
-            {t('home.tools.whyChoose.title')}
-          </h3>
-          
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div>
-              <div className="text-3xl font-bold text-seafoam-600 dark:text-seafoam-400 mb-2">13</div>
-              <div className="text-privacy-700 dark:text-privacy-300 font-medium">{t('home.tools.whyChoose.stats.tools')}</div>
-              <div className="text-sm text-privacy-500">{t('home.tools.whyChoose.stats.toolsDesc')}</div>
-            </div>
-            
-            <div>
-              <div className="text-3xl font-bold text-ocean-600 dark:text-ocean-400 mb-2">100%</div>
-              <div className="text-privacy-700 dark:text-privacy-300 font-medium">{t('home.tools.whyChoose.stats.privacy')}</div>
-              <div className="text-sm text-privacy-500">{t('home.tools.whyChoose.stats.privacyDesc')}</div>
-            </div>
-            
-            <div>
-              <div className="text-3xl font-bold text-privacy-600 dark:text-privacy-400 mb-2">0</div>
-              <div className="text-privacy-700 dark:text-privacy-300 font-medium">{t('home.tools.whyChoose.stats.dataCollection')}</div>
-              <div className="text-sm text-privacy-500">{t('home.tools.whyChoose.stats.dataCollectionDesc')}</div>
-            </div>
-            
-            <div>
-              <div className="text-3xl font-bold text-success-600 dark:text-success-400 mb-2">∞</div>
-              <div className="text-privacy-700 dark:text-privacy-300 font-medium">{t('home.tools.whyChoose.stats.usageLimits')}</div>
-              <div className="text-sm text-privacy-500">{t('home.tools.whyChoose.stats.usageLimitsDesc')}</div>
-            </div>
-          </div>
-
-          {/* Privacy Promise */}
-          <div className="mt-8 pt-8 border-t border-privacy-200 dark:border-privacy-700">
-            <div className="flex items-center justify-center gap-3">
-              <svg className="w-6 h-6 text-privacy-accent" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12,1L21,5V11C21,16.55 17.16,21.74 12,23C6.84,21.74 3,16.55 3,11V5L12,1Z" />
-              </svg>
-              <span className="text-lg font-semibold text-privacy-800 dark:text-privacy-200">
-                {t('home.tools.trustMessage')}
-              </span>
-            </div>
-            <p className="text-privacy-600 dark:text-privacy-400 mt-2 max-w-2xl mx-auto">
-              {t('home.tools.whyChoose.description')}
-            </p>
-          </div>
-          </div>
-        </div>
       </div>
     </section>
   );

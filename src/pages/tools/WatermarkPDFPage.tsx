@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { toolsSEOData } from '../../data/seoData';
 import { StandardToolPageTemplate } from '../../components/templates';
-import { WatermarkTool } from '../../components/organisms';
+import { WatermarkTool, RelatedToolsSection } from '../../components/organisms';
 import { ModernUploadZone } from '../../components/molecules';
 import { useFileUpload } from '../../hooks/useFileUpload';
 import { useI18n } from '../../hooks/useI18n';
@@ -101,17 +101,17 @@ const WatermarkPDFPage: React.FC = () => {
               </div>
               <div>
                 <h3 className="text-xl font-black text-green-800 dark:text-green-200">
-                  Водяной знак успешно добавлен!
+                  {t('tools.watermark.results.successTitle')}
                 </h3>
                 <p className="text-gray-800 dark:text-gray-100 font-medium text-sm">
-                  PDF документ защищен водяным знаком
+                  {t('tools.watermark.results.successDescription')}
                 </p>
               </div>
             </div>
 
             {/* Download Section */}
             <div className="space-y-4">
-              <h4 className="font-bold text-black dark:text-white">Скачать файл с водяным знаком:</h4>
+              <h4 className="font-bold text-black dark:text-white">{t('tools.watermark.results.downloadTitle')}:</h4>
               <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl p-4 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-800 dark:to-blue-700 rounded-xl flex items-center justify-center text-xl">
@@ -122,7 +122,7 @@ const WatermarkPDFPage: React.FC = () => {
                       {files[0]?.name ? files[0].name.replace(/\.pdf$/i, '_watermarked.pdf') : 'watermarked.pdf'}
                     </p>
                     <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      {watermarkedSize > 0 ? `${(watermarkedSize / 1024 / 1024).toFixed(2)} МБ` : 'Готово к скачиванию'}
+                      {watermarkedSize > 0 ? `${(watermarkedSize / 1024 / 1024).toFixed(2)} ${t('tools.watermark.tool.fileSizeUnit')}` : t('tools.watermark.results.readyToDownload')}
                     </p>
                   </div>
                 </div>
@@ -131,7 +131,7 @@ const WatermarkPDFPage: React.FC = () => {
                   className="btn-privacy-modern text-sm px-6 py-3 flex items-center gap-2"
                 >
                   <Download className="w-4 h-4" />
-                  Скачать
+                  {t('common.download')}
                 </button>
               </div>
             </div>
@@ -142,7 +142,7 @@ const WatermarkPDFPage: React.FC = () => {
                 onClick={handleReset}
                 className="btn-privacy-secondary text-lg px-8 py-4"
               >
-                Добавить водяной знак к другому файлу
+                {t('tools.watermark.results.addAnotherWatermark')}
               </button>
             </div>
           </div>
@@ -172,9 +172,9 @@ const WatermarkPDFPage: React.FC = () => {
           multiple={false}
           maxSize={100 * 1024 * 1024}
           disabled={false}
-          title="Загрузите PDF файл для добавления водяного знака"
-          subtitle="Защитите свои документы текстовыми или графическими водяными знаками"
-          supportedFormats="PDF файлы"
+          title={t('tools.watermark.upload.title')}
+          subtitle={t('tools.watermark.upload.description')}
+          supportedFormats={t('tools.watermark.upload.supportedFormats')}
         />
         
         {/* File List & Start Button */}
@@ -186,10 +186,10 @@ const WatermarkPDFPage: React.FC = () => {
               </div>
               <div>
                 <h3 className="text-xl font-black text-black dark:text-white">
-                  Выбранный файл ({files.length})
+                  {t('tools.watermark.upload.selectedFile', { count: files.length })}
                 </h3>
                 <p className="text-gray-800 dark:text-gray-100 font-medium text-sm">
-                  Готов для добавления водяного знака
+                  {t('tools.watermark.upload.readyToWatermark')}
                 </p>
               </div>
             </div>
@@ -204,14 +204,14 @@ const WatermarkPDFPage: React.FC = () => {
                     <div>
                       <p className="font-black text-black dark:text-white">{file.name}</p>
                       <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                        {(file.size / 1024 / 1024).toFixed(2)} МБ
+                        {(file.size / 1024 / 1024).toFixed(2)} {t('tools.watermark.tool.fileSizeUnit')}
                       </p>
                     </div>
                   </div>
                   <button
                     onClick={() => removeFile(index)}
                     className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all duration-200"
-                    title="Удалить файл"
+                    title={t('tools.watermark.upload.removeFile')}
                   >
                     <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
@@ -226,7 +226,7 @@ const WatermarkPDFPage: React.FC = () => {
                 onClick={() => setToolActive(true)}
                 className="btn-privacy-modern text-lg px-8 py-4 min-w-[250px] ripple-effect btn-press"
               >
-                Добавить водяной знак 💧
+                {t('tools.watermark.upload.startWatermarking')}
               </button>
             </div>
           </div>
@@ -243,10 +243,11 @@ const WatermarkPDFPage: React.FC = () => {
         question: faq.question,
         answer: faq.answer
       }))}
-      pageTitle="Добавить водяной знак в PDF бесплатно"
-      pageDescription="Защитите PDF документы текстовыми или графическими водяными знаками. Быстро, безопасно, без загрузок на сервер."
+      pageTitle={t('tools.watermark.pageTitle')}
+      pageDescription={t('tools.watermark.pageDescription')}
       toolComponent={toolComponent}
       breadcrumbKey="watermark-pdf"
+      relatedToolsSection={<RelatedToolsSection currentTool="watermark-pdf" />}
     />
   );
 };

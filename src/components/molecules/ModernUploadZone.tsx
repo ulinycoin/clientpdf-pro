@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { useMotionPreferences } from '../../hooks/useAccessibilityPreferences';
+import { useI18n } from '../../hooks/useI18n';
 
 interface ModernUploadZoneProps {
   onFilesSelected: (files: File[]) => void;
@@ -29,6 +30,7 @@ const ModernUploadZone: React.FC<ModernUploadZoneProps> = ({
   icon = '📄'
 }) => {
   const { shouldAnimate } = useMotionPreferences();
+  const { t } = useI18n();
   const [isDragActive, setIsDragActive] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -101,7 +103,7 @@ const ModernUploadZone: React.FC<ModernUploadZoneProps> = ({
 
   const formatMaxSize = (bytes: number): string => {
     const mb = bytes / (1024 * 1024);
-    return `${Math.round(mb)}МБ`;
+    return `${Math.round(mb)}${t('components.modernUploadZone.fileSizeMB')}`;
   };
 
   return (
@@ -145,7 +147,7 @@ const ModernUploadZone: React.FC<ModernUploadZoneProps> = ({
         className="hidden"
         id="modern-file-upload"
         name="file-upload"
-        aria-label="Выбрать файлы для загрузки"
+        aria-label={t('components.modernUploadZone.accessibility.selectFiles')}
       />
 
       {/* Background decoration */}
@@ -178,7 +180,7 @@ const ModernUploadZone: React.FC<ModernUploadZoneProps> = ({
 
         {/* Title */}
         <h3 className="text-2xl font-black text-black dark:text-white mb-4">
-          {isDragActive ? 'Отпустите файлы здесь' : title}
+          {isDragActive ? t('components.modernUploadZone.dropActive') : title}
         </h3>
 
         {/* Subtitle */}
@@ -200,7 +202,7 @@ const ModernUploadZone: React.FC<ModernUploadZoneProps> = ({
             ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
           `}
         >
-          {isDragActive ? 'Загрузить файлы' : 'Выбрать файлы'}
+          {isDragActive ? t('components.modernUploadZone.uploadFiles') : t('components.modernUploadZone.selectFiles')}
         </button>
 
         {/* Supported formats */}
@@ -213,7 +215,7 @@ const ModernUploadZone: React.FC<ModernUploadZoneProps> = ({
           <div className="flex items-center gap-2 px-4 py-2 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-full border border-white/20 dark:border-gray-600/20">
             <div className={`w-2 h-2 rounded-full bg-success-500 ${shouldAnimate ? 'animate-pulse' : ''}`}></div>
             <span className="text-sm font-medium text-gray-800 dark:text-gray-100">
-              100% Приватно
+              {t('components.modernUploadZone.private')}
             </span>
           </div>
           
@@ -222,7 +224,7 @@ const ModernUploadZone: React.FC<ModernUploadZoneProps> = ({
               <path d="M13,13H11V7H13M13,17H11V15H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" />
             </svg>
             <span className="text-sm font-medium text-gray-800 dark:text-gray-100">
-              Мгновенная обработка
+              {t('components.modernUploadZone.instantProcessing')}
             </span>
           </div>
         </div>

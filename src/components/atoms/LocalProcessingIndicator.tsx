@@ -190,7 +190,7 @@ const LocalProcessingIndicator: React.FC<LocalProcessingIndicatorProps> = ({
         
         {/* Privacy Indicator */}
         {status === 'processing' && (
-          <div className="flex items-center justify-center gap-1 mt-1 text-xs text-privacy-500">
+          <div className="flex items-center justify-center gap-1 mt-1 text-xs text-gray-600">
             <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12,1L21,5V11C21,16.55 17.16,21.74 12,23C6.84,21.74 3,16.55 3,11V5L12,1M12,7C10.89,7 10,7.89 10,9A2,2 0 0,0 12,11A2,2 0 0,0 14,9C14,7.89 13.1,7 12,7Z" />
             </svg>

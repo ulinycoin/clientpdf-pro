@@ -63,9 +63,71 @@ const INDEX_NOW_ENDPOINTS = [
 ];
 
 /**
- * Submit URLs to IndexNow API
+ * Submit URLs to IndexNow API with staggered delivery
+ * Splits large URL batches into smaller chunks to avoid server overload
  */
-async function submitToIndexNow(endpoint, urls) {
+async function submitToIndexNow(endpoint, urls, batchSize = 10) {
+  const results = [];
+  
+  // Split URLs into smaller batches for staggered submission
+  const batches = [];
+  for (let i = 0; i < urls.length; i += batchSize) {
+    batches.push(urls.slice(i, i + batchSize));
+  }
+  
+  console.log(`  📦 Splitting ${urls.length} URLs into ${batches.length} batches of max ${batchSize} URLs each`);
+  
+  // Submit each batch with delays
+  for (let i = 0; i < batches.length; i++) {
+    const batch = batches[i];
+    const batchNumber = i + 1;
+    
+    console.log(`  📋 Batch ${batchNumber}/${batches.length}: Submitting ${batch.length} URLs to ${endpoint}`);
+    
+    try {
+      const result = await submitBatchToIndexNow(endpoint, batch);
+      results.push({
+        ...result,
+        batchNumber,
+        batchSize: batch.length
+      });
+      
+      // Add delay between batches (2-3 seconds) to be respectful
+      if (i < batches.length - 1) {
+        const delay = 2000 + Math.random() * 1000; // 2-3 seconds random delay
+        console.log(`  ⏱️  Waiting ${Math.round(delay)}ms before next batch...`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+      
+    } catch (error) {
+      results.push({
+        endpoint,
+        status: 'error',
+        error: error.message,
+        batchNumber,
+        batchSize: batch.length
+      });
+    }
+  }
+  
+  // Return summary of all batches
+  const successfulBatches = results.filter(r => r.status === 'success').length;
+  const totalUrlsSubmitted = results.reduce((sum, r) => sum + (r.batchSize || 0), 0);
+  
+  return {
+    endpoint,
+    status: successfulBatches === batches.length ? 'success' : 'partial',
+    totalBatches: batches.length,
+    successfulBatches,
+    totalUrlsSubmitted,
+    results
+  };
+}
+
+/**
+ * Submit a single batch to IndexNow API
+ */
+async function submitBatchToIndexNow(endpoint, urls) {
   return new Promise((resolve, reject) => {
     const postData = JSON.stringify({
       host: 'localpdf.online',
@@ -94,17 +156,18 @@ async function submitToIndexNow(endpoint, urls) {
       });
 
       res.on('end', () => {
-        console.log(`✅ ${endpoint}: Status ${res.statusCode}`);
         if (res.statusCode === 200 || res.statusCode === 202) {
+          console.log(`    ✅ Batch submitted successfully (${res.statusCode})`);
           resolve({ endpoint, status: 'success', statusCode: res.statusCode });
         } else {
+          console.log(`    ❌ Batch failed (${res.statusCode})`);
           resolve({ endpoint, status: 'error', statusCode: res.statusCode, response: data });
         }
       });
     });
 
     req.on('error', (error) => {
-      console.error(`❌ Error submitting to ${endpoint}:`, error.message);
+      console.error(`    ❌ Network error:`, error.message);
       reject({ endpoint, status: 'error', error: error.message });
     });
 
@@ -157,26 +220,38 @@ async function submitToGoogle() {
   });
 }
 /**
- * Submit URLs to all IndexNow endpoints and Google
+ * Submit URLs to all IndexNow endpoints and Google with staggered delivery
  */
-async function submitToAllEndpoints() {
-  console.log('🚀 Starting sitemap submission...');
+async function submitToAllEndpoints(batchSize = 10) {
+  console.log('🚀 Starting OPTIMIZED IndexNow submission with staggered delivery...');
   console.log(`📋 Submitting ${URLS_TO_INDEX.length} URLs to ${INDEX_NOW_ENDPOINTS.length} IndexNow endpoints + Google`);
+  console.log(`⚡ Using staggered batches of ${batchSize} URLs each to reduce server load`);
   console.log('');
 
   const results = [];
 
-  // Submit to IndexNow endpoints
+  // Submit to IndexNow endpoints with staggered batches
   for (const endpoint of INDEX_NOW_ENDPOINTS) {
     try {
-      console.log(`📡 Submitting to ${endpoint}...`);
-      const result = await submitToIndexNow(endpoint, URLS_TO_INDEX);
+      console.log(`📡 Starting staggered submission to ${endpoint}...`);
+      const result = await submitToIndexNow(endpoint, URLS_TO_INDEX, batchSize);
       results.push(result);
 
-      // Add delay between requests to be respectful
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Add longer delay between endpoints (5-8 seconds) to spread load
+      if (endpoint !== INDEX_NOW_ENDPOINTS[INDEX_NOW_ENDPOINTS.length - 1]) {
+        const endpointDelay = 5000 + Math.random() * 3000; // 5-8 seconds
+        console.log(`⏳ Waiting ${Math.round(endpointDelay)}ms before next endpoint...`);
+        await new Promise(resolve => setTimeout(resolve, endpointDelay));
+      }
+      
+      console.log(`✨ Completed submission to ${endpoint}\n`);
     } catch (error) {
-      results.push(error);
+      results.push({
+        endpoint,
+        status: 'error',
+        error: error.message || error
+      });
+      console.log(`❌ Failed submission to ${endpoint}\n`);
     }
   }
 
@@ -219,11 +294,13 @@ ${URLS_TO_INDEX.map(url => `  <url>
 }
 
 /**
- * Main execution function
+ * Main execution function with staggered delivery
  */
 async function main() {
-  console.log('🎯 LocalPDF IndexNow Mass Submission');
-  console.log('=====================================');
+  console.log('🎯 LocalPDF IndexNow OPTIMIZED Submission');
+  console.log('==========================================');
+  console.log('✨ Now using STAGGERED DELIVERY to respect IndexNow best practices');
+  console.log('⚡ Prevents server overload with small batches and delays');
   console.log('');
 
   try {
@@ -235,33 +312,59 @@ async function main() {
     const results = await submitToAllEndpoints();
 
     console.log('');
-    console.log('📊 SUBMISSION RESULTS:');
-    console.log('=====================');
+    console.log('📊 STAGGERED SUBMISSION RESULTS:');
+    console.log('================================');
 
-    let successCount = 0;
-    let errorCount = 0;
+    let totalSuccessfulEndpoints = 0;
+    let totalErrorEndpoints = 0;
+    let totalUrlsSubmitted = 0;
+    let totalBatchesSubmitted = 0;
 
     results.forEach(result => {
-      if (result.status === 'success') {
-        console.log(`✅ ${result.endpoint}: SUCCESS (${result.statusCode})`);
-        successCount++;
+      if (result.endpoint === 'Google') {
+        // Handle Google ping result
+        if (result.status === 'success') {
+          console.log(`✅ ${result.endpoint}: SUCCESS (${result.statusCode})`);
+          totalSuccessfulEndpoints++;
+        } else {
+          console.log(`❌ ${result.endpoint}: ERROR (${result.statusCode || 'Network Error'})`);
+          if (result.error) console.log(`   Error: ${result.error}`);
+          totalErrorEndpoints++;
+        }
       } else {
-        console.log(`❌ ${result.endpoint}: ERROR (${result.statusCode || 'Network Error'})`);
-        if (result.error) console.log(`   Error: ${result.error}`);
-        if (result.response) console.log(`   Response: ${result.response}`);
-        errorCount++;
+        // Handle IndexNow staggered result
+        if (result.status === 'success') {
+          console.log(`✅ ${result.endpoint}: SUCCESS - ${result.successfulBatches}/${result.totalBatches} batches (${result.totalUrlsSubmitted} URLs)`);
+          totalSuccessfulEndpoints++;
+          totalUrlsSubmitted += result.totalUrlsSubmitted;
+          totalBatchesSubmitted += result.totalBatches;
+        } else if (result.status === 'partial') {
+          console.log(`⚠️  ${result.endpoint}: PARTIAL - ${result.successfulBatches}/${result.totalBatches} batches (${result.totalUrlsSubmitted} URLs)`);
+          totalSuccessfulEndpoints++; // Count as success for partial
+          totalUrlsSubmitted += result.totalUrlsSubmitted;
+          totalBatchesSubmitted += result.totalBatches;
+        } else {
+          console.log(`❌ ${result.endpoint}: ERROR`);
+          if (result.error) console.log(`   Error: ${result.error}`);
+          totalErrorEndpoints++;
+        }
       }
     });
 
     console.log('');
-    console.log(`📈 Summary: ${successCount} successful, ${errorCount} errors`);
-    console.log(`🔄 ${URLS_TO_INDEX.length} URLs submitted to ${INDEX_NOW_ENDPOINTS.length} IndexNow endpoints + Google sitemap ping`);
+    console.log(`📈 STAGGERED DELIVERY SUMMARY:`);
+    console.log(`   🎯 ${totalSuccessfulEndpoints} successful endpoints, ${totalErrorEndpoints} errors`);
+    console.log(`   📦 ${totalBatchesSubmitted} total batches submitted across all endpoints`);
+    console.log(`   🔄 ${totalUrlsSubmitted} total URL submissions (with redundancy across endpoints)`);
+    console.log(`   🌐 ${URLS_TO_INDEX.length} unique URLs processed with staggered delivery`);
 
-    if (successCount > 0) {
+    if (totalSuccessfulEndpoints > 0) {
       console.log('');
-      console.log('🎉 Sitemap submission completed!');
+      console.log('🎉 STAGGERED IndexNow submission completed successfully!');
+      console.log('⚡ Used respectful staggered delivery to avoid server overload');
       console.log('⏰ Pages should be crawled within 24-48 hours');
       console.log('💡 Monitor Google Search Console and Bing Webmaster Tools for indexing status');
+      console.log('🏆 IndexNow best practices: ✅ Small batches ✅ Delays ✅ Respectful timing');
     }
 
   } catch (error) {

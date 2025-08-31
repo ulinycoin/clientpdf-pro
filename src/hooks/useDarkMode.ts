@@ -25,8 +25,8 @@ export const useDarkModeLogic = () => {
       return JSON.parse(stored);
     }
     
-    // Fallback to system preference
-    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    // Default to light theme (instead of system preference)
+    return false;
   });
 
   useEffect(() => {

@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useCallback, useState } from 'react';
 import * as pdfjsLib from 'pdfjs-dist';
+import { useI18n } from '../../../../hooks/useI18n';
 
 // Set worker path
 pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
@@ -51,6 +52,7 @@ const Canvas: React.FC<CanvasProps> = ({
   onPageChange,
   onTotalPagesChange
 }) => {
+  const { t } = useI18n();
   // Refs - CRITICAL FIX for canvas rendering race condition
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -368,7 +370,7 @@ const Canvas: React.FC<CanvasProps> = ({
         <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-10">
           <div className="text-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
-            <p className="mt-2 text-gray-600">Loading PDF...</p>
+            <p className="mt-2 text-gray-600">{t('tools.addText.canvas.loadingPdf')}</p>
           </div>
         </div>
       )}

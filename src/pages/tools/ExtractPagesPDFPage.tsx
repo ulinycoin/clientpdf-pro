@@ -3,6 +3,7 @@ import { toolsSEOData } from '../../data/seoData';
 import { StandardToolPageTemplate } from '../../components/templates';
 import ExtractPagesTool from '../../components/organisms/ExtractPagesTool';
 import { ModernUploadZone } from '../../components/molecules';
+import { RelatedToolsSection } from '../../components/organisms';
 import { useI18n } from '../../hooks/useI18n';
 import { useFileUpload } from '../../hooks/useFileUpload';
 import { useDynamicSEO } from '../../hooks/useDynamicSEO';
@@ -64,8 +65,8 @@ const ExtractPagesPDFPage: React.FC = () => {
         maxSize={100 * 1024 * 1024}
         disabled={false}
         title={t('pages.tools.extractPages.uploadTitle') || 'Извлечь страницы из PDF'}
-        subtitle="Выберите конкретные страницы из PDF документа для создания нового файла"
-        supportedFormats="PDF файлы до 100MB"
+        subtitle={t('pages.tools.extractPages.uploadSubtitle') || 'Select specific pages from PDF document to create a new file'}
+        supportedFormats={t('pages.tools.extractPages.supportedFormats') || 'PDF files up to 100MB'}
         icon="📑"
       />
       
@@ -78,10 +79,10 @@ const ExtractPagesPDFPage: React.FC = () => {
             </div>
             <div>
               <h3 className="text-xl font-black text-black dark:text-white">
-                Выбранный файл
+                {t('pages.tools.extractPages.selectedFile') || 'Selected File'}
               </h3>
               <p className="text-gray-800 dark:text-gray-100 font-medium text-sm">
-                Готов к извлечению страниц
+                {t('pages.tools.extractPages.readyToExtract') || 'Ready to extract pages'}
               </p>
             </div>
           </div>
@@ -96,14 +97,14 @@ const ExtractPagesPDFPage: React.FC = () => {
                   <div>
                     <p className="font-black text-black dark:text-white">{file.name}</p>
                     <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      {(file.size / 1024 / 1024).toFixed(2)} МБ
+                      {(file.size / 1024 / 1024).toFixed(2)} {t('pages.tools.extractPages.fileSizeUnit') || 'MB'}
                     </p>
                   </div>
                 </div>
                 <button
                   onClick={() => removeFile(index)}
                   className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all duration-200"
-                  title="Удалить файл"
+                  title={t('pages.tools.extractPages.removeFile') || 'Remove file'}
                 >
                   <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
@@ -118,7 +119,7 @@ const ExtractPagesPDFPage: React.FC = () => {
               onClick={() => setToolActive(true)}
               className="btn-privacy-modern text-lg px-8 py-4 min-w-[250px] ripple-effect btn-press"
             >
-              Извлечь страницы 📑
+              {t('pages.tools.extractPages.extractPagesButton') || 'Extract Pages 📑'}
             </button>
           </div>
         </div>
@@ -144,6 +145,7 @@ const ExtractPagesPDFPage: React.FC = () => {
       pageDescription={t('pages.tools.extractPages.pageDescription') || 'Извлекайте нужные страницы из PDF документов и создавайте новые файлы онлайн'}
       toolComponent={toolComponent}
       breadcrumbKey="extract-pages-pdf"
+      relatedToolsSection={<RelatedToolsSection currentTool="extract-pages-pdf" />}
     />
   );
 };

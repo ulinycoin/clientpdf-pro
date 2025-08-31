@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Minimal polyfills moved to main.tsx for better control -->
+  
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover" />
 
@@ -123,24 +125,6 @@
 </head>
 <body>
   <div id="root"></div>
-  <!-- Development polyfills for Node.js compatibility -->
-  <script>
-    // Only add polyfills in development
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-      if (typeof global === 'undefined') {
-        window.global = globalThis;
-      }
-      if (typeof require === 'undefined') {
-        window.require = function(module) {
-          console.warn('require() called for module:', module, '- this is not supported in browser');
-          return {};
-        };
-      }
-      if (typeof process === 'undefined') {
-        window.process = { env: {}, browser: true };
-      }
-    }
-  </script>
   
   <script type="module" src="/src/main.tsx"></script>
 </body>

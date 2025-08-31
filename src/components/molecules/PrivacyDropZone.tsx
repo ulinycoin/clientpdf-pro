@@ -180,7 +180,7 @@ const PrivacyDropZone: React.FC<PrivacyDropZoneProps> = ({
               {isProcessing ? 'Подготовка файлов...' : title}
             </h3>
             
-            <p className="text-privacy-600 dark:text-privacy-400">
+            <p className="text-gray-700 dark:text-privacy-400">
               {isProcessing ? 'Файлы проверяются локально' : subtitle}
             </p>
 

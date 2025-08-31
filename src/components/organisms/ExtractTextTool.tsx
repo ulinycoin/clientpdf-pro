@@ -55,7 +55,7 @@ const ExtractTextTool: React.FC<ExtractTextToolProps> = ({
 
   const handleExtractText = async () => {
     if (files.length === 0) {
-      setValidationErrors(['Please select a PDF file to extract text from']);
+      setValidationErrors([t('pages.tools.extractText.tool.errors.noFileSelected')]);
       return;
     }
 
@@ -98,7 +98,7 @@ const ExtractTextTool: React.FC<ExtractTextToolProps> = ({
           className="p-2 hover:bg-seafoam-50 dark:hover:bg-seafoam-900/20 rounded-lg transition-all duration-200 flex items-center space-x-2"
         >
           <span>←</span>
-          <span className="font-medium text-black dark:text-white">Back to Tools</span>
+          <span className="font-medium text-black dark:text-white">{t('pages.tools.extractText.backToTools')}</span>
         </button>
       </div>
 

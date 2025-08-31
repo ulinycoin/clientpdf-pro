@@ -5,6 +5,7 @@ import Canvas from './components/Canvas';
 import Toolbar from './components/Toolbar';
 import FormatPanel from './components/FormatPanel';
 import FileUploadZone from '../../molecules/FileUploadZone';
+import { useI18n } from '../../../hooks/useI18n';
 
 const AddTextTool: React.FC<AddTextToolProps> = ({
   files,
@@ -12,6 +13,7 @@ const AddTextTool: React.FC<AddTextToolProps> = ({
   onClose,
   className = ''
 }) => {
+  const { t } = useI18n();
   const {
     // State
     textElements,
@@ -57,9 +59,9 @@ const AddTextTool: React.FC<AddTextToolProps> = ({
   // Handle canvas click
   const handleCanvasClick = useCallback((x: number, y: number) => {
     if (toolMode === 'add') {
-      addTextElement(x, y, 'Click to edit');
+      addTextElement(x, y, t('tools.addText.status.clickToEdit'));
     }
-  }, [toolMode, addTextElement]);
+  }, [toolMode, addTextElement, t]);
 
   // Handle element selection
   const handleElementSelect = useCallback((id: string) => {
@@ -168,17 +170,17 @@ const AddTextTool: React.FC<AddTextToolProps> = ({
             className="p-2 hover:bg-seafoam-50 dark:hover:bg-seafoam-900/20 rounded-lg transition-all duration-200 flex items-center space-x-2"
           >
             <span>←</span>
-            <span className="font-medium text-black dark:text-white">Back to Tools</span>
+            <span className="font-medium text-black dark:text-white">{t('tools.addText.backToTools')}</span>
           </button>
-          <h2 className="text-2xl font-black text-black dark:text-white">Add Text to PDF</h2>
+          <h2 className="text-2xl font-black text-black dark:text-white">{t('tools.addText.addTextToPdf')}</h2>
         </div>
 
         <div className="text-center py-12">
           <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg mx-auto mb-6">
             📄
           </div>
-          <h3 className="text-lg font-black text-black dark:text-white mb-2">No PDF File Selected</h3>
-          <p className="text-gray-800 dark:text-gray-100 font-medium mb-6">Please upload a PDF file to add text</p>
+          <h3 className="text-lg font-black text-black dark:text-white mb-2">{t('tools.addText.noFileSelected')}</h3>
+          <p className="text-gray-800 dark:text-gray-100 font-medium mb-6">{t('tools.addText.noFileDescription')}</p>
           <FileUploadZone
             onFileUpload={(files) => {
               // This would need to be handled by parent component
@@ -201,12 +203,12 @@ const AddTextTool: React.FC<AddTextToolProps> = ({
           className="p-2 hover:bg-seafoam-50 dark:hover:bg-seafoam-900/20 rounded-lg transition-all duration-200 flex items-center space-x-2 text-sm"
         >
           <span>←</span>
-          <span className="font-medium text-black dark:text-white">Back to Tools</span>
+          <span className="font-medium text-black dark:text-white">{t('tools.addText.backToTools')}</span>
         </button>
-        <h2 className="text-lg font-black text-black dark:text-white">Add Text to PDF</h2>
+        <h2 className="text-lg font-black text-black dark:text-white">{t('tools.addText.addTextToPdf')}</h2>
         <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg border border-white/20 dark:border-gray-600/20 rounded-lg px-3 py-1">
           <div className="text-xs font-medium text-black dark:text-white">
-            {textElements.length} text element{textElements.length !== 1 ? 's' : ''}
+            {textElements.length} {textElements.length === 1 ? t('tools.addText.textElements.single') : t('tools.addText.textElements.multiple')}
           </div>
         </div>
       </div>
@@ -259,11 +261,11 @@ const AddTextTool: React.FC<AddTextToolProps> = ({
           {/* Status bar */}
           <div className="p-2 border-t bg-gray-50 text-xs text-gray-600 flex justify-between flex-shrink-0">
             <div>
-              Mode: {toolMode === 'add' ? '✏️ Add Text' : '👆 Select'}
-              {selectedElement && ` | Selected: "${selectedElement.text.slice(0, 20)}${selectedElement.text.length > 20 ? '...' : ''}"`}
+              {t('tools.addText.status.mode')}: {toolMode === 'add' ? `✏️ ${t('tools.addText.status.addTextMode')}` : `👆 ${t('tools.addText.status.selectMode')}`}
+              {selectedElement && ` | ${t('tools.addText.status.selected')}: "${selectedElement.text.slice(0, 20)}${selectedElement.text.length > 20 ? '...' : ''}"`}
             </div>
             <div>
-              Zoom: {Math.round(scale * 100)}% | Page {currentPage} of {totalPages}
+              {t('tools.addText.status.zoom')}: {Math.round(scale * 100)}% | {t('tools.addText.toolbar.page')} {currentPage} {t('tools.addText.toolbar.of')} {totalPages}
             </div>
           </div>
         </div>
@@ -274,8 +276,8 @@ const AddTextTool: React.FC<AddTextToolProps> = ({
         <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-lg border border-white/20 dark:border-gray-600/20 rounded-2xl p-8 text-center shadow-2xl">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-seafoam-500 mx-auto mb-6"></div>
-            <p className="text-black dark:text-white font-black text-lg mb-2">Processing PDF with Cyrillic support...</p>
-            <p className="text-gray-800 dark:text-gray-100 font-medium text-sm">Loading Unicode fonts and generating document</p>
+            <p className="text-black dark:text-white font-black text-lg mb-2">{t('tools.addText.processingTitle')}</p>
+            <p className="text-gray-800 dark:text-gray-100 font-medium text-sm">{t('tools.addText.processingDescription')}</p>
           </div>
         </div>
       )}

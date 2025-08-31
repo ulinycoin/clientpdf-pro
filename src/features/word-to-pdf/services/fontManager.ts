@@ -59,14 +59,15 @@ export class FontManager {
 
   async loadFont(pdfDoc: PDFDocument, language: string, isCyrillic: boolean = false): Promise<FontLoadResult> {
     try {
-      const fontName = this.selectBestFont(language, isCyrillic);
+      const selectedFont = this.selectBestFont(language, isCyrillic);
 
       // Create a document-specific cache key to avoid cross-document font reuse issues
       // PDF-lib font objects are bound to specific documents and can't be reused
       const documentId = Math.random().toString(36).substr(2, 9); // Generate unique ID for each document
-      const cacheKey = `${fontName}-${language}-${documentId}`;
+      const cacheKey = `${selectedFont}-${language}-${documentId}`;
 
       let font;
+      let fontName = selectedFont;
       let supportsCyrillic = false;
       let needsTransliteration = isCyrillic;
 
@@ -81,14 +82,27 @@ export class FontManager {
 
           console.log(`✅ Cyrillic font loaded successfully for ${language}. No transliteration needed.`);
         } catch (error) {
-          console.warn(`Failed to load Cyrillic font, falling back to standard font with transliteration`);
-          font = await this.loadStandardFont(pdfDoc, 'Helvetica');
-          supportsCyrillic = false;
-          needsTransliteration = true;
+          console.warn(`⚠️ Failed to load external Cyrillic font: ${error.message}`);
+          console.log('🔄 Using improved fallback strategy for Cyrillic text...');
+          
+          // Better fallback strategy - try Times-Roman first as it has better Unicode support
+          try {
+            font = await this.loadStandardFont(pdfDoc, 'Times-Roman');
+            fontName = 'Times-Roman (fallback)';
+            supportsCyrillic = false;
+            needsTransliteration = true;
+            console.log('✅ Times-Roman font loaded as fallback (will transliterate Cyrillic)');
+          } catch (timesError) {
+            font = await this.loadStandardFont(pdfDoc, 'Helvetica');
+            fontName = 'Helvetica (fallback)';
+            supportsCyrillic = false;
+            needsTransliteration = true;
+            console.log('✅ Helvetica font loaded as last resort (will transliterate Cyrillic)');
+          }
         }
       } else {
         // Standard Latin fonts
-        font = await this.loadStandardFont(pdfDoc, fontName);
+        font = await this.loadStandardFont(pdfDoc, selectedFont);
         supportsCyrillic = false;
         needsTransliteration = false;
       }
@@ -111,16 +125,32 @@ export class FontManager {
       };
 
     } catch (error) {
-      console.warn(`Failed to load font for ${language}, using fallback:`, error);
+      console.error(`❌ Critical font loading error for ${language}:`, error);
+      console.log('🚨 Using emergency fallback font strategy...');
 
-      // Fallback to Helvetica
-      const fallbackFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
-      return {
-        font: fallbackFont,
-        fontName: 'Helvetica',
-        supportsCyrillic: false,
-        needsTransliteration: isCyrillic
-      };
+      // Emergency fallback - ensure we always have a working font
+      try {
+        const emergencyFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
+        return {
+          font: emergencyFont,
+          fontName: 'Times-Roman (Emergency)',
+          supportsCyrillic: false,
+          needsTransliteration: isCyrillic
+        };
+      } catch (timesError) {
+        try {
+          const emergencyFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
+          return {
+            font: emergencyFont,
+            fontName: 'Helvetica (Emergency)',
+            supportsCyrillic: false,
+            needsTransliteration: isCyrillic
+          };
+        } catch (helveticaError) {
+          // If even basic fonts fail, something is seriously wrong
+          throw new Error(`Critical font loading failure - cannot load any PDF fonts: ${helveticaError.message}`);
+        }
+      }
     }
   }
 
@@ -145,7 +175,10 @@ export class FontManager {
       console.log(`Loading Noto Sans Cyrillic font for ${language}...`);
 
       const response = await fetch(fontUrl, {
-        mode: 'cors'
+        mode: 'cors',
+        headers: {
+          'Accept': 'application/font-woff2,application/font-woff,application/font-ttf,*/*'
+        }
       });
 
       if (!response.ok) {
@@ -166,7 +199,10 @@ export class FontManager {
         const fallbackUrl = 'https://cdn.jsdelivr.net/npm/dejavu-fonts-ttf@2.37.3/ttf/DejaVuSans.ttf';
 
         const response = await fetch(fallbackUrl, {
-          mode: 'cors'
+          mode: 'cors',
+          headers: {
+            'Accept': 'application/font-woff2,application/font-woff,application/font-ttf,*/*'
+          }
         });
 
         if (!response.ok) {
@@ -187,7 +223,10 @@ export class FontManager {
           const lastResortUrl = 'https://fonts.gstatic.com/s/ptsans/v17/jizaRExUiTo99u79D0KEwA.woff2';
 
           const response = await fetch(lastResortUrl, {
-            mode: 'cors'
+            mode: 'cors',
+            headers: {
+              'Accept': 'application/font-woff2,application/font-woff,application/font-ttf,*/*'
+            }
           });
 
           if (!response.ok) {

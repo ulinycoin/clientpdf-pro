@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import ModernUploadZone from '../molecules/ModernUploadZone';
 import ProgressBar from '../atoms/ProgressBar';
+import { useI18n } from '../../hooks/useI18n';
 import { PdfToImageService } from '../../services/pdfToImageService';
 import { 
   ImageConversionOptions,
@@ -18,6 +19,7 @@ interface PdfToImageToolProps {
 }
 
 export const PdfToImageTool: React.FC<PdfToImageToolProps> = ({ onClose, initialFile }) => {
+  const { t } = useI18n();
   const [file, setFile] = useState<File | null>(initialFile || null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState<ImageConversionProgress | null>(null);
@@ -103,7 +105,7 @@ export const PdfToImageTool: React.FC<PdfToImageToolProps> = ({ onClose, initial
         totalPages: 0,
         originalSize: file.size,
         convertedSize: 0,
-        error: error instanceof Error ? error.message : 'Unknown error occurred'
+        error: error instanceof Error ? error.message : (t('pages.tools.pdfToImage.errors.conversionFailed') || 'Unknown error occurred')
       });
     } finally {
       setIsProcessing(false);
@@ -140,9 +142,9 @@ export const PdfToImageTool: React.FC<PdfToImageToolProps> = ({ onClose, initial
               🖼️
             </div>
             <div>
-              <h2 className="text-3xl font-black text-black dark:text-white">PDF to Image Converter</h2>
+              <h2 className="text-3xl font-black text-black dark:text-white">{t('pages.tools.pdfToImage.tool.title') || 'PDF to Image Converter'}</h2>
               <p className="text-gray-800 dark:text-gray-100 font-medium">
-                Конвертируйте PDF страницы в высококачественные изображения
+                {t('pages.tools.pdfToImage.tool.description') || 'Convert PDF pages to high-quality image files'}
               </p>
             </div>
           </div>
@@ -150,7 +152,7 @@ export const PdfToImageTool: React.FC<PdfToImageToolProps> = ({ onClose, initial
             <button
               onClick={onClose}
               className="p-3 text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl transition-all duration-200"
-              title="Закрыть"
+              title={t('pages.tools.pdfToImage.tool.close') || 'Close'}
             >
               <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
@@ -168,14 +170,14 @@ export const PdfToImageTool: React.FC<PdfToImageToolProps> = ({ onClose, initial
               multiple={false}
               maxSize={100 * 1024 * 1024} // 100MB
               disabled={isProcessing}
-              title="Загрузите PDF файл для конвертации"
-              subtitle="Конвертируйте страницы PDF в высококачественные изображения PNG или JPEG"
-              supportedFormats="PDF файлы"
+              title={t('pages.tools.pdfToImage.uploadTitle') || 'Upload PDF file to convert to images'}
+              subtitle={t('pages.tools.pdfToImage.uploadSubtitle') || 'Transform PDF pages into high-quality JPG, PNG or WebP images'}
+              supportedFormats={t('pages.tools.pdfToImage.supportedFormats') || 'PDF files'}
             />
             <div className="mt-6 p-4 bg-white/60 dark:bg-gray-800/60 backdrop-blur-lg border border-white/20 dark:border-gray-600/20 rounded-xl">
               <p className="text-gray-800 dark:text-gray-100 font-medium flex items-center justify-center gap-2">
                 <span className="w-2 h-2 bg-purple-500 rounded-full"></span>
-                Поддерживаются файлы до 100MB • PNG, JPEG форматы • Высокое качество
+                {t('pages.tools.pdfToImage.tool.supportInfo') || 'Files up to 100MB supported • PNG, JPEG formats • High quality'}
               </p>
             </div>
           </div>
@@ -190,7 +192,7 @@ export const PdfToImageTool: React.FC<PdfToImageToolProps> = ({ onClose, initial
               <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-800 dark:to-blue-700 rounded-xl flex items-center justify-center text-lg">
                 📄
               </div>
-              <h3 className="text-xl font-black text-black dark:text-white">Выбранный файл</h3>
+              <h3 className="text-xl font-black text-black dark:text-white">{t('pages.tools.pdfToImage.selectedFile', { count: 1 }) || 'Selected file'}</h3>
             </div>
             <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl p-4">
               <div className="flex items-center gap-3">
@@ -213,7 +215,7 @@ export const PdfToImageTool: React.FC<PdfToImageToolProps> = ({ onClose, initial
               <div className="w-10 h-10 bg-gradient-to-br from-green-100 to-green-200 dark:from-green-800 dark:to-green-700 rounded-xl flex items-center justify-center text-lg">
                 ⚙️
               </div>
-              <h3 className="text-xl font-black text-black dark:text-white">Настройки конвертации</h3>
+              <h3 className="text-xl font-black text-black dark:text-white">{t('pages.tools.pdfToImage.tool.conversionSettingsTitle') || 'Conversion Settings'}</h3>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -223,7 +225,7 @@ export const PdfToImageTool: React.FC<PdfToImageToolProps> = ({ onClose, initial
                   <span className="w-5 h-5 bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-800 dark:to-purple-700 rounded flex items-center justify-center text-xs">
                     🖼️
                   </span>
-                  Output Format
+                  {t('pages.tools.pdfToImage.tool.formatTitle') || 'Output Format'}
                 </label>
                 <select
                   value={format}
@@ -235,7 +237,7 @@ export const PdfToImageTool: React.FC<PdfToImageToolProps> = ({ onClose, initial
                 </select>
                 <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mt-2 flex items-center gap-1">
                   <span className="w-1 h-1 bg-purple-500 rounded-full"></span>
-                  {FORMAT_DESCRIPTIONS[format]}
+                  {t(`pages.tools.pdfToImage.tool.formats.${format}`) || FORMAT_DESCRIPTIONS[format]}
                 </p>
               </div>
 
@@ -245,7 +247,7 @@ export const PdfToImageTool: React.FC<PdfToImageToolProps> = ({ onClose, initial
                   <span className="w-5 h-5 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-800 dark:to-blue-700 rounded flex items-center justify-center text-xs">
                     ⭐
                   </span>
-                  Quality
+                  {t('pages.tools.pdfToImage.tool.qualityTitle') || 'Quality'}
                 </label>
                 <select
                   value={quality}
@@ -260,7 +262,7 @@ export const PdfToImageTool: React.FC<PdfToImageToolProps> = ({ onClose, initial
                 </select>
                 <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mt-2 flex items-center gap-1">
                   <span className="w-1 h-1 bg-blue-500 rounded-full"></span>
-                  {QUALITY_SETTINGS[quality].description}
+                  {t(`pages.tools.pdfToImage.tool.qualities.${quality}`) || QUALITY_SETTINGS[quality].description}
                 </p>
               </div>
             </div>
@@ -272,7 +274,7 @@ export const PdfToImageTool: React.FC<PdfToImageToolProps> = ({ onClose, initial
               <div className="w-10 h-10 bg-gradient-to-br from-orange-100 to-orange-200 dark:from-orange-800 dark:to-orange-700 rounded-xl flex items-center justify-center text-lg">
                 📑
               </div>
-              <h3 className="text-xl font-black text-black dark:text-white">Выбор страниц</h3>
+              <h3 className="text-xl font-black text-black dark:text-white">{t('pages.tools.pdfToImage.tool.pageSelectionTitle') || 'Page Selection'}</h3>
             </div>
             
             <div className="space-y-4">
@@ -286,7 +288,7 @@ export const PdfToImageTool: React.FC<PdfToImageToolProps> = ({ onClose, initial
                     onChange={(e) => setPageSelection(e.target.value as any)}
                     className="w-4 h-4 text-orange-500 bg-white/80 border-gray-300 focus:ring-orange-500 focus:ring-2 mr-3"
                   />
-                  <span className="font-black text-black dark:text-white">Все страницы</span>
+                  <span className="font-black text-black dark:text-white">{t('pages.tools.pdfToImage.tool.pageSelection.all') || 'All pages'}</span>
                 </label>
               </div>
               
@@ -300,7 +302,7 @@ export const PdfToImageTool: React.FC<PdfToImageToolProps> = ({ onClose, initial
                     onChange={(e) => setPageSelection(e.target.value as any)}
                     className="w-4 h-4 text-orange-500 bg-white/80 border-gray-300 focus:ring-orange-500 focus:ring-2 mr-3"
                   />
-                  <span className="font-black text-black dark:text-white">Диапазон страниц</span>
+                  <span className="font-black text-black dark:text-white">{t('pages.tools.pdfToImage.tool.pageSelection.range') || 'Page range'}</span>
                 </label>
                 
                 {pageSelection === 'range' && (
@@ -311,16 +313,16 @@ export const PdfToImageTool: React.FC<PdfToImageToolProps> = ({ onClose, initial
                       value={pageRange.start}
                       onChange={(e) => setPageRange(prev => ({ ...prev, start: parseInt(e.target.value) || 1 }))}
                       className="w-20 px-3 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-lg text-black dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-orange-500"
-                      placeholder="От"
+                      placeholder={t('pages.tools.pdfToImage.tool.pageRangeFrom') || 'From'}
                     />
-                    <span className="text-gray-600 dark:text-gray-400 font-medium">до</span>
+                    <span className="text-gray-600 dark:text-gray-400 font-medium">{t('pages.tools.pdfToImage.tool.pageRangeTo') || 'to'}</span>
                     <input
                       type="number"
                       min={pageRange.start}
                       value={pageRange.end}
                       onChange={(e) => setPageRange(prev => ({ ...prev, end: parseInt(e.target.value) || 1 }))}
                       className="w-20 px-3 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-lg text-black dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-orange-500"
-                      placeholder="До"
+                      placeholder={t('pages.tools.pdfToImage.tool.pageRangeTo') || 'To'}
                     />
                   </div>
                 )}
@@ -336,7 +338,7 @@ export const PdfToImageTool: React.FC<PdfToImageToolProps> = ({ onClose, initial
                     onChange={(e) => setPageSelection(e.target.value as any)}
                     className="w-4 h-4 text-orange-500 bg-white/80 border-gray-300 focus:ring-orange-500 focus:ring-2 mr-3"
                   />
-                  <span className="font-black text-black dark:text-white">Конкретные страницы</span>
+                  <span className="font-black text-black dark:text-white">{t('pages.tools.pdfToImage.tool.pageSelection.specific') || 'Specific pages'}</span>
                 </label>
                 
                 {pageSelection === 'specific' && (
@@ -345,12 +347,12 @@ export const PdfToImageTool: React.FC<PdfToImageToolProps> = ({ onClose, initial
                       type="text"
                       value={specificPages}
                       onChange={(e) => setSpecificPages(e.target.value)}
-                      placeholder="например: 1, 3, 5-7, 10"
+                      placeholder={t('pages.tools.pdfToImage.tool.specificPagesPlaceholder') || 'e.g., 1,3,5-10'}
                       className="w-full px-4 py-3 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl text-black dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
                     />
                     <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mt-2 flex items-center gap-1">
                       <span className="w-1 h-1 bg-orange-500 rounded-full"></span>
-                      Введите номера страниц через запятую
+                      {t('pages.tools.pdfToImage.tool.specificPagesHelp') || 'Enter page numbers separated by commas'}
                     </p>
                   </div>
                 )}
@@ -365,7 +367,7 @@ export const PdfToImageTool: React.FC<PdfToImageToolProps> = ({ onClose, initial
                 <div className="w-10 h-10 bg-gradient-to-br from-yellow-100 to-yellow-200 dark:from-yellow-800 dark:to-yellow-700 rounded-xl flex items-center justify-center text-lg">
                   🎨
                 </div>
-                <h3 className="text-xl font-black text-black dark:text-white">Цвет фона (для JPEG)</h3>
+                <h3 className="text-xl font-black text-black dark:text-white">{t('pages.tools.pdfToImage.tool.backgroundTitle') || 'Background Color'}</h3>
               </div>
               <div className="flex items-center space-x-4">
                 <input
@@ -392,10 +394,10 @@ export const PdfToImageTool: React.FC<PdfToImageToolProps> = ({ onClose, initial
                 {isProcessing ? (
                   <div className="flex items-center justify-center gap-3">
                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                    Конвертация...
+                    {t('pages.tools.pdfToImage.tool.converting') || 'Converting...'}
                   </div>
                 ) : (
-                  'Конвертировать в изображения 🖼️'
+                  t('pages.tools.pdfToImage.tool.startConversion') || 'Convert to Images 🖼️'
                 )}
               </button>
               <button
@@ -403,7 +405,7 @@ export const PdfToImageTool: React.FC<PdfToImageToolProps> = ({ onClose, initial
                 disabled={isProcessing}
                 className="btn-privacy-secondary text-lg px-8 py-4 min-h-[56px] disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Выбрать другой файл
+                {t('pages.tools.pdfToImage.tool.selectFile') || 'Select another file'}
               </button>
             </div>
           </div>
@@ -418,9 +420,9 @@ export const PdfToImageTool: React.FC<PdfToImageToolProps> = ({ onClose, initial
               ⚡
             </div>
             <div>
-              <h3 className="text-xl font-black text-black dark:text-white">Конвертация в процессе</h3>
+              <h3 className="text-xl font-black text-black dark:text-white">{t('pages.tools.pdfToImage.results.processingTitle') || 'Conversion in progress'}</h3>
               <p className="text-gray-800 dark:text-gray-100 font-medium">
-                {progress.message || `Обработка страницы ${progress.currentPage} из ${progress.totalPages}`}
+                {progress.message || t('pages.tools.pdfToImage.results.processingMessage', { current: progress.currentPage, total: progress.totalPages }) || `Processing page ${progress.currentPage} of ${progress.totalPages}`}
               </p>
             </div>
           </div>
@@ -445,10 +447,10 @@ export const PdfToImageTool: React.FC<PdfToImageToolProps> = ({ onClose, initial
                   </div>
                   <div>
                     <h3 className="text-xl font-black text-green-800 dark:text-green-200">
-                      Конвертация завершена успешно!
+                      {t('pages.tools.pdfToImage.results.conversionComplete') || 'Conversion completed successfully!'}
                     </h3>
                     <p className="text-gray-800 dark:text-gray-100 font-medium text-sm">
-                      Все страницы PDF преобразованы в изображения
+                      {t('pages.tools.pdfToImage.results.successDescription') || 'All PDF pages converted to images'}
                     </p>
                   </div>
                 </div>
@@ -459,7 +461,7 @@ export const PdfToImageTool: React.FC<PdfToImageToolProps> = ({ onClose, initial
                       {result.images.length}
                     </div>
                     <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      Страниц конвертировано
+                      {t('pages.tools.pdfToImage.results.pagesConverted') || 'Pages converted'}
                     </p>
                   </div>
                   
@@ -468,7 +470,7 @@ export const PdfToImageTool: React.FC<PdfToImageToolProps> = ({ onClose, initial
                       {format.toUpperCase()}
                     </div>
                     <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      Формат • {quality} ({result.metadata?.resolution} DPI)
+                      {t('pages.tools.pdfToImage.results.format') || 'Format'} • {quality} ({result.metadata?.resolution} DPI)
                     </p>
                   </div>
                   
@@ -477,7 +479,7 @@ export const PdfToImageTool: React.FC<PdfToImageToolProps> = ({ onClose, initial
                       {(result.convertedSize / 1024 / 1024).toFixed(1)}MB
                     </div>
                     <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      Общий размер • {((result.metadata?.processingTime || 0) / 1000).toFixed(1)}с
+                      {t('pages.tools.pdfToImage.results.totalSize') || 'Total size'} • {((result.metadata?.processingTime || 0) / 1000).toFixed(1)}{t('pages.tools.pdfToImage.results.seconds') || 's'}
                     </p>
                   </div>
                 </div>
@@ -490,7 +492,7 @@ export const PdfToImageTool: React.FC<PdfToImageToolProps> = ({ onClose, initial
                     <div className="w-10 h-10 bg-gradient-to-br from-pink-100 to-pink-200 dark:from-pink-800 dark:to-pink-700 rounded-xl flex items-center justify-center text-lg">
                       👁️
                     </div>
-                    <h3 className="text-xl font-black text-black dark:text-white">Предварительный просмотр</h3>
+                    <h3 className="text-xl font-black text-black dark:text-white">{t('pages.tools.pdfToImage.results.preview') || 'Preview'}</h3>
                   </div>
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                     {previewImages.map((preview, index) => (
@@ -501,7 +503,7 @@ export const PdfToImageTool: React.FC<PdfToImageToolProps> = ({ onClose, initial
                           className="w-full h-24 object-contain rounded-lg mb-2"
                         />
                         <p className="text-xs font-black text-black dark:text-white text-center">
-                          Страница {result.images[index]?.pageNumber}
+                          {t('pages.tools.pdfToImage.results.pageLabel', { number: result.images[index]?.pageNumber }) || `Page ${result.images[index]?.pageNumber}`}
                         </p>
                       </div>
                     ))}
@@ -525,7 +527,7 @@ export const PdfToImageTool: React.FC<PdfToImageToolProps> = ({ onClose, initial
                   <div className="w-10 h-10 bg-gradient-to-br from-green-100 to-green-200 dark:from-green-800 dark:to-green-700 rounded-xl flex items-center justify-center text-lg">
                     📥
                   </div>
-                  <h3 className="text-xl font-black text-black dark:text-white">Скачать изображения</h3>
+                  <h3 className="text-xl font-black text-black dark:text-white">{t('pages.tools.pdfToImage.results.downloadImages') || 'Download Images'}</h3>
                 </div>
                 
                 <div className="flex flex-col sm:flex-row gap-4 mb-6">
@@ -533,13 +535,13 @@ export const PdfToImageTool: React.FC<PdfToImageToolProps> = ({ onClose, initial
                     onClick={handleDownloadAll} 
                     className="flex-1 btn-privacy-modern text-lg px-8 py-4 min-h-[56px] ripple-effect btn-press"
                   >
-                    Скачать все изображения ({result.images.length}) 📦
+                    {t('pages.tools.pdfToImage.results.downloadAll', { count: result.images.length }) || `Download all images (${result.images.length})`} 📦
                   </button>
                   <button 
                     onClick={handleReset}
                     className="btn-privacy-secondary text-lg px-8 py-4 min-h-[56px]"
                   >
-                    Конвертировать другой PDF
+                    {t('pages.tools.pdfToImage.results.convertAnotherFile') || 'Convert another PDF'}
                   </button>
                 </div>
 
@@ -550,7 +552,7 @@ export const PdfToImageTool: React.FC<PdfToImageToolProps> = ({ onClose, initial
                       <span className="w-5 h-5 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-800 dark:to-blue-700 rounded flex items-center justify-center text-xs">
                         📄
                       </span>
-                      Скачать отдельные изображения
+                      {t('pages.tools.pdfToImage.results.downloadIndividual') || 'Download individual images'}
                     </h4>
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                       {result.images.map((image, index) => (
@@ -559,7 +561,7 @@ export const PdfToImageTool: React.FC<PdfToImageToolProps> = ({ onClose, initial
                           onClick={() => handleDownloadSingle(index)}
                           className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl px-4 py-3 text-black dark:text-white font-medium hover:bg-white dark:hover:bg-gray-700 hover:scale-105 transition-all duration-200 hover:shadow-lg"
                         >
-                          Страница {image.pageNumber}
+                          {t('pages.tools.pdfToImage.results.pageLabel', { number: image.pageNumber }) || `Page ${image.pageNumber}`}
                         </button>
                       ))}
                     </div>
@@ -577,10 +579,10 @@ export const PdfToImageTool: React.FC<PdfToImageToolProps> = ({ onClose, initial
                   </div>
                   <div>
                     <h3 className="text-xl font-black text-red-800 dark:text-red-200">
-                      Ошибка конвертации
+                      {t('pages.tools.pdfToImage.errors.conversionFailed') || 'Conversion failed'}
                     </h3>
                     <p className="text-gray-800 dark:text-gray-100 font-medium text-sm">
-                      Не удалось преобразовать PDF в изображения
+                      {t('pages.tools.pdfToImage.messages.error') || 'Failed to convert PDF to images'}
                     </p>
                   </div>
                 </div>
@@ -594,13 +596,13 @@ export const PdfToImageTool: React.FC<PdfToImageToolProps> = ({ onClose, initial
                     onClick={handleConvert} 
                     className="flex-1 btn-privacy-modern text-lg px-8 py-4 min-h-[56px] ripple-effect btn-press"
                   >
-                    Попробовать снова 🔄
+                    {t('pages.tools.pdfToImage.tool.startConversion') || 'Try again'} 🔄
                   </button>
                   <button 
                     onClick={handleReset}
                     className="btn-privacy-secondary text-lg px-8 py-4 min-h-[56px]"
                   >
-                    Выбрать другой файл
+                    {t('pages.tools.pdfToImage.tool.selectFile') || 'Select another file'}
                   </button>
                 </div>
               </div>

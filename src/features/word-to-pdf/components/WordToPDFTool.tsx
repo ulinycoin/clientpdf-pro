@@ -5,6 +5,7 @@ import { ConversionSettings } from '../types/wordToPdf.types';
 import { ConversionSettingsPanel } from './ConversionSettingsPanel';
 import { PDFPreview } from './PDFPreview';
 import { useTranslation } from '../../../hooks/useI18n';
+import ModernUploadZone from '../../../components/molecules/ModernUploadZone';
 
 export const WordToPDFTool: React.FC = () => {
   const { t } = useTranslation();
@@ -21,8 +22,7 @@ export const WordToPDFTool: React.FC = () => {
     compression: false
   });
 
-  // useRef hook - always in the same position
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  // Removed fileInputRef as we now use ModernUploadZone
 
   // Custom hook - always call in the same position, destructure all values safely
   const hookResult = useWordToPDF();
@@ -35,20 +35,13 @@ export const WordToPDFTool: React.FC = () => {
   const togglePreviewMode = hookResult.togglePreviewMode;
   const reset = hookResult.reset;
 
-  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
+  const handleFilesSelected = (files: File[]) => {
+    const file = files[0];
     if (file) {
       setCurrentFile(file);
       setShowPreview(false);
       reset();
     }
-  };
-
-  const handleClick = () => {
-    reset();
-    setCurrentFile(null);
-    setShowPreview(false);
-    fileInputRef.current?.click();
   };
 
   const handleConvert = async () => {
@@ -83,54 +76,17 @@ export const WordToPDFTool: React.FC = () => {
     <div className="max-w-7xl mx-auto p-6">
       {!currentFile ? (
         <div className="max-w-2xl mx-auto">
-          <input
-            ref={fileInputRef}
-            type="file"
+          <ModernUploadZone
+            onFilesSelected={handleFilesSelected}
             accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-            onChange={handleFileSelect}
-            className="hidden"
+            acceptedTypes={['application/vnd.openxmlformats-officedocument.wordprocessingml.document', '.docx']}
+            multiple={false}
+            maxFiles={1}
+            maxSize={100 * 1024 * 1024}
+            title={t('pages.tools.wordToPdf.tool.uploadTitle')}
+            subtitle={t('pages.tools.wordToPdf.tool.uploadSubtitle')}
+            supportedFormats={t('pages.tools.wordToPdf.tool.supportedFormats')}
           />
-
-          <div
-            onClick={handleClick}
-            className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-white/20 dark:border-gray-600/20 rounded-2xl shadow-2xl p-12 cursor-pointer hover:shadow-3xl hover:scale-105 transition-all duration-300 group"
-          >
-            <div className="text-center">
-              <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-2xl flex items-center justify-center text-white text-4xl mx-auto mb-8 shadow-2xl group-hover:scale-110 transition-transform duration-300">
-                📝
-              </div>
-              
-              <h3 className="text-2xl font-black text-black dark:text-white mb-4">
-                {t('pages.tools.wordToPdf.tool.uploadTitle')}
-              </h3>
-              <p className="text-lg font-medium text-gray-600 dark:text-gray-300 mb-8">
-                {t('pages.tools.wordToPdf.tool.uploadSubtitle')}
-              </p>
-
-              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200/60 dark:border-blue-600/20 rounded-xl p-4 mb-6 backdrop-blur-sm">
-                <p className="text-sm font-medium text-blue-700 dark:text-blue-300">{t('pages.tools.wordToPdf.tool.supportedFormats')}</p>
-              </div>
-
-              <div className="grid gap-3 text-left">
-                <div className="flex items-center gap-3">
-                  <span className="w-2 h-2 bg-seafoam-500 rounded-full"></span>
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('pages.tools.wordToPdf.tool.compatibility.msWord')}</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="w-2 h-2 bg-seafoam-500 rounded-full"></span>
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('pages.tools.wordToPdf.tool.compatibility.googleDocs')}</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="w-2 h-2 bg-amber-500 rounded-full"></span>
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('pages.tools.wordToPdf.tool.compatibility.docWarning')}</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('pages.tools.wordToPdf.tool.compatibility.localProcessing')}</span>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       ) : (
         <div className="space-y-6">

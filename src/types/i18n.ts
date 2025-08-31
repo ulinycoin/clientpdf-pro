@@ -235,6 +235,58 @@ export interface Translations {
     addText: {
       title: string;
       description: string;
+      pageTitle: string;
+      pageDescription: string;
+      uploadTitle: string;
+      uploadSubtitle: string;
+      supportedFormats: string;
+      selectedFile: string;
+      readyForEditing: string;
+      fileSizeUnit: string;
+      removeFile: string;
+      editPdf: string;
+      backToTools: string;
+      addTextToPdf: string;
+      noFileSelected: string;
+      noFileDescription: string;
+      textElements: {
+        single: string;
+        multiple: string;
+      };
+      processingTitle: string;
+      processingDescription: string;
+      toolbar: {
+        addText: string;
+        select: string;
+        undo: string;
+        redo: string;
+        page: string;
+        of: string;
+        savePdf: string;
+      };
+      formatPanel: {
+        title: string;
+        selectElementPrompt: string;
+        textContent: string;
+        textPlaceholder: string;
+        fontFamily: string;
+        fontSize: string;
+        textColor: string;
+        position: string;
+        preview: string;
+        sampleText: string;
+      };
+      canvas: {
+        loadingPdf: string;
+      };
+      status: {
+        mode: string;
+        addTextMode: string;
+        selectMode: string;
+        selected: string;
+        zoom: string;
+        clickToEdit: string;
+      };
     };
     watermark: {
       title: string;
@@ -243,14 +295,111 @@ export interface Translations {
     rotate: {
       title: string;
       description: string;
+      pageTitle: string;
+      pageDescription: string;
+      results: {
+        successTitle: string;
+        successDescription: string;
+        downloadTitle: string;
+        readyToDownload: string;
+        rotateAnother: string;
+      };
+      upload: {
+        title: string;
+        description: string;
+        supportedFormats: string;
+        selectedFile: string;
+        readyToRotate: string;
+        removeFile: string;
+        startRotating: string;
+      };
+      tool: {
+        fileSizeUnit: string;
+        pageCount: string;
+        fileNotSelected: string;
+        fileNotSelectedDescription: string;
+        toolTitle: string;
+        trustIndicators: {
+          private: string;
+          quality: string;
+        };
+        rotationAngle: {
+          title: string;
+          description: string;
+        };
+        rotationOptions: {
+          clockwise: {
+            label: string;
+            description: string;
+          };
+          flip: {
+            label: string;
+            description: string;
+          };
+          counterclockwise: {
+            label: string;
+            description: string;
+          };
+        };
+        pageSelection: {
+          title: string;
+          description: string;
+          allPages: {
+            label: string;
+            description: string;
+            descriptionWithCount: string;
+          };
+          specificPages: {
+            label: string;
+            description: string;
+          };
+        };
+        specificPages: {
+          inputLabel: string;
+          placeholder: string;
+          helpText: string;
+        };
+        pageOverview: {
+          title: string;
+          description: string;
+          pageTooltip: string;
+          portrait: string;
+          landscape: string;
+          portraitOrientation: string;
+          landscapeOrientation: string;
+        };
+        processing: {
+          title: string;
+          analyzing: string;
+          rotating: string;
+        };
+        errors: {
+          invalidPageNumbers: string;
+          rotationFailed: string;
+          unknownError: string;
+          processingError: string;
+        };
+        infoBox: {
+          title: string;
+          description: string;
+        };
+        buttons: {
+          rotate: string;
+          processing: string;
+        };
+      };
     };
     extractPages: {
       title: string;
       description: string;
+      pageTitle: string;
+      pageDescription: string;
     };
     extractText: {
       title: string;
       description: string;
+      pageTitle: string;
+      pageDescription: string;
     };
     pdfToImage: {
       title: string;
@@ -834,6 +983,76 @@ export interface Translations {
           choose: string;
           download: string;
         };
+        uploadTitle: string;
+        uploadSubtitle: string;
+        supportedFormats: string;
+        selectedFile: string;
+        readyToExtract: string;
+        removeFile: string;
+        extractTextButton: string;
+        backToTools: string;
+        tool: {
+          title: string;
+          description: string;
+          fileToExtract: string;
+          extractionOptions: string;
+          smartFormatting: string;
+          smartFormattingDesc: string;
+          formattingLevel: string;
+          levels: {
+            minimal: {
+              title: string;
+              desc: string;
+            };
+            standard: {
+              title: string;
+              desc: string;
+            };
+            advanced: {
+              title: string;
+              desc: string;
+            };
+          };
+          includeMetadata: string;
+          preserveFormatting: string;
+          pageRange: string;
+          pageRangeFields: {
+            startPage: string;
+            endPage: string;
+            note: string;
+          };
+          extracting: string;
+          success: {
+            title: string;
+            pagesProcessed: string;
+            textLength: string;
+            documentTitle: string;
+            author: string;
+            smartFormattingApplied: string;
+            fileDownloaded: string;
+            noTextWarning: string;
+            comparisonPreview: string;
+            before: string;
+            after: string;
+            notice: string;
+            textPreview: string;
+          };
+          infoBox: {
+            title: string;
+            description: string;
+          };
+          privacy: {
+            title: string;
+            description: string;
+          };
+          buttons: {
+            extractText: string;
+            extracting: string;
+          };
+          errors: {
+            noFileSelected: string;
+          };
+        };
       };
       addText: {
         pageTitle: string;
@@ -847,73 +1066,213 @@ export interface Translations {
       rotate: {
         pageTitle: string;
         pageDescription: string;
-        uploadTitle: string;
-        uploadSubtitle: string;
-        buttons: {
-          uploadDifferent: string;
+        results: {
+          successTitle: string;
+          successDescription: string;
+          downloadTitle: string;
+          readyToDownload: string;
+          rotateAnother: string;
         };
-        features: {
+        upload: {
           title: string;
-          items: {
-            angles: string;
-            selection: string;
-            preview: string;
+          description: string;
+          supportedFormats: string;
+          selectedFile: string;
+          readyToRotate: string;
+          removeFile: string;
+          startRotating: string;
+        };
+        tool: {
+          fileSizeUnit: string;
+          pageCount: string;
+          fileNotSelected: string;
+          fileNotSelectedDescription: string;
+          toolTitle: string;
+          trustIndicators: {
+            private: string;
             quality: string;
           };
-        };
-        privacy: {
-          title: string;
-          items: {
-            clientSide: string;
-            noUploads: string;
-            localProcessing: string;
-            instantProcessing: string;
-          };
-        };
-        benefits: {
-          title: string;
-          instant: {
+          rotationAngle: {
             title: string;
             description: string;
           };
-          precise: {
+          rotationOptions: {
+            clockwise: {
+              label: string;
+              description: string;
+            };
+            flip: {
+              label: string;
+              description: string;
+            };
+            counterclockwise: {
+              label: string;
+              description: string;
+            };
+          };
+          pageSelection: {
+            title: string;
+            description: string;
+            allPages: {
+              label: string;
+              description: string;
+              descriptionWithCount: string;
+            };
+            specificPages: {
+              label: string;
+              description: string;
+            };
+          };
+          specificPages: {
+            inputLabel: string;
+            placeholder: string;
+            helpText: string;
+          };
+          pageOverview: {
+            title: string;
+            description: string;
+            pageTooltip: string;
+            portrait: string;
+            landscape: string;
+            portraitOrientation: string;
+            landscapeOrientation: string;
+          };
+          processing: {
+            title: string;
+            analyzing: string;
+            rotating: string;
+          };
+          errors: {
+            invalidPageNumbers: string;
+            rotationFailed: string;
+            unknownError: string;
+            processingError: string;
+          };
+          infoBox: {
             title: string;
             description: string;
           };
-          private: {
-            title: string;
-            description: string;
-          };
-        };
-        howTo: {
-          title: string;
-          steps: {
-            upload: {
-              title: string;
-              description: string;
-            };
-            select: {
-              title: string;
-              description: string;
-            };
-            angle: {
-              title: string;
-              description: string;
-            };
-            download: {
-              title: string;
-              description: string;
-            };
+          buttons: {
+            rotate: string;
+            processing: string;
           };
         };
       };
       watermark: {
         pageTitle: string;
         pageDescription: string;
-        steps: {
-          upload: string;
-          configure: string;
-          download: string;
+        results: {
+          successTitle: string;
+          successDescription: string;
+          downloadTitle: string;
+          readyToDownload: string;
+          addAnotherWatermark: string;
+        };
+        upload: {
+          title: string;
+          description: string;
+          supportedFormats: string;
+          selectedFile: string;
+          readyToWatermark: string;
+          removeFile: string;
+          startWatermarking: string;
+        };
+        tool: {
+          toolTitle: string;
+          toolDescription: string;
+          fileSizeUnit: string;
+          fileInfo: {
+            pdfPreview: string;
+          };
+          fileErrors: {
+            noFileSelected: string;
+          };
+          preview: {
+            title: string;
+            enterTextPrompt: string;
+            livePreviewDescription: string;
+            previewWillAppear: string;
+            pageLabel: string;
+          };
+          settings: {
+            title: string;
+            watermarkText: {
+              label: string;
+              placeholder: string;
+              charactersRemaining: string;
+            };
+            fontFamily: {
+              label: string;
+            };
+            fontRecommendation: {
+              title: string;
+              supportsCyrillic: string;
+            };
+            fontSupport: {
+              supported: string;
+              mayNotSupport: string;
+            };
+            fontSize: {
+              label: string;
+              rangeLabels: {
+                small: string;
+                large: string;
+              };
+            };
+            opacity: {
+              label: string;
+              rangeLabels: {
+                transparent: string;
+                opaque: string;
+              };
+            };
+            rotation: {
+              label: string;
+            };
+            position: {
+              label: string;
+              positions: {
+                center: string;
+                topLeft: string;
+                topRight: string;
+                bottomLeft: string;
+                bottomRight: string;
+              };
+            };
+            textColor: {
+              label: string;
+              colors: {
+                gray: string;
+                red: string;
+                blue: string;
+                green: string;
+                black: string;
+                orange: string;
+              };
+            };
+          };
+          progress: {
+            addingWatermark: string;
+            completed: string;
+          };
+          error: {
+            title: string;
+          };
+          privacy: {
+            title: string;
+            description: string;
+          };
+          success: {
+            title: string;
+            description: string;
+            downloadAgain: string;
+          };
+          actions: {
+            processAnother: string;
+            cancel: string;
+            adding: string;
+            addWatermark: string;
+          };
         };
       };
       pdfToImage: {

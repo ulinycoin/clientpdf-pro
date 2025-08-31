@@ -120,7 +120,7 @@ const DataStaysLocalIndicator: React.FC<DataStaysLocalIndicatorProps> = ({
           {variant === 'hero' ? 'Ваши данные остаются только у вас' : 'Локальная обработка'}
         </h3>
         
-        <p className="text-privacy-600 dark:text-privacy-400 leading-relaxed">
+        <p className="text-gray-700 dark:text-privacy-400 leading-relaxed">
           {variant === 'compact' 
             ? 'Файлы обрабатываются в браузере'
             : variant === 'hero'

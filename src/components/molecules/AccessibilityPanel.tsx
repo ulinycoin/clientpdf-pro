@@ -65,7 +65,7 @@ const AccessibilityPanel: React.FC<AccessibilityPanelProps> = ({
                 flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200
                 ${activeTab === tab.id
                   ? 'bg-white dark:bg-privacy-700 text-privacy-900 dark:text-privacy-100 shadow-sm'
-                  : 'text-privacy-600 dark:text-privacy-400 hover:text-privacy-800 dark:hover:text-privacy-200'
+                  : 'text-gray-700 dark:text-privacy-400 hover:text-privacy-800 dark:hover:text-privacy-200'
                 }
               `}
             >
@@ -86,7 +86,7 @@ const AccessibilityPanel: React.FC<AccessibilityPanelProps> = ({
                     <h3 className="font-medium text-privacy-800 dark:text-privacy-200 mb-1">
                       Уменьшить анимации
                     </h3>
-                    <p className="text-sm text-privacy-600 dark:text-privacy-400">
+                    <p className="text-sm text-gray-700 dark:text-privacy-400">
                       Отключает анимации и переходы для снижения нагрузки и предотвращения дискомфорта
                     </p>
                   </div>
@@ -111,7 +111,7 @@ const AccessibilityPanel: React.FC<AccessibilityPanelProps> = ({
                   </div>
                 </div>
 
-                <div className="text-sm text-privacy-600 dark:text-privacy-400">
+                <div className="text-sm text-gray-700 dark:text-privacy-400">
                   {preferences.reducedMotion 
                     ? '✅ Анимации отключены для комфортного просмотра'
                     : 'ℹ️ Анимации включены для полного интерактивного опыта'
@@ -130,7 +130,7 @@ const AccessibilityPanel: React.FC<AccessibilityPanelProps> = ({
                   <h3 className="font-medium text-privacy-800 dark:text-privacy-200 mb-1">
                     Высокая контрастность
                   </h3>
-                  <p className="text-sm text-privacy-600 dark:text-privacy-400">
+                  <p className="text-sm text-gray-700 dark:text-privacy-400">
                     Увеличивает контраст цветов для лучшей видимости текста и элементов
                   </p>
                 </div>
@@ -168,7 +168,7 @@ const AccessibilityPanel: React.FC<AccessibilityPanelProps> = ({
                           <div className="font-medium text-privacy-800 dark:text-privacy-200">
                             {option.label}
                           </div>
-                          <div className="text-xs text-privacy-600 dark:text-privacy-400">
+                          <div className="text-xs text-gray-700 dark:text-privacy-400">
                             {option.value === 'small' && '14px'}
                             {option.value === 'medium' && '16px'}
                             {option.value === 'large' && '18px'}
@@ -176,7 +176,7 @@ const AccessibilityPanel: React.FC<AccessibilityPanelProps> = ({
                           </div>
                         </div>
                         <div 
-                          className="text-privacy-600 dark:text-privacy-400"
+                          className="text-gray-700 dark:text-privacy-400"
                           style={{ 
                             fontSize: option.value === 'small' ? '14px' : 
                                      option.value === 'medium' ? '16px' :
@@ -197,7 +197,7 @@ const AccessibilityPanel: React.FC<AccessibilityPanelProps> = ({
                   <h3 className="font-medium text-privacy-800 dark:text-privacy-200 mb-1">
                     Оптимизация для скринридеров
                   </h3>
-                  <p className="text-sm text-privacy-600 dark:text-privacy-400">
+                  <p className="text-sm text-gray-700 dark:text-privacy-400">
                     Улучшает совместимость с программами чтения с экрана
                   </p>
                 </div>
@@ -223,7 +223,7 @@ const AccessibilityPanel: React.FC<AccessibilityPanelProps> = ({
                   <h3 className="font-medium text-privacy-800 dark:text-privacy-200 mb-1">
                     Улучшенная видимость фокуса
                   </h3>
-                  <p className="text-sm text-privacy-600 dark:text-privacy-400">
+                  <p className="text-sm text-gray-700 dark:text-privacy-400">
                     Делает границы фокуса более заметными при навигации с клавиатуры
                   </p>
                 </div>
@@ -244,7 +244,7 @@ const AccessibilityPanel: React.FC<AccessibilityPanelProps> = ({
                   <h3 className="font-medium text-privacy-800 dark:text-privacy-200 mb-1">
                     Расширенная навигация с клавиатуры
                   </h3>
-                  <p className="text-sm text-privacy-600 dark:text-privacy-400">
+                  <p className="text-sm text-gray-700 dark:text-privacy-400">
                     Включает дополнительные клавиатурные сочетания и улучшенную навигацию
                   </p>
                 </div>
@@ -266,19 +266,19 @@ const AccessibilityPanel: React.FC<AccessibilityPanelProps> = ({
                 </h4>
                 <div className="grid grid-cols-2 gap-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-privacy-600 dark:text-privacy-400">Закрыть модал:</span>
+                    <span className="text-gray-700 dark:text-privacy-400">Закрыть модал:</span>
                     <kbd className="px-2 py-1 bg-privacy-200 dark:bg-privacy-700 rounded text-xs">Esc</kbd>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-privacy-600 dark:text-privacy-400">Навигация:</span>
+                    <span className="text-gray-700 dark:text-privacy-400">Навигация:</span>
                     <kbd className="px-2 py-1 bg-privacy-200 dark:bg-privacy-700 rounded text-xs">Tab</kbd>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-privacy-600 dark:text-privacy-400">Активировать:</span>
+                    <span className="text-gray-700 dark:text-privacy-400">Активировать:</span>
                     <kbd className="px-2 py-1 bg-privacy-200 dark:bg-privacy-700 rounded text-xs">Enter</kbd>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-privacy-600 dark:text-privacy-400">Выбор:</span>
+                    <span className="text-gray-700 dark:text-privacy-400">Выбор:</span>
                     <kbd className="px-2 py-1 bg-privacy-200 dark:bg-privacy-700 rounded text-xs">Space</kbd>
                   </div>
                 </div>

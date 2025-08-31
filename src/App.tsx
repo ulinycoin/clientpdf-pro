@@ -74,6 +74,7 @@ function App() {
                 <Route path="/extract-text-pdf" element={<ExtractTextPDFPage />} />
                 <Route path="/pdf-to-image" element={<PDFToImagePage />} />
                 <Route path="/images-to-pdf" element={<ImageToPDFPage />} />
+                <Route path="/image-to-pdf" element={<ImageToPDFPage />} /> {/* Alias for convenience */}
                 <Route path="/word-to-pdf" element={<WordToPDFPage />} />
                 <Route path="/excel-to-pdf" element={<ExcelToPDFPage />} />
                 <Route path="/ocr-pdf" element={<OCRPDFPage />} />
@@ -90,6 +91,7 @@ function App() {
                 <Route path="/de/extract-text-pdf" element={<ExtractTextPDFPage />} />
                 <Route path="/de/pdf-to-image" element={<PDFToImagePage />} />
                 <Route path="/de/images-to-pdf" element={<ImageToPDFPage />} />
+                <Route path="/de/image-to-pdf" element={<ImageToPDFPage />} /> {/* Alias */}
                 <Route path="/de/word-to-pdf" element={<WordToPDFPage />} />
                 <Route path="/de/excel-to-pdf" element={<ExcelToPDFPage />} />
                 <Route path="/de/ocr-pdf" element={<OCRPDFPage />} />
@@ -105,6 +107,7 @@ function App() {
                 <Route path="/fr/extract-text-pdf" element={<ExtractTextPDFPage />} />
                 <Route path="/fr/pdf-to-image" element={<PDFToImagePage />} />
                 <Route path="/fr/images-to-pdf" element={<ImageToPDFPage />} />
+                <Route path="/fr/image-to-pdf" element={<ImageToPDFPage />} /> {/* Alias */}
                 <Route path="/fr/word-to-pdf" element={<WordToPDFPage />} />
                 <Route path="/fr/excel-to-pdf" element={<ExcelToPDFPage />} />
                 <Route path="/fr/ocr-pdf" element={<OCRPDFPage />} />
@@ -120,6 +123,7 @@ function App() {
                 <Route path="/es/extract-text-pdf" element={<ExtractTextPDFPage />} />
                 <Route path="/es/pdf-to-image" element={<PDFToImagePage />} />
                 <Route path="/es/images-to-pdf" element={<ImageToPDFPage />} />
+                <Route path="/es/image-to-pdf" element={<ImageToPDFPage />} /> {/* Alias */}
                 <Route path="/es/word-to-pdf" element={<WordToPDFPage />} />
                 <Route path="/es/excel-to-pdf" element={<ExcelToPDFPage />} />
                 <Route path="/es/ocr-pdf" element={<OCRPDFPage />} />
@@ -135,6 +139,7 @@ function App() {
                 <Route path="/ru/extract-text-pdf" element={<ExtractTextPDFPage />} />
                 <Route path="/ru/pdf-to-image" element={<PDFToImagePage />} />
                 <Route path="/ru/images-to-pdf" element={<ImageToPDFPage />} />
+                <Route path="/ru/image-to-pdf" element={<ImageToPDFPage />} /> {/* Alias */}
                 <Route path="/ru/word-to-pdf" element={<WordToPDFPage />} />
                 <Route path="/ru/excel-to-pdf" element={<ExcelToPDFPage />} />
                 <Route path="/ru/ocr-pdf" element={<OCRPDFPage />} />

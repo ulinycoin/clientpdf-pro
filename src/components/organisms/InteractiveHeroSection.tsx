@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useTranslation } from '../../hooks/useI18n';
+import { useI18n } from '../../hooks/useI18n';
 
 export interface InteractiveHeroSectionProps {
   title: string;
@@ -20,11 +20,14 @@ const InteractiveHeroSection: React.FC<InteractiveHeroSectionProps> = ({
   animated = true,
   className = ''
 }) => {
-  const { t } = useTranslation();
+  const { t, translations } = useI18n();
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isVisible, setIsVisible] = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
   const [currentBadgeIndex, setCurrentBadgeIndex] = useState(0);
+
+  // Privacy-focused badges with real value propositions
+  const badges = translations.home.hero.badges;
 
   // Track mouse position for parallax effects
   useEffect(() => {
@@ -68,14 +71,11 @@ const InteractiveHeroSection: React.FC<InteractiveHeroSectionProps> = ({
   useEffect(() => {
     if (animated) {
       const interval = setInterval(() => {
-        setCurrentBadgeIndex(prev => (prev + 1) % 4);
+        setCurrentBadgeIndex(prev => (prev + 1) % (badges?.length || 3));
       }, 2500);
       return () => clearInterval(interval);
     }
   }, [animated]);
-
-  // Privacy-focused badges with real value propositions
-  const badges = t('home.hero.badges');
 
   return (
     <section 
@@ -172,21 +172,21 @@ const InteractiveHeroSection: React.FC<InteractiveHeroSectionProps> = ({
               <div className="relative flex flex-col sm:flex-row items-center gap-4">
                 <div className={`text-3xl transition-all duration-500 ${animated ? 'animate-pulse' : ''}`} 
                      key={currentBadgeIndex}>
-                  {badges[currentBadgeIndex].icon}
+                  {badges?.[currentBadgeIndex]?.icon || '🔒'}
                 </div>
                 
                 <div className="text-center sm:text-left">
                   <div className="text-xl font-bold text-white mb-1">
-                    {badges[currentBadgeIndex].text}
+                    {badges?.[currentBadgeIndex]?.title || 'Private & Secure'}
                   </div>
                   <div className="text-sm font-medium text-gray-300">
-                    {badges[currentBadgeIndex].description}
+                    {badges?.[currentBadgeIndex]?.description || 'All processing happens locally'}
                   </div>
                 </div>
                 
                 {animated && (
                   <div className="flex space-x-2 ml-auto">
-                    {badges.map((_, i) => (
+                    {badges?.map((_, i) => (
                       <div
                         key={i}
                         className={`w-2 h-2 rounded-full transition-all duration-500 ${
@@ -246,7 +246,7 @@ const InteractiveHeroSection: React.FC<InteractiveHeroSectionProps> = ({
           {/* Scroll indicator */}
           {animated && (
             <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
-              <div className="flex flex-col items-center text-privacy-500 dark:text-privacy-400">
+              <div className="flex flex-col items-center text-gray-600 dark:text-privacy-400">
                 <span className="text-sm mb-2">{t('home.hero.learnMore')}</span>
                 <svg 
                   className="w-6 h-6 animate-bounce" 

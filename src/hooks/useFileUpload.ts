@@ -1,13 +1,38 @@
 import { useState, useCallback } from 'react';
 import { UseFileUploadResult } from '../types';
 
-export const useFileUpload = (): UseFileUploadResult => {
+export interface FileUploadOptions {
+  acceptedTypes?: string[];
+  maxFiles?: number;
+  maxSize?: number;
+}
+
+export const useFileUpload = (options?: FileUploadOptions): UseFileUploadResult => {
   const [files, setFiles] = useState<File[]>([]);
   const [isDragging, setIsDragging] = useState(false);
 
   const addFiles = useCallback((newFiles: File[]) => {
-    // Filter only PDF files
-    const pdfFiles = newFiles.filter(file => file.type === 'application/pdf');
+    // Use accepted types from options, default to PDF for backward compatibility
+    const acceptedTypes = options?.acceptedTypes || ['application/pdf'];
+    const maxFiles = options?.maxFiles || 100;
+    const maxSize = options?.maxSize || 100 * 1024 * 1024; // 100MB default
+    
+    // Filter files based on accepted types
+    const validFiles = newFiles.filter(file => {
+      // Check file type
+      const isValidType = acceptedTypes.some(type => {
+        if (type.includes('*')) {
+          const baseType = type.split('/')[0];
+          return file.type.startsWith(baseType + '/');
+        }
+        return file.type === type;
+      });
+      
+      // Check file size
+      const isValidSize = file.size <= maxSize && file.size > 0;
+      
+      return isValidType && isValidSize;
+    });
     
     setFiles(prevFiles => {
       // Avoid duplicates by checking file names and sizes
@@ -15,13 +40,15 @@ export const useFileUpload = (): UseFileUploadResult => {
         prevFiles.map(f => `${f.name}-${f.size}`)
       );
       
-      const uniqueNewFiles = pdfFiles.filter(
+      const uniqueNewFiles = validFiles.filter(
         file => !existingFiles.has(`${file.name}-${file.size}`)
       );
       
-      return [...prevFiles, ...uniqueNewFiles];
+      // Limit total files
+      const totalFiles = [...prevFiles, ...uniqueNewFiles];
+      return totalFiles.slice(0, maxFiles);
     });
-  }, []);
+  }, [options]);
 
   const removeFile = useCallback((index: number) => {
     setFiles(prevFiles => prevFiles.filter((_, i) => i !== index));

@@ -14,6 +14,7 @@ export { default as InteractiveHeroSection } from './InteractiveHeroSection';
 export { default as PrivacyBenefitsSection } from './PrivacyBenefitsSection';
 export { default as QuickStartSection } from './QuickStartSection';
 export { default as TrustSignalsSection } from './TrustSignalsSection';
+export { default as RelatedToolsSection } from './RelatedToolsSection';
 
 // PDF Tools - all consistently exported as default
 export { default as MergeTool } from './MergeTool';
@@ -31,6 +32,7 @@ export { default as ExtractPagesTool } from './ExtractPagesTool';
 export { default as ImageToPDFTool } from './ImageToPDFTool';
 export { default as OCRTool } from './OCRTool';
 export { default as ExcelToPDFTool } from './ExcelToPDFTool';
+export { default as ModernWordToPDFTool } from './ModernWordToPDFTool';
 
 // Modular AddTextTool - now correctly points to the modular version
 export { default as AddTextTool } from './AddTextTool';

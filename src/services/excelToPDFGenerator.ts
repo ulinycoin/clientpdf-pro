@@ -41,16 +41,15 @@ export class ExcelToPDFGenerator {
     // Register fontkit for custom font support
     pdfDoc.registerFontkit(fontkit);
 
-    // Try multiple font sources
+    // Try multiple font sources with better error handling and CORS handling
     const fontUrls = [
-      'https://cdn.jsdelivr.net/npm/dejavu-fonts-ttf@2.37.3/ttf/DejaVuSans.ttf',
-      'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/webfonts/fa-solid-900.ttf',
-      'https://fonts.gstatic.com/s/notosans/v36/o-0IIpQlx3QUlC5A4PNr5TRASf6M7Q.woff2'
+      'https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxK.woff',
+      'https://cdn.jsdelivr.net/npm/dejavu-fonts-ttf@2.37.3/ttf/DejaVuSans.ttf'
     ];
 
     for (const fontUrl of fontUrls) {
       try {
-        console.log(`Trying to load font from: ${fontUrl}`);
+        console.log(`🔤 Attempting to load Cyrillic font from: ${fontUrl}`);
 
         const response = await fetch(fontUrl, {
           mode: 'cors',
@@ -60,30 +59,31 @@ export class ExcelToPDFGenerator {
         });
 
         if (!response.ok) {
-          console.warn(`Font fetch failed: ${response.status} ${response.statusText}`);
+          console.warn(`❌ Font fetch failed: ${response.status} ${response.statusText}`);
           continue;
         }
 
         const fontBytes = await response.arrayBuffer();
 
-        // Validate that we got actual font data
+        // Validate font data
         if (fontBytes.byteLength < 1000) {
-          console.warn('Font data too small, probably not a valid font');
+          console.warn('⚠️ Font data too small, probably not a valid font');
           continue;
         }
 
         const font = await pdfDoc.embedFont(fontBytes);
-        console.log(`✅ Successfully loaded font for ${language} from ${fontUrl}`);
+        console.log(`✅ Successfully loaded Cyrillic font for ${language}`);
         return font;
 
       } catch (error) {
-        console.warn(`Failed to load font from ${fontUrl}:`, error.message);
+        console.warn(`❌ Failed to load font from ${fontUrl}:`, error.message);
         continue;
       }
     }
 
-    // If all external fonts fail, throw error to use fallback
-    throw new Error(`Unable to load any Cyrillic fonts from external sources`);
+    // If all external fonts fail, use fallback approach with standard fonts
+    console.warn('🔄 All external fonts failed, using standard font fallback');
+    throw new Error(`Unable to load external fonts - will use standard font with transliteration`);
   }
 
   async loadFont(pdfDoc: PDFDocument, language: string, isCyrillic: boolean = false): Promise<FontLoadResult> {
@@ -119,25 +119,27 @@ export class ExcelToPDFGenerator {
           font = await this.loadCyrillicFont(pdfDoc, language);
           supportsCyrillic = true;
           needsTransliteration = false;
-          fontName = 'DejaVu Sans';
-          console.log('✅ Cyrillic font (DejaVu Sans) loaded successfully');
+          fontName = 'Roboto (Cyrillic)';
+          console.log('✅ External Cyrillic font loaded successfully');
         } catch (error) {
-          console.warn(`⚠️ Failed to load Cyrillic font: ${error.message}`);
-          console.log('🔄 Falling back to standard font with transliteration');
+          console.warn(`⚠️ Failed to load external Cyrillic font: ${error.message}`);
+          console.log('🔄 Using improved fallback strategy for Cyrillic text...');
 
-          // Try Times-Roman first as it has better Unicode support than Helvetica
+          // Better fallback strategy - try Times-Roman first as it has better Unicode support
           try {
             font = await pdfDoc.embedFont(StandardFonts.TimesRoman);
             fontName = 'Times-Roman';
-            console.log('✅ Times-Roman font loaded as fallback');
+            supportsCyrillic = false;
+            needsTransliteration = true;
+            console.log('✅ Times-Roman font loaded as fallback (will transliterate Cyrillic)');
           } catch (timesError) {
-            console.warn('⚠️ Times-Roman also failed, using Helvetica');
+            console.warn('⚠️ Times-Roman also failed, using Helvetica as last resort');
             font = await pdfDoc.embedFont(StandardFonts.Helvetica);
             fontName = 'Helvetica';
-            console.log('✅ Helvetica font loaded as last resort');
+            supportsCyrillic = false;
+            needsTransliteration = true;
+            console.log('✅ Helvetica font loaded (will transliterate Cyrillic)');
           }
-          supportsCyrillic = false;
-          needsTransliteration = true;
         }
       } else {
         console.log('📝 Loading standard Helvetica font for Latin text');
@@ -165,21 +167,30 @@ export class ExcelToPDFGenerator {
       };
 
     } catch (error) {
-      console.warn(`Failed to load font for ${language}, using final fallback:`, error);
-      // Try Times-Roman first, then Helvetica as last resort
-      let fallbackFont;
-      let fallbackName;
+      console.error(`❌ Critical font loading error for ${language}:`, error);
+      console.log('🚨 Using emergency fallback font strategy...');
+      
+      // Emergency fallback - ensure we always have a working font
+      let emergencyFont;
+      let emergencyName;
       try {
-        fallbackFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
-        fallbackName = 'Times-Roman';
+        emergencyFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
+        emergencyName = 'Times-Roman (Emergency)';
+        console.log('✅ Emergency Times-Roman font loaded');
       } catch (timesError) {
-        fallbackFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
-        fallbackName = 'Helvetica';
+        try {
+          emergencyFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
+          emergencyName = 'Helvetica (Emergency)';
+          console.log('✅ Emergency Helvetica font loaded');
+        } catch (helveticaError) {
+          // If even basic fonts fail, something is seriously wrong
+          throw new Error(`Critical font loading failure - cannot load any PDF fonts: ${helveticaError.message}`);
+        }
       }
 
       return {
-        font: fallbackFont,
-        fontName: fallbackName,
+        font: emergencyFont,
+        fontName: emergencyName,
         supportsCyrillic: false,
         needsTransliteration: isCyrillic
       };

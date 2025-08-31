@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useTranslation } from '../../hooks/useI18n';
+import { useTranslation, useI18n } from '../../hooks/useI18n';
 import { useMotionPreferences } from '../../hooks/useAccessibilityPreferences';
 import { getToolRoute } from '../../utils/routeHelpers';
 
@@ -28,9 +28,18 @@ const ModernToolCard: React.FC<ModernToolCardProps> = ({
   className = ''
 }) => {
   const { t } = useTranslation();
+  const { currentLanguage } = useI18n();
   const { shouldAnimate } = useMotionPreferences();
-  const toolRoute = getToolRoute(operationType || '');
+  const baseToolRoute = getToolRoute(operationType || '');
   const isDisabled = disabled || comingSoon;
+
+  // Helper function to create localized tool route
+  const getLocalizedToolRoute = () => {
+    if (currentLanguage === 'en') {
+      return baseToolRoute;
+    }
+    return `/${currentLanguage}${baseToolRoute}`;
+  };
 
   // Modern SVG icons for PDF tools
   const getModernIcon = (iconType: string) => {
@@ -234,7 +243,7 @@ const ModernToolCard: React.FC<ModernToolCardProps> = ({
     </div>
   ) : (
     <Link
-      to={toolRoute}
+      to={getLocalizedToolRoute()}
       className={cardClassName}
       role="button"
       tabIndex={0}

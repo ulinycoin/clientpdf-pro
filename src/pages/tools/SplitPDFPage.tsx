@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { toolsSEOData } from '../../data/seoData';
 import { StandardToolPageTemplate } from '../../components/templates';
-import { ModernSplitTool } from '../../components/organisms';
+import { ModernSplitTool, RelatedToolsSection } from '../../components/organisms';
 import { ModernUploadZone } from '../../components/molecules';
 import { useFileUpload } from '../../hooks/useFileUpload';
 import { useI18n } from '../../hooks/useI18n';
@@ -128,10 +128,10 @@ const SplitPDFPage: React.FC = () => {
               </div>
               <div>
                 <h3 className="text-xl font-black text-green-800 dark:text-green-200">
-                  PDF успешно разделен!
+                  {t('tools.split.results.successTitle')}
                 </h3>
                 <p className="text-gray-800 dark:text-gray-100 font-medium text-sm">
-                  Создано {successResults.length} файлов
+                  {t('tools.split.results.successDescription', { count: successResults.length })}
                 </p>
               </div>
             </div>
@@ -139,18 +139,18 @@ const SplitPDFPage: React.FC = () => {
             {/* Download Options */}
             {useZip ? (
               <div className="space-y-4">
-                <h4 className="font-bold text-black dark:text-white">Скачать все файлы одним архивом:</h4>
+                <h4 className="font-bold text-black dark:text-white">{t('tools.split.results.downloadAllZip')}:</h4>
                 <button
                   onClick={downloadAllAsZip}
                   className="btn-privacy-modern text-lg px-8 py-4 w-full flex items-center justify-center gap-3"
                 >
                   <Download className="w-5 h-5" />
-                  Скачать ZIP архив ({successResults.length} файлов)
+                  {t('tools.split.results.downloadAllZipDescription', { count: successResults.length })}
                 </button>
               </div>
             ) : (
               <div className="space-y-4">
-                <h4 className="font-bold text-black dark:text-white">Скачать файлы по отдельности:</h4>
+                <h4 className="font-bold text-black dark:text-white">{t('tools.split.results.downloadIndividually')}:</h4>
                 <div className="space-y-3">
                   {successResults.map((result, index) => (
                     <div key={index} className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl p-4 flex items-center justify-between">
@@ -161,13 +161,13 @@ const SplitPDFPage: React.FC = () => {
                         <div>
                           <p className="font-black text-black dark:text-white">
                             {result.metadata?.pageNumber 
-                              ? `Страница ${result.metadata.pageNumber}.pdf`
+                              ? t('tools.split.results.pageFileName', { pageNumber: result.metadata.pageNumber })
                               : result.metadata?.startPage && result.metadata?.endPage
-                              ? `Страницы ${result.metadata.startPage}-${result.metadata.endPage}.pdf`
-                              : `Файл ${index + 1}.pdf`}
+                              ? t('tools.split.results.rangeFileName', { startPage: result.metadata.startPage, endPage: result.metadata.endPage })
+                              : t('tools.split.results.genericFileName', { index: index + 1 })}
                           </p>
                           <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Готово к скачиванию
+                            {t('tools.split.results.fileReady')}
                           </p>
                         </div>
                       </div>
@@ -176,7 +176,7 @@ const SplitPDFPage: React.FC = () => {
                         className="btn-privacy-modern text-sm px-6 py-3 flex items-center gap-2"
                       >
                         <Download className="w-4 h-4" />
-                        Скачать
+                        {t('common.download')}
                       </button>
                     </div>
                   ))}
@@ -190,7 +190,7 @@ const SplitPDFPage: React.FC = () => {
                 onClick={handleReset}
                 className="btn-privacy-secondary text-lg px-8 py-4"
               >
-                Разделить другой файл
+                {t('tools.split.results.splitAnother')}
               </button>
             </div>
           </div>
@@ -220,9 +220,9 @@ const SplitPDFPage: React.FC = () => {
           multiple={false}
           maxSize={100 * 1024 * 1024}
           disabled={false}
-          title="Загрузите PDF файл для разделения"
-          subtitle="Извлекайте отдельные страницы или диапазоны из PDF документов"
-          supportedFormats="PDF файлы"
+          title={t('tools.split.upload.title')}
+          subtitle={t('tools.split.upload.description')}
+          supportedFormats={t('tools.split.upload.supportedFormats')}
         />
         
         {/* File List & Start Button */}
@@ -234,10 +234,10 @@ const SplitPDFPage: React.FC = () => {
               </div>
               <div>
                 <h3 className="text-xl font-black text-black dark:text-white">
-                  Выбранный файл ({files.length})
+                  {t('tools.split.upload.selectedFile', { count: files.length })}
                 </h3>
                 <p className="text-gray-800 dark:text-gray-100 font-medium text-sm">
-                  Готов к разделению
+                  {t('tools.split.upload.readyToSplit')}
                 </p>
               </div>
             </div>
@@ -252,14 +252,14 @@ const SplitPDFPage: React.FC = () => {
                     <div>
                       <p className="font-black text-black dark:text-white">{file.name}</p>
                       <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                        {(file.size / 1024 / 1024).toFixed(2)} МБ
+                        {(file.size / 1024 / 1024).toFixed(2)} {t('common.fileSizeUnit')}
                       </p>
                     </div>
                   </div>
                   <button
                     onClick={() => removeFile(index)}
                     className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all duration-200"
-                    title="Удалить файл"
+                    title={t('tools.split.upload.removeFile')}
                   >
                     <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
@@ -274,7 +274,7 @@ const SplitPDFPage: React.FC = () => {
                 onClick={() => setToolActive(true)}
                 className="btn-privacy-modern text-lg px-8 py-4 min-w-[250px] ripple-effect btn-press"
               >
-                Разделить PDF файл ✂️
+                {t('tools.split.upload.startSplitting')}
               </button>
             </div>
           </div>
@@ -291,10 +291,11 @@ const SplitPDFPage: React.FC = () => {
         question: faq.question,
         answer: faq.answer
       }))}
-      pageTitle="Разделить PDF файл бесплатно"
-      pageDescription="Извлекайте отдельные страницы или диапазоны из PDF документов с полной конфиденциальностью. Быстро, безопасно, без загрузок на сервер."
+      pageTitle={t('tools.split.pageTitle')}
+      pageDescription={t('tools.split.pageDescription')}
       toolComponent={toolComponent}
       breadcrumbKey="split-pdf"
+      relatedToolsSection={<RelatedToolsSection currentTool="split-pdf" />}
     />
   );
 };

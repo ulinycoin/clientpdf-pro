@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { PDFProcessingResult } from '../../types';
 import { RotateService } from '../../services/rotateService';
 import { useMotionPreferences } from '../../hooks/useAccessibilityPreferences';
+import { useI18n } from '../../hooks/useI18n';
 
 interface ModernRotateToolProps {
   files: File[];
@@ -17,6 +18,7 @@ const ModernRotateTool: React.FC<ModernRotateToolProps> = React.memo(({
   className = ''
 }) => {
   const { shouldAnimate } = useMotionPreferences();
+  const { t } = useI18n();
   const [rotation, setRotation] = useState<90 | 180 | 270>(90);
   const [pageSelection, setPageSelection] = useState<'all' | 'specific'>('all');
   const [specificPages, setSpecificPages] = useState<string>('');
@@ -32,7 +34,7 @@ const ModernRotateTool: React.FC<ModernRotateToolProps> = React.memo(({
 
   const formatSize = (bytes: number): string => {
     const mb = bytes / (1024 * 1024);
-    return `${mb.toFixed(1)} МБ`;
+    return `${mb.toFixed(1)} ${t('tools.rotate.tool.fileSizeUnit')}`;
   };
 
   const clearError = () => setError(null);
@@ -56,13 +58,13 @@ const ModernRotateTool: React.FC<ModernRotateToolProps> = React.memo(({
   const getRotationInfo = (degrees: number) => {
     switch (degrees) {
       case 90:
-        return { icon: '↻', label: 'По часовой', description: '90° вправо' };
+        return { icon: '↻', label: t('tools.rotate.tool.rotationOptions.clockwise.label'), description: t('tools.rotate.tool.rotationOptions.clockwise.description') };
       case 180:
-        return { icon: '⟲', label: 'Переворот', description: '180° полный' };
+        return { icon: '⟲', label: t('tools.rotate.tool.rotationOptions.flip.label'), description: t('tools.rotate.tool.rotationOptions.flip.description') };
       case 270:
-        return { icon: '↺', label: 'Против часовой', description: '270° влево' };
+        return { icon: '↺', label: t('tools.rotate.tool.rotationOptions.counterclockwise.label'), description: t('tools.rotate.tool.rotationOptions.counterclockwise.description') };
       default:
-        return { icon: '↻', label: 'По часовой', description: '90° вправо' };
+        return { icon: '↻', label: t('tools.rotate.tool.rotationOptions.clockwise.label'), description: t('tools.rotate.tool.rotationOptions.clockwise.description') };
     }
   };
 
@@ -87,7 +89,7 @@ const ModernRotateTool: React.FC<ModernRotateToolProps> = React.memo(({
           .filter(p => p >= 0);
         
         if (pageNumbers.length === 0) {
-          setError('Введите корректные номера страниц');
+          setError(t('tools.rotate.tool.errors.invalidPageNumbers'));
           setIsProcessing(false);
           return;
         }
@@ -102,7 +104,7 @@ const ModernRotateTool: React.FC<ModernRotateToolProps> = React.memo(({
       setProgress(100);
       
       if (!result.success) {
-        setError(result.error?.message || 'Ошибка поворота PDF');
+        setError(result.error?.message || t('tools.rotate.tool.errors.rotationFailed'));
         return;
       }
 
@@ -112,7 +114,7 @@ const ModernRotateTool: React.FC<ModernRotateToolProps> = React.memo(({
 
     } catch (error) {
       console.error('Rotate error:', error);
-      setError(error instanceof Error ? error.message : 'Неизвестная ошибка');
+      setError(error instanceof Error ? error.message : t('tools.rotate.tool.errors.unknownError'));
     } finally {
       setIsProcessing(false);
     }
@@ -130,16 +132,16 @@ const ModernRotateTool: React.FC<ModernRotateToolProps> = React.memo(({
             ⚠️
           </div>
           <h2 className="text-2xl font-black text-black dark:text-white mb-4">
-            Файл не выбран
+            {t('tools.rotate.tool.fileNotSelected')}
           </h2>
           <p className="text-gray-800 dark:text-gray-100 font-medium mb-6">
-            Выберите PDF файл для поворота страниц
+            {t('tools.rotate.tool.fileNotSelectedDescription')}
           </p>
           <button
             onClick={onClose}
             className="btn-ocean-modern"
           >
-            Назад
+            {t('common.back')}
           </button>
         </div>
       </div>
@@ -157,11 +159,11 @@ const ModernRotateTool: React.FC<ModernRotateToolProps> = React.memo(({
             </div>
             <div>
               <h2 className="text-2xl font-black text-black dark:text-white">
-                Поворот PDF страниц
+                {t('tools.rotate.tool.toolTitle')}
               </h2>
               <p className="text-gray-800 dark:text-gray-100 font-medium">
                 {selectedFile.name} • {formatSize(selectedFile.size)}
-                {pageInfo && ` • ${pageInfo.totalPages} страниц`}
+                {pageInfo && ` • ${t('tools.rotate.tool.pageCount', { count: pageInfo.totalPages })}`}
               </p>
             </div>
           </div>
@@ -170,7 +172,7 @@ const ModernRotateTool: React.FC<ModernRotateToolProps> = React.memo(({
             onClick={onClose}
             disabled={isProcessing}
             className="p-3 text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-white/50 dark:hover:bg-gray-700/50 rounded-xl transition-all duration-200 disabled:opacity-50"
-            aria-label="Закрыть"
+            aria-label={t('common.close')}
           >
             <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
               <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
@@ -183,7 +185,7 @@ const ModernRotateTool: React.FC<ModernRotateToolProps> = React.memo(({
           <div className="flex items-center gap-2 px-4 py-2 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-full border border-white/20 dark:border-gray-600/20">
             <div className={`w-2 h-2 rounded-full bg-success-500 ${shouldAnimate ? 'animate-pulse' : ''}`}></div>
             <span className="text-sm font-medium text-gray-800 dark:text-gray-100">
-              Приватная обработка
+              {t('tools.rotate.tool.trustIndicators.private')}
             </span>
           </div>
           
@@ -192,7 +194,7 @@ const ModernRotateTool: React.FC<ModernRotateToolProps> = React.memo(({
               <path d="M13,13H11V7H13M13,17H11V15H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" />
             </svg>
             <span className="text-sm font-medium text-gray-800 dark:text-gray-100">
-              Точный поворот
+              {t('tools.rotate.tool.trustIndicators.quality')}
             </span>
           </div>
         </div>
@@ -206,10 +208,10 @@ const ModernRotateTool: React.FC<ModernRotateToolProps> = React.memo(({
           </div>
           <div>
             <h3 className="text-xl font-black text-black dark:text-white">
-              Угол поворота
+              {t('tools.rotate.tool.rotationAngle.title')}
             </h3>
             <p className="text-gray-800 dark:text-gray-100 font-medium text-sm">
-              Выберите направление и угол поворота страниц
+              {t('tools.rotate.tool.rotationAngle.description')}
             </p>
           </div>
         </div>
@@ -270,10 +272,10 @@ const ModernRotateTool: React.FC<ModernRotateToolProps> = React.memo(({
           </div>
           <div>
             <h3 className="text-xl font-black text-black dark:text-white">
-              Выбор страниц
+              {t('tools.rotate.tool.pageSelection.title')}
             </h3>
             <p className="text-gray-800 dark:text-gray-100 font-medium text-sm">
-              Укажите какие страницы нужно повернуть
+              {t('tools.rotate.tool.pageSelection.description')}
             </p>
           </div>
         </div>
@@ -282,14 +284,14 @@ const ModernRotateTool: React.FC<ModernRotateToolProps> = React.memo(({
           {[
             {
               value: 'all',
-              label: 'Все страницы',
-              description: pageInfo ? `Повернуть все ${pageInfo.totalPages} страниц` : 'Повернуть все страницы документа',
+              label: t('tools.rotate.tool.pageSelection.allPages.label'),
+              description: pageInfo ? t('tools.rotate.tool.pageSelection.allPages.descriptionWithCount', { count: pageInfo.totalPages }) : t('tools.rotate.tool.pageSelection.allPages.description'),
               icon: '📚'
             },
             {
               value: 'specific',
-              label: 'Конкретные страницы',
-              description: 'Указать номера страниц для поворота',
+              label: t('tools.rotate.tool.pageSelection.specificPages.label'),
+              description: t('tools.rotate.tool.pageSelection.specificPages.description'),
               icon: '🎯'
             }
           ].map((option, index) => (
@@ -327,18 +329,18 @@ const ModernRotateTool: React.FC<ModernRotateToolProps> = React.memo(({
         {pageSelection === 'specific' && (
           <div className="mt-6 pt-6 border-t border-white/20 dark:border-gray-600/20">
             <label className="block text-sm font-bold text-black dark:text-white mb-2">
-              Номера страниц
+              {t('tools.rotate.tool.specificPages.inputLabel')}
             </label>
             <input
               type="text"
-              placeholder="Например: 1, 3, 5, 7"
+              placeholder={t('tools.rotate.tool.specificPages.placeholder')}
               value={specificPages}
               onChange={(e) => setSpecificPages(e.target.value)}
               disabled={isProcessing}
               className="w-full px-4 py-3 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/30 dark:border-gray-600/30 rounded-xl text-black dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-seafoam-500 focus:border-seafoam-500 transition-all"
             />
             <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mt-2">
-              Введите номера страниц через запятую
+              {t('tools.rotate.tool.specificPages.helpText')}
             </p>
           </div>
         )}
@@ -353,10 +355,10 @@ const ModernRotateTool: React.FC<ModernRotateToolProps> = React.memo(({
             </div>
             <div>
               <h3 className="text-xl font-black text-black dark:text-white">
-                Обзор страниц
+                {t('tools.rotate.tool.pageOverview.title')}
               </h3>
               <p className="text-gray-800 dark:text-gray-100 font-medium text-sm">
-                Текущая ориентация каждой страницы
+                {t('tools.rotate.tool.pageOverview.description')}
               </p>
             </div>
           </div>
@@ -372,7 +374,12 @@ const ModernRotateTool: React.FC<ModernRotateToolProps> = React.memo(({
                     : 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-2 border-green-200 dark:border-green-800'
                   }
                 `}
-                title={`Страница ${index + 1} - ${orientation === 'portrait' ? 'Книжная' : 'Альбомная'}`}
+                title={t('tools.rotate.tool.pageOverview.pageTooltip', { 
+                  pageNumber: index + 1, 
+                  orientation: orientation === 'portrait' 
+                    ? t('tools.rotate.tool.pageOverview.portrait')
+                    : t('tools.rotate.tool.pageOverview.landscape')
+                })}
               >
                 {index + 1}
               </div>
@@ -383,13 +390,13 @@ const ModernRotateTool: React.FC<ModernRotateToolProps> = React.memo(({
             <div className="flex items-center gap-2">
               <div className="w-4 h-5 bg-blue-100 dark:bg-blue-900/30 border-2 border-blue-200 dark:border-blue-800 rounded"></div>
               <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
-                Книжная ориентация
+                {t('tools.rotate.tool.pageOverview.portraitOrientation')}
               </span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-5 h-4 bg-green-100 dark:bg-green-900/30 border-2 border-green-200 dark:border-green-800 rounded"></div>
               <span className="text-sm font-medium text-green-700 dark:text-green-300">
-                Альбомная ориентация
+                {t('tools.rotate.tool.pageOverview.landscapeOrientation')}
               </span>
             </div>
           </div>
@@ -404,16 +411,16 @@ const ModernRotateTool: React.FC<ModernRotateToolProps> = React.memo(({
               🔄
             </div>
             <h3 className="text-xl font-black text-black dark:text-white mb-2">
-              Поворот в процессе
+              {t('tools.rotate.tool.processing.title')}
             </h3>
             <p className="text-gray-800 dark:text-gray-100 font-medium">
-              {progress < 50 ? 'Анализ PDF файла...' : 'Поворот страниц...'}
+              {progress < 50 ? t('tools.rotate.tool.processing.analyzing') : t('tools.rotate.tool.processing.rotating')}
             </p>
           </div>
 
           <div className="mb-6">
             <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Прогресс</span>
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('common.progress')}</span>
               <span className="text-sm font-bold text-seafoam-600 dark:text-seafoam-400">{Math.round(progress)}%</span>
             </div>
             <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
@@ -438,7 +445,7 @@ const ModernRotateTool: React.FC<ModernRotateToolProps> = React.memo(({
               ⚠️
             </div>
             <div className="flex-1">
-              <h4 className="font-bold text-red-800 dark:text-red-200 mb-1">Ошибка обработки</h4>
+              <h4 className="font-bold text-red-800 dark:text-red-200 mb-1">{t('tools.rotate.tool.errors.processingError')}</h4>
               <p className="text-red-700 dark:text-red-300 font-medium">{error}</p>
             </div>
             <button
@@ -461,11 +468,10 @@ const ModernRotateTool: React.FC<ModernRotateToolProps> = React.memo(({
           </div>
           <div>
             <h4 className="font-bold text-seafoam-800 dark:text-seafoam-200 mb-2">
-              Совет по использованию
+              {t('tools.rotate.tool.infoBox.title')}
             </h4>
             <p className="text-seafoam-700 dark:text-seafoam-300 font-medium text-sm leading-relaxed">
-              Используйте обзор страниц выше, чтобы понять какие страницы имеют неправильную ориентацию. 
-              Синие страницы - книжная ориентация, зеленые - альбомная. Поворот на 90° меняет ориентацию с книжной на альбомную.
+              {t('tools.rotate.tool.infoBox.description')}
             </p>
           </div>
         </div>
@@ -486,10 +492,10 @@ const ModernRotateTool: React.FC<ModernRotateToolProps> = React.memo(({
             {isProcessing ? (
               <div className="flex items-center justify-center gap-2">
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                Поворот...
+                {t('tools.rotate.tool.buttons.processing')}
               </div>
             ) : (
-              `Повернуть на ${rotation}°`
+              t('tools.rotate.tool.buttons.rotate', { degrees: rotation })
             )}
           </button>
           
@@ -498,7 +504,7 @@ const ModernRotateTool: React.FC<ModernRotateToolProps> = React.memo(({
             disabled={isProcessing}
             className="btn-ocean-modern text-lg px-8 py-4 flex-1 sm:flex-none min-w-[200px]"
           >
-            {isProcessing ? 'Отменить' : 'Назад'}
+            {isProcessing ? t('common.cancel') : t('common.back')}
           </button>
         </div>
       </div>

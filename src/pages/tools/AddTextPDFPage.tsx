@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { toolsSEOData } from '../../data/seoData';
 import { StandardToolPageTemplate } from '../../components/templates';
 import AddTextTool from '../../components/organisms/AddTextTool';
+import { RelatedToolsSection } from '../../components/organisms';
 import { ModernUploadZone } from '../../components/molecules';
 import { useI18n } from '../../hooks/useI18n';
 import { useFileUpload } from '../../hooks/useFileUpload';
@@ -65,9 +66,9 @@ const AddTextPDFPage: React.FC = () => {
         multiple={false}
         maxSize={100 * 1024 * 1024}
         disabled={false}
-        title={t('pages.tools.addText.uploadTitle') || 'Добавить текст в PDF'}
-        subtitle="Добавьте текстовые аннотации и подписи к вашим PDF документам"
-        supportedFormats="PDF файлы до 100MB"
+        title={t('tools.addText.uploadTitle')}
+        subtitle={t('tools.addText.uploadSubtitle')}
+        supportedFormats={t('tools.addText.supportedFormats')}
         icon="✏️"
       />
       
@@ -80,10 +81,10 @@ const AddTextPDFPage: React.FC = () => {
             </div>
             <div>
               <h3 className="text-xl font-black text-black dark:text-white">
-                Выбранный файл
+                {t('tools.addText.selectedFile')}
               </h3>
               <p className="text-gray-800 dark:text-gray-100 font-medium text-sm">
-                Готов к редактированию
+                {t('tools.addText.readyForEditing')}
               </p>
             </div>
           </div>
@@ -98,14 +99,14 @@ const AddTextPDFPage: React.FC = () => {
                   <div>
                     <p className="font-black text-black dark:text-white">{file.name}</p>
                     <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      {(file.size / 1024 / 1024).toFixed(2)} МБ
+                      {(file.size / 1024 / 1024).toFixed(2)} {t('tools.addText.fileSizeUnit')}
                     </p>
                   </div>
                 </div>
                 <button
                   onClick={() => removeFile(index)}
                   className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all duration-200"
-                  title="Удалить файл"
+                  title={t('tools.addText.removeFile')}
                 >
                   <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
@@ -120,7 +121,7 @@ const AddTextPDFPage: React.FC = () => {
               onClick={() => setToolActive(true)}
               className="btn-privacy-modern text-lg px-8 py-4 min-w-[250px] ripple-effect btn-press"
             >
-              Редактировать PDF ✏️
+              {t('tools.addText.editPdf')}
             </button>
           </div>
         </div>
@@ -142,10 +143,11 @@ const AddTextPDFPage: React.FC = () => {
         question: faq.question,
         answer: faq.answer
       }))}
-      pageTitle={t('pages.tools.addText.pageTitle') || 'Добавить текст в PDF'}
-      pageDescription={t('pages.tools.addText.pageDescription') || 'Добавьте текстовые аннотации, подписи и заметки к вашим PDF документам онлайн'}
+      pageTitle={t('tools.addText.pageTitle')}
+      pageDescription={t('tools.addText.pageDescription')}
       toolComponent={toolComponent}
       breadcrumbKey="add-text-pdf"
+      relatedToolsSection={<RelatedToolsSection currentTool="add-text-pdf" />}
     />
   );
 };

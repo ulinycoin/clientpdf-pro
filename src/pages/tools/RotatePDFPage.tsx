@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { toolsSEOData } from '../../data/seoData';
 import { StandardToolPageTemplate } from '../../components/templates';
-import { ModernRotateTool } from '../../components/organisms';
+import { ModernRotateTool, RelatedToolsSection } from '../../components/organisms';
 import { ModernUploadZone } from '../../components/molecules';
 import { useFileUpload } from '../../hooks/useFileUpload';
 import { useI18n } from '../../hooks/useI18n';
@@ -9,6 +9,7 @@ import { useDynamicSEO } from '../../hooks/useDynamicSEO';
 import { getCombinedFAQs } from '../../data/faqData';
 import { PDFProcessingResult } from '../../types';
 import { Download, CheckCircle, RefreshCw } from 'lucide-react';
+
 
 const RotatePDFPage: React.FC = () => {
   const { t } = useI18n();
@@ -101,17 +102,17 @@ const RotatePDFPage: React.FC = () => {
               </div>
               <div>
                 <h3 className="text-xl font-black text-green-800 dark:text-green-200">
-                  PDF успешно повернут!
+                  {t('tools.rotate.results.successTitle')}
                 </h3>
                 <p className="text-gray-800 dark:text-gray-100 font-medium text-sm">
-                  Ориентация страниц изменена
+                  {t('tools.rotate.results.successDescription')}
                 </p>
               </div>
             </div>
 
             {/* Download Section */}
             <div className="space-y-4">
-              <h4 className="font-bold text-black dark:text-white">Скачать повернутый файл:</h4>
+              <h4 className="font-bold text-black dark:text-white">{t('tools.rotate.results.downloadTitle')}:</h4>
               <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl p-4 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-gradient-to-br from-orange-100 to-orange-200 dark:from-orange-800 dark:to-orange-700 rounded-xl flex items-center justify-center text-xl">
@@ -122,7 +123,7 @@ const RotatePDFPage: React.FC = () => {
                       {files[0]?.name ? files[0].name.replace(/\.pdf$/i, '_rotated.pdf') : 'rotated.pdf'}
                     </p>
                     <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      {rotatedSize > 0 ? `${(rotatedSize / 1024 / 1024).toFixed(2)} МБ` : 'Готово к скачиванию'}
+                      {rotatedSize > 0 ? `${(rotatedSize / 1024 / 1024).toFixed(2)} ${t('common.fileSizeUnit')}` : t('tools.rotate.results.readyToDownload')}
                     </p>
                   </div>
                 </div>
@@ -131,7 +132,7 @@ const RotatePDFPage: React.FC = () => {
                   className="btn-privacy-modern text-sm px-6 py-3 flex items-center gap-2"
                 >
                   <Download className="w-4 h-4" />
-                  Скачать
+                  {t('common.download')}
                 </button>
               </div>
             </div>
@@ -142,7 +143,7 @@ const RotatePDFPage: React.FC = () => {
                 onClick={handleReset}
                 className="btn-privacy-secondary text-lg px-8 py-4"
               >
-                Повернуть другой файл
+                {t('tools.rotate.results.rotateAnother')}
               </button>
             </div>
           </div>
@@ -172,9 +173,9 @@ const RotatePDFPage: React.FC = () => {
           multiple={false}
           maxSize={100 * 1024 * 1024}
           disabled={false}
-          title="Загрузите PDF файл для поворота"
-          subtitle="Поворачивайте страницы PDF документов на 90°, 180° или 270°"
-          supportedFormats="PDF файлы"
+          title={t('tools.rotate.upload.title')}
+          subtitle={t('tools.rotate.upload.description')}
+          supportedFormats={t('tools.rotate.upload.supportedFormats')}
         />
         
         {/* File List & Start Button */}
@@ -186,10 +187,10 @@ const RotatePDFPage: React.FC = () => {
               </div>
               <div>
                 <h3 className="text-xl font-black text-black dark:text-white">
-                  Выбранный файл ({files.length})
+                  {t('tools.rotate.upload.selectedFile', { count: files.length })}
                 </h3>
                 <p className="text-gray-800 dark:text-gray-100 font-medium text-sm">
-                  Готов к повороту
+                  {t('tools.rotate.upload.readyToRotate')}
                 </p>
               </div>
             </div>
@@ -204,14 +205,14 @@ const RotatePDFPage: React.FC = () => {
                     <div>
                       <p className="font-black text-black dark:text-white">{file.name}</p>
                       <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                        {(file.size / 1024 / 1024).toFixed(2)} МБ
+                        {(file.size / 1024 / 1024).toFixed(2)} {t('common.fileSizeUnit')}
                       </p>
                     </div>
                   </div>
                   <button
                     onClick={() => removeFile(index)}
                     className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all duration-200"
-                    title="Удалить файл"
+                    title={t('tools.rotate.upload.removeFile')}
                   >
                     <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
@@ -226,7 +227,7 @@ const RotatePDFPage: React.FC = () => {
                 onClick={() => setToolActive(true)}
                 className="btn-privacy-modern text-lg px-8 py-4 min-w-[250px] ripple-effect btn-press"
               >
-                Повернуть PDF файл 🔄
+                {t('tools.rotate.upload.startRotating')}
               </button>
             </div>
           </div>
@@ -243,10 +244,11 @@ const RotatePDFPage: React.FC = () => {
         question: faq.question,
         answer: faq.answer
       }))}
-      pageTitle="Повернуть PDF страницы бесплатно"
-      pageDescription="Поворачивайте страницы PDF документов на 90°, 180° или 270°. Исправьте ориентацию страниц быстро и бесплатно."
+      pageTitle={t('pages.tools.rotate.pageTitle')}
+      pageDescription={t('pages.tools.rotate.pageDescription')}
       toolComponent={toolComponent}
       breadcrumbKey="rotate-pdf"
+      relatedToolsSection={<RelatedToolsSection currentTool="rotate-pdf" />}
     />
   );
 };

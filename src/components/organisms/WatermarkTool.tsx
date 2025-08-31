@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useWatermark } from '../../hooks/useWatermark';
 import { WatermarkOptions, WatermarkService } from '../../services/watermarkService';
 import { downloadBlob, generateFilename } from '../../utils/fileHelpers';
+import { useI18n } from '../../hooks/useI18n';
 import Button from '../atoms/Button';
 import ProgressBar from '../atoms/ProgressBar';
 
@@ -18,6 +19,7 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
   onClose,
   className = ''
 }) => {
+  const { t } = useI18n();
   const {
     isProcessing,
     progress,
@@ -57,7 +59,7 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
 
   const handleAddWatermark = async () => {
     if (files.length === 0) {
-      setValidationErrors(['Please select a PDF file to add watermark']);
+      setValidationErrors([t('tools.watermark.tool.fileErrors.noFileSelected')]);
       return;
     }
 
@@ -72,7 +74,7 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
   const formatFileSize = (bytes: number): string => {
     if (bytes === 0) return '0 B';
     const k = 1024;
-    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const sizes = ['B', 'KB', t('tools.watermark.tool.fileSizeUnit'), 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`;
   };
@@ -81,21 +83,21 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
 
   // Color presets
   const colorPresets = [
-    { name: 'Gray', value: { r: 128, g: 128, b: 128 } },
-    { name: 'Red', value: { r: 220, g: 38, b: 38 } },
-    { name: 'Blue', value: { r: 59, g: 130, b: 246 } },
-    { name: 'Green', value: { r: 34, g: 197, b: 94 } },
-    { name: 'Black', value: { r: 0, g: 0, b: 0 } },
-    { name: 'Orange', value: { r: 251, g: 146, b: 60 } }
+    { name: t('tools.watermark.tool.settings.textColor.colors.gray'), value: { r: 128, g: 128, b: 128 } },
+    { name: t('tools.watermark.tool.settings.textColor.colors.red'), value: { r: 220, g: 38, b: 38 } },
+    { name: t('tools.watermark.tool.settings.textColor.colors.blue'), value: { r: 59, g: 130, b: 246 } },
+    { name: t('tools.watermark.tool.settings.textColor.colors.green'), value: { r: 34, g: 197, b: 94 } },
+    { name: t('tools.watermark.tool.settings.textColor.colors.black'), value: { r: 0, g: 0, b: 0 } },
+    { name: t('tools.watermark.tool.settings.textColor.colors.orange'), value: { r: 251, g: 146, b: 60 } }
   ];
 
   // Position presets
   const positionPresets: Array<{ name: string; value: WatermarkOptions['position'] }> = [
-    { name: 'Center', value: 'center' },
-    { name: 'Top Left', value: 'top-left' },
-    { name: 'Top Right', value: 'top-right' },
-    { name: 'Bottom Left', value: 'bottom-left' },
-    { name: 'Bottom Right', value: 'bottom-right' }
+    { name: t('tools.watermark.tool.settings.position.positions.center'), value: 'center' },
+    { name: t('tools.watermark.tool.settings.position.positions.topLeft'), value: 'top-left' },
+    { name: t('tools.watermark.tool.settings.position.positions.topRight'), value: 'top-right' },
+    { name: t('tools.watermark.tool.settings.position.positions.bottomLeft'), value: 'bottom-left' },
+    { name: t('tools.watermark.tool.settings.position.positions.bottomRight'), value: 'bottom-right' }
   ];
 
   // Get position style for preview (optimized for new larger preview)
@@ -164,10 +166,10 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
             <div className="w-10 h-10 bg-gradient-to-br from-seafoam-500 to-ocean-500 rounded-xl flex items-center justify-center text-white shadow-lg">
               💧
             </div>
-            Add Watermark
+            {t('tools.watermark.tool.toolTitle')}
           </h2>
           <p className="text-gray-800 dark:text-gray-100 font-medium mt-1">
-            Add text watermarks to protect your documents
+            {t('tools.watermark.tool.toolDescription')}
           </p>
         </div>
         <button 
@@ -190,7 +192,7 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
                 <div className="w-6 h-6 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center text-white text-xs">
                   📄
                 </div>
-                PDF Preview
+                {t('tools.watermark.tool.fileInfo.pdfPreview')}
               </h3>
               
               <div className="p-4 bg-white/40 dark:bg-gray-700/40 backdrop-blur-sm border border-white/30 dark:border-gray-600/30 rounded-xl mb-6">
@@ -214,10 +216,10 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
                 <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg flex items-center justify-center text-white text-sm">
                   👁️
                 </div>
-                Предварительный просмотр
+                {t('tools.watermark.tool.preview.title')}
               </h4>
               {!options.text.trim() && (
-                <span className="text-sm text-gray-500 dark:text-gray-400">Введите текст для просмотра</span>
+                <span className="text-sm text-gray-500 dark:text-gray-400">{t('tools.watermark.tool.preview.enterTextPrompt')}</span>
               )}
             </div>
             
@@ -258,18 +260,18 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
                   
                   {/* Page label */}
                   <div className="absolute -bottom-6 left-0 text-xs text-gray-500">
-                    Page 1
+                    {t('tools.watermark.tool.preview.pageLabel')}
                   </div>
                 </div>
               </div>
               
               {options.text.trim() ? (
                 <p className="text-xs font-medium text-gray-600 dark:text-gray-300 mt-4 text-center">
-                  ✨ Live preview of watermark placement and styling
+                  {t('tools.watermark.tool.preview.livePreviewDescription')}
                 </p>
               ) : (
                 <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-4 text-center">
-                  🖼️ Preview will appear when you enter watermark text
+                  {t('tools.watermark.tool.preview.previewWillAppear')}
                 </p>
               )}
             </div>
@@ -283,7 +285,7 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
               <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center text-white text-sm">
                 ⚙️
               </div>
-              Настройки водяного знака
+              {t('tools.watermark.tool.settings.title')}
             </h3>
         
           <div className="space-y-6">
@@ -293,19 +295,19 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
               <span className="w-5 h-5 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-800 dark:to-blue-700 rounded flex items-center justify-center text-xs">
                 ✏️
               </span>
-              Текст водяного знака *
+              {t('tools.watermark.tool.settings.watermarkText.label')}
             </label>
             <input
               type="text"
               value={options.text}
               onChange={(e) => setOptions(prev => ({ ...prev, text: e.target.value }))}
               disabled={isProcessing}
-              placeholder="Введите текст (например, КОНФИДЕНЦИАЛЬНО, ЧЕРНОВИК)"
+              placeholder={t('tools.watermark.tool.settings.watermarkText.placeholder')}
               className="w-full px-4 py-3 bg-white/90 dark:bg-gray-700/50 backdrop-blur-sm border border-gray-300/80 dark:border-gray-600/30 rounded-xl focus:ring-2 focus:ring-seafoam-500/50 focus:border-seafoam-500 transition-all duration-300 font-medium text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400 shadow-sm"
               maxLength={50}
             />
             <p className="text-xs text-gray-500 mt-1">
-              {options.text.length}/50 characters
+              {options.text.length}/50 {t('tools.watermark.tool.settings.watermarkText.charactersRemaining')}
             </p>
             
             {/* Non-ASCII Character Warning */}
@@ -314,7 +316,7 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
                 <div className="flex items-start">
                   <div className="text-blue-400 mr-2 mt-0.5">💡</div>
                   <div>
-                    <h4 className="text-blue-800 font-medium text-sm">Font Recommendation</h4>
+                    <h4 className="text-blue-800 font-medium text-sm">{t('tools.watermark.tool.settings.fontRecommendation.title')}</h4>
                     <p className="text-blue-700 text-sm mt-1">
                       {nonAsciiWarning}
                     </p>
@@ -330,7 +332,7 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
               <span className="w-5 h-5 bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-800 dark:to-purple-700 rounded flex items-center justify-center text-xs">
                 🔤
               </span>
-              Семейство шрифтов
+              {t('tools.watermark.tool.settings.fontFamily.label')}
             </label>
             <select
               value={options.fontName || 'Helvetica'}
@@ -340,14 +342,14 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
             >
               {availableFonts.map((font) => (
                 <option key={font.name} value={font.name}>
-                  {font.displayName} {font.supportsCyrillic ? '(Supports Cyrillic)' : ''}
+                  {font.displayName} {font.supportsCyrillic ? t('tools.watermark.tool.settings.fontRecommendation.supportsCyrillic') : ''}
                 </option>
               ))}
             </select>
             <p className="text-xs text-gray-500 mt-1">
               {watermarkService.fontSupportsText(options.fontName || 'Helvetica', options.text) 
-                ? '✅ This font supports your text' 
-                : '⚠️ This font may not support all characters in your text'}
+                ? t('tools.watermark.tool.settings.fontSupport.supported') 
+                : t('tools.watermark.tool.settings.fontSupport.mayNotSupport')}
             </p>
           </div>
 
@@ -357,7 +359,7 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
               <span className="w-5 h-5 bg-gradient-to-br from-green-100 to-green-200 dark:from-green-800 dark:to-green-700 rounded flex items-center justify-center text-xs">
                 📏
               </span>
-              Размер шрифта: <span className="text-blue-600 dark:text-blue-400 font-black">{options.fontSize}px</span>
+              {t('tools.watermark.tool.settings.fontSize.label')}: <span className="text-blue-600 dark:text-blue-400 font-black">{options.fontSize}px</span>
             </label>
             <input
               type="range"
@@ -370,8 +372,8 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
               className="w-full h-4 bg-gradient-to-r from-seafoam-300 to-ocean-300 dark:from-blue-600 dark:to-blue-700 rounded-lg appearance-none cursor-pointer slider-thumb shadow-lg border-2 border-white dark:border-gray-700"
             />
             <div className="flex justify-between text-xs text-gray-500 mt-1">
-              <span>Small (8px)</span>
-              <span>Large (144px)</span>
+              <span>{t('tools.watermark.tool.settings.fontSize.rangeLabels.small')}</span>
+              <span>{t('tools.watermark.tool.settings.fontSize.rangeLabels.large')}</span>
             </div>
           </div>
 
@@ -381,7 +383,7 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
               <span className="w-5 h-5 bg-gradient-to-br from-yellow-100 to-yellow-200 dark:from-yellow-800 dark:to-yellow-700 rounded flex items-center justify-center text-xs">
                 🎭
               </span>
-              Прозрачность: <span className="text-blue-600 dark:text-blue-400 font-black">{options.opacity}%</span>
+              {t('tools.watermark.tool.settings.opacity.label')}: <span className="text-blue-600 dark:text-blue-400 font-black">{options.opacity}%</span>
             </label>
             <input
               type="range"
@@ -394,8 +396,8 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
               className="w-full h-4 bg-gradient-to-r from-yellow-300 to-orange-300 dark:from-yellow-600 dark:to-orange-600 rounded-lg appearance-none cursor-pointer slider-thumb shadow-lg border-2 border-white dark:border-gray-700"
             />
             <div className="flex justify-between text-xs text-gray-500 mt-1">
-              <span>Transparent (5%)</span>
-              <span>Opaque (100%)</span>
+              <span>{t('tools.watermark.tool.settings.opacity.rangeLabels.transparent')}</span>
+              <span>{t('tools.watermark.tool.settings.opacity.rangeLabels.opaque')}</span>
             </div>
           </div>
 
@@ -405,7 +407,7 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
               <span className="w-5 h-5 bg-gradient-to-br from-red-100 to-red-200 dark:from-red-800 dark:to-red-700 rounded flex items-center justify-center text-xs">
                 🔄
               </span>
-              Поворот: <span className="text-blue-600 dark:text-blue-400 font-black">{options.rotation}°</span>
+              {t('tools.watermark.tool.settings.rotation.label')}: <span className="text-blue-600 dark:text-blue-400 font-black">{options.rotation}°</span>
             </label>
             <input
               type="range"
@@ -430,7 +432,7 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
               <span className="w-5 h-5 bg-gradient-to-br from-indigo-100 to-indigo-200 dark:from-indigo-800 dark:to-indigo-700 rounded flex items-center justify-center text-xs">
                 📍
               </span>
-              Позиция
+              {t('tools.watermark.tool.settings.position.label')}
             </label>
             <div className="grid grid-cols-3 gap-2">
               {positionPresets.map((preset) => (
@@ -456,7 +458,7 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
               <span className="w-5 h-5 bg-gradient-to-br from-pink-100 to-pink-200 dark:from-pink-800 dark:to-pink-700 rounded flex items-center justify-center text-xs">
                 🎨
               </span>
-              Цвет
+              {t('tools.watermark.tool.settings.textColor.label')}
             </label>
             <div className="grid grid-cols-6 gap-3">
               {colorPresets.map((preset) => (
@@ -498,7 +500,7 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
               ⏳
             </div>
             <h4 className="text-lg font-black text-black dark:text-white">
-              Добавление водяного знака...
+              {t('tools.watermark.tool.progress.addingWatermark')}
             </h4>
           </div>
           <ProgressBar
@@ -507,7 +509,7 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
             animated={true}
           />
           <p className="text-sm font-medium text-gray-600 dark:text-gray-300 text-center">
-            {Math.round(progress)}% завершено
+            {Math.round(progress)}% {t('tools.watermark.tool.progress.completed')}
           </p>
         </div>
       )}
@@ -520,7 +522,7 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
               ⚠️
             </div>
             <div>
-              <h4 className="text-red-800 dark:text-red-300 font-black text-lg">Ошибка</h4>
+              <h4 className="text-red-800 dark:text-red-300 font-black text-lg">{t('tools.watermark.tool.error.title')}</h4>
               {error && <p className="text-red-700 dark:text-red-400 text-sm font-medium mt-2">{error}</p>}
               {validationErrors.map((err, index) => (
                 <p key={index} className="text-red-700 dark:text-red-400 text-sm font-medium mt-2">{err}</p>
@@ -537,10 +539,9 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
             🔒
           </div>
           <div>
-            <h4 className="text-blue-800 dark:text-blue-300 font-black text-lg">Приватность и безопасность</h4>
+            <h4 className="text-blue-800 dark:text-blue-300 font-black text-lg">{t('tools.watermark.tool.privacy.title')}</h4>
             <p className="text-blue-700 dark:text-blue-400 text-sm font-medium mt-2">
-              Водяные знаки добавляются локально в вашем браузере. PDF не покидает ваше устройство, 
-              обеспечивая полную конфиденциальность и безопасность.
+              {t('tools.watermark.tool.privacy.description')}
             </p>
           </div>
         </div>
@@ -554,9 +555,9 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
               ✅
             </div>
             <div className="flex-1">
-              <h4 className="text-green-800 dark:text-green-300 font-black text-lg">Водяной знак успешно добавлен!</h4>
+              <h4 className="text-green-800 dark:text-green-300 font-black text-lg">{t('tools.watermark.tool.success.title')}</h4>
               <p className="text-green-700 dark:text-green-400 text-sm font-medium mt-2">
-                Ваш PDF с водяным знаком был автоматически загружен.
+                {t('tools.watermark.tool.success.description')}
               </p>
               <div className="mt-4">
                 <button
@@ -570,7 +571,7 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
                   }}
                   className="btn-privacy-modern text-sm px-6 py-3 flex items-center gap-2"
                 >
-                  📥 Скачать еще раз
+                  {t('tools.watermark.tool.success.downloadAgain')}
                 </button>
               </div>
             </div>
@@ -586,7 +587,7 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
             disabled={isProcessing}
             className="btn-ocean-modern px-6 py-3 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {result && result.success ? 'Обработать другой файл' : 'Отмена'}
+            {result && result.success ? t('tools.watermark.tool.actions.processAnother') : t('tools.watermark.tool.actions.cancel')}
           </button>
           {(!result || !result.success) && (
             <button
@@ -597,11 +598,11 @@ const WatermarkTool: React.FC<WatermarkToolProps> = ({
               {isProcessing ? (
                 <>
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  Добавление водяного знака...
+                  {t('tools.watermark.tool.actions.adding')}
                 </>
               ) : (
                 <>
-                  💧 Добавить водяной знак
+                  {t('tools.watermark.tool.actions.addWatermark')}
                 </>
               )}
             </button>

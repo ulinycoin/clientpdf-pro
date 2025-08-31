@@ -1,4 +1,5 @@
 import React from 'react';
+import { useI18n } from '../../../../hooks/useI18n';
 
 // Define TextElement locally
 interface TextElement {
@@ -22,6 +23,7 @@ const FormatPanel: React.FC<FormatPanelProps> = ({
   selectedElement,
   onElementUpdate
 }) => {
+  const { t } = useI18n();
   const fontFamilies = [
     'Open Sans', // Unicode-compatible, good for Cyrillic
     'Roboto', // Google font with Cyrillic support
@@ -82,12 +84,12 @@ const FormatPanel: React.FC<FormatPanelProps> = ({
   if (!selectedElement) {
     return (
       <div className="w-64 bg-white/95 dark:bg-gray-800/90 backdrop-blur-lg border-r border-gray-200/60 dark:border-gray-600/20 p-6 h-full flex flex-col">
-        <h3 className="text-lg font-black text-black dark:text-white mb-6">Format Panel</h3>
+        <h3 className="text-lg font-black text-black dark:text-white mb-6">{t('tools.addText.formatPanel.title')}</h3>
         <div className="text-center py-8">
           <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg mx-auto mb-4">
             🎨
           </div>
-          <p className="text-gray-800 dark:text-gray-100 font-medium">Select a text element to edit its properties</p>
+          <p className="text-gray-800 dark:text-gray-100 font-medium">{t('tools.addText.formatPanel.selectElementPrompt')}</p>
         </div>
       </div>
     );
@@ -95,26 +97,26 @@ const FormatPanel: React.FC<FormatPanelProps> = ({
 
   return (
     <div className="w-64 bg-white/95 dark:bg-gray-800/90 backdrop-blur-lg border-r border-gray-200/60 dark:border-gray-600/20 p-6 space-y-6 h-full flex flex-col overflow-y-auto">
-      <h3 className="text-lg font-black text-black dark:text-white mb-6">Format Panel</h3>
+      <h3 className="text-lg font-black text-black dark:text-white mb-6">{t('tools.addText.formatPanel.title')}</h3>
 
       {/* Text Content */}
       <div className="bg-white/90 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200/50 dark:border-gray-600/20 rounded-xl p-4 shadow-sm">
         <label className="block text-sm font-black text-black dark:text-white mb-3">
-          Text Content
+          {t('tools.addText.formatPanel.textContent')}
         </label>
         <textarea
           value={selectedElement.text}
           onChange={(e) => handleTextChange(e.target.value)}
           className="w-full px-3 py-2 border border-gray-300/80 dark:border-gray-500/50 rounded-lg bg-white dark:bg-gray-700/90 backdrop-blur-lg text-black dark:text-white font-medium focus:ring-2 focus:ring-seafoam-500/50 focus:border-seafoam-500 transition-all duration-200 shadow-lg placeholder-gray-500 dark:placeholder-gray-400"
           rows={3}
-          placeholder="Enter text..."
+          placeholder={t('tools.addText.formatPanel.textPlaceholder')}
         />
       </div>
 
       {/* Font Family */}
       <div className="bg-white/90 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200/50 dark:border-gray-600/20 rounded-xl p-4 shadow-sm">
         <label className="block text-sm font-black text-black dark:text-white mb-3">
-          Font Family
+          {t('tools.addText.formatPanel.fontFamily')}
         </label>
         <select
           value={selectedElement.fontFamily}
@@ -132,7 +134,7 @@ const FormatPanel: React.FC<FormatPanelProps> = ({
       {/* Font Size */}
       <div className="bg-white/90 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200/50 dark:border-gray-600/20 rounded-xl p-4 shadow-sm">
         <label className="block text-sm font-black text-black dark:text-white mb-3">
-          Font Size
+          {t('tools.addText.formatPanel.fontSize')}
         </label>
         <div className="flex space-x-2">
           <select
@@ -160,7 +162,7 @@ const FormatPanel: React.FC<FormatPanelProps> = ({
       {/* Color */}
       <div className="bg-white/90 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200/50 dark:border-gray-600/20 rounded-xl p-4 shadow-sm">
         <label className="block text-sm font-black text-black dark:text-white mb-3">
-          Text Color
+          {t('tools.addText.formatPanel.textColor')}
         </label>
         <div className="flex flex-wrap gap-2 mb-3">
           {colors.map(color => (
@@ -188,7 +190,7 @@ const FormatPanel: React.FC<FormatPanelProps> = ({
       {/* Position */}
       <div className="bg-white/90 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200/50 dark:border-gray-600/20 rounded-xl p-4 shadow-sm">
         <label className="block text-sm font-black text-black dark:text-white mb-3">
-          Position
+          {t('tools.addText.formatPanel.position')}
         </label>
         <div className="grid grid-cols-2 gap-3">
           <div>
@@ -217,7 +219,7 @@ const FormatPanel: React.FC<FormatPanelProps> = ({
       {/* Preview with multiline support */}
       <div className="bg-white/90 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200/50 dark:border-gray-600/20 rounded-xl p-4 shadow-sm">
         <label className="block text-sm font-black text-black dark:text-white mb-3">
-          Preview
+          {t('tools.addText.formatPanel.preview')}
         </label>
         <div
           className="p-3 border border-gray-300/80 dark:border-gray-500/50 rounded-lg bg-gray-50 dark:bg-gray-700/90 min-h-12 backdrop-blur-lg shadow-lg"
@@ -229,7 +231,7 @@ const FormatPanel: React.FC<FormatPanelProps> = ({
             whiteSpace: 'pre-wrap' // This enables multiline display
           }}
         >
-          {selectedElement.text || 'Sample text'}
+          {selectedElement.text || t('tools.addText.formatPanel.sampleText')}
         </div>
       </div>
 

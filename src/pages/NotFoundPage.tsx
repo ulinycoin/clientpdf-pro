@@ -2,16 +2,25 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { ArrowLeft, Home, Search, FileText } from 'lucide-react';
-import { useTranslation } from '../hooks/useI18n';
+import { useTranslation, useI18n } from '../hooks/useI18n';
 
 const NotFoundPage: React.FC = () => {
   const { t } = useTranslation();
+  const { currentLanguage } = useI18n();
+  
+  // Helper function to create localized paths
+  const getLocalizedPath = (path: string) => {
+    if (currentLanguage === 'en') {
+      return path;
+    }
+    return `/${currentLanguage}${path}`;
+  };
   
   const popularTools = [
-    { name: t('tools.merge.title'), path: '/merge-pdf', icon: '🔗', description: t('tools.merge.description') },
-    { name: t('tools.split.title'), path: '/split-pdf', icon: '✂️', description: t('tools.split.description') },
-    { name: t('tools.compress.title'), path: '/compress-pdf', icon: '🗜️', description: t('tools.compress.description') },
-    { name: t('tools.addText.title'), path: '/add-text-pdf', icon: '📝', description: t('tools.addText.description') }
+    { name: t('tools.merge.title'), path: getLocalizedPath('/merge-pdf'), icon: '🔗', description: t('tools.merge.description') },
+    { name: t('tools.split.title'), path: getLocalizedPath('/split-pdf'), icon: '✂️', description: t('tools.split.description') },
+    { name: t('tools.compress.title'), path: getLocalizedPath('/compress-pdf'), icon: '🗜️', description: t('tools.compress.description') },
+    { name: t('tools.addText.title'), path: getLocalizedPath('/add-text-pdf'), icon: '📝', description: t('tools.addText.description') }
   ];
 
   return (
@@ -53,7 +62,7 @@ const NotFoundPage: React.FC = () => {
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
               <Link
-                to="/"
+                to={getLocalizedPath("/")}
                 className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors duration-200 shadow-lg hover:shadow-xl"
               >
                 <Home className="w-5 h-5 mr-2" />
@@ -135,11 +144,11 @@ const NotFoundPage: React.FC = () => {
             <div className="mt-12 text-center">
               <p className="text-gray-500 text-sm">
                 Need help? Check out our{' '}
-                <Link to="/faq" className="text-blue-600 hover:underline">
+                <Link to={getLocalizedPath("/faq")} className="text-blue-600 hover:underline">
                   FAQ page
                 </Link>{' '}
                 or learn about our{' '}
-                <Link to="/privacy" className="text-blue-600 hover:underline">
+                <Link to={getLocalizedPath("/privacy")} className="text-blue-600 hover:underline">
                   privacy policy
                 </Link>
                 .

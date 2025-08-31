@@ -144,19 +144,19 @@ const PrivacyBadges: React.FC<PrivacyBadgesProps> = ({
               <div className="text-2xl font-bold text-seafoam-600 dark:text-seafoam-400">
                 {formatNumber(userStats.totalUsers)}+
               </div>
-              <div className="text-xs text-privacy-500">Пользователей</div>
+              <div className="text-xs text-gray-600">Пользователей</div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-seafoam-600 dark:text-seafoam-400">
                 {formatNumber(userStats.filesProcessed)}+
               </div>
-              <div className="text-xs text-privacy-500">Файлов обработано</div>
+              <div className="text-xs text-gray-600">Файлов обработано</div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-seafoam-600 dark:text-seafoam-400">
                 {formatNumber(userStats.timesSaved)}ч
               </div>
-              <div className="text-xs text-privacy-500">Времени сэкономлено</div>
+              <div className="text-xs text-gray-600">Времени сэкономлено</div>
             </div>
           </div>
         </div>
@@ -208,7 +208,7 @@ const PrivacyBadges: React.FC<PrivacyBadgesProps> = ({
       </div>
 
       {/* Additional Trust Indicators */}
-      <div className="flex flex-wrap justify-center gap-6 text-xs text-privacy-500">
+      <div className="flex flex-wrap justify-center gap-6 text-xs text-gray-600">
         <div className="flex items-center gap-1">
           <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
           <span>Без регистрации</span>

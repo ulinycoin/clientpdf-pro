@@ -9,11 +9,19 @@ export const useWordToPDF = () => {
   const [conversionService] = useState(() => new ConversionService());
 
   const convertFile = async (file: File, settings?: ConversionSettings, autoDownload = true) => {
+    console.log('🔄 useWordToPDF: Starting conversion...', { fileName: file.name, autoDownload });
     setIsConverting(true);
     setResult(null);
 
     try {
       const conversionResult = await conversionService.convertWordToPDF(file, settings);
+      console.log('📋 useWordToPDF: Conversion result:', { 
+        success: conversionResult.success, 
+        hasPdfBytes: !!conversionResult.pdfBytes,
+        bytesLength: conversionResult.pdfBytes?.length,
+        error: conversionResult.error 
+      });
+      
       setResult(conversionResult);
 
       // Auto-download if successful and autoDownload is true
@@ -22,11 +30,13 @@ export const useWordToPDF = () => {
       }
 
     } catch (error) {
+      console.error('❌ useWordToPDF: Conversion error:', error);
       setResult({
         success: false,
         error: error.message || 'Conversion failed'
       });
     } finally {
+      console.log('🏁 useWordToPDF: Conversion finished, isConverting = false');
       setIsConverting(false);
     }
   };

@@ -34,7 +34,7 @@ const ModernCompressionTool: React.FC<CompressionToolProps> = React.memo(({
 
   const formatSize = (bytes: number): string => {
     const mb = bytes / (1024 * 1024);
-    return `${mb.toFixed(1)} МБ`;
+    return `${mb.toFixed(1)} ${t('tools.compress.fileSizeUnit')}`;
   };
 
   const clearError = () => setError(null);
@@ -46,11 +46,11 @@ const ModernCompressionTool: React.FC<CompressionToolProps> = React.memo(({
   }, [files]);
 
   const getQualityText = (quality: number) => {
-    if (quality <= 0.3) return 'Максимальное сжатие';
-    if (quality <= 0.5) return 'Высокое сжатие';
-    if (quality <= 0.7) return 'Среднее сжатие';
-    if (quality <= 0.8) return 'Оптимальное';
-    return 'Высокое качество';
+    if (quality <= 0.3) return t('tools.compress.qualitySettings.qualityLabels.maxCompression');
+    if (quality <= 0.5) return t('tools.compress.qualitySettings.qualityLabels.highCompression');
+    if (quality <= 0.7) return t('tools.compress.qualitySettings.qualityLabels.mediumCompression');
+    if (quality <= 0.8) return t('tools.compress.qualitySettings.qualityLabels.optimal');
+    return t('tools.compress.qualitySettings.qualityLabels.highQuality');
   };
 
   const getQualityColor = (quality: number) => {
@@ -63,13 +63,13 @@ const ModernCompressionTool: React.FC<CompressionToolProps> = React.memo(({
 
   const handleCompress = async () => {
     if (files.length === 0) {
-      setError('Выберите PDF файл для сжатия');
+      setError(t('tools.compress.errors.selectFile'));
       return;
     }
 
     setIsProcessing(true);
     setProgress(0);
-    setProgressMessage('Начинаем сжатие...');
+    setProgressMessage(t('tools.compress.processing.startingMessage'));
     setError(null);
 
     try {
@@ -80,17 +80,17 @@ const ModernCompressionTool: React.FC<CompressionToolProps> = React.memo(({
         options,
         (progress, message) => {
           setProgress(progress);
-          setProgressMessage(message || 'Сжатие в процессе...');
+          setProgressMessage(message || t('tools.compress.processing.defaultMessage'));
         }
       );
 
       if (result.success) {
         onComplete(result);
       } else {
-        setError(result.error?.message || 'Ошибка сжатия PDF');
+        setError(result.error?.message || t('tools.compress.errors.compressionError'));
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Неизвестная ошибка');
+      setError(err instanceof Error ? err.message : t('tools.compress.errors.unknownError'));
     } finally {
       setIsProcessing(false);
     }
@@ -108,16 +108,16 @@ const ModernCompressionTool: React.FC<CompressionToolProps> = React.memo(({
             ⚠️
           </div>
           <h2 className="text-2xl font-black text-black dark:text-white mb-4">
-            Файл не выбран
+            {t('tools.compress.noFileTitle')}
           </h2>
           <p className="text-gray-800 dark:text-gray-100 font-medium mb-6">
-            Выберите PDF файл для сжатия
+            {t('tools.compress.noFileMessage')}
           </p>
           <button
             onClick={onClose}
             className="btn-ocean-modern"
           >
-            Назад
+            {t('tools.compress.backButton')}
           </button>
         </div>
       </div>
@@ -135,7 +135,7 @@ const ModernCompressionTool: React.FC<CompressionToolProps> = React.memo(({
             </div>
             <div>
               <h2 className="text-2xl font-black text-black dark:text-white">
-                Сжатие PDF файла
+                {t('tools.compress.toolTitle')}
               </h2>
               <p className="text-gray-800 dark:text-gray-100 font-medium">
                 {currentFile.name} • {formatSize(currentFile.size)}
@@ -147,7 +147,7 @@ const ModernCompressionTool: React.FC<CompressionToolProps> = React.memo(({
             onClick={onClose}
             disabled={isProcessing}
             className="p-3 text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-white/50 dark:hover:bg-gray-700/50 rounded-xl transition-all duration-200 disabled:opacity-50"
-            aria-label="Закрыть"
+            aria-label={t('tools.compress.closeButton')}
           >
             <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
               <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
@@ -165,17 +165,17 @@ const ModernCompressionTool: React.FC<CompressionToolProps> = React.memo(({
               <div>
                 <p className="font-bold text-black dark:text-white">{currentFile.name}</p>
                 <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Текущий размер: {formatSize(currentFile.size)}
+                  {t('tools.compress.currentSize')}: {formatSize(currentFile.size)}
                 </p>
               </div>
             </div>
             {estimatedSavings > 0 && (
               <div className="text-right">
                 <p className="text-lg font-bold text-green-600 dark:text-green-400">
-                  ~{estimatedSavings}% меньше
+                  ~{estimatedSavings}% {t('tools.compress.estimatedSavings')}
                 </p>
                 <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
-                  Прогнозируемая экономия
+                  {t('tools.compress.forecastedSaving')}
                 </p>
               </div>
             )}
@@ -187,7 +187,7 @@ const ModernCompressionTool: React.FC<CompressionToolProps> = React.memo(({
           <div className="flex items-center gap-2 px-4 py-2 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-full border border-white/20 dark:border-gray-600/20">
             <div className={`w-2 h-2 rounded-full bg-success-500 ${shouldAnimate ? 'animate-pulse' : ''}`}></div>
             <span className="text-sm font-medium text-gray-800 dark:text-gray-100">
-              Приватная обработка
+              {t('tools.compress.trustIndicators.privateProcessing')}
             </span>
           </div>
           
@@ -196,7 +196,7 @@ const ModernCompressionTool: React.FC<CompressionToolProps> = React.memo(({
               <path d="M13,13H11V7H13M13,17H11V15H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" />
             </svg>
             <span className="text-sm font-medium text-gray-800 dark:text-gray-100">
-              Интеллектуальное сжатие
+              {t('tools.compress.trustIndicators.intelligentCompression')}
             </span>
           </div>
         </div>
@@ -210,10 +210,10 @@ const ModernCompressionTool: React.FC<CompressionToolProps> = React.memo(({
           </div>
           <div>
             <h3 className="text-xl font-black text-black dark:text-white">
-              Настройки качества
+              {t('tools.compress.qualitySettings.title')}
             </h3>
             <p className="text-gray-800 dark:text-gray-100 font-medium text-sm">
-              Найдите баланс между размером файла и качеством
+              {t('tools.compress.qualitySettings.subtitle')}
             </p>
           </div>
         </div>
@@ -222,7 +222,7 @@ const ModernCompressionTool: React.FC<CompressionToolProps> = React.memo(({
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
             <label className="text-lg font-bold text-black dark:text-white">
-              Уровень качества
+              {t('tools.compress.qualitySettings.qualityLevel')}
             </label>
             <div className="text-right">
               <div className={`text-lg font-bold ${getQualityColor(options.quality)}`}>
@@ -251,8 +251,8 @@ const ModernCompressionTool: React.FC<CompressionToolProps> = React.memo(({
               }}
             />
             <div className="flex justify-between text-sm font-medium text-gray-600 dark:text-gray-400 mt-2">
-              <span>Меньший размер</span>
-              <span>Лучшее качество</span>
+              <span>{t('tools.compress.qualitySettings.smallerSize')}</span>
+              <span>{t('tools.compress.qualitySettings.betterQuality')}</span>
             </div>
           </div>
         </div>
@@ -265,10 +265,10 @@ const ModernCompressionTool: React.FC<CompressionToolProps> = React.memo(({
                 🗜️
               </div>
               <h4 className="font-bold text-black dark:text-white text-sm mb-1">
-                Максимальное сжатие
+                {t('tools.compress.previewCards.maxCompression.title')}
               </h4>
               <p className="text-xs font-medium text-gray-700 dark:text-gray-300">
-                Наименьший размер
+                {t('tools.compress.previewCards.maxCompression.subtitle')}
               </p>
             </div>
           </div>
@@ -279,10 +279,10 @@ const ModernCompressionTool: React.FC<CompressionToolProps> = React.memo(({
                 ⚖️
               </div>
               <h4 className="font-bold text-black dark:text-white text-sm mb-1">
-                Оптимальное
+                {t('tools.compress.previewCards.optimal.title')}
               </h4>
               <p className="text-xs font-medium text-gray-700 dark:text-gray-300">
-                Баланс размера и качества
+                {t('tools.compress.previewCards.optimal.subtitle')}
               </p>
             </div>
           </div>
@@ -293,10 +293,10 @@ const ModernCompressionTool: React.FC<CompressionToolProps> = React.memo(({
                 💎
               </div>
               <h4 className="font-bold text-black dark:text-white text-sm mb-1">
-                Высокое качество
+                {t('tools.compress.previewCards.highQuality.title')}
               </h4>
               <p className="text-xs font-medium text-gray-700 dark:text-gray-300">
-                Лучшее качество
+                {t('tools.compress.previewCards.highQuality.subtitle')}
               </p>
             </div>
           </div>
@@ -311,10 +311,10 @@ const ModernCompressionTool: React.FC<CompressionToolProps> = React.memo(({
           </div>
           <div>
             <h3 className="text-xl font-black text-black dark:text-white">
-              Дополнительные настройки
+              {t('tools.compress.advancedSettings.title')}
             </h3>
             <p className="text-gray-800 dark:text-gray-100 font-medium text-sm">
-              Опции для дополнительной оптимизации
+              {t('tools.compress.advancedSettings.subtitle')}
             </p>
           </div>
         </div>
@@ -323,22 +323,22 @@ const ModernCompressionTool: React.FC<CompressionToolProps> = React.memo(({
           {[
             {
               key: 'imageCompression',
-              label: 'Сжимать изображения',
-              description: 'Уменьшить размер изображений внутри PDF',
+              label: t('tools.compress.advancedSettings.compressImages.title'),
+              description: t('tools.compress.advancedSettings.compressImages.description'),
               icon: '🖼️',
               checked: options.imageCompression
             },
             {
               key: 'removeMetadata',
-              label: 'Удалить метаданные',
-              description: 'Убрать информацию об авторе, дате создания и т.д.',
+              label: t('tools.compress.advancedSettings.removeMetadata.title'),
+              description: t('tools.compress.advancedSettings.removeMetadata.description'),
               icon: '🗑️',
               checked: options.removeMetadata
             },
             {
               key: 'optimizeForWeb',
-              label: 'Оптимизировать для веба',
-              description: 'Ускорить загрузку PDF в браузере',
+              label: t('tools.compress.advancedSettings.optimizeForWeb.title'),
+              description: t('tools.compress.advancedSettings.optimizeForWeb.description'),
               icon: '🌐',
               checked: options.optimizeForWeb
             }
@@ -380,16 +380,16 @@ const ModernCompressionTool: React.FC<CompressionToolProps> = React.memo(({
               ⚡
             </div>
             <h3 className="text-xl font-black text-black dark:text-white mb-2">
-              Сжатие в процессе
+              {t('tools.compress.processing.title')}
             </h3>
             <p className="text-gray-800 dark:text-gray-100 font-medium">
-              {progressMessage || 'Оптимизация PDF файла...'}
+              {progressMessage || t('tools.compress.processing.defaultMessage')}
             </p>
           </div>
 
           <div className="mb-6">
             <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Прогресс</span>
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('tools.compress.processing.progressLabel')}</span>
               <span className="text-sm font-bold text-seafoam-600 dark:text-seafoam-400">{Math.round(progress)}%</span>
             </div>
             <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
@@ -414,7 +414,7 @@ const ModernCompressionTool: React.FC<CompressionToolProps> = React.memo(({
               ⚠️
             </div>
             <div className="flex-1">
-              <h4 className="font-bold text-red-800 dark:text-red-200 mb-1">Ошибка обработки</h4>
+              <h4 className="font-bold text-red-800 dark:text-red-200 mb-1">{t('tools.compress.errors.processingError')}</h4>
               <p className="text-red-700 dark:text-red-300 font-medium">{error}</p>
             </div>
             <button
@@ -437,11 +437,10 @@ const ModernCompressionTool: React.FC<CompressionToolProps> = React.memo(({
           </div>
           <div>
             <h4 className="font-bold text-seafoam-800 dark:text-seafoam-200 mb-2">
-              Как работает сжатие
+              {t('tools.compress.infoBox.title')}
             </h4>
             <p className="text-seafoam-700 dark:text-seafoam-300 font-medium text-sm leading-relaxed">
-              Мы используем современные алгоритмы для оптимизации размера PDF без потери качества. 
-              Изображения сжимаются с помощью интеллектуальных методов, а ненужные метаданные удаляются.
+              {t('tools.compress.infoBox.description')}
             </p>
           </div>
         </div>
@@ -462,10 +461,10 @@ const ModernCompressionTool: React.FC<CompressionToolProps> = React.memo(({
             {isProcessing ? (
               <div className="flex items-center justify-center gap-2">
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                Сжатие...
+                {t('tools.compress.actions.compressing')}
               </div>
             ) : (
-              `Сжать PDF`
+              t('tools.compress.actions.compress')
             )}
           </button>
           
@@ -474,7 +473,7 @@ const ModernCompressionTool: React.FC<CompressionToolProps> = React.memo(({
             disabled={isProcessing}
             className="btn-ocean-modern text-lg px-8 py-4 flex-1 sm:flex-none min-w-[200px]"
           >
-            {isProcessing ? 'Отменить' : 'Назад'}
+            {isProcessing ? t('tools.compress.actions.cancel') : t('tools.compress.actions.back')}
           </button>
         </div>
       </div>

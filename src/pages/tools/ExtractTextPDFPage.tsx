@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { toolsSEOData } from '../../data/seoData';
 import { StandardToolPageTemplate } from '../../components/templates';
 import ExtractTextTool from '../../components/organisms/ExtractTextTool';
+import { RelatedToolsSection } from '../../components/organisms';
 import { ModernUploadZone } from '../../components/molecules';
 import { useI18n } from '../../hooks/useI18n';
 import { useFileUpload } from '../../hooks/useFileUpload';
@@ -54,9 +55,9 @@ const ExtractTextPDFPage: React.FC = () => {
         multiple={false}
         maxSize={100 * 1024 * 1024}
         disabled={false}
-        title={t('pages.tools.extractText.uploadTitle') || 'Извлечь текст из PDF'}
-        subtitle="Извлекайте весь текстовый контент из PDF документов одним кликом"
-        supportedFormats="PDF файлы до 100MB"
+        title={t('pages.tools.extractText.uploadTitle')}
+        subtitle={t('pages.tools.extractText.uploadSubtitle')}
+        supportedFormats={t('pages.tools.extractText.supportedFormats')}
         icon="📝"
       />
       
@@ -69,10 +70,10 @@ const ExtractTextPDFPage: React.FC = () => {
             </div>
             <div>
               <h3 className="text-xl font-black text-black dark:text-white">
-                Выбранный файл
+                {t('pages.tools.extractText.selectedFile')}
               </h3>
               <p className="text-gray-800 dark:text-gray-100 font-medium text-sm">
-                Готов к извлечению текста
+                {t('pages.tools.extractText.readyToExtract')}
               </p>
             </div>
           </div>
@@ -87,14 +88,14 @@ const ExtractTextPDFPage: React.FC = () => {
                   <div>
                     <p className="font-black text-black dark:text-white">{file.name}</p>
                     <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      {(file.size / 1024 / 1024).toFixed(2)} МБ
+                      {(file.size / 1024 / 1024).toFixed(2)} {t('common.fileSizeUnit')}
                     </p>
                   </div>
                 </div>
                 <button
                   onClick={() => removeFile(index)}
                   className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all duration-200"
-                  title="Удалить файл"
+                  title={t('pages.tools.extractText.removeFile')}
                 >
                   <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
@@ -109,7 +110,7 @@ const ExtractTextPDFPage: React.FC = () => {
               onClick={() => setToolActive(true)}
               className="btn-privacy-modern text-lg px-8 py-4 min-w-[250px] ripple-effect btn-press"
             >
-              Извлечь текст 📝
+              {t('pages.tools.extractText.extractTextButton')}
             </button>
           </div>
         </div>
@@ -135,6 +136,7 @@ const ExtractTextPDFPage: React.FC = () => {
       pageDescription={t('pages.tools.extractText.pageDescription') || 'Извлекайте весь текстовый контент из PDF документов в удобном формате'}
       toolComponent={toolComponent}
       breadcrumbKey="extract-text-pdf"
+      relatedToolsSection={<RelatedToolsSection currentTool="extract-text-pdf" />}
     />
   );
 };

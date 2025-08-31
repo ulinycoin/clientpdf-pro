@@ -136,7 +136,7 @@ const AdvancedProgressIndicator: React.FC<AdvancedProgressIndicatorProps> = ({
           <div className="text-sm font-medium text-privacy-800 dark:text-privacy-200">
             {Math.round(animatedProgress)}%
           </div>
-          <div className="text-xs text-privacy-600 dark:text-privacy-400">
+          <div className="text-xs text-gray-700 dark:text-privacy-400">
             {getStatusMessage()}
           </div>
         </div>
@@ -224,7 +224,7 @@ const AdvancedProgressIndicator: React.FC<AdvancedProgressIndicatorProps> = ({
 
       {/* Status Message */}
       <div className="text-center mb-4">
-        <p className="text-sm text-privacy-600 dark:text-privacy-400">
+        <p className="text-sm text-gray-700 dark:text-privacy-400">
           {getStatusMessage()}
         </p>
         {metrics.timeRemaining > 0 && status === 'processing' && (
@@ -241,28 +241,28 @@ const AdvancedProgressIndicator: React.FC<AdvancedProgressIndicatorProps> = ({
             <div className="text-lg font-bold text-seafoam-600 dark:text-seafoam-400">
               {metrics.speed.toFixed(1)}
             </div>
-            <div className="text-xs text-privacy-500">файлов/сек</div>
+            <div className="text-xs text-gray-600">файлов/сек</div>
           </div>
           
           <div className="text-center">
             <div className="text-lg font-bold text-ocean-600 dark:text-ocean-400">
               {metrics.throughput}
             </div>
-            <div className="text-xs text-privacy-500">МБ/сек</div>
+            <div className="text-xs text-gray-600">МБ/сек</div>
           </div>
           
           <div className="text-center">
-            <div className="text-lg font-bold text-privacy-600 dark:text-privacy-400">
+            <div className="text-lg font-bold text-gray-700 dark:text-privacy-400">
               {metrics.efficiency}%
             </div>
-            <div className="text-xs text-privacy-500">эффективность</div>
+            <div className="text-xs text-gray-600">эффективность</div>
           </div>
           
           <div className="text-center">
             <div className="text-lg font-bold text-success-600 dark:text-success-400">
               {metrics.filesProcessed}
             </div>
-            <div className="text-xs text-privacy-500">обработано</div>
+            <div className="text-xs text-gray-600">обработано</div>
           </div>
         </div>
       )}

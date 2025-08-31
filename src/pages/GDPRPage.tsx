@@ -1,14 +1,14 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useTranslation } from '../hooks/useI18n';
-import { ArrowLeft } from 'lucide-react';
-import LanguageSwitcher from '../components/molecules/LanguageSwitcher';
+import { ModernHeader, ModernFooter } from '../components/organisms';
+import { useTranslation, useI18n } from '../hooks/useI18n';
 
 const GDPRPage: React.FC = () => {
-  const { t, language } = useTranslation();
+  const { t } = useTranslation();
+  const { currentLanguage } = useI18n();
   
   const currentYear = new Date().getFullYear();
-  const baseUrl = language === 'en' ? 'https://localpdf.online' : `https://localpdf.online/${language}`;
+  const baseUrl = currentLanguage === 'en' ? 'https://localpdf.online' : `https://localpdf.online/${currentLanguage}`;
 
   const structuredData = {
     "@context": "https://schema.org",
@@ -16,7 +16,7 @@ const GDPRPage: React.FC = () => {
     "name": t('pages.gdpr.title'),
     "description": t('pages.gdpr.description'),
     "url": `${baseUrl}/pages.gdpr`,
-    "inLanguage": language,
+    "inLanguage": currentLanguage,
     "isPartOf": {
       "@type": "WebSite",
       "name": "LocalPDF",
@@ -59,43 +59,30 @@ const GDPRPage: React.FC = () => {
         </script>
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-8">
-        <div className="max-w-4xl mx-auto px-4">
-          
-          {/* Navigation Header */}
-          <div className="flex justify-between items-center mb-8">
-            <button
-              onClick={() => window.history.back()}
-              className="flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors group"
-            >
-              <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-              <span className="font-medium">{t('back')}</span>
-            </button>
-            
-            <LanguageSwitcher variant="compact" className="ml-auto" />
-          </div>
-          
-          {/* Header */}
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-full mb-4">
-              <svg className="w-8 h-8 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-              </svg>
-            </div>
-            <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              {t('pages.gdpr.title')}
-            </h1>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              {t('pages.gdpr.description')}
-            </p>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-4">
-              {t('pages.gdpr.lastUpdated')}: {currentYear}-01-15
-            </p>
-          </div>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+        <ModernHeader />
 
-          {/* Main Content */}
-          <div className="bg-white dark:bg-gray-800 backdrop-blur-sm bg-opacity-70 dark:bg-opacity-70 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700">
-            <div className="p-8 space-y-8">
+        <main className="flex-grow">
+          <div className="max-w-4xl mx-auto px-4 py-16">
+          
+            {/* Hero Section */}
+            <div className="text-center mb-16">
+              <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent mb-6">
+                {t('pages.gdpr.title')}
+              </h1>
+              <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-4 max-w-3xl mx-auto">
+                {t('pages.gdpr.description')}
+              </p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                {t('pages.gdpr.lastUpdated')}: {currentYear}-01-15
+              </p>
+            </div>
+
+            <div className="space-y-12">
+              
+              {/* Main Content */}
+              <div className="bg-white dark:bg-gray-800 backdrop-blur-sm bg-opacity-70 dark:bg-opacity-70 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700">
+                <div className="p-8 space-y-8">
               
               {/* Introduction */}
               <section className="space-y-4">
@@ -248,25 +235,14 @@ const GDPRPage: React.FC = () => {
                 </div>
               </section>
 
+                </div>
+              </div>
+              
             </div>
           </div>
+        </main>
 
-          {/* Footer Links */}
-          <div className="mt-8 text-center">
-            <div className="flex flex-wrap justify-center gap-6 text-sm text-gray-600 dark:text-gray-400">
-              <a href="/privacy" className="hover:text-blue-500 transition-colors">
-                {t('footer.links.privacy')}
-              </a>
-              <a href="/terms" className="hover:text-blue-500 transition-colors">
-                {t('footer.links.terms')}
-              </a>
-              <a href="/faq" className="hover:text-blue-500 transition-colors">
-                {t('footer.links.faq')}
-              </a>
-            </div>
-          </div>
-
-        </div>
+        <ModernFooter />
       </div>
     </>
   );

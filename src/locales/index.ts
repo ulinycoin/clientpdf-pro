@@ -1,10 +1,10 @@
 // src/locales/index.ts
 import { SupportedLanguage, Translations } from '../types/i18n';
-import { en } from './en';
-import { de } from './de';
-import { fr } from './fr';
-import { es } from './es';
-import { ru } from './ru';
+import { en } from './en/index';
+import { de } from './de/index';
+import { fr } from './fr/index';
+import { es } from './es/index';
+import { ru } from './ru/index';
 
 // Экспорт всех переводов
 export const translations: Record<SupportedLanguage, Translations> = {

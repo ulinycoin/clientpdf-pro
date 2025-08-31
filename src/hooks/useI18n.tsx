@@ -114,7 +114,9 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
     return getSavedLanguage();
   });
   
-  const [translations, setTranslations] = useState<Translations>(() => getTranslations(currentLanguage));
+  const [translations, setTranslations] = useState<Translations>(() => {
+    return getTranslations(currentLanguage);
+  });
 
   // Функция для смены языка
   const setLanguage = (language: SupportedLanguage) => {
@@ -184,11 +186,17 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
   // Отслеживаем изменения URL через React Router для автоматического определения языка
   useEffect(() => {
     const pathParts = location.pathname.split('/').filter(Boolean);
-    const urlLang = pathParts.length > 0 && 
-      SUPPORTED_LANGUAGES.some(lang => lang.code === pathParts[0])
-        ? pathParts[0] as SupportedLanguage 
-        : 'en'; // Default to English for root path
+    let urlLang: SupportedLanguage;
     
+    if (pathParts.length > 0 && SUPPORTED_LANGUAGES.some(lang => lang.code === pathParts[0])) {
+      // URL содержит языковой префикс
+      urlLang = pathParts[0] as SupportedLanguage;
+    } else {
+      // URL не содержит языковой префикс, используем DEFAULT_LANGUAGE (английский)
+      urlLang = DEFAULT_LANGUAGE;
+    }
+    
+    // Обновляем язык только если он действительно изменился
     if (urlLang !== currentLanguage) {
       setCurrentLanguage(urlLang);
       setTranslations(getTranslations(urlLang));
@@ -198,7 +206,7 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
         document.documentElement.lang = urlLang;
       }
       
-      // Сохраняем новый язык в localStorage
+      // Сохраняем новый язык в localStorage только если это было явное изменение через URL
       try {
         localStorage.setItem(LANGUAGE_KEY, urlLang);
       } catch (error) {

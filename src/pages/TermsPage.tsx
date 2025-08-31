@@ -1,7 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import Header from '../components/organisms/Header';
-import Footer from '../components/organisms/Footer';
+import ModernHeader from '../components/organisms/ModernHeader';
+import ModernFooter from '../components/organisms/ModernFooter';
 import { useTranslation } from '../hooks/useI18n';
 
 const TermsPage: React.FC = () => {
@@ -50,21 +50,21 @@ const TermsPage: React.FC = () => {
         </script>
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-mesh flex flex-col">
-        <Header />
+      <div className="min-h-screen bg-gradient-radial from-white to-privacy-50 dark:from-privacy-900 dark:to-privacy-900 flex flex-col">
+        <ModernHeader />
 
-        <main className="flex-grow max-w-4xl mx-auto px-4 py-16">
-          <div className="glass rounded-2xl shadow-soft border border-white/20 p-8">
+        <main className="flex-grow max-w-4xl mx-auto px-4 py-24">
+          <div className="bg-white/80 dark:bg-privacy-800/80 backdrop-blur-lg rounded-3xl shadow-xl border border-privacy-200/50 dark:border-privacy-700/50 p-8 md:p-12">
 
             {/* Hero Section */}
             <div className="text-center mb-12">
-              <h1 className="text-4xl md:text-5xl font-bold text-secondary-900 mb-4">
-                <span className="text-gradient-blue">{t('pages.terms.title')}</span>
+              <h1 className="text-4xl md:text-5xl font-bold text-privacy-900 dark:text-privacy-100 mb-4">
+                <span className="text-gradient-ocean">{t('pages.terms.title')}</span>
               </h1>
-              <p className="text-xl text-secondary-600 mb-6">
+              <p className="text-xl text-privacy-600 dark:text-privacy-300 mb-6">
                 {t('pages.terms.subtitle')}
               </p>
-              <p className="text-sm text-secondary-500">
+              <p className="text-sm text-gray-600 dark:text-privacy-400">
                 {t('pages.terms.lastUpdated')}
               </p>
             </div>
@@ -73,14 +73,14 @@ const TermsPage: React.FC = () => {
 
               {/* Introduction */}
               <section className="mb-12">
-                <h2 className="text-2xl font-semibold text-secondary-800 mb-6 flex items-center">
-                  <span className="w-8 h-8 bg-primary-100 rounded-lg flex items-center justify-center mr-3">
+                <h2 className="text-2xl font-semibold text-privacy-800 dark:text-privacy-200 mb-6 flex items-center">
+                  <span className="w-8 h-8 bg-seafoam-100 dark:bg-seafoam-900 rounded-lg flex items-center justify-center mr-3">
                     📋
                   </span>
                   {t('pages.terms.sections.introduction.title')}
                 </h2>
-                <div className="pdf-processing-card border-l-4 border-blue-500 p-6 mb-6">
-                  <p className="text-blue-800 text-lg leading-relaxed">
+                <div className="bg-gradient-subtle border-l-4 border-seafoam-400 p-6 mb-6 rounded-xl">
+                  <p className="text-seafoam-800 dark:text-seafoam-200 text-lg leading-relaxed">
                     {t('pages.terms.sections.introduction.content')}
                   </p>
                 </div>
@@ -306,7 +306,7 @@ const TermsPage: React.FC = () => {
           </div>
         </main>
 
-        <Footer />
+        <ModernFooter />
       </div>
     </>
   );

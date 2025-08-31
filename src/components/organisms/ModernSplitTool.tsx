@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { PDFProcessingResult } from '../../types';
 import { SplitService } from '../../services/splitService';
 import { useMotionPreferences } from '../../hooks/useAccessibilityPreferences';
+import { useTranslation } from '../../hooks/useI18n';
 
 interface ModernSplitToolProps {
   files: File[];
@@ -19,6 +20,7 @@ const ModernSplitTool: React.FC<ModernSplitToolProps> = React.memo(({
   className = ''
 }) => {
   const { shouldAnimate } = useMotionPreferences();
+  const { t } = useTranslation();
   const [mode, setMode] = useState<SplitMode>('all');
   const [startPage, setStartPage] = useState<number>(1);
   const [endPage, setEndPage] = useState<number>(1);
@@ -32,7 +34,7 @@ const ModernSplitTool: React.FC<ModernSplitToolProps> = React.memo(({
 
   const formatSize = (bytes: number): string => {
     const mb = bytes / (1024 * 1024);
-    return `${mb.toFixed(1)} МБ`;
+    return `${mb.toFixed(1)} ${t('tools.split.tool.fileSizeUnit')}`;
   };
 
   const clearError = () => setError(null);
@@ -49,7 +51,7 @@ const ModernSplitTool: React.FC<ModernSplitToolProps> = React.memo(({
 
       if (mode === 'range') {
         if (startPage > endPage) {
-          setError('Начальная страница не может быть больше конечной');
+          setError(t('tools.split.tool.errors.startPageTooLarge'));
           setIsProcessing(false);
           return;
         }
@@ -66,7 +68,7 @@ const ModernSplitTool: React.FC<ModernSplitToolProps> = React.memo(({
           .filter(p => !isNaN(p) && p >= 0);
 
         if (pageNumbers.length === 0) {
-          setError('Введите корректные номера страниц');
+          setError(t('tools.split.tool.errors.invalidPageNumbers'));
           setIsProcessing(false);
           return;
         }
@@ -89,9 +91,9 @@ const ModernSplitTool: React.FC<ModernSplitToolProps> = React.memo(({
       if (successResults.length === 0) {
         const errorMessages = results
           .filter(r => !r.success)
-          .map(r => r.error?.message || 'Неизвестная ошибка')
+          .map(r => r.error?.message || t('tools.split.tool.errors.unknownError'))
           .join(', ');
-        setError(`Ошибка разделения: ${errorMessages}`);
+        setError(t('tools.split.tool.errors.splittingFailed', { error: errorMessages }));
         return;
       }
 
@@ -101,7 +103,7 @@ const ModernSplitTool: React.FC<ModernSplitToolProps> = React.memo(({
 
     } catch (error) {
       console.error('Split error:', error);
-      setError(error instanceof Error ? error.message : 'Ошибка разделения PDF');
+      setError(error instanceof Error ? error.message : t('tools.split.tool.errors.unknownError'));
     } finally {
       setIsProcessing(false);
     }
@@ -113,9 +115,9 @@ const ModernSplitTool: React.FC<ModernSplitToolProps> = React.memo(({
 
   const getModeDescription = () => {
     switch (mode) {
-      case 'all': return 'Каждая страница станет отдельным PDF файлом';
-      case 'range': return `Страницы ${startPage}-${endPage} будут извлечены в один файл`;
-      case 'specific': return 'Выбранные страницы станут отдельными файлами';
+      case 'all': return t('tools.split.tool.modes.all.shortDescription');
+      case 'range': return t('tools.split.tool.modes.range.shortDescription', { startPage, endPage });
+      case 'specific': return t('tools.split.tool.modes.specific.shortDescription');
       default: return '';
     }
   };
@@ -128,16 +130,16 @@ const ModernSplitTool: React.FC<ModernSplitToolProps> = React.memo(({
             ⚠️
           </div>
           <h2 className="text-2xl font-black text-black dark:text-white mb-4">
-            Файл не выбран
+            {t('tools.split.tool.fileNotSelected')}
           </h2>
           <p className="text-gray-800 dark:text-gray-100 font-medium mb-6">
-            Выберите PDF файл для разделения
+            {t('tools.split.tool.fileNotSelectedDescription')}
           </p>
           <button
             onClick={onClose}
             className="btn-ocean-modern"
           >
-            Назад
+            {t('tools.split.tool.buttons.back')}
           </button>
         </div>
       </div>
@@ -155,7 +157,7 @@ const ModernSplitTool: React.FC<ModernSplitToolProps> = React.memo(({
             </div>
             <div>
               <h2 className="text-2xl font-black text-black dark:text-white">
-                Разделение PDF файла
+                {t('tools.split.tool.toolTitle')}
               </h2>
               <p className="text-gray-800 dark:text-gray-100 font-medium">
                 {selectedFile.name} • {formatSize(selectedFile.size)}
@@ -167,7 +169,7 @@ const ModernSplitTool: React.FC<ModernSplitToolProps> = React.memo(({
             onClick={onClose}
             disabled={isProcessing}
             className="p-3 text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-white/50 dark:hover:bg-gray-700/50 rounded-xl transition-all duration-200 disabled:opacity-50"
-            aria-label="Закрыть"
+            aria-label={t('tools.split.tool.buttons.close')}
           >
             <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
               <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
@@ -180,7 +182,7 @@ const ModernSplitTool: React.FC<ModernSplitToolProps> = React.memo(({
           <div className="flex items-center gap-2 px-4 py-2 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-full border border-white/20 dark:border-gray-600/20">
             <div className={`w-2 h-2 rounded-full bg-success-500 ${shouldAnimate ? 'animate-pulse' : ''}`}></div>
             <span className="text-sm font-medium text-gray-800 dark:text-gray-100">
-              Приватная обработка
+              {t('tools.split.tool.trustIndicators.private')}
             </span>
           </div>
           
@@ -189,7 +191,7 @@ const ModernSplitTool: React.FC<ModernSplitToolProps> = React.memo(({
               <path d="M13,13H11V7H13M13,17H11V15H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" />
             </svg>
             <span className="text-sm font-medium text-gray-800 dark:text-gray-100">
-              Высокое качество
+              {t('tools.split.tool.trustIndicators.quality')}
             </span>
           </div>
         </div>
@@ -203,10 +205,10 @@ const ModernSplitTool: React.FC<ModernSplitToolProps> = React.memo(({
           </div>
           <div>
             <h3 className="text-xl font-black text-black dark:text-white">
-              Режим разделения
+              {t('tools.split.tool.modes.title')}
             </h3>
             <p className="text-gray-800 dark:text-gray-100 font-medium text-sm">
-              Выберите способ разделения PDF
+              {t('tools.split.tool.modes.description')}
             </p>
           </div>
         </div>
@@ -215,20 +217,20 @@ const ModernSplitTool: React.FC<ModernSplitToolProps> = React.memo(({
           {[
             { 
               value: 'all', 
-              label: 'Разделить на отдельные страницы', 
-              desc: 'Каждая страница станет отдельным PDF файлом',
+              label: t('tools.split.tool.modes.all.title'), 
+              desc: t('tools.split.tool.modes.all.description'),
               icon: '📑'
             },
             { 
               value: 'range', 
-              label: 'Извлечь диапазон страниц', 
-              desc: 'Выбрать конкретный диапазон страниц',
+              label: t('tools.split.tool.modes.range.title'), 
+              desc: t('tools.split.tool.modes.range.description'),
               icon: '📐'
             },
             { 
               value: 'specific', 
-              label: 'Извлечь конкретные страницы', 
-              desc: 'Указать номера страниц через запятую',
+              label: t('tools.split.tool.modes.specific.title'), 
+              desc: t('tools.split.tool.modes.specific.description'),
               icon: '📋'
             }
           ].map((option, index) => (
@@ -278,10 +280,10 @@ const ModernSplitTool: React.FC<ModernSplitToolProps> = React.memo(({
             </div>
             <div>
               <h3 className="text-xl font-black text-black dark:text-white">
-                Диапазон страниц
+                {t('tools.split.tool.rangeInputs.title')}
               </h3>
               <p className="text-gray-800 dark:text-gray-100 font-medium text-sm">
-                Укажите начальную и конечную страницы
+                {t('tools.split.tool.rangeInputs.description')}
               </p>
             </div>
           </div>
@@ -289,7 +291,7 @@ const ModernSplitTool: React.FC<ModernSplitToolProps> = React.memo(({
           <div className="flex items-center gap-6">
             <div className="flex-1">
               <label className="block text-sm font-bold text-black dark:text-white mb-2">
-                С страницы
+                {t('tools.split.tool.rangeInputs.fromPage')}
               </label>
               <input
                 type="number"
@@ -305,7 +307,7 @@ const ModernSplitTool: React.FC<ModernSplitToolProps> = React.memo(({
             
             <div className="flex-1">
               <label className="block text-sm font-bold text-black dark:text-white mb-2">
-                По страницу
+                {t('tools.split.tool.rangeInputs.toPage')}
               </label>
               <input
                 type="number"
@@ -329,10 +331,10 @@ const ModernSplitTool: React.FC<ModernSplitToolProps> = React.memo(({
             </div>
             <div>
               <h3 className="text-xl font-black text-black dark:text-white">
-                Конкретные страницы
+                {t('tools.split.tool.specificInputs.title')}
               </h3>
               <p className="text-gray-800 dark:text-gray-100 font-medium text-sm">
-                Укажите номера страниц через запятую
+                {t('tools.split.tool.specificInputs.description')}
               </p>
             </div>
           </div>
@@ -340,14 +342,14 @@ const ModernSplitTool: React.FC<ModernSplitToolProps> = React.memo(({
           <div>
             <input
               type="text"
-              placeholder="Например: 1, 3, 5-7, 10"
+              placeholder={t('tools.split.tool.specificInputs.placeholder')}
               value={specificPages}
               onChange={(e) => setSpecificPages(e.target.value)}
               disabled={isProcessing}
               className="w-full px-4 py-3 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/30 dark:border-gray-600/30 rounded-xl text-black dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-seafoam-500 focus:border-seafoam-500 transition-all"
             />
             <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mt-2">
-              Используйте запятые для разделения и дефис для диапазонов (например: 1, 3, 5-7)
+              {t('tools.split.tool.specificInputs.helpText')}
             </p>
           </div>
         </div>
@@ -369,10 +371,10 @@ const ModernSplitTool: React.FC<ModernSplitToolProps> = React.memo(({
             </div>
             <div>
               <h4 className="font-black text-black dark:text-white">
-                Упаковать в ZIP архив
+                {t('tools.split.tool.zipOption.title')}
               </h4>
               <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Рекомендуется при разделении на 5+ страниц
+                {t('tools.split.tool.zipOption.description')}
               </p>
             </div>
           </label>
@@ -387,16 +389,16 @@ const ModernSplitTool: React.FC<ModernSplitToolProps> = React.memo(({
               ⚡
             </div>
             <h3 className="text-xl font-black text-black dark:text-white mb-2">
-              Разделение в процессе
+              {t('tools.split.tool.processingTitle')}
             </h3>
             <p className="text-gray-800 dark:text-gray-100 font-medium">
-              {progress < 50 ? 'Анализ PDF файла...' : 'Разделение страниц...'}
+              {progress < 50 ? t('tools.split.tool.processingAnalyzing') : t('tools.split.tool.processingSplitting')}
             </p>
           </div>
 
           <div className="mb-6">
             <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Прогресс</span>
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('tools.split.tool.progress.label')}</span>
               <span className="text-sm font-bold text-seafoam-600 dark:text-seafoam-400">{Math.round(progress)}%</span>
             </div>
             <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
@@ -421,7 +423,7 @@ const ModernSplitTool: React.FC<ModernSplitToolProps> = React.memo(({
               ⚠️
             </div>
             <div className="flex-1">
-              <h4 className="font-bold text-red-800 dark:text-red-200 mb-1">Ошибка обработки</h4>
+              <h4 className="font-bold text-red-800 dark:text-red-200 mb-1">{t('tools.split.tool.errors.processingError')}</h4>
               <p className="text-red-700 dark:text-red-300 font-medium">{error}</p>
             </div>
             <button
@@ -451,10 +453,10 @@ const ModernSplitTool: React.FC<ModernSplitToolProps> = React.memo(({
             {isProcessing ? (
               <div className="flex items-center justify-center gap-2">
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                Обработка...
+                {t('tools.split.tool.buttons.processing')}
               </div>
             ) : (
-              `Разделить PDF`
+              t('tools.split.tool.buttons.split')
             )}
           </button>
           
@@ -463,7 +465,7 @@ const ModernSplitTool: React.FC<ModernSplitToolProps> = React.memo(({
             disabled={isProcessing}
             className="btn-ocean-modern text-lg px-8 py-4 flex-1 sm:flex-none min-w-[200px]"
           >
-            {isProcessing ? 'Отменить' : 'Назад'}
+            {isProcessing ? t('tools.split.tool.buttons.cancel') : t('tools.split.tool.buttons.back')}
           </button>
         </div>
       </div>

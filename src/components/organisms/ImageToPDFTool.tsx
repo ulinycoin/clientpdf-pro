@@ -1,11 +1,61 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useImageToPDF } from '../../hooks/useImageToPDF';
 import { ImageToPDFOptions } from '../../services/imageToPDFService';
 import { downloadBlob, generateFilename } from '../../utils/fileHelpers';
 import Button from '../atoms/Button';
 import ProgressBar from '../atoms/ProgressBar';
-import { ModernUploadZone } from '../molecules';
 import { useI18n } from '../../hooks/useI18n';
+
+// Image Preview Component with error handling
+const ImagePreview: React.FC<{ file: File; onError?: () => void }> = ({ file, onError }) => {
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [hasError, setHasError] = useState(false);
+
+  useEffect(() => {
+    const url = URL.createObjectURL(file);
+    setImageUrl(url);
+
+    // Cleanup on unmount
+    return () => {
+      URL.revokeObjectURL(url);
+    };
+  }, [file]);
+
+  const handleError = () => {
+    setHasError(true);
+    onError?.();
+  };
+
+  const handleLoad = () => {
+    // Image loaded successfully
+    setHasError(false);
+  };
+
+  if (hasError) {
+    return (
+      <div className="w-full h-full flex items-center justify-center text-gray-500 dark:text-gray-400">
+        <div className="text-center">
+          <div className="text-2xl mb-1">🖼️</div>
+          <div className="text-xs">Error loading</div>
+        </div>
+      </div>
+    );
+  }
+
+  return imageUrl ? (
+    <img
+      src={imageUrl}
+      alt={file.name}
+      className="w-full h-full object-cover hover:scale-105 transition-transform duration-200"
+      onLoad={handleLoad}
+      onError={handleError}
+    />
+  ) : (
+    <div className="w-full h-full flex items-center justify-center">
+      <div className="animate-spin rounded-full h-6 w-6 border-2 border-seafoam-500 border-t-transparent"></div>
+    </div>
+  );
+};
 
 interface ImageToPDFToolProps {
   files?: File[];
@@ -22,6 +72,13 @@ const ImageToPDFTool: React.FC<ImageToPDFToolProps> = ({
 }) => {
   const { t } = useI18n();
   const [selectedFiles, setSelectedFiles] = useState<File[]>(initialFiles);
+
+  // Synchronize with props when files change
+  useEffect(() => {
+    if (initialFiles && initialFiles.length > 0) {
+      setSelectedFiles(initialFiles);
+    }
+  }, [initialFiles]);
   const [options, setOptions] = useState<ImageToPDFOptions>({
     pageSize: 'A4',
     orientation: 'Portrait',
@@ -42,7 +99,17 @@ const ImageToPDFTool: React.FC<ImageToPDFToolProps> = ({
 
   // Handle file selection
   const handleFileSelect = useCallback((files: File[]) => {
-    const imageFiles = files.filter(file => file.type.startsWith('image/'));
+    const imageFiles = files.filter(file => {
+      // More strict image validation
+      const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/bmp'];
+      return validTypes.includes(file.type.toLowerCase()) && file.size > 0;
+    });
+    
+    if (imageFiles.length !== files.length) {
+      const invalidFiles = files.length - imageFiles.length;
+      console.warn(`Filtered out ${invalidFiles} invalid or empty files`);
+    }
+    
     setSelectedFiles(imageFiles);
     clearError();
   }, [clearError]);
@@ -52,16 +119,25 @@ const ImageToPDFTool: React.FC<ImageToPDFToolProps> = ({
     if (selectedFiles.length === 0) return;
 
     try {
-      const result = await convertImages(selectedFiles, options);
+      // Additional validation before conversion
+      const validFiles = selectedFiles.filter(file => file.size > 0);
+      if (validFiles.length === 0) {
+        throw new Error('No valid image files selected');
+      }
+
+      const result = await convertImages(validFiles, options);
 
       if (result.success && result.data) {
         const filename = generateFilename('images', 'converted', 'pdf');
         downloadBlob(result.data, filename);
         onComplete?.(result);
         console.log('Images to PDF conversion completed successfully!');
+      } else {
+        console.error('Conversion failed:', result.error?.message || 'Unknown error');
       }
     } catch (err) {
       console.error('Conversion failed:', err);
+      // Error will be shown via the hook's error state
     }
   };
 
@@ -112,24 +188,8 @@ const ImageToPDFTool: React.FC<ImageToPDFToolProps> = ({
         </div>
       )}
 
-      {/* File Upload Zone */}
-      {selectedFiles.length === 0 ? (
-        <div className="mb-8">
-          <ModernUploadZone
-            onFilesSelected={handleFileSelect}
-            accept="image/*"
-            acceptedTypes={['image/*']}
-            multiple={true}
-            maxFiles={100}
-            maxSize={50 * 1024 * 1024}
-            disabled={isProcessing}
-            title={t('pages.tools.imageToPdf.uploadSection.title') || 'Загрузить изображения'}
-            subtitle={t('pages.tools.imageToPdf.uploadSection.subtitle') || 'Преобразуем множественные изображения в один PDF документ'}
-            supportedFormats={t('pages.tools.imageToPdf.uploadSection.supportedFormats') || 'JPG, PNG, GIF, BMP, WebP файлы до 50МБ каждый'}
-            icon="🖼️"
-          />
-        </div>
-      ) : (
+      {/* Selected Files Display */}
+      {selectedFiles.length > 0 && (
         <>
           {/* Selected Files */}
           <div className="mb-8">
@@ -151,12 +211,13 @@ const ImageToPDFTool: React.FC<ImageToPDFToolProps> = ({
                 {selectedFiles.map((file, index) => (
                   <div key={`${file.name}-${index}`} className="relative group">
                     <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg border border-white/20 dark:border-gray-600/20 rounded-xl p-3 hover:border-seafoam-400 hover:shadow-xl hover:scale-105 transition-all duration-200">
-                      <div className="aspect-square bg-gradient-to-br from-seafoam-50 to-ocean-50 dark:from-seafoam-900/20 dark:to-ocean-900/20 rounded-lg mb-3 overflow-hidden shadow-lg">
-                        <img
-                          src={URL.createObjectURL(file)}
-                          alt={file.name}
-                          className="w-full h-full object-cover hover:scale-105 transition-transform duration-200"
-                          onLoad={(e) => URL.revokeObjectURL((e.target as HTMLImageElement).src)}
+                      <div className="aspect-square bg-gradient-to-br from-seafoam-50 to-ocean-50 dark:from-seafoam-900/20 dark:to-ocean-900/20 rounded-lg mb-3 overflow-hidden shadow-lg flex items-center justify-center">
+                        <ImagePreview 
+                          file={file} 
+                          onError={() => {
+                            console.warn(`Failed to load image preview for: ${file.name}`);
+                            // Could show a fallback icon or remove the problematic file
+                          }}
                         />
                       </div>
                       <p className="text-xs font-black text-black dark:text-white truncate mb-1" title={file.name}>{file.name}</p>

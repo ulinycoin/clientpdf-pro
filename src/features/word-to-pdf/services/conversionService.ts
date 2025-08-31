@@ -21,20 +21,38 @@ export class ConversionService {
       compression: false
     }
   ): Promise<ConversionResult> {
+    console.log('🔧 ConversionService: Starting Word to PDF conversion...', { 
+      fileName: file.name, 
+      fileSize: file.size, 
+      settings 
+    });
+
     try {
       // Validate file
       if (!this.isValidWordFile(file)) {
+        console.log('❌ ConversionService: Invalid file type');
         return {
           success: false,
           error: 'Please select a valid Word document (.docx, .doc)'
         };
       }
 
+      console.log('✅ ConversionService: File validation passed');
+
       // Step 1: Parse Word document
+      console.log('📖 ConversionService: Starting document parsing...');
       const documentContent = await this.wordParser.parseDocument(file);
+      console.log('✅ ConversionService: Document parsed successfully', { 
+        paragraphs: documentContent.paragraphs?.length,
+        metadata: documentContent.metadata 
+      });
 
       // Step 2: Generate PDF
+      console.log('🎨 ConversionService: Starting PDF generation...');
       const pdfBytes = await this.pdfGenerator.createPDF(documentContent, settings);
+      console.log('✅ ConversionService: PDF generated successfully', { 
+        pdfSizeBytes: pdfBytes?.length 
+      });
 
       return {
         success: true,
@@ -43,7 +61,7 @@ export class ConversionService {
       };
 
     } catch (error) {
-      console.error('Conversion error:', error);
+      console.error('❌ ConversionService: Conversion failed:', error);
       return {
         success: false,
         error: error.message || 'Conversion failed'

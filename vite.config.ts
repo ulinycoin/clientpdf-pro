@@ -128,14 +128,21 @@ export default defineConfig({
   define: {
     global: 'globalThis',
     'process.env': {},
-    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
+    'process.browser': 'true',
+    'process.versions': '{}',
+    'process.nextTick': 'setTimeout',
+    '__dirname': '""',
+    '__filename': '""'
   },
 
   optimizeDeps: {
     include: [
       'react', 'react-dom', 'react-router-dom', 'react-helmet-async',
-      'pdf-lib', 'jspdf', 'pdfjs-dist', 'lucide-react',
-      'mammoth'
+      'jspdf', 'pdfjs-dist', 'lucide-react',
+      'mammoth', 'stream-browserify', 'buffer', 'util',
+      'crypto-browserify', 'path-browserify', 'os-browserify/browser', 
+      'events', 'assert', 'url'
     ],
     exclude: ['tesseract.js']
   },
@@ -150,7 +157,19 @@ export default defineConfig({
       '@/hooks': path.resolve(__dirname, './src/hooks'),
       '@/data': path.resolve(__dirname, './src/data'),
       // Prevent Tesseract.js from loading in development
-      'tesseract.js': path.resolve(__dirname, './src/utils/tesseract-stub.ts')
+      'tesseract.js': path.resolve(__dirname, './src/utils/tesseract-stub.ts'),
+      // Node.js polyfills for browser - Enhanced
+      'stream': 'stream-browserify',
+      'buffer': 'buffer',
+      'util': 'util',
+      'crypto': 'crypto-browserify',
+      'path': 'path-browserify',
+      'fs': path.resolve(__dirname, './src/utils/fs-stub.ts'),
+      'os': 'os-browserify/browser',
+      'events': 'events',
+      // Additional polyfills for PDF processing
+      'assert': 'assert',
+      'url': 'url'
     }
   }
 });

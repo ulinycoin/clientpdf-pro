@@ -3,10 +3,8 @@ import Button from '../atoms/Button';
 import Icon from '../atoms/Icon';
 import ProgressBar from '../atoms/ProgressBar';
 import { useExtractPages } from '../../hooks/useExtractPages';
-import { 
-  PAGE_SELECTION_MODES, 
-  ExtractPagesToolProps 
-} from '../../types/pageExtraction.types';
+import { useI18n } from '../../hooks/useI18n';
+import { ExtractPagesToolProps } from '../../types/pageExtraction.types';
 
 export const ExtractPagesTool: React.FC<ExtractPagesToolProps> = ({
   files,
@@ -14,6 +12,7 @@ export const ExtractPagesTool: React.FC<ExtractPagesToolProps> = ({
   onClose,
   className = ''
 }) => {
+  const { t } = useI18n();
   const {
     file,
     pages,
@@ -36,6 +35,26 @@ export const ExtractPagesTool: React.FC<ExtractPagesToolProps> = ({
   } = useExtractPages();
 
   const [selectionMode, setSelectionMode] = useState<'individual' | 'range' | 'all' | 'custom'>('individual');
+
+  // Define selection modes with translations
+  const selectionModes = [
+    {
+      type: 'individual' as const,
+      label: t('pages.tools.extractPages.tool.selectionModes.individual') || 'Individual'
+    },
+    {
+      type: 'range' as const,
+      label: t('pages.tools.extractPages.tool.selectionModes.range') || 'Range'
+    },
+    {
+      type: 'all' as const,
+      label: t('pages.tools.extractPages.tool.selectionModes.all') || 'All'
+    },
+    {
+      type: 'custom' as const,
+      label: t('pages.tools.extractPages.tool.selectionModes.custom') || 'Custom'
+    }
+  ];
   const [rangeInput, setRangeInput] = useState('');
   const [rangeStart, setRangeStart] = useState('');
   const [rangeEnd, setRangeEnd] = useState('');
@@ -85,8 +104,8 @@ export const ExtractPagesTool: React.FC<ExtractPagesToolProps> = ({
           <div className="w-16 h-16 bg-gradient-to-br from-seafoam-500 to-ocean-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
             <span className="text-white text-2xl">📑</span>
           </div>
-          <h2 className="text-2xl font-black text-black dark:text-white mb-4">Extract PDF Pages</h2>
-          <p className="text-gray-800 dark:text-gray-100 font-medium mb-6">Loading PDF file...</p>
+          <h2 className="text-2xl font-black text-black dark:text-white mb-4">{t('pages.tools.extractPages.tool.titleLoading') || 'Extract PDF Pages'}</h2>
+          <p className="text-gray-800 dark:text-gray-100 font-medium mb-6">{t('pages.tools.extractPages.tool.fileInfo.loadingFile') || 'Loading PDF file...'}</p>
           <div className="max-w-md mx-auto">
             <ProgressBar progress={50} color="blue" />
           </div>
@@ -100,25 +119,25 @@ export const ExtractPagesTool: React.FC<ExtractPagesToolProps> = ({
     return (
       <div className={`max-w-4xl mx-auto bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-white/20 dark:border-gray-600/20 rounded-2xl shadow-2xl p-8 ${className} transition-all duration-300`}>
         <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl font-black text-black dark:text-white">Extract PDF Pages</h2>
+          <h2 className="text-2xl font-black text-black dark:text-white">{t('pages.tools.extractPages.tool.title') || 'Extract PDF Pages'}</h2>
           <button
             onClick={onClose}
             className="p-2 hover:bg-seafoam-50 dark:hover:bg-seafoam-900/20 rounded-lg transition-all duration-200 flex items-center space-x-2"
           >
             <span>←</span>
-            <span className="font-medium text-black dark:text-white">Back to Tools</span>
+            <span className="font-medium text-black dark:text-white">{t('pages.tools.extractPages.tool.fileInfo.goBack') || 'Back to Tools'}</span>
           </button>
         </div>
         <div className="text-center py-12">
           <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
             <span className="text-white text-2xl">⚠️</span>
           </div>
-          <p className="text-gray-800 dark:text-gray-100 font-medium mb-6">No PDF file available for page extraction.</p>
+          <p className="text-gray-800 dark:text-gray-100 font-medium mb-6">{t('pages.tools.extractPages.tool.fileInfo.noFileAvailable') || 'No PDF file available for page extraction.'}</p>
           <button
             onClick={onClose}
             className="btn-privacy-modern text-lg px-8 py-3 ripple-effect btn-press"
           >
-            Go Back
+            {t('pages.tools.extractPages.tool.fileInfo.goBack') || 'Go Back'}
           </button>
         </div>
       </div>
@@ -161,7 +180,7 @@ export const ExtractPagesTool: React.FC<ExtractPagesToolProps> = ({
       {/* Selection Mode Tabs */}
       <div className="mb-8">
         <div className="flex space-x-2 mb-6">
-          {PAGE_SELECTION_MODES.map((mode) => (
+          {selectionModes.map((mode) => (
             <button
               key={mode.type}
               onClick={() => setSelectionMode(mode.type)}

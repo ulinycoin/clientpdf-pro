@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useTranslation } from '../../hooks/useI18n';
+import { useTranslation, useI18n } from '../../hooks/useI18n';
 import { useMotionPreferences } from '../../hooks/useAccessibilityPreferences';
 import LanguageSwitcher from '../molecules/LanguageSwitcher';
 import DarkModeToggle from '../molecules/DarkModeToggle';
@@ -19,10 +19,19 @@ const ModernHeader: React.FC<ModernHeaderProps> = ({
   className = ''
 }) => {
   const { t } = useTranslation();
+  const { currentLanguage } = useI18n();
   const { shouldAnimate } = useMotionPreferences();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+
+  // Helper function to create localized paths
+  const getLocalizedPath = (path: string) => {
+    if (currentLanguage === 'en') {
+      return path;
+    }
+    return `/${currentLanguage}${path}`;
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -48,7 +57,7 @@ const ModernHeader: React.FC<ModernHeaderProps> = ({
         <div className="flex justify-between items-center h-20">
           
           {/* Modern Logo */}
-          <Link to="/" className="flex items-center space-x-4 group">
+          <Link to={getLocalizedPath("/")} className="flex items-center space-x-4 group">
             {showLogo && (
               <div className="relative">
                 {/* Floating glow effect */}
@@ -74,7 +83,7 @@ const ModernHeader: React.FC<ModernHeaderProps> = ({
               <h1 className="text-2xl font-bold text-gradient-ocean group-hover:scale-105 transition-transform duration-200">
                 {title}
               </h1>
-              <p className="text-sm text-privacy-600 dark:text-privacy-400 font-medium hidden sm:block">
+              <p className="text-sm text-gray-700 dark:text-privacy-400 font-medium hidden sm:block">
                 {t('header.subtitle')}
               </p>
             </div>
@@ -86,7 +95,7 @@ const ModernHeader: React.FC<ModernHeaderProps> = ({
               
               {/* Navigation Links */}
               <Link
-                to="/privacy"
+                to={getLocalizedPath("/privacy")}
                 className="relative text-privacy-700 dark:text-privacy-300 hover:text-seafoam-600 dark:hover:text-seafoam-400 transition-colors font-medium group py-2"
               >
                 <span className="flex items-center gap-2">
@@ -99,7 +108,7 @@ const ModernHeader: React.FC<ModernHeaderProps> = ({
               </Link>
               
               <Link
-                to="/faq"
+                to={getLocalizedPath("/faq")}
                 className="relative text-privacy-700 dark:text-privacy-300 hover:text-ocean-600 dark:hover:text-ocean-400 transition-colors font-medium group py-2"
               >
                 <span className="flex items-center gap-2">
@@ -144,7 +153,7 @@ const ModernHeader: React.FC<ModernHeaderProps> = ({
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="lg:hidden p-3 text-privacy-600 dark:text-privacy-400 hover:text-privacy-900 dark:hover:text-privacy-100 transition-colors rounded-xl hover:bg-white/50 dark:hover:bg-privacy-800/50 backdrop-blur-sm"
+            className="lg:hidden p-3 text-gray-700 dark:text-privacy-400 hover:text-privacy-900 dark:hover:text-privacy-100 transition-colors rounded-xl hover:bg-white/50 dark:hover:bg-privacy-800/50 backdrop-blur-sm"
             aria-label={t('header.mobileMenu.toggle')}
           >
             <div className="relative w-5 h-5">
@@ -164,7 +173,7 @@ const ModernHeader: React.FC<ModernHeaderProps> = ({
             
             {/* Mobile Navigation Links */}
             <Link
-              to="/privacy"
+              to={getLocalizedPath("/privacy")}
               className="flex items-center gap-3 px-4 py-3 text-privacy-700 dark:text-privacy-300 hover:text-seafoam-600 dark:hover:text-seafoam-400 hover:bg-white/50 dark:hover:bg-privacy-800/50 rounded-xl transition-all duration-200 font-medium"
               onClick={() => setIsMobileMenuOpen(false)}
             >
@@ -175,7 +184,7 @@ const ModernHeader: React.FC<ModernHeaderProps> = ({
             </Link>
             
             <Link
-              to="/faq"
+              to={getLocalizedPath("/faq")}
               className="flex items-center gap-3 px-4 py-3 text-privacy-700 dark:text-privacy-300 hover:text-ocean-600 dark:hover:text-ocean-400 hover:bg-white/50 dark:hover:bg-privacy-800/50 rounded-xl transition-all duration-200 font-medium"
               onClick={() => setIsMobileMenuOpen(false)}
             >

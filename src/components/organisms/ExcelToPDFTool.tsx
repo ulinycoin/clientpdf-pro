@@ -1,6 +1,5 @@
 import React from 'react';
 import { useI18n } from '../../hooks/useI18n';
-import { ModernUploadZone } from '../molecules';
 import ProgressBar from '../atoms/ProgressBar';
 import Button from '../atoms/Button';
 import ExcelPreview from '../molecules/ExcelPreview';
@@ -91,29 +90,18 @@ const ConversionSettings: React.FC<ConversionSettingsProps> = ({
         </div>
       </div>
 
-      <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl p-6 shadow-lg">
+      {/* Page Setup Section */}
+      <div className="bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl p-4 shadow-lg">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg flex items-center justify-center text-white shadow-lg">
-            ⚙️
+          <div className="w-6 h-6 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-lg flex items-center justify-center text-white shadow-sm">
+            📄
           </div>
-          <h3 className="text-lg font-black text-black dark:text-white">Настройки конвертации</h3>
+          <h3 className="font-black text-black dark:text-white">{t('tools.excelToPdf.pageSetup')}</h3>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-black text-black dark:text-white mb-3">{t('tools.excelToPdf.pageOrientation')}</label>
-            <select
-              value={options.orientation}
-              onChange={(e) => onOptionsChange({ ...options, orientation: e.target.value as any })}
-              className="w-full px-4 py-3 border border-gray-300/80 dark:border-gray-600/20 rounded-xl bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg text-black dark:text-white font-medium focus:ring-2 focus:ring-seafoam-500/50 focus:border-seafoam-500 transition-all duration-200 shadow-sm"
-            >
-              <option value="portrait">{t('tools.excelToPdf.portrait')}</option>
-              <option value="landscape">{t('tools.excelToPdf.landscape')}</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-black text-black dark:text-white mb-3">{t('tools.excelToPdf.pageSize')}</label>
+          <div className="space-y-3">
+            <label className="block text-sm font-black text-black dark:text-white mb-2">{t('tools.excelToPdf.pageSize')}</label>
             <select
               value={options.pageSize}
               onChange={(e) => onOptionsChange({ ...options, pageSize: e.target.value as any })}
@@ -126,8 +114,32 @@ const ConversionSettings: React.FC<ConversionSettingsProps> = ({
             </select>
           </div>
 
-          <div>
-            <label className="block text-sm font-black text-black dark:text-white mb-3">{t('tools.excelToPdf.fontSize')}</label>
+          <div className="space-y-3">
+            <label className="block text-sm font-black text-black dark:text-white mb-2">{t('tools.excelToPdf.pageOrientation')}</label>
+            <select
+              value={options.orientation}
+              onChange={(e) => onOptionsChange({ ...options, orientation: e.target.value as any })}
+              className="w-full px-4 py-3 border border-gray-300/80 dark:border-gray-600/20 rounded-xl bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg text-black dark:text-white font-medium focus:ring-2 focus:ring-seafoam-500/50 focus:border-seafoam-500 transition-all duration-200 shadow-sm"
+            >
+              <option value="portrait">{t('tools.excelToPdf.portrait')}</option>
+              <option value="landscape">{t('tools.excelToPdf.landscape')}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      {/* Formatting Section */}
+      <div className="bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl p-4 shadow-lg">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-6 h-6 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center text-white shadow-sm">
+            🎨
+          </div>
+          <h3 className="font-black text-black dark:text-white">{t('tools.excelToPdf.formatting')}</h3>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-3">
+            <label className="block text-sm font-black text-black dark:text-white mb-2">{t('tools.excelToPdf.fontSize')}</label>
             <input
               type="number"
               min="6"
@@ -138,8 +150,8 @@ const ConversionSettings: React.FC<ConversionSettingsProps> = ({
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-black text-black dark:text-white mb-3">{t('tools.excelToPdf.outputFormat')}</label>
+          <div className="space-y-3">
+            <label className="block text-sm font-black text-black dark:text-white mb-2">{t('tools.excelToPdf.outputFormat')}</label>
             <select
               value={options.outputFormat}
               onChange={(e) => onOptionsChange({ ...options, outputFormat: e.target.value as any })}
@@ -152,7 +164,96 @@ const ConversionSettings: React.FC<ConversionSettingsProps> = ({
         </div>
       </div>
 
-      <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl p-4 shadow-lg">
+      {/* Margins Section */}
+      <div className="bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl p-4 shadow-lg">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-6 h-6 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg flex items-center justify-center text-white shadow-sm">
+            📐
+          </div>
+          <h3 className="font-black text-black dark:text-white">{t('tools.excelToPdf.margins')}</h3>
+        </div>
+        
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="text-xs font-bold text-gray-600 dark:text-gray-300 mb-2 block">{t('tools.excelToPdf.marginTop')}</label>
+            <input
+              type="number"
+              min="0"
+              max="50"
+              value={options.margins?.top || 20}
+              onChange={(e) => onOptionsChange({ 
+                ...options, 
+                margins: { 
+                  ...options.margins, 
+                  top: parseInt(e.target.value) || 20 
+                } 
+              })}
+              className="w-full px-3 py-2 text-sm border border-gray-300/80 dark:border-gray-600/20 rounded-lg bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg text-black dark:text-white font-medium focus:ring-2 focus:ring-seafoam-500/50 focus:border-seafoam-500 transition-all duration-200 shadow-sm"
+            />
+          </div>
+          <div>
+            <label className="text-xs font-bold text-gray-600 dark:text-gray-300 mb-2 block">{t('tools.excelToPdf.marginBottom')}</label>
+            <input
+              type="number"
+              min="0"
+              max="50"
+              value={options.margins?.bottom || 20}
+              onChange={(e) => onOptionsChange({ 
+                ...options, 
+                margins: { 
+                  ...options.margins, 
+                  bottom: parseInt(e.target.value) || 20 
+                } 
+              })}
+              className="w-full px-3 py-2 text-sm border border-gray-300/80 dark:border-gray-600/20 rounded-lg bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg text-black dark:text-white font-medium focus:ring-2 focus:ring-seafoam-500/50 focus:border-seafoam-500 transition-all duration-200 shadow-sm"
+            />
+          </div>
+          <div>
+            <label className="text-xs font-bold text-gray-600 dark:text-gray-300 mb-2 block">{t('tools.excelToPdf.marginLeft')}</label>
+            <input
+              type="number"
+              min="0"
+              max="50"
+              value={options.margins?.left || 20}
+              onChange={(e) => onOptionsChange({ 
+                ...options, 
+                margins: { 
+                  ...options.margins, 
+                  left: parseInt(e.target.value) || 20 
+                } 
+              })}
+              className="w-full px-3 py-2 text-sm border border-gray-300/80 dark:border-gray-600/20 rounded-lg bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg text-black dark:text-white font-medium focus:ring-2 focus:ring-seafoam-500/50 focus:border-seafoam-500 transition-all duration-200 shadow-sm"
+            />
+          </div>
+          <div>
+            <label className="text-xs font-bold text-gray-600 dark:text-gray-300 mb-2 block">{t('tools.excelToPdf.marginRight')}</label>
+            <input
+              type="number"
+              min="0"
+              max="50"
+              value={options.margins?.right || 20}
+              onChange={(e) => onOptionsChange({ 
+                ...options, 
+                margins: { 
+                  ...options.margins, 
+                  right: parseInt(e.target.value) || 20 
+                } 
+              })}
+              className="w-full px-3 py-2 text-sm border border-gray-300/80 dark:border-gray-600/20 rounded-lg bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg text-black dark:text-white font-medium focus:ring-2 focus:ring-seafoam-500/50 focus:border-seafoam-500 transition-all duration-200 shadow-sm"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Additional Options */}
+      <div className="bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl p-4 shadow-lg">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-6 h-6 bg-gradient-to-br from-orange-500 to-red-500 rounded-lg flex items-center justify-center text-white shadow-sm">
+            ⚙️
+          </div>
+          <h3 className="font-black text-black dark:text-white">{t('tools.excelToPdf.options')}</h3>
+        </div>
+        
         <label className="flex items-center space-x-3 cursor-pointer">
           <input
             type="checkbox"
@@ -164,18 +265,58 @@ const ConversionSettings: React.FC<ConversionSettingsProps> = ({
         </label>
       </div>
 
-      <button
-        onClick={onConvert}
-        disabled={isProcessing || options.selectedSheets.length === 0}
-        className="w-full btn-privacy-modern bg-gradient-to-br from-seafoam-500 to-ocean-500 hover:from-seafoam-600 hover:to-ocean-600 disabled:from-gray-400 disabled:to-gray-500 text-white font-black px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 disabled:hover:scale-100 transition-all duration-300 disabled:opacity-50"
-      >
-        {isProcessing ? t('tools.excelToPdf.converting') : t('tools.excelToPdf.convertToPdf')}
-      </button>
+      {/* File Information Section */}
+      {workbook && (
+        <div className="bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl p-4 shadow-lg">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-6 h-6 bg-gradient-to-br from-indigo-500 to-blue-500 rounded-lg flex items-center justify-center text-white shadow-sm">
+              📊
+            </div>
+            <h3 className="font-black text-black dark:text-white">{t('tools.excelToPdf.fileInformation')}</h3>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-lg p-3 border border-white/20 dark:border-gray-600/20">
+              <div className="text-xs font-bold text-gray-600 dark:text-gray-300 mb-1">{t('tools.excelToPdf.file')}</div>
+              <div className="font-black text-black dark:text-white truncate text-sm" title={workbook.metadata.fileName}>
+                {workbook.metadata.fileName}
+              </div>
+            </div>
+            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-lg p-3 border border-white/20 dark:border-gray-600/20">
+              <div className="text-xs font-bold text-gray-600 dark:text-gray-300 mb-1">{t('tools.excelToPdf.size')}</div>
+              <div className="font-black text-black dark:text-white text-sm">
+                {(workbook.metadata.fileSize / 1024).toFixed(1)} KB
+              </div>
+            </div>
+            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-lg p-3 border border-white/20 dark:border-gray-600/20">
+              <div className="text-xs font-bold text-gray-600 dark:text-gray-300 mb-1">{t('tools.excelToPdf.sheets')}</div>
+              <div className="font-black text-black dark:text-white text-sm">
+                {workbook.metadata.totalSheets}
+              </div>
+            </div>
+            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-lg p-3 border border-white/20 dark:border-gray-600/20">
+              <div className="text-xs font-bold text-gray-600 dark:text-gray-300 mb-1">{t('tools.excelToPdf.languages')}</div>
+              <div className="font-black text-black dark:text-white text-sm">
+                {workbook.metadata.detectedLanguages.join(', ') || 'en'}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Button removed - now handled by parent component */}
     </div>
   );
 };
 
-export const ExcelToPDFTool: React.FC = () => {
+interface ExcelToPDFToolProps {
+  files?: File[];
+  onComplete?: (result: any) => void;
+  onClose?: () => void;
+}
+
+const ExcelToPDFTool: React.FC<ExcelToPDFToolProps> = ({ files = [], onComplete, onClose }) => {
+  
   const { t } = useI18n();
   const {
     workbook,
@@ -215,11 +356,12 @@ export const ExcelToPDFTool: React.FC = () => {
     }
   }, [workbook, options, analyzeTable]);
 
-  const handleFileSelect = async (files: File[]) => {
-    if (files.length > 0) {
-      await parseFile(files[0]);
+  // Process files passed from parent component
+  React.useEffect(() => {
+    if (files.length > 0 && !workbook) {
+      parseFile(files[0]);
     }
-  };
+  }, [files, workbook, parseFile]);
 
   const handleConvert = async () => {
     console.log('🔥 handleConvert called with options:', options);
@@ -261,45 +403,27 @@ export const ExcelToPDFTool: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto p-6">
-      {!workbook ? (
-        <div className="max-w-2xl mx-auto">
-          <ModernUploadZone
-            onFilesSelected={handleFileSelect}
-            accept=".xlsx,.xls"
-            acceptedTypes={['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel']}
-            maxSize={100 * 1024 * 1024}
-            multiple={false}
-            disabled={false}
-            title="Загрузить Excel файл"
-            subtitle="Конвертируйте Excel таблицы в PDF с полным сохранением форматирования и данных"
-            supportedFormats="XLSX, XLS файлы до 100МБ"
-            icon="📊"
-          />
-          
-          <div className="mt-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 rounded-xl p-6 shadow-lg">
-            <h4 className="text-lg font-black text-black dark:text-white mb-4">✨ Особенности конвертации:</h4>
-            <div className="grid gap-3">
-              <div className="flex items-center gap-3">
-                <span className="w-2 h-2 bg-seafoam-500 rounded-full"></span>
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('tools.excelToPdf.multipleSheets')}</span>
+      {/* Show interface even without workbook */}
+      <div className="space-y-6">
+        {/* Message when no file */}
+        {!workbook && (
+          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200/60 dark:border-blue-600/20 rounded-2xl p-6 backdrop-blur-sm shadow-xl">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-2xl flex items-center justify-center text-white text-xl shadow-lg">
+                📊
               </div>
-              <div className="flex items-center gap-3">
-                <span className="w-2 h-2 bg-seafoam-500 rounded-full"></span>
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('tools.excelToPdf.complexFormulas')}</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <span className="w-2 h-2 bg-seafoam-500 rounded-full"></span>
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('tools.excelToPdf.internationalText')}</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <span className="w-2 h-2 bg-seafoam-500 rounded-full"></span>
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('tools.excelToPdf.localProcessing')}</span>
+              <div>
+                <h3 className="text-blue-800 dark:text-blue-200 font-black text-lg">Excel to PDF Settings</h3>
+                <p className="text-blue-700 dark:text-blue-300 text-sm font-medium">
+                  Configure your conversion preferences. Upload a file to see live preview.
+                </p>
               </div>
             </div>
           </div>
-        </div>
-      ) : (
-        <div className="space-y-6">
+        )}
+        
+        {workbook && (
+          <div>
           {/* Success Message */}
           {result?.success && (
             <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-200/60 dark:border-green-600/20 rounded-2xl p-6 backdrop-blur-sm shadow-xl">
@@ -345,7 +469,7 @@ export const ExcelToPDFTool: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Left Panel - Preview */}
             <div className="space-y-6">
-              <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-white/20 dark:border-gray-600/20 rounded-2xl shadow-2xl overflow-hidden h-[600px]"> {/* Fixed height */}
+              <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-white/20 dark:border-gray-600/20 rounded-2xl shadow-2xl overflow-hidden min-h-[600px] h-fit"> {/* Dynamic height */}
                 {(() => {
                   // Debug logging
                   console.log('🔍 ExcelToPDFTool Preview Data:', {
@@ -364,6 +488,8 @@ export const ExcelToPDFTool: React.FC = () => {
                       onDownloadAll={result?.pdfFiles && result.pdfFiles.length > 1 ? downloadAllPDFs : undefined}
                       isGenerating={isProcessing}
                       onRegenerate={workbook ? handleConvert : undefined}
+                      onConvert={workbook ? handleConvert : undefined}
+                      hasWorkbook={!!workbook}
                       onOrientationToggle={handleOrientationToggle}
                       tableOverflowWarning={tableAnalysis ? {
                         isOverflowing: tableAnalysis.isOverflowing,
@@ -380,7 +506,7 @@ export const ExcelToPDFTool: React.FC = () => {
 
             {/* Right Panel - Conversion Settings */}
             <div className="space-y-6">
-              <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-white/20 dark:border-gray-600/20 rounded-2xl shadow-2xl p-6 h-[600px] flex flex-col"> {/* Fixed height with flex */}
+              <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-white/20 dark:border-gray-600/20 rounded-2xl shadow-2xl p-6 min-h-[600px] h-fit flex flex-col"> {/* Dynamic height with flex */}
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-lg flex items-center justify-center text-white shadow-lg">
                     ⚙️
@@ -388,7 +514,7 @@ export const ExcelToPDFTool: React.FC = () => {
                   <h2 className="text-xl font-black text-black dark:text-white">{t('tools.excelToPdf.conversionSettings')}</h2>
                 </div>
 
-                <div className="flex-1 overflow-y-auto"> {/* Scrollable content area */}
+                <div className="flex-1 overflow-y-auto max-h-[400px]"> {/* Limited scrollable content area */}
                   <ConversionSettings
                     workbook={workbook}
                     options={options}
@@ -397,59 +523,34 @@ export const ExcelToPDFTool: React.FC = () => {
                     isProcessing={isProcessing}
                   />
                 </div>
-              </div>
-            </div>
-          </div>
 
-          {/* File Information - Full Width Below */}
-          <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-white/20 dark:border-gray-600/20 rounded-2xl shadow-2xl p-6">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-blue-500 rounded-lg flex items-center justify-center text-white shadow-lg">
-                📊
-              </div>
-              <h2 className="text-xl font-black text-black dark:text-white">{t('tools.excelToPdf.fileInformation')}</h2>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-xl p-4 border border-white/20 dark:border-gray-600/20">
-                <div className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{t('tools.excelToPdf.file')}</div>
-                <div className="font-black text-black dark:text-white truncate" title={workbook.metadata.fileName}>{workbook.metadata.fileName}</div>
-              </div>
-              <div className="bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-xl p-4 border border-white/20 dark:border-gray-600/20">
-                <div className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{t('tools.excelToPdf.size')}</div>
-                <div className="font-black text-black dark:text-white">{Math.round(workbook.metadata.fileSize / 1024)} KB</div>
-              </div>
-              <div className="bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-xl p-4 border border-white/20 dark:border-gray-600/20">
-                <div className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{t('tools.excelToPdf.sheets')}</div>
-                <div className="font-black text-black dark:text-white">{workbook.metadata.totalSheets}</div>
-              </div>
-              <div className="bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-xl p-4 border border-white/20 dark:border-gray-600/20">
-                <div className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{t('tools.excelToPdf.languages')}</div>
-                <div className="font-black text-black dark:text-white">{workbook.metadata.detectedLanguages.join(', ') || 'English'}</div>
-              </div>
-            </div>
-
-            {workbook.metadata.detectedLanguages.length > 1 && (
-              <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200/60 dark:border-blue-600/20 rounded-xl backdrop-blur-sm">
-                <div className="flex items-center gap-3">
-                  <div className="w-6 h-6 bg-blue-500 rounded-lg flex items-center justify-center text-white text-sm">
-                    🌍
-                  </div>
-                  <div className="text-sm font-medium text-blue-800 dark:text-blue-200">
-                    {t('tools.excelToPdf.multiLanguageNote')}
-                  </div>
+                {/* Convert Button - Always at bottom */}
+                <div className="mt-6 pt-6 border-t border-white/20 dark:border-gray-600/20 flex-shrink-0">
+                  <button
+                    onClick={handleConvert}
+                    disabled={!workbook || isProcessing || options.selectedSheets.length === 0}
+                    className="w-full btn-privacy-modern bg-gradient-to-br from-seafoam-500 to-ocean-500 hover:from-seafoam-600 hover:to-ocean-600 disabled:from-gray-400 disabled:to-gray-500 text-white font-black py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 disabled:hover:scale-100 transition-all duration-300 disabled:opacity-50"
+                  >
+                    {isProcessing ? (
+                      <span className="flex items-center justify-center gap-2">
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                        {t('tools.excelToPdf.converting')}
+                      </span>
+                    ) : (
+                      <>🔄 {t('tools.excelToPdf.convertToPdf')}</>
+                    )}
+                  </button>
                 </div>
               </div>
-            )}
-
-            <button
-              onClick={reset}
-              className="mt-6 px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border border-red-300/80 dark:border-red-600/20 rounded-lg text-red-600 dark:text-red-400 font-bold hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-200 shadow-lg"
-            >
-              {t('tools.excelToPdf.chooseDifferentFile')}
-            </button>
+            </div>
           </div>
+
+          {/* File Information moved inside settings panel */}
         </div>
-      )}
+        )}
+
+        
+      </div>
     </div>
   );
 };

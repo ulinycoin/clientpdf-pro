@@ -7,14 +7,14 @@ import {
   ModernToolsGrid,
   InteractiveHeroSection,
   PrivacyBenefitsSection,
-  QuickStartSection,
-  TrustSignalsSection
+  QuickStartSection
 } from '../components/organisms';
 // Removed PrivacyBadge - using InteractiveHeroSection instead
 
 const HomePage: React.FC = () => {
   const { t } = useTranslation();
   const { currentLanguage } = useI18n();
+  
 
   return (
     <>
@@ -90,17 +90,15 @@ const HomePage: React.FC = () => {
           animated={true}
         />
 
+        {/* Modern Tools Grid - Moved up for better UX */}
+        <ModernToolsGrid disabledTools={[]} />
+
         {/* Privacy Benefits Section */}
         <PrivacyBenefitsSection animated={true} />
 
         {/* Quick Start Guide Section */}
         <QuickStartSection animated={true} />
 
-        {/* Modern Tools Grid */}
-        <ModernToolsGrid disabledTools={[]} />
-
-        {/* Trust & Social Proof Section */}
-        <TrustSignalsSection animated={true} />
         </main>
 
         <ModernFooter />

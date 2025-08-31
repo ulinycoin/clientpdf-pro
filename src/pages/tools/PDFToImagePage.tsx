@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { toolsSEOData } from '../../data/seoData';
 import { StandardToolPageTemplate } from '../../components/templates';
 import PdfToImageTool from '../../components/organisms/PdfToImageTool';
+import { RelatedToolsSection } from '../../components/organisms';
 import { ModernUploadZone } from '../../components/molecules';
 import { useFileUpload } from '../../hooks/useFileUpload';
 import { useI18n } from '../../hooks/useI18n';
@@ -64,10 +65,10 @@ const PDFToImagePage: React.FC = () => {
               </div>
               <div>
                 <h3 className="text-xl font-black text-green-800 dark:text-green-200">
-                  PDF успешно конвертирован в изображения!
+                  {t('pages.tools.pdfToImage.results.successTitle') || 'PDF successfully converted to images!'}
                 </h3>
                 <p className="text-gray-800 dark:text-gray-100 font-medium text-sm">
-                  Все страницы PDF преобразованы в изображения
+                  {t('pages.tools.pdfToImage.results.successDescription') || 'All PDF pages converted to images'}
                 </p>
               </div>
             </div>
@@ -78,7 +79,7 @@ const PDFToImagePage: React.FC = () => {
                 onClick={handleReset}
                 className="btn-privacy-secondary text-lg px-8 py-4"
               >
-                Конвертировать другой файл
+                {t('pages.tools.pdfToImage.results.convertAnotherFile') || 'Convert another file'}
               </button>
             </div>
           </div>
@@ -107,9 +108,9 @@ const PDFToImagePage: React.FC = () => {
           multiple={false}
           maxSize={100 * 1024 * 1024}
           disabled={false}
-          title="Загрузите PDF файл для конвертации в изображения"
-          subtitle="Преобразуйте PDF страницы в высококачественные изображения JPG, PNG или WebP"
-          supportedFormats="PDF файлы"
+          title={t('pages.tools.pdfToImage.uploadTitle') || 'Upload PDF file to convert to images'}
+          subtitle={t('pages.tools.pdfToImage.uploadSubtitle') || 'Transform PDF pages into high-quality JPG, PNG or WebP images'}
+          supportedFormats={t('pages.tools.pdfToImage.supportedFormats') || 'PDF files'}
         />
         
         {/* File List & Start Button */}
@@ -121,10 +122,10 @@ const PDFToImagePage: React.FC = () => {
               </div>
               <div>
                 <h3 className="text-xl font-black text-black dark:text-white">
-                  Выбранный файл ({files.length})
+                  {t('pages.tools.pdfToImage.selectedFile', { count: files.length }) || `Selected file (${files.length})`}
                 </h3>
                 <p className="text-gray-800 dark:text-gray-100 font-medium text-sm">
-                  Готов для конвертации в изображения
+                  {t('pages.tools.pdfToImage.readyToConvert') || 'Ready to convert to images'}
                 </p>
               </div>
             </div>
@@ -139,14 +140,14 @@ const PDFToImagePage: React.FC = () => {
                     <div>
                       <p className="font-black text-black dark:text-white">{file.name}</p>
                       <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                        {(file.size / 1024 / 1024).toFixed(2)} МБ
+                        {(file.size / 1024 / 1024).toFixed(2)} {t('pages.tools.pdfToImage.fileSizeUnit') || 'MB'}
                       </p>
                     </div>
                   </div>
                   <button
                     onClick={() => removeFile(index)}
                     className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all duration-200"
-                    title="Удалить файл"
+                    title={t('pages.tools.pdfToImage.removeFile') || 'Remove file'}
                   >
                     <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
@@ -161,7 +162,7 @@ const PDFToImagePage: React.FC = () => {
                 onClick={() => setToolActive(true)}
                 className="btn-privacy-modern text-lg px-8 py-4 min-w-[250px] ripple-effect btn-press"
               >
-                Конвертировать в изображения 🖼️
+                {t('pages.tools.pdfToImage.buttons.startConverting') || 'Convert to Images 🖼️'}
               </button>
             </div>
           </div>
@@ -178,10 +179,11 @@ const PDFToImagePage: React.FC = () => {
         question: faq.question,
         answer: faq.answer
       }))}
-      pageTitle="Конвертировать PDF в изображения бесплатно"
-      pageDescription="Преобразуйте PDF страницы в JPG, PNG, WebP изображения. Высокое качество, быстро, безопасно."
+      pageTitle={t('pages.tools.pdfToImage.pageTitle') || 'Convert PDF to Images for Free - LocalPDF'}
+      pageDescription={t('pages.tools.pdfToImage.pageDescription') || 'Convert PDF pages to PNG or JPEG images. High-quality PDF to image conversion.'}
       toolComponent={toolComponent}
       breadcrumbKey="pdf-to-image"
+      relatedToolsSection={<RelatedToolsSection currentTool="pdf-to-image" />}
     />
   );
 };

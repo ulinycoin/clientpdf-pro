@@ -10,6 +10,8 @@ interface ExcelPreviewProps {
   isGenerating: boolean;
   onRegenerate?: () => void;
   onOrientationToggle?: () => void;
+  onConvert?: () => void; // Added for Convert button
+  hasWorkbook?: boolean; // Added to know if file is loaded
   tableOverflowWarning?: {
     isOverflowing: boolean;
     recommendedOrientation?: 'landscape' | 'portrait';
@@ -27,6 +29,8 @@ export const ExcelPreview: React.FC<ExcelPreviewProps> = ({
   isGenerating,
   onRegenerate,
   onOrientationToggle,
+  onConvert,
+  hasWorkbook,
   tableOverflowWarning
 }) => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -113,14 +117,30 @@ export const ExcelPreview: React.FC<ExcelPreviewProps> = ({
 
   if (!result || !result.success) {
     return (
-      <div className="border border-gray-200 rounded-lg p-6 bg-gray-50">
-        <div className="flex items-center justify-center h-64">
-          <div className="text-center text-gray-500">
-            <Eye className="w-12 h-12 mx-auto mb-3 opacity-50" />
-            <p>PDF preview will appear here</p>
-            <p className="text-sm">Upload an Excel file and convert to see preview</p>
-          </div>
+      <div className="p-8 text-center flex flex-col items-center justify-center h-full">
+        <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-blue-500 rounded-2xl flex items-center justify-center text-white mb-6 shadow-xl">
+          <Eye className="w-8 h-8" />
         </div>
+        <h3 className="text-xl font-black text-black dark:text-white mb-3">Excel Preview</h3>
+        <p className="text-sm font-medium text-gray-600 dark:text-gray-300 mb-6">
+          {hasWorkbook ? 'Convert your Excel file to see PDF preview' : 'Upload an Excel file to get started'}
+        </p>
+        {hasWorkbook && onConvert && (
+          <button
+            onClick={onConvert}
+            disabled={isGenerating}
+            className="btn-privacy-modern bg-gradient-to-br from-seafoam-500 to-ocean-500 hover:from-seafoam-600 hover:to-ocean-600 disabled:from-gray-400 disabled:to-gray-500 text-white font-black px-8 py-3 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 disabled:hover:scale-100 transition-all duration-300 disabled:opacity-50"
+          >
+            {isGenerating ? (
+              <span className="flex items-center gap-2">
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                Converting...
+              </span>
+            ) : (
+              'Convert to PDF'
+            )}
+          </button>
+        )}
       </div>
     );
   }

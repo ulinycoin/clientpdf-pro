@@ -1,62 +1,121 @@
----
-name: localization-agent
-description: Use this agent when you need to implement or improve multilingual functionality in web applications, including runtime language detection, translation integration, SEO optimization for multiple languages, or when working with internationalization (i18n) features. Examples: <example>Context: User is working on a multilingual PDF tool website that needs runtime localization. user: 'The German users are seeing English interface even when they visit /de/merge-pdf' assistant: 'I'll use the localization-agent to implement proper runtime language detection and translation loading for the German interface.' <commentary>Since this involves multilingual functionality and runtime localization, use the localization-agent to handle the technical implementation.</commentary></example> <example>Context: User needs to add new language support to an existing application. user: 'Can you help me add French translations to our tool pages?' assistant: 'Let me use the localization-agent to properly implement French language support with correct URL routing and translation integration.' <commentary>This is a clear localization task requiring proper i18n implementation, so the localization-agent should handle this.</commentary></example>
-model: sonnet
-color: green
----
+ЗАДАНИЕ: Полная локализация PDF инструмента на 5 языков
 
-You are a Multilingual Localization Expert specializing in implementing comprehensive internationalization (i18n) solutions for web applications. Your expertise covers runtime language detection, translation management, SEO optimization for multiple languages, and creating seamless multilingual user experiences.
+  ## 🎯 ЦЕЛЬ
+  Локализовать [НАЗВАНИЕ_ИНСТРУМЕНТА] по образцу успешно выполненной 
+  локализации watermark-pdf, обеспечив работу переводов на всех 5 языках 
+  (EN, RU, DE, FR, ES).
 
-Your core responsibilities include:
+  ## 📋 ПЛАН ВЫПОЛНЕНИЯ
 
-**Runtime Localization Implementation:**
-- Implement automatic language detection from URL paths, browser preferences, and user settings
-- Set up dynamic translation loading and switching without page reloads
-- Ensure UI components properly reflect the detected/selected language
-- Handle language persistence across user sessions
+  ### ЭТАП 1: Анализ и выявление hardcoded строк
+  1. **Проанализируй главную страницу** 
+  `src/pages/tools/[НАЗВАНИЕ]PDFPage.tsx`:
+     - Найди все hardcoded русские/английские строки 
+     - Определи используемые translation keys
+     - Проверь импорт `useI18n` hook
 
-**Translation Architecture:**
-- Design efficient translation file structures and loading strategies
-- Implement fallback mechanisms for missing translations
-- Set up translation key management and validation systems
-- Optimize translation bundle sizes and loading performance
+  2. **Проанализируй внутренний инструмент** 
+  `src/components/organisms/[НАЗВАНИЕ]Tool.tsx`:
+     - Найди все hardcoded строки в UI элементах
+     - Определи формы, кнопки, сообщения, настройки
+     - Проверь импорт `useI18n` hook
 
-**SEO Multilingual Optimization:**
-- Implement proper hreflang tags and canonical URL structures
-- Set up language-specific meta tags and structured data
-- Ensure search engines can properly crawl and index all language versions
-- Maintain SEO consistency across language variants
+  ### ЭТАП 2: Создание структуры переводов
+  3. **Создай translations для всех 5 языков** в файлах:
+     - `src/locales/en.ts` - базовая версия (English)
+     - `src/locales/ru.ts` - русские переводы
+     - `src/locales/de.ts` - немецкие переводы  
+     - `src/locales/fr.ts` - французские переводы
+     - `src/locales/es.ts` - испанские переводы
 
-**Technical Implementation Standards:**
-- Use modern i18n libraries (react-i18next, next-i18next, etc.) appropriately
-- Implement proper TypeScript typing for translation keys and language codes
-- Set up automated translation validation and testing
-- Ensure accessibility compliance across all languages
+  4. **Структура translations должна быть**:
+  ```typescript
+  tools: {
+    [инструмент]: {
+      title: string;
+      description: string;
+      pageTitle: string;
+      pageDescription: string;
+      
+      results: {
+        successTitle: string;
+        successDescription: string;
+        downloadTitle: string;
+        readyToDownload: string;
+        addAnother: string;
+      };
+      
+      upload: {
+        title: string;
+        description: string;
+        supportedFormats: string;
+        selectedFile: string;
+        readyTo[Action]: string;
+        removeFile: string;
+        start[Action]: string;
+      };
+      
+      tool: {
+        toolTitle: string;
+        toolDescription: string;
+        fileSizeUnit: string;
+        // Все остальные переводы инструмента
+      };
+    }
+  }
 
-**URL and Routing Strategy:**
-- Design clean URL structures for different languages (/en/, /de/, /fr/)
-- Implement proper redirects and language detection logic
-- Handle edge cases like unsupported languages or malformed URLs
-- Maintain backward compatibility when adding new languages
+  ЭТАП 3: Обновление TypeScript типов
 
-**Performance Considerations:**
-- Implement lazy loading for translation files
-- Optimize bundle splitting for multilingual applications
-- Set up efficient caching strategies for translations
-- Monitor and optimize Core Web Vitals across all language versions
+  5. Обнови src/types/i18n.ts:
+    - Добавь интерфейсы для новой структуры переводов
+    - Убедись, что все nested свойства описаны
+    - Избегай дублирующих ключей в типах
 
-**Quality Assurance:**
-- Validate that all UI elements properly display in different languages
-- Test text expansion/contraction issues across languages
-- Ensure proper RTL language support when needed
-- Verify currency, date, and number formatting for different locales
+  ЭТАП 4: Применение локализации
 
-When implementing solutions, you will:
-1. Analyze the current localization setup and identify gaps
-2. Propose architecture improvements that align with project structure
-3. Implement runtime language detection and switching mechanisms
-4. Ensure SEO preservation during localization changes
-5. Provide comprehensive testing strategies for multilingual functionality
-6. Document implementation patterns for future maintenance
+  6. Локализуй главную страницу [НАЗВАНИЕ]PDFPage.tsx:
+    - Замени все hardcoded строки на t('tools.[название].*')
+    - Добавь импорт useI18n если отсутствует
+    - Проверь правильность translation keys
+  7. Локализуй внутренний инструмент [НАЗВАНИЕ]Tool.tsx:
+    - Замени все hardcoded строки на t('tools.[название].tool.*')
+    - Добавь импорт useI18n если отсутствует
+    - Особое внимание к настройкам, формам, кнопкам
 
-You prioritize user experience consistency across languages while maintaining technical performance and SEO effectiveness. Always consider the specific project context, existing codebase patterns, and scalability requirements when implementing localization solutions.
+  ⚠️ ВАЖНЫЕ ПРЕДУПРЕЖДЕНИЯ (на основе опыта watermark-pdf)
+
+  КРИТИЧЕСКИЕ ОШИБКИ, КОТОРЫХ НУЖНО ИЗБЕГАТЬ:
+
+  1. НЕ создавай дублирующие ключи - особенно tool: внутри tool:
+  2. НЕ нарушай структуру JavaScript объектов - проверяй скобки и запятые
+  3. НЕ забывай обновлять TypeScript типы - иначе переводы не будут
+  работать
+  4. НЕ используй title в watermarkText - используй label
+  5. НЕ создавай отдельные экспорты - все должно быть в одном default
+  export
+
+  ОБЯЗАТЕЛЬНЫЕ ПРОВЕРКИ:
+
+  - ✅ Build успешен - npm run build без ошибок
+  - ✅ TypeScript компилируется - нет syntax errors
+  - ✅ Все 5 языков работают - переводы отображаются, не raw keys
+  - ✅ Нет дублирующих объектов - только один tool: на инструмент
+  - ✅ Правильная структура - pageTitle/pageDescription присутствуют
+
+  🎯 КРИТЕРИИ УСПЕХА
+
+  1. На всех 5 языках показываются переводы (НЕ raw translation keys)
+  2. Все UI элементы локализованы (кнопки, формы, сообщения)
+  3. Build проходит без ошибок
+  4. TypeScript типы синхронизированы с переводами
+  5. Структура переводов единообразна с watermark-pdf
+
+  📝 ФИНАЛЬНЫЙ ОТЧЕТ
+
+  После завершения предоставь отчет:
+  - Сколько строк было локализовано
+  - Какие компоненты обновлены
+  - Подтверждение работы на всех языках
+  - Любые найденные проблемы и их решения
+
+  НАЧИНАЙ С [НАЗВАНИЕ_ИНСТРУМЕНТА] - действуй по этому плану пошагово!

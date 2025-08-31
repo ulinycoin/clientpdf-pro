@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { toolsSEOData } from '../../data/seoData';
 import { StandardToolPageTemplate } from '../../components/templates';
-import { ModernMergeTool } from '../../components/organisms';
+import { ModernMergeTool, RelatedToolsSection } from '../../components/organisms';
 import { ModernUploadZone } from '../../components/molecules';
 import { useI18n } from '../../hooks/useI18n';
 import { useFileUpload } from '../../hooks/useFileUpload';
@@ -54,8 +54,8 @@ const MergePDFPage: React.FC = () => {
         maxSize={100 * 1024 * 1024}
         disabled={false}
         title={t('pages.tools.merge.uploadTitle')}
-        subtitle="Объедините несколько PDF файлов в один документ"
-        supportedFormats="PDF файлы"
+        subtitle={t('pages.tools.merge.uploadSubtitle')}
+        supportedFormats={t('pages.tools.merge.supportedFormats')}
       />
       
       {/* File List & Start Button */}
@@ -67,10 +67,10 @@ const MergePDFPage: React.FC = () => {
             </div>
             <div>
               <h3 className="text-xl font-black text-black dark:text-white">
-                Выбранные файлы ({files.length})
+                {t('pages.tools.merge.selectedFiles')} ({files.length})
               </h3>
               <p className="text-gray-800 dark:text-gray-100 font-medium text-sm">
-                Готовы к объединению
+                {t('pages.tools.merge.readyToMerge')}
               </p>
             </div>
           </div>
@@ -85,14 +85,14 @@ const MergePDFPage: React.FC = () => {
                   <div>
                     <p className="font-black text-black dark:text-white">{file.name}</p>
                     <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      {(file.size / 1024 / 1024).toFixed(2)} МБ
+                      {(file.size / 1024 / 1024).toFixed(2)} {t('pages.tools.merge.fileSizeUnit')}
                     </p>
                   </div>
                 </div>
                 <button
                   onClick={() => removeFile(index)}
                   className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all duration-200"
-                  title="Удалить файл"
+                  title={t('pages.tools.merge.removeFile')}
                 >
                   <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
@@ -133,6 +133,7 @@ const MergePDFPage: React.FC = () => {
       pageDescription={t('pages.tools.merge.pageDescription')}
       toolComponent={toolComponent}
       breadcrumbKey="merge-pdf"
+      relatedToolsSection={<RelatedToolsSection currentTool="merge-pdf" />}
     />
   );
 };

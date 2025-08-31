@@ -1,19 +1,10 @@
-// Stub for Tesseract.js to prevent loading issues in development
-export default {
-  recognize: () => Promise.resolve({ data: { text: '' } }),
-  createWorker: () => ({
-    loadLanguage: () => Promise.resolve(),
-    initialize: () => Promise.resolve(),
-    recognize: () => Promise.resolve({ data: { text: '' } }),
-    terminate: () => Promise.resolve(),
-  }),
+// Simple stub for tesseract.js to prevent heavy loading in browser build
+export const createWorker = () => {
+  throw new Error('Tesseract.js disabled in browser build');
 };
 
-export const createWorker = () => ({
-  loadLanguage: () => Promise.resolve(),
-  initialize: () => Promise.resolve(),
-  recognize: () => Promise.resolve({ data: { text: '' } }),
-  terminate: () => Promise.resolve(),
-});
+export const recognize = () => {
+  throw new Error('Tesseract.js disabled in browser build');
+};
 
-export const recognize = () => Promise.resolve({ data: { text: '' } });
+export default { createWorker, recognize };
