@@ -11,6 +11,41 @@
       window.process = { env: { NODE_ENV: 'production' }, browser: true };
     }
     
+    // Core-js runtime protection - intercept import() calls
+    (function() {
+      const originalImport = window.__dynamicImportHandler__;
+      const coreJsStub = {
+        default: Promise.resolve(),
+        __esModule: true,
+        PromiseStub: Promise,
+        arrayIterator: Array.prototype[Symbol.iterator],
+        stringMatch: String.prototype.match,
+        stringReplace: String.prototype.replace,
+        arrayReduce: Array.prototype.reduce,
+        stringEndsWith: String.prototype.endsWith
+      };
+      
+      // Override dynamic imports for core-js
+      if (typeof originalImport === 'function') {
+        window.__dynamicImportHandler__ = function(url) {
+          if (url && url.includes && url.includes('core-js')) {
+            console.log('🔄 Blocked core-js import:', url);
+            return Promise.resolve(coreJsStub);
+          }
+          return originalImport.apply(this, arguments);
+        };
+      }
+      
+      // Catch ES import errors
+      window.addEventListener('error', function(e) {
+        if (e.message && e.message.includes && e.message.includes('core-js')) {
+          console.log('🔄 Suppressed core-js error:', e.message);
+          e.preventDefault();
+          return false;
+        }
+      });
+    })();
+    
     // Hide Vercel toolbar for production users
     (function() {
       function hideVercelToolbar() {

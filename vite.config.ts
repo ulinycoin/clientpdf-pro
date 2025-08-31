@@ -204,7 +204,13 @@ export default defineConfig({
       { find: 'url', replacement: 'url' },
       
       // CATCH-ALL for ALL core-js modules - match any core-js import
-      { find: /^core-js\/.*$/, replacement: path.resolve(__dirname, './src/utils/core-js-stubs.ts') }
+      { find: /^core-js\/.*$/, replacement: path.resolve(__dirname, './src/utils/core-js-stubs.ts') },
+      
+      // Specific core-js modules that still try to load
+      { find: 'core-js/modules/es.promise.js', replacement: path.resolve(__dirname, './src/utils/core-js-stubs.ts') },
+      { find: 'core-js/modules/es.string.match.js', replacement: path.resolve(__dirname, './src/utils/core-js-stubs.ts') },
+      { find: 'core-js/modules/es.string.replace.js', replacement: path.resolve(__dirname, './src/utils/core-js-stubs.ts') },
+      { find: 'core-js/modules/es.array.iterator.js', replacement: path.resolve(__dirname, './src/utils/core-js-stubs.ts') }
     ]
   }
 });
@@ -676,6 +682,41 @@ function generatePrerenderedHTML(route: string, toolKey: string, language: strin
     if (typeof process === 'undefined') {
       window.process = { env: { NODE_ENV: 'production' }, browser: true };
     }
+    
+    // Core-js runtime protection - intercept import() calls
+    (function() {
+      const originalImport = window.__dynamicImportHandler__;
+      const coreJsStub = {
+        default: Promise.resolve(),
+        __esModule: true,
+        PromiseStub: Promise,
+        arrayIterator: Array.prototype[Symbol.iterator],
+        stringMatch: String.prototype.match,
+        stringReplace: String.prototype.replace,
+        arrayReduce: Array.prototype.reduce,
+        stringEndsWith: String.prototype.endsWith
+      };
+      
+      // Override dynamic imports for core-js
+      if (typeof originalImport === 'function') {
+        window.__dynamicImportHandler__ = function(url) {
+          if (url && url.includes && url.includes('core-js')) {
+            console.log('🔄 Blocked core-js import:', url);
+            return Promise.resolve(coreJsStub);
+          }
+          return originalImport.apply(this, arguments);
+        };
+      }
+      
+      // Catch ES import errors
+      window.addEventListener('error', function(e) {
+        if (e.message && e.message.includes && e.message.includes('core-js')) {
+          console.log('🔄 Suppressed core-js error:', e.message);
+          e.preventDefault();
+          return false;
+        }
+      });
+    })();
     
     // Hide Vercel toolbar for production users
     (function() {
