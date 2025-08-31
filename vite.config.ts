@@ -77,13 +77,6 @@ export default defineConfig({
     sourcemap: false,
     
     rollupOptions: {
-      external: (id) => {
-        // Exclude problematic core-js internals from bundling
-        if (id.includes('core-js/internals') || id.includes('define-globalThis-property')) {
-          return true;
-        }
-        return false;
-      },
       output: {
         manualChunks: (id) => {
           if (id.includes('node_modules')) {
@@ -128,9 +121,6 @@ export default defineConfig({
             return 'vendor';
           }
         },
-        globals: {
-          'core-js/internals/define-globalThis-property': 'globalThis'
-        }
       }
     }
   },
@@ -180,8 +170,11 @@ export default defineConfig({
       // Additional polyfills for PDF processing
       'assert': 'assert',
       'url': 'url',
-      // Fix core-js internal module resolution issues
-      'core-js/internals/define-globalThis-property': 'globalThis'
+      // Fix core-js internal module resolution issues  
+      'core-js/internals/define-globalThis-property': path.resolve(__dirname, './src/utils/globalThis-stub.ts'),
+      'core-js/internals/array-reduce': path.resolve(__dirname, './src/utils/array-reduce-stub.ts'),
+      'core-js/internals/array-method-is-strict': path.resolve(__dirname, './src/utils/array-method-stub.ts'),
+      'core-js/internals/globalThis-this': path.resolve(__dirname, './src/utils/globalThis-stub.ts')
     }
   }
 });
