@@ -77,6 +77,13 @@ export default defineConfig({
     sourcemap: false,
     
     rollupOptions: {
+      external: (id) => {
+        // Exclude problematic core-js internals from bundling
+        if (id.includes('core-js/internals') || id.includes('define-globalThis-property')) {
+          return true;
+        }
+        return false;
+      },
       output: {
         manualChunks: (id) => {
           if (id.includes('node_modules')) {
@@ -120,6 +127,9 @@ export default defineConfig({
             // All other dependencies
             return 'vendor';
           }
+        },
+        globals: {
+          'core-js/internals/define-globalThis-property': 'globalThis'
         }
       }
     }
@@ -169,7 +179,9 @@ export default defineConfig({
       'events': 'events',
       // Additional polyfills for PDF processing
       'assert': 'assert',
-      'url': 'url'
+      'url': 'url',
+      // Fix core-js internal module resolution issues
+      'core-js/internals/define-globalThis-property': 'globalThis'
     }
   }
 });
