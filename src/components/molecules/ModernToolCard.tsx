@@ -116,6 +116,16 @@ const ModernToolCard: React.FC<ModernToolCardProps> = ({
           <rect x="6" y="10" width="6" height="2" opacity="0.7"/>
           <rect x="6" y="14" width="4" height="2" opacity="0.7"/>
         </svg>
+      ),
+      'PDF_TO_SVG': (
+        <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
+          <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6z" opacity="0.5"/>
+          <path d="M14 8h4l-4-4v4z" opacity="0.7"/>
+          <path d="M12 10L8 14h3v4h2v-4h3l-4-4z"/>
+          <circle cx="16" cy="16" r="6" opacity="0.8"/>
+          <path d="M13 13h6l-3 6-3-6z" fill="white"/>
+          <circle cx="16" cy="15" r="1" fill="white"/>
+        </svg>
       )
     };
 
@@ -139,6 +149,7 @@ const ModernToolCard: React.FC<ModernToolCardProps> = ({
       'extract-pages': 'from-privacy-500 to-ocean-500',
       'extract-text': 'from-seafoam-600 to-privacy-500',
       'pdf-to-image': 'from-ocean-500 to-seafoam-500',
+      'pdf-to-svg': 'from-purple-500 to-indigo-500',
       'images-to-pdf': 'from-seafoam-500 to-ocean-600',
       'word-to-pdf': 'from-privacy-600 to-seafoam-400',
       'excel-to-pdf': 'from-seafoam-400 to-privacy-600',

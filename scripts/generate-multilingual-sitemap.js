@@ -27,6 +27,7 @@ const pages = [
   { url: '/extract-pages-pdf', priority: '0.8', changefreq: 'monthly', key: 'extractPages' },
   { url: '/extract-text-pdf', priority: '0.8', changefreq: 'monthly', key: 'extractText' },
   { url: '/pdf-to-image', priority: '0.8', changefreq: 'monthly', key: 'pdfToImage' },
+  { url: '/pdf-to-svg', priority: '0.8', changefreq: 'monthly', key: 'pdfToSvg' },
   { url: '/images-to-pdf', priority: '0.8', changefreq: 'monthly', key: 'imagesToPdf' },
   { url: '/word-to-pdf', priority: '0.8', changefreq: 'monthly', key: 'wordToPdf' },
   { url: '/excel-to-pdf', priority: '0.8', changefreq: 'monthly', key: 'excelToPdf' },

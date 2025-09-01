@@ -25,6 +25,7 @@ import { extractPages } from './tools/extractPages';
 import { extractText } from './tools/extractText';
 import { ocr } from './tools/ocr';
 import { pdfToImage } from './tools/pdfToImage';
+import { pdfToSvg } from './tools/pdfToSvg';
 import { imageToPdf } from './tools/imageToPdf';
 import { wordToPdf } from './tools/wordToPdf';
 import { excelToPdf } from './tools/excelToPdf';
@@ -60,6 +61,7 @@ export const ru = {
     extractText,
     ocr,
     pdfToImage,
+    pdfToSvg,
     imageToPdf,
     wordToPdf,
     excelToPdf
@@ -86,6 +88,7 @@ export const ru = {
       extractText,
       ocr,
       pdfToImage,
+      pdfToSvg,
       imageToPdf,
       wordToPdf,
       excelToPdf

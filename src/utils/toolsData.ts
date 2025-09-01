@@ -77,6 +77,12 @@ export const TOOL_DEFINITIONS = [
     category: 'conversion' as const
   },
   {
+    id: 'pdfToSvg',
+    icon: 'PDF_TO_SVG',
+    operationType: 'pdf-to-svg',
+    category: 'conversion' as const
+  },
+  {
     id: 'imageToPdf',
     icon: 'IMAGE_TO_PDF',
     operationType: 'images-to-pdf',

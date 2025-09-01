@@ -51,6 +51,12 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
     setIsOpen(false);
   };
 
+  const handleToggleOpen = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsOpen(!isOpen);
+  };
+
   const getVariantStyles = () => {
     switch (variant) {
       case 'compact':
@@ -62,7 +68,7 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
       case 'mobile':
         return {
           button: 'px-4 py-3 text-base w-full justify-between',
-          dropdown: 'w-full mt-2',
+          dropdown: 'w-full mt-2 left-0',
           item: 'px-4 py-3 text-base',
         };
       default:
@@ -76,11 +82,54 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
 
   const styles = getVariantStyles();
 
+  // Мобильная версия - горизонтальные кнопки
+  if (variant === 'mobile') {
+    return (
+      <div className={`${className}`}>
+        {/* Заголовок */}
+        <div className="flex items-center gap-2 mb-3 px-4">
+          <Globe className="w-4 h-4 text-gray-600" />
+          <span className="text-sm text-gray-600 font-medium">Language</span>
+        </div>
+        
+        {/* Горизонтальные кнопки языков */}
+        <div className="flex gap-2 px-4">
+          {supportedLanguages.map((language) => (
+            <button
+              key={language.code}
+              onClick={() => handleLanguageSelect(language.code)}
+              className={`
+                flex-1 flex flex-col items-center gap-1 py-3 px-2 rounded-lg border-2 
+                transition-all duration-200 min-w-0
+                ${currentLanguage === language.code 
+                  ? 'border-primary-500 bg-primary-50 text-primary-700' 
+                  : 'border-gray-200 bg-white hover:border-primary-300 hover:bg-primary-25 text-gray-700'
+                }
+              `}
+              aria-label={`Switch to ${language.name}`}
+            >
+              {/* Флаг */}
+              <span className="text-lg" role="img" aria-label={language.name}>
+                {language.flag}
+              </span>
+              
+              {/* Код языка */}
+              <span className="text-xs font-medium uppercase truncate w-full text-center">
+                {language.code}
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Обычная версия - dropdown
   return (
     <div className={`relative inline-block ${className}`} ref={dropdownRef}>
       {/* Кнопка переключения языка */}
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={handleToggleOpen}
         className={`
           flex items-center space-x-2 bg-white/80 backdrop-blur-sm border border-gray-200 
           rounded-lg hover:bg-white/90 hover:border-gray-300 
@@ -90,12 +139,7 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
         aria-label="Select language"
         aria-expanded={isOpen}
         aria-haspopup="listbox"
-      >
-        {/* Иконка глобуса для мобильной версии */}
-        {variant === 'mobile' && (
-          <Globe className="w-5 h-5 text-gray-600" />
-        )}
-        
+      >        
         {/* Флаг текущего языка */}
         {showFlag && currentLang && (
           <span className="text-lg" role="img" aria-label={currentLang.name}>

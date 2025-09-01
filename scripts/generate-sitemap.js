@@ -17,6 +17,7 @@ const pages = [
   { url: '/extract-pages-pdf', priority: '0.8', changefreq: 'monthly' },
   { url: '/extract-text-pdf', priority: '0.8', changefreq: 'monthly' },
   { url: '/pdf-to-image', priority: '0.8', changefreq: 'monthly' },
+  { url: '/pdf-to-svg', priority: '0.8', changefreq: 'monthly' },
   { url: '/images-to-pdf', priority: '0.8', changefreq: 'monthly' },
   { url: '/word-to-pdf', priority: '0.8', changefreq: 'monthly' },
   { url: '/excel-to-pdf', priority: '0.8', changefreq: 'monthly' },

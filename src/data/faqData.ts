@@ -178,6 +178,29 @@ export const toolFAQs: ToolFAQs = {
     }
   ],
 
+  'pdf-to-svg': [
+    {
+      id: 'pdf-to-svg-privacy',
+      question: 'Is PDF to SVG conversion secure and private?',
+      answer: 'Yes, completely secure! LocalPDF converts PDF pages to SVG entirely within your browser. Your documents <strong>never get uploaded to any server</strong>, ensuring complete privacy for business documents, technical drawings, or personal files.'
+    },
+    {
+      id: 'pdf-to-svg-quality',
+      question: 'What are the benefits of SVG over other image formats?',
+      answer: 'SVG (Scalable Vector Graphics) offers significant advantages: <ul><li><strong>Infinite scalability:</strong> Resize without quality loss</li><li><strong>Small file sizes:</strong> Vector-based format is often smaller</li><li><strong>Text remains selectable:</strong> Perfect for documents with text</li><li><strong>Print quality:</strong> Always crisp at any resolution</li><li><strong>Web friendly:</strong> Native browser support</li></ul>'
+    },
+    {
+      id: 'pdf-to-svg-use-cases',
+      question: 'When should I use SVG instead of PNG or JPEG?',
+      answer: 'Choose SVG for: <ul><li><strong>Technical drawings:</strong> CAD files, schematics, diagrams</li><li><strong>Logo extraction:</strong> Company logos and branding materials</li><li><strong>Web graphics:</strong> Icons and graphics for websites</li><li><strong>Print materials:</strong> Business cards, flyers, posters</li><li><strong>Presentations:</strong> Scalable graphics for any screen size</li></ul>'
+    },
+    {
+      id: 'pdf-to-svg-compatibility',
+      question: 'Can I edit SVG files after conversion?',
+      answer: 'Yes! SVG files can be edited with various tools: <ul><li><strong>Vector graphics software:</strong> Adobe Illustrator, Inkscape, CorelDRAW</li><li><strong>Code editors:</strong> SVG is XML-based and human-readable</li><li><strong>Web browsers:</strong> Direct editing in browser developer tools</li><li><strong>Online editors:</strong> Browser-based SVG editing tools</li></ul>'
+    }
+  ],
+
   'excel-to-pdf': [
     {
       id: 'excel-to-pdf-privacy',

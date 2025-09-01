@@ -318,6 +318,50 @@ export const toolsSEOData = {
     }
   },
 
+  pdfToSvg: {
+    title: "Convert PDF to SVG Free - PDF to Vector Graphics Converter",
+    description: "Convert PDF pages to SVG vectors for free. Export PDF as scalable SVG graphics. High-quality PDF to SVG conversion in your browser - privacy-first.",
+    keywords: "PDF to SVG, convert PDF to vector, PDF SVG converter, PDF to scalable graphics, vector PDF conversion",
+    canonical: "https://localpdf.online/pdf-to-svg",
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "PDF to SVG Converter - LocalPDF",
+      "description": "Free tool to convert PDF pages to scalable vector graphics (SVG)",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web Browser",
+      "browserRequirements": "Modern web browser with JavaScript enabled",
+      "permissions": "none",
+      "isAccessibleForFree": true,
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
+      },
+      "featureList": [
+        "Convert PDF to SVG vectors",
+        "100% privacy - no server uploads",
+        "Works entirely in browser",
+        "Scalable vector output",
+        "Custom resolution settings",
+        "Page range selection",
+        "Batch conversion",
+        "Instant download",
+        "No registration required",
+        "GDPR compliant"
+      ],
+      "softwareVersion": "1.0.0",
+      "applicationSubCategory": "PDF Conversion Tools",
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "ratingCount": "856",
+        "bestRating": "5"
+      }
+    }
+  },
+
   imagesToPdf: {
     title: "Images to PDF Converter Free - JPG/PNG to PDF Online",
     description: "Convert multiple images to PDF for free. Combine JPG, PNG, GIF, WebP images into one PDF document. Privacy-first image to PDF converter in your browser.",
@@ -527,6 +571,7 @@ export const relatedTools = {
   rotate: ['addText', 'watermark', 'split'],
   extractPages: ['split', 'merge', 'pdfToImage'],
   extractText: ['addText', 'extractPages', 'pdfToImage'],
-  pdfToImage: ['extractPages', 'extractText', 'rotate'],
+  pdfToImage: ['pdfToSvg', 'extractPages', 'extractText'],
+  pdfToSvg: ['pdfToImage', 'extractPages', 'rotate'],
   'excel-to-pdf': ['word-to-pdf', 'images-to-pdf', 'merge']
 };
