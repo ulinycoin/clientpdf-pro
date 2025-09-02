@@ -25,62 +25,15 @@ export default defineConfig({
         return null;
       }
     },
-    // Pre-render plugin for SEO
+    // Sitemap generator only (no prerendering for now)
     {
-      name: 'seo-prerender',
+      name: 'sitemap-generator',
       generateBundle() {
-        // Generate sitemap
+        // Generate sitemap only
         this.emitFile({
           type: 'asset',
           fileName: 'sitemap.xml',
           source: generateSitemap()
-        });
-
-        // Generate pre-rendered HTML pages with proper SEO tags
-        const baseRoutes = [
-          '/merge-pdf',
-          '/split-pdf', 
-          '/compress-pdf',
-          '/add-text-pdf',
-          '/watermark-pdf',
-          '/rotate-pdf',
-          '/extract-pages-pdf',
-          '/extract-text-pdf',
-          '/extract-images-from-pdf',
-          '/pdf-to-image',
-          '/pdf-to-svg',
-          '/images-to-pdf',
-          '/word-to-pdf',
-          '/excel-to-pdf',
-          '/ocr-pdf',
-          '/privacy',
-          '/terms',
-          '/gdpr',
-          '/faq'
-        ];
-
-        // Generate multilingual pages
-        const languages = ['en', 'de', 'fr', 'es', 'ru'];
-        
-        languages.forEach(lang => {
-          baseRoutes.forEach(route => {
-            const toolKey = route.replace('/', '').replace(/-/g, '');
-            let fileName;
-            
-            if (lang === 'en') {
-              // English files in root
-              fileName = route.slice(1) + '.html';
-            } else {
-              // Other languages in subdirectories
-              fileName = `${lang}${route}.html`;
-            }
-            
-            this.emitFile({
-              type: 'asset',
-              fileName,
-              source: generatePrerenderedHTML(route, toolKey, lang)
-            });
-          });
         });
       }
     }
@@ -621,7 +574,7 @@ const multilingualSeoData: Record<string, Record<string, any>> = {
   }
 };
 
-function generatePrerenderedHTML(route: string, toolKey: string, language: string = 'en') {
+function generatePrerenderedHTML(route: string, toolKey: string, language: string = 'en', bundle?: any) {
   // Fallback SEO data mapping (English as fallback)
   const fallbackSeoData: Record<string, any> = {
     'mergepdf': {
@@ -862,8 +815,7 @@ function generatePrerenderedHTML(route: string, toolKey: string, language: strin
   <!-- Security headers -->
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
   
-  <script type="module" crossorigin src="/assets/index-5d1cc039.js"></script>
-  <link rel="stylesheet" href="/assets/index-76a4743d.css">
+  <!-- Dynamic asset links will be injected here -->
 </head>
 <body>
   <div id="root"></div>

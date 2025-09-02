@@ -5,6 +5,19 @@ import fs from 'fs';
 import path from 'path';
 import { spawn } from 'child_process';
 
+// Функция для извлечения main script src из index.html
+function getMainScriptSrc() {
+  const indexPath = path.join(distPath, 'index.html');
+  if (fs.existsSync(indexPath)) {
+    const indexContent = fs.readFileSync(indexPath, 'utf-8');
+    const scriptMatch = indexContent.match(/<script[^>]*type="module"[^>]*src="([^"]*)"[^>]*>/);
+    if (scriptMatch) {
+      return scriptMatch[1];
+    }
+  }
+  return '/src/main.tsx'; // fallback
+}
+
 const distPath = 'dist';
 const port = 4175;
 const baseUrl = `http://localhost:${port}`;
@@ -310,6 +323,8 @@ async function prerenderMultilingualRoutes() {
           .replace(/(<meta property="og:description" content=")[^"]*(")/i, `$1${route.description}$2`)
           .replace(/(<meta name="twitter:title" content=")[^"]*(")/i, `$1${route.title}$2`)
           .replace(/(<meta name="twitter:description" content=")[^"]*(")/i, `$1${route.description}$2`)
+          // Заменяем development script src на production
+          .replace(/<script type="module" src="\/src\/main\.tsx"><\/script>/, `<script type="module" crossorigin src="${getMainScriptSrc()}"></script>`)
           // Добавляем hreflang теги в head
           .replace('</head>', `  ${hrefLangTags}\n</head>`);
 
@@ -385,7 +400,7 @@ function createFallbackHTML(route, allRoutes) {
     localStorage.setItem('localpdf-language', '${route.language}');
     document.documentElement.lang = '${route.language}';
   </script>
-  <script type="module" src="/src/main.tsx"></script>
+  <script type="module" crossorigin src="${getMainScriptSrc()}"></script>
 </body>
 </html>`;
 }
