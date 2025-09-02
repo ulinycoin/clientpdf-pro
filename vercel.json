@@ -18,9 +18,11 @@
     {
       "source": "/(.*)\\.(html)",
       "headers": [
-        {"key": "Cache-Control", "value": "public, max-age=0, must-revalidate"},
+        {"key": "Cache-Control", "value": "no-cache, no-store, must-revalidate, max-age=0"},
+        {"key": "Pragma", "value": "no-cache"},
+        {"key": "Expires", "value": "0"},
         {"key": "CF-Cache-Status", "value": "BYPASS"},
-        {"key": "Cache-Buster", "value": "v2"}
+        {"key": "Cache-Buster", "value": "v3"}
       ]
     },
     {
