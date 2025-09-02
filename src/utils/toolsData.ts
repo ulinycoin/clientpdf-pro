@@ -56,6 +56,12 @@ export const TOOL_DEFINITIONS = [
     category: 'advanced' as const
   },
   {
+    id: 'extractImagesFromPdf',
+    icon: 'EXTRACT_IMAGES',
+    operationType: 'extract-images-from-pdf',
+    category: 'advanced' as const
+  },
+  {
     id: 'extractPages',
     icon: 'EXTRACT_PAGES',
     operationType: 'extract-pages',

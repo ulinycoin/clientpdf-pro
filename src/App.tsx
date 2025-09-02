@@ -18,6 +18,7 @@ const WatermarkPDFPage = React.lazy(() => import('./pages/tools/WatermarkPDFPage
 const RotatePDFPage = React.lazy(() => import('./pages/tools/RotatePDFPage'));
 const ExtractPagesPDFPage = React.lazy(() => import('./pages/tools/ExtractPagesPDFPage'));
 const ExtractTextPDFPage = React.lazy(() => import('./pages/tools/ExtractTextPDFPage'));
+const ExtractImagesFromPDFPage = React.lazy(() => import('./pages/tools/ExtractImagesFromPDFPage'));
 const PDFToImagePage = React.lazy(() => import('./pages/tools/PDFToImagePage'));
 const PDFToSvgPage = React.lazy(() => import('./pages/tools/PDFToSvgPage'));
 const ImageToPDFPage = React.lazy(() => import('./pages/tools/ImageToPDFPage'));
@@ -73,6 +74,7 @@ function App() {
                 <Route path="/rotate-pdf" element={<RotatePDFPage />} />
                 <Route path="/extract-pages-pdf" element={<ExtractPagesPDFPage />} />
                 <Route path="/extract-text-pdf" element={<ExtractTextPDFPage />} />
+                <Route path="/extract-images-from-pdf" element={<ExtractImagesFromPDFPage />} />
                 <Route path="/pdf-to-image" element={<PDFToImagePage />} />
                 <Route path="/pdf-to-svg" element={<PDFToSvgPage />} />
                 <Route path="/images-to-pdf" element={<ImageToPDFPage />} />
@@ -91,6 +93,7 @@ function App() {
                 <Route path="/de/rotate-pdf" element={<RotatePDFPage />} />
                 <Route path="/de/extract-pages-pdf" element={<ExtractPagesPDFPage />} />
                 <Route path="/de/extract-text-pdf" element={<ExtractTextPDFPage />} />
+                <Route path="/de/extract-images-from-pdf" element={<ExtractImagesFromPDFPage />} />
                 <Route path="/de/pdf-to-image" element={<PDFToImagePage />} />
                 <Route path="/de/pdf-to-svg" element={<PDFToSvgPage />} />
                 <Route path="/de/images-to-pdf" element={<ImageToPDFPage />} />
@@ -108,6 +111,7 @@ function App() {
                 <Route path="/fr/rotate-pdf" element={<RotatePDFPage />} />
                 <Route path="/fr/extract-pages-pdf" element={<ExtractPagesPDFPage />} />
                 <Route path="/fr/extract-text-pdf" element={<ExtractTextPDFPage />} />
+                <Route path="/fr/extract-images-from-pdf" element={<ExtractImagesFromPDFPage />} />
                 <Route path="/fr/pdf-to-image" element={<PDFToImagePage />} />
                 <Route path="/fr/pdf-to-svg" element={<PDFToSvgPage />} />
                 <Route path="/fr/images-to-pdf" element={<ImageToPDFPage />} />
@@ -125,6 +129,7 @@ function App() {
                 <Route path="/es/rotate-pdf" element={<RotatePDFPage />} />
                 <Route path="/es/extract-pages-pdf" element={<ExtractPagesPDFPage />} />
                 <Route path="/es/extract-text-pdf" element={<ExtractTextPDFPage />} />
+                <Route path="/es/extract-images-from-pdf" element={<ExtractImagesFromPDFPage />} />
                 <Route path="/es/pdf-to-image" element={<PDFToImagePage />} />
                 <Route path="/es/pdf-to-svg" element={<PDFToSvgPage />} />
                 <Route path="/es/images-to-pdf" element={<ImageToPDFPage />} />
@@ -142,6 +147,7 @@ function App() {
                 <Route path="/ru/rotate-pdf" element={<RotatePDFPage />} />
                 <Route path="/ru/extract-pages-pdf" element={<ExtractPagesPDFPage />} />
                 <Route path="/ru/extract-text-pdf" element={<ExtractTextPDFPage />} />
+                <Route path="/ru/extract-images-from-pdf" element={<ExtractImagesFromPDFPage />} />
                 <Route path="/ru/pdf-to-image" element={<PDFToImagePage />} />
                 <Route path="/ru/pdf-to-svg" element={<PDFToSvgPage />} />
                 <Route path="/ru/images-to-pdf" element={<ImageToPDFPage />} />

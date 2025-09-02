@@ -126,6 +126,16 @@ const ModernToolCard: React.FC<ModernToolCardProps> = ({
           <path d="M13 13h6l-3 6-3-6z" fill="white"/>
           <circle cx="16" cy="15" r="1" fill="white"/>
         </svg>
+      ),
+      'EXTRACT_IMAGES': (
+        <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
+          <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6z" opacity="0.3"/>
+          <path d="M14 8h4l-4-4v4z" opacity="0.7"/>
+          <rect x="7" y="11" width="10" height="7" rx="1" opacity="0.5"/>
+          <circle cx="9" cy="13" r="1" fill="white"/>
+          <path d="m11.5 14.5-1.5 2-1-1.5L7 17h6l-1.5-2.5z" fill="white"/>
+          <path d="M16 4L20 8L16 12L14 10L16 8L14 6L16 4Z" opacity="0.8"/>
+        </svg>
       )
     };
 
@@ -153,6 +163,7 @@ const ModernToolCard: React.FC<ModernToolCardProps> = ({
       'images-to-pdf': 'from-seafoam-500 to-ocean-600',
       'word-to-pdf': 'from-privacy-600 to-seafoam-400',
       'excel-to-pdf': 'from-seafoam-400 to-privacy-600',
+      'extract-images-from-pdf': 'from-purple-500 to-pink-500',
       'ocr-pdf': 'from-ocean-600 to-privacy-500'
     };
 

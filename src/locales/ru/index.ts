@@ -23,6 +23,7 @@ import { watermark } from './tools/watermark';
 import { rotate } from './tools/rotate';
 import { extractPages } from './tools/extractPages';
 import { extractText } from './tools/extractText';
+import { extractImagesFromPdf } from './tools/extractImagesFromPdf';
 import { ocr } from './tools/ocr';
 import { pdfToImage } from './tools/pdfToImage';
 import { pdfToSvg } from './tools/pdfToSvg';
@@ -59,6 +60,7 @@ export const ru = {
     rotate,
     extractPages,
     extractText,
+    extractImagesFromPdf,
     ocr,
     pdfToImage,
     pdfToSvg,
@@ -86,6 +88,7 @@ export const ru = {
       rotate,
       extractPages,
       extractText,
+      extractImagesFromPdf,
       ocr,
       pdfToImage,
       pdfToSvg,

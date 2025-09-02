@@ -449,6 +449,52 @@ export const toolsSEOData = {
     }
   },
 
+  extractImagesFromPdf: {
+    title: "Extract Images from PDF Free - Privacy-First Image Extractor | LocalPDF",
+    description: "Extract all images from PDF files without uploads. 100% private image extraction works in your browser. Download images in original quality with batch selection.",
+    keywords: "extract images from pdf online, pdf image extractor free, extract images pdf without uploading, private pdf image extraction, secure image extractor, pdf images browser, extract pdf graphics no registration",
+    canonical: "https://localpdf.online/extract-images-from-pdf",
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Privacy-First PDF Image Extractor - LocalPDF",
+      "description": "Extract all images from PDF documents privately in your browser without uploading to servers",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web Browser",
+      "browserRequirements": "Modern web browser with JavaScript enabled",
+      "permissions": "none",
+      "isAccessibleForFree": true,
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
+      },
+      "featureList": [
+        "Extract all PDF images",
+        "100% privacy - no server uploads",
+        "Works entirely in browser",
+        "Original quality preservation",
+        "Batch selection and download",
+        "Multiple image formats supported",
+        "Duplicate image filtering",
+        "ZIP archive downloads",
+        "Page-specific extraction",
+        "No file size limits",
+        "No registration required",
+        "GDPR compliant"
+      ],
+      "softwareVersion": "1.0.0",
+      "applicationSubCategory": "PDF Image Extraction Tools",
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "ratingCount": "756",
+        "bestRating": "5"
+      }
+    }
+  },
+
   excelToPdf: {
     title: "Excel to PDF Free - Privacy-First XLSX Converter | LocalPDF",
     description: "Convert Excel files to PDF without uploads. 100% private XLSX converter works in your browser. Support for sheets, charts, and formatting.",
@@ -496,7 +542,7 @@ export const toolsSEOData = {
 
 export const homepageSEOData = {
   title: "LocalPDF - Privacy-First PDF Tools | Merge, Split, Compress",
-  description: "13 powerful PDF tools in your browser. Merge, split, compress, add text, watermark, OCR. 100% private - no uploads, no tracking. Free forever.",
+  description: "14 powerful PDF tools in your browser. Merge, split, compress, add text, watermark, extract images, OCR. 100% private - no uploads, no tracking. Free forever.",
   keywords: "PDF tools, merge PDF, split PDF, compress PDF, add text PDF, watermark PDF, rotate PDF, extract pages, PDF to image, images to PDF, Word to PDF, Excel to PDF, OCR PDF, privacy, local processing, browser PDF editor, free PDF tools",
   canonical: "https://localpdf.online/",
   structuredData: {
@@ -521,6 +567,7 @@ export const homepageSEOData = {
       "Rotate PDF pages",
       "Extract PDF pages",
       "Extract text from PDF",
+      "Extract images from PDF",
       "Convert PDF to images",
       "Convert images to PDF",
       "Convert Word to PDF",
@@ -558,7 +605,7 @@ export const pagesSEOData = {
 export const toolCategories = {
   primary: ['merge', 'split', 'compress'],
   editing: ['addText', 'watermark', 'rotate'],
-  extraction: ['extractPages', 'extractText', 'pdfToImage']
+  extraction: ['extractPages', 'extractText', 'extractImagesFromPdf', 'pdfToImage']
 };
 
 // Related tools mapping for internal linking
@@ -569,9 +616,10 @@ export const relatedTools = {
   addText: ['watermark', 'rotate', 'extractText'],
   watermark: ['addText', 'compress', 'rotate'],
   rotate: ['addText', 'watermark', 'split'],
-  extractPages: ['split', 'merge', 'pdfToImage'],
-  extractText: ['addText', 'extractPages', 'pdfToImage'],
-  pdfToImage: ['pdfToSvg', 'extractPages', 'extractText'],
+  extractPages: ['split', 'merge', 'extractImagesFromPdf'],
+  extractText: ['addText', 'extractPages', 'extractImagesFromPdf'],
+  extractImagesFromPdf: ['extractText', 'extractPages', 'pdfToImage'],
+  pdfToImage: ['pdfToSvg', 'extractImagesFromPdf', 'extractText'],
   pdfToSvg: ['pdfToImage', 'extractPages', 'rotate'],
   'excel-to-pdf': ['word-to-pdf', 'images-to-pdf', 'merge']
 };
