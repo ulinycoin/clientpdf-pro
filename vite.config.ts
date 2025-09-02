@@ -46,7 +46,9 @@ export default defineConfig({
           '/rotate-pdf',
           '/extract-pages-pdf',
           '/extract-text-pdf',
+          '/extract-images-from-pdf',
           '/pdf-to-image',
+          '/pdf-to-svg',
           '/images-to-pdf',
           '/word-to-pdf',
           '/excel-to-pdf',
@@ -291,9 +293,17 @@ const multilingualSeoData: Record<string, Record<string, any>> = {
       title: "Extract Text from PDF Free - PDF Text Extractor Online",
       description: "Extract text content from PDF files for free. Get plain text from PDF documents. Fast text extraction in your browser without uploads."
     },
+    'extractimagesfrompdf': {
+      title: "Extract Images from PDF Free - PDF Image Extractor Online",
+      description: "Extract images from PDF files for free. Get all images from PDF documents in original quality. Fast image extraction in your browser."
+    },
     'pdftoimage': {
       title: "Convert PDF to Images Free - PDF to JPG/PNG Converter",
       description: "Convert PDF pages to images for free. Export PDF as JPG, PNG, or WEBP. High-quality PDF to image conversion in your browser."
+    },
+    'pdftosvg': {
+      title: "Convert PDF to SVG Free - PDF to SVG Converter Online",
+      description: "Convert PDF pages to SVG format for free. Get scalable vector graphics from PDF documents. High-quality PDF to SVG conversion in your browser."
     },
     'imagestopdf': {
       title: "Images to PDF Converter Free - JPG/PNG to PDF Online",
@@ -653,10 +663,20 @@ function generatePrerenderedHTML(route: string, toolKey: string, language: strin
       description: "Extract text content from PDF files for free. Get plain text from PDF documents. Fast text extraction in your browser without uploads.",
       canonical: "https://localpdf.online/extract-text-pdf"
     },
+    'extractimagesfrompdf': {
+      title: "Extract Images from PDF Free - PDF Image Extractor Online",
+      description: "Extract images from PDF files for free. Get all images from PDF documents in original quality. Fast image extraction in your browser.",
+      canonical: "https://localpdf.online/extract-images-from-pdf"
+    },
     'pdftoimage': {
       title: "Convert PDF to Images Free - PDF to JPG/PNG Converter",
       description: "Convert PDF pages to images for free. Export PDF as JPG, PNG, or WEBP. High-quality PDF to image conversion in your browser.",
       canonical: "https://localpdf.online/pdf-to-image"
+    },
+    'pdftosvg': {
+      title: "Convert PDF to SVG Free - PDF to SVG Converter Online",
+      description: "Convert PDF pages to SVG format for free. Get scalable vector graphics from PDF documents. High-quality PDF to SVG conversion in your browser.",
+      canonical: "https://localpdf.online/pdf-to-svg"
     },
     'imagestopdf': {
       title: "Images to PDF Converter Free - JPG/PNG to PDF Online",
