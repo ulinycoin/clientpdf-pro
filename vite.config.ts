@@ -25,15 +25,77 @@ export default defineConfig({
         return null;
       }
     },
-    // Sitemap generator only (no prerendering for now)
+    // SEO prerender with dynamic asset detection
     {
-      name: 'sitemap-generator',
-      generateBundle() {
-        // Generate sitemap only
+      name: 'seo-prerender-dynamic',
+      generateBundle(options, bundle) {
+        // Generate sitemap
         this.emitFile({
           type: 'asset',
           fileName: 'sitemap.xml',
           source: generateSitemap()
+        });
+
+        // Find actual asset files with their hashes
+        let indexJsFile = '';
+        let indexCssFile = '';
+        
+        Object.keys(bundle).forEach(fileName => {
+          if (fileName.startsWith('assets/index-') && fileName.endsWith('.js')) {
+            indexJsFile = fileName;
+          }
+          if (fileName.startsWith('assets/index-') && fileName.endsWith('.css')) {
+            indexCssFile = fileName;
+          }
+        });
+
+        console.log('🔍 Found assets:', { indexJsFile, indexCssFile });
+
+        // Generate pre-rendered HTML pages with correct asset hashes
+        const baseRoutes = [
+          '/merge-pdf',
+          '/split-pdf', 
+          '/compress-pdf',
+          '/add-text-pdf',
+          '/watermark-pdf',
+          '/rotate-pdf',
+          '/extract-pages-pdf',
+          '/extract-text-pdf',
+          '/extract-images-from-pdf',
+          '/pdf-to-image',
+          '/pdf-to-svg',
+          '/images-to-pdf',
+          '/word-to-pdf',
+          '/excel-to-pdf',
+          '/ocr-pdf',
+          '/privacy',
+          '/terms',
+          '/gdpr',
+          '/faq'
+        ];
+
+        // Generate multilingual pages
+        const languages = ['en', 'de', 'fr', 'es', 'ru'];
+        
+        languages.forEach(lang => {
+          baseRoutes.forEach(route => {
+            const toolKey = route.replace('/', '').replace(/-/g, '');
+            let fileName;
+            
+            if (lang === 'en') {
+              // English files in root
+              fileName = route.slice(1) + '.html';
+            } else {
+              // Other languages in subdirectories
+              fileName = `${lang}${route}.html`;
+            }
+            
+            this.emitFile({
+              type: 'asset',
+              fileName,
+              source: generatePrerenderedHTML(route, toolKey, lang, indexJsFile, indexCssFile)
+            });
+          });
         });
       }
     }
@@ -574,7 +636,7 @@ const multilingualSeoData: Record<string, Record<string, any>> = {
   }
 };
 
-function generatePrerenderedHTML(route: string, toolKey: string, language: string = 'en', bundle?: any) {
+function generatePrerenderedHTML(route: string, toolKey: string, language: string = 'en', indexJsFile: string = '', indexCssFile: string = '') {
   // Fallback SEO data mapping (English as fallback)
   const fallbackSeoData: Record<string, any> = {
     'mergepdf': {
@@ -815,7 +877,8 @@ function generatePrerenderedHTML(route: string, toolKey: string, language: strin
   <!-- Security headers -->
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
   
-  <!-- Dynamic asset links will be injected here -->
+  ${indexJsFile ? `<script type="module" crossorigin src="/${indexJsFile}"></script>` : ''}
+  ${indexCssFile ? `<link rel="stylesheet" href="/${indexCssFile}">` : ''}
 </head>
 <body>
   <div id="root"></div>
