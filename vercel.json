@@ -22,7 +22,7 @@
         {"key": "Pragma", "value": "no-cache"},
         {"key": "Expires", "value": "0"},
         {"key": "CF-Cache-Status", "value": "BYPASS"},
-        {"key": "Cache-Buster", "value": "v3"}
+        {"key": "Cache-Buster", "value": "v4-force-refresh"}
       ]
     },
     {
