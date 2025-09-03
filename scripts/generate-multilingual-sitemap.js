@@ -33,6 +33,8 @@ const pages = [
   { url: '/excel-to-pdf', priority: '0.8', changefreq: 'monthly', key: 'excelToPdf' },
   { url: '/ocr-pdf', priority: '0.8', changefreq: 'monthly', key: 'ocrPdf' },
   { url: '/privacy', priority: '0.3', changefreq: 'yearly', key: 'privacy' },
+  { url: '/terms', priority: '0.3', changefreq: 'yearly', key: 'terms' },
+  { url: '/gdpr', priority: '0.3', changefreq: 'yearly', key: 'gdpr' },
   { url: '/faq', priority: '0.6', changefreq: 'monthly', key: 'faq' }
 ];
 
