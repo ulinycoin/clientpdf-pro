@@ -26,10 +26,10 @@ const WordToPDFPage = React.lazy(() => import('./pages/tools/WordToPDFPage'));
 const ExcelToPDFPage = React.lazy(() => import('./pages/tools/ExcelToPDFPage'));
 const OCRPDFPage = React.lazy(() => import('./pages/tools/OCRPDFPage'));
 
-// Blog pages
-const BlogPage = React.lazy(() => import('./pages/BlogPage'));
-const BlogPostPage = React.lazy(() => import('./pages/BlogPostPage'));
-const BlogCategoryPage = React.lazy(() => import('./pages/BlogCategoryPage'));
+// Blog pages - Temporarily disabled during development
+// const BlogPage = React.lazy(() => import('./pages/BlogPage'));
+// const BlogPostPage = React.lazy(() => import('./pages/BlogPostPage'));
+// const BlogCategoryPage = React.lazy(() => import('./pages/BlogCategoryPage'));
 
 // Loading component
 const LoadingSpinner: React.FC = () => {
@@ -88,10 +88,10 @@ function App() {
                 <Route path="/excel-to-pdf" element={<ExcelToPDFPage />} />
                 <Route path="/ocr-pdf" element={<OCRPDFPage />} />
 
-                {/* Blog - English (default) URLs */}
-                <Route path="/blog" element={<BlogPage />} />
+                {/* Blog - English (default) URLs - Temporarily disabled */}
+                {/* <Route path="/blog" element={<BlogPage />} />
                 <Route path="/blog/:slug" element={<BlogPostPage />} />
-                <Route path="/blog/category/:category" element={<BlogCategoryPage />} />
+                <Route path="/blog/category/:category" element={<BlogCategoryPage />} /> */}
 
                 {/* PDF Tools - Multilingual URLs */}
                 {/* German (DE) */}
@@ -166,26 +166,26 @@ function App() {
                 <Route path="/ru/excel-to-pdf" element={<ExcelToPDFPage />} />
                 <Route path="/ru/ocr-pdf" element={<OCRPDFPage />} />
 
-                {/* Blog - Multilingual URLs */}
+                {/* Blog - Multilingual URLs - Temporarily disabled during development */}
                 {/* German (DE) */}
-                <Route path="/de/blog" element={<BlogPage />} />
+                {/* <Route path="/de/blog" element={<BlogPage />} />
                 <Route path="/de/blog/:slug" element={<BlogPostPage />} />
-                <Route path="/de/blog/category/:category" element={<BlogCategoryPage />} />
+                <Route path="/de/blog/category/:category" element={<BlogCategoryPage />} /> */}
 
                 {/* French (FR) */}
-                <Route path="/fr/blog" element={<BlogPage />} />
+                {/* <Route path="/fr/blog" element={<BlogPage />} />
                 <Route path="/fr/blog/:slug" element={<BlogPostPage />} />
-                <Route path="/fr/blog/category/:category" element={<BlogCategoryPage />} />
+                <Route path="/fr/blog/category/:category" element={<BlogCategoryPage />} /> */}
 
                 {/* Spanish (ES) */}
-                <Route path="/es/blog" element={<BlogPage />} />
+                {/* <Route path="/es/blog" element={<BlogPage />} />
                 <Route path="/es/blog/:slug" element={<BlogPostPage />} />
-                <Route path="/es/blog/category/:category" element={<BlogCategoryPage />} />
+                <Route path="/es/blog/category/:category" element={<BlogCategoryPage />} /> */}
 
                 {/* Russian (RU) */}
-                <Route path="/ru/blog" element={<BlogPage />} />
+                {/* <Route path="/ru/blog" element={<BlogPage />} />
                 <Route path="/ru/blog/:slug" element={<BlogPostPage />} />
-                <Route path="/ru/blog/category/:category" element={<BlogCategoryPage />} />
+                <Route path="/ru/blog/category/:category" element={<BlogCategoryPage />} /> */}
 
                 {/* Information pages - English */}
                 <Route path="/privacy" element={<PrivacyPage />} />
