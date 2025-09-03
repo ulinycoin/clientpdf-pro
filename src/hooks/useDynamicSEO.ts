@@ -1,10 +1,12 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { toolsSEOData, homepageSEOData, pagesSEOData } from '@/data/seoData';
+import { useI18n } from './useI18n';
 
 // Enhanced SEO Head component for dynamic updates
 export const useDynamicSEO = (toolKey?: keyof typeof toolsSEOData) => {
   const location = useLocation();
+  const { t, language } = useI18n();
 
   useEffect(() => {
     const updateSEO = () => {
@@ -16,6 +18,33 @@ export const useDynamicSEO = (toolKey?: keyof typeof toolsSEOData) => {
         seoData = homepageSEOData;
       } else if (toolKey && toolsSEOData[toolKey]) {
         seoData = toolsSEOData[toolKey];
+        
+        // Override title with localized version if available
+        const toolKeyMappings: Record<string, string> = {
+          'extractImagesFromPdf': 'pages.tools.extractImagesFromPdf.pageTitle',
+          'pdfToSvg': 'pages.tools.pdfToSvg.pageTitle',
+          'merge': 'pages.tools.merge.pageTitle',
+          'split': 'pages.tools.split.pageTitle',
+          'compress': 'pages.tools.compress.pageTitle',
+          'addText': 'pages.tools.addText.pageTitle',
+          'watermark': 'pages.tools.watermark.pageTitle',
+          'rotate': 'pages.tools.rotate.pageTitle',
+          'extractPages': 'pages.tools.extractPages.pageTitle',
+          'extractText': 'pages.tools.extractText.pageTitle',
+          'pdfToImage': 'pages.tools.pdfToImage.pageTitle',
+          'imagesToPdf': 'pages.tools.imagesToPdf.pageTitle',
+          'wordToPdf': 'pages.tools.wordToPdf.pageTitle',
+          'excelToPdf': 'pages.tools.excelToPdf.pageTitle',
+          'ocr': 'pages.tools.ocr.pageTitle'
+        };
+        
+        const translationKey = toolKeyMappings[toolKey];
+        if (translationKey) {
+          const localizedTitle = t(translationKey);
+          if (localizedTitle && localizedTitle !== translationKey) {
+            seoData = { ...seoData, title: localizedTitle };
+          }
+        }
       } else if (path === '/privacy' && pagesSEOData.privacy) {
         seoData = pagesSEOData.privacy;
       } else if (path === '/faq' && pagesSEOData.faq) {
@@ -75,5 +104,5 @@ export const useDynamicSEO = (toolKey?: keyof typeof toolsSEOData) => {
     };
 
     updateSEO();
-  }, [location.pathname, toolKey]);
+  }, [location.pathname, toolKey, language, t]);
 };
