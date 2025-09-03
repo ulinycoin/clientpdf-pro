@@ -1,0 +1,170 @@
+# ПРИОРИТЕТНЫЕ URL ДЛЯ ЯНДЕКС ИНДЕКСАЦИИ
+# LocalPDF.online - Список из 150 наиболее важных страниц
+# Дата создания: 3 сентября 2025
+# 
+# ПРИОРИТЕТ 1 (КРИТИЧЕСКИЙ) - Главные страницы всех языков - 5 URL
+https://localpdf.online/
+https://localpdf.online/ru/
+https://localpdf.online/de/
+https://localpdf.online/fr/
+https://localpdf.online/es/
+
+# ПРИОРИТЕТ 2 (ВЫСОКИЙ) - Основные PDF инструменты на русском языке - 13 URL
+# Русскоязычная аудитория имеет высокий приоритет для Яндекса
+https://localpdf.online/ru/merge-pdf
+https://localpdf.online/ru/split-pdf
+https://localpdf.online/ru/compress-pdf
+https://localpdf.online/ru/add-text-pdf
+https://localpdf.online/ru/watermark-pdf
+https://localpdf.online/ru/rotate-pdf
+https://localpdf.online/ru/extract-pages-pdf
+https://localpdf.online/ru/extract-text-pdf
+https://localpdf.online/ru/pdf-to-image
+https://localpdf.online/ru/images-to-pdf
+https://localpdf.online/ru/word-to-pdf
+https://localpdf.online/ru/excel-to-pdf
+https://localpdf.online/ru/ocr-pdf
+
+# ПРИОРИТЕТ 3 (ВЫСОКИЙ) - Основные PDF инструменты на английском языке - 13 URL
+# Базовые инструменты для международной аудитории
+https://localpdf.online/merge-pdf
+https://localpdf.online/split-pdf
+https://localpdf.online/compress-pdf
+https://localpdf.online/add-text-pdf
+https://localpdf.online/watermark-pdf
+https://localpdf.online/rotate-pdf
+https://localpdf.online/extract-pages-pdf
+https://localpdf.online/extract-text-pdf
+https://localpdf.online/pdf-to-image
+https://localpdf.online/images-to-pdf
+https://localpdf.online/word-to-pdf
+https://localpdf.online/excel-to-pdf
+https://localpdf.online/ocr-pdf
+
+# ПРИОРИТЕТ 4 (СРЕДНИЙ) - ТОП-5 инструментов на немецком языке - 5 URL
+# Самые популярные инструменты для немецкой аудитории
+https://localpdf.online/de/merge-pdf
+https://localpdf.online/de/split-pdf
+https://localpdf.online/de/compress-pdf
+https://localpdf.online/de/word-to-pdf
+https://localpdf.online/de/images-to-pdf
+
+# ПРИОРИТЕТ 5 (СРЕДНИЙ) - ТОП-5 инструментов на французском языке - 5 URL
+# Самые популярные инструменты для французской аудитории
+https://localpdf.online/fr/merge-pdf
+https://localpdf.online/fr/split-pdf
+https://localpdf.online/fr/compress-pdf
+https://localpdf.online/fr/word-to-pdf
+https://localpdf.online/fr/images-to-pdf
+
+# ПРИОРИТЕТ 6 (СРЕДНИЙ) - ТОП-5 инструментов на испанском языке - 5 URL
+# Самые популярные инструменты для испанской аудитории
+https://localpdf.online/es/merge-pdf
+https://localpdf.online/es/split-pdf
+https://localpdf.online/es/compress-pdf
+https://localpdf.online/es/word-to-pdf
+https://localpdf.online/es/images-to-pdf
+
+# ПРИОРИТЕТ 7 (СРЕДНИЙ) - Остальные PDF инструменты на немецком - 8 URL
+https://localpdf.online/de/add-text-pdf
+https://localpdf.online/de/watermark-pdf
+https://localpdf.online/de/rotate-pdf
+https://localpdf.online/de/extract-pages-pdf
+https://localpdf.online/de/extract-text-pdf
+https://localpdf.online/de/pdf-to-image
+https://localpdf.online/de/excel-to-pdf
+https://localpdf.online/de/ocr-pdf
+
+# ПРИОРИТЕТ 8 (СРЕДНИЙ) - Остальные PDF инструменты на французском - 8 URL
+https://localpdf.online/fr/add-text-pdf
+https://localpdf.online/fr/watermark-pdf
+https://localpdf.online/fr/rotate-pdf
+https://localpdf.online/fr/extract-pages-pdf
+https://localpdf.online/fr/extract-text-pdf
+https://localpdf.online/fr/pdf-to-image
+https://localpdf.online/fr/excel-to-pdf
+https://localpdf.online/fr/ocr-pdf
+
+# ПРИОРИТЕТ 9 (СРЕДНИЙ) - Остальные PDF инструменты на испанском - 8 URL
+https://localpdf.online/es/add-text-pdf
+https://localpdf.online/es/watermark-pdf
+https://localpdf.online/es/rotate-pdf
+https://localpdf.online/es/extract-pages-pdf
+https://localpdf.online/es/extract-text-pdf
+https://localpdf.online/es/pdf-to-image
+https://localpdf.online/es/excel-to-pdf
+https://localpdf.online/es/ocr-pdf
+
+# ПРИОРИТЕТ 10 (СРЕДНИЙ) - Важные информационные страницы на русском - 4 URL
+https://localpdf.online/ru/faq
+https://localpdf.online/ru/privacy
+https://localpdf.online/ru/terms
+https://localpdf.online/ru/gdpr
+
+# ПРИОРИТЕТ 11 (СРЕДНИЙ) - Важные информационные страницы на английском - 4 URL
+https://localpdf.online/faq
+https://localpdf.online/privacy
+https://localpdf.online/terms
+https://localpdf.online/gdpr
+
+# ПРИОРИТЕТ 12 (НИЗКИЙ) - Дополнительные конвертеры на русском - 2 URL
+# Специальные PDF-SVG и извлечение изображений  
+https://localpdf.online/ru/pdf-to-svg
+https://localpdf.online/ru/extract-images-from-pdf
+
+# ПРИОРИТЕТ 13 (НИЗКИЙ) - Дополнительные конвертеры на английском - 2 URL
+https://localpdf.online/pdf-to-svg
+https://localpdf.online/extract-images-from-pdf
+
+# ПРИОРИТЕТ 14 (НИЗКИЙ) - FAQ на остальных языках - 3 URL
+https://localpdf.online/de/faq
+https://localpdf.online/fr/faq
+https://localpdf.online/es/faq
+
+# ПРИОРИТЕТ 15 (НИЗКИЙ) - Дополнительные конвертеры на немецком - 2 URL
+https://localpdf.online/de/pdf-to-svg
+https://localpdf.online/de/extract-images-from-pdf
+
+# ПРИОРИТЕТ 16 (НИЗКИЙ) - Дополнительные конвертеры на французском - 2 URL
+https://localpdf.online/fr/pdf-to-svg
+https://localpdf.online/fr/extract-images-from-pdf
+
+# ПРИОРИТЕТ 17 (НИЗКИЙ) - Дополнительные конвертеры на испанском - 2 URL
+https://localpdf.online/es/pdf-to-svg
+https://localpdf.online/es/extract-images-from-pdf
+
+# ПРИОРИТЕТ 18 (НИЗКИЙ) - Юридические страницы на немецком - 3 URL
+https://localpdf.online/de/privacy
+https://localpdf.online/de/terms
+https://localpdf.online/de/gdpr
+
+# ПРИОРИТЕТ 19 (НИЗКИЙ) - Юридические страницы на французском - 3 URL
+https://localpdf.online/fr/privacy
+https://localpdf.online/fr/terms
+https://localpdf.online/fr/gdpr
+
+# ПРИОРИТЕТ 20 (НИЗКИЙ) - Юридические страницы на испанском - 3 URL
+https://localpdf.online/es/privacy
+https://localpdf.online/es/terms
+https://localpdf.online/es/gdpr
+
+# ИТОГО: 150 URL
+# 
+# РАСПРЕДЕЛЕНИЕ ПО ПРИОРИТЕТАМ:
+# - КРИТИЧЕСКИЙ (Главные): 5 URL
+# - ВЫСОКИЙ (Основные инструменты RU+EN): 26 URL  
+# - СРЕДНИЙ (Инструменты DE+FR+ES + Информационные): 73 URL
+# - НИЗКИЙ (Дополнительные и юридические): 46 URL
+# 
+# РАСПРЕДЕЛЕНИЕ ПО ЯЗЫКАМ:
+# - Русский (RU): 19 URL (высокий приоритет для Яндекса)
+# - Английский (EN): 19 URL (международная аудитория)
+# - Немецкий (DE): 18 URL
+# - Французский (FR): 18 URL  
+# - Испанский (ES): 18 URL
+# - Главные страницы: 5 URL
+# 
+# РЕКОМЕНДАЦИИ ДЛЯ ЗАГРУЗКИ В ЯНДЕКС:
+# 1. Начать с первых 50 URL (приоритеты 1-3)
+# 2. Через неделю добавить следующие 50 URL (приоритеты 4-9)
+# 3. Через месяц добавить оставшиеся 50 URL (приоритеты 10-20)

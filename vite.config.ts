@@ -436,6 +436,14 @@ const multilingualSeoData: Record<string, Record<string, any>> = {
       title: "Nutzungsbedingungen - LocalPDF | Datenschutz-erste PDF-Verarbeitung",
       description: "LocalPDF Nutzungsbedingungen. Erfahren Sie mehr über unsere Servicebedingungen, Nutzerverantwortlichkeiten und datenschutzorientierten Ansatz zur PDF-Verarbeitung."
     },
+    'extractimagesfrompdf': {
+      title: "Bilder aus PDF extrahieren kostenlos - PDF Bild Extractor",
+      description: "Extrahieren Sie Bilder aus PDF-Dateien kostenlos. Erhalten Sie alle Bilder aus PDF-Dokumenten in ursprünglicher Qualität. Schnelle Bildextraktion in Ihrem Browser ohne Uploads."
+    },
+    'pdftosvg': {
+      title: "PDF in SVG umwandeln kostenlos - PDF zu SVG Konverter online",
+      description: "Konvertieren Sie PDF-Seiten kostenlos in das SVG-Format. Erhalten Sie skalierbare Vektorgrafiken aus PDF-Dokumenten. Hochwertige PDF-zu-SVG-Konvertierung in Ihrem Browser."
+    },
     'gdpr': {
       title: "DSGVO-Konformität - LocalPDF | Datenschutz-erste PDF-Verarbeitung",
       description: "Erfahren Sie mehr über LocalPDFs DSGVO-Konformität. Wir gewährleisten vollständigen Datenschutz mit 100% lokaler Verarbeitung, ohne Uploads und mit vollständiger Benutzerprivatsphäre."
@@ -509,6 +517,14 @@ const multilingualSeoData: Record<string, Record<string, any>> = {
     'terms': {
       title: "Conditions d'utilisation - LocalPDF | Traitement PDF axé sur la confidentialité",
       description: "Conditions d'utilisation LocalPDF. Découvrez nos conditions de service, responsabilités des utilisateurs et approche axée sur la confidentialité du traitement PDF."
+    },
+    'extractimagesfrompdf': {
+      title: "Extraire des images du PDF gratuit - Extracteur d'images PDF",
+      description: "Extrayez des images de fichiers PDF gratuitement. Obtenez toutes les images des documents PDF en qualité originale. Extraction rapide d'images dans votre navigateur sans téléchargements."
+    },
+    'pdftosvg': {
+      title: "Convertir PDF en SVG gratuit - Convertisseur PDF vers SVG en ligne",
+      description: "Convertissez les pages PDF au format SVG gratuitement. Obtenez des graphiques vectoriels évolutifs à partir de documents PDF. Conversion PDF vers SVG de haute qualité dans votre navigateur."
     },
     'gdpr': {
       title: "Conformité RGPD - LocalPDF | Traitement PDF axé sur la confidentialité",
@@ -584,6 +600,14 @@ const multilingualSeoData: Record<string, Record<string, any>> = {
       title: "Términos de Servicio - LocalPDF | Procesamiento PDF centrado en la privacidad",
       description: "Términos de Servicio de LocalPDF. Conozca nuestras condiciones de servicio, responsabilidades del usuario y enfoque centrado en la privacidad del procesamiento PDF."
     },
+    'extractimagesfrompdf': {
+      title: "Extraer imágenes del PDF gratis - Extractor de imágenes PDF",
+      description: "Extraiga imágenes de archivos PDF gratis. Obtenga todas las imágenes de documentos PDF en calidad original. Extracción rápida de imágenes en su navegador sin cargas."
+    },
+    'pdftosvg': {
+      title: "Convertir PDF a SVG gratis - Convertidor PDF a SVG en línea",
+      description: "Convierta páginas PDF a formato SVG gratis. Obtenga gráficos vectoriales escalables de documentos PDF. Conversión PDF a SVG de alta calidad en su navegador."
+    },
     'gdpr': {
       title: "Cumplimiento GDPR - LocalPDF | Procesamiento PDF centrado en privacidad",
       description: "Conozca el cumplimiento GDPR de LocalPDF. Garantizamos protección completa de datos con procesamiento 100% local, sin cargas y con privacidad completa del usuario."
@@ -657,6 +681,14 @@ const multilingualSeoData: Record<string, Record<string, any>> = {
     'terms': {
       title: "Условия использования - LocalPDF | PDF обработка с защитой конфиденциальности",
       description: "Условия использования LocalPDF. Узнайте о наших условиях обслуживания, обязанностях пользователей и подходе к обработке PDF с защитой конфиденциальности."
+    },
+    'extractimagesfrompdf': {
+      title: "Извлечь изображения из PDF бесплатно - Экстрактор изображений PDF",
+      description: "Извлекайте изображения из PDF файлов бесплатно. Получите все изображения из PDF документов в исходном качестве. Быстрое извлечение изображений в вашем браузере без загрузок."
+    },
+    'pdftosvg': {
+      title: "Конвертировать PDF в SVG бесплатно - PDF в SVG конвертер онлайн",
+      description: "Конвертируйте страницы PDF в формат SVG бесплатно. Получайте масштабируемую векторную графику из PDF документов. Высококачественная конвертация PDF в SVG в вашем браузере."
     },
     'gdpr': {
       title: "Соответствие GDPR - LocalPDF | PDF обработка с защитой конфиденциальности",

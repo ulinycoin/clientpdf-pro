@@ -95,6 +95,19 @@ const ModernHeader: React.FC<ModernHeaderProps> = ({
               
               {/* Navigation Links */}
               <Link
+                to={getLocalizedPath("/blog")}
+                className="relative text-privacy-700 dark:text-privacy-300 hover:text-sandy-beige-600 dark:hover:text-sandy-beige-400 transition-colors font-medium group py-2"
+              >
+                <span className="flex items-center gap-2">
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                  </svg>
+                  {t('header.navigation.blog')}
+                </span>
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-sandy-beige-500 group-hover:w-full transition-all duration-300"></span>
+              </Link>
+
+              <Link
                 to={getLocalizedPath("/privacy")}
                 className="relative text-privacy-700 dark:text-privacy-300 hover:text-seafoam-600 dark:hover:text-seafoam-400 transition-colors font-medium group py-2"
               >
@@ -172,6 +185,17 @@ const ModernHeader: React.FC<ModernHeaderProps> = ({
           <div className="pt-4 space-y-3 border-t border-privacy-200/50 dark:border-privacy-700/50 backdrop-blur-sm">
             
             {/* Mobile Navigation Links */}
+            <Link
+              to={getLocalizedPath("/blog")}
+              className="flex items-center gap-3 px-4 py-3 text-privacy-700 dark:text-privacy-300 hover:text-sandy-beige-600 dark:hover:text-sandy-beige-400 hover:bg-white/50 dark:hover:bg-privacy-800/50 rounded-xl transition-all duration-200 font-medium"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+              </svg>
+              {t('header.navigation.blog')}
+            </Link>
+
             <Link
               to={getLocalizedPath("/privacy")}
               className="flex items-center gap-3 px-4 py-3 text-privacy-700 dark:text-privacy-300 hover:text-seafoam-600 dark:hover:text-seafoam-400 hover:bg-white/50 dark:hover:bg-privacy-800/50 rounded-xl transition-all duration-200 font-medium"

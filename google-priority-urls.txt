@@ -1,0 +1,145 @@
+# ПРИОРИТЕТНЫЕ URL ДЛЯ GOOGLE SEARCH CONSOLE ИНДЕКСАЦИИ
+# LocalPDF.online - Список для максимального международного охвата
+# Дата создания: 3 сентября 2025
+# Стратегия: English-first + European languages focus
+# 
+# ПРИОРИТЕТ 1 (КРИТИЧЕСКИЙ) - Главные страницы - 5 URL
+# English имеет максимальный приоритет для международной аудитории Google
+https://localpdf.online/
+https://localpdf.online/de/
+https://localpdf.online/fr/
+https://localpdf.online/es/
+https://localpdf.online/ru/
+
+# ПРИОРИТЕТ 2 (МАКСИМАЛЬНЫЙ) - Все PDF инструменты English - 13 URL
+# Основа для международного SEO-трафика
+https://localpdf.online/merge-pdf
+https://localpdf.online/split-pdf
+https://localpdf.online/compress-pdf
+https://localpdf.online/add-text-pdf
+https://localpdf.online/watermark-pdf
+https://localpdf.online/rotate-pdf
+https://localpdf.online/extract-pages-pdf
+https://localpdf.online/extract-text-pdf
+https://localpdf.online/pdf-to-image
+https://localpdf.online/images-to-pdf
+https://localpdf.online/word-to-pdf
+https://localpdf.online/excel-to-pdf
+https://localpdf.online/ocr-pdf
+
+# ПРИОРИТЕТ 3 (ОЧЕНЬ ВЫСОКИЙ) - ТОП-8 инструментов German - 8 URL
+# Немецкий рынок - один из крупнейших в Европе для B2B инструментов
+https://localpdf.online/de/merge-pdf
+https://localpdf.online/de/split-pdf
+https://localpdf.online/de/compress-pdf
+https://localpdf.online/de/word-to-pdf
+https://localpdf.online/de/images-to-pdf
+https://localpdf.online/de/pdf-to-image
+https://localpdf.online/de/add-text-pdf
+https://localpdf.online/de/watermark-pdf
+
+# ПРИОРИТЕТ 4 (ОЧЕНЬ ВЫСОКИЙ) - ТОП-8 инструментов French - 8 URL
+# Французский рынок + франкофонные страны
+https://localpdf.online/fr/merge-pdf
+https://localpdf.online/fr/split-pdf
+https://localpdf.online/fr/compress-pdf
+https://localpdf.online/fr/word-to-pdf
+https://localpdf.online/fr/images-to-pdf
+https://localpdf.online/fr/pdf-to-image
+https://localpdf.online/fr/add-text-pdf
+https://localpdf.online/fr/watermark-pdf
+
+# ПРИОРИТЕТ 5 (ОЧЕНЬ ВЫСОКИЙ) - ТОП-8 инструментов Spanish - 8 URL
+# Испанский язык - огромная аудитория (Испания + Латинская Америка)
+https://localpdf.online/es/merge-pdf
+https://localpdf.online/es/split-pdf
+https://localpdf.online/es/compress-pdf
+https://localpdf.online/es/word-to-pdf
+https://localpdf.online/es/images-to-pdf
+https://localpdf.online/es/pdf-to-image
+https://localpdf.online/es/add-text-pdf
+https://localpdf.online/es/watermark-pdf
+
+# ПРИОРИТЕТ 6 (ВЫСОКИЙ) - ТОП-8 инструментов Russian - 8 URL
+# Русский рынок важен, но меньший приоритет в Google чем в Яндексе
+https://localpdf.online/ru/merge-pdf
+https://localpdf.online/ru/split-pdf
+https://localpdf.online/ru/compress-pdf
+https://localpdf.online/ru/word-to-pdf
+https://localpdf.online/ru/images-to-pdf
+https://localpdf.online/ru/pdf-to-image
+https://localpdf.online/ru/add-text-pdf
+https://localpdf.online/ru/watermark-pdf
+
+# ПРИОРИТЕТ 7 (СРЕДНИЙ) - Остальные инструменты German - 5 URL
+https://localpdf.online/de/rotate-pdf
+https://localpdf.online/de/extract-pages-pdf
+https://localpdf.online/de/extract-text-pdf
+https://localpdf.online/de/excel-to-pdf
+https://localpdf.online/de/ocr-pdf
+
+# ПРИОРИТЕТ 8 (СРЕДНИЙ) - Остальные инструменты French - 5 URL
+https://localpdf.online/fr/rotate-pdf
+https://localpdf.online/fr/extract-pages-pdf
+https://localpdf.online/fr/extract-text-pdf
+https://localpdf.online/fr/excel-to-pdf
+https://localpdf.online/fr/ocr-pdf
+
+# ПРИОРИТЕТ 9 (СРЕДНИЙ) - Остальные инструменты Spanish - 5 URL
+https://localpdf.online/es/rotate-pdf
+https://localpdf.online/es/extract-pages-pdf
+https://localpdf.online/es/extract-text-pdf
+https://localpdf.online/es/excel-to-pdf
+https://localpdf.online/es/ocr-pdf
+
+# ПРИОРИТЕТ 10 (СРЕДНИЙ) - Остальные инструменты Russian - 5 URL
+https://localpdf.online/ru/rotate-pdf
+https://localpdf.online/ru/extract-pages-pdf
+https://localpdf.online/ru/extract-text-pdf
+https://localpdf.online/ru/excel-to-pdf
+https://localpdf.online/ru/ocr-pdf
+
+# ПРИОРИТЕТ 11 (СРЕДНИЙ) - Дополнительные английские конвертеры - 2 URL
+https://localpdf.online/pdf-to-svg
+https://localpdf.online/extract-images-from-pdf
+
+# ПРИОРИТЕТ 12 (НИЗКИЙ) - Информационные страницы English - 4 URL
+https://localpdf.online/faq
+https://localpdf.online/privacy
+https://localpdf.online/terms
+https://localpdf.online/gdpr
+
+# ПРИОРИТЕТ 13 (НИЗКИЙ) - FAQ на основных European языках - 3 URL
+https://localpdf.online/de/faq
+https://localpdf.online/fr/faq
+https://localpdf.online/es/faq
+
+# ПРИОРИТЕТ 14 (ОЧЕНЬ НИЗКИЙ) - Дополнительные конвертеры European - 6 URL
+https://localpdf.online/de/pdf-to-svg
+https://localpdf.online/de/extract-images-from-pdf
+https://localpdf.online/fr/pdf-to-svg
+https://localpdf.online/fr/extract-images-from-pdf
+https://localpdf.online/es/pdf-to-svg
+https://localpdf.online/es/extract-images-from-pdf
+
+# ПРИОРИТЕТ 15 (ОЧЕНЬ НИЗКИЙ) - Russian дополнительные - 3 URL
+https://localpdf.online/ru/faq
+https://localpdf.online/ru/pdf-to-svg
+https://localpdf.online/ru/extract-images-from-pdf
+
+# ИТОГО: 100 URL (оптимально для Google)
+# 
+# РАСПРЕДЕЛЕНИЕ ПО ЯЗЫКАМ (Google-оптимизированное):
+# - Английский (EN): 19 URL (максимальный приоритет)
+# - Немецкий (DE): 16 URL (крупный европейский рынок)
+# - Французский (FR): 16 URL (франкофонный мир)
+# - Испанский (ES): 16 URL (Испания + Латинская Америка)
+# - Русский (RU): 16 URL (меньший приоритет чем в Яндексе)
+# - Главные страницы: 5 URL
+# - Информационные: 12 URL
+# 
+# СТРАТЕГИЧЕСКИЕ ОТЛИЧИЯ ОТ ЯНДЕКСА:
+# 1. English-first подход (19 URL vs 19 для Яндекса, но выше приоритет)
+# 2. Больше внимания European языкам (DE/FR/ES: 48 URL vs 54 в Яндексе)
+# 3. Меньше фокуса на русском (16 URL vs 19 в Яндексе)
+# 4. Общий лимит: 100 URL (vs 150 для Яндекса) - качество важнее количества

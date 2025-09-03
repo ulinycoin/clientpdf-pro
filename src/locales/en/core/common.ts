@@ -55,6 +55,7 @@ export const header = {
   title: 'LocalPDF',
   subtitle: 'Privacy-First PDF Tools',
   navigation: {
+    blog: 'Blog',
     privacy: 'Privacy',
     faq: 'FAQ',
     github: 'GitHub'
@@ -97,7 +98,7 @@ export const footer = {
     terms: 'Terms of Service',
     faq: 'FAQ'
   },
-  copyright: '© {year} LocalPDF. All rights reserved.',
+  copyright: 'ï¿½ {year} LocalPDF. All rights reserved.',
   builtWith: 'Built with',
   followProject: 'Follow the project:'
 };

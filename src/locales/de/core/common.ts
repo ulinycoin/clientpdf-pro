@@ -53,6 +53,7 @@ export const header = {
   title: 'LocalPDF',
   subtitle: 'Datenschutzzentrierte PDF-Tools',
   navigation: {
+    blog: 'Blog',
     privacy: 'Datenschutz',
     faq: 'FAQ',
     github: 'GitHub'

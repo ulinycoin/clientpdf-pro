@@ -84,12 +84,18 @@ const getSavedLanguage = (): SupportedLanguage => {
   }
 };
 
+// Функция для экранирования специальных символов в регулярных выражениях
+const escapeRegExp = (string: string): string => {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+};
+
 // Функция для интерполяции параметров в переводах
 const interpolate = (text: string, params?: TranslationParams): string => {
   if (!params) return text;
 
   return Object.entries(params).reduce((result, [key, value]) => {
-    return result.replace(new RegExp(`{${key}}`, 'g'), String(value));
+    const escapedKey = escapeRegExp(key);
+    return result.replace(new RegExp(`\\{${escapedKey}\\}`, 'g'), String(value));
   }, text);
 };
 
