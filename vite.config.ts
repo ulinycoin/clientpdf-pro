@@ -78,6 +78,15 @@ export default defineConfig({
         const languages = ['en', 'de', 'fr', 'es', 'ru'];
         
         languages.forEach(lang => {
+          // Generate language home pages first
+          if (lang !== 'en') {
+            this.emitFile({
+              type: 'asset',
+              fileName: `${lang}.html`,
+              source: generatePrerenderedHTML('/', 'homepage', lang, indexJsFile, indexCssFile)
+            });
+          }
+          
           baseRoutes.forEach(route => {
             const toolKey = route.replace('/', '').replace(/-/g, '');
             let fileName;
@@ -277,6 +286,10 @@ export default defineConfig({
 // Hardcoded multilingual SEO data since we can't load translations at build time
 const multilingualSeoData: Record<string, Record<string, any>> = {
   en: {
+    'homepage': {
+      title: "LocalPDF - Free Privacy-First PDF Tools Online",
+      description: "Process PDF files completely in your browser. No uploads, no privacy concerns. Merge, split, compress, and edit PDFs with 100% privacy protection."
+    },
     'mergepdf': {
       title: "Merge PDF Free - Privacy-First PDF Combiner | LocalPDF",
       description: "Merge PDF files online without uploading to servers. 100% private PDF merger works in your browser. Combine multiple PDFs instantly - no registration required."
@@ -355,6 +368,10 @@ const multilingualSeoData: Record<string, Record<string, any>> = {
     }
   },
   de: {
+    'homepage': {
+      title: "LocalPDF - Kostenlose datenschutzfreundliche PDF-Tools online",
+      description: "PDF-Dateien vollständig in Ihrem Browser verarbeiten. Keine Uploads, keine Datenschutzbedenken. PDF zusammenführen, teilen, komprimieren und bearbeiten mit 100% Datenschutz."
+    },
     'mergepdf': {
       title: "PDF zusammenführen kostenlos - Datenschutz-erste PDF Combiner | LocalPDF",
       description: "PDF-Dateien online zusammenführen ohne Server-Upload. 100% private PDF-Fusion funktioniert in Ihrem Browser. Mehrere PDFs sofort kombinieren - keine Registrierung erforderlich."
@@ -425,6 +442,10 @@ const multilingualSeoData: Record<string, Record<string, any>> = {
     }
   },
   fr: {
+    'homepage': {
+      title: "LocalPDF - Outils PDF gratuits axés sur la confidentialité en ligne",
+      description: "Traitez les fichiers PDF entièrement dans votre navigateur. Aucun téléchargement, aucun souci de confidentialité. Fusionnez, divisez, compressez et éditez des PDF avec 100% de protection de la vie privée."
+    },
     'mergepdf': {
       title: "Fusionner PDF gratuit - Combinateur PDF sécurisé | LocalPDF",
       description: "Fusionnez des fichiers PDF en ligne sans téléchargement sur serveur. Fusion PDF 100% privée dans votre navigateur. Combinez plusieurs PDFs instantanément - sans inscription."
@@ -495,6 +516,10 @@ const multilingualSeoData: Record<string, Record<string, any>> = {
     }
   },
   es: {
+    'homepage': {
+      title: "LocalPDF - Herramientas PDF gratuitas centradas en la privacidad en línea",
+      description: "Procese archivos PDF completamente en su navegador. Sin cargas, sin preocupaciones de privacidad. Combine, divida, comprima y edite PDFs con 100% de protección de privacidad."
+    },
     'mergepdf': {
       title: "Combinar PDF gratis - Combinador PDF privado | LocalPDF",
       description: "Combine archivos PDF en línea sin subir a servidores. Fusión PDF 100% privada en su navegador. Combine múltiples PDFs al instante - sin registro requerido."
@@ -565,6 +590,10 @@ const multilingualSeoData: Record<string, Record<string, any>> = {
     }
   },
   ru: {
+    'homepage': {
+      title: "LocalPDF - Бесплатные PDF инструменты с защитой конфиденциальности онлайн",
+      description: "Обрабатывайте PDF файлы полностью в вашем браузере. Без загрузок, без проблем с конфиденциальностью. Объединяйте, разделяйте, сжимайте и редактируйте PDF с 100% защитой конфиденциальности."
+    },
     'mergepdf': {
       title: "Объединить PDF бесплатно - Приватный объединитель PDF | LocalPDF",
       description: "Объединяйте PDF файлы онлайн без загрузки на серверы. 100% приватное объединение PDF в вашем браузере. Комбинируйте несколько PDF мгновенно - без регистрации."
@@ -639,6 +668,11 @@ const multilingualSeoData: Record<string, Record<string, any>> = {
 function generatePrerenderedHTML(route: string, toolKey: string, language: string = 'en', indexJsFile: string = '', indexCssFile: string = '') {
   // Fallback SEO data mapping (English as fallback)
   const fallbackSeoData: Record<string, any> = {
+    'homepage': {
+      title: "LocalPDF - Free Privacy-First PDF Tools Online",
+      description: "Process PDF files completely in your browser. No uploads, no privacy concerns. Merge, split, compress, and edit PDFs with 100% privacy protection.",
+      canonical: "https://localpdf.online"
+    },
     'mergepdf': {
       title: "Merge PDF Free - Privacy-First PDF Combiner | LocalPDF",
       description: "Merge PDF files online without uploading to servers. 100% private PDF merger works in your browser. Combine multiple PDFs instantly - no registration required.",
