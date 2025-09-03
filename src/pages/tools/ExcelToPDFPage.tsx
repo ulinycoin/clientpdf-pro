@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { toolsSEOData } from '../../data/seoData';
+// Force bundle regeneration - fix asset hash mismatch
 import { StandardToolPageTemplate } from '../../components/templates';
 import { ModernUploadZone } from '../../components/molecules';
 import { RelatedToolsSection } from '../../components/organisms';
