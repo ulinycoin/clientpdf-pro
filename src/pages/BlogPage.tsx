@@ -5,7 +5,7 @@ import { BlogLayout } from '../components/blog/BlogLayout';
 import { useI18n } from '../hooks/useI18n';
 
 export const BlogPage: React.FC = () => {
-  const { t, language } = useI18n();
+  const { t, currentLanguage } = useI18n();
   const [searchParams] = useSearchParams();
   
   const category = searchParams.get('category');
@@ -20,14 +20,14 @@ export const BlogPage: React.FC = () => {
     keywords: t('blog.page.seo.keywords', 
       'PDF tutorials, PDF tips, PDF guides, document management, PDF tools, compression, merge, conversion, security'
     ),
-    canonicalUrl: `https://localpdf.online${language === 'en' ? '/blog' : `/${language}/blog`}`,
+    canonicalUrl: `https://localpdf.online${currentLanguage === 'en' ? '/blog' : `/${currentLanguage}/blog`}`,
     ogImage: '/images/blog-og-image.jpg',
     schema: {
       '@context': 'https://schema.org',
       '@type': 'Blog',
       name: 'LocalPDF Blog',
       description: 'Expert guides and tutorials about PDF tools and document management',
-      url: `https://localpdf.online${language === 'en' ? '/blog' : `/${language}/blog`}`,
+      url: `https://localpdf.online${currentLanguage === 'en' ? '/blog' : `/${currentLanguage}/blog`}`,
       publisher: {
         '@type': 'Organization',
         name: 'LocalPDF',
@@ -38,7 +38,7 @@ export const BlogPage: React.FC = () => {
       },
       mainEntityOfPage: {
         '@type': 'WebPage',
-        '@id': `https://localpdf.online${language === 'en' ? '/blog' : `/${language}/blog`}`
+        '@id': `https://localpdf.online${currentLanguage === 'en' ? '/blog' : `/${currentLanguage}/blog`}`
       }
     }
   };

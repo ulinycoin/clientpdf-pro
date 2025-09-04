@@ -18,7 +18,7 @@ export const BlogLayout: React.FC<BlogLayoutProps> = ({
   tag,
   initialSearchQuery = '',
 }) => {
-  const { t, language } = useI18n();
+  const { t, currentLanguage } = useI18n();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
   
@@ -31,7 +31,7 @@ export const BlogLayout: React.FC<BlogLayoutProps> = ({
     hasNextPage,
     hasPrevPage,
     loading: paginationLoading
-  } = usePaginatedBlogPosts(currentPage, 9, category, tag, language);
+  } = usePaginatedBlogPosts(currentPage, 9, category, tag, currentLanguage);
 
   const loading = postsLoading || paginationLoading;
 
@@ -45,11 +45,11 @@ export const BlogLayout: React.FC<BlogLayoutProps> = ({
     : posts;
 
   const baseUrl = React.useMemo(() => {
-    let url = language === 'en' ? '/blog' : `/${language}/blog`;
+    let url = currentLanguage === 'en' ? '/blog' : `/${currentLanguage}/blog`;
     if (category) url += `/category/${category}`;
     if (tag) url += `?tag=${tag}`;
     return url;
-  }, [language, category, tag]);
+  }, [currentLanguage, category, tag]);
 
   const handleSearchChange = (query: string) => {
     setSearchQuery(query);
@@ -124,13 +124,6 @@ export const BlogLayout: React.FC<BlogLayoutProps> = ({
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Main Content */}
           <main className="lg:col-span-3">
-            {/* Advanced Search */}
-            <div className="mb-8">
-              <BlogSearch 
-                onSearchChange={handleSearchChange}
-                className="max-w-2xl"
-              />
-            </div>
 
             {/* Featured Posts (only on main blog page, not in search/category) */}
             {!category && !tag && !searchQuery && featuredPosts.length > 0 && (
@@ -179,7 +172,7 @@ export const BlogLayout: React.FC<BlogLayoutProps> = ({
                         setSearchQuery('');
                         setCurrentPage(1);
                         // Navigate to main blog page
-                        window.location.href = language === 'en' ? '/blog' : `/${language}/blog`;
+                        window.location.href = currentLanguage === 'en' ? '/blog' : `/${currentLanguage}/blog`;
                       }}
                       className="text-sm text-seafoam-green hover:text-ocean-blue transition-colors"
                     >

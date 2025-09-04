@@ -8,17 +8,17 @@ import { useI18n } from '../hooks/useI18n';
 
 export const BlogCategoryPage: React.FC = () => {
   const { category: categorySlug } = useParams<{ category: string }>();
-  const { t, language } = useI18n();
+  const { t, currentLanguage } = useI18n();
   const [currentPage, setCurrentPage] = useState(1);
   
-  const { category, loading: categoryLoading, error, notFound } = useBlogCategory(categorySlug!, language);
+  const { category, loading: categoryLoading, error, notFound } = useBlogCategory(categorySlug!, currentLanguage);
   
   const {
     posts,
     totalPages,
     totalPosts,
     loading: postsLoading
-  } = usePaginatedBlogPosts(currentPage, 12, categorySlug, undefined, language);
+  } = usePaginatedBlogPosts(currentPage, 12, categorySlug, undefined, currentLanguage);
 
   const loading = categoryLoading || postsLoading;
 
@@ -38,7 +38,7 @@ export const BlogCategoryPage: React.FC = () => {
   }
 
   if (error || notFound || !category) {
-    return <Navigate to={language === 'en' ? '/blog' : `/${language}/blog`} replace />;
+    return <Navigate to={currentLanguage === 'en' ? '/blog' : `/${currentLanguage}/blog`} replace />;
   }
 
   const seoData = {
@@ -47,14 +47,14 @@ export const BlogCategoryPage: React.FC = () => {
       `Discover ${totalPosts} professional ${category.name} articles about PDF tools and document management.`
     ),
     keywords: t('blog.category.seo.keywords', `${category.name}, PDF ${category.name}, ${categorySlug}, tutorials`),
-    canonicalUrl: `https://localpdf.online${language === 'en' ? '/blog/category' : `/${language}/blog/category`}/${categorySlug}`,
+    canonicalUrl: `https://localpdf.online${currentLanguage === 'en' ? '/blog/category' : `/${currentLanguage}/blog/category`}/${categorySlug}`,
     ogImage: `/images/blog-category-${categorySlug}.jpg`,
     schema: {
       '@context': 'https://schema.org',
       '@type': 'CollectionPage',
       name: `${category.name} Articles`,
       description: category.description,
-      url: `https://localpdf.online${language === 'en' ? '/blog/category' : `/${language}/blog/category`}/${categorySlug}`,
+      url: `https://localpdf.online${currentLanguage === 'en' ? '/blog/category' : `/${currentLanguage}/blog/category`}/${categorySlug}`,
       mainEntity: {
         '@type': 'ItemList',
         numberOfItems: totalPosts,
@@ -65,7 +65,7 @@ export const BlogCategoryPage: React.FC = () => {
             '@type': 'BlogPosting',
             headline: post.title,
             description: post.excerpt,
-            url: `https://localpdf.online${language === 'en' ? '/blog' : `/${language}/blog`}/${post.slug}`,
+            url: `https://localpdf.online${currentLanguage === 'en' ? '/blog' : `/${currentLanguage}/blog`}/${post.slug}`,
             datePublished: post.publishedAt,
             author: {
               '@type': 'Organization',
@@ -87,7 +87,7 @@ export const BlogCategoryPage: React.FC = () => {
             <ol className="flex items-center justify-center space-x-2 text-sm text-gray-600 dark:text-gray-300">
               <li>
                 <Link 
-                  to={language === 'en' ? '/blog' : `/${language}/blog`}
+                  to={currentLanguage === 'en' ? '/blog' : `/${currentLanguage}/blog`}
                   className="hover:text-seafoam-green transition-colors"
                 >
                   {t('blog.category.breadcrumbs.blog', 'Blog')}
@@ -139,7 +139,7 @@ export const BlogCategoryPage: React.FC = () => {
             <BlogPagination
               currentPage={currentPage}
               totalPages={totalPages}
-              baseUrl={`${language === 'en' ? '/blog/category' : `/${language}/blog/category`}/${categorySlug}`}
+              baseUrl={`${currentLanguage === 'en' ? '/blog/category' : `/${currentLanguage}/blog/category`}/${categorySlug}`}
               className="mb-8"
             />
           </>
@@ -158,7 +158,7 @@ export const BlogCategoryPage: React.FC = () => {
               {t('blog.category.noArticlesDescription', 'Check back soon for new content or browse other categories')}
             </p>
             <Link
-              to={language === 'en' ? '/blog' : `/${language}/blog`}
+              to={currentLanguage === 'en' ? '/blog' : `/${currentLanguage}/blog`}
               className="inline-flex items-center px-6 py-3 bg-seafoam-green text-white font-medium 
                        rounded-lg hover:bg-seafoam-green/80 transition-colors"
             >
@@ -170,7 +170,7 @@ export const BlogCategoryPage: React.FC = () => {
         {/* Back to Blog */}
         <nav>
           <Link
-            to={language === 'en' ? '/blog' : `/${language}/blog`}
+            to={currentLanguage === 'en' ? '/blog' : `/${currentLanguage}/blog`}
             className="inline-flex items-center px-6 py-3 bg-white/10 backdrop-blur-sm 
                      border border-white/20 rounded-lg text-seafoam-green font-medium
                      hover:bg-white/15 hover:text-ocean-blue transition-all"

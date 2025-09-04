@@ -111,3 +111,8 @@ ocr-integration-test.js
 # CodeMCP config
 codemcp.toml
 .vercel
+
+# Google Cloud credentials
+*-service-account.json
+*service-account.json
+indexlocalpdf*.json

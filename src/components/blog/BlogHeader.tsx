@@ -24,13 +24,13 @@ export const BlogHeader: React.FC<BlogHeaderProps> = ({
   );
 
   return (
-    <div className="bg-gradient-to-r from-seafoam-green via-ocean-blue to-seafoam-green py-16 px-4">
-      <div className="max-w-4xl mx-auto text-center">
-        <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 drop-shadow-lg">
+    <div className="bg-gray-900 py-16 px-4 border-b-4 border-seafoam-green">
+      <div className="relative z-10 max-w-4xl mx-auto text-center">
+        <h1 className="text-4xl md:text-5xl font-bold text-white mb-4" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.8), 0 0 10px rgba(0,0,0,0.5)' }}>
           {title || defaultTitle}
         </h1>
         
-        <p className="text-xl text-white/90 mb-8 max-w-3xl mx-auto leading-relaxed">
+        <p className="text-xl text-white mb-8 max-w-3xl mx-auto leading-relaxed" style={{ textShadow: '1px 1px 2px rgba(0,0,0,0.7)' }}>
           {description || defaultDescription}
         </p>
 

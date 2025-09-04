@@ -68,6 +68,7 @@ export default defineConfig({
           '/word-to-pdf',
           '/excel-to-pdf',
           '/ocr-pdf',
+          '/blog',
           '/privacy',
           '/terms',
           '/gdpr',
@@ -354,6 +355,10 @@ const multilingualSeoData: Record<string, Record<string, any>> = {
       title: "Privacy Policy - LocalPDF | 100% Private PDF Processing",
       description: "LocalPDF privacy policy. Learn how we protect your privacy with 100% local PDF processing. No uploads, no tracking, no data collection."
     },
+    'blog': {
+      title: "PDF Expert Blog - Professional PDF Guides & Tutorials | LocalPDF",
+      description: "Expert guides and tutorials for PDF tools. Learn professional PDF management, document processing tips, and advanced techniques for business productivity."
+    },
     'faq': {
       title: "FAQ - Frequently Asked Questions | LocalPDF",
       description: "Get answers to common questions about LocalPDF. Learn about our privacy-first PDF tools, browser compatibility, and how to use our features."
@@ -427,6 +432,10 @@ const multilingualSeoData: Record<string, Record<string, any>> = {
     'privacy': {
       title: "Datenschutzerklärung - LocalPDF | 100% Private PDF-Verarbeitung",
       description: "LocalPDF Datenschutzerklärung. Erfahren Sie, wie wir Ihre Privatsphäre mit 100% lokaler PDF-Verarbeitung schützen. Keine Uploads, kein Tracking, keine Datensammlung."
+    },
+    'blog': {
+      title: "PDF Experten Blog - Professionelle PDF Anleitungen & Tutorials | LocalPDF",
+      description: "Expertenanleitungen und Tutorials für PDF-Tools. Lernen Sie professionelle PDF-Verwaltung, Dokumentverarbeitungstipps und fortgeschrittene Techniken für Geschäftsproduktivität."
     },
     'faq': {
       title: "FAQ - Häufig gestellte Fragen | LocalPDF",
@@ -510,6 +519,10 @@ const multilingualSeoData: Record<string, Record<string, any>> = {
       title: "Politique de confidentialité - LocalPDF | Traitement PDF 100% privé",
       description: "Politique de confidentialité LocalPDF. Découvrez comment nous protégeons votre vie privée avec un traitement PDF 100% local. Pas de téléchargements, pas de suivi, pas de collecte de données."
     },
+    'blog': {
+      title: "Blog d'Experts PDF - Guides Professionnels & Tutoriels | LocalPDF",
+      description: "Guides d'experts et tutoriels pour les outils PDF. Apprenez la gestion professionnelle des PDF, conseils de traitement de documents et techniques avancées pour la productivité."
+    },
     'faq': {
       title: "FAQ - Questions fréquemment posées | LocalPDF",
       description: "Obtenez des réponses aux questions courantes sur LocalPDF. Découvrez nos outils PDF axés sur la confidentialité, la compatibilité des navigateurs et les fonctionnalités."
@@ -592,6 +605,10 @@ const multilingualSeoData: Record<string, Record<string, any>> = {
       title: "Política de privacidad - LocalPDF | Procesamiento PDF 100% privado",
       description: "Política de privacidad de LocalPDF. Aprenda cómo protegemos su privacidad con procesamiento PDF 100% local. Sin subidas, sin seguimiento, sin recopilación de datos."
     },
+    'blog': {
+      title: "Blog de Expertos PDF - Guías Profesionales y Tutoriales | LocalPDF",
+      description: "Guías de expertos y tutoriales para herramientas PDF. Aprenda gestión profesional de PDF, consejos de procesamiento de documentos y técnicas avanzadas para productividad."
+    },
     'faq': {
       title: "FAQ - Preguntas frecuentes | LocalPDF",
       description: "Obtenga respuestas a preguntas comunes sobre LocalPDF. Conozca nuestras herramientas PDF centradas en la privacidad, compatibilidad del navegador y características."
@@ -673,6 +690,10 @@ const multilingualSeoData: Record<string, Record<string, any>> = {
     'privacy': {
       title: "Политика конфиденциальности - LocalPDF | 100% приватная обработка PDF",
       description: "Политика конфиденциальности LocalPDF. Узнайте, как мы защищаем вашу конфиденциальность с помощью 100% локальной обработки PDF. Без загрузок, без отслеживания, без сбора данных."
+    },
+    'blog': {
+      title: "Блог Экспертов PDF - Профессиональные Руководства и Учебники | LocalPDF",
+      description: "Экспертные руководства и учебники по PDF инструментам. Изучите профессиональное управление PDF, советы по обработке документов и продвинутые техники для продуктивности."
     },
     'faq': {
       title: "FAQ - Часто задаваемые вопросы | LocalPDF",
@@ -784,6 +805,11 @@ function generatePrerenderedHTML(route: string, toolKey: string, language: strin
       title: "Privacy Policy - LocalPDF | 100% Private PDF Processing",
       description: "LocalPDF privacy policy. Learn how we protect your privacy with 100% local PDF processing. No uploads, no tracking, no data collection.",
       canonical: "https://localpdf.online/privacy"
+    },
+    'blog': {
+      title: "PDF Expert Blog - Professional PDF Guides & Tutorials | LocalPDF",
+      description: "Expert guides and tutorials for PDF tools. Learn professional PDF management, document processing tips, and advanced techniques for business productivity.",
+      canonical: "https://localpdf.online/blog"
     },
     'faq': {
       title: "FAQ - Frequently Asked Questions | LocalPDF",
@@ -943,10 +969,26 @@ function generatePrerenderedHTML(route: string, toolKey: string, language: strin
   <!-- Security headers -->
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
   
+  <!-- Yandex.Metrika counter -->
+  <script type="text/javascript">
+      (function(m,e,t,r,i,k,a){
+          m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+          m[i].l=1*new Date();
+          for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+          k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+      })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=104030773', 'ym');
+
+      ym(104030773, 'init', {ssr:true, webvisor:true, clickmap:true, accurateTrackBounce:true, trackLinks:true});
+  </script>
+  <!-- /Yandex.Metrika counter -->
+  
   ${indexJsFile ? `<script type="module" crossorigin src="/${indexJsFile}"></script>` : ''}
   ${indexCssFile ? `<link rel="stylesheet" href="/${indexCssFile}">` : ''}
 </head>
 <body>
+  <!-- Yandex.Metrika noscript -->
+  <noscript><div><img src="https://mc.yandex.ru/watch/104030773" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+  
   <div id="root"></div>
 </body>
 </html>`;

@@ -8,9 +8,9 @@ import { useI18n } from '../hooks/useI18n';
 
 export const BlogPostPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
-  const { t, language } = useI18n();
+  const { t, currentLanguage } = useI18n();
   
-  const { post, relatedPosts, loading, error, notFound } = useBlogPost(slug!, language);
+  const { post, relatedPosts, loading, error, notFound } = useBlogPost(slug!, currentLanguage);
 
   if (loading) {
     return (
@@ -28,14 +28,14 @@ export const BlogPostPage: React.FC = () => {
   }
 
   if (error || notFound || !post) {
-    return <Navigate to={language === 'en' ? '/blog' : `/${language}/blog`} replace />;
+    return <Navigate to={currentLanguage === 'en' ? '/blog' : `/${currentLanguage}/blog`} replace />;
   }
 
   const seoData = {
     title: post.seo.metaTitle,
     description: post.seo.metaDescription,
     keywords: post.tags.join(', '),
-    canonicalUrl: post.seo.canonicalUrl || `https://localpdf.online${generateBlogUrl(post.slug, language)}`,
+    canonicalUrl: post.seo.canonicalUrl || `https://localpdf.online${generateBlogUrl(post.slug, currentLanguage)}`,
     ogImage: post.seo.ogImage || '/images/blog-default-og.jpg',
     schema: {
       '@context': 'https://schema.org',
@@ -59,7 +59,7 @@ export const BlogPostPage: React.FC = () => {
       },
       mainEntityOfPage: {
         '@type': 'WebPage',
-        '@id': `https://localpdf.online${generateBlogUrl(post.slug, language)}`
+        '@id': `https://localpdf.online${generateBlogUrl(post.slug, currentLanguage)}`
       },
       articleSection: post.category,
       keywords: post.tags,
@@ -78,7 +78,7 @@ export const BlogPostPage: React.FC = () => {
             <ol className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-300">
               <li>
                 <Link 
-                  to={language === 'en' ? '/blog' : `/${language}/blog`}
+                  to={currentLanguage === 'en' ? '/blog' : `/${currentLanguage}/blog`}
                   className="hover:text-seafoam-green transition-colors"
                 >
                   {t('blog.post.breadcrumbs.blog', 'Blog')}
@@ -89,7 +89,7 @@ export const BlogPostPage: React.FC = () => {
                   <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
                 </svg>
                 <Link
-                  to={`${language === 'en' ? '/blog/category' : `/${language}/blog/category`}/${post.category}`}
+                  to={`${currentLanguage === 'en' ? '/blog/category' : `/${currentLanguage}/blog/category`}/${post.category}`}
                   className="hover:text-seafoam-green transition-colors capitalize"
                 >
                   {post.category}
@@ -131,7 +131,7 @@ export const BlogPostPage: React.FC = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
                       d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
-              {formatDate(post.publishedAt, language)}
+              {formatDate(post.publishedAt, currentLanguage)}
             </div>
             
             <div className="flex items-center">
@@ -148,7 +148,7 @@ export const BlogPostPage: React.FC = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
                         d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>
-                {t('blog.post.updated', `Updated ${formatDate(post.updatedAt, language)}`)}
+                {t('blog.post.updated', `Updated ${formatDate(post.updatedAt, currentLanguage)}`)}
               </div>
             )}
           </div>
@@ -159,7 +159,7 @@ export const BlogPostPage: React.FC = () => {
               {post.tags.map((tag) => (
                 <Link
                   key={tag}
-                  to={`${language === 'en' ? '/blog' : `/${language}/blog`}?tag=${tag}`}
+                  to={`${currentLanguage === 'en' ? '/blog' : `/${currentLanguage}/blog`}?tag=${tag}`}
                   className="inline-block px-3 py-1 text-sm font-medium text-seafoam-green 
                            bg-seafoam-green/10 border border-seafoam-green/20 rounded-full
                            hover:bg-seafoam-green/20 transition-colors"
@@ -172,14 +172,7 @@ export const BlogPostPage: React.FC = () => {
         </header>
 
         {/* Article Content */}
-        <article className="prose prose-lg max-w-none mb-12 
-                          prose-headings:text-gray-900 dark:prose-headings:text-white
-                          prose-p:text-gray-700 dark:prose-p:text-gray-300
-                          prose-a:text-seafoam-green hover:prose-a:text-ocean-blue
-                          prose-strong:text-gray-900 dark:prose-strong:text-white
-                          prose-code:text-seafoam-green prose-code:bg-gray-100 dark:prose-code:bg-gray-800
-                          prose-pre:bg-gray-100 dark:prose-pre:bg-gray-800">
-          
+        <article className="prose prose-lg max-w-none mb-12">
           <div dangerouslySetInnerHTML={{ __html: post.content }} />
         </article>
 
@@ -191,9 +184,9 @@ export const BlogPostPage: React.FC = () => {
                 {t('blog.post.publishedBy', 'Published by')} <span className="font-medium">{post.author}</span>
               </p>
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                {formatDate(post.publishedAt, language)}
+                {formatDate(post.publishedAt, currentLanguage)}
                 {post.updatedAt && post.updatedAt !== post.publishedAt && (
-                  <span> • {t('blog.post.lastUpdated', `Updated ${formatDate(post.updatedAt, language)}`)}</span>
+                  <span> • {t('blog.post.lastUpdated', `Updated ${formatDate(post.updatedAt, currentLanguage)}`)}</span>
                 )}
               </p>
             </div>
@@ -232,7 +225,7 @@ export const BlogPostPage: React.FC = () => {
         {/* Navigation */}
         <nav className="mb-8">
           <Link
-            to={language === 'en' ? '/blog' : `/${language}/blog`}
+            to={currentLanguage === 'en' ? '/blog' : `/${currentLanguage}/blog`}
             className="inline-flex items-center px-6 py-3 bg-white/10 backdrop-blur-sm 
                      border border-white/20 rounded-lg text-seafoam-green font-medium
                      hover:bg-white/15 hover:text-ocean-blue transition-all"

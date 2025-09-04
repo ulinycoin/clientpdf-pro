@@ -130,7 +130,7 @@ const InteractiveHeroSection: React.FC<InteractiveHeroSectionProps> = ({
           {/* Animated title */}
           <h1 className={`
             text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold mb-6
-            bg-gradient-to-r from-white via-seafoam-200 to-ocean-200 bg-clip-text text-transparent
+            bg-gradient-to-r from-gray-900 via-seafoam-green to-ocean-blue dark:from-white dark:via-seafoam-200 dark:to-ocean-200 bg-clip-text text-transparent
             ${isVisible ? 'smooth-reveal' : 'opacity-0'}
           `}>
             {title}

@@ -1,6 +1,12 @@
 import { useState, useEffect, useMemo } from 'react';
 import { BlogPost, BlogCategory, BlogLanguage } from '../types/blog';
-import { getBlogCategories, getRelatedPosts, paginatePosts } from '../utils/blogUtils';
+import { getBlogCategories, paginatePosts } from '../utils/blogUtils';
+import { 
+  getCachedPosts, 
+  getPostBySlug, 
+  getRelatedPosts as getRelatedFromContent,
+  getBlogStats
+} from '../utils/blogContentLoader';
 import { useI18n } from './useI18n';
 
 // Mock data for development - will be replaced with actual content loading
@@ -120,7 +126,7 @@ const mockBlogPosts: BlogPost[] = [
 ];
 
 export const useBlogPosts = (language?: BlogLanguage) => {
-  const { language: currentLanguage } = useI18n();
+  const { currentLanguage } = useI18n();
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -132,14 +138,25 @@ export const useBlogPosts = (language?: BlogLanguage) => {
       try {
         setLoading(true);
         
-        // TODO: Replace with actual blog post loading logic
-        // This will load markdown files from src/content/blog/{language}/
-        const filteredPosts = mockBlogPosts.filter(post => post.language === targetLanguage);
+        // Загружаем реальные markdown файлы с fallback
+        const loadedPosts = await getCachedPosts(targetLanguage);
         
-        setPosts(filteredPosts);
+        if (loadedPosts.length === 0) {
+          // Fallback к mock данным если markdown файлы не загружаются
+          const filteredPosts = mockBlogPosts.filter(post => post.language === targetLanguage);
+          setPosts(filteredPosts);
+        } else {
+          setPosts(loadedPosts);
+        }
+        
         setError(null);
       } catch (err) {
+        console.error('Failed to load blog posts:', err);
         setError(err instanceof Error ? err.message : 'Failed to load blog posts');
+        
+        // В случае ошибки используем mock данные как fallback
+        const filteredPosts = mockBlogPosts.filter(post => post.language === targetLanguage);
+        setPosts(filteredPosts);
       } finally {
         setLoading(false);
       }
@@ -174,8 +191,20 @@ export const useBlogPosts = (language?: BlogLanguage) => {
     return posts.filter(post => post.tags.includes(tag));
   };
 
-  const getRelatedPostsForPost = (post: BlogPost, maxPosts: number = 3): BlogPost[] => {
-    return getRelatedPosts(post, posts, maxPosts);
+  const getRelatedPostsForPost = async (post: BlogPost, maxPosts: number = 3): Promise<BlogPost[]> => {
+    try {
+      return await getRelatedFromContent(post, targetLanguage, maxPosts);
+    } catch (error) {
+      // Fallback к локальной функции если что-то пошло не так
+      const related = posts
+        .filter(p => p.slug !== post.slug)
+        .filter(p => 
+          p.category === post.category || 
+          p.tags.some(tag => post.tags.includes(tag))
+        )
+        .slice(0, maxPosts);
+      return related;
+    }
   };
 
   return {
@@ -194,10 +223,42 @@ export const useBlogPosts = (language?: BlogLanguage) => {
 };
 
 export const useBlogPost = (slug: string, language?: BlogLanguage) => {
-  const { getPostBySlug, getRelatedPostsForPost, loading, error } = useBlogPosts(language);
+  const { currentLanguage } = useI18n();
+  const targetLanguage = language || currentLanguage;
   
-  const post = getPostBySlug(slug);
-  const relatedPosts = post ? getRelatedPostsForPost(post) : [];
+  const [post, setPost] = useState<BlogPost | null>(null);
+  const [relatedPosts, setRelatedPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadPost = async () => {
+      try {
+        setLoading(true);
+        
+        // Загружаем статью по slug
+        const loadedPost = await getPostBySlug(slug, targetLanguage);
+        setPost(loadedPost);
+        
+        // Загружаем похожие статьи
+        if (loadedPost) {
+          const related = await getRelatedFromContent(loadedPost, targetLanguage, 3);
+          setRelatedPosts(related);
+        }
+        
+        setError(null);
+      } catch (err) {
+        console.error(`Failed to load post ${slug}:`, err);
+        setError(err instanceof Error ? err.message : 'Failed to load post');
+        setPost(null);
+        setRelatedPosts([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadPost();
+  }, [slug, targetLanguage]);
 
   return {
     post,

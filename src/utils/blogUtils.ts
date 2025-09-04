@@ -26,6 +26,10 @@ export const formatDate = (dateString: string, language: BlogLanguage = 'en'): s
 };
 
 export const generateBlogSlug = (title: string): string => {
+  if (!title || typeof title !== 'string') {
+    return 'untitled-post';
+  }
+  
   return title
     .toLowerCase()
     .replace(/[^\w\s-]/g, '')

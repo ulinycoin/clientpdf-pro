@@ -6,12 +6,13 @@ export const parseFrontmatter = (content: string): { frontmatter: BlogFrontmatte
   const match = content.match(frontmatterRegex);
 
   if (!match) {
+    console.error('Invalid frontmatter format in markdown file');
     throw new Error('Invalid frontmatter format');
   }
 
   const [, frontmatterYaml, markdownContent] = match;
   
-  // Simple YAML parser for frontmatter
+  // Simple YAML parser for frontmatter - improved version
   const frontmatter: any = {};
   const lines = frontmatterYaml.split('\n');
   let currentKey = '';
@@ -19,38 +20,76 @@ export const parseFrontmatter = (content: string): { frontmatter: BlogFrontmatte
   let inArray = false;
   let inObject = false;
   let currentObject: any = {};
-  let objectKey = '';
 
   for (const line of lines) {
     const trimmedLine = line.trim();
     if (!trimmedLine) continue;
 
-    if (trimmedLine.endsWith(':') && !inArray && !inObject) {
+    // Handle object properties (like seo:)
+    if (trimmedLine.endsWith(':') && !inArray) {
+      // Save previous key if exists
       if (currentKey) {
-        frontmatter[currentKey] = currentValue;
+        if (inObject) {
+          frontmatter[currentKey] = currentObject;
+          inObject = false;
+          currentObject = {};
+        } else {
+          frontmatter[currentKey] = currentValue;
+        }
       }
+      
       currentKey = trimmedLine.slice(0, -1);
       currentValue = '';
       inArray = false;
-    } else if (trimmedLine.startsWith('- ') && !inObject) {
+      
+      // Check if this is a special object key
+      if (currentKey === 'seo') {
+        inObject = true;
+        currentObject = {};
+      }
+    } 
+    // Handle array items
+    else if (trimmedLine.startsWith('- ') && !inObject) {
       if (!inArray) {
         currentValue = [];
         inArray = true;
       }
-      currentValue.push(trimmedLine.slice(2));
-    } else if (trimmedLine.includes(':') && (currentKey === 'seo' || inObject)) {
-      if (!inObject) {
-        currentObject = {};
-        inObject = true;
+      const arrayItem = trimmedLine.slice(2).replace(/^["'\[]|["'\]]$/g, '');
+      currentValue.push(arrayItem);
+    } 
+    // Handle object properties
+    else if (trimmedLine.includes(':') && inObject) {
+      const colonIndex = trimmedLine.indexOf(':');
+      const key = trimmedLine.substring(0, colonIndex).trim();
+      const value = trimmedLine.substring(colonIndex + 1).trim().replace(/^["']|["']$/g, '');
+      currentObject[key] = value;
+    } 
+    // Handle simple key-value pairs
+    else if (trimmedLine.includes(':') && !inArray && !inObject) {
+      const colonIndex = trimmedLine.indexOf(':');
+      const key = trimmedLine.substring(0, colonIndex).trim();
+      let value = trimmedLine.substring(colonIndex + 1).trim();
+      
+      // Check if value is a JSON array (starts with [ and ends with ])
+      if (value.startsWith('[') && value.endsWith(']')) {
+        try {
+          frontmatter[key] = JSON.parse(value);
+        } catch (e) {
+          // If JSON parsing fails, treat as string
+          frontmatter[key] = value.replace(/^["']|["']$/g, '');
+        }
+      } else {
+        // Regular string value
+        frontmatter[key] = value.replace(/^["']|["']$/g, '');
       }
-      const [key, ...valueParts] = trimmedLine.split(':');
-      const value = valueParts.join(':').trim().replace(/^["']|["']$/g, '');
-      currentObject[key.trim()] = value;
-    } else if (!inArray && !inObject) {
+    }
+    // Handle continuation of simple values
+    else if (!inArray && !inObject && currentKey) {
       currentValue = trimmedLine.replace(/^["']|["']$/g, '');
     }
   }
 
+  // Save final key
   if (currentKey) {
     if (inObject) {
       frontmatter[currentKey] = currentObject;
@@ -58,6 +97,7 @@ export const parseFrontmatter = (content: string): { frontmatter: BlogFrontmatte
       frontmatter[currentKey] = currentValue;
     }
   }
+
 
   return {
     frontmatter: frontmatter as BlogFrontmatter,
@@ -93,12 +133,12 @@ export const parseMarkdownContent = (content: string): string => {
   html = html.replace(/^\d+\. (.*$)/gim, '<li>$1</li>');
   html = html.replace(/(<li>.*<\/li>)/s, '<ol class="list-decimal pl-6 space-y-2">$1</ol>');
 
-  // Paragraphs
-  html = html.replace(/\n\n/g, '</p><p class="mb-4">');
-  html = '<p class="mb-4">' + html + '</p>';
+  // Paragraphs - let prose handle styling
+  html = html.replace(/\n\n/g, '</p><p>');
+  html = '<p>' + html + '</p>';
 
   // Clean up empty paragraphs
-  html = html.replace(/<p class="mb-4"><\/p>/g, '');
+  html = html.replace(/<p><\/p>/g, '');
 
   return html;
 };
@@ -123,7 +163,7 @@ export const createBlogPostFromMarkdown = (
     publishedAt: frontmatter.publishedAt,
     updatedAt: frontmatter.updatedAt,
     category: frontmatter.category,
-    tags: frontmatter.tags || [],
+    tags: Array.isArray(frontmatter.tags) ? frontmatter.tags : [],
     readingTime,
     language,
     seo: frontmatter.seo,

@@ -48,6 +48,71 @@ body {
   max-width: 100vw; /* Ограничиваем максимальную ширину */
 }
 
+/* Dark mode prose styling */
+.dark .prose {
+  --tw-prose-body: rgb(243 244 246) !important;
+  --tw-prose-headings: rgb(243 244 246) !important;
+  --tw-prose-lead: rgb(243 244 246) !important;
+  --tw-prose-links: #4ECDC4 !important;
+  --tw-prose-bold: rgb(243 244 246) !important;
+  --tw-prose-counters: rgb(243 244 246) !important;
+  --tw-prose-bullets: rgb(243 244 246) !important;
+  --tw-prose-hr: rgb(55 65 81) !important;
+  --tw-prose-quotes: rgb(243 244 246) !important;
+  --tw-prose-quote-borders: rgb(55 65 81) !important;
+  --tw-prose-captions: rgb(243 244 246) !important;
+  --tw-prose-code: rgb(243 244 246) !important;
+  --tw-prose-pre-code: rgb(243 244 246) !important;
+  --tw-prose-pre-bg: rgb(31 41 55) !important;
+  --tw-prose-th-borders: rgb(55 65 81) !important;
+  --tw-prose-td-borders: rgb(75 85 99) !important;
+}
+
+.dark .prose h1,
+.dark .prose h2,
+.dark .prose h3,
+.dark .prose h4,
+.dark .prose h5,
+.dark .prose h6 {
+  color: rgb(243 244 246) !important;
+}
+
+.dark .prose p,
+.dark .prose li,
+.dark .prose span,
+.dark .prose div,
+.dark .prose td,
+.dark .prose th,
+.dark .prose blockquote,
+.dark .prose figcaption {
+  color: rgb(243 244 246) !important;
+}
+
+.dark .prose strong,
+.dark .prose b {
+  color: rgb(243 244 246) !important;
+  font-weight: 600;
+}
+
+.dark .prose em,
+.dark .prose i {
+  color: rgb(243 244 246) !important;
+}
+
+.dark .prose ol li,
+.dark .prose ul li {
+  color: rgb(243 244 246) !important;
+}
+
+.dark .prose table {
+  color: rgb(243 244 246) !important;
+}
+
+.dark .prose code {
+  color: #4ECDC4 !important;
+  background-color: rgb(31 41 55) !important;
+}
+
 /* Основной контейнер приложения */
 #root {
   width: 100%;

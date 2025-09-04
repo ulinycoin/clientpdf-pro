@@ -32,6 +32,7 @@ const pages = [
   { url: '/word-to-pdf', priority: '0.8', changefreq: 'monthly', key: 'wordToPdf' },
   { url: '/excel-to-pdf', priority: '0.8', changefreq: 'monthly', key: 'excelToPdf' },
   { url: '/ocr-pdf', priority: '0.8', changefreq: 'monthly', key: 'ocrPdf' },
+  { url: '/blog', priority: '0.8', changefreq: 'weekly', key: 'blog' },
   { url: '/privacy', priority: '0.3', changefreq: 'yearly', key: 'privacy' },
   { url: '/terms', priority: '0.3', changefreq: 'yearly', key: 'terms' },
   { url: '/gdpr', priority: '0.3', changefreq: 'yearly', key: 'gdpr' },

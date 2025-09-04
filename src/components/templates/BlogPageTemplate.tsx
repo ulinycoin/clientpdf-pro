@@ -11,8 +11,9 @@ export interface SEOData {
   title: string;
   description: string;
   keywords: string;
-  canonical: string;
-  structuredData: any;
+  canonicalUrl: string;
+  ogImage?: string;
+  schema: any;
 }
 
 export interface BlogPageTemplateProps {
@@ -44,34 +45,34 @@ const BlogPageTemplate: React.FC<BlogPageTemplateProps> = ({
         <title>{seoData.title}</title>
         <meta name="description" content={seoData.description} />
         <meta name="keywords" content={seoData.keywords} />
-        <link rel="canonical" href={seoData.canonical} />
+        <link rel="canonical" href={seoData.canonicalUrl} />
         <meta name="robots" content="index, follow" />
         
         {/* Open Graph tags */}
         <meta property="og:title" content={seoData.title} />
         <meta property="og:description" content={seoData.description} />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content={seoData.canonical} />
-        <meta property="og:image" content={`${seoData.canonical}/og-blog.jpg`} />
+        <meta property="og:url" content={seoData.canonicalUrl} />
+        <meta property="og:image" content={seoData.ogImage || '/images/blog-default-og.jpg'} />
         
         {/* Twitter Card tags */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={seoData.title} />
         <meta name="twitter:description" content={seoData.description} />
-        <meta name="twitter:image" content={`${seoData.canonical}/og-blog.jpg`} />
+        <meta name="twitter:image" content={seoData.ogImage || '/images/blog-default-og.jpg'} />
         
         {/* JSON-LD structured data */}
         <script type="application/ld+json">
-          {JSON.stringify(seoData.structuredData)}
+          {JSON.stringify(seoData.schema)}
         </script>
       </Helmet>
       
       <SEOHead 
         title={seoData.title}
         description={seoData.description}
-        canonical={seoData.canonical}
-        ogImage={`${seoData.canonical}/og-blog.jpg`}
-        structuredData={seoData.structuredData}
+        canonical={seoData.canonicalUrl}
+        ogImage={seoData.ogImage || '/images/blog-default-og.jpg'}
+        structuredData={seoData.schema}
       />
       
       <TwitterCardImage />

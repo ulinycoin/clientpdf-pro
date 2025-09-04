@@ -102,7 +102,7 @@ const StandardToolPageTemplate: React.FC<StandardToolPageTemplateProps> = ({
 
               {/* Page Header */}
               <div className="text-center mb-16">
-                <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-12 bg-gradient-to-r from-white via-seafoam-200 to-ocean-200 bg-clip-text text-transparent leading-tight">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-12 bg-gradient-to-r from-gray-900 via-seafoam-green to-ocean-blue dark:from-white dark:via-seafoam-200 dark:to-ocean-200 bg-clip-text text-transparent leading-tight">
                   {pageTitle}
                 </h1>
                 <p className="text-lg sm:text-xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
@@ -116,7 +116,7 @@ const StandardToolPageTemplate: React.FC<StandardToolPageTemplateProps> = ({
           <section className="relative py-12">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="text-center mb-12">
-                <h2 className="text-2xl sm:text-3xl font-extrabold mb-4 bg-gradient-to-r from-white via-seafoam-200 to-ocean-200 bg-clip-text text-transparent">
+                <h2 className="text-2xl sm:text-3xl font-extrabold mb-4 bg-gradient-to-r from-gray-900 via-seafoam-green to-ocean-blue dark:from-white dark:via-seafoam-200 dark:to-ocean-200 bg-clip-text text-transparent">
                   {t('toolTemplate.quickSteps.title')}
                 </h2>
                 <p className="text-lg text-gray-300 max-w-3xl mx-auto">
@@ -268,7 +268,7 @@ const StandardToolPageTemplate: React.FC<StandardToolPageTemplateProps> = ({
           <section className="py-16">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="bg-white/10 dark:bg-gray-800/10 backdrop-blur-lg border border-white/20 dark:border-gray-700/30 rounded-2xl p-8 md:p-12">
-                <h2 className="text-2xl sm:text-3xl font-extrabold mb-8 bg-gradient-to-r from-white via-seafoam-200 to-ocean-200 bg-clip-text text-transparent text-center">
+                <h2 className="text-2xl sm:text-3xl font-extrabold mb-8 bg-gradient-to-r from-gray-900 via-seafoam-green to-ocean-blue dark:from-white dark:via-seafoam-200 dark:to-ocean-200 bg-clip-text text-transparent text-center">
                   {t('toolTemplate.detailed.title')}
                 </h2>
                 
