@@ -101,7 +101,7 @@ const QuickStartSection: React.FC<QuickStartSectionProps> = ({
               {t('home.quickStart.title')}
             </span>
           </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-700 dark:text-gray-400 max-w-2xl mx-auto">
             {t('home.quickStart.subtitle')}
           </p>
         </div>
@@ -156,11 +156,11 @@ const QuickStartSection: React.FC<QuickStartSectionProps> = ({
                   </div>
 
                   {/* Content */}
-                  <h3 className="text-2xl font-bold text-black dark:text-white mb-4">
+                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
                     {step.title}
                   </h3>
                   
-                  <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
+                  <p className="text-gray-700 dark:text-gray-400 leading-relaxed mb-6">
                     {step.description}
                   </p>
 
@@ -216,7 +216,7 @@ const QuickStartSection: React.FC<QuickStartSectionProps> = ({
               <div className="text-3xl font-bold text-seafoam-600 dark:text-seafoam-400 mb-2">
                 {stat.number}
               </div>
-              <div className="text-gray-600 dark:text-gray-400">
+              <div className="text-gray-700 dark:text-gray-400">
                 {stat.label}
               </div>
             </div>

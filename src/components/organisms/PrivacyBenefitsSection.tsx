@@ -102,7 +102,7 @@ const PrivacyBenefitsSection: React.FC<PrivacyBenefitsSectionProps> = ({
 {t('home.whyChooseTitle')}
             </span>
           </h2>
-          <p className="text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-xl text-gray-700 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
 {t('home.whyChooseSubtitle')}
           </p>
         </div>
@@ -147,11 +147,11 @@ const PrivacyBenefitsSection: React.FC<PrivacyBenefitsSectionProps> = ({
                 </div>
 
                 {/* Content */}
-                <h3 className="text-xl font-bold text-black dark:text-white mb-4 group-hover:text-seafoam-600 dark:group-hover:text-seafoam-400 transition-colors">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-seafoam-600 dark:group-hover:text-seafoam-400 transition-colors">
                   {benefit.title}
                 </h3>
                 
-                <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                <p className="text-gray-700 dark:text-gray-400 leading-relaxed">
                   {benefit.description}
                 </p>
 
@@ -175,7 +175,7 @@ const PrivacyBenefitsSection: React.FC<PrivacyBenefitsSectionProps> = ({
             shadow-lg hover:shadow-xl transition-all duration-300
           ">
             <div className="text-2xl">🚀</div>
-            <div className="text-lg font-semibold text-black dark:text-white">
+            <div className="text-lg font-semibold text-gray-900 dark:text-white">
               {t('home.privacyBenefits.cta', { toolsCount: actualToolsCount })}
             </div>
           </div>

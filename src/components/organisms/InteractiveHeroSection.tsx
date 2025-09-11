@@ -138,7 +138,7 @@ const InteractiveHeroSection: React.FC<InteractiveHeroSectionProps> = ({
 
           {/* Subtitle */}
           <p className={`
-            text-xl sm:text-2xl md:text-3xl font-semibold text-gray-200 mb-8
+            text-xl sm:text-2xl md:text-3xl font-semibold text-gray-600 dark:text-gray-200 mb-8
             ${isVisible ? 'smooth-reveal staggered-reveal' : 'opacity-0'}
           `}>
             {subtitle}
@@ -146,7 +146,7 @@ const InteractiveHeroSection: React.FC<InteractiveHeroSectionProps> = ({
 
           {/* Description */}
           <p className={`
-            text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto mb-12 leading-relaxed
+            text-lg sm:text-xl text-gray-700 dark:text-gray-400 max-w-3xl mx-auto mb-12 leading-relaxed
             ${isVisible ? 'smooth-reveal staggered-reveal' : 'opacity-0'}
           `}>
             {description}
@@ -159,7 +159,8 @@ const InteractiveHeroSection: React.FC<InteractiveHeroSectionProps> = ({
           `}>
             <div className="
               relative px-8 py-6 rounded-2xl overflow-hidden
-              bg-white/10 backdrop-blur-xl border border-white/20
+              bg-white/70 dark:bg-white/10 backdrop-blur-xl 
+              border border-gray-200/50 dark:border-white/20
               shadow-lg shadow-black/10 hover:shadow-2xl hover:shadow-black/20
               hover:scale-105 transition-all duration-500 ease-out
             ">
@@ -176,10 +177,10 @@ const InteractiveHeroSection: React.FC<InteractiveHeroSectionProps> = ({
                 </div>
                 
                 <div className="text-center sm:text-left">
-                  <div className="text-xl font-bold text-white mb-1">
+                  <div className="text-xl font-bold text-gray-900 dark:text-white mb-1">
                     {badges?.[currentBadgeIndex]?.title || 'Private & Secure'}
                   </div>
-                  <div className="text-sm font-medium text-gray-600">
+                  <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
                     {badges?.[currentBadgeIndex]?.description || 'All processing happens locally'}
                   </div>
                 </div>
@@ -191,8 +192,8 @@ const InteractiveHeroSection: React.FC<InteractiveHeroSectionProps> = ({
                         key={i}
                         className={`w-2 h-2 rounded-full transition-all duration-500 ${
                           i === currentBadgeIndex 
-                            ? 'bg-seafoam-400 scale-125 shadow-lg shadow-seafoam-400/50' 
-                            : 'bg-gray-500'
+                            ? 'bg-seafoam-500 scale-125 shadow-lg shadow-seafoam-500/50' 
+                            : 'bg-gray-400 dark:bg-gray-500'
                         }`}
                       />
                     ))}
@@ -246,7 +247,7 @@ const InteractiveHeroSection: React.FC<InteractiveHeroSectionProps> = ({
           {/* Scroll indicator */}
           {animated && (
             <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
-              <div className="flex flex-col items-center text-gray-600 dark:text-privacy-400">
+              <div className="flex flex-col items-center text-gray-600 dark:text-gray-400">
                 <span className="text-sm mb-2">{t('home.hero.learnMore')}</span>
                 <svg 
                   className="w-6 h-6 animate-bounce" 

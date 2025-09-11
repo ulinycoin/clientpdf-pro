@@ -76,7 +76,7 @@ const ModernToolsGrid: React.FC<ModernToolsGridProps> = ({
           <h2 className="text-4xl sm:text-5xl font-bold text-gradient-ocean mb-6">
             {t('home.tools.title')}
           </h2>
-          <p className="text-xl text-gray-600 dark:text-privacy-400 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-xl text-gray-700 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
             {t('home.tools.subtitle', { count: pdfTools.length })}
           </p>
           
@@ -84,21 +84,21 @@ const ModernToolsGrid: React.FC<ModernToolsGridProps> = ({
           <div className="flex flex-wrap justify-center gap-4 mt-8">
             <div className="flex items-center gap-2 px-4 py-2 bg-white/60 dark:bg-privacy-900/60 backdrop-blur-lg rounded-full border border-white/20 dark:border-privacy-700/30">
               <div className={`w-2 h-2 rounded-full bg-success-500 ${shouldAnimate ? 'animate-pulse' : ''}`}></div>
-              <span className="text-sm font-medium text-privacy-700 dark:text-privacy-300">
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                 {t('home.tools.trustIndicators.private')}
               </span>
             </div>
             
             <div className="flex items-center gap-2 px-4 py-2 bg-white/60 dark:bg-privacy-900/60 backdrop-blur-lg rounded-full border border-white/20 dark:border-privacy-700/30">
               <div className={`w-2 h-2 rounded-full bg-seafoam-500 ${shouldAnimate ? 'animate-pulse' : ''}`} style={{animationDelay: '0.5s'}}></div>
-              <span className="text-sm font-medium text-privacy-700 dark:text-privacy-300">
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                 {t('home.tools.trustIndicators.noUploads')}
               </span>
             </div>
             
             <div className="flex items-center gap-2 px-4 py-2 bg-white/60 dark:bg-privacy-900/60 backdrop-blur-lg rounded-full border border-white/20 dark:border-privacy-700/30">
               <div className={`w-2 h-2 rounded-full bg-ocean-500 ${shouldAnimate ? 'animate-pulse' : ''}`} style={{animationDelay: '1s'}}></div>
-              <span className="text-sm font-medium text-privacy-700 dark:text-privacy-300">
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                 {t('home.tools.trustIndicators.unlimited')}
               </span>
             </div>
@@ -116,11 +116,11 @@ const ModernToolsGrid: React.FC<ModernToolsGridProps> = ({
                   <div className="w-12 h-12 bg-gradient-to-br from-seafoam-100 to-ocean-100 dark:from-privacy-800 dark:to-privacy-700 rounded-2xl flex items-center justify-center text-2xl">
                     {categoryInfo[category as keyof typeof categoryInfo].icon}
                   </div>
-                  <h3 className="text-2xl font-bold text-white dark:text-privacy-100">
+                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
                     {categoryInfo[category as keyof typeof categoryInfo].title}
                   </h3>
                 </div>
-                <p className="text-gray-600 dark:text-privacy-400 max-w-2xl mx-auto">
+                <p className="text-gray-700 dark:text-gray-400 max-w-2xl mx-auto">
                   {categoryInfo[category as keyof typeof categoryInfo].description}
                 </p>
               </div>

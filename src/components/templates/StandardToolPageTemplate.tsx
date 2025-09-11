@@ -70,7 +70,7 @@ const StandardToolPageTemplate: React.FC<StandardToolPageTemplateProps> = ({
       <TwitterCardImage toolId={toolId} />
 
       {/* MODERN LAYOUT */}
-      <div className={`min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 dark:from-gray-950 dark:via-blue-950 dark:to-purple-950 flex flex-col ${className}`}>
+      <div className={`min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 dark:from-gray-900 dark:via-blue-900 dark:to-purple-900 flex flex-col ${className}`}>
         <ModernHeader />
 
         <main className="flex-grow">
@@ -85,7 +85,7 @@ const StandardToolPageTemplate: React.FC<StandardToolPageTemplateProps> = ({
             <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               {/* Breadcrumbs */}
               <div className="mb-8">
-                <nav aria-label="Breadcrumb" className="text-gray-600">
+                <nav aria-label="Breadcrumb" className="text-gray-600 dark:text-gray-400">
                   <ol className="flex items-center space-x-2 text-sm">
                     <li>
                       <span className="text-gray-400">{t('toolTemplate.breadcrumbs.home')}</span>
@@ -105,7 +105,7 @@ const StandardToolPageTemplate: React.FC<StandardToolPageTemplateProps> = ({
                 <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-12 bg-gradient-to-r from-gray-900 via-seafoam-green to-ocean-blue dark:from-white dark:via-seafoam-200 dark:to-ocean-200 bg-clip-text text-transparent leading-tight">
                   {pageTitle}
                 </h1>
-                <p className="text-lg sm:text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
+                <p className="text-lg sm:text-xl text-gray-700 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed">
                   {pageDescription}
                 </p>
               </div>
@@ -119,7 +119,7 @@ const StandardToolPageTemplate: React.FC<StandardToolPageTemplateProps> = ({
                 <h2 className="text-2xl sm:text-3xl font-extrabold mb-4 bg-gradient-to-r from-gray-900 via-seafoam-green to-ocean-blue dark:from-white dark:via-seafoam-200 dark:to-ocean-200 bg-clip-text text-transparent">
                   {t('toolTemplate.quickSteps.title')}
                 </h2>
-                <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+                <p className="text-lg text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
                   {t('toolTemplate.quickSteps.subtitle')}
                 </p>
               </div>
@@ -176,10 +176,10 @@ const StandardToolPageTemplate: React.FC<StandardToolPageTemplateProps> = ({
                       </div>
 
                       {/* Content */}
-                      <h3 className="text-lg font-black text-white mb-2 group-hover:text-seafoam-200 transition-colors">
+                      <h3 className="text-lg font-black text-gray-900 dark:text-white mb-2 group-hover:text-seafoam-600 dark:group-hover:text-seafoam-200 transition-colors">
                         {step.title}
                       </h3>
-                      <p className="text-sm text-gray-600 leading-relaxed">
+                      <p className="text-sm text-gray-700 dark:text-gray-400 leading-relaxed">
                         {step.description}
                       </p>
                     </div>
@@ -213,14 +213,14 @@ const StandardToolPageTemplate: React.FC<StandardToolPageTemplateProps> = ({
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 
                 {/* Преимущества */}
-                <div className="bg-white/10 dark:bg-gray-800/10 backdrop-blur-lg border border-white/20 dark:border-gray-700/30 rounded-2xl p-8">
+                <div className="bg-white/70 dark:bg-gray-800/10 backdrop-blur-lg border border-gray-200/50 dark:border-gray-700/30 rounded-2xl p-8 shadow-lg">
                   <div className="w-12 h-12 bg-gradient-to-br from-seafoam-500 to-ocean-500 rounded-xl flex items-center justify-center text-white text-2xl mb-6 shadow-lg">
                     ⚡
                   </div>
-                  <h3 className="text-xl font-black text-white mb-4">
+                  <h3 className="text-xl font-black text-gray-900 dark:text-white mb-4">
                     {t('toolTemplate.benefits.advantages.title')}
                   </h3>
-                  <ul className="text-gray-600 space-y-2 text-sm leading-relaxed">
+                  <ul className="text-gray-700 dark:text-gray-400 space-y-2 text-sm leading-relaxed">
                     <li>• {t('toolTemplate.benefits.advantages.items.speed')}</li>
                     <li>• {t('toolTemplate.benefits.advantages.items.quality')}</li>
                     <li>• {t('toolTemplate.benefits.advantages.items.simplicity')}</li>
@@ -229,14 +229,14 @@ const StandardToolPageTemplate: React.FC<StandardToolPageTemplateProps> = ({
                 </div>
 
                 {/* Безопасность */}
-                <div className="bg-white/10 dark:bg-gray-800/10 backdrop-blur-lg border border-white/20 dark:border-gray-700/30 rounded-2xl p-8">
+                <div className="bg-white/70 dark:bg-gray-800/10 backdrop-blur-lg border border-gray-200/50 dark:border-gray-700/30 rounded-2xl p-8 shadow-lg">
                   <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center text-white text-2xl mb-6 shadow-lg">
                     🔒
                   </div>
-                  <h3 className="text-xl font-black text-white mb-4">
+                  <h3 className="text-xl font-black text-gray-900 dark:text-white mb-4">
                     {t('toolTemplate.benefits.security.title')}
                   </h3>
-                  <ul className="text-gray-600 space-y-2 text-sm leading-relaxed">
+                  <ul className="text-gray-700 dark:text-gray-400 space-y-2 text-sm leading-relaxed">
                     <li>• {t('toolTemplate.benefits.security.items.local')}</li>
                     <li>• {t('toolTemplate.benefits.security.items.noUpload')}</li>
                     <li>• {t('toolTemplate.benefits.security.items.noRegistration')}</li>
@@ -249,10 +249,10 @@ const StandardToolPageTemplate: React.FC<StandardToolPageTemplateProps> = ({
                   <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-xl flex items-center justify-center text-white text-2xl mb-6 shadow-lg">
                     🛠️
                   </div>
-                  <h3 className="text-xl font-black text-white mb-4">
+                  <h3 className="text-xl font-black text-gray-900 dark:text-white mb-4">
                     {t('toolTemplate.benefits.technical.title')}
                   </h3>
-                  <ul className="text-gray-600 space-y-2 text-sm leading-relaxed">
+                  <ul className="text-gray-700 dark:text-gray-400 space-y-2 text-sm leading-relaxed">
                     <li>• {t('toolTemplate.benefits.technical.items.technology')}</li>
                     <li>• {t('toolTemplate.benefits.technical.items.crossplatform')}</li>
                     <li>• {t('toolTemplate.benefits.technical.items.quality')}</li>
@@ -267,28 +267,28 @@ const StandardToolPageTemplate: React.FC<StandardToolPageTemplateProps> = ({
           {/* Detailed Information Section */}
           <section className="py-16">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="bg-white/10 dark:bg-gray-800/10 backdrop-blur-lg border border-white/20 dark:border-gray-700/30 rounded-2xl p-8 md:p-12">
+              <div className="bg-white/70 dark:bg-gray-800/10 backdrop-blur-lg border border-gray-200/50 dark:border-gray-700/30 rounded-2xl p-8 md:p-12 shadow-lg">
                 <h2 className="text-2xl sm:text-3xl font-extrabold mb-8 bg-gradient-to-r from-gray-900 via-seafoam-green to-ocean-blue dark:from-white dark:via-seafoam-200 dark:to-ocean-200 bg-clip-text text-transparent text-center">
                   {t('toolTemplate.detailed.title')}
                 </h2>
                 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                   <div>
-                    <h3 className="text-xl font-black text-white mb-4">{t('toolTemplate.detailed.business.title')}</h3>
-                    <p className="text-gray-600 leading-relaxed mb-4">
+                    <h3 className="text-xl font-black text-gray-900 dark:text-white mb-4">{t('toolTemplate.detailed.business.title')}</h3>
+                    <p className="text-gray-700 dark:text-gray-400 leading-relaxed mb-4">
                       {t('toolTemplate.detailed.business.description1')}
                     </p>
-                    <p className="text-gray-600 leading-relaxed">
+                    <p className="text-gray-700 dark:text-gray-400 leading-relaxed">
                       {t('toolTemplate.detailed.business.description2')}
                     </p>
                   </div>
                   
                   <div>
-                    <h3 className="text-xl font-black text-white mb-4">{t('toolTemplate.detailed.personal.title')}</h3>
-                    <p className="text-gray-600 leading-relaxed mb-4">
+                    <h3 className="text-xl font-black text-gray-900 dark:text-white mb-4">{t('toolTemplate.detailed.personal.title')}</h3>
+                    <p className="text-gray-700 dark:text-gray-400 leading-relaxed mb-4">
                       {t('toolTemplate.detailed.personal.description1')}
                     </p>
-                    <p className="text-gray-600 leading-relaxed">
+                    <p className="text-gray-700 dark:text-gray-400 leading-relaxed">
                       {t('toolTemplate.detailed.personal.description2')}
                     </p>
                   </div>

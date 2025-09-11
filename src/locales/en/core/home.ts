@@ -12,10 +12,10 @@ export const home = {
     description: 'Professional PDF processing tools that work entirely in your browser',
     descriptionSecondary: 'No uploads " No tracking " No limits " Completely free forever',
     badges: [
-      { icon: '=', text: 'Local Processing', description: 'Your files never leave your device' },
-      { icon: '�', text: 'Instant Results', description: 'No server uploads required' },
-      { icon: '<', text: 'Works Offline', description: 'Internet only needed for first load' },
-      { icon: '=', text: 'No Registration', description: 'Start using right away' }
+      { icon: '🔒', title: 'Private & Secure', description: 'Your files never leave your device' },
+      { icon: '⚡', title: 'Instant Results', description: 'No server uploads required' },
+      { icon: '🌐', title: 'Works Offline', description: 'Internet only needed for first load' },
+      { icon: '✅', title: 'No Registration', description: 'Start using right away' }
     ],
     getStarted: 'Get Started',
     learnMore: 'Learn More',

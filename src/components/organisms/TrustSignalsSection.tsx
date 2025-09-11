@@ -140,7 +140,7 @@ const TrustSignalsSection: React.FC<TrustSignalsSectionProps> = ({
           <h2 className="text-4xl sm:text-5xl font-extrabold mb-6 text-white">
             {t('home.trustSignals.title')}
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-300 dark:text-gray-600 max-w-3xl mx-auto">
             {t('home.trustSignals.subtitle')}
           </p>
         </div>
