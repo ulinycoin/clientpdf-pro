@@ -1,39 +1,15 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { Analytics } from '@vercel/analytics/react';
 import { I18nProvider } from './hooks/useI18n';
 import { DarkModeProvider } from './components/providers/DarkModeProvider';
-import { HomePage, PrivacyPage, FAQPage, HowToUsePage, NotFoundPage } from './pages';
-import TermsPage from './pages/TermsPage';
-import GDPRPage from './pages/GDPRPage';
 import ScrollToTop from './components/ScrollToTop';
 
-// Lazy load tool pages for better performance
-const MergePDFPage = React.lazy(() => import('./pages/tools/MergePDFPage'));
-const SplitPDFPage = React.lazy(() => import('./pages/tools/SplitPDFPage'));
-const CompressPDFPage = React.lazy(() => import('./pages/tools/CompressPDFPage'));
-const AddTextPDFPage = React.lazy(() => import('./pages/tools/AddTextPDFPage'));
-const WatermarkPDFPage = React.lazy(() => import('./pages/tools/WatermarkPDFPage'));
-const RotatePDFPage = React.lazy(() => import('./pages/tools/RotatePDFPage'));
-const ExtractPagesPDFPage = React.lazy(() => import('./pages/tools/ExtractPagesPDFPage'));
-const ExtractTextPDFPage = React.lazy(() => import('./pages/tools/ExtractTextPDFPage'));
-const ExtractImagesFromPDFPage = React.lazy(() => import('./pages/tools/ExtractImagesFromPDFPage'));
-const PDFToImagePage = React.lazy(() => import('./pages/tools/PDFToImagePage'));
-const PDFToSvgPage = React.lazy(() => import('./pages/tools/PDFToSvgPage'));
-const ImageToPDFPage = React.lazy(() => import('./pages/tools/ImageToPDFPage'));
-const WordToPDFPage = React.lazy(() => import('./pages/tools/WordToPDFPage'));
-const ExcelToPDFPage = React.lazy(() => import('./pages/tools/ExcelToPDFPage'));
-const OCRPDFPage = React.lazy(() => import('./pages/tools/OCRPDFPage'));
+import { routes, supportedLanguages, defaultLanguage } from './config/routes';
 
-// Blog pages
-const BlogPage = React.lazy(() => import('./pages/BlogPage'));
-const BlogPostPage = React.lazy(() => import('./pages/BlogPostPage'));
-const BlogCategoryPage = React.lazy(() => import('./pages/BlogCategoryPage'));
-
-// Loading component
+// Loading component for lazy loaded pages
 const LoadingSpinner: React.FC = () => {
-  // Используем простой текст здесь, так как провайдер еще не инициализирован
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-mesh">
       <div className="text-center">
@@ -44,183 +20,77 @@ const LoadingSpinner: React.FC = () => {
   );
 };
 
+// A component to enforce a trailing slash on URLs that need it (e.g., /de -> /de/)
+const TrailingSlashRedirect: React.FC = () => {
+  const location = useLocation();
+  return <Navigate to={`${location.pathname}/`} replace />;
+};
+
 function App() {
+  // Separate routes for ordering (static routes must come before dynamic ones)
+  const staticRoutes = routes.filter(r => !r.hasDynamicPath && r.path !== '*');
+  const dynamicRoutes = routes.filter(r => r.hasDynamicPath);
+  const notFoundRoute = routes.find(r => r.path === '*');
+
   return (
     <HelmetProvider>
       <DarkModeProvider>
         <Router
           future={{
             v7_startTransition: true,
-            v7_relativeSplatPath: true
+            v7_relativeSplatPath: true,
           }}
         >
           <I18nProvider>
-          <ScrollToTop />
-          <div className="min-h-screen bg-gradient-mesh no-horizontal-scroll">
-            {/* Main content with suspense for lazy loading */}
-            <React.Suspense fallback={<LoadingSpinner />}>
-              <Routes>
-                {/* Home page - English (default) */}
-                <Route path="/" element={<HomePage />} />
+            <ScrollToTop />
+            <div className="min-h-screen bg-gradient-mesh no-horizontal-scroll">
+              <React.Suspense fallback={<LoadingSpinner />}>
+                <Routes>
+                  {/* 1. Redirect language roots to enforce trailing slash for canonicalization */}
+                  {supportedLanguages
+                    .filter(lang => lang !== defaultLanguage)
+                    .map(lang => (
+                      <Route key={`redirect-${lang}`} path={`/${lang}`} element={<TrailingSlashRedirect />} />
+                    ))}
 
+                  {/* 2. Generate static routes for all languages from the single source of truth */}
+                  {staticRoutes.flatMap(({ path, component: Component }) => {
+                    const key = path.replace(/[^a-zA-Z0-9]/g, '');
+                    const defaultRoute = <Route key={`en-${key}`} path={path} element={<Component />} />;
 
-                {/* Multilingual home pages */}
-                <Route path="/de" element={<HomePage />} />
-                <Route path="/fr" element={<HomePage />} />
-                <Route path="/es" element={<HomePage />} />
-                <Route path="/ru" element={<HomePage />} />
+                    const localizedRoutes = supportedLanguages
+                      .filter(lang => lang !== defaultLanguage)
+                      .map(lang => {
+                        // Handle the homepage case, e.g. /de/
+                        const localizedPath = path === '/' ? `/${lang}/` : `/${lang}${path}`;
+                        return <Route key={`${lang}-${key}`} path={localizedPath} element={<Component />} />;
+                      });
 
-                {/* PDF Tools - English (default) URLs */}
-                <Route path="/merge-pdf" element={<MergePDFPage />} />
-                <Route path="/split-pdf" element={<SplitPDFPage />} />
-                <Route path="/compress-pdf" element={<CompressPDFPage />} />
-                <Route path="/add-text-pdf" element={<AddTextPDFPage />} />
-                <Route path="/watermark-pdf" element={<WatermarkPDFPage />} />
-                <Route path="/rotate-pdf" element={<RotatePDFPage />} />
-                <Route path="/extract-pages-pdf" element={<ExtractPagesPDFPage />} />
-                <Route path="/extract-text-pdf" element={<ExtractTextPDFPage />} />
-                <Route path="/extract-images-from-pdf" element={<ExtractImagesFromPDFPage />} />
-                <Route path="/pdf-to-image" element={<PDFToImagePage />} />
-                <Route path="/pdf-to-svg" element={<PDFToSvgPage />} />
-                <Route path="/images-to-pdf" element={<ImageToPDFPage />} />
-                <Route path="/image-to-pdf" element={<ImageToPDFPage />} /> {/* Alias for convenience */}
-                <Route path="/word-to-pdf" element={<WordToPDFPage />} />
-                <Route path="/excel-to-pdf" element={<ExcelToPDFPage />} />
-                <Route path="/ocr-pdf" element={<OCRPDFPage />} />
+                    return [defaultRoute, ...localizedRoutes];
+                  })}
 
-                {/* Blog - English (default) URLs */}
-                <Route path="/blog" element={<BlogPage />} />
-                <Route path="/blog/:slug" element={<BlogPostPage />} />
-                <Route path="/blog/category/:category" element={<BlogCategoryPage />} />
+                  {/* 3. Generate dynamic routes (e.g., /blog/:slug) for all languages */}
+                  {dynamicRoutes.flatMap(({ path, component: Component }) => {
+                    const key = path.replace(/[^a-zA-Z0-9]/g, '');
+                    const defaultRoute = <Route key={`en-dynamic-${key}`} path={path} element={<Component />} />;
 
-                {/* PDF Tools - Multilingual URLs */}
-                {/* German (DE) */}
-                <Route path="/de/merge-pdf" element={<MergePDFPage />} />
-                <Route path="/de/split-pdf" element={<SplitPDFPage />} />
-                <Route path="/de/compress-pdf" element={<CompressPDFPage />} />
-                <Route path="/de/add-text-pdf" element={<AddTextPDFPage />} />
-                <Route path="/de/watermark-pdf" element={<WatermarkPDFPage />} />
-                <Route path="/de/rotate-pdf" element={<RotatePDFPage />} />
-                <Route path="/de/extract-pages-pdf" element={<ExtractPagesPDFPage />} />
-                <Route path="/de/extract-text-pdf" element={<ExtractTextPDFPage />} />
-                <Route path="/de/extract-images-from-pdf" element={<ExtractImagesFromPDFPage />} />
-                <Route path="/de/pdf-to-image" element={<PDFToImagePage />} />
-                <Route path="/de/pdf-to-svg" element={<PDFToSvgPage />} />
-                <Route path="/de/images-to-pdf" element={<ImageToPDFPage />} />
-                <Route path="/de/image-to-pdf" element={<ImageToPDFPage />} /> {/* Alias */}
-                <Route path="/de/word-to-pdf" element={<WordToPDFPage />} />
-                <Route path="/de/excel-to-pdf" element={<ExcelToPDFPage />} />
-                <Route path="/de/ocr-pdf" element={<OCRPDFPage />} />
+                    const localizedRoutes = supportedLanguages
+                      .filter(lang => lang !== defaultLanguage)
+                      .map(lang => {
+                        const localizedPath = `/${lang}${path}`;
+                        return <Route key={`${lang}-dynamic-${key}`} path={localizedPath} element={<Component />} />;
+                      });
 
-                {/* French (FR) */}
-                <Route path="/fr/merge-pdf" element={<MergePDFPage />} />
-                <Route path="/fr/split-pdf" element={<SplitPDFPage />} />
-                <Route path="/fr/compress-pdf" element={<CompressPDFPage />} />
-                <Route path="/fr/add-text-pdf" element={<AddTextPDFPage />} />
-                <Route path="/fr/watermark-pdf" element={<WatermarkPDFPage />} />
-                <Route path="/fr/rotate-pdf" element={<RotatePDFPage />} />
-                <Route path="/fr/extract-pages-pdf" element={<ExtractPagesPDFPage />} />
-                <Route path="/fr/extract-text-pdf" element={<ExtractTextPDFPage />} />
-                <Route path="/fr/extract-images-from-pdf" element={<ExtractImagesFromPDFPage />} />
-                <Route path="/fr/pdf-to-image" element={<PDFToImagePage />} />
-                <Route path="/fr/pdf-to-svg" element={<PDFToSvgPage />} />
-                <Route path="/fr/images-to-pdf" element={<ImageToPDFPage />} />
-                <Route path="/fr/image-to-pdf" element={<ImageToPDFPage />} /> {/* Alias */}
-                <Route path="/fr/word-to-pdf" element={<WordToPDFPage />} />
-                <Route path="/fr/excel-to-pdf" element={<ExcelToPDFPage />} />
-                <Route path="/fr/ocr-pdf" element={<OCRPDFPage />} />
+                    return [defaultRoute, ...localizedRoutes];
+                  })}
 
-                {/* Spanish (ES) */}
-                <Route path="/es/merge-pdf" element={<MergePDFPage />} />
-                <Route path="/es/split-pdf" element={<SplitPDFPage />} />
-                <Route path="/es/compress-pdf" element={<CompressPDFPage />} />
-                <Route path="/es/add-text-pdf" element={<AddTextPDFPage />} />
-                <Route path="/es/watermark-pdf" element={<WatermarkPDFPage />} />
-                <Route path="/es/rotate-pdf" element={<RotatePDFPage />} />
-                <Route path="/es/extract-pages-pdf" element={<ExtractPagesPDFPage />} />
-                <Route path="/es/extract-text-pdf" element={<ExtractTextPDFPage />} />
-                <Route path="/es/extract-images-from-pdf" element={<ExtractImagesFromPDFPage />} />
-                <Route path="/es/pdf-to-image" element={<PDFToImagePage />} />
-                <Route path="/es/pdf-to-svg" element={<PDFToSvgPage />} />
-                <Route path="/es/images-to-pdf" element={<ImageToPDFPage />} />
-                <Route path="/es/image-to-pdf" element={<ImageToPDFPage />} /> {/* Alias */}
-                <Route path="/es/word-to-pdf" element={<WordToPDFPage />} />
-                <Route path="/es/excel-to-pdf" element={<ExcelToPDFPage />} />
-                <Route path="/es/ocr-pdf" element={<OCRPDFPage />} />
-
-                {/* Russian (RU) */}
-                <Route path="/ru/merge-pdf" element={<MergePDFPage />} />
-                <Route path="/ru/split-pdf" element={<SplitPDFPage />} />
-                <Route path="/ru/compress-pdf" element={<CompressPDFPage />} />
-                <Route path="/ru/add-text-pdf" element={<AddTextPDFPage />} />
-                <Route path="/ru/watermark-pdf" element={<WatermarkPDFPage />} />
-                <Route path="/ru/rotate-pdf" element={<RotatePDFPage />} />
-                <Route path="/ru/extract-pages-pdf" element={<ExtractPagesPDFPage />} />
-                <Route path="/ru/extract-text-pdf" element={<ExtractTextPDFPage />} />
-                <Route path="/ru/extract-images-from-pdf" element={<ExtractImagesFromPDFPage />} />
-                <Route path="/ru/pdf-to-image" element={<PDFToImagePage />} />
-                <Route path="/ru/pdf-to-svg" element={<PDFToSvgPage />} />
-                <Route path="/ru/images-to-pdf" element={<ImageToPDFPage />} />
-                <Route path="/ru/image-to-pdf" element={<ImageToPDFPage />} /> {/* Alias */}
-                <Route path="/ru/word-to-pdf" element={<WordToPDFPage />} />
-                <Route path="/ru/excel-to-pdf" element={<ExcelToPDFPage />} />
-                <Route path="/ru/ocr-pdf" element={<OCRPDFPage />} />
-
-                {/* Blog - Multilingual URLs */}
-                {/* German (DE) */}
-                <Route path="/de/blog" element={<BlogPage />} />
-                <Route path="/de/blog/:slug" element={<BlogPostPage />} />
-                <Route path="/de/blog/category/:category" element={<BlogCategoryPage />} />
-
-                {/* French (FR) */}
-                <Route path="/fr/blog" element={<BlogPage />} />
-                <Route path="/fr/blog/:slug" element={<BlogPostPage />} />
-                <Route path="/fr/blog/category/:category" element={<BlogCategoryPage />} />
-
-                {/* Spanish (ES) */}
-                <Route path="/es/blog" element={<BlogPage />} />
-                <Route path="/es/blog/:slug" element={<BlogPostPage />} />
-                <Route path="/es/blog/category/:category" element={<BlogCategoryPage />} />
-
-                {/* Russian (RU) */}
-                <Route path="/ru/blog" element={<BlogPage />} />
-                <Route path="/ru/blog/:slug" element={<BlogPostPage />} />
-                <Route path="/ru/blog/category/:category" element={<BlogCategoryPage />} />
-
-                {/* Information pages - English */}
-                <Route path="/privacy" element={<PrivacyPage />} />
-                <Route path="/terms" element={<TermsPage />} />
-                <Route path="/gdpr" element={<GDPRPage />} />
-                <Route path="/faq" element={<FAQPage />} />
-                <Route path="/how-to-use" element={<HowToUsePage />} />
-
-                {/* Information pages - Multilingual */}
-                <Route path="/de/privacy" element={<PrivacyPage />} />
-                <Route path="/de/terms" element={<TermsPage />} />
-                <Route path="/de/gdpr" element={<GDPRPage />} />
-                <Route path="/de/faq" element={<FAQPage />} />
-                <Route path="/fr/privacy" element={<PrivacyPage />} />
-                <Route path="/fr/terms" element={<TermsPage />} />
-                <Route path="/fr/gdpr" element={<GDPRPage />} />
-                <Route path="/fr/faq" element={<FAQPage />} />
-                <Route path="/es/privacy" element={<PrivacyPage />} />
-                <Route path="/es/terms" element={<TermsPage />} />
-                <Route path="/es/gdpr" element={<GDPRPage />} />
-                <Route path="/es/faq" element={<FAQPage />} />
-                <Route path="/ru/privacy" element={<PrivacyPage />} />
-                <Route path="/ru/terms" element={<TermsPage />} />
-                <Route path="/ru/gdpr" element={<GDPRPage />} />
-                <Route path="/ru/faq" element={<FAQPage />} />
-
-                {/* 404 page - professional LocalPDF branded error page */}
-                <Route path="*" element={<NotFoundPage />} />
-              </Routes>
-            </React.Suspense>
-          </div>
-
-          {/* Vercel Analytics - Privacy-compliant analytics */}
-          <Analytics />
-        </I18nProvider>
+                  {/* 4. Add the 404 not found route, which must be last */}
+                  {notFoundRoute && <Route path="*" element={<notFoundRoute.component />} />}
+                </Routes>
+              </React.Suspense>
+            </div>
+            <Analytics />
+          </I18nProvider>
         </Router>
       </DarkModeProvider>
     </HelmetProvider>

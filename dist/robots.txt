@@ -1,122 +1,30 @@
+# Allow all crawlers full access to the site.
+# We will block specific non-content files below.
 User-agent: *
 Allow: /
 
-# PDF Tools - All tools are optimized for search engines (English)
-Allow: /merge-pdf
-Allow: /split-pdf
-Allow: /compress-pdf
-Allow: /add-text-pdf
-Allow: /watermark-pdf
-Allow: /rotate-pdf
-Allow: /extract-pages-pdf
-Allow: /extract-text-pdf
-Allow: /pdf-to-image
-Allow: /images-to-pdf
-Allow: /word-to-pdf
-Allow: /excel-to-pdf
-Allow: /ocr-pdf
-
-# Information pages (English)
-Allow: /privacy
-Allow: /faq
-
-# Multilingual pages - German
-Allow: /de/
-Allow: /de/merge-pdf
-Allow: /de/split-pdf
-Allow: /de/compress-pdf
-Allow: /de/add-text-pdf
-Allow: /de/watermark-pdf
-Allow: /de/rotate-pdf
-Allow: /de/extract-pages-pdf
-Allow: /de/extract-text-pdf
-Allow: /de/pdf-to-image
-Allow: /de/images-to-pdf
-Allow: /de/word-to-pdf
-Allow: /de/excel-to-pdf
-Allow: /de/ocr-pdf
-Allow: /de/privacy
-Allow: /de/faq
-
-# Multilingual pages - Russian
-Allow: /ru/
-Allow: /ru/merge-pdf
-Allow: /ru/split-pdf
-Allow: /ru/compress-pdf
-Allow: /ru/add-text-pdf
-Allow: /ru/watermark-pdf
-Allow: /ru/rotate-pdf
-Allow: /ru/extract-pages-pdf
-Allow: /ru/extract-text-pdf
-Allow: /ru/pdf-to-image
-Allow: /ru/images-to-pdf
-Allow: /ru/word-to-pdf
-Allow: /ru/excel-to-pdf
-Allow: /ru/ocr-pdf
-Allow: /ru/privacy
-Allow: /ru/faq
-
-# Multilingual pages - French
-Allow: /fr/
-Allow: /fr/merge-pdf
-Allow: /fr/split-pdf
-Allow: /fr/compress-pdf
-Allow: /fr/add-text-pdf
-Allow: /fr/watermark-pdf
-Allow: /fr/rotate-pdf
-Allow: /fr/extract-pages-pdf
-Allow: /fr/extract-text-pdf
-Allow: /fr/pdf-to-image
-Allow: /fr/images-to-pdf
-Allow: /fr/word-to-pdf
-Allow: /fr/excel-to-pdf
-Allow: /fr/ocr-pdf
-Allow: /fr/privacy
-Allow: /fr/faq
-
-# Multilingual pages - Spanish
-Allow: /es/
-Allow: /es/merge-pdf
-Allow: /es/split-pdf
-Allow: /es/compress-pdf
-Allow: /es/add-text-pdf
-Allow: /es/watermark-pdf
-Allow: /es/rotate-pdf
-Allow: /es/extract-pages-pdf
-Allow: /es/extract-text-pdf
-Allow: /es/pdf-to-image
-Allow: /es/images-to-pdf
-Allow: /es/word-to-pdf
-Allow: /es/excel-to-pdf
-Allow: /es/ocr-pdf
-Allow: /es/privacy
-Allow: /es/faq
-
-# Block development and system files
+# Block development/system files and source code.
+# Search engines should only index the final built pages.
 Disallow: /src/
 Disallow: /node_modules/
+Disallow: /.git/
+Disallow: /.claude/
+Disallow: /scripts/
+
+# Block source maps and configuration files from being crawled.
+Disallow: /*.js.map$
 Disallow: /*.json$
 Disallow: /*.ts$
 Disallow: /*.tsx$
-Disallow: /dev-assets/
-Disallow: /.git/
-Disallow: /.claude/
-Disallow: /assets/
-Disallow: /scripts/
+Disallow: /vite.config.ts
+Disallow: /tailwind.config.js
+Disallow: /postcss.config.js
 
-# Crawl delay for respectful crawling
+# Note: We are no longer disallowing /assets/ because it contains
+# critical CSS and JS files required for rendering the page.
+
+# Set a crawl delay to be respectful to servers (optional, but good practice).
 Crawl-delay: 1
 
-# Sitemap locations
+# Location of the single, definitive sitemap.
 Sitemap: https://localpdf.online/sitemap.xml
-Sitemap: https://localpdf.online/sitemap-multilingual.xml
-
-# Additional search engine specific directives
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: Yandex
-Allow: /

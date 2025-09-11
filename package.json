@@ -44,7 +44,7 @@
     "submit-indexnow": "node scripts/index-now-submit.js",
     "prerender-multilingual": "node scripts/prerender-multilingual.js",
     "prerender-old": "node scripts/prerender.js",
-    "generate-multilingual-sitemap": "node scripts/generate-multilingual-sitemap.js",
+    "generate-multilingual-sitemap": "npx tsx scripts/generate-multilingual-sitemap.ts",
     "deploy": "node scripts/deploy-production.js",
     "type-check": "tsc --noEmit",
     "test": "vitest",
