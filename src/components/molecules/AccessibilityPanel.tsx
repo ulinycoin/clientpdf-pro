@@ -103,7 +103,7 @@ const AccessibilityPanel: React.FC<AccessibilityPanelProps> = ({
 
                 {/* Animation Preview */}
                 <div className="p-4 bg-privacy-50 dark:bg-privacy-900 rounded-lg">
-                  <div className="text-xs text-privacy-500 mb-2">Превью анимации:</div>
+                  <div className="text-xs text-privacy-700 mb-2">Превью анимации:</div>
                   <div className="flex items-center space-x-4">
                     <div className={`w-8 h-8 bg-seafoam-400 rounded-full ${preferences.reducedMotion ? '' : 'animate-pulse'}`} />
                     <div className={`w-6 h-6 bg-ocean-400 rounded ${preferences.reducedMotion ? '' : 'animate-bounce'}`} />
@@ -289,7 +289,7 @@ const AccessibilityPanel: React.FC<AccessibilityPanelProps> = ({
 
         {/* Footer */}
         <div className="pt-4 border-t border-privacy-200 dark:border-privacy-700">
-          <div className="text-xs text-privacy-500 text-center">
+          <div className="text-xs text-privacy-700 text-center">
             Настройки сохраняются автоматически и применяются ко всем страницам LocalPDF
           </div>
         </div>

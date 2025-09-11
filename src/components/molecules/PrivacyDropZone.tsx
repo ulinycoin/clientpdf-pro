@@ -194,7 +194,7 @@ const PrivacyDropZone: React.FC<PrivacyDropZoneProps> = ({
             </div>
 
             {/* Limits Info */}
-            <div className="text-xs text-privacy-500 space-y-1">
+            <div className="text-xs text-privacy-700 space-y-1">
               <div>Максимум {maxFiles} файл{maxFiles > 1 ? 'ов' : ''} · До {maxFileSize}MB каждый</div>
             </div>
           </div>

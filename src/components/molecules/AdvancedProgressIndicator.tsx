@@ -228,7 +228,7 @@ const AdvancedProgressIndicator: React.FC<AdvancedProgressIndicatorProps> = ({
           {getStatusMessage()}
         </p>
         {metrics.timeRemaining > 0 && status === 'processing' && (
-          <p className="text-xs text-privacy-500 mt-1">
+          <p className="text-xs text-privacy-700 mt-1">
             Осталось примерно {formatTime(metrics.timeRemaining)}
           </p>
         )}
@@ -272,7 +272,7 @@ const AdvancedProgressIndicator: React.FC<AdvancedProgressIndicatorProps> = ({
         <div className="grid grid-cols-2 gap-4 mb-4">
           {metrics.cpuUsage !== undefined && (
             <div className="privacy-card border border-privacy-200 dark:border-privacy-700">
-              <div className="text-xs text-privacy-500 mb-1">Использование CPU</div>
+              <div className="text-xs text-privacy-700 mb-1">Использование CPU</div>
               <div className="flex items-center space-x-2">
                 <div className="flex-1 h-2 bg-privacy-100 dark:bg-privacy-800 rounded">
                   <div 
@@ -287,7 +287,7 @@ const AdvancedProgressIndicator: React.FC<AdvancedProgressIndicatorProps> = ({
           
           {metrics.memoryUsage !== undefined && (
             <div className="privacy-card border border-privacy-200 dark:border-privacy-700">
-              <div className="text-xs text-privacy-500 mb-1">Память</div>
+              <div className="text-xs text-privacy-700 mb-1">Память</div>
               <div className="flex items-center space-x-2">
                 <div className="flex-1 h-2 bg-privacy-100 dark:bg-privacy-800 rounded">
                   <div 

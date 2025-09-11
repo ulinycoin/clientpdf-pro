@@ -201,7 +201,7 @@ const LocalProcessingIndicator: React.FC<LocalProcessingIndicatorProps> = ({
 
       {/* Local vs Cloud Comparison (when processing) */}
       {status === 'processing' && estimatedTime && (
-        <div className="text-xs text-privacy-500 text-center space-y-1">
+        <div className="text-xs text-privacy-700 text-center space-y-1">
           <div className="flex items-center gap-2">
             <span className="text-seafoam-600">📱 Локально: {estimatedTime}с</span>
           </div>

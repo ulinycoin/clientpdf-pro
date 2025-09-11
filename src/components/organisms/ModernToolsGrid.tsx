@@ -76,7 +76,7 @@ const ModernToolsGrid: React.FC<ModernToolsGridProps> = ({
           <h2 className="text-4xl sm:text-5xl font-bold text-gradient-ocean mb-6">
             {t('home.tools.title')}
           </h2>
-          <p className="text-xl text-gray-300 dark:text-privacy-400 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-xl text-gray-600 dark:text-privacy-400 max-w-3xl mx-auto leading-relaxed">
             {t('home.tools.subtitle', { count: pdfTools.length })}
           </p>
           
@@ -120,7 +120,7 @@ const ModernToolsGrid: React.FC<ModernToolsGridProps> = ({
                     {categoryInfo[category as keyof typeof categoryInfo].title}
                   </h3>
                 </div>
-                <p className="text-gray-300 dark:text-privacy-400 max-w-2xl mx-auto">
+                <p className="text-gray-600 dark:text-privacy-400 max-w-2xl mx-auto">
                   {categoryInfo[category as keyof typeof categoryInfo].description}
                 </p>
               </div>

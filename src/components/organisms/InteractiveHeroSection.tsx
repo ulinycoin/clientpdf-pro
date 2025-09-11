@@ -146,7 +146,7 @@ const InteractiveHeroSection: React.FC<InteractiveHeroSectionProps> = ({
 
           {/* Description */}
           <p className={`
-            text-lg sm:text-xl text-gray-300 max-w-3xl mx-auto mb-12 leading-relaxed
+            text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto mb-12 leading-relaxed
             ${isVisible ? 'smooth-reveal staggered-reveal' : 'opacity-0'}
           `}>
             {description}
@@ -179,7 +179,7 @@ const InteractiveHeroSection: React.FC<InteractiveHeroSectionProps> = ({
                   <div className="text-xl font-bold text-white mb-1">
                     {badges?.[currentBadgeIndex]?.title || 'Private & Secure'}
                   </div>
-                  <div className="text-sm font-medium text-gray-300">
+                  <div className="text-sm font-medium text-gray-600">
                     {badges?.[currentBadgeIndex]?.description || 'All processing happens locally'}
                   </div>
                 </div>

@@ -78,7 +78,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
           <button
             onClick={onUndo}
             disabled={!canUndo}
-            className="p-2 text-gray-800 dark:text-gray-200 hover:text-seafoam-600 dark:hover:text-seafoam-400 hover:bg-seafoam-50 dark:hover:bg-seafoam-900/20 disabled:text-gray-300 disabled:cursor-not-allowed rounded-lg transition-all duration-200"
+            className="p-2 text-gray-800 dark:text-gray-200 hover:text-seafoam-600 dark:hover:text-seafoam-400 hover:bg-seafoam-50 dark:hover:bg-seafoam-900/20 disabled:text-gray-600 disabled:cursor-not-allowed rounded-lg transition-all duration-200"
             title={t('tools.addText.toolbar.undo')}
           >
             ↶
@@ -86,7 +86,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
           <button
             onClick={onRedo}
             disabled={!canRedo}
-            className="p-2 text-gray-800 dark:text-gray-200 hover:text-seafoam-600 dark:hover:text-seafoam-400 hover:bg-seafoam-50 dark:hover:bg-seafoam-900/20 disabled:text-gray-300 disabled:cursor-not-allowed rounded-lg transition-all duration-200"
+            className="p-2 text-gray-800 dark:text-gray-200 hover:text-seafoam-600 dark:hover:text-seafoam-400 hover:bg-seafoam-50 dark:hover:bg-seafoam-900/20 disabled:text-gray-600 disabled:cursor-not-allowed rounded-lg transition-all duration-200"
             title={t('tools.addText.toolbar.redo')}
           >
             ↷
@@ -99,7 +99,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
         <button
           onClick={() => onPageChange(Math.max(1, currentPage - 1))}
           disabled={currentPage <= 1}
-          className="p-2 text-gray-800 dark:text-gray-200 hover:text-seafoam-600 dark:hover:text-seafoam-400 hover:bg-seafoam-50 dark:hover:bg-seafoam-900/20 disabled:text-gray-300 disabled:cursor-not-allowed rounded-lg transition-all duration-200"
+          className="p-2 text-gray-800 dark:text-gray-200 hover:text-seafoam-600 dark:hover:text-seafoam-400 hover:bg-seafoam-50 dark:hover:bg-seafoam-900/20 disabled:text-gray-600 disabled:cursor-not-allowed rounded-lg transition-all duration-200"
         >
           ◀️
         </button>
@@ -120,7 +120,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
         <button
           onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
           disabled={currentPage >= totalPages}
-          className="p-2 text-gray-800 dark:text-gray-200 hover:text-seafoam-600 dark:hover:text-seafoam-400 hover:bg-seafoam-50 dark:hover:bg-seafoam-900/20 disabled:text-gray-300 disabled:cursor-not-allowed rounded-lg transition-all duration-200"
+          className="p-2 text-gray-800 dark:text-gray-200 hover:text-seafoam-600 dark:hover:text-seafoam-400 hover:bg-seafoam-50 dark:hover:bg-seafoam-900/20 disabled:text-gray-600 disabled:cursor-not-allowed rounded-lg transition-all duration-200"
         >
           ▶️
         </button>

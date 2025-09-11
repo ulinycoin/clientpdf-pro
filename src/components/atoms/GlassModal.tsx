@@ -202,7 +202,7 @@ const GlassModal: React.FC<GlassModalProps> = ({
                     p-2 rounded-lg transition-all duration-200
                     hover:bg-white/20 dark:hover:bg-slate-700/30
                     focus:outline-none focus:ring-2 focus:ring-privacy-accent focus:ring-offset-2
-                    text-privacy-500 hover:text-privacy-700 dark:text-privacy-400 dark:hover:text-privacy-200
+                    text-privacy-700 hover:text-privacy-900 dark:text-privacy-400 dark:hover:text-privacy-200
                   "
                   aria-label="Close modal"
                 >

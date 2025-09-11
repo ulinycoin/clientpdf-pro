@@ -85,7 +85,7 @@ const StandardToolPageTemplate: React.FC<StandardToolPageTemplateProps> = ({
             <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               {/* Breadcrumbs */}
               <div className="mb-8">
-                <nav aria-label="Breadcrumb" className="text-gray-300">
+                <nav aria-label="Breadcrumb" className="text-gray-600">
                   <ol className="flex items-center space-x-2 text-sm">
                     <li>
                       <span className="text-gray-400">{t('toolTemplate.breadcrumbs.home')}</span>
@@ -105,7 +105,7 @@ const StandardToolPageTemplate: React.FC<StandardToolPageTemplateProps> = ({
                 <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-12 bg-gradient-to-r from-gray-900 via-seafoam-green to-ocean-blue dark:from-white dark:via-seafoam-200 dark:to-ocean-200 bg-clip-text text-transparent leading-tight">
                   {pageTitle}
                 </h1>
-                <p className="text-lg sm:text-xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
+                <p className="text-lg sm:text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
                   {pageDescription}
                 </p>
               </div>
@@ -119,7 +119,7 @@ const StandardToolPageTemplate: React.FC<StandardToolPageTemplateProps> = ({
                 <h2 className="text-2xl sm:text-3xl font-extrabold mb-4 bg-gradient-to-r from-gray-900 via-seafoam-green to-ocean-blue dark:from-white dark:via-seafoam-200 dark:to-ocean-200 bg-clip-text text-transparent">
                   {t('toolTemplate.quickSteps.title')}
                 </h2>
-                <p className="text-lg text-gray-300 max-w-3xl mx-auto">
+                <p className="text-lg text-gray-600 max-w-3xl mx-auto">
                   {t('toolTemplate.quickSteps.subtitle')}
                 </p>
               </div>
@@ -179,7 +179,7 @@ const StandardToolPageTemplate: React.FC<StandardToolPageTemplateProps> = ({
                       <h3 className="text-lg font-black text-white mb-2 group-hover:text-seafoam-200 transition-colors">
                         {step.title}
                       </h3>
-                      <p className="text-sm text-gray-300 leading-relaxed">
+                      <p className="text-sm text-gray-600 leading-relaxed">
                         {step.description}
                       </p>
                     </div>
@@ -220,7 +220,7 @@ const StandardToolPageTemplate: React.FC<StandardToolPageTemplateProps> = ({
                   <h3 className="text-xl font-black text-white mb-4">
                     {t('toolTemplate.benefits.advantages.title')}
                   </h3>
-                  <ul className="text-gray-300 space-y-2 text-sm leading-relaxed">
+                  <ul className="text-gray-600 space-y-2 text-sm leading-relaxed">
                     <li>• {t('toolTemplate.benefits.advantages.items.speed')}</li>
                     <li>• {t('toolTemplate.benefits.advantages.items.quality')}</li>
                     <li>• {t('toolTemplate.benefits.advantages.items.simplicity')}</li>
@@ -236,7 +236,7 @@ const StandardToolPageTemplate: React.FC<StandardToolPageTemplateProps> = ({
                   <h3 className="text-xl font-black text-white mb-4">
                     {t('toolTemplate.benefits.security.title')}
                   </h3>
-                  <ul className="text-gray-300 space-y-2 text-sm leading-relaxed">
+                  <ul className="text-gray-600 space-y-2 text-sm leading-relaxed">
                     <li>• {t('toolTemplate.benefits.security.items.local')}</li>
                     <li>• {t('toolTemplate.benefits.security.items.noUpload')}</li>
                     <li>• {t('toolTemplate.benefits.security.items.noRegistration')}</li>
@@ -252,7 +252,7 @@ const StandardToolPageTemplate: React.FC<StandardToolPageTemplateProps> = ({
                   <h3 className="text-xl font-black text-white mb-4">
                     {t('toolTemplate.benefits.technical.title')}
                   </h3>
-                  <ul className="text-gray-300 space-y-2 text-sm leading-relaxed">
+                  <ul className="text-gray-600 space-y-2 text-sm leading-relaxed">
                     <li>• {t('toolTemplate.benefits.technical.items.technology')}</li>
                     <li>• {t('toolTemplate.benefits.technical.items.crossplatform')}</li>
                     <li>• {t('toolTemplate.benefits.technical.items.quality')}</li>
@@ -275,20 +275,20 @@ const StandardToolPageTemplate: React.FC<StandardToolPageTemplateProps> = ({
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                   <div>
                     <h3 className="text-xl font-black text-white mb-4">{t('toolTemplate.detailed.business.title')}</h3>
-                    <p className="text-gray-300 leading-relaxed mb-4">
+                    <p className="text-gray-600 leading-relaxed mb-4">
                       {t('toolTemplate.detailed.business.description1')}
                     </p>
-                    <p className="text-gray-300 leading-relaxed">
+                    <p className="text-gray-600 leading-relaxed">
                       {t('toolTemplate.detailed.business.description2')}
                     </p>
                   </div>
                   
                   <div>
                     <h3 className="text-xl font-black text-white mb-4">{t('toolTemplate.detailed.personal.title')}</h3>
-                    <p className="text-gray-300 leading-relaxed mb-4">
+                    <p className="text-gray-600 leading-relaxed mb-4">
                       {t('toolTemplate.detailed.personal.description1')}
                     </p>
-                    <p className="text-gray-300 leading-relaxed">
+                    <p className="text-gray-600 leading-relaxed">
                       {t('toolTemplate.detailed.personal.description2')}
                     </p>
                   </div>
