@@ -1,8 +1,11 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useTranslation } from '../../hooks/useI18n';
+import { useLocalizedPath } from '../../hooks/useLocalizedPath';
 
 const Footer: React.FC = () => {
   const { t } = useTranslation();
+  const getLocalizedPath = useLocalizedPath();
   const currentYear = new Date().getFullYear();
 
   return (
@@ -34,33 +37,33 @@ const Footer: React.FC = () => {
             {t('footer.copyright')}
           </p>
           <div className="flex justify-center space-x-6 text-sm">
-            <a 
-              href="/privacy" 
+            <Link
+              to={getLocalizedPath('/privacy')}
               className="text-gray-400 hover:text-white transition-colors"
             >
               {t('footer.links.privacy')}
-            </a>
+            </Link>
             <span className="text-gray-600">•</span>
-            <a 
-              href="/terms" 
+            <Link
+              to={getLocalizedPath('/terms')}
               className="text-gray-400 hover:text-white transition-colors"
             >
               {t('footer.links.terms')}
-            </a>
+            </Link>
             <span className="text-gray-600">•</span>
-            <a 
-              href="/gdpr" 
+            <Link
+              to={getLocalizedPath('/gdpr')}
               className="text-gray-400 hover:text-white transition-colors"
             >
               GDPR
-            </a>
+            </Link>
             <span className="text-gray-600">•</span>
-            <a 
-              href="/faq" 
+            <Link
+              to={getLocalizedPath('/faq')}
               className="text-gray-400 hover:text-white transition-colors"
             >
               {t('footer.links.faq')}
-            </a>
+            </Link>
             <span className="text-gray-600">•</span>
             <a 
               href="https://github.com/ulinycoin/clientpdf-pro" 
@@ -71,12 +74,12 @@ const Footer: React.FC = () => {
               {t('footer.links.github')}
             </a>
             <span className="text-gray-600">•</span>
-            <a 
-              href="https://localpdf.online" 
+            <Link
+              to={getLocalizedPath('/')}
               className="text-gray-400 hover:text-white transition-colors"
             >
               localpdf.online
-            </a>
+            </Link>
           </div>
         </div>
       </div>

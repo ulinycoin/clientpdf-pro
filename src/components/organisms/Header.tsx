@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Shield, Zap, Github, Menu, X } from 'lucide-react';
 import { useTranslation } from '../../hooks/useI18n';
 import LanguageSwitcher from '../molecules/LanguageSwitcher';
+import { useLocalizedPath } from '../../hooks/useLocalizedPath';
 
 interface HeaderProps {
   title?: string;
@@ -18,6 +19,7 @@ const Header: React.FC<HeaderProps> = ({
   className = ''
 }) => {
   const { t } = useTranslation();
+  const getLocalizedPath = useLocalizedPath();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
@@ -42,7 +44,7 @@ const Header: React.FC<HeaderProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo and Title */}
-          <Link to="/" className="flex items-center space-x-4 group">
+          <Link to={getLocalizedPath('/')} className="flex items-center space-x-4 group">
             {showLogo && (
               <div className="relative">
                 {/* Pulse ring effect for trust */}
@@ -66,14 +68,14 @@ const Header: React.FC<HeaderProps> = ({
           <div className="hidden md:flex items-center space-x-8">
             <nav className="flex items-center space-x-6">
               <Link
-                to="/privacy"
+                to={getLocalizedPath('/privacy')}
                 className="text-secondary-700 hover:text-primary-600 transition-colors font-medium relative group"
               >
                 {t('header.navigation.privacy')}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary-600 group-hover:w-full transition-all duration-200"></span>
               </Link>
               <Link
-                to="/faq"
+                to={getLocalizedPath('/faq')}
                 className="text-secondary-700 hover:text-primary-600 transition-colors font-medium relative group"
               >
                 {t('header.navigation.faq')}
@@ -144,14 +146,14 @@ const Header: React.FC<HeaderProps> = ({
         `}>
           <div className="py-4 space-y-4 border-t border-white/20 backdrop-blur-sm">
             <Link
-              to="/privacy"
+              to={getLocalizedPath('/privacy')}
               className="block px-4 py-3 text-secondary-700 hover:text-primary-600 hover:bg-white/50 rounded-xl transition-colors font-medium progressive-reveal"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               {t('header.mobileMenu.privacyPolicy')}
             </Link>
             <Link
-              to="/faq"
+              to={getLocalizedPath('/faq')}
               className="block px-4 py-3 text-secondary-700 hover:text-primary-600 hover:bg-white/50 rounded-xl transition-colors font-medium progressive-reveal"
               onClick={() => setIsMobileMenuOpen(false)}
             >
