@@ -10,6 +10,7 @@ interface I18nContextType {
   setLanguage: (language: SupportedLanguage) => void;
   t: (key: string, params?: TranslationParams) => string;
   supportedLanguages: typeof SUPPORTED_LANGUAGES;
+  isInitialized: boolean;
 }
 
 const I18nContext = createContext<I18nContextType | undefined>(undefined);
@@ -20,6 +21,7 @@ interface I18nProviderProps {
 
 // Константы для localStorage
 const LANGUAGE_KEY = 'localpdf-language';
+const USER_LANGUAGE_PREFERENCE_KEY = 'localpdf-user-language-preference'; // Флаг явного выбора пользователя
 
 // Функция для определения языка браузера с расширенной поддержкой
 const getBrowserLanguage = (): SupportedLanguage => {
@@ -30,7 +32,7 @@ const getBrowserLanguage = (): SupportedLanguage => {
 
   // Проверяем каждый язык браузера
   for (const lang of browserLanguages) {
-    // Извлекаем код языка (например, 'en' из 'en-US')
+    // Извлекаем код языка (например, 'en' из 'en-US', 'ru' из 'ru-RU')
     const languageCode = lang.split('-')[0].toLowerCase() as SupportedLanguage;
 
     // Проверяем, поддерживается ли этот язык
@@ -66,22 +68,90 @@ const getLanguageFromURL = (): SupportedLanguage | null => {
   return null;
 };
 
-// Функция для загрузки сохраненного языка (без URL приоритета)
+// Проверяет, является ли путь нелокализованным (без языкового префикса)
+const isNonLocalizedPath = (pathname: string): boolean => {
+  if (typeof window === 'undefined') return false;
+  
+  const pathParts = pathname.split('/').filter(Boolean);
+  
+  // Корневой путь '/' всегда считается нелокализованным
+  if (pathParts.length === 0) return true;
+  
+  // Проверяем, начинается ли путь с языкового кода
+  if (pathParts.length > 0) {
+    const firstPart = pathParts[0];
+    const isLanguageCode = SUPPORTED_LANGUAGES.some(lang => lang.code === firstPart);
+    return !isLanguageCode; // Если первая часть НЕ языковой код, путь нелокализован
+  }
+  
+  return false;
+};
+
+// Проверяет, установлен ли язык явно пользователем (не системой)
+const hasUserLanguagePreference = (): boolean => {
+  if (typeof window === 'undefined') return false;
+  
+  try {
+    const userPreference = localStorage.getItem(USER_LANGUAGE_PREFERENCE_KEY);
+    return userPreference === 'true';
+  } catch {
+    return false;
+  }
+};
+
+// Сохраняет язык как явный выбор пользователя
+const saveUserLanguagePreference = (language: SupportedLanguage): void => {
+  if (typeof window === 'undefined') return;
+  
+  try {
+    localStorage.setItem(LANGUAGE_KEY, language);
+    localStorage.setItem(USER_LANGUAGE_PREFERENCE_KEY, 'true');
+  } catch (error) {
+    console.warn('Failed to save user language preference:', error);
+  }
+};
+
+// Сохраняет язык как системный (без пользовательского предпочтения)
+const saveSystemLanguage = (language: SupportedLanguage): void => {
+  if (typeof window === 'undefined') return;
+  
+  try {
+    localStorage.setItem(LANGUAGE_KEY, language);
+    // НЕ устанавливаем USER_LANGUAGE_PREFERENCE_KEY, оставляем для будущего browser detection
+  } catch (error) {
+    console.warn('Failed to save system language:', error);
+  }
+};
+
+// Функция для загрузки сохраненного языка (приоритет: явный выбор -> браузер -> default)
 const getSavedLanguage = (): SupportedLanguage => {
   if (typeof window === 'undefined') return DEFAULT_LANGUAGE;
 
   try {
-    // 1. Проверяем localStorage
-    const saved = localStorage.getItem(LANGUAGE_KEY) as SupportedLanguage;
-    if (SUPPORTED_LANGUAGES.some(lang => lang.code === saved)) {
-      return saved;
+    // 1. Проверяем есть ли явный выбор пользователя
+    if (hasUserLanguagePreference()) {
+      const saved = localStorage.getItem(LANGUAGE_KEY) as SupportedLanguage;
+      if (saved && SUPPORTED_LANGUAGES.some(lang => lang.code === saved)) {
+        return saved;
+      }
     }
 
-    // 2. Fallback на язык браузера
+    // 2. Если нет явного выбора - используем браузер (главная фича!)
     return getBrowserLanguage();
   } catch {
+    // 3. В случае ошибки все равно пытаемся определить язык браузера
     return getBrowserLanguage();
   }
+};
+
+// Новая функция для получения начального языка при первом запуске
+const getInitialLanguage = (): SupportedLanguage => {
+  // 1. Проверяем URL первым делом (высший приоритет)
+  const urlLang = getLanguageFromURL();
+  if (urlLang) return urlLang;
+  
+  // 2. Для корневого пути без языкового префикса используем новую логику:
+  return getSavedLanguage(); // Теперь правильно различает пользовательские и системные предпочтения
 };
 
 // Функция для экранирования специальных символов в регулярных выражениях
@@ -110,14 +180,12 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
   
-  // Initialize language from URL first, then fallback to saved language
+  // Track initialization state
+  const [isInitialized, setIsInitialized] = useState(false);
+  
+  // Initialize language with proper browser detection
   const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguage>(() => {
-    // Get language from URL first (highest priority)
-    const urlLang = getLanguageFromURL();
-    if (urlLang) return urlLang;
-    
-    // Fallback to saved language
-    return getSavedLanguage();
+    return getInitialLanguage();
   });
   
   const [translations, setTranslations] = useState<Translations>(() => {
@@ -156,12 +224,8 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
       setCurrentLanguage(language);
       setTranslations(getTranslations(language));
 
-      // Сохраняем выбор в localStorage
-      try {
-        localStorage.setItem(LANGUAGE_KEY, language);
-      } catch (error) {
-        console.warn('Failed to save language preference:', error);
-      }
+      // Сохраняем выбор как явное предпочтение пользователя
+      saveUserLanguagePreference(language);
 
       // Обновляем lang атрибут HTML
       if (typeof document !== 'undefined') {
@@ -208,12 +272,56 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
     return interpolate(value, params);
   };
 
-  // Устанавливаем начальный язык при монтировании
+  // Устанавливаем начальный язык при монтировании и обрабатываем редирект
   useEffect(() => {
     if (typeof document !== 'undefined') {
       document.documentElement.lang = currentLanguage;
     }
-  }, []);
+
+    // Особая логика для автоматического перенаправления на основе языка браузера
+    const handleBrowserLanguageRedirect = () => {
+      // Проверяем, является ли текущий путь нелокализованным (без языкового префикса)
+      if (!isNonLocalizedPath(location.pathname)) {
+        setIsInitialized(true);
+        return; // Если путь уже локализован (/de/tool, /ru/tool), не редиректим
+      }
+      
+      // Проверяем, есть ли явное предпочтение пользователя (не системное сохранение)
+      if (hasUserLanguagePreference()) {
+        const savedLanguage = localStorage.getItem(LANGUAGE_KEY);
+        console.log(`[LocalPDF i18n] Found explicit user language preference: ${savedLanguage}, skipping auto-redirect`);
+        setIsInitialized(true);
+        return; // Если есть явный выбор пользователя, не редиректим
+      }
+      
+      // Определяем язык браузера
+      const browserLanguage = getBrowserLanguage();
+      const browserLanguages = (navigator.languages || [navigator.language]).join(', ');
+      
+      console.log(`[LocalPDF i18n] Current path: ${location.pathname}`);
+      console.log(`[LocalPDF i18n] Is non-localized path: ${isNonLocalizedPath(location.pathname)}`);
+      console.log(`[LocalPDF i18n] Browser languages: ${browserLanguages}`);
+      console.log(`[LocalPDF i18n] Detected browser language: ${browserLanguage}`);
+      console.log(`[LocalPDF i18n] User has explicit preference: ${hasUserLanguagePreference()}`);
+      console.log(`[LocalPDF i18n] Saved language: ${localStorage.getItem(LANGUAGE_KEY) || 'none'}`);
+      
+      // Если язык браузера не английский, делаем редирект с сохранением пути
+      if (browserLanguage !== DEFAULT_LANGUAGE) {
+        const currentPath = location.pathname;
+        const newPath = `/${browserLanguage}${currentPath === '/' ? '' : currentPath}`;
+        console.log(`[LocalPDF i18n] Redirecting from ${currentPath} to: ${newPath}`);
+        navigate(newPath, { replace: true });
+      } else {
+        console.log(`[LocalPDF i18n] Browser language is English, staying on current path: ${location.pathname}`);
+      }
+      
+      // Помечаем как инициализированный после всех проверок
+      setIsInitialized(true);
+    };
+
+    // Выполняем проверку только при первом рендере
+    handleBrowserLanguageRedirect();
+  }, []); // Только при монтировании
 
   // Отслеживаем изменения URL через React Router для автоматического определения языка
   useEffect(() => {
@@ -238,14 +346,15 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
         document.documentElement.lang = urlLang;
       }
       
-      // Сохраняем новый язык в localStorage только если это было явное изменение через URL
-      try {
-        localStorage.setItem(LANGUAGE_KEY, urlLang);
-      } catch (error) {
-        console.warn('Failed to save language preference:', error);
-      }
+      // Сохраняем новый язык как системное изменение (не пользовательское предпочтение)
+      saveSystemLanguage(urlLang);
     }
-  }, [location.pathname, currentLanguage]);
+    
+    // Убеждаемся что мы инициализированы после обработки URL
+    if (!isInitialized) {
+      setIsInitialized(true);
+    }
+  }, [location.pathname, currentLanguage, isInitialized]);
 
   // Обновляем переводы при смене языка
   useEffect(() => {
@@ -258,7 +367,20 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
     setLanguage,
     t,
     supportedLanguages: SUPPORTED_LANGUAGES,
+    isInitialized,
   };
+
+  // Show loading spinner while context initializes to prevent hook access errors
+  if (!isInitialized) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gradient-mesh">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary-600 mx-auto mb-4"></div>
+          <p className="text-secondary-600 text-lg">Initializing LocalPDF...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <I18nContext.Provider value={contextValue}>
@@ -293,11 +415,16 @@ export const isLanguageSupported = (language: string): language is SupportedLang
 
 // Хук для автоматического определения языка (полезен для отладки)
 export const useLanguageDetection = () => {
+  const browserLanguages = typeof window !== 'undefined' ? 
+    (navigator.languages || [navigator.language]).join(', ') : 'N/A';
+  
   return {
     browserLanguage: detectBrowserLanguage(),
+    browserLanguages,
     urlLanguage: getLanguageFromUrl(),
     savedLanguage: typeof window !== 'undefined' ? localStorage.getItem(LANGUAGE_KEY) : null,
     isSupported: isLanguageSupported,
+    initialLanguage: typeof window !== 'undefined' ? getInitialLanguage() : DEFAULT_LANGUAGE,
   };
 };
 
