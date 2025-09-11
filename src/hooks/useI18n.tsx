@@ -124,6 +124,32 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
     return getTranslations(currentLanguage);
   });
 
+  // Effect for initial language-based redirect
+  useEffect(() => {
+    // Only run on initial load to check for redirection.
+    const urlLang = getLanguageFromURL();
+    const savedLang = localStorage.getItem(LANGUAGE_KEY);
+
+    // Conditions for redirection:
+    // 1. There is no language specified in the URL.
+    // 2. The user has not manually set a language in a previous session.
+    if (!urlLang && !savedLang) {
+      const browserLang = getBrowserLanguage();
+
+      // 3. The detected browser language is supported by the site, but it's not the default language.
+      if (browserLang !== DEFAULT_LANGUAGE && SUPPORTED_LANGUAGES.some(l => l.code === browserLang)) {
+        // Construct the new path with the language prefix.
+        // Ensure the homepage ('/') redirects to '/<lang>/' correctly and directly.
+        const newPath = location.pathname === '/'
+          ? `/${browserLang}/`
+          : `/${browserLang}${location.pathname}`;
+
+        console.log(`Redirecting to browser language version: ${newPath}`);
+        navigate(newPath, { replace: true });
+      }
+    }
+  }, []); // Empty dependency array ensures this runs only once on mount.
+
   // Функция для смены языка
   const setLanguage = (language: SupportedLanguage) => {
     if (SUPPORTED_LANGUAGES.some(lang => lang.code === language)) {
