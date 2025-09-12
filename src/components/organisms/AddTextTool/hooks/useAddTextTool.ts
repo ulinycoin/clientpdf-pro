@@ -309,17 +309,21 @@ export const useAddTextTool = (): UseAddTextToolReturn => {
     }
 
     // Font mapping prioritizing Unicode font
+    const defaultFont = fonts['Unicode'] || helveticaFont;
+    
     return {
-      'Arial': fonts['Unicode'] || helveticaFont,
-      'Helvetica': fonts['Unicode'] || helveticaFont,
-      'Open Sans': fonts['Unicode'] || helveticaFont,
-      'Roboto': fonts['Unicode'] || helveticaFont,
-      'PT Sans': fonts['Unicode'] || helveticaFont,
-      'Noto Sans': fonts['Unicode'] || helveticaFont,
+      'Arial': defaultFont,
+      'Helvetica': defaultFont,
+      'Open Sans': defaultFont,
+      'Roboto': defaultFont,
+      'PT Sans': defaultFont,
+      'Noto Sans': defaultFont,
       'Times': timesRomanFont,
       'Times New Roman': timesRomanFont,
       'Courier': courierFont,
       'Courier New': courierFont,
+      // Ensure we always have a fallback
+      '__default__': defaultFont,
     };
   };
 
@@ -353,7 +357,7 @@ export const useAddTextTool = (): UseAddTextToolReturn => {
 
         elements.forEach(element => {
           const color = hexToRgb(element.color);
-          const font = fontMap[element.fontFamily] || helveticaFont;
+          const font = fontMap[element.fontFamily] || fontMap['Helvetica'] || fontMap['__default__'];
 
           // Draw multiline text with Unicode support
           console.log(`🎨 Drawing text "${element.text}" with font: ${element.fontFamily}`);
