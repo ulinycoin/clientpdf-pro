@@ -136,6 +136,14 @@ const ModernToolCard: React.FC<ModernToolCardProps> = ({
           <path d="m11.5 14.5-1.5 2-1-1.5L7 17h6l-1.5-2.5z" fill="white"/>
           <path d="M16 4L20 8L16 12L14 10L16 8L14 6L16 4Z" opacity="0.8"/>
         </svg>
+      ),
+      'PROTECT': (
+        <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
+          <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" opacity="0.3"/>
+          <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
+          <circle cx="12" cy="8.5" r="2" fill="white"/>
+          <path d="M10 12h4v2h-4v-2z" fill="white" opacity="0.8"/>
+        </svg>
       )
     };
 
@@ -164,7 +172,8 @@ const ModernToolCard: React.FC<ModernToolCardProps> = ({
       'word-to-pdf': 'from-privacy-600 to-seafoam-400',
       'excel-to-pdf': 'from-seafoam-400 to-privacy-600',
       'extract-images-from-pdf': 'from-purple-500 to-pink-500',
-      'ocr-pdf': 'from-ocean-600 to-privacy-500'
+      'ocr-pdf': 'from-ocean-600 to-privacy-500',
+      'protect-pdf': 'from-red-500 to-orange-500'
     };
 
     return gradientMap[operationType as keyof typeof gradientMap] || 'from-seafoam-500 to-ocean-500';

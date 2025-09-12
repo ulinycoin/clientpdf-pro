@@ -209,6 +209,12 @@ export const useOCR = (): UseOCRReturn => {
       case 'searchable-pdf':
         link.download = `${nameWithoutExt}_searchable.pdf`;
         break;
+      case 'docx':
+        link.download = `${nameWithoutExt}_ocr.docx`;
+        break;
+      case 'rtf':
+        link.download = `${nameWithoutExt}_ocr.rtf`;
+        break;
       default:
         link.download = `${nameWithoutExt}_ocr.txt`;
     }

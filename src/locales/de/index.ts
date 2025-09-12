@@ -33,6 +33,7 @@ import { pdfToSvg } from './tools/pdfToSvg';
 import { imageToPdf } from './tools/imageToPdf';
 import { wordToPdf } from './tools/wordToPdf';
 import { excelToPdf } from './tools/excelToPdf';
+import { protect } from './tools/protect';
 
 // Construct the complete DE translations object
 export const de = {
@@ -72,7 +73,8 @@ export const de = {
     pdfToSvg,
     imageToPdf,
     wordToPdf,
-    excelToPdf
+    excelToPdf,
+    protect
   },
   
   // Page-specific translations
@@ -100,7 +102,8 @@ export const de = {
       pdfToSvg,
       imageToPdf,
       wordToPdf,
-      excelToPdf
+      excelToPdf,
+      protect
     }
   }
 };

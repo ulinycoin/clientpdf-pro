@@ -1,7 +1,7 @@
 export interface OCROptions {
   language: string;
   preserveLayout: boolean;
-  outputFormat: 'text' | 'pdf' | 'searchable-pdf';
+  outputFormat: 'text' | 'pdf' | 'searchable-pdf' | 'docx' | 'rtf';
   imagePreprocessing: boolean;
 }
 
@@ -18,6 +18,10 @@ export interface OCRResult {
   words: OCRWord[];
   blocks: OCRBlock[];
   pages: OCRPage[];
+  outputFormat?: 'text' | 'pdf' | 'searchable-pdf' | 'docx' | 'rtf';
+  originalOutputFormat?: 'text' | 'pdf' | 'searchable-pdf' | 'docx' | 'rtf';
+  isEdited?: boolean;
+  error?: string;
 }
 
 export interface OCRWord {
@@ -75,4 +79,5 @@ export interface ProcessedOCRResult {
   processedBlob: Blob;
   downloadUrl: string;
   processingTime: number;
+  mimeType?: string;
 }

@@ -1,7 +1,13 @@
 import * as Tesseract from 'tesseract.js';
 import { PDFDocument, rgb } from 'pdf-lib';
 import { getDocument } from 'pdfjs-dist';
+import * as pdfjsLib from 'pdfjs-dist';
+
+// Configure PDF.js worker
+pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
 import { postProcessOCRText } from '../utils/ocrPostProcessing';
+import { documentGenerator } from '../utils/documentGenerator';
+import { textToPDFGenerator } from '../utils/textToPDFGenerator';
 import {
   OCROptions,
   OCRProgress,
@@ -84,32 +90,175 @@ class OCRService {
     }
   }
 
-  // Convert PDF to images for OCR processing
+  // Convert PDF to images for OCR processing with enhanced error handling and logging
   private async pdfToImages(file: File): Promise<ImageData[]> {
-    const arrayBuffer = await file.arrayBuffer();
-    const pdf = await getDocument({ data: arrayBuffer }).promise;
-    const images: ImageData[] = [];
+    console.log(`📄 Starting PDF to images conversion:`, {
+      fileName: file.name,
+      fileSize: file.size,
+      fileType: file.type
+    });
 
-    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-      const page = await pdf.getPage(pageNum);
-      const scale = 2.0; // Higher scale for better OCR accuracy
-      const viewport = page.getViewport({ scale });
+    try {
+      // Convert file to array buffer
+      const arrayBuffer = await file.arrayBuffer();
+      console.log(`✅ PDF file loaded as ArrayBuffer:`, {
+        byteLength: arrayBuffer.byteLength
+      });
 
-      const canvas = document.createElement('canvas');
-      const context = canvas.getContext('2d')!;
-      canvas.height = viewport.height;
-      canvas.width = viewport.width;
+      if (arrayBuffer.byteLength === 0) {
+        throw new Error('PDF file is empty');
+      }
 
-      await page.render({
-        canvasContext: context,
-        viewport: viewport
+      // Load PDF document
+      console.log(`🔍 Loading PDF document with pdf.js...`);
+      const pdf = await getDocument({ 
+        data: arrayBuffer,
+        // Add worker and compatibility options for better reliability
+        verbosity: 0, // Reduce console spam
+        isEvalSupported: false // Security setting
       }).promise;
 
-      const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-      images.push(imageData);
+      console.log(`✅ PDF document loaded successfully:`, {
+        numPages: pdf.numPages,
+        fingerprints: pdf.fingerprints
+      });
+
+      if (pdf.numPages === 0) {
+        throw new Error('PDF has no pages to process');
+      }
+
+      const images: ImageData[] = [];
+
+      // Process each page
+      for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+        try {
+          console.log(`🔍 Processing PDF page ${pageNum}/${pdf.numPages}...`);
+          
+          const page = await pdf.getPage(pageNum);
+          
+          // Use higher scale for better OCR accuracy, but not too high to avoid memory issues
+          const scale = Math.min(2.5, Math.max(1.5, 1200 / Math.max(page.view[2], page.view[3])));
+          console.log(`📐 Using scale factor: ${scale} for page ${pageNum}`);
+          
+          const viewport = page.getViewport({ scale });
+          
+          console.log(`📏 Page ${pageNum} viewport:`, {
+            width: viewport.width,
+            height: viewport.height,
+            scale: scale
+          });
+
+          // Create canvas with proper dimensions
+          const canvas = document.createElement('canvas');
+          const context = canvas.getContext('2d');
+          
+          if (!context) {
+            throw new Error(`Failed to get 2D context for page ${pageNum}`);
+          }
+
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+
+          // Set canvas background to white for better OCR
+          context.fillStyle = 'white';
+          context.fillRect(0, 0, canvas.width, canvas.height);
+
+          // Render page to canvas
+          console.log(`🎨 Rendering page ${pageNum} to canvas...`);
+          const renderTask = page.render({
+            canvasContext: context,
+            viewport: viewport,
+            // Add rendering options for better quality
+            intent: 'print', // Better quality for OCR
+            renderInteractiveForms: false
+          });
+
+          await renderTask.promise;
+          console.log(`✅ Page ${pageNum} rendered successfully`);
+
+          // Get image data from canvas
+          const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+          console.log(`📊 Image data extracted for page ${pageNum}:`, {
+            width: imageData.width,
+            height: imageData.height,
+            dataLength: imageData.data.length
+          });
+
+          // Validate image data
+          if (imageData.width === 0 || imageData.height === 0) {
+            console.warn(`⚠️ Page ${pageNum} has zero dimensions, skipping`);
+            continue;
+          }
+
+          // Check if image has any content (not completely white/transparent)
+          const hasContent = this.validateImageContent(imageData);
+          if (!hasContent) {
+            console.warn(`⚠️ Page ${pageNum} appears to be blank, but including anyway`);
+          }
+
+          images.push(imageData);
+          console.log(`✅ Page ${pageNum} successfully converted to ImageData`);
+
+        } catch (pageError) {
+          console.error(`❌ Failed to process page ${pageNum}:`, pageError);
+          throw new Error(`Failed to convert page ${pageNum}: ${pageError.message}`);
+        }
+      }
+
+      console.log(`🎉 PDF conversion completed successfully:`, {
+        totalPages: pdf.numPages,
+        convertedPages: images.length,
+        averageSize: images.length > 0 ? Math.round(images.reduce((sum, img) => sum + img.data.length, 0) / images.length) : 0
+      });
+
+      if (images.length === 0) {
+        throw new Error('No pages could be converted to images');
+      }
+
+      return images;
+
+    } catch (error) {
+      console.error(`❌ PDF to images conversion failed:`, {
+        fileName: file.name,
+        error: error.message,
+        stack: error.stack
+      });
+
+      // Provide more specific error messages
+      if (error.message?.includes('Invalid PDF')) {
+        throw new Error('The uploaded file is not a valid PDF document. Please check the file and try again.');
+      } else if (error.message?.includes('password')) {
+        throw new Error('This PDF is password protected. Please use an unprotected PDF file.');
+      } else if (error.message?.includes('network')) {
+        throw new Error('Network error while processing PDF. Please check your internet connection.');
+      } else {
+        throw new Error(`Failed to process PDF: ${error.message}. Please try a different PDF file.`);
+      }
+    }
+  }
+
+  // Validate if image contains actual content (not blank)
+  private validateImageContent(imageData: ImageData): boolean {
+    const { data } = imageData;
+    let nonWhitePixels = 0;
+    const sampleSize = Math.min(data.length, 10000); // Sample first ~2500 pixels
+
+    for (let i = 0; i < sampleSize; i += 4) {
+      const r = data[i];
+      const g = data[i + 1];
+      const b = data[i + 2];
+      const a = data[i + 3];
+
+      // Check if pixel is not white/transparent
+      if (a > 0 && (r < 250 || g < 250 || b < 250)) {
+        nonWhitePixels++;
+        if (nonWhitePixels > 10) {
+          return true; // Found enough content, early exit
+        }
+      }
     }
 
-    return images;
+    return nonWhitePixels > 5; // At least some non-white pixels
   }
 
   // Enhanced image preprocessing for better OCR accuracy
@@ -194,22 +343,52 @@ class OCRService {
   ): Promise<OCRResult> {
     console.log(`🚀 OCR Service - Starting image recognition for language: ${options.language}`);
     
-    let processedImage = image;
+    let processedInput: File | HTMLCanvasElement;
     
-    // Preprocess File images for better accuracy
+    // Handle different input types
     if (image instanceof File) {
+      console.log(`📁 Processing File input: ${image.name}`);
+      
+      // Preprocess File images for better accuracy
       try {
-        processedImage = await this.preprocessImage(image);
+        processedInput = await this.preprocessImage(image);
         console.log(`✅ Image preprocessed successfully`);
       } catch (preprocessError) {
         console.warn(`⚠️ Image preprocessing failed, using original:`, preprocessError);
-        processedImage = image;
+        processedInput = image;
       }
+    } else {
+      // Convert ImageData to Canvas for Tesseract.js
+      console.log(`🖼️ Converting ImageData to Canvas:`, {
+        width: image.width,
+        height: image.height,
+        dataLength: image.data.length
+      });
+      
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      
+      if (!ctx) {
+        throw new Error('Failed to get canvas 2D context for ImageData conversion');
+      }
+      
+      canvas.width = image.width;
+      canvas.height = image.height;
+      
+      // Put ImageData onto canvas
+      ctx.putImageData(image, 0, 0);
+      
+      console.log(`✅ ImageData converted to Canvas:`, {
+        width: canvas.width,
+        height: canvas.height
+      });
+      
+      processedInput = canvas;
     }
     
     const worker = await this.initializeWorker(options.language);
     
-    console.log(`🔍 OCR Service - Starting recognition with optimized settings`);
+    console.log(`🔍 OCR Service - Starting recognition with processed input`);
 
     let result;
     try {
@@ -226,7 +405,7 @@ class OCRService {
       };
       
       console.log(`🔍 Starting Tesseract recognition...`);
-      result = await worker.recognize(processedImage, recognitionOptions, outputOptions);
+      result = await worker.recognize(processedInput, recognitionOptions, outputOptions);
       
       console.log(`✅ OCR Recognition completed:`, {
         hasText: !!result.data.text,
@@ -400,6 +579,15 @@ class OCRService {
   ): Promise<Blob> {
     const pdfDoc = await PDFDocument.create();
 
+    // Check if we need Cyrillic support
+    const hasText = ocrResult.text || '';
+    const isCyrillic = textToPDFGenerator.containsCyrillic(hasText);
+    console.log(`🔤 Text analysis: Cyrillic detected: ${isCyrillic}`);
+
+    // Load appropriate font using textToPDFGenerator
+    const fontResult = await (textToPDFGenerator as any).loadFont(pdfDoc, isCyrillic);
+    console.log(`✅ Font loaded for searchable PDF: ${fontResult.fontName}, supports Cyrillic: ${fontResult.supportsCyrillic}`);
+
     for (let i = 0; i < images.length; i++) {
       const page = pdfDoc.addPage([images[i].width, images[i].height]);
       const pageResult = ocrResult.pages[i] || ocrResult.pages[0];
@@ -407,19 +595,55 @@ class OCRService {
       // Add invisible text layer for searchability
       const pageWords = pageResult.blocks?.flatMap(block => block.words || []) || [];
       console.log(`🔍 Adding ${pageWords.length} words to page ${i + 1} for searchability`);
-
-      pageWords.forEach(word => {
-        if (word && word.bbox && word.text) {
-          const fontSize = Math.abs(word.bbox.y1 - word.bbox.y0) * 0.8;
-          page.drawText(word.text, {
-            x: word.bbox.x0,
-            y: images[i].height - word.bbox.y1,
-            size: fontSize > 0 ? fontSize : 12, // Ensure positive font size
-            color: rgb(0, 0, 0),
-            opacity: 0, // Invisible text
-          });
-        }
+      console.log(`📊 Page ${i + 1} OCR data:`, {
+        blocks: pageResult.blocks?.length || 0,
+        totalText: pageResult.text?.substring(0, 100) + '...',
+        confidence: pageResult.confidence
       });
+
+      // If no word-level data, fall back to simple text placement
+      if (pageWords.length === 0 && pageResult.text) {
+        console.log('⚠️ No word bounding boxes found, using simple text overlay');
+        let textToRender = pageResult.text;
+        
+        // Apply transliteration if needed
+        if (fontResult.needsTransliteration && textToRender) {
+          textToRender = textToPDFGenerator.transliterateCyrillic(textToRender);
+          console.log('🔄 Applied transliteration to searchable text');
+        }
+        
+        page.drawText(textToRender, {
+          x: 50,
+          y: images[i].height - 50,
+          size: 12,
+          font: fontResult.font,
+          color: rgb(0, 0, 0),
+          opacity: 0, // Invisible for production (was 0.1 for testing)
+        });
+      } else {
+        pageWords.forEach((word, wordIndex) => {
+          if (word && word.bbox && word.text) {
+            const fontSize = Math.abs(word.bbox.y1 - word.bbox.y0) * 0.8;
+            console.log(`📝 Word ${wordIndex}: "${word.text}" at (${word.bbox.x0},${word.bbox.y0}) size:${fontSize}`);
+            
+            let wordText = word.text;
+            
+            // Apply transliteration if needed
+            if (fontResult.needsTransliteration && wordText) {
+              wordText = textToPDFGenerator.transliterateCyrillic(wordText);
+            }
+            
+            page.drawText(wordText, {
+              x: word.bbox.x0,
+              y: images[i].height - word.bbox.y1,
+              size: fontSize > 0 ? fontSize : 12, // Ensure positive font size
+              font: fontResult.font,
+              color: rgb(0, 0, 0),
+              opacity: 0, // Invisible for production (was 0.1 for testing)
+            });
+          }
+        });
+      }
 
       // Add the original image as background
       const canvas = document.createElement('canvas');
@@ -525,8 +749,31 @@ class OCRService {
           };
 
         } catch (pdfError) {
-          console.error('❌ PDF processing failed:', pdfError);
-          throw pdfError;
+          console.error('❌ PDF processing failed:', {
+            fileName: file.name,
+            fileSize: file.size,
+            error: pdfError.message,
+            stack: pdfError.stack
+          });
+          
+          // Provide more user-friendly error messages for PDF issues
+          let errorMessage = 'Failed to process PDF file.';
+          
+          if (pdfError.message?.includes('Invalid PDF')) {
+            errorMessage = 'The uploaded file is not a valid PDF document. Please check the file format and try again.';
+          } else if (pdfError.message?.includes('password')) {
+            errorMessage = 'This PDF is password protected. Please use an unprotected PDF file.';
+          } else if (pdfError.message?.includes('empty')) {
+            errorMessage = 'The PDF file appears to be empty or corrupted.';
+          } else if (pdfError.message?.includes('No pages could be converted')) {
+            errorMessage = 'Unable to extract readable content from the PDF. The file may contain only images or be corrupted.';
+          } else if (pdfError.message?.includes('network') || pdfError.message?.includes('fetch')) {
+            errorMessage = 'Network error while processing PDF. Please check your internet connection and try again.';
+          } else {
+            errorMessage = `PDF processing error: ${pdfError.message}. Please try a different PDF file.`;
+          }
+          
+          throw new Error(errorMessage);
         }
 
       } else if (file.type.startsWith('image/')) {
@@ -633,6 +880,79 @@ class OCRService {
           }
           break;
 
+        case 'docx':
+          try {
+            console.log('📄 Creating DOCX document from OCR result');
+            const docxText = ocrResult.text && ocrResult.text.trim() ? ocrResult.text : 'No text was extracted from the image. Please try a clearer image or different language setting.';
+            
+            // Prepare metadata for document
+            const metadata = {
+              confidence: ocrResult.confidence,
+              processingTime: 0, // Will be set later
+              wordsCount: ocrResult.words?.length || 0,
+              language: ocrOptions.language,
+              originalFileName: file.name
+            };
+            
+            processedBlob = await documentGenerator.generateDOCX(
+              docxText,
+              metadata,
+              {
+                title: `${file.name.replace(/\.[^/.]+$/, '')} - OCR Results`,
+                author: 'LocalPDF OCR Tool',
+                subject: 'OCR Extracted Text',
+                fontSize: 11,
+                fontFamily: 'Times New Roman',
+                includeMetadata: true
+              }
+            );
+            
+            downloadUrl = URL.createObjectURL(processedBlob);
+            console.log('✅ DOCX document created successfully:', processedBlob.size, 'bytes');
+          } catch (docxError) {
+            console.error('❌ DOCX creation failed, falling back to text:', docxError);
+            const fallbackText = ocrResult.text && ocrResult.text.trim() ? ocrResult.text : 'No text was extracted from the image. Please try a clearer image or different language setting.';
+            processedBlob = new Blob([fallbackText], { type: 'text/plain' });
+            downloadUrl = URL.createObjectURL(processedBlob);
+          }
+          break;
+
+        case 'rtf':
+          try {
+            console.log('📄 Creating RTF document from OCR result');
+            const rtfText = ocrResult.text && ocrResult.text.trim() ? ocrResult.text : 'No text was extracted from the image. Please try a clearer image or different language setting.';
+            
+            // Prepare metadata for document
+            const metadata = {
+              confidence: ocrResult.confidence,
+              processingTime: 0, // Will be set later
+              wordsCount: ocrResult.words?.length || 0,
+              language: ocrOptions.language,
+              originalFileName: file.name
+            };
+            
+            processedBlob = documentGenerator.generateRTF(
+              rtfText,
+              metadata,
+              {
+                title: `${file.name.replace(/\.[^/.]+$/, '')} - OCR Results`,
+                author: 'LocalPDF OCR Tool',
+                fontSize: 11,
+                fontFamily: 'Times New Roman',
+                includeMetadata: true
+              }
+            );
+            
+            downloadUrl = URL.createObjectURL(processedBlob);
+            console.log('✅ RTF document created successfully:', processedBlob.size, 'bytes');
+          } catch (rtfError) {
+            console.error('❌ RTF creation failed, falling back to text:', rtfError);
+            const fallbackText = ocrResult.text && ocrResult.text.trim() ? ocrResult.text : 'No text was extracted from the image. Please try a clearer image or different language setting.';
+            processedBlob = new Blob([fallbackText], { type: 'text/plain' });
+            downloadUrl = URL.createObjectURL(processedBlob);
+          }
+          break;
+
         default:
           // Default case with proper content handling
           const defaultText = ocrResult.text && ocrResult.text.trim() ? ocrResult.text : 'No text was extracted from the image. Please try a clearer image or different language setting.';
@@ -647,12 +967,36 @@ class OCRService {
 
       const processingTime = Date.now() - startTime;
 
+      // Determine MIME type based on the actual blob type
+      let mimeType = processedBlob.type;
+      if (!mimeType || mimeType === 'application/octet-stream') {
+        // Fallback MIME type determination
+        switch (ocrOptions.outputFormat) {
+          case 'searchable-pdf':
+            mimeType = 'application/pdf';
+            break;
+          case 'docx':
+            mimeType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+            break;
+          case 'rtf':
+            mimeType = 'application/rtf';
+            break;
+          default:
+            mimeType = 'text/plain';
+        }
+      }
+
       return {
         originalFile: file,
-        result: ocrResult,
+        result: {
+          ...ocrResult,
+          outputFormat: ocrOptions.outputFormat,
+          originalOutputFormat: ocrOptions.outputFormat // Save original choice for later reference
+        },
         processedBlob,
         downloadUrl,
         processingTime,
+        mimeType,
       };
 
     } catch (error) {

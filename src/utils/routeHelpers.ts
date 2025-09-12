@@ -21,6 +21,7 @@ export const getToolRoute = (operationType: string): string => {
     'images-to-pdf': '/images-to-pdf',
     'word-to-pdf': '/word-to-pdf',
     'excel-to-pdf': '/excel-to-pdf',
+    'protect-pdf': '/protect-pdf',
     'ocr-pdf': '/ocr-pdf'
   };
 
@@ -46,6 +47,7 @@ export const getOperationFromRoute = (route: string): string => {
     '/images-to-pdf': 'images-to-pdf',
     '/word-to-pdf': 'word-to-pdf',
     '/excel-to-pdf': 'excel-to-pdf',
+    '/protect-pdf': 'protect-pdf',
     '/ocr-pdf': 'ocr-pdf'
   };
 

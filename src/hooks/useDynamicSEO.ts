@@ -35,6 +35,7 @@ export const useDynamicSEO = (toolKey?: keyof typeof toolsSEOData) => {
           'imagesToPdf': 'pages.tools.imagesToPdf.pageTitle',
           'wordToPdf': 'pages.tools.wordToPdf.pageTitle',
           'excelToPdf': 'pages.tools.excelToPdf.pageTitle',
+          'protect-pdf': 'pages.tools.protect.pageTitle',
           'ocr': 'pages.tools.ocr.pageTitle'
         };
         

@@ -74,6 +74,13 @@ export const TOOL_DEFINITIONS = [
     featured: true,
     category: 'enhancement' as const
   },
+  {
+    id: 'protect',
+    icon: 'PROTECT',
+    operationType: 'protect-pdf',
+    featured: true,
+    category: 'enhancement' as const
+  },
   
   // Conversion Tools
   {
@@ -106,17 +113,16 @@ export const TOOL_DEFINITIONS = [
     icon: 'WORD_TO_PDF',
     operationType: 'word-to-pdf',
     category: 'conversion' as const
-  }
+  },
   
-  // Special Tools temporarily disabled
-  // OCR tool disabled until Tesseract.js issues are resolved
-  // {
-  //   id: 'ocr',
-  //   icon: 'OCR', 
-  //   operationType: 'ocr-pdf',
-  //   featured: true,
-  //   category: 'advanced' as const
-  // }
+  // OCR Tool - Re-enabled with Tesseract.js 5.1.1
+  {
+    id: 'ocr',
+    icon: 'OCR',
+    operationType: 'ocr-pdf',
+    featured: true,
+    category: 'advanced' as const
+  }
 ];
 
 // Get total count of available tools

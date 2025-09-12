@@ -1,10 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="notranslate" translate="no">
 <head>
   <!-- Minimal polyfills moved to main.tsx for better control -->
   
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover" />
+
+  <!-- Disable automatic browser translation to prevent conflicts with our i18n system -->
+  <meta name="google" content="notranslate" />
+  <meta name="googletranslate" content="notranslate" />
+  <meta http-equiv="content-language" content="en" />
+  <meta name="no-translate" content="true" />
 
   <!-- Updated Content Security Policy with proper permissions -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com https://www.googletagmanager.com https://mc.yandex.ru; script-src-elem 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com https://www.googletagmanager.com https://mc.yandex.ru; style-src 'self' 'unsafe-inline' data: https://fonts.googleapis.com; img-src 'self' data: blob: https: https://mc.yandex.ru; font-src 'self' data: https: https://fonts.gstatic.com; connect-src 'self' data: blob: https: https://www.google-analytics.com https://analytics.google.com https://mc.yandex.ru; worker-src 'self' blob: data: https://cdn.jsdelivr.net; child-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-src 'self' blob: data:;" />
@@ -136,7 +142,7 @@
   </script>
   <!-- /Yandex.Metrika counter -->
 </head>
-<body>
+<body translate="no" class="notranslate">
   <!-- Yandex.Metrika noscript -->
   <noscript><div><img src="https://mc.yandex.ru/watch/104030773" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
   

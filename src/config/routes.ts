@@ -25,6 +25,7 @@ const PDFToSvgPage = React.lazy(() => import('../pages/tools/PDFToSvgPage'));
 const ImageToPDFPage = React.lazy(() => import('../pages/tools/ImageToPDFPage'));
 const WordToPDFPage = React.lazy(() => import('../pages/tools/WordToPDFPage'));
 const ExcelToPDFPage = React.lazy(() => import('../pages/tools/ExcelToPDFPage'));
+const ProtectPDFPage = React.lazy(() => import('../pages/tools/ProtectPDFPage'));
 const OCRPDFPage = React.lazy(() => import('../pages/tools/OCRPDFPage'));
 
 // Blog Pages
@@ -55,6 +56,7 @@ const componentMap: { [key: string]: React.ComponentType } = {
   '/image-to-pdf': ImageToPDFPage, // Alias
   '/word-to-pdf': WordToPDFPage,
   '/excel-to-pdf': ExcelToPDFPage,
+  '/protect-pdf': ProtectPDFPage,
   '/ocr-pdf': OCRPDFPage,
   '/blog': BlogPage,
   '/blog/:slug': BlogPostPage,

@@ -245,7 +245,7 @@ const StandardToolPageTemplate: React.FC<StandardToolPageTemplateProps> = ({
                 </div>
 
                 {/* Технические особенности */}
-                <div className="bg-white/10 dark:bg-gray-800/10 backdrop-blur-lg border border-white/20 dark:border-gray-700/30 rounded-2xl p-8 md:col-span-2 lg:col-span-1">
+                <div className="bg-white/70 dark:bg-gray-800/10 backdrop-blur-lg border border-gray-200/50 dark:border-gray-700/30 rounded-2xl p-8 shadow-lg md:col-span-2 lg:col-span-1">
                   <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-xl flex items-center justify-center text-white text-2xl mb-6 shadow-lg">
                     🛠️
                   </div>

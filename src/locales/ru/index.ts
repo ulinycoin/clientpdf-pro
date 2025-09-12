@@ -33,6 +33,7 @@ import { pdfToSvg } from './tools/pdfToSvg';
 import { imageToPdf } from './tools/imageToPdf';
 import { wordToPdf } from './tools/wordToPdf';
 import { excelToPdf } from './tools/excelToPdf';
+import { protect } from './tools/protect';
 
 // Construct the complete RU translations object
 export const ru = {
@@ -72,7 +73,8 @@ export const ru = {
     pdfToSvg,
     imageToPdf,
     wordToPdf,
-    excelToPdf
+    excelToPdf,
+    protect
   },
   
   // Page-specific translations
@@ -100,7 +102,8 @@ export const ru = {
       pdfToSvg,
       imageToPdf,
       wordToPdf,
-      excelToPdf
+      excelToPdf,
+      protect
     }
   }
 };

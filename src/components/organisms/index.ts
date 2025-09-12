@@ -31,6 +31,7 @@ export { default as PdfToImageTool } from './PdfToImageTool';
 export { default as ExtractPagesTool } from './ExtractPagesTool';
 export { default as ImageToPDFTool } from './ImageToPDFTool';
 export { default as OCRTool } from './OCRTool';
+export { default as ModernOCRTool } from './OCRTool/ModernOCRTool';
 export { default as ExcelToPDFTool } from './ExcelToPDFTool';
 export { default as ModernWordToPDFTool } from './ModernWordToPDFTool';
 

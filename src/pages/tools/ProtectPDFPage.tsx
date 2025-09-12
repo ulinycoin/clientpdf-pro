@@ -5,31 +5,24 @@ import { ModernUploadZone } from '../../components/molecules';
 import { useI18n } from '../../hooks/useI18n';
 import { useFileUpload } from '../../hooks/useFileUpload';
 import { checkFileSize, FILE_SIZE_LIMITS } from '../../services/protectService';
-
-// For now using a simple SEO data object - will be added to seoData.ts later
-const seoData = {
-  title: "Protect PDF with Password - Secure PDF Documents Online",
-  description: "Add password protection and security restrictions to your PDF documents. Control printing, copying, and editing permissions with military-grade encryption.",
-  keywords: "PDF password protection, secure PDF, encrypt PDF, PDF security, password protect documents, PDF permissions, document security",
-  canonical: "/protect-pdf",
-  structuredData: {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "PDF Password Protection Tool",
-    "description": "Secure your PDF documents with password protection and access restrictions",
-    "applicationCategory": "BusinessApplication",
-    "operatingSystem": "Any",
-    "permissions": "browser",
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "USD"
-    }
-  }
-};
+import { toolsSEOData } from '../../data/seoData';
 
 const ProtectPDFPage: React.FC = () => {
   const { t } = useI18n();
+  
+  // Fallback SEO data in case import fails
+  const fallbackSeoData = {
+    title: "Password Protect PDF Free - Secure PDF Documents | LocalPDF",
+    description: "Password protect PDF files without uploads. Add security restrictions and encryption to PDFs privately in your browser.",
+    keywords: "password protect pdf online, secure pdf documents, pdf encryption free, protect pdf without uploading",
+    canonical: "https://localpdf.online/protect-pdf",
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "PDF Password Protection Tool",
+      "description": "Secure your PDF documents with password protection and access restrictions"
+    }
+  };
   const [toolActive, setToolActive] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [fileSizeWarning, setFileSizeWarning] = useState<{level: string, warning: string | null} | null>(null);
@@ -234,7 +227,7 @@ const ProtectPDFPage: React.FC = () => {
 
   return (
     <StandardToolPageTemplate
-      seoData={seoData}
+      seoData={toolsSEOData['protect-pdf'] || fallbackSeoData}
       toolId="protect-pdf"
       pageTitle={t('pages.tools.protect.pageTitle')}
       pageDescription={t('pages.tools.protect.pageDescription')}

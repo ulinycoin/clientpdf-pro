@@ -20,6 +20,7 @@
   { "path": "/image-to-pdf", "isTool": true },
   { "path": "/word-to-pdf", "isTool": true },
   { "path": "/excel-to-pdf", "isTool": true },
+  { "path": "/protect-pdf", "isTool": true },
   { "path": "/ocr-pdf", "isTool": true },
   { "path": "/blog", "isTool": false },
   { "path": "/blog/:slug", "isTool": false, "hasDynamicPath": true },

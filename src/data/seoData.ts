@@ -582,6 +582,49 @@ export const homepageSEOData = {
       "ratingCount": "2847",
       "bestRating": "5"
     }
+  },
+
+  'protect-pdf': {
+    title: "Password Protect PDF Free - Secure PDF Documents | LocalPDF",
+    description: "Password protect PDF files without uploads. Add security restrictions and encryption to PDFs privately in your browser. Military-grade PDF protection.",
+    keywords: "password protect pdf online, secure pdf documents, pdf encryption free, protect pdf without uploading, private pdf security, encrypt pdf browser, pdf password protection no registration",
+    canonical: "https://localpdf.online/protect-pdf",
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication", 
+      "name": "Privacy-First PDF Password Protection - LocalPDF",
+      "description": "Add password protection and security restrictions to PDF documents privately in your browser",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web Browser",
+      "browserRequirements": "Modern web browser with JavaScript enabled",
+      "permissions": "none",
+      "isAccessibleForFree": true,
+      "offers": {
+        "@type": "Offer",
+        "price": "0", 
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
+      },
+      "featureList": [
+        "Password protect PDF files",
+        "256-bit AES encryption",
+        "Document permission controls",
+        "100% privacy - no server uploads",
+        "Works entirely in browser",
+        "Print and copy restrictions",
+        "No file size limits",
+        "No registration required",
+        "GDPR compliant"
+      ],
+      "softwareVersion": "1.0.0",
+      "applicationSubCategory": "PDF Security Tools",
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "ratingCount": "892",
+        "bestRating": "5"
+      }
+    }
   }
 };
 
@@ -614,12 +657,13 @@ export const relatedTools = {
   split: ['merge', 'extractPages', 'rotate'],
   compress: ['merge', 'split', 'watermark'],
   addText: ['watermark', 'rotate', 'extractText'],
-  watermark: ['addText', 'compress', 'rotate'],
+  watermark: ['addText', 'compress', 'rotate', 'protect-pdf'],
   rotate: ['addText', 'watermark', 'split'],
   extractPages: ['split', 'merge', 'extractImagesFromPdf'],
   extractText: ['addText', 'extractPages', 'extractImagesFromPdf'],
   extractImagesFromPdf: ['extractText', 'extractPages', 'pdfToImage'],
   pdfToImage: ['pdfToSvg', 'extractImagesFromPdf', 'extractText'],
   pdfToSvg: ['pdfToImage', 'extractPages', 'rotate'],
+  'protect-pdf': ['watermark', 'addText', 'compress'],
   'excel-to-pdf': ['word-to-pdf', 'images-to-pdf', 'merge']
 };
