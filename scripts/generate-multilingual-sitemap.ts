@@ -10,12 +10,21 @@ const defaultLanguage = 'en';
 // Function to get all blog posts from content directory
 function getBlogPosts(): { slug: string; language: string; priority: number }[] {
   const blogPosts: { slug: string; language: string; priority: number }[] = [];
-  const contentDir = path.resolve(process.cwd(), 'src', 'content', 'blog');
-  
+
+  // First try to read from dist (production build)
+  let contentDir = path.resolve(process.cwd(), 'dist', 'src', 'content', 'blog');
+
+  // If dist doesn't exist, fallback to src (development)
   if (!fs.existsSync(contentDir)) {
-    console.warn('⚠️ Blog content directory not found:', contentDir);
+    contentDir = path.resolve(process.cwd(), 'src', 'content', 'blog');
+  }
+
+  if (!fs.existsSync(contentDir)) {
+    console.warn('⚠️ Blog content directory not found in both dist and src:', contentDir);
     return blogPosts;
   }
+
+  console.log('📂 Reading blog posts from:', contentDir);
 
   // Get all language directories
   const langDirs = fs.readdirSync(contentDir, { withFileTypes: true })
