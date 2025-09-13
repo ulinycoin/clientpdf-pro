@@ -96,6 +96,7 @@ export const blog = {
 
   // Blog category page
   category: {
+    title: 'Artikel der Kategorie {category}',
     loading: 'Kategorie wird geladen...',
     articlesCount: '{count} Artikel',
     noArticles: 'Noch keine Artikel in dieser Kategorie',

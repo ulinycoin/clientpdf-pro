@@ -212,7 +212,6 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
           ? `/${browserLang}/`
           : `/${browserLang}${location.pathname}`;
 
-        console.log(`Redirecting to browser language version: ${newPath}`);
         navigate(newPath, { replace: true });
       }
     }
@@ -288,31 +287,18 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
       
       // Проверяем, есть ли явное предпочтение пользователя (не системное сохранение)
       if (hasUserLanguagePreference()) {
-        const savedLanguage = localStorage.getItem(LANGUAGE_KEY);
-        console.log(`[LocalPDF i18n] Found explicit user language preference: ${savedLanguage}, skipping auto-redirect`);
         setIsInitialized(true);
         return; // Если есть явный выбор пользователя, не редиректим
       }
       
       // Определяем язык браузера
       const browserLanguage = getBrowserLanguage();
-      const browserLanguages = (navigator.languages || [navigator.language]).join(', ');
-      
-      console.log(`[LocalPDF i18n] Current path: ${location.pathname}`);
-      console.log(`[LocalPDF i18n] Is non-localized path: ${isNonLocalizedPath(location.pathname)}`);
-      console.log(`[LocalPDF i18n] Browser languages: ${browserLanguages}`);
-      console.log(`[LocalPDF i18n] Detected browser language: ${browserLanguage}`);
-      console.log(`[LocalPDF i18n] User has explicit preference: ${hasUserLanguagePreference()}`);
-      console.log(`[LocalPDF i18n] Saved language: ${localStorage.getItem(LANGUAGE_KEY) || 'none'}`);
       
       // Если язык браузера не английский, делаем редирект с сохранением пути
       if (browserLanguage !== DEFAULT_LANGUAGE) {
         const currentPath = location.pathname;
         const newPath = `/${browserLanguage}${currentPath === '/' ? '' : currentPath}`;
-        console.log(`[LocalPDF i18n] Redirecting from ${currentPath} to: ${newPath}`);
         navigate(newPath, { replace: true });
-      } else {
-        console.log(`[LocalPDF i18n] Browser language is English, staying on current path: ${location.pathname}`);
       }
       
       // Помечаем как инициализированный после всех проверок

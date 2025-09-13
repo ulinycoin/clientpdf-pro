@@ -96,6 +96,7 @@ export const blog = {
 
   // Blog category page
   category: {
+    title: 'Статьи категории {category}',
     loading: 'Загрузка категории...',
     articlesCount: '{count} статей',
     noArticles: 'В этой категории пока нет статей',
