@@ -25,6 +25,41 @@ function generatePrerenderedHTML(lang: string, canonicalUrl: string, indexJsFile
 export default defineConfig({
   plugins: [
     react(),
+    // Plugin для копирования markdown файлов блога в dist
+    {
+      name: 'copy-blog-content',
+      apply: 'build',
+      generateBundle() {
+        const contentDir = path.resolve(__dirname, 'src/content');
+        if (fs.existsSync(contentDir)) {
+          this.emitFile({
+            type: 'asset',
+            fileName: 'src/content/blog/en/complete-guide-pdf-merging-2025.md',
+            source: fs.readFileSync(path.join(contentDir, 'blog/en/complete-guide-pdf-merging-2025.md'), 'utf-8')
+          });
+          // Рекурсивно копируем всю папку content
+          const copyDir = (srcDir: string, targetPath: string) => {
+            const entries = fs.readdirSync(srcDir, { withFileTypes: true });
+            entries.forEach(entry => {
+              const srcPath = path.join(srcDir, entry.name);
+              const targetFilePath = path.join(targetPath, entry.name);
+
+              if (entry.isDirectory()) {
+                copyDir(srcPath, targetFilePath);
+              } else if (entry.name.endsWith('.md')) {
+                const relativePath = path.relative(path.resolve(__dirname), srcPath);
+                this.emitFile({
+                  type: 'asset',
+                  fileName: relativePath,
+                  source: fs.readFileSync(srcPath, 'utf-8')
+                });
+              }
+            });
+          };
+          copyDir(contentDir, 'src/content');
+        }
+      }
+    },
     {
       name: 'pre-render-routes',
       apply: 'build',
@@ -97,10 +132,15 @@ export default defineConfig({
       // Включаем markdown файлы в сборку как статические ресурсы
       external: [],
     },
+    // Копируем markdown файлы в dist
+    copyPublicDir: true,
   },
 
   // Обеспечиваем корректную работу с markdown файлами
   assetsInclude: ['**/*.md'],
+
+  // Добавляем markdown файлы в public для копирования
+  publicDir: 'public',
 
   resolve: {
     alias: {
