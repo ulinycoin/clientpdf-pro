@@ -7,10 +7,33 @@ import { createBlogPostFromMarkdown } from './markdownParser';
  */
 
 // Создаем карту всех markdown файлов из content/blog/
-const markdownFiles = import.meta.glob('/src/content/blog/**/*.md', { 
+const markdownFiles = import.meta.glob('/src/content/blog/**/*.md', {
   as: 'raw',
-  eager: false 
+  eager: false
 });
+
+// Alternative: direct file loading for production
+async function loadMarkdownFromPath(path: string): Promise<string | null> {
+  try {
+    // Try using import.meta.glob first
+    if (markdownFiles[path]) {
+      const loadFile = markdownFiles[path];
+      return await loadFile() as string;
+    }
+
+    // Fallback to fetch for files copied by our Vite plugin
+    const response = await fetch(path);
+    if (response.ok) {
+      return await response.text();
+    }
+
+    console.warn(`Could not load markdown from path: ${path}`);
+    return null;
+  } catch (error) {
+    console.warn(`Failed to load markdown from ${path}:`, error);
+    return null;
+  }
+}
 
 
 /**
@@ -18,22 +41,25 @@ const markdownFiles = import.meta.glob('/src/content/blog/**/*.md', {
  */
 export const getAvailablePosts = async (language: BlogLanguage): Promise<BlogPost[]> => {
   const posts: BlogPost[] = [];
-  
-  // Фильтруем файлы по языку
+
+  // Debug: показываем все доступные файлы
+  console.log('🔍 [BlogLoader] Available markdown files from import.meta.glob:', Object.keys(markdownFiles));
+  console.log('🔍 [BlogLoader] Looking for language:', language);
+
+  // Фильтруем файлы по языку из import.meta.glob
   const languageFiles = Object.keys(markdownFiles).filter(
     path => path.includes(`/blog/${language}/`)
   );
-  
 
-  // Загружаем и парсим каждый файл
+  console.log('🔍 [BlogLoader] Found files from import.meta.glob for', language, ':', languageFiles);
+
+  // Загружаем файлы через import.meta.glob
   for (const filePath of languageFiles) {
     try {
-      const loadFile = markdownFiles[filePath];
-      const content = await loadFile() as string;
-      
+      const content = await loadMarkdownFromPath(filePath);
+
       if (content) {
         const post = createBlogPostFromMarkdown(content, language);
-        // Всегда используем имя файла как slug для консистентности
         const fileName = filePath.split('/').pop()?.replace('.md', '') || '';
         post.slug = fileName;
         posts.push(post);
@@ -43,8 +69,52 @@ export const getAvailablePosts = async (language: BlogLanguage): Promise<BlogPos
     }
   }
 
+  // If no posts found via import.meta.glob, try loading from static list
+  if (posts.length === 0) {
+    console.log('🔄 [BlogLoader] No posts found via import.meta.glob, trying static list approach...');
+
+    // Use the same static list we defined in sitemap
+    const BLOG_POSTS = [
+      'complete-guide-pdf-merging-2025',
+      'how-to-add-text-to-pdf',
+      'how-to-convert-excel-to-pdf',
+      'how-to-convert-image-to-pdf',
+      'how-to-convert-pdf-to-image',
+      'how-to-convert-pdf-to-svg',
+      'how-to-convert-word-to-pdf',
+      'how-to-extract-images-from-pdf',
+      'how-to-extract-pages-from-pdf',
+      'how-to-extract-text-from-pdf',
+      'how-to-rotate-pdf-files',
+      'how-to-split-pdf-files',
+      'how-to-watermark-pdf-files',
+      'ocr-pdf-ultimate-guide',
+      'pdf-accessibility-wcag-compliance',
+      'pdf-compression-guide',
+      'pdf-security-guide',
+      'protect-pdf-guide'
+    ];
+
+    for (const slug of BLOG_POSTS) {
+      try {
+        const filePath = `/src/content/blog/${language}/${slug}.md`;
+        const content = await loadMarkdownFromPath(filePath);
+
+        if (content) {
+          const post = createBlogPostFromMarkdown(content, language);
+          post.slug = slug;
+          posts.push(post);
+        }
+      } catch (error) {
+        console.warn(`Failed to load blog post from static list: ${slug}`, error);
+      }
+    }
+  }
+
+  console.log(`✅ [BlogLoader] Successfully loaded ${posts.length} posts for ${language}`);
+
   // Сортируем по дате публикации (новые сначала)
-  return posts.sort((a, b) => 
+  return posts.sort((a, b) =>
     new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
   );
 };
