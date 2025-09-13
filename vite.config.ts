@@ -93,7 +93,14 @@ export default defineConfig({
     target: 'es2020',
     minify: 'esbuild',
     sourcemap: false,
+    rollupOptions: {
+      // Включаем markdown файлы в сборку как статические ресурсы
+      external: [],
+    },
   },
+
+  // Обеспечиваем корректную работу с markdown файлами
+  assetsInclude: ['**/*.md'],
 
   resolve: {
     alias: {
