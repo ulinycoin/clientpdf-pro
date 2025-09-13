@@ -32,11 +32,6 @@ export default defineConfig({
       generateBundle() {
         const contentDir = path.resolve(__dirname, 'src/content');
         if (fs.existsSync(contentDir)) {
-          this.emitFile({
-            type: 'asset',
-            fileName: 'src/content/blog/en/complete-guide-pdf-merging-2025.md',
-            source: fs.readFileSync(path.join(contentDir, 'blog/en/complete-guide-pdf-merging-2025.md'), 'utf-8')
-          });
           // Рекурсивно копируем всю папку content
           const copyDir = (srcDir: string, targetPath: string) => {
             const entries = fs.readdirSync(srcDir, { withFileTypes: true });
@@ -47,12 +42,16 @@ export default defineConfig({
               if (entry.isDirectory()) {
                 copyDir(srcPath, targetFilePath);
               } else if (entry.name.endsWith('.md')) {
-                const relativePath = path.relative(path.resolve(__dirname), srcPath);
-                this.emitFile({
-                  type: 'asset',
-                  fileName: relativePath,
-                  source: fs.readFileSync(srcPath, 'utf-8')
-                });
+                try {
+                  const relativePath = path.relative(path.resolve(__dirname), srcPath);
+                  this.emitFile({
+                    type: 'asset',
+                    fileName: relativePath,
+                    source: fs.readFileSync(srcPath, 'utf-8')
+                  });
+                } catch (error) {
+                  console.warn(`[copy-blog-content] Could not read file: ${srcPath}`, error);
+                }
               }
             });
           };
