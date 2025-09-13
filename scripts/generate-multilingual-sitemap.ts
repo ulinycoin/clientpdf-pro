@@ -7,37 +7,37 @@ const currentDate = new Date().toISOString().slice(0, 10);
 const supportedLanguages = ['en', 'de', 'fr', 'es', 'ru'];
 const defaultLanguage = 'en';
 
+// Static list of blog posts - reliable for all environments
+const BLOG_POSTS = [
+  'complete-guide-pdf-merging-2025',
+  'how-to-add-text-to-pdf',
+  'how-to-convert-excel-to-pdf',
+  'how-to-convert-image-to-pdf',
+  'how-to-convert-pdf-to-image',
+  'how-to-convert-pdf-to-svg',
+  'how-to-convert-word-to-pdf',
+  'how-to-extract-images-from-pdf',
+  'how-to-extract-pages-from-pdf',
+  'how-to-extract-text-from-pdf',
+  'how-to-rotate-pdf-files',
+  'how-to-split-pdf-files',
+  'how-to-watermark-pdf-files',
+  'ocr-pdf-ultimate-guide',
+  'pdf-accessibility-wcag-compliance',
+  'pdf-compression-guide',
+  'pdf-security-guide',
+  'protect-pdf-guide'
+];
+
 // Function to get all blog posts from content directory
 function getBlogPosts(): { slug: string; language: string; priority: number }[] {
   const blogPosts: { slug: string; language: string; priority: number }[] = [];
 
-  // First try to read from dist (production build)
-  let contentDir = path.resolve(process.cwd(), 'dist', 'src', 'content', 'blog');
+  console.log('📝 Using static blog post list for reliable sitemap generation');
 
-  // If dist doesn't exist, fallback to src (development)
-  if (!fs.existsSync(contentDir)) {
-    contentDir = path.resolve(process.cwd(), 'src', 'content', 'blog');
-  }
-
-  if (!fs.existsSync(contentDir)) {
-    console.warn('⚠️ Blog content directory not found in both dist and src:', contentDir);
-    return blogPosts;
-  }
-
-  console.log('📂 Reading blog posts from:', contentDir);
-
-  // Get all language directories
-  const langDirs = fs.readdirSync(contentDir, { withFileTypes: true })
-    .filter(dirent => dirent.isDirectory())
-    .map(dirent => dirent.name);
-
-  langDirs.forEach(lang => {
-    const langDir = path.join(contentDir, lang);
-    const mdFiles = fs.readdirSync(langDir)
-      .filter(file => file.endsWith('.md'))
-      .map(file => file.replace('.md', ''));
-
-    mdFiles.forEach(slug => {
+  // Generate posts for all languages
+  BLOG_POSTS.forEach(slug => {
+    supportedLanguages.forEach(lang => {
       // Determine priority based on article type
       let priority = 0.7; // Default blog post priority
       if (slug.includes('guide') || slug.includes('complete-guide')) {
@@ -51,7 +51,7 @@ function getBlogPosts(): { slug: string; language: string; priority: number }[] 
     });
   });
 
-  console.log(`📝 Found ${blogPosts.length} blog posts across ${langDirs.length} languages`);
+  console.log(`📝 Generated ${blogPosts.length} blog posts across ${supportedLanguages.length} languages`);
   return blogPosts;
 }
 
