@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { FileText, WifiOff, Loader2, Brain, Sparkles } from 'lucide-react';
 import { useOCR } from '../../../hooks/useOCR';
-import { useAIEnhancedOCR } from '../../../hooks/useAIEnhancedOCR';
 import { useTranslation } from '../../../hooks/useI18n';
 import Button from '../../atoms/Button';
 // OCRCanvas removed - simplified interface without area selection
@@ -40,7 +39,6 @@ const ModernOCRTool: React.FC<ModernOCRToolProps> = ({
   const standardOCR = useOCR();
 
   // AI-Enhanced OCR hook
-  const aiEnhancedOCR = useAIEnhancedOCR();
 
   // Use appropriate OCR based on toggle
   const {
@@ -56,7 +54,7 @@ const ModernOCRTool: React.FC<ModernOCRToolProps> = ({
     downloadResult,
     canProcess,
     getFileTypeInfo,
-  } = useAIEnhancement ? aiEnhancedOCR : standardOCR;
+  } = standardOCR;
 
   // UI State
   const selectedFile = files[0]; // OCR works with single file

@@ -5,7 +5,7 @@ import { useTranslation, useI18n } from '../hooks/useI18n';
 import {
   ModernHeader,
   ModernFooter,
-  BentoToolsGrid,
+  ModernToolsGrid,
   InteractiveHeroSection,
   PrivacyBenefitsSection,
   QuickStartSection
@@ -92,7 +92,7 @@ const HomePage: React.FC = () => {
         />
 
         {/* Bento Tools Grid - Modern asymmetric design */}
-        <BentoToolsGrid />
+        <ModernToolsGrid />
 
         {/* Privacy Benefits Section */}
         <PrivacyBenefitsSection animated={true} />
