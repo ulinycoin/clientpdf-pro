@@ -1,0 +1,545 @@
+{
+  "buildCommand": "npm run build:full",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {"key": "X-Content-Type-Options", "value": "nosniff"},
+        {"key": "X-Frame-Options", "value": "DENY"},
+        {"key": "X-XSS-Protection", "value": "1; mode=block"},
+        {"key": "Referrer-Policy", "value": "strict-origin-when-cross-origin"},
+        {"key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()"},
+        {"key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com https://www.googletagmanager.com https://mc.yandex.ru https://vercel.live; script-src-elem 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com https://www.googletagmanager.com https://mc.yandex.ru https://vercel.live; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https: https://mc.yandex.ru; connect-src 'self' data: https://cdn.jsdelivr.net https://fonts.gstatic.com https://region1.google-analytics.com https://www.google-analytics.com https://analytics.google.com https://mc.yandex.ru https://vercel.live wss://ws-us3.pusher.com; worker-src 'self' blob:; frame-src https://vercel.live; object-src 'none'; base-uri 'self'; form-action 'self'"},
+        {"key": "Cache-Control", "value": "public, max-age=0, must-revalidate"}
+      ]
+    },
+    {
+      "source": "/(.*)\\.(html)",
+      "headers": [
+        {"key": "Cache-Control", "value": "no-cache, no-store, must-revalidate, max-age=0"},
+        {"key": "Pragma", "value": "no-cache"},
+        {"key": "Expires", "value": "0"},
+        {"key": "CF-Cache-Status", "value": "BYPASS"},
+        {"key": "Cache-Buster", "value": "v4-force-refresh"}
+      ]
+    },
+    {
+      "source": "/(.*)\\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2)",
+      "headers": [
+        {"key": "Cache-Control", "value": "public, max-age=31536000, immutable"}
+      ]
+    },
+    {
+      "source": "/sitemap(.*).xml",
+      "headers": [
+        {"key": "Content-Type", "value": "application/xml; charset=utf-8"},
+        {"key": "Cache-Control", "value": "public, max-age=86400"}
+      ]
+    },
+    {
+      "source": "/sitemap.xsl",
+      "headers": [
+        {"key": "Content-Type", "value": "text/xsl; charset=utf-8"},
+        {"key": "Cache-Control", "value": "public, max-age=86400"}
+      ]
+    },
+    {
+      "source": "/robots.txt",
+      "headers": [
+        {"key": "Content-Type", "value": "text/plain; charset=utf-8"},
+        {"key": "Cache-Control", "value": "public, max-age=86400"}
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/sitemap-multilingual.xml",
+      "destination": "/sitemap.xml",
+      "permanent": false
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/merge-pdf",
+      "destination": "/merge-pdf.html"
+    },
+    {
+      "source": "/split-pdf",
+      "destination": "/split-pdf.html"
+    },
+    {
+      "source": "/compress-pdf",
+      "destination": "/compress-pdf.html"
+    },
+    {
+      "source": "/add-text-pdf",
+      "destination": "/add-text-pdf.html"
+    },
+    {
+      "source": "/watermark-pdf",
+      "destination": "/watermark-pdf.html"
+    },
+    {
+      "source": "/rotate-pdf",
+      "destination": "/rotate-pdf.html"
+    },
+    {
+      "source": "/extract-pages-pdf",
+      "destination": "/extract-pages-pdf.html"
+    },
+    {
+      "source": "/extract-text-pdf",
+      "destination": "/extract-text-pdf.html"
+    },
+    {
+      "source": "/extract-images-from-pdf",
+      "destination": "/extract-images-from-pdf.html"
+    },
+    {
+      "source": "/pdf-to-image",
+      "destination": "/pdf-to-image.html"
+    },
+    {
+      "source": "/pdf-to-svg",
+      "destination": "/pdf-to-svg.html"
+    },
+    {
+      "source": "/images-to-pdf",
+      "destination": "/images-to-pdf.html"
+    },
+    {
+      "source": "/image-to-pdf",
+      "destination": "/image-to-pdf.html"
+    },
+    {
+      "source": "/word-to-pdf",
+      "destination": "/word-to-pdf.html"
+    },
+    {
+      "source": "/excel-to-pdf",
+      "destination": "/excel-to-pdf.html"
+    },
+    {
+      "source": "/protect-pdf",
+      "destination": "/protect-pdf.html"
+    },
+    {
+      "source": "/ocr-pdf",
+      "destination": "/ocr-pdf.html"
+    },
+    {
+      "source": "/privacy",
+      "destination": "/privacy.html"
+    },
+    {
+      "source": "/faq",
+      "destination": "/faq.html"
+    },
+    {
+      "source": "/terms",
+      "destination": "/terms.html"
+    },
+    {
+      "source": "/gdpr",
+      "destination": "/gdpr.html"
+    },
+    {
+      "source": "/how-to-use",
+      "destination": "/how-to-use.html"
+    },
+    {
+      "source": "/blog",
+      "destination": "/blog.html"
+    },
+    {
+      "source": "/de/merge-pdf",
+      "destination": "/de/merge-pdf.html"
+    },
+    {
+      "source": "/de/split-pdf",
+      "destination": "/de/split-pdf.html"
+    },
+    {
+      "source": "/de/compress-pdf",
+      "destination": "/de/compress-pdf.html"
+    },
+    {
+      "source": "/de/add-text-pdf",
+      "destination": "/de/add-text-pdf.html"
+    },
+    {
+      "source": "/de/watermark-pdf",
+      "destination": "/de/watermark-pdf.html"
+    },
+    {
+      "source": "/de/rotate-pdf",
+      "destination": "/de/rotate-pdf.html"
+    },
+    {
+      "source": "/de/extract-pages-pdf",
+      "destination": "/de/extract-pages-pdf.html"
+    },
+    {
+      "source": "/de/extract-text-pdf",
+      "destination": "/de/extract-text-pdf.html"
+    },
+    {
+      "source": "/de/extract-images-from-pdf",
+      "destination": "/de/extract-images-from-pdf.html"
+    },
+    {
+      "source": "/de/pdf-to-image",
+      "destination": "/de/pdf-to-image.html"
+    },
+    {
+      "source": "/de/pdf-to-svg",
+      "destination": "/de/pdf-to-svg.html"
+    },
+    {
+      "source": "/de/images-to-pdf",
+      "destination": "/de/images-to-pdf.html"
+    },
+    {
+      "source": "/de/image-to-pdf",
+      "destination": "/de/image-to-pdf.html"
+    },
+    {
+      "source": "/de/word-to-pdf",
+      "destination": "/de/word-to-pdf.html"
+    },
+    {
+      "source": "/de/excel-to-pdf",
+      "destination": "/de/excel-to-pdf.html"
+    },
+    {
+      "source": "/de/protect-pdf",
+      "destination": "/de/protect-pdf.html"
+    },
+    {
+      "source": "/de/ocr-pdf",
+      "destination": "/de/ocr-pdf.html"
+    },
+    {
+      "source": "/de/privacy",
+      "destination": "/de/privacy.html"
+    },
+    {
+      "source": "/de/faq",
+      "destination": "/de/faq.html"
+    },
+    {
+      "source": "/de/terms",
+      "destination": "/de/terms.html"
+    },
+    {
+      "source": "/de/gdpr",
+      "destination": "/de/gdpr.html"
+    },
+    {
+      "source": "/de/how-to-use",
+      "destination": "/de/how-to-use.html"
+    },
+    {
+      "source": "/de/blog",
+      "destination": "/de/blog.html"
+    },
+    {
+      "source": "/de",
+      "destination": "/de/index.html"
+    },
+    {
+      "source": "/fr/merge-pdf",
+      "destination": "/fr/merge-pdf.html"
+    },
+    {
+      "source": "/fr/split-pdf",
+      "destination": "/fr/split-pdf.html"
+    },
+    {
+      "source": "/fr/compress-pdf",
+      "destination": "/fr/compress-pdf.html"
+    },
+    {
+      "source": "/fr/add-text-pdf",
+      "destination": "/fr/add-text-pdf.html"
+    },
+    {
+      "source": "/fr/watermark-pdf",
+      "destination": "/fr/watermark-pdf.html"
+    },
+    {
+      "source": "/fr/rotate-pdf",
+      "destination": "/fr/rotate-pdf.html"
+    },
+    {
+      "source": "/fr/extract-pages-pdf",
+      "destination": "/fr/extract-pages-pdf.html"
+    },
+    {
+      "source": "/fr/extract-text-pdf",
+      "destination": "/fr/extract-text-pdf.html"
+    },
+    {
+      "source": "/fr/extract-images-from-pdf",
+      "destination": "/fr/extract-images-from-pdf.html"
+    },
+    {
+      "source": "/fr/pdf-to-image",
+      "destination": "/fr/pdf-to-image.html"
+    },
+    {
+      "source": "/fr/pdf-to-svg",
+      "destination": "/fr/pdf-to-svg.html"
+    },
+    {
+      "source": "/fr/images-to-pdf",
+      "destination": "/fr/images-to-pdf.html"
+    },
+    {
+      "source": "/fr/image-to-pdf",
+      "destination": "/fr/image-to-pdf.html"
+    },
+    {
+      "source": "/fr/word-to-pdf",
+      "destination": "/fr/word-to-pdf.html"
+    },
+    {
+      "source": "/fr/excel-to-pdf",
+      "destination": "/fr/excel-to-pdf.html"
+    },
+    {
+      "source": "/fr/protect-pdf",
+      "destination": "/fr/protect-pdf.html"
+    },
+    {
+      "source": "/fr/ocr-pdf",
+      "destination": "/fr/ocr-pdf.html"
+    },
+    {
+      "source": "/fr/privacy",
+      "destination": "/fr/privacy.html"
+    },
+    {
+      "source": "/fr/faq",
+      "destination": "/fr/faq.html"
+    },
+    {
+      "source": "/fr/terms",
+      "destination": "/fr/terms.html"
+    },
+    {
+      "source": "/fr/gdpr",
+      "destination": "/fr/gdpr.html"
+    },
+    {
+      "source": "/fr/how-to-use",
+      "destination": "/fr/how-to-use.html"
+    },
+    {
+      "source": "/fr/blog",
+      "destination": "/fr/blog.html"
+    },
+    {
+      "source": "/fr",
+      "destination": "/fr/index.html"
+    },
+    {
+      "source": "/es/merge-pdf",
+      "destination": "/es/merge-pdf.html"
+    },
+    {
+      "source": "/es/split-pdf",
+      "destination": "/es/split-pdf.html"
+    },
+    {
+      "source": "/es/compress-pdf",
+      "destination": "/es/compress-pdf.html"
+    },
+    {
+      "source": "/es/add-text-pdf",
+      "destination": "/es/add-text-pdf.html"
+    },
+    {
+      "source": "/es/watermark-pdf",
+      "destination": "/es/watermark-pdf.html"
+    },
+    {
+      "source": "/es/rotate-pdf",
+      "destination": "/es/rotate-pdf.html"
+    },
+    {
+      "source": "/es/extract-pages-pdf",
+      "destination": "/es/extract-pages-pdf.html"
+    },
+    {
+      "source": "/es/extract-text-pdf",
+      "destination": "/es/extract-text-pdf.html"
+    },
+    {
+      "source": "/es/extract-images-from-pdf",
+      "destination": "/es/extract-images-from-pdf.html"
+    },
+    {
+      "source": "/es/pdf-to-image",
+      "destination": "/es/pdf-to-image.html"
+    },
+    {
+      "source": "/es/pdf-to-svg",
+      "destination": "/es/pdf-to-svg.html"
+    },
+    {
+      "source": "/es/images-to-pdf",
+      "destination": "/es/images-to-pdf.html"
+    },
+    {
+      "source": "/es/image-to-pdf",
+      "destination": "/es/image-to-pdf.html"
+    },
+    {
+      "source": "/es/word-to-pdf",
+      "destination": "/es/word-to-pdf.html"
+    },
+    {
+      "source": "/es/excel-to-pdf",
+      "destination": "/es/excel-to-pdf.html"
+    },
+    {
+      "source": "/es/protect-pdf",
+      "destination": "/es/protect-pdf.html"
+    },
+    {
+      "source": "/es/ocr-pdf",
+      "destination": "/es/ocr-pdf.html"
+    },
+    {
+      "source": "/es/privacy",
+      "destination": "/es/privacy.html"
+    },
+    {
+      "source": "/es/faq",
+      "destination": "/es/faq.html"
+    },
+    {
+      "source": "/es/terms",
+      "destination": "/es/terms.html"
+    },
+    {
+      "source": "/es/gdpr",
+      "destination": "/es/gdpr.html"
+    },
+    {
+      "source": "/es/how-to-use",
+      "destination": "/es/how-to-use.html"
+    },
+    {
+      "source": "/es/blog",
+      "destination": "/es/blog.html"
+    },
+    {
+      "source": "/es",
+      "destination": "/es/index.html"
+    },
+    {
+      "source": "/ru/merge-pdf",
+      "destination": "/ru/merge-pdf.html"
+    },
+    {
+      "source": "/ru/split-pdf",
+      "destination": "/ru/split-pdf.html"
+    },
+    {
+      "source": "/ru/compress-pdf",
+      "destination": "/ru/compress-pdf.html"
+    },
+    {
+      "source": "/ru/add-text-pdf",
+      "destination": "/ru/add-text-pdf.html"
+    },
+    {
+      "source": "/ru/watermark-pdf",
+      "destination": "/ru/watermark-pdf.html"
+    },
+    {
+      "source": "/ru/rotate-pdf",
+      "destination": "/ru/rotate-pdf.html"
+    },
+    {
+      "source": "/ru/extract-pages-pdf",
+      "destination": "/ru/extract-pages-pdf.html"
+    },
+    {
+      "source": "/ru/extract-text-pdf",
+      "destination": "/ru/extract-text-pdf.html"
+    },
+    {
+      "source": "/ru/extract-images-from-pdf",
+      "destination": "/ru/extract-images-from-pdf.html"
+    },
+    {
+      "source": "/ru/pdf-to-image",
+      "destination": "/ru/pdf-to-image.html"
+    },
+    {
+      "source": "/ru/pdf-to-svg",
+      "destination": "/ru/pdf-to-svg.html"
+    },
+    {
+      "source": "/ru/images-to-pdf",
+      "destination": "/ru/images-to-pdf.html"
+    },
+    {
+      "source": "/ru/image-to-pdf",
+      "destination": "/ru/image-to-pdf.html"
+    },
+    {
+      "source": "/ru/word-to-pdf",
+      "destination": "/ru/word-to-pdf.html"
+    },
+    {
+      "source": "/ru/excel-to-pdf",
+      "destination": "/ru/excel-to-pdf.html"
+    },
+    {
+      "source": "/ru/protect-pdf",
+      "destination": "/ru/protect-pdf.html"
+    },
+    {
+      "source": "/ru/ocr-pdf",
+      "destination": "/ru/ocr-pdf.html"
+    },
+    {
+      "source": "/ru/privacy",
+      "destination": "/ru/privacy.html"
+    },
+    {
+      "source": "/ru/faq",
+      "destination": "/ru/faq.html"
+    },
+    {
+      "source": "/ru/terms",
+      "destination": "/ru/terms.html"
+    },
+    {
+      "source": "/ru/gdpr",
+      "destination": "/ru/gdpr.html"
+    },
+    {
+      "source": "/ru/how-to-use",
+      "destination": "/ru/how-to-use.html"
+    },
+    {
+      "source": "/ru/blog",
+      "destination": "/ru/blog.html"
+    },
+    {
+      "source": "/ru",
+      "destination": "/ru/index.html"
+    },
+    {
+      "source": "/((?!assets|api|sitemap|robots\\\\.txt|.*\\\\.js|.*\\\\.css|.*\\\\.png|.*\\\\.jpg|.*\\\\.jpeg|.*\\\\.gif|.*\\\\.ico|.*\\\\.svg|.*\\\\.html|de|fr|es|ru).*)",
+      "destination": "/index.html"
+    }
+  ]
+}
