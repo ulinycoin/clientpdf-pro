@@ -35,7 +35,7 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build": "SKIP_TYPE_CHECK=1 vite build",
+    "build": "SKIP_TYPE_CHECK=1 vite build && npm run generate-multilingual-sitemap",
     "build:full": "SKIP_TYPE_CHECK=1 vite build && npm run generate-multilingual-sitemap && npm run submit-indexnow",
     "preview": "vite preview",
     "generate-sitemap": "node scripts/generate-sitemap.js",

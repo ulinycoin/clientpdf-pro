@@ -202,9 +202,25 @@ ${allEntries}
 }
 
 function run() {
+  const distPath = path.resolve(process.cwd(), 'dist');
   const publicPath = path.resolve(process.cwd(), 'public');
+
+  // Ensure directories exist
+  if (!fs.existsSync(distPath)) {
+    console.log('⚠️ dist directory not found, creating...');
+    fs.mkdirSync(distPath, { recursive: true });
+  }
+  if (!fs.existsSync(publicPath)) {
+    fs.mkdirSync(publicPath, { recursive: true });
+    console.log('📁 Created public directory');
+  }
+
   const blogPosts = getBlogPosts();
   const sitemapContent = generateSitemap();
+
+  // Write to both dist (for deployment) and public (for source)
+  fs.writeFileSync(path.join(distPath, 'sitemap.xml'), sitemapContent);
+  console.log('✅ Generated comprehensive multilingual sitemap: dist/sitemap.xml');
 
   fs.writeFileSync(path.join(publicPath, 'sitemap.xml'), sitemapContent);
   console.log('✅ Generated comprehensive multilingual sitemap: public/sitemap.xml');
@@ -215,7 +231,10 @@ function run() {
     console.log('🗑️ Removed redundant sitemap: public/sitemap-multilingual.xml');
   }
 
-  // Update indexnow-sitemap.xml as well
+  // Update indexnow-sitemap.xml as well (both locations)
+  fs.writeFileSync(path.join(distPath, 'indexnow-sitemap.xml'), sitemapContent);
+  console.log('✅ Updated IndexNow sitemap: dist/indexnow-sitemap.xml');
+
   const indexNowSitemapPath = path.join(publicPath, 'indexnow-sitemap.xml');
   fs.writeFileSync(indexNowSitemapPath, sitemapContent);
   console.log('✅ Updated IndexNow sitemap: public/indexnow-sitemap.xml');
