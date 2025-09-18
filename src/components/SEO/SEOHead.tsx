@@ -80,6 +80,9 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
         {/* Canonical URL */}
         <link rel="canonical" href={canonicalUrl} />
 
+        {/* Google Site Verification */}
+        <meta name="google-site-verification" content="YkUCbfJ6xGMa-PzjFZD0W-73hS9BOG_udzm4HsbA8Yg" />
+
       {/* Open Graph */}
       <meta property="og:type" content={ogType} />
       <meta property="og:title" content={fullTitle} />
