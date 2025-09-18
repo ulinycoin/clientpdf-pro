@@ -181,6 +181,20 @@ body {
   * {
     word-break: break-word;
   }
+
+  /* Исправления для grid layouts на очень маленьких экранах */
+  .grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Специальные исправления для Bento Grid */
+  [class*="col-span-"] {
+    grid-column: span 1 !important;
+  }
+
+  [class*="row-span-"] {
+    grid-row: span 1 !important;
+  }
 }
 
 /* Utility классы для предотвращения горизонтальной прокрутки */

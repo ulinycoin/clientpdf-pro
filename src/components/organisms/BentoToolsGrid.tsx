@@ -32,12 +32,12 @@ const TOOL_ICONS = {
   'ocr': Eye
 } as const;
 
-// Organic Bento Grid Layout - asymmetric design with priority-based sizes
+// Organic Bento Grid Layout - responsive asymmetric design with priority-based sizes
 const BENTO_LAYOUT = [
   // Priority 1: Most used tool - extra large
   {
     id: 'merge',
-    gridClass: 'col-span-2 row-span-2',
+    gridClass: 'col-span-1 sm:col-span-2 lg:col-span-2 row-span-1 sm:row-span-1 lg:row-span-2',
     size: 'xl',
     featured: true,
     priority: 1,
@@ -47,7 +47,7 @@ const BENTO_LAYOUT = [
   // Priority 2: Core tools - large size
   {
     id: 'split',
-    gridClass: 'col-span-2 row-span-1',
+    gridClass: 'col-span-1 sm:col-span-2 lg:col-span-2 row-span-1',
     size: 'large',
     featured: true,
     priority: 2,
@@ -57,7 +57,7 @@ const BENTO_LAYOUT = [
   // Priority 3: Popular tool - medium-large
   {
     id: 'compress',
-    gridClass: 'col-span-1 row-span-2',
+    gridClass: 'col-span-1 sm:col-span-1 lg:col-span-1 row-span-1 sm:row-span-1 lg:row-span-2',
     size: 'large',
     featured: true,
     priority: 2,
@@ -74,7 +74,7 @@ const BENTO_LAYOUT = [
   },
   {
     id: 'imageToPdf',
-    gridClass: 'col-span-2 row-span-1',
+    gridClass: 'col-span-1 sm:col-span-2 lg:col-span-2 row-span-1',
     size: 'medium',
     priority: 3,
     bgGradient: 'from-violet-500 to-violet-600'
@@ -83,7 +83,7 @@ const BENTO_LAYOUT = [
   // Priority 5: Advanced tools - varied sizes
   {
     id: 'ocr',
-    gridClass: 'col-span-1 row-span-2',
+    gridClass: 'col-span-1 sm:col-span-1 lg:col-span-1 row-span-1 sm:row-span-1 lg:row-span-2',
     size: 'medium',
     featured: true,
     priority: 3,
@@ -114,7 +114,7 @@ const BENTO_LAYOUT = [
   },
   {
     id: 'protect',
-    gridClass: 'col-span-2 row-span-1',
+    gridClass: 'col-span-1 sm:col-span-2 lg:col-span-2 row-span-1',
     size: 'medium',
     priority: 4,
     bgGradient: 'from-slate-500 to-slate-600'
@@ -366,8 +366,8 @@ const BentoToolsGrid: React.FC<BentoToolsGridProps> = ({
   }
 
   return (
-    <section data-section="tools" className={`py-8 ${className}`} id="tools-section">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section data-section="tools" className={`py-8 ${className} overflow-hidden`} id="tools-section">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
 
         {/* Modern Header */}
         <div className="text-center mb-12">
@@ -381,8 +381,8 @@ const BentoToolsGrid: React.FC<BentoToolsGridProps> = ({
         </div>
 
 
-        {/* Organic Bento Grid - asymmetric layout with more rows */}
-        <div className="grid grid-cols-4 auto-rows-[180px] gap-6 max-w-6xl mx-auto"
+        {/* Organic Bento Grid - responsive asymmetric layout */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 auto-rows-[180px] gap-4 sm:gap-6 max-w-6xl mx-auto overflow-hidden"
              style={{ gridTemplateRows: 'repeat(auto-fit, 180px)' }}>
           {BENTO_LAYOUT.map(renderBentoCard)}
         </div>

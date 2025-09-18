@@ -129,25 +129,28 @@ const InteractiveHeroSection: React.FC<InteractiveHeroSectionProps> = ({
         <div className="text-center">
           {/* Animated title */}
           <h1 className={`
-            text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold mb-6
+            text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-extrabold mb-6
             bg-gradient-to-r from-gray-900 via-seafoam-green to-ocean-blue dark:from-white dark:via-seafoam-200 dark:to-ocean-200 bg-clip-text text-transparent
             ${isVisible ? 'smooth-reveal' : 'opacity-0'}
+            leading-tight px-2
           `}>
             {title}
           </h1>
 
           {/* Subtitle */}
           <p className={`
-            text-xl sm:text-2xl md:text-3xl font-semibold text-gray-600 dark:text-gray-200 mb-8
+            text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold text-gray-600 dark:text-gray-200 mb-8
             ${isVisible ? 'smooth-reveal staggered-reveal' : 'opacity-0'}
+            px-2
           `}>
             {subtitle}
           </p>
 
           {/* Description */}
           <p className={`
-            text-lg sm:text-xl text-gray-700 dark:text-gray-400 max-w-3xl mx-auto mb-12 leading-relaxed
+            text-base sm:text-lg md:text-xl text-gray-700 dark:text-gray-400 max-w-3xl mx-auto mb-12 leading-relaxed
             ${isVisible ? 'smooth-reveal staggered-reveal' : 'opacity-0'}
+            px-4
           `}>
             {description}
           </p>
