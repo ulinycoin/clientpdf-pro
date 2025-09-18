@@ -60,6 +60,6 @@
     }
   ],
   "rewrites": [
-    { "source": "/((?!api/.*).*)", "destination": "/index.html" }
+    { "source": "/((?!api/.*|.*\\.html|.*\\.txt|.*\\.xml|robots\\.txt|sitemap.*|google.*\\.html).*)", "destination": "/index.html" }
   ]
 }
