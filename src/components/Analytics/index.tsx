@@ -7,7 +7,6 @@ interface AnalyticsProvidersProps {
 }
 
 const AnalyticsProviders: React.FC<AnalyticsProvidersProps> = ({ children }) => {
-  const gaTrackingId = import.meta.env.VITE_GA_TRACKING_ID;
   const yandexMetricaId = import.meta.env.VITE_YANDEX_METRICA_ID;
 
   // Only load analytics in production
@@ -19,7 +18,7 @@ const AnalyticsProviders: React.FC<AnalyticsProvidersProps> = ({ children }) => 
 
   return (
     <>
-      {gaTrackingId && <GoogleAnalytics trackingId={gaTrackingId} />}
+      {/* Google Analytics is now loaded via index.html for better SEO detection */}
       {yandexMetricaId && <YandexMetrica counterId={yandexMetricaId} />}
       {children}
     </>
