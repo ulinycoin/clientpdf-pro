@@ -23,6 +23,7 @@ const HomePage: React.FC = () => {
         <title>LocalPDF - {t('home.hero.subtitle')} | Free Privacy-First PDF Tools</title>
         <meta name="description" content={`${t('home.hero.description')} - ${t('home.hero.descriptionSecondary')}`} />
         <meta name="robots" content="index, follow" />
+        <meta name="google-site-verification" content="34adca022b79f1a0" />
         <link rel="canonical" href="https://localpdf.online/" />
 
         {/* Open Graph */}
