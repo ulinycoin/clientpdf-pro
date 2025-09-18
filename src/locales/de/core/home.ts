@@ -52,6 +52,8 @@ export const home = {
   tools: {
     title: 'Vollständiges PDF-Toolkit',
     subtitle: 'Professionelle Tools für alle Ihre PDF-Anforderungen',
+    popular: 'Beliebt',
+    moreTools: 'Alle Tools anzeigen',
     trustIndicators: {
       private: 'Privat & Sicher',
       noUploads: 'Keine Datei-Uploads',

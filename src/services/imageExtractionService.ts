@@ -394,7 +394,7 @@ export class ImageExtractionService {
       let transformMatrix = [1, 0, 0, 1, 0, 0]; // identity matrix
       for (let i = imageOpIndex - 1; i >= 0; i--) {
         const op = operatorList.fnArray[i];
-        if (op === pdfjsLib.OPS.transform || op === pdfjsLib.OPS.setTransform) {
+        if (op === pdfjsLib.OPS.transform) {
           transformMatrix = operatorList.argsArray[i];
           break;
         }
@@ -458,8 +458,7 @@ export class ImageExtractionService {
           isVector: false,
           metadata: {
             colorSpace: 'RGB',
-            compression: 'PDF Extracted',
-            transformMatrix: transformMatrix.join(',')
+            compression: 'PDF Extracted'
           }
         };
       }

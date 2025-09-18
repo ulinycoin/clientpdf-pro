@@ -8,6 +8,7 @@ export { default as ToolCard } from './ToolCard';
 export { default as ModernHeader } from './ModernHeader';
 export { default as ModernFooter } from './ModernFooter';
 export { default as ModernToolsGrid } from './ModernToolsGrid';
+export { default as BentoToolsGrid } from './BentoToolsGrid';
 export { default as InteractiveHeroSection } from './InteractiveHeroSection';
 
 // New modern sections

@@ -1,5 +1,6 @@
 export const ocr = {
   title: 'OCR-Erkennung',
+  aiTitle: 'KI-erweiterte OCR',
   description: 'Text aus gescannten PDFs und Bildern extrahieren',
   pageTitle: 'PDF-OCR kostenlos - LocalPDF',
   pageDescription: 'Extrahieren Sie Text aus gescannten PDF-Dokumenten mit OCR-Technologie. Kostenloses PDF-OCR-Tool.',

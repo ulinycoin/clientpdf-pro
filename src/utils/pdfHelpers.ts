@@ -113,7 +113,7 @@ export const addWatermark = async (
       size: fontSize,
       color: rgb(color[0], color[1], color[2]),
       opacity,
-      rotate: { type: 'degrees', angle: rotation },
+      rotate: { type: 'degrees' as const, angle: rotation },
     });
   }
 

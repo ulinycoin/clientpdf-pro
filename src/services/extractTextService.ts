@@ -195,7 +195,10 @@ export class ExtractTextService {
       console.error('[ExtractTextService] Error:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to extract text'
+        error: {
+          code: 'EXTRACT_TEXT_ERROR',
+          message: error instanceof Error ? error.message : 'Failed to extract text'
+        }
       };
     }
   }

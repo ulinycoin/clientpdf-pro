@@ -138,11 +138,11 @@ export class QuickOCR {
 
           // Apply Russian-specific parameters
           await russianWorker.setParameters({
-            tessedit_pageseg_mode: '6',
-            tessedit_ocr_engine_mode: '2',
+            tessedit_pageseg_mode: 6,
+            tessedit_ocr_engine_mode: 2,
             tessedit_char_whitelist: 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя0123456789.,!?:;()[]{}«»—–-+=*/\\|@#№$%^&*~',
-            load_system_dawg: '0',
-            load_freq_dawg: '0',
+            load_system_dawg: 0,
+            load_freq_dawg: 0,
           });
 
           console.log('🔧 QuickOCR: Russian worker configured, starting recognition');

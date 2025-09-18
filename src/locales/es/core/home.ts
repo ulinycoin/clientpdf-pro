@@ -52,6 +52,8 @@ export const home = {
   tools: {
     title: 'Kit completo de herramientas PDF',
     subtitle: 'Elige la herramienta adecuada para tus necesidades. Todas las operaciones se realizan localmente en tu navegador.',
+    popular: 'Popular',
+    moreTools: 'Ver todas las herramientas',
     categories: {
       core: {
         title: 'Herramientas básicas',

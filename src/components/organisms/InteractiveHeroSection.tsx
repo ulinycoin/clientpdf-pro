@@ -125,7 +125,7 @@ const InteractiveHeroSection: React.FC<InteractiveHeroSectionProps> = ({
         )}
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-32">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
         <div className="text-center">
           {/* Animated title */}
           <h1 className={`
@@ -152,113 +152,7 @@ const InteractiveHeroSection: React.FC<InteractiveHeroSectionProps> = ({
             {description}
           </p>
 
-          {/* Enhanced Privacy Benefits Card */}
-          <div className={`
-            group relative inline-block mb-12
-            ${isVisible ? 'smooth-reveal staggered-reveal' : 'opacity-0'}
-          `}>
-            <div className="
-              relative px-8 py-6 rounded-2xl overflow-hidden
-              bg-white/70 dark:bg-white/10 backdrop-blur-xl 
-              border border-gray-200/50 dark:border-white/20
-              shadow-lg shadow-black/10 hover:shadow-2xl hover:shadow-black/20
-              hover:scale-105 transition-all duration-500 ease-out
-            ">
-              {/* Animated gradient background */}
-              <div className="absolute inset-0 opacity-30">
-                <div className="absolute inset-0 bg-gradient-to-r from-seafoam-400/20 via-ocean-400/20 to-seafoam-400/20 
-                  animate-gradient-x"></div>
-              </div>
-              
-              <div className="relative flex flex-col sm:flex-row items-center gap-4">
-                <div className={`text-3xl transition-all duration-500 ${animated ? 'animate-pulse' : ''}`} 
-                     key={currentBadgeIndex}>
-                  {badges?.[currentBadgeIndex]?.icon || '🔒'}
-                </div>
-                
-                <div className="text-center sm:text-left">
-                  <div className="text-xl font-bold text-gray-900 dark:text-white mb-1">
-                    {badges?.[currentBadgeIndex]?.title || 'Private & Secure'}
-                  </div>
-                  <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                    {badges?.[currentBadgeIndex]?.description || 'All processing happens locally'}
-                  </div>
-                </div>
-                
-                {animated && (
-                  <div className="flex space-x-2 ml-auto">
-                    {badges?.map((_, i) => (
-                      <div
-                        key={i}
-                        className={`w-2 h-2 rounded-full transition-all duration-500 ${
-                          i === currentBadgeIndex 
-                            ? 'bg-seafoam-500 scale-125 shadow-lg shadow-seafoam-500/50' 
-                            : 'bg-gray-400 dark:bg-gray-500'
-                        }`}
-                      />
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
 
-          {/* Enhanced CTA Button - Centered */}
-          <div className="flex justify-center mb-16">
-            <button
-              onClick={() => {
-                if (onGetStarted) {
-                  onGetStarted();
-                } else {
-                  // Smooth scroll to tools section
-                  const toolsSection = document.querySelector('[data-section="tools"]');
-                  if (toolsSection) {
-                    toolsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                  }
-                }
-              }}
-              className={`
-                group relative inline-flex items-center gap-3 px-8 py-4
-                bg-gradient-to-r from-seafoam-500 to-ocean-500 text-white font-bold text-xl
-                rounded-2xl shadow-lg shadow-seafoam-500/25 hover:shadow-xl hover:shadow-seafoam-500/40
-                hover:scale-105 active:scale-95 transform transition-all duration-300 ease-out
-                border border-white/20 backdrop-blur-sm
-                ${isVisible ? 'smooth-reveal staggered-reveal' : 'opacity-0'}
-              `}
-            >
-              <span className="relative z-10">{t('home.hero.getStarted')}</span>
-              <svg 
-                className="w-6 h-6 transition-transform duration-300 group-hover:translate-x-1" 
-                fill="none" 
-                viewBox="0 0 24 24" 
-                stroke="currentColor"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-              </svg>
-              
-              {/* Animated background gradient */}
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-ocean-600 to-seafoam-600 
-                opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            </button>
-          </div>
-
-
-
-          {/* Scroll indicator */}
-          {animated && (
-            <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
-              <div className="flex flex-col items-center text-gray-600 dark:text-gray-400">
-                <span className="text-sm mb-2">{t('home.hero.learnMore')}</span>
-                <svg 
-                  className="w-6 h-6 animate-bounce" 
-                  viewBox="0 0 24 24" 
-                  fill="currentColor"
-                >
-                  <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
-                </svg>
-              </div>
-            </div>
-          )}
         </div>
       </div>
 

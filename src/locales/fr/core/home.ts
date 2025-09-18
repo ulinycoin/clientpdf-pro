@@ -52,6 +52,8 @@ export const home = {
   tools: {
     title: 'Boîte à outils PDF complète',
     subtitle: 'Outils professionnels pour tous vos besoins PDF',
+    popular: 'Populaire',
+    moreTools: 'Voir tous les outils',
     trustIndicators: {
       private: '100% Privé',
       noUploads: 'Pas d\'upload',

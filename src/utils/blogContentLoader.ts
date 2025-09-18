@@ -7,16 +7,16 @@ import { createBlogPostFromMarkdown } from './markdownParser';
  */
 
 // Создаем карту всех markdown файлов из content/blog/
-const markdownFiles = import.meta.glob('/src/content/blog/**/*.md', {
+const markdownFiles = (import.meta as any).glob?.('/src/content/blog/**/*.md', {
   as: 'raw',
   eager: false
-});
+}) || {};
 
 // Production-ready file loading function
 async function loadMarkdownFromPath(path: string): Promise<string | null> {
   try {
     // In development, try import.meta.glob first
-    if (import.meta.env.DEV && markdownFiles[path]) {
+    if ((import.meta as any).env?.DEV && markdownFiles[path]) {
       const loadFile = markdownFiles[path];
       return await loadFile() as string;
     }
@@ -47,7 +47,7 @@ export const getAvailablePosts = async (language: BlogLanguage): Promise<BlogPos
   console.log('🔍 [BlogLoader] Looking for language:', language);
 
   // In development, try import.meta.glob first, but don't rely on it exclusively
-  if (import.meta.env.DEV && Object.keys(markdownFiles).length > 0) {
+  if ((import.meta as any).env?.DEV && Object.keys(markdownFiles).length > 0) {
     console.log('🔄 [BlogLoader] Development mode: trying import.meta.glob approach...');
 
     const languageFiles = Object.keys(markdownFiles).filter(

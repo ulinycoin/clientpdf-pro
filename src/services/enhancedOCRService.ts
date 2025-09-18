@@ -404,14 +404,14 @@ class EnhancedOCRService {
       },
       'chi_sim': {
         ...baseParams,
-        tessedit_pageseg_mode: '6', // Single uniform block for Chinese
-        tessedit_ocr_engine_mode: '1', // Original Tesseract for Chinese works better sometimes
+        tessedit_pageseg_mode: 6, // Single uniform block for Chinese
+        tessedit_ocr_engine_mode: 1, // Original Tesseract for Chinese works better sometimes
       },
       'ara': {
         ...baseParams,
-        tessedit_pageseg_mode: '6',
-        tessedit_write_images: '1',
-        textord_arabic_numerals: '1',
+        tessedit_pageseg_mode: 6,
+        tessedit_write_images: 1,
+        textord_arabic_numerals: 1,
       }
     };
 
@@ -663,7 +663,7 @@ class EnhancedOCRService {
         details: error,
       };
 
-      onError?.(ocrError);
+      error?.(ocrError);
       throw ocrError;
     } finally {
       this.isProcessing = false;

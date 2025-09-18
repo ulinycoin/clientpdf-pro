@@ -47,7 +47,7 @@ class PDFWorker {
     } as WorkerResponse);
   }
 
-  private sendError(id: string, error: string, code: string = 'UNKNOWN_ERROR'): void {
+  sendError(id: string, error: string, code: string = 'UNKNOWN_ERROR'): void {
     self.postMessage({
       id,
       type: 'ERROR',

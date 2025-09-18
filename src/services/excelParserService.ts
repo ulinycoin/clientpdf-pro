@@ -9,7 +9,7 @@ export class ExcelParserService {
       const arrayBuffer = await file.arrayBuffer();
       const workbook = XLSX.read(arrayBuffer, {
         cellStyles: true,
-        cellFormulas: true,
+        cellFormula: true,
         cellDates: true,
         cellNF: true,
         sheetStubs: true

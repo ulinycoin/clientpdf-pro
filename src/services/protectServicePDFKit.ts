@@ -1,5 +1,7 @@
-import PDFKit from 'pdfkit';
-import blobStream from 'blob-stream';
+// import PDFKit from 'pdfkit';
+// import blobStream from 'blob-stream';
+type PDFKit = any;
+type blobStream = any;
 import { PDFDocument } from 'pdf-lib';
 import type { 
   ProtectionSettings, 

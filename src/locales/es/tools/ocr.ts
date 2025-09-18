@@ -4,6 +4,7 @@
 
 export const ocr = {
   title: 'OCR PDF',
+  aiTitle: 'OCR mejorado con IA',
   description: 'Extraer texto de documentos PDF escaneados',
   pageTitle: 'OCR PDF gratis - LocalPDF',
   pageDescription: 'Extraiga texto de documentos PDF escaneados usando tecnología OCR. Herramienta OCR PDF gratuita.',

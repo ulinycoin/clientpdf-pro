@@ -6,7 +6,7 @@
 
 export const extractImagesFromPdf = {
   // Basic properties for tools grid
-  title: 'Extraer imágenes',
+  title: 'Extraer imágenes del PDF',
   description: 'Extraer todas las imágenes de documentos PDF en calidad original',
   
   // Page metadata (SEO)

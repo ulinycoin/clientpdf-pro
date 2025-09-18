@@ -28,7 +28,7 @@ export interface SecurityInfo {
 }
 
 export interface ProtectionProgress {
-  stage: 'analyzing' | 'encrypting' | 'finalizing' | 'complete';
+  stage: 'analyzing' | 'encrypting' | 'finalizing' | 'complete' | 'preparing' | 'extracting' | 'creating' | 'copying';
   progress: number;           // 0-100
   message: string;
 }

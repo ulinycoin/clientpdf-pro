@@ -257,14 +257,14 @@ export class TextToPDFGenerator {
   /**
    * Check if text contains Cyrillic characters
    */
-  private containsCyrillic(text: string): boolean {
+  containsCyrillic(text: string): boolean {
     return /[\u0400-\u04FF]/.test(text);
   }
 
   /**
    * Transliterate Cyrillic text to Latin characters
    */
-  private transliterateCyrillic(text: string): string {
+  transliterateCyrillic(text: string): string {
     const cyrillicMap: Record<string, string> = {
       'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'yo',
       'ж': 'zh', 'з': 'z', 'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm',

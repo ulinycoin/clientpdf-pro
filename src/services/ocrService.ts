@@ -169,8 +169,7 @@ class OCRService {
             canvasContext: context,
             viewport: viewport,
             // Add rendering options for better quality
-            intent: 'print', // Better quality for OCR
-            renderInteractiveForms: false
+            intent: 'print' // Better quality for OCR
           });
 
           await renderTask.promise;
@@ -430,7 +429,7 @@ class OCRService {
           };
           
           console.log(`🔄 Trying alternative recognition options...`);
-          result = await worker.recognize(processedImage, recognitionOptions, alternativeOptions);
+          result = await worker.recognize(image, recognitionOptions, alternativeOptions);
           
           console.log(`🔄 Alternative recognition result:`, {
             hasText: !!result.data.text,

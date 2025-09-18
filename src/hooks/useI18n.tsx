@@ -8,7 +8,7 @@ interface I18nContextType {
   currentLanguage: SupportedLanguage;
   translations: Translations;
   setLanguage: (language: SupportedLanguage) => void;
-  t: (key: string, params?: TranslationParams) => string;
+  t: (key: string, fallbackOrParams?: string | TranslationParams) => string;
   supportedLanguages: typeof SUPPORTED_LANGUAGES;
   isInitialized: boolean;
 }
@@ -259,15 +259,21 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
     }
   };
 
-  // Функция перевода с поддержкой интерполяции
-  const t = (key: string, params?: TranslationParams): string => {
+  // Функция перевода с поддержкой интерполяции и fallback
+  const t = (key: string, fallbackOrParams?: string | TranslationParams): string => {
     const value = getNestedValue(translations, key);
 
     if (value === undefined) {
+      // Если передан string как второй параметр, используем его как fallback
+      if (typeof fallbackOrParams === 'string') {
+        return fallbackOrParams;
+      }
       console.warn(`Translation missing for key: "${key}" in language: "${currentLanguage}"`);
       return key; // Возвращаем ключ как fallback
     }
 
+    // Если передан object, используем для интерполяции
+    const params = typeof fallbackOrParams === 'object' ? fallbackOrParams : undefined;
     return interpolate(value, params);
   };
 

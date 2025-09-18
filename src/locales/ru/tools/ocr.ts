@@ -1,5 +1,6 @@
 export const ocr = {
   title: 'OCR PDF',
+  aiTitle: 'ИИ-улучшенный OCR',
   description: 'Извлечение текста из сканированных PDF документов',
   pageTitle: 'OCR PDF бесплатно - LocalPDF',
   pageDescription: 'Извлекайте текст из сканированных PDF документов с помощью OCR технологии. Бесплатный OCR инструмент для PDF.',

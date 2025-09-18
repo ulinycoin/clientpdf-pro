@@ -52,6 +52,8 @@ export const home = {
   tools: {
     title: 'Полный набор PDF-инструментов',
     subtitle: 'Профессиональные инструменты для всех ваших потребностей PDF',
+    popular: 'Популярно',
+    moreTools: 'Посмотреть все инструменты',
     trustIndicators: {
       private: 'Приватно и безопасно',
       noUploads: 'Без загрузки файлов',

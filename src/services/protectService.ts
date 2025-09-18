@@ -329,10 +329,9 @@ export const removePDFProtection = async (
   try {
     const arrayBuffer = await file.arrayBuffer();
     
-    // Load PDF with password
-    const pdfDoc = await PDFDocument.load(arrayBuffer, { 
-      password: password,
-      ignoreEncryption: false 
+    // Load PDF with password - pdf-lib doesn't support password parameter directly
+    const pdfDoc = await PDFDocument.load(arrayBuffer, {
+      ignoreEncryption: false
     });
     
     // Save without encryption

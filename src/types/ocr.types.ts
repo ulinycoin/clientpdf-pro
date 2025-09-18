@@ -6,10 +6,11 @@ export interface OCROptions {
 }
 
 export interface OCRProgress {
-  status: 'recognizing text' | 'loading language' | 'initializing' | 'processing' | 'complete';
+  status: 'recognizing text' | 'loading language' | 'initializing' | 'processing' | 'complete' | 'retrying';
   progress: number;
   currentPage?: number;
   totalPages?: number;
+  message?: string;
 }
 
 export interface OCRResult {

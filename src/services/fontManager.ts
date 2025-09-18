@@ -3,7 +3,7 @@ import { FontSubset } from '../types/excelToPdf.types';
 const AVAILABLE_FONT_SUBSETS: FontSubset[] = [
   {
     name: 'DejaVu Sans',
-    subset: 'latin-cyrillic',
+    subset: 'mixed',
     languages: ['en', 'ru', 'de', 'fr', 'es', 'no', 'sv', 'da'],
     size: 180000,
     loaded: false
