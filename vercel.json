@@ -1,6 +1,5 @@
 {
   "buildCommand": "npm run build:full",
-  "cleanUrls": false,
   "trailingSlash": false,
   "headers": [
     {
@@ -61,15 +60,6 @@
     }
   ],
   "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
-    }
+    { "source": "/((?!api/.*).*)", "destination": "/index.html" }
   ]
 }
