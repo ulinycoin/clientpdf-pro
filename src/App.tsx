@@ -5,6 +5,7 @@ import { Analytics } from '@vercel/analytics/react';
 import { I18nProvider } from './hooks/useI18n';
 import { DarkModeProvider } from './components/providers/DarkModeProvider';
 import ScrollToTop from './components/ScrollToTop';
+import AnalyticsProviders from './components/Analytics';
 
 import { routes, supportedLanguages, defaultLanguage } from './config/routes';
 
@@ -35,63 +36,65 @@ function App() {
   return (
     <HelmetProvider>
       <DarkModeProvider>
-        <Router
-          future={{
-            v7_startTransition: true,
-            v7_relativeSplatPath: true,
-          }}
-        >
-          <I18nProvider>
-            <ScrollToTop />
-            <div className="min-h-screen bg-gradient-mesh no-horizontal-scroll">
-              <React.Suspense fallback={<LoadingSpinner />}>
-                <Routes>
-                  {/* 1. Redirect language roots to enforce trailing slash for canonicalization */}
-                  {supportedLanguages
-                    .filter(lang => lang !== defaultLanguage)
-                    .map(lang => (
-                      <Route key={`redirect-${lang}`} path={`/${lang}`} element={<TrailingSlashRedirect />} />
-                    ))}
-
-                  {/* 2. Generate static routes for all languages from the single source of truth */}
-                  {staticRoutes.flatMap(({ path, component: Component }) => {
-                    const key = path.replace(/[^a-zA-Z0-9]/g, '');
-                    const defaultRoute = <Route key={`en-${key}`} path={path} element={<Component />} />;
-
-                    const localizedRoutes = supportedLanguages
+        <AnalyticsProviders>
+          <Router
+            future={{
+              v7_startTransition: true,
+              v7_relativeSplatPath: true,
+            }}
+          >
+            <I18nProvider>
+              <ScrollToTop />
+              <div className="min-h-screen bg-gradient-mesh no-horizontal-scroll">
+                <React.Suspense fallback={<LoadingSpinner />}>
+                  <Routes>
+                    {/* 1. Redirect language roots to enforce trailing slash for canonicalization */}
+                    {supportedLanguages
                       .filter(lang => lang !== defaultLanguage)
-                      .map(lang => {
-                        // Handle the homepage case, e.g. /de/
-                        const localizedPath = path === '/' ? `/${lang}/` : `/${lang}${path}`;
-                        return <Route key={`${lang}-${key}`} path={localizedPath} element={<Component />} />;
-                      });
+                      .map(lang => (
+                        <Route key={`redirect-${lang}`} path={`/${lang}`} element={<TrailingSlashRedirect />} />
+                      ))}
 
-                    return [defaultRoute, ...localizedRoutes];
-                  })}
+                    {/* 2. Generate static routes for all languages from the single source of truth */}
+                    {staticRoutes.flatMap(({ path, component: Component }) => {
+                      const key = path.replace(/[^a-zA-Z0-9]/g, '');
+                      const defaultRoute = <Route key={`en-${key}`} path={path} element={<Component />} />;
 
-                  {/* 3. Generate dynamic routes (e.g., /blog/:slug) for all languages */}
-                  {dynamicRoutes.flatMap(({ path, component: Component }) => {
-                    const key = path.replace(/[^a-zA-Z0-9]/g, '');
-                    const defaultRoute = <Route key={`en-dynamic-${key}`} path={path} element={<Component />} />;
+                      const localizedRoutes = supportedLanguages
+                        .filter(lang => lang !== defaultLanguage)
+                        .map(lang => {
+                          // Handle the homepage case, e.g. /de/
+                          const localizedPath = path === '/' ? `/${lang}/` : `/${lang}${path}`;
+                          return <Route key={`${lang}-${key}`} path={localizedPath} element={<Component />} />;
+                        });
 
-                    const localizedRoutes = supportedLanguages
-                      .filter(lang => lang !== defaultLanguage)
-                      .map(lang => {
-                        const localizedPath = `/${lang}${path}`;
-                        return <Route key={`${lang}-dynamic-${key}`} path={localizedPath} element={<Component />} />;
-                      });
+                      return [defaultRoute, ...localizedRoutes];
+                    })}
 
-                    return [defaultRoute, ...localizedRoutes];
-                  })}
+                    {/* 3. Generate dynamic routes (e.g., /blog/:slug) for all languages */}
+                    {dynamicRoutes.flatMap(({ path, component: Component }) => {
+                      const key = path.replace(/[^a-zA-Z0-9]/g, '');
+                      const defaultRoute = <Route key={`en-dynamic-${key}`} path={path} element={<Component />} />;
 
-                  {/* 4. Add the 404 not found route, which must be last */}
-                  {notFoundRoute && <Route path="*" element={<notFoundRoute.component />} />}
-                </Routes>
-              </React.Suspense>
-            </div>
-            <Analytics />
-          </I18nProvider>
-        </Router>
+                      const localizedRoutes = supportedLanguages
+                        .filter(lang => lang !== defaultLanguage)
+                        .map(lang => {
+                          const localizedPath = `/${lang}${path}`;
+                          return <Route key={`${lang}-dynamic-${key}`} path={localizedPath} element={<Component />} />;
+                        });
+
+                      return [defaultRoute, ...localizedRoutes];
+                    })}
+
+                    {/* 4. Add the 404 not found route, which must be last */}
+                    {notFoundRoute && <Route path="*" element={<notFoundRoute.component />} />}
+                  </Routes>
+                </React.Suspense>
+              </div>
+              <Analytics />
+            </I18nProvider>
+          </Router>
+        </AnalyticsProviders>
       </DarkModeProvider>
     </HelmetProvider>
   );
