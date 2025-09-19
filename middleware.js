@@ -323,9 +323,9 @@ export default async function middleware(request) {
 export const config = {
   matcher: [
     /*
-     * Match all paths except robots.txt, sitemap.xml and standard static Vercel paths
-     * Uses negative lookahead to exclude specific files from middleware processing
+     * TEMPORARY: Disable middleware completely to test robots.txt
+     * This should make robots.txt work by bypassing all middleware
      */
-    '/((?!^robots\\.txt$|^sitemap\\.xml$|_next/static|_next/image|favicon\\.ico).*)',
+    '/api/test-endpoint-that-does-not-exist',
   ],
 };
