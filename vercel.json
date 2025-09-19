@@ -58,10 +58,15 @@
       "source": "/sitemap-multilingual.xml",
       "destination": "/sitemap.xml",
       "permanent": false
+    },
+    {
+      "source": "/robots.txt",
+      "destination": "/site-robots.txt",
+      "permanent": false
     }
   ],
   "rewrites": [
     { "source": "/google34adca022b79f1a0.html", "destination": "/google34adca022b79f1a0.html" },
-    { "source": "/((?!api/.*|.*\\.html|.*\\.txt|.*\\.xml|sitemap.*|google.*\\.html).*)", "destination": "/index.html" }
+    { "source": "/((?!api/.*|.*\\.html|.*\\.txt|.*\\.xml|sitemap.*|robots\\.txt|google.*\\.html).*)", "destination": "/index.html" }
   ]
 }
