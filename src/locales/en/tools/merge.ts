@@ -63,6 +63,10 @@ export const merge = {
     moveUp: 'Move up',
     moveDown: 'Move down'
   },
+  fileCounter: {
+    label: 'files',
+    scrollHint: '• Scroll to view all files'
+  },
   actions: {
     merge: 'Merge {count} {fileWord}',
     merging: 'Processing...',

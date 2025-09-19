@@ -5,6 +5,8 @@ import { useToolState } from '../../hooks/useToolState';
 import { useTranslation } from '../../hooks/useI18n';
 import { downloadBlob, generateFilename } from '../../utils/fileHelpers';
 import ToolContainer from '../shared/ToolContainer';
+import SmartMergeRecommendations from '../molecules/SmartMergeRecommendations';
+import { SuggestedMetadata, MergeSettings } from '../../types/smartMerge.types';
 
 const MergeTool: React.FC<MergeToolProps> = React.memo(({
   files,
@@ -31,6 +33,8 @@ const MergeTool: React.FC<MergeToolProps> = React.memo(({
       subject: 'Merged PDF Document'
     }
   });
+
+  const [showAIRecommendations, setShowAIRecommendations] = useState(true);
 
   // Memoized computed values
   const orderedFiles = useMemo(() => {
@@ -100,6 +104,30 @@ const MergeTool: React.FC<MergeToolProps> = React.memo(({
     }));
   };
 
+  // AI Recommendation handlers
+  const handleApplyOrder = (fileIds: string[]) => {
+    const newOrder = fileIds.map(id => parseInt(id, 10));
+    setOptions(prev => ({ ...prev, order: newOrder }));
+  };
+
+  const handleApplyMetadata = (metadata: SuggestedMetadata) => {
+    setOptions(prev => ({
+      ...prev,
+      metadata: {
+        title: metadata.title,
+        author: metadata.author,
+        subject: metadata.subject
+      }
+    }));
+  };
+
+  const handleApplySettings = (settings: MergeSettings) => {
+    // For now, we'll just log the settings since the current merge tool
+    // doesn't have all these advanced options implemented yet
+    console.log('🧠 AI suggested settings:', settings);
+    // TODO: Implement advanced merge settings in the future
+  };
+
   return (
     <ToolContainer
       title={t('tools.merge.title')}
@@ -125,6 +153,34 @@ const MergeTool: React.FC<MergeToolProps> = React.memo(({
       }}
       className={className}
     >
+      {/* AI Smart Recommendations */}
+      {files.length >= 2 && showAIRecommendations && (
+        <div className="mb-6">
+          <SmartMergeRecommendations
+            files={files}
+            onApplyOrder={handleApplyOrder}
+            onApplyMetadata={handleApplyMetadata}
+            onApplySettings={handleApplySettings}
+            isProcessing={state.isProcessing}
+          />
+        </div>
+      )}
+
+      {/* Toggle AI Recommendations */}
+      {files.length >= 2 && (
+        <div className="mb-4">
+          <button
+            onClick={() => setShowAIRecommendations(!showAIRecommendations)}
+            className="text-sm text-blue-600 hover:text-blue-800 flex items-center space-x-2"
+          >
+            <span className="text-lg">{showAIRecommendations ? '🧠' : '🤖'}</span>
+            <span>
+              {showAIRecommendations ? 'Hide' : 'Show'} AI Recommendations
+            </span>
+          </button>
+        </div>
+      )}
+
       {/* File Reordering Section */}
       <div className="space-y-6">
         <div>

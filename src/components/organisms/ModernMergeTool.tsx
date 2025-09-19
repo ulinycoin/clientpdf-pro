@@ -5,6 +5,8 @@ import { useToolState } from '../../hooks/useToolState';
 import { useTranslation } from '../../hooks/useI18n';
 import { useMotionPreferences } from '../../hooks/useAccessibilityPreferences';
 import { downloadBlob, generateFilename } from '../../utils/fileHelpers';
+import SmartMergeRecommendations from '../molecules/SmartMergeRecommendations';
+import { SuggestedMetadata, MergeSettings } from '../../types/smartMerge.types';
 
 const ModernMergeTool: React.FC<MergeToolProps> = React.memo(({
   files,
@@ -32,6 +34,8 @@ const ModernMergeTool: React.FC<MergeToolProps> = React.memo(({
       subject: 'Merged PDF Document'
     }
   });
+
+  const [showAIRecommendations, setShowAIRecommendations] = useState(true);
 
   // Memoized computed values
   const orderedFiles = useMemo(() => {
@@ -105,6 +109,30 @@ const ModernMergeTool: React.FC<MergeToolProps> = React.memo(({
     setOptions(prev => ({ ...prev, order: newOrder }));
   };
 
+  // AI Recommendation handlers
+  const handleApplyOrder = (fileIds: string[]) => {
+    const newOrder = fileIds.map(id => parseInt(id, 10));
+    setOptions(prev => ({ ...prev, order: newOrder }));
+  };
+
+  const handleApplyMetadata = (metadata: SuggestedMetadata) => {
+    setOptions(prev => ({
+      ...prev,
+      metadata: {
+        title: metadata.title,
+        author: metadata.author,
+        subject: metadata.subject
+      }
+    }));
+  };
+
+  const handleApplySettings = (settings: MergeSettings) => {
+    // For now, we'll just log the settings since the current merge tool
+    // doesn't have all these advanced options implemented yet
+    console.log('🧠 AI suggested settings:', settings);
+    // TODO: Implement advanced merge settings in the future
+  };
+
   return (
     <div className={`max-w-5xl mx-auto ${className}`}>
       {/* Header */}
@@ -156,23 +184,61 @@ const ModernMergeTool: React.FC<MergeToolProps> = React.memo(({
         </div>
       </div>
 
+      {/* AI Smart Recommendations */}
+      {files.length >= 2 && showAIRecommendations && (
+        <div className="mb-8">
+          <SmartMergeRecommendations
+            files={files}
+            onApplyOrder={handleApplyOrder}
+            onApplyMetadata={handleApplyMetadata}
+            onApplySettings={handleApplySettings}
+            isProcessing={state.isProcessing}
+          />
+        </div>
+      )}
+
+      {/* Toggle AI Recommendations */}
+      {files.length >= 2 && (
+        <div className="mb-6 text-center">
+          <button
+            onClick={() => setShowAIRecommendations(!showAIRecommendations)}
+            className="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 flex items-center space-x-2 mx-auto px-4 py-2 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-xl border border-white/20 dark:border-gray-600/20 hover:bg-white/70 dark:hover:bg-gray-800/70 transition-all duration-200"
+          >
+            <span className="text-lg">{showAIRecommendations ? '🧠' : '🤖'}</span>
+            <span>
+              {showAIRecommendations ? 'Hide' : 'Show'} AI Recommendations
+            </span>
+          </button>
+        </div>
+      )}
+
       {/* File Reordering Section */}
       <div className={`bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg border border-white/20 dark:border-gray-600/20 rounded-2xl shadow-lg hover:shadow-xl p-8 mb-8 transition-all duration-300 ${shouldAnimate ? 'smooth-reveal staggered-reveal' : ''}`}>
         <div className="flex items-center gap-3 mb-6">
           <div className="w-12 h-12 bg-gradient-to-br from-ocean-500 to-seafoam-600 rounded-xl flex items-center justify-center text-white text-xl shadow-lg">
             🔄
           </div>
-          <div>
-            <h3 className="text-xl font-black text-black dark:text-white">
-              {t('tools.merge.orderTitle')}
-            </h3>
-            <p className="text-gray-800 dark:text-gray-100 font-medium text-sm">
+          <div className="flex-1">
+            <div className="flex items-center gap-3">
+              <h3 className="text-xl font-black text-black dark:text-white">
+                {t('tools.merge.orderTitle')}
+              </h3>
+              <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-sm font-bold">
+                {orderedFiles.length} {t('tools.merge.fileCounter.label')}
+              </span>
+            </div>
+            <p className="text-gray-800 dark:text-gray-100 font-medium text-sm mt-1">
               {t('tools.merge.orderDescription')}
+              {orderedFiles.length > 5 && (
+                <span className="text-blue-600 dark:text-blue-400 ml-1">
+                  {t('tools.merge.fileCounter.scrollHint')}
+                </span>
+              )}
             </p>
           </div>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400 scrollbar-track-transparent">
           {orderedFiles.map((file, index) => (
             <div
               key={`${file.name}-${index}`}

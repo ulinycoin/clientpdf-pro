@@ -34,6 +34,7 @@ import { imageToPdf } from './tools/imageToPdf';
 import { wordToPdf } from './tools/wordToPdf';
 import { excelToPdf } from './tools/excelToPdf';
 import { protect } from './tools/protect';
+import { smartMerge } from './tools/smartMerge';
 
 // Construct the complete RU translations object
 export const ru = {
@@ -74,7 +75,8 @@ export const ru = {
     imageToPdf,
     wordToPdf,
     excelToPdf,
-    protect
+    protect,
+    smartMerge
   },
   
   // Page-specific translations
@@ -103,7 +105,8 @@ export const ru = {
       imageToPdf,
       wordToPdf,
       excelToPdf,
-      protect
+      protect,
+      smartMerge
     }
   }
 };

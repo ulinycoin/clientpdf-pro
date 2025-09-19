@@ -63,6 +63,10 @@ export const merge = {
     moveUp: 'Nach oben verschieben',
     moveDown: 'Nach unten verschieben'
   },
+  fileCounter: {
+    label: 'Dateien',
+    scrollHint: '• Scrollen, um alle Dateien anzuzeigen'
+  },
   actions: {
     merge: '{count} {fileWord} zusammenführen',
     merging: 'Verarbeitung...',

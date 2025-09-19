@@ -11,6 +11,7 @@ export * from './addText.types';
 export * from './image.types';
 export * from './pageExtraction.types';
 export * from './ocr.types';
+export * from './smartMerge.types';
 
 // Common PDF processing types
 export interface PDFFile {
