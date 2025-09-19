@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192">
+  <!-- Background circle with gradient -->
+  <circle cx="96" cy="96" r="88" fill="url(#bg-gradient)" stroke="url(#border-gradient)" stroke-width="4"/>
+  
+  <!-- PDF document shape -->
+  <rect x="56" y="48" width="64" height="88" rx="4" fill="#ffffff" opacity="0.95"/>
+  
+  <!-- PDF fold corner -->
+  <path d="M108 48 L120 60 L108 60 Z" fill="#e5e7eb"/>
+  
+  <!-- PDF text lines -->
+  <rect x="64" y="72" width="40" height="3" rx="1.5" fill="#4ECDC4"/>
+  <rect x="64" y="80" width="48" height="3" rx="1.5" fill="#4ECDC4"/>
+  <rect x="64" y="88" width="32" height="3" rx="1.5" fill="#4ECDC4"/>
+  <rect x="64" y="96" width="44" height="3" rx="1.5" fill="#4ECDC4"/>
+  
+  <!-- Privacy shield overlay -->
+  <circle cx="88" cy="112" r="16" fill="url(#shield-gradient)" opacity="0.9"/>
+  <path d="M88 100 L96 106 L88 124 L80 106 Z" fill="#ffffff"/>
+  
+  <!-- Sparkle effects -->
+  <circle cx="72" cy="60" r="2" fill="#45B7D1" opacity="0.8"/>
+  <circle cx="116" cy="80" r="1.5" fill="#4ECDC4" opacity="0.8"/>
+  <circle cx="124" cy="120" r="2" fill="#F4E4BC" opacity="0.8"/>
+  
+  <!-- Gradients -->
+  <defs>
+    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4ECDC4"/>
+      <stop offset="50%" style="stop-color:#45B7D1"/>
+      <stop offset="100%" style="stop-color:#3B82F6"/>
+    </linearGradient>
+    
+    <linearGradient id="border-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.3"/>
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0.1"/>
+    </linearGradient>
+    
+    <radialGradient id="shield-gradient">
+      <stop offset="0%" style="stop-color:#4ECDC4"/>
+      <stop offset="100%" style="stop-color:#45B7D1"/>
+    </radialGradient>
+  </defs>
+</svg>

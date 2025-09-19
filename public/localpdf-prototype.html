@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LocalPDF - Бесплатные PDF Инструменты</title>
+    <meta name="description" content="Бесплатные PDF инструменты для работы с документами. Объединение, разделение, сжатие PDF файлов прямо в браузере без загрузки на сервер.">
+    
+    <!-- Production ready styles -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    },
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Glass effect cards */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Subtle hover effects */
+        .tool-card {
+            transition: all 0.3s ease;
+        }
+        
+        .tool-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Icon containers */
+        .icon-container {
+            transition: transform 0.3s ease;
+        }
+        
+        .tool-card:hover .icon-container {
+            transform: scale(1.1);
+        }
+        
+        /* Background */
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+        }
+        
+        /* Status indicators */
+        .status-ready {
+            background: linear-gradient(45deg, #10b981, #059669);
+        }
+        
+        .status-popular {
+            background: linear-gradient(45deg, #3b82f6, #1d4ed8);
+        }
+    </style>
+</head>
+<body class="font-sans">
+    
+    <!-- Header -->
+    <header class="bg-white/80 backdrop-blur-md border-b border-gray-200/50 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-primary-600 rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold text-lg">PDF</span>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-gray-900">LocalPDF</h1>
+                        <p class="text-sm text-gray-600">Бесплатные PDF инструменты</p>
+                    </div>
+                </div>
+                
+                <!-- Trust indicators -->
+                <div class="hidden md:flex items-center space-x-6 text-sm text-gray-600">
+                    <div class="flex items-center space-x-2">
+                        <i data-lucide="shield-check" class="w-4 h-4 text-green-600"></i>
+                        <span>100% приватность</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <i data-lucide="zap" class="w-4 h-4 text-blue-600"></i>
+                        <span>Без регистрации</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <i data-lucide="download" class="w-4 h-4 text-purple-600"></i>
+                        <span>Локальная обработка</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Main Tools Section -->
+        <section class="mb-12">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Основные инструменты</h2>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">Самые популярные операции с PDF файлами</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                
+                <!-- Merge PDF -->
+                <div class="glass-card rounded-2xl p-6 tool-card cursor-pointer group">
+                    <div class="text-center">
+                        <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center icon-container">
+                            <i data-lucide="git-merge" class="w-8 h-8 text-white"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Объединить PDF</h3>
+                        <p class="text-sm text-gray-600 mb-4">Объедините несколько PDF файлов в один документ</p>
+                        <div class="flex items-center justify-center">
+                            <span class="status-popular text-white text-xs px-3 py-1 rounded-full">Популярный</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Split PDF -->
+                <div class="glass-card rounded-2xl p-6 tool-card cursor-pointer group">
+                    <div class="text-center">
+                        <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center icon-container">
+                            <i data-lucide="scissors" class="w-8 h-8 text-white"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Разделить PDF</h3>
+                        <p class="text-sm text-gray-600 mb-4">Разделите PDF на отдельные страницы или диапазоны</p>
+                        <div class="flex items-center justify-center">
+                            <span class="status-ready text-white text-xs px-3 py-1 rounded-full">Готов</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Compress PDF -->
+                <div class="glass-card rounded-2xl p-6 tool-card cursor-pointer group">
+                    <div class="text-center">
+                        <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center icon-container">
+                            <i data-lucide="archive" class="w-8 h-8 text-white"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Сжать PDF</h3>
+                        <p class="text-sm text-gray-600 mb-4">Уменьшите размер файла без потери качества</p>
+                        <div class="flex items-center justify-center">
+                            <span class="status-ready text-white text-xs px-3 py-1 rounded-full">Готов</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add Text -->
+                <div class="glass-card rounded-2xl p-6 tool-card cursor-pointer group">
+                    <div class="text-center">
+                        <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center icon-container">
+                            <i data-lucide="type" class="w-8 h-8 text-white"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Добавить текст</h3>
+                        <p class="text-sm text-gray-600 mb-4">Добавьте текст и аннотации к PDF документу</p>
+                        <div class="flex items-center justify-center">
+                            <span class="status-ready text-white text-xs px-3 py-1 rounded-full">Готов</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Document Tools Section -->
+        <section class="mb-12">
+            <h3 class="text-2xl font-bold text-gray-900 mb-6">Работа с документами</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <!-- Watermark -->
+                <div class="glass-card rounded-2xl p-6 tool-card cursor-pointer group">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-xl flex items-center justify-center icon-container flex-shrink-0">
+                            <i data-lucide="droplets" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-gray-900">Водяной знак</h4>
+                            <p class="text-sm text-gray-600">Защитите документы водяными знаками</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rotate PDF -->
+                <div class="glass-card rounded-2xl p-6 tool-card cursor-pointer group">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-pink-600 rounded-xl flex items-center justify-center icon-container flex-shrink-0">
+                            <i data-lucide="rotate-cw" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-gray-900">Повернуть PDF</h4>
+                            <p class="text-sm text-gray-600">Поверните страницы на нужный угол</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Extract Pages -->
+                <div class="glass-card rounded-2xl p-6 tool-card cursor-pointer group">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center icon-container flex-shrink-0">
+                            <i data-lucide="file-minus" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-gray-900">Извлечь страницы</h4>
+                            <p class="text-sm text-gray-600">Создайте новый PDF из выбранных страниц</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Conversion Tools -->
+        <section class="mb-12">
+            <h3 class="text-2xl font-bold text-gray-900 mb-6">Конвертация файлов</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                
+                <!-- PDF to Images -->
+                <div class="glass-card rounded-2xl p-6 tool-card cursor-pointer group">
+                    <div class="text-center">
+                        <div class="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl flex items-center justify-center icon-container">
+                            <i data-lucide="image" class="w-7 h-7 text-white"></i>
+                        </div>
+                        <h4 class="font-semibold text-gray-900 mb-1">PDF → JPG</h4>
+                        <p class="text-xs text-gray-600">Конвертация в изображения</p>
+                    </div>
+                </div>
+
+                <!-- Images to PDF -->
+                <div class="glass-card rounded-2xl p-6 tool-card cursor-pointer group">
+                    <div class="text-center">
+                        <div class="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center icon-container">
+                            <i data-lucide="images" class="w-7 h-7 text-white"></i>
+                        </div>
+                        <h4 class="font-semibold text-gray-900 mb-1">JPG → PDF</h4>
+                        <p class="text-xs text-gray-600">Создание PDF из картинок</p>
+                    </div>
+                </div>
+
+                <!-- Word to PDF -->
+                <div class="glass-card rounded-2xl p-6 tool-card cursor-pointer group">
+                    <div class="text-center">
+                        <div class="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center icon-container">
+                            <i data-lucide="file-text" class="w-7 h-7 text-white"></i>
+                        </div>
+                        <h4 class="font-semibold text-gray-900 mb-1">Word → PDF</h4>
+                        <p class="text-xs text-gray-600">Конвертация документов</p>
+                    </div>
+                </div>
+
+                <!-- Excel to PDF -->
+                <div class="glass-card rounded-2xl p-6 tool-card cursor-pointer group">
+                    <div class="text-center">
+                        <div class="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center icon-container">
+                            <i data-lucide="table" class="w-7 h-7 text-white"></i>
+                        </div>
+                        <h4 class="font-semibold text-gray-900 mb-1">Excel → PDF</h4>
+                        <p class="text-xs text-gray-600">Конвертация таблиц</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Advanced Tools -->
+        <section class="mb-12">
+            <h3 class="text-2xl font-bold text-gray-900 mb-6">Продвинутые инструменты</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- Extract Text -->
+                <div class="glass-card rounded-2xl p-6 tool-card cursor-pointer group">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center icon-container flex-shrink-0">
+                            <i data-lucide="file-text" class="w-8 h-8 text-white"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-2">Извлечь текст</h4>
+                            <p class="text-sm text-gray-600 mb-3">Получите весь текст из PDF в редактируемом формате</p>
+                            <span class="status-ready text-white text-xs px-3 py-1 rounded-full">Готов</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- OCR -->
+                <div class="glass-card rounded-2xl p-6 tool-card cursor-pointer group">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-700 rounded-2xl flex items-center justify-center icon-container flex-shrink-0">
+                            <i data-lucide="scan-text" class="w-8 h-8 text-white"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-2">OCR распознавание</h4>
+                            <p class="text-sm text-gray-600 mb-3">Извлечение текста из сканированных документов</p>
+                            <div class="flex items-center space-x-2">
+                                <span class="bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded">ИИ</span>
+                                <span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded">5 языков</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Trust Section -->
+        <section class="bg-white/60 backdrop-blur-sm rounded-3xl p-8 text-center">
+            <div class="max-w-4xl mx-auto">
+                <h3 class="text-2xl font-bold text-gray-900 mb-6">Почему выбирают LocalPDF</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-primary-600 mb-2">13</div>
+                        <div class="text-gray-700 font-medium">Инструментов</div>
+                        <div class="text-sm text-gray-500">Полный набор</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-green-600 mb-2">100%</div>
+                        <div class="text-gray-700 font-medium">Приватность</div>
+                        <div class="text-sm text-gray-500">Локальная обработка</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-purple-600 mb-2">0₽</div>
+                        <div class="text-gray-700 font-medium">Стоимость</div>
+                        <div class="text-sm text-gray-500">Бесплатно навсегда</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-orange-600 mb-2">∞</div>
+                        <div class="text-gray-700 font-medium">Без лимитов</div>
+                        <div class="text-sm text-gray-500">Неограниченное использование</div>
+                    </div>
+                </div>
+                
+                <div class="flex items-center justify-center space-x-2 text-green-700">
+                    <i data-lucide="shield-check" class="w-5 h-5"></i>
+                    <span class="font-medium">Ваши файлы никогда не покидают ваше устройство</span>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white/40 backdrop-blur-sm border-t border-gray-200/50 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="text-center text-gray-600">
+                <p>&copy; 2024 LocalPDF. Все инструменты работают локально в вашем браузере.</p>
+                <p class="text-sm mt-2">Никаких серверов, никаких данных не отправляется, полная приватность.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // SVG icon fallbacks for reliable display
+        const svgIcons = {
+            'git-merge': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="m6 9 12 12"/></svg>',
+            'scissors': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>',
+            'archive': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="5" rx="1"/><path d="m4 8 16 0"/><path d="m6 21 12 0"/><path d="M10 12h4"/></svg>',
+            'type': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4,7 4,4 20,4 20,7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>',
+            'droplets': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"/><path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2.04 4.6 4.14 5.78s3.14 2.35 3.14 3.9a5 5 0 0 1-5 5"/></svg>',
+            'rotate-cw': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2v6h-6"/><path d="m21 8-2.5-2.5A10 10 0 1 0 21 16"/></svg>',
+            'file-minus': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/><line x1="9" y1="15" x2="15" y2="15"/></svg>',
+            'file-text': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="12" y2="17"/></svg>',
+            'image': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg>',
+            'images': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 22H4a2 2 0 0 1-2-2V6"/><path d="m22 13-1.296-1.296a2.41 2.41 0 0 0-3.408 0L11 18"/><circle cx="12" cy="8" r="2"/><rect width="16" height="16" x="6" y="2" rx="2"/></svg>',
+            'table': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M21 9H3"/><path d="M21 15H3"/><path d="M12 3v18"/></svg>',
+            'scan-text': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 8h8"/><path d="M7 12h10"/><path d="M7 16h6"/></svg>',
+            'shield-check': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>',
+            'zap': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13,2 3,14 12,14 11,22 21,10 12,10 13,2"/></svg>',
+            'download': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>'
+        };
+
+        // Initialize icons with fallback
+        function initializeIcons() {
+            if (typeof lucide !== 'undefined' && lucide.createIcons) {
+                try {
+                    lucide.createIcons();
+                    console.log('✅ Lucide icons loaded');
+                } catch (error) {
+                    applyFallbackIcons();
+                }
+            } else {
+                applyFallbackIcons();
+            }
+        }
+
+        function applyFallbackIcons() {
+            document.querySelectorAll('i[data-lucide]').forEach(element => {
+                const iconName = element.getAttribute('data-lucide');
+                if (svgIcons[iconName]) {
+                    element.innerHTML = svgIcons[iconName];
+                    element.style.display = 'flex';
+                    element.style.alignItems = 'center';
+                    element.style.justifyContent = 'center';
+                }
+            });
+            console.log('🔄 Applied fallback icons');
+        }
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', initializeIcons);
+        
+        // Fallback initialization
+        setTimeout(initializeIcons, 100);
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LocalPDF - Концепт Современных Иконок 2024</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    },
+                    animation: {
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                        'float': 'float 3s ease-in-out infinite',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'shine': 'shine 2s ease-in-out infinite',
+                        'morph': 'morph 4s ease-in-out infinite'
+                    },
+                    keyframes: {
+                        glow: {
+                            '0%': { boxShadow: '0 0 20px rgba(59, 130, 246, 0.5)' },
+                            '100%': { boxShadow: '0 0 30px rgba(59, 130, 246, 0.8)' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-8px)' }
+                        },
+                        shine: {
+                            '0%': { transform: 'translateX(-100%)' },
+                            '100%': { transform: 'translateX(100%)' }
+                        },
+                        morph: {
+                            '0%, 100%': { borderRadius: '1.5rem' },
+                            '50%': { borderRadius: '2rem' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-morphism {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .neo-morphism {
+            background: linear-gradient(145deg, #ffffff, #f0f0f0);
+            box-shadow: 20px 20px 60px #d9d9d9, -20px -20px 60px #ffffff;
+        }
+        
+        .icon-3d {
+            transform-style: preserve-3d;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .icon-3d:hover {
+            transform: rotateY(15deg) rotateX(15deg) scale(1.1);
+        }
+        
+        .gradient-border {
+            position: relative;
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            padding: 3px;
+            border-radius: 1.5rem;
+        }
+        
+        .gradient-border-inner {
+            background: white;
+            border-radius: 1.2rem;
+            height: 100%;
+            width: 100%;
+        }
+        
+        .shine-effect {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .shine-effect::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shine 3s infinite;
+        }
+        
+        .bg-gradient-mesh {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+        
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .tool-card-modern {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .tool-card-modern:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            background: rgba(255, 255, 255, 0.98);
+        }
+        
+        .icon-container-2024 {
+            background: linear-gradient(135deg, var(--icon-color-1), var(--icon-color-2));
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .icon-container-2024::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--icon-color-1), var(--icon-color-2), var(--icon-color-1));
+            border-radius: inherit;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .icon-container-2024:hover::before {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-gradient-mesh min-h-screen font-sans">
+    <!-- Header -->
+    <header class="backdrop-blur-sm bg-white/10 border-b border-white/20 sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-700 rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold text-sm">PDF</span>
+                    </div>
+                    <span class="text-xl font-bold text-white">LocalPDF Icon Concept 2024</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <!-- Hero Section -->
+        <div class="text-center mb-16">
+            <h1 class="text-4xl md:text-6xl font-bold text-white mb-6">
+                🎨 Современные PDF Иконки
+                <br>
+                <span class="text-2xl md:text-3xl font-semibold bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">
+                    Тренды 2024 года
+                </span>
+            </h1>
+            <p class="text-xl text-white/80 mb-8 max-w-3xl mx-auto">
+                Концепт современных иконок с использованием последних трендов: 3D эффекты, неоморфизм, 
+                глас-морфизм и микро-интерракции
+            </p>
+        </div>
+
+        <!-- Design Trends 2024 -->
+        <div class="mb-16">
+            <h2 class="text-3xl font-bold text-white text-center mb-8">
+                🚀 Тренды Дизайна 2024
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <!-- 3D Icons -->
+                <div class="tool-card-modern rounded-2xl p-6 text-center">
+                    <div class="w-16 h-16 mx-auto mb-4 icon-3d bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                        <i data-lucide="box" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2">3D Эффекты</h3>
+                    <p class="text-sm text-gray-600">Объёмные иконки с глубиной и перспективой</p>
+                </div>
+
+                <!-- Glass Morphism -->
+                <div class="tool-card-modern rounded-2xl p-6 text-center">
+                    <div class="w-16 h-16 mx-auto mb-4 glass-morphism rounded-xl flex items-center justify-center">
+                        <i data-lucide="droplets" class="w-8 h-8 text-blue-600"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2">Глас-морфизм</h3>
+                    <p class="text-sm text-gray-600">Прозрачность и размытие фона</p>
+                </div>
+
+                <!-- Micro Animations -->
+                <div class="tool-card-modern rounded-2xl p-6 text-center">
+                    <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center animate-float">
+                        <i data-lucide="zap" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2">Микро-анимации</h3>
+                    <p class="text-sm text-gray-600">Плавные переходы и hover эффекты</p>
+                </div>
+
+                <!-- Gradient Borders -->
+                <div class="tool-card-modern rounded-2xl p-6 text-center">
+                    <div class="gradient-border w-16 h-16 mx-auto mb-4">
+                        <div class="gradient-border-inner flex items-center justify-center">
+                            <i data-lucide="palette" class="w-8 h-8 text-purple-600"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2">Градиент границы</h3>
+                    <p class="text-sm text-gray-600">Яркие обводки и переходы цветов</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Tools Grid -->
+        <div class="mb-16">
+            <h2 class="text-3xl font-bold text-white text-center mb-8">
+                📋 Основные PDF Инструменты
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                
+                <!-- Merge PDF -->
+                <div class="tool-card-modern rounded-2xl p-6 shine-effect">
+                    <div class="icon-container-2024 w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center animate-morph" 
+                         style="--icon-color-1: #3b82f6; --icon-color-2: #1d4ed8;">
+                        <i data-lucide="merge" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2 text-center">Объединить PDF</h3>
+                    <p class="text-sm text-gray-600 text-center">Слияние нескольких файлов в один</p>
+                    <div class="mt-4 text-center">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            merge, combine, join
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Split PDF -->
+                <div class="tool-card-modern rounded-2xl p-6 shine-effect">
+                    <div class="icon-container-2024 w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center animate-morph" 
+                         style="--icon-color-1: #f59e0b; --icon-color-2: #d97706;">
+                        <i data-lucide="scissors" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2 text-center">Разделить PDF</h3>
+                    <p class="text-sm text-gray-600 text-center">Разбивка на отдельные страницы</p>
+                    <div class="mt-4 text-center">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+                            scissors, split, cut
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Compress PDF -->
+                <div class="tool-card-modern rounded-2xl p-6 shine-effect">
+                    <div class="icon-container-2024 w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center animate-morph" 
+                         style="--icon-color-1: #10b981; --icon-color-2: #059669;">
+                        <i data-lucide="archive" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2 text-center">Сжать PDF</h3>
+                    <p class="text-sm text-gray-600 text-center">Уменьшение размера файла</p>
+                    <div class="mt-4 text-center">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            archive, compress, minimize
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Add Text -->
+                <div class="tool-card-modern rounded-2xl p-6 shine-effect">
+                    <div class="icon-container-2024 w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center animate-morph" 
+                         style="--icon-color-1: #8b5cf6; --icon-color-2: #7c3aed;">
+                        <i data-lucide="type" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2 text-center">Добавить Текст</h3>
+                    <p class="text-sm text-gray-600 text-center">Вставка текста и аннотаций</p>
+                    <div class="mt-4 text-center">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                            type, text, edit
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Watermark -->
+                <div class="tool-card-modern rounded-2xl p-6 shine-effect">
+                    <div class="icon-container-2024 w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center animate-morph" 
+                         style="--icon-color-1: #06b6d4; --icon-color-2: #0891b2;">
+                        <i data-lucide="droplets" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2 text-center">Водяной Знак</h3>
+                    <p class="text-sm text-gray-600 text-center">Защита документов знаками</p>
+                    <div class="mt-4 text-center">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-cyan-100 text-cyan-800">
+                            droplets, watermark, protect
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Rotate PDF -->
+                <div class="tool-card-modern rounded-2xl p-6 shine-effect">
+                    <div class="icon-container-2024 w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center animate-morph" 
+                         style="--icon-color-1: #ec4899; --icon-color-2: #db2777;">
+                        <i data-lucide="rotate-cw" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2 text-center">Повернуть PDF</h3>
+                    <p class="text-sm text-gray-600 text-center">Поворот страниц на 90°/180°</p>
+                    <div class="mt-4 text-center">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-pink-100 text-pink-800">
+                            rotate-cw, turn, orientation
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Extract Pages -->
+                <div class="tool-card-modern rounded-2xl p-6 shine-effect">
+                    <div class="icon-container-2024 w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center animate-morph" 
+                         style="--icon-color-1: #6366f1; --icon-color-2: #4f46e5;">
+                        <i data-lucide="file-minus" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2 text-center">Извлечь Страницы</h3>
+                    <p class="text-sm text-gray-600 text-center">Выделение нужных страниц</p>
+                    <div class="mt-4 text-center">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                            file-minus, extract, select
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Extract Text -->
+                <div class="tool-card-modern rounded-2xl p-6 shine-effect">
+                    <div class="icon-container-2024 w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center animate-morph" 
+                         style="--icon-color-1: #059669; --icon-color-2: #047857;">
+                        <i data-lucide="file-text" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2 text-center">Извлечь Текст</h3>
+                    <p class="text-sm text-gray-600 text-center">Получение текста из PDF</p>
+                    <div class="mt-4 text-center">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+                            file-text, extract, copy
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Conversion Tools -->
+        <div class="mb-16">
+            <h2 class="text-3xl font-bold text-white text-center mb-8">
+                🔄 Инструменты Конвертации
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+                
+                <!-- PDF to Images -->
+                <div class="tool-card-modern rounded-2xl p-6 shine-effect">
+                    <div class="icon-container-2024 w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center animate-morph" 
+                         style="--icon-color-1: #f59e0b; --icon-color-2: #d97706;">
+                        <i data-lucide="image" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2 text-center">PDF в Изображения</h3>
+                    <p class="text-sm text-gray-600 text-center">Конвертация в JPG/PNG</p>
+                    <div class="mt-4 text-center">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+                            image, convert, export
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Images to PDF -->
+                <div class="tool-card-modern rounded-2xl p-6 shine-effect">
+                    <div class="icon-container-2024 w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center animate-morph" 
+                         style="--icon-color-1: #10b981; --icon-color-2: #059669;">
+                        <i data-lucide="images" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2 text-center">Изображения в PDF</h3>
+                    <p class="text-sm text-gray-600 text-center">Создание PDF из картинок</p>
+                    <div class="mt-4 text-center">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            images, create, combine
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Word to PDF -->
+                <div class="tool-card-modern rounded-2xl p-6 shine-effect">
+                    <div class="icon-container-2024 w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center animate-morph" 
+                         style="--icon-color-1: #2563eb; --icon-color-2: #1d4ed8;">
+                        <i data-lucide="file-text" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2 text-center">Word в PDF</h3>
+                    <p class="text-sm text-gray-600 text-center">Конвертация документов Word</p>
+                    <div class="mt-4 text-center">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            file-text, word, convert
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Excel to PDF -->
+                <div class="tool-card-modern rounded-2xl p-6 shine-effect">
+                    <div class="icon-container-2024 w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center animate-morph" 
+                         style="--icon-color-1: #059669; --icon-color-2: #047857;">
+                        <i data-lucide="spreadsheet" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2 text-center">Excel в PDF</h3>
+                    <p class="text-sm text-gray-600 text-center">Конвертация таблиц Excel</p>
+                    <div class="mt-4 text-center">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+                            spreadsheet, excel, table
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Advanced Tools -->
+        <div class="mb-16">
+            <h2 class="text-3xl font-bold text-white text-center mb-8">
+                🤖 Продвинутые Инструменты
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 gap-6 max-w-md mx-auto">
+                
+                <!-- OCR Recognition -->
+                <div class="tool-card-modern rounded-2xl p-8 shine-effect text-center">
+                    <div class="icon-container-2024 w-20 h-20 mx-auto mb-6 rounded-3xl flex items-center justify-center animate-morph" 
+                         style="--icon-color-1: #8b5cf6; --icon-color-2: #7c3aed;">
+                        <i data-lucide="scan-text" class="w-10 h-10 text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-3">OCR Распознавание</h3>
+                    <p class="text-base text-gray-600 mb-4">Извлечение текста из сканированных документов с помощью ИИ</p>
+                    <div class="flex flex-wrap justify-center gap-2">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                            scan-text
+                        </span>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                            AI powered
+                        </span>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                            multilingual
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Icon Alternatives -->
+        <div class="mb-16">
+            <h2 class="text-3xl font-bold text-white text-center mb-8">
+                🎭 Альтернативные Варианты Иконок
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <!-- Merge Alternatives -->
+                <div class="tool-card-modern rounded-2xl p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4 text-center">Объединить PDF - Варианты</h3>
+                    <div class="grid grid-cols-4 gap-4">
+                        <div class="text-center">
+                            <div class="w-12 h-12 mx-auto mb-2 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
+                                <i data-lucide="merge" class="w-6 h-6 text-white"></i>
+                            </div>
+                            <p class="text-xs text-gray-600">merge</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-12 h-12 mx-auto mb-2 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
+                                <i data-lucide="combine" class="w-6 h-6 text-white"></i>
+                            </div>
+                            <p class="text-xs text-gray-600">combine</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-12 h-12 mx-auto mb-2 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
+                                <i data-lucide="git-merge" class="w-6 h-6 text-white"></i>
+                            </div>
+                            <p class="text-xs text-gray-600">git-merge</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-12 h-12 mx-auto mb-2 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
+                                <i data-lucide="layers" class="w-6 h-6 text-white"></i>
+                            </div>
+                            <p class="text-xs text-gray-600">layers</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Split Alternatives -->
+                <div class="tool-card-modern rounded-2xl p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4 text-center">Разделить PDF - Варианты</h3>
+                    <div class="grid grid-cols-4 gap-4">
+                        <div class="text-center">
+                            <div class="w-12 h-12 mx-auto mb-2 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center">
+                                <i data-lucide="scissors" class="w-6 h-6 text-white"></i>
+                            </div>
+                            <p class="text-xs text-gray-600">scissors</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-12 h-12 mx-auto mb-2 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center">
+                                <i data-lucide="split" class="w-6 h-6 text-white"></i>
+                            </div>
+                            <p class="text-xs text-gray-600">split</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-12 h-12 mx-auto mb-2 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center">
+                                <i data-lucide="separator-horizontal" class="w-6 h-6 text-white"></i>
+                            </div>
+                            <p class="text-xs text-gray-600">separator</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-12 h-12 mx-auto mb-2 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center">
+                                <i data-lucide="git-branch" class="w-6 h-6 text-white"></i>
+                            </div>
+                            <p class="text-xs text-gray-600">git-branch</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Implementation Preview -->
+        <div class="mb-16">
+            <h2 class="text-3xl font-bold text-white text-center mb-8">
+                💻 Превью Реализации
+            </h2>
+            <div class="tool-card-modern rounded-2xl p-8">
+                <div class="text-center mb-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Как это будет выглядеть в коде</h3>
+                    <p class="text-gray-600">React компонент с современными иконками Lucide</p>
+                </div>
+                
+                <div class="bg-gray-100 rounded-xl p-6 text-left">
+                    <pre class="text-sm text-gray-800 overflow-x-auto"><code>import { 
+  Merge, Scissors, Archive, Type, Droplets, 
+  RotateCw, FileMinus, FileText, Image, 
+  Images, Spreadsheet, ScanText 
+} from 'lucide-react';
+
+const iconMap = {
+  'merge': Merge,
+  'split': Scissors, 
+  'compress': Archive,
+  'add-text': Type,
+  'watermark': Droplets,
+  'rotate': RotateCw,
+  'extract-pages': FileMinus,
+  'extract-text': FileText,
+  'pdf-to-image': Image,
+  'images-to-pdf': Images,
+  'excel-to-pdf': Spreadsheet,
+  'ocr-pdf': ScanText
+};</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Final Recommendation -->
+        <div class="text-center">
+            <div class="tool-card-modern rounded-2xl p-8 max-w-4xl mx-auto">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">
+                    🎯 Рекомендация
+                </h2>
+                <p class="text-gray-600 text-lg leading-relaxed mb-6">
+                    Использовать <strong>Lucide React иконки</strong> с современными эффектами: 3D трансформации, 
+                    градиентные фоны, микро-анимации и глас-морфизм. Это создаст премиальный вид и улучшит UX.
+                </p>
+                <div class="flex flex-wrap justify-center gap-3">
+                    <span class="px-4 py-2 bg-blue-100 text-blue-800 rounded-full font-medium">✅ Консистентность</span>
+                    <span class="px-4 py-2 bg-green-100 text-green-800 rounded-full font-medium">✅ Масштабируемость</span>
+                    <span class="px-4 py-2 bg-purple-100 text-purple-800 rounded-full font-medium">✅ Кастомизация</span>
+                    <span class="px-4 py-2 bg-orange-100 text-orange-800 rounded-full font-medium">✅ Производительность</span>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        lucide.createIcons();
+        
+        // Add some interactive effects
+        document.querySelectorAll('.tool-card-modern').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-8px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+        
+        // Icon hover effects
+        document.querySelectorAll('.icon-container-2024').forEach(icon => {
+            icon.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.1) rotateY(15deg)';
+            });
+            
+            icon.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1) rotateY(0deg)';
+            });
+        });
+    </script>
+</body>
+</html>
