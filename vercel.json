@@ -61,6 +61,7 @@
     }
   ],
   "rewrites": [
+    { "source": "/robots.txt", "destination": "/api/robots.txt" },
     { "source": "/google34adca022b79f1a0.html", "destination": "/google34adca022b79f1a0.html" },
     { "source": "/((?!api/.*|.*\\.html|.*\\.txt|.*\\.xml|sitemap.*|google.*\\.html).*)", "destination": "/index.html" }
   ]
