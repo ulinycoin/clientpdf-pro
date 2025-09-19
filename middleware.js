@@ -195,13 +195,17 @@ export default async function middleware(request) {
   const url = new URL(request.url);
   const userAgent = request.headers.get('user-agent') || '';
 
-  // Early return for robots.txt and other critical static files
-  // This ensures they are served directly by Vercel without middleware interference
-  if (url.pathname === '/robots.txt' ||
-      url.pathname === '/sitemap.xml' ||
+  // Explicit check for robots.txt (should not reach here if matcher works correctly)
+  if (url.pathname === '/robots.txt') {
+    console.log('[Middleware] WARNING: robots.txt reached middleware - matcher may need adjustment');
+    return null; // Explicit skip to continue to static serving
+  }
+
+  // Additional safety check for other static files
+  if (url.pathname === '/sitemap.xml' ||
       url.pathname.startsWith('/sitemap') ||
       url.pathname.match(/\.(ico|png|jpg|jpeg|gif|svg|js|css|woff|woff2)$/)) {
-    return;
+    return null;
   }
 
   logActivity('Processing request', {
@@ -319,10 +323,9 @@ export default async function middleware(request) {
 export const config = {
   matcher: [
     /*
-     * Simple matchers for Vercel Edge Runtime
-     * Let the middleware handle filtering logic internally
+     * Match all paths except robots.txt, sitemap.xml and standard static Vercel paths
+     * Uses negative lookahead to exclude specific files from middleware processing
      */
-    '/',
-    '/:path*',
+    '/((?!^robots\\.txt$|^sitemap\\.xml$|_next/static|_next/image|favicon\\.ico).*)',
   ],
 };
