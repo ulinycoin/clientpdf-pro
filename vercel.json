@@ -2,66 +2,18 @@
   "buildCommand": "npm run build:full",
   "outputDirectory": "dist",
   "trailingSlash": false,
-  "headers": [
+  "routes": [
     {
-      "source": "/(.*)",
-      "headers": [
-        {"key": "X-Content-Type-Options", "value": "nosniff"},
-        {"key": "X-Frame-Options", "value": "DENY"},
-        {"key": "X-XSS-Protection", "value": "1; mode=block"},
-        {"key": "Referrer-Policy", "value": "strict-origin-when-cross-origin"},
-        {"key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()"},
-        {"key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com https://www.googletagmanager.com https://mc.yandex.ru https://vercel.live; script-src-elem 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com https://www.googletagmanager.com https://mc.yandex.ru https://vercel.live; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https: https://mc.yandex.ru; connect-src 'self' data: https://cdn.jsdelivr.net https://fonts.gstatic.com https://region1.google-analytics.com https://www.google-analytics.com https://analytics.google.com https://mc.yandex.ru https://vercel.live wss://ws-us3.pusher.com; worker-src 'self' blob:; frame-src https://vercel.live; object-src 'none'; base-uri 'self'; form-action 'self'"},
-        {"key": "Cache-Control", "value": "public, max-age=0, must-revalidate"}
-      ]
+      "src": "/robots.txt",
+      "headers": {
+        "Content-Type": "text/plain; charset=utf-8",
+        "Cache-Control": "public, max-age=3600"
+      },
+      "dest": "/robots.txt"
     },
     {
-      "source": "/(.*)\\.(html)",
-      "headers": [
-        {"key": "Cache-Control", "value": "no-cache, no-store, must-revalidate, max-age=0"},
-        {"key": "Pragma", "value": "no-cache"},
-        {"key": "Expires", "value": "0"},
-        {"key": "CF-Cache-Status", "value": "BYPASS"},
-        {"key": "Cache-Buster", "value": "v4-force-refresh"}
-      ]
-    },
-    {
-      "source": "/(.*)\\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2)",
-      "headers": [
-        {"key": "Cache-Control", "value": "public, max-age=31536000, immutable"}
-      ]
-    },
-    {
-      "source": "/sitemap(.*).xml",
-      "headers": [
-        {"key": "Content-Type", "value": "application/xml; charset=utf-8"},
-        {"key": "Cache-Control", "value": "public, max-age=86400"}
-      ]
-    },
-    {
-      "source": "/sitemap.xsl",
-      "headers": [
-        {"key": "Content-Type", "value": "text/xsl; charset=utf-8"},
-        {"key": "Cache-Control", "value": "public, max-age=86400"}
-      ]
-    },
-    {
-      "source": "/robots.txt",
-      "headers": [
-        {"key": "Content-Type", "value": "text/plain; charset=utf-8"},
-        {"key": "Cache-Control", "value": "public, max-age=86400"}
-      ]
+      "src": "/((?!api/.*|.*\\.html|.*\\.txt|.*\\.xml|.*\\.ico|.*\\.png|.*\\.jpg|.*\\.gif|.*\\.svg|.*\\.css|.*\\.js|.*\\.woff|.*\\.woff2|sitemap.*).*)",
+      "dest": "/index.html"
     }
-  ],
-  "redirects": [
-    {
-      "source": "/sitemap-multilingual.xml",
-      "destination": "/sitemap.xml",
-      "permanent": false
-    }
-  ],
-  "rewrites": [
-    { "source": "/google34adca022b79f1a0.html", "destination": "/google34adca022b79f1a0.html" },
-    { "source": "/((?!api/.*|.*\\.html|.*\\.txt|.*\\.xml|sitemap.*|google.*\\.html).*)", "destination": "/index.html" }
   ]
 }
