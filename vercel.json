@@ -58,11 +58,6 @@
       "source": "/sitemap-multilingual.xml",
       "destination": "/sitemap.xml",
       "permanent": false
-    },
-    {
-      "source": "/robots.txt",
-      "destination": "/site-robots.txt",
-      "permanent": false
     }
   ],
   "rewrites": [
