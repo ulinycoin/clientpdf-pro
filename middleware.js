@@ -195,6 +195,15 @@ export default async function middleware(request) {
   const url = new URL(request.url);
   const userAgent = request.headers.get('user-agent') || '';
 
+  // Early return for robots.txt and other critical static files
+  // This ensures they are served directly by Vercel without middleware interference
+  if (url.pathname === '/robots.txt' ||
+      url.pathname === '/sitemap.xml' ||
+      url.pathname.startsWith('/sitemap') ||
+      url.pathname.match(/\.(ico|png|jpg|jpeg|gif|svg|js|css|woff|woff2)$/)) {
+    return;
+  }
+
   logActivity('Processing request', {
     url: url.pathname,
     userAgent: userAgent.slice(0, 100) + '...', // Truncate for logging
