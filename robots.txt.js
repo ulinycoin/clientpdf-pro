@@ -1,4 +1,10 @@
-# LocalPDF Robots.txt - Optimized for PDF Tools Search Engine Visibility
+// Vercel Edge Function for robots.txt
+export const config = {
+  runtime: 'edge',
+}
+
+export default function handler() {
+  const robotsContent = `# LocalPDF Robots.txt - Optimized for PDF Tools Search Engine Visibility
 # Privacy-first PDF tools that work entirely in your browser
 # Updated: September 2025
 
@@ -114,4 +120,12 @@ Crawl-delay: 2
 # - Extract Pages/Text/Images, PDF to Image/SVG
 # - Images/Word/Excel to PDF, Protect PDF, OCR PDF
 # All tools work locally in browser without uploads
-# Available in 5 languages: EN, DE, FR, ES, RU
+# Available in 5 languages: EN, DE, FR, ES, RU`;
+
+  return new Response(robotsContent, {
+    headers: {
+      'Content-Type': 'text/plain; charset=utf-8',
+      'Cache-Control': 'public, max-age=86400',
+    },
+  });
+}
