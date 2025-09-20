@@ -1,54 +1,42 @@
 import React from 'react';
-import { Helmet } from 'react-helmet-async';
 import ModernHeader from '../components/organisms/ModernHeader';
 import ModernFooter from '../components/organisms/ModernFooter';
-import { useTranslation } from '../hooks/useI18n';
+import { useTranslation, useI18n } from '../hooks/useI18n';
+import { SEOHead } from '../components/SEO/SEOHead';
 
 const TermsPage: React.FC = () => {
   const { t } = useTranslation();
+  const { currentLanguage } = useI18n();
+
+  // Generate multilingual canonical URL
+  const canonicalUrl = currentLanguage === 'en'
+    ? 'https://localpdf.online/terms'
+    : `https://localpdf.online/${currentLanguage}/terms`;
+
+  // Structured Data for Legal Page
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": t('pages.terms.title'),
+    "description": "Terms of Service for LocalPDF privacy-first PDF tools",
+    "url": canonicalUrl,
+    "publisher": {
+      "@type": "Organization",
+      "name": "LocalPDF",
+      "url": "https://localpdf.online"
+    }
+  };
 
   return (
     <>
-      <Helmet>
-        <title>{t('pages.terms.title')} - LocalPDF | Privacy-First PDF Tools</title>
-        <meta name="description" content="Terms of Service for LocalPDF: Free, open-source PDF tools with complete privacy protection. No registration required, all processing happens locally." />
-        <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="https://localpdf.online/terms" />
-
-        {/* Open Graph */}
-        <meta property="og:title" content={`${t('pages.terms.title')} - LocalPDF`} />
-        <meta property="og:description" content="Free and privacy-first PDF tools - read our terms of service" />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://localpdf.online/terms" />
-
-        {/* Twitter Cards */}
-        <meta name="twitter:card" content="summary" />
-        <meta name="twitter:title" content={`${t('pages.terms.title')} - LocalPDF`} />
-        <meta name="twitter:description" content="Terms of service for the most privacy-focused PDF tools" />
-
-        {/* Structured Data for Legal Page */}
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebPage",
-            "name": t('pages.terms.title'),
-            "description": "Terms of Service for LocalPDF privacy-first PDF tools",
-            "url": "https://localpdf.online/terms",
-            "publisher": {
-              "@type": "Organization",
-              "name": "LocalPDF",
-              "url": "https://localpdf.online"
-            },
-            "dateModified": "2025-01-15",
-            "inLanguage": "en",
-            "isPartOf": {
-              "@type": "WebSite",
-              "name": "LocalPDF",
-              "url": "https://localpdf.online"
-            }
-          })}
-        </script>
-      </Helmet>
+      <SEOHead
+        title={`${t('pages.terms.title')} - LocalPDF | Privacy-First PDF Tools`}
+        description="Terms of Service for LocalPDF: Free, open-source PDF tools with complete privacy protection. No registration required, all processing happens locally."
+        canonical={canonicalUrl}
+        ogType="website"
+        structuredData={structuredData}
+        includeHreflang={true}
+      />
 
       <div className="min-h-screen bg-gradient-radial from-white to-privacy-50 dark:from-privacy-900 dark:to-privacy-900 flex flex-col">
         <ModernHeader />

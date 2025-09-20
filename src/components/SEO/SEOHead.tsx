@@ -41,7 +41,7 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
   const fullTitle = title.includes('LocalPDF') ? title : `${title} | LocalPDF`;
 
   // Get canonical URL - always use provided canonical URL for consistency
-  // This ensures multilingual pages have correct canonical URLs pointing to the English version
+  // This ensures multilingual pages have correct canonical URLs pointing to themselves
   const canonicalUrl = canonical || 'https://localpdf.online';
 
   // Full image URLs

@@ -1,31 +1,26 @@
 import React from 'react';
-import { Helmet } from 'react-helmet-async';
 import { ModernHeader, ModernFooter } from '../components/organisms';
 import { useTranslation, useI18n } from '../hooks/useI18n';
+import { SEOHead } from '../components/SEO/SEOHead';
 
 const FAQPage: React.FC = () => {
   const { t } = useTranslation();
   const { currentLanguage } = useI18n();
 
+  // Generate multilingual canonical URL
+  const canonicalUrl = currentLanguage === 'en'
+    ? 'https://localpdf.online/faq'
+    : `https://localpdf.online/${currentLanguage}/faq`;
+
   return (
     <>
-      <Helmet>
-        <title>{t('pages.faq.title')} - LocalPDF | Privacy-First PDF Tools</title>
-        <meta name="description" content="Get answers to common questions about LocalPDF's privacy-first PDF tools. Learn about security, features, and how to use our tools effectively." />
-        <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="https://localpdf.online/faq" />
-
-        {/* Open Graph */}
-        <meta property="og:title" content={`${t('pages.faq.title')} - LocalPDF`} />
-        <meta property="og:description" content="Everything you need to know about LocalPDF's privacy-first PDF tools" />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://localpdf.online/faq" />
-
-        {/* Twitter Cards */}
-        <meta name="twitter:card" content="summary" />
-        <meta name="twitter:title" content={`${t('pages.faq.title')} - LocalPDF`} />
-        <meta name="twitter:description" content="Your privacy-first PDF toolkit questions answered" />
-      </Helmet>
+      <SEOHead
+        title={`${t('pages.faq.title')} - LocalPDF | Privacy-First PDF Tools`}
+        description="Get answers to common questions about LocalPDF's privacy-first PDF tools. Learn about security, features, and how to use our tools effectively."
+        canonical={canonicalUrl}
+        ogType="website"
+        includeHreflang={true}
+      />
 
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
         <ModernHeader />
