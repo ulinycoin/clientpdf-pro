@@ -54,6 +54,7 @@ export const header = {
   subtitle: 'Datenschutzzentrierte PDF-Tools',
   navigation: {
     blog: 'Blog',
+    docs: 'Docs',
     privacy: 'Datenschutz',
     faq: 'FAQ',
     github: 'GitHub'

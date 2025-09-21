@@ -17,6 +17,9 @@ import { toolTemplate } from './template/toolTemplate';
 // Import blog module
 import { blog } from './blog/blog';
 
+// Import docs module
+import { docs } from './docs/docs';
+
 // Import tool modules
 import { merge } from './tools/merge';
 import { split } from './tools/split';
@@ -54,6 +57,9 @@ export const en = {
   
   // Blog translations
   blog,
+
+  // Documentation translations
+  docs,
   
   // Home page translations
   home,

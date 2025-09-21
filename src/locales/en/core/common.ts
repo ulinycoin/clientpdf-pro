@@ -56,6 +56,7 @@ export const header = {
   subtitle: 'Privacy-First PDF Tools',
   navigation: {
     blog: 'Blog',
+    docs: 'Docs',
     privacy: 'Privacy',
     faq: 'FAQ',
     github: 'GitHub'

@@ -1,0 +1,11 @@
+fix: implement robots.txt as Vercel API route for reliable access
+
+- Create /api/robots.txt.js serverless function to serve robots.txt content
+- Add rewrite rule in vercel.json to route /robots.txt to API function
+- This bypasses SPA routing and static file serving issues completely
+- Ensures robots.txt is always accessible with proper headers
+- Fixes 404 error on https://localpdf.online/robots.txt
+
+🤖 Generated with Claude AI
+
+Co-Authored-By: Claude AI <noreply@anthropic.com>

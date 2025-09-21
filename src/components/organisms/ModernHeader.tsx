@@ -108,6 +108,22 @@ const ModernHeader: React.FC<ModernHeaderProps> = ({
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-sandy-beige-500 group-hover:w-full transition-all duration-300"></span>
               </Link>
 
+              {/* Documentation link */}
+              <Link
+                to={getLocalizedPath("/docs")}
+                className="relative text-privacy-700 dark:text-privacy-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors font-medium group py-2"
+              >
+                <span className="flex items-center gap-2">
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6z"/>
+                    <path d="M14 8h4l-4-4v4z" opacity="0.7"/>
+                    <path d="M7 12h7M7 14h7M7 16h7" stroke="currentColor" strokeWidth="1" fill="none"/>
+                  </svg>
+                  {t('header.navigation.docs')}
+                </span>
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-purple-500 group-hover:w-full transition-all duration-300"></span>
+              </Link>
+
               <Link
                 to={getLocalizedPath("/privacy")}
                 className="relative text-privacy-700 dark:text-privacy-300 hover:text-seafoam-600 dark:hover:text-seafoam-400 transition-colors font-medium group py-2"
@@ -196,6 +212,20 @@ const ModernHeader: React.FC<ModernHeaderProps> = ({
                 <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
               </svg>
               {t('header.navigation.blog')}
+            </Link>
+
+            {/* Documentation link for mobile */}
+            <Link
+              to={getLocalizedPath("/docs")}
+              className="flex items-center gap-3 px-4 py-3 text-privacy-700 dark:text-privacy-300 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-white/50 dark:hover:bg-privacy-800/50 rounded-xl transition-all duration-200 font-medium"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6z"/>
+                <path d="M14 8h4l-4-4v4z" opacity="0.7"/>
+                <path d="M7 12h7M7 14h7M7 16h7" stroke="currentColor" strokeWidth="1" fill="none"/>
+              </svg>
+              {t('header.navigation.docs')}
             </Link>
 
             <Link

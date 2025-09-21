@@ -28,6 +28,9 @@ const ExcelToPDFPage = React.lazy(() => import('../pages/tools/ExcelToPDFPage'))
 const ProtectPDFPage = React.lazy(() => import('../pages/tools/ProtectPDFPage'));
 const OCRPDFPage = React.lazy(() => import('../pages/tools/OCRPDFPage'));
 
+// Documentation Pages
+const DocsPage = React.lazy(() => import('../pages/DocsPage'));
+
 // Blog Pages
 const BlogPage = React.lazy(() => import('../pages/BlogPage'));
 const BlogPostPage = React.lazy(() => import('../pages/BlogPostPage'));
@@ -58,6 +61,8 @@ const componentMap: { [key: string]: React.ComponentType } = {
   '/excel-to-pdf': ExcelToPDFPage,
   '/protect-pdf': ProtectPDFPage,
   '/ocr-pdf': OCRPDFPage,
+  '/docs': DocsPage,
+  '/docs/:section': DocsPage,
   '/blog': BlogPage,
   '/blog/:slug': BlogPostPage,
   '/blog/category/:category': BlogCategoryPage,

@@ -22,6 +22,8 @@
   { "path": "/excel-to-pdf", "isTool": true },
   { "path": "/protect-pdf", "isTool": true },
   { "path": "/ocr-pdf", "isTool": true },
+  { "path": "/docs", "isTool": false },
+  { "path": "/docs/:section", "isTool": false, "hasDynamicPath": true },
   { "path": "/blog", "isTool": false },
   { "path": "/blog/:slug", "isTool": false, "hasDynamicPath": true },
   { "path": "/blog/category/:category", "isTool": false, "hasDynamicPath": true },

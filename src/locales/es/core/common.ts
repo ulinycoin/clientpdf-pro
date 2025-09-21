@@ -55,6 +55,7 @@ export const header = {
   subtitle: 'Herramientas PDF centradas en la privacidad',
   navigation: {
     blog: 'Blog',
+    docs: 'Docs',
     privacy: 'Privacidad',
     faq: 'FAQ',
     github: 'GitHub'

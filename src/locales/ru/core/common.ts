@@ -56,6 +56,7 @@ export const header = {
   subtitle: 'PDF-инструменты с защитой конфиденциальности',
   navigation: {
     blog: 'Блог',
+    docs: 'Документация',
     privacy: 'Конфиденциальность',
     faq: 'FAQ',
     github: 'GitHub'
