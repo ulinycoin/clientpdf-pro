@@ -1,7 +1,7 @@
 {
   "buildCommand": "npm run build:full",
   "outputDirectory": "dist",
-  "trailingSlash": false,
+  "trailingSlash": true,
   "headers": [
     {
       "source": "/robots.txt",
@@ -15,6 +15,38 @@
           "value": "public, max-age=3600"
         }
       ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/(de|fr|es|ru)$",
+      "destination": "/$1/",
+      "permanent": true
+    },
+    {
+      "source": "/merge",
+      "destination": "/merge-pdf/",
+      "permanent": true
+    },
+    {
+      "source": "/split",
+      "destination": "/split-pdf/",
+      "permanent": true
+    },
+    {
+      "source": "/compress",
+      "destination": "/compress-pdf/",
+      "permanent": true
+    },
+    {
+      "source": "/protect",
+      "destination": "/protect-pdf/",
+      "permanent": true
+    },
+    {
+      "source": "/ocr",
+      "destination": "/ocr-pdf/",
+      "permanent": true
     }
   ],
   "rewrites": [

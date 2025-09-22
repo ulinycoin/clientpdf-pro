@@ -115,3 +115,10 @@ Crawl-delay: 2
 # - Images/Word/Excel to PDF, Protect PDF, OCR PDF
 # All tools work locally in browser without uploads
 # Available in 5 languages: EN, DE, FR, ES, RU
+
+# === CLEAN URL PARAMETERS ===
+# Remove tracking parameters to prevent duplicate content
+Clean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content
+Clean-param: gclid&fbclid&msclkid&yclid
+Clean-param: ref&referrer&source&medium&campaign
+Clean-param: igshid&_hsenc&_hsmi&mc_cid&mc_eid

@@ -251,10 +251,8 @@ const FEATURE_LISTS = {
 
 // Generate URL for language and tool
 function generateUrl(language: SupportedLanguage, toolId: string): string {
-  if (language === 'en') {
-    return `${BASE_URL}/${toolId}`;
-  }
-  return `${BASE_URL}/${language}/${toolId}`;
+  // ALL canonical URLs point to English version for proper SEO hierarchy
+  return `${BASE_URL}/${toolId}`;
 }
 
 // Generate SEO data for a specific tool and language (safe version for build time)

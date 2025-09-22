@@ -323,8 +323,12 @@ export default async function middleware(request) {
 export const config = {
   matcher: [
     /*
-     * Temporarily disable middleware to fix robots.txt issues
+     * Match all paths except static files and API routes
+     * This ensures prerendering.io works for all content pages
      */
-    '/___never_match___',
+    '/((?!.*\\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|pdf|zip|txt|xml)$).*)',
+    '/((?!api/).*)',
+    '/((?!robots\\.txt).*)',
+    '/((?!sitemap).*)',
   ],
 };

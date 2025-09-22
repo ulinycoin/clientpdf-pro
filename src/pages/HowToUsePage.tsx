@@ -10,7 +10,7 @@ const HowToUsePage: React.FC = () => {
         <title>How to Use LocalPDF - Complete Guide to Free PDF Tools</title>
         <meta name="description" content="Complete guide on how to use LocalPDF's 9 free PDF tools. Step-by-step instructions for merging, splitting, compressing, editing and converting PDFs in your browser." />
         <meta name="keywords" content="how to use LocalPDF, PDF tools guide, PDF tutorial, merge PDF tutorial, split PDF guide, compress PDF instructions" />
-        <meta name="robots" content="noindex, nofollow" />
+        <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://localpdf.online/how-to-use" />
 
         {/* Open Graph */}

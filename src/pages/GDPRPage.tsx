@@ -15,7 +15,7 @@ const GDPRPage: React.FC = () => {
     "@type": "WebPage",
     "name": t('pages.gdpr.title'),
     "description": t('pages.gdpr.description'),
-    "url": `${baseUrl}/pages.gdpr`,
+    "url": `${baseUrl}/gdpr`,
     "inLanguage": currentLanguage,
     "isPartOf": {
       "@type": "WebSite",
@@ -36,21 +36,21 @@ const GDPRPage: React.FC = () => {
       <Helmet>
         <title>{t('pages.gdpr.title')}</title>
         <meta name="description" content={t('pages.gdpr.description')} />
-        <link rel="canonical" href={`${baseUrl}/pages.gdpr`} />
+        <link rel="canonical" href={`${baseUrl}/gdpr`} />
         
         {/* Hreflang tags */}
-        <link rel="alternate" hreflang="en" href="https://localpdf.online/pages.gdpr" />
-        <link rel="alternate" hreflang="de" href="https://localpdf.online/de/pages.gdpr" />
-        <link rel="alternate" hreflang="fr" href="https://localpdf.online/fr/pages.gdpr" />
-        <link rel="alternate" hreflang="es" href="https://localpdf.online/es/pages.gdpr" />
-        <link rel="alternate" hreflang="ru" href="https://localpdf.online/ru/pages.gdpr" />
-        <link rel="alternate" hreflang="x-default" href="https://localpdf.online/pages.gdpr" />
+        <link rel="alternate" hreflang="en" href="https://localpdf.online/gdpr" />
+        <link rel="alternate" hreflang="de" href="https://localpdf.online/de/gdpr" />
+        <link rel="alternate" hreflang="fr" href="https://localpdf.online/fr/gdpr" />
+        <link rel="alternate" hreflang="es" href="https://localpdf.online/es/gdpr" />
+        <link rel="alternate" hreflang="ru" href="https://localpdf.online/ru/gdpr" />
+        <link rel="alternate" hreflang="x-default" href="https://localpdf.online/gdpr" />
         
         {/* Open Graph */}
         <meta property="og:type" content="website" />
         <meta property="og:title" content={t('pages.gdpr.title')} />
         <meta property="og:description" content={t('pages.gdpr.description')} />
-        <meta property="og:url" content={`${baseUrl}/pages.gdpr`} />
+        <meta property="og:url" content={`${baseUrl}/gdpr`} />
         <meta property="og:site_name" content="LocalPDF" />
         
         {/* Structured Data */}
