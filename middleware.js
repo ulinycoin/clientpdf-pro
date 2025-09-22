@@ -323,12 +323,9 @@ export default async function middleware(request) {
 export const config = {
   matcher: [
     /*
-     * Match all paths except static files and API routes
-     * This ensures prerendering.io works for all content pages
+     * Match all paths except static files, API routes, robots.txt and sitemaps
+     * Simplified matcher without capturing groups to avoid Vercel errors
      */
-    '/((?!.*\\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|pdf|zip|txt|xml)$).*)',
-    '/((?!api/).*)',
-    '/((?!robots\\.txt).*)',
-    '/((?!sitemap).*)',
+    '/:path*',
   ],
 };
