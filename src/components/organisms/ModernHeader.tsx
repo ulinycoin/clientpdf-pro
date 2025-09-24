@@ -108,34 +108,6 @@ const ModernHeader: React.FC<ModernHeaderProps> = ({
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-sandy-beige-500 group-hover:w-full transition-all duration-300"></span>
               </Link>
 
-              {/* Documentation link */}
-              <Link
-                to={getLocalizedPath("/docs")}
-                className="relative text-privacy-700 dark:text-privacy-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors font-medium group py-2"
-              >
-                <span className="flex items-center gap-2">
-                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6z"/>
-                    <path d="M14 8h4l-4-4v4z" opacity="0.7"/>
-                    <path d="M7 12h7M7 14h7M7 16h7" stroke="currentColor" strokeWidth="1" fill="none"/>
-                  </svg>
-                  {t('header.navigation.docs')}
-                </span>
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-purple-500 group-hover:w-full transition-all duration-300"></span>
-              </Link>
-
-              <Link
-                to={getLocalizedPath("/privacy")}
-                className="relative text-privacy-700 dark:text-privacy-300 hover:text-seafoam-600 dark:hover:text-seafoam-400 transition-colors font-medium group py-2"
-              >
-                <span className="flex items-center gap-2">
-                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12,1L21,5V11C21,16.55 17.16,21.74 12,23C6.84,21.74 3,16.55 3,11V5L12,1Z" />
-                  </svg>
-                  {t('header.navigation.privacy')}
-                </span>
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-seafoam-500 group-hover:w-full transition-all duration-300"></span>
-              </Link>
               
               <Link
                 to={getLocalizedPath("/faq")}
@@ -150,20 +122,6 @@ const ModernHeader: React.FC<ModernHeaderProps> = ({
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-ocean-500 group-hover:w-full transition-all duration-300"></span>
               </Link>
               
-              <a
-                href="https://github.com/ulinycoin/clientpdf-pro"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="relative text-privacy-700 dark:text-privacy-300 hover:text-privacy-900 dark:hover:text-privacy-100 transition-colors font-medium group py-2"
-              >
-                <span className="flex items-center gap-2">
-                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12,2A10,10 0 0,0 2,12C2,16.42 4.87,20.17 8.84,21.5C9.34,21.58 9.5,21.27 9.5,21C9.5,20.77 9.5,20.14 9.5,19.31C6.73,19.91 6.14,17.97 6.14,17.97C5.68,16.81 5.03,16.5 5.03,16.5C4.12,15.88 5.1,15.9 5.1,15.9C6.1,15.97 6.63,16.93 6.63,16.93C7.5,18.45 8.97,18 9.54,17.76C9.63,17.11 9.89,16.67 10.17,16.42C7.95,16.17 5.62,15.31 5.62,11.5C5.62,10.39 6,9.5 6.65,8.79C6.55,8.54 6.2,7.5 6.75,6.15C6.75,6.15 7.59,5.88 9.5,7.17C10.29,6.95 11.15,6.84 12,6.84C12.85,6.84 13.71,6.95 14.5,7.17C16.41,5.88 17.25,6.15 17.25,6.15C17.8,7.5 17.45,8.54 17.35,8.79C18,9.5 18.38,10.39 18.38,11.5C18.38,15.32 16.04,16.16 13.81,16.41C14.17,16.72 14.5,17.33 14.5,18.26C14.5,19.6 14.5,20.68 14.5,21C14.5,21.27 14.66,21.59 15.17,21.5C19.14,20.16 22,16.42 22,12A10,10 0 0,0 12,2Z" />
-                  </svg>
-                  GitHub
-                </span>
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-privacy-accent group-hover:w-full transition-all duration-300"></span>
-              </a>
             </nav>
 
             {/* Controls */}
@@ -214,30 +172,6 @@ const ModernHeader: React.FC<ModernHeaderProps> = ({
               {t('header.navigation.blog')}
             </Link>
 
-            {/* Documentation link for mobile */}
-            <Link
-              to={getLocalizedPath("/docs")}
-              className="flex items-center gap-3 px-4 py-3 text-privacy-700 dark:text-privacy-300 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-white/50 dark:hover:bg-privacy-800/50 rounded-xl transition-all duration-200 font-medium"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6z"/>
-                <path d="M14 8h4l-4-4v4z" opacity="0.7"/>
-                <path d="M7 12h7M7 14h7M7 16h7" stroke="currentColor" strokeWidth="1" fill="none"/>
-              </svg>
-              {t('header.navigation.docs')}
-            </Link>
-
-            <Link
-              to={getLocalizedPath("/privacy")}
-              className="flex items-center gap-3 px-4 py-3 text-privacy-700 dark:text-privacy-300 hover:text-seafoam-600 dark:hover:text-seafoam-400 hover:bg-white/50 dark:hover:bg-privacy-800/50 rounded-xl transition-all duration-200 font-medium"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12,1L21,5V11C21,16.55 17.16,21.74 12,23C6.84,21.74 3,16.55 3,11V5L12,1Z" />
-              </svg>
-{t('header.navigation.privacy')}
-            </Link>
             
             <Link
               to={getLocalizedPath("/faq")}
@@ -250,18 +184,6 @@ const ModernHeader: React.FC<ModernHeaderProps> = ({
 {t('header.navigation.faq')}
             </Link>
             
-            <a
-              href="https://github.com/ulinycoin/clientpdf-pro"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-3 px-4 py-3 text-privacy-700 dark:text-privacy-300 hover:text-privacy-900 dark:hover:text-privacy-100 hover:bg-white/50 dark:hover:bg-privacy-800/50 rounded-xl transition-all duration-200 font-medium"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12,2A10,10 0 0,0 2,12C2,16.42 4.87,20.17 8.84,21.5C9.34,21.58 9.5,21.27 9.5,21C9.5,20.77 9.5,20.14 9.5,19.31C6.73,19.91 6.14,17.97 6.14,17.97C5.68,16.81 5.03,16.5 5.03,16.5C4.12,15.88 5.1,15.9 5.1,15.9C6.1,15.97 6.63,16.93 6.63,16.93C7.5,18.45 8.97,18 9.54,17.76C9.63,17.11 9.89,16.67 10.17,16.42C7.95,16.17 5.62,15.31 5.62,11.5C5.62,10.39 6,9.5 6.65,8.79C6.55,8.54 6.2,7.5 6.75,6.15C6.75,6.15 7.59,5.88 9.5,7.17C10.29,6.95 11.15,6.84 12,6.84C12.85,6.84 13.71,6.95 14.5,7.17C16.41,5.88 17.25,6.15 17.25,6.15C17.8,7.5 17.45,8.54 17.35,8.79C18,9.5 18.38,10.39 18.38,11.5C18.38,15.32 16.04,16.16 13.81,16.41C14.17,16.72 14.5,17.33 14.5,18.26C14.5,19.6 14.5,20.68 14.5,21C14.5,21.27 14.66,21.59 15.17,21.5C19.14,20.16 22,16.42 22,12A10,10 0 0,0 12,2Z" />
-              </svg>
-{t('header.mobileMenu.githubRepository')}
-            </a>
 
             {/* Mobile Controls */}
             <div className="px-4 pt-4 border-t border-privacy-200/30 dark:border-privacy-700/30 space-y-4">

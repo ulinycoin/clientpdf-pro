@@ -29,12 +29,21 @@ const ModernFooter: React.FC = () => {
       ]
     },
     {
+      title: t('footer.sections.resources.title', 'Resources'),
+      links: [
+        { name: t('footer.sections.resources.pdfHub', 'PDF Learning Center'), href: getLocalizedPath('/pdf-hub'), internal: true },
+        { name: t('footer.sections.resources.guides', 'PDF Guides'), href: getLocalizedPath('/pdf-hub/guides'), internal: true },
+        { name: t('footer.sections.resources.workflows', 'Workflows'), href: getLocalizedPath('/pdf-hub/workflows'), internal: true },
+        { name: t('footer.sections.resources.comparison', 'Tool Comparison'), href: getLocalizedPath('/pdf-hub/comparison'), internal: true }
+      ]
+    },
+    {
       title: t('footer.sections.company.title'),
       links: [
         { name: t('footer.sections.company.about'), href: getLocalizedPath('/faq'), internal: true },
+        { name: t('header.navigation.docs'), href: getLocalizedPath('/docs'), internal: true },
         { name: t('footer.links.privacy'), href: getLocalizedPath('/privacy'), internal: true },
-        { name: t('footer.sections.company.terms'), href: getLocalizedPath('/terms'), internal: true },
-        { name: 'GDPR', href: getLocalizedPath('/gdpr'), internal: true }
+        { name: t('footer.sections.company.terms'), href: getLocalizedPath('/terms'), internal: true }
       ]
     },
     {
@@ -43,7 +52,7 @@ const ModernFooter: React.FC = () => {
         { name: 'GitHub', href: 'https://github.com/ulinycoin/clientpdf-pro', internal: false },
         { name: t('footer.sections.developers.apiDocs'), href: 'https://github.com/ulinycoin/clientpdf-pro#api', internal: false },
         { name: t('footer.sections.developers.contribute'), href: 'https://github.com/ulinycoin/clientpdf-pro/contributing', internal: false },
-        { name: t('footer.sections.developers.license'), href: 'https://github.com/ulinycoin/clientpdf-pro/license', internal: false }
+        { name: 'GDPR', href: getLocalizedPath('/gdpr'), internal: true }
       ]
     }
   ];
@@ -59,6 +68,24 @@ const ModernFooter: React.FC = () => {
       )
     },
     {
+      name: 'Twitter/X',
+      href: 'https://x.com/LocalPDF',
+      icon: (
+        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/>
+        </svg>
+      )
+    },
+    {
+      name: 'Reddit',
+      href: 'https://www.reddit.com/user/Salt_Apartment5489/',
+      icon: (
+        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/>
+        </svg>
+      )
+    },
+    {
       name: 'Website',
       href: 'https://localpdf.online',
       icon: (
@@ -70,76 +97,36 @@ const ModernFooter: React.FC = () => {
   ];
 
   return (
-    <footer className="relative bg-gradient-to-br from-privacy-50 via-white to-seafoam-50 dark:from-privacy-950 dark:via-privacy-900 dark:to-ocean-950 border-t border-privacy-200 dark:border-privacy-700 mt-20">
-      
-      {/* Background decoration */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-20 -right-20 w-40 h-40 bg-gradient-to-br from-seafoam-200/10 to-ocean-200/10 rounded-full blur-3xl"></div>
-        <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-gradient-to-br from-privacy-200/10 to-seafoam-200/10 rounded-full blur-2xl"></div>
+    <footer className="relative bg-white dark:bg-privacy-900 border-t border-gray-200 dark:border-privacy-700 mt-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
-        {/* Floating particles */}
-        {shouldAnimate && (
-          <>
-            <div className="absolute w-1 h-1 bg-seafoam-400/20 rounded-full gentle-float" style={{left: '20%', top: '30%', animationDelay: '0s'}}></div>
-            <div className="absolute w-1 h-1 bg-ocean-400/20 rounded-full gentle-float" style={{left: '80%', top: '60%', animationDelay: '2s'}}></div>
-            <div className="absolute w-1 h-1 bg-privacy-accent/20 rounded-full gentle-float" style={{left: '60%', top: '80%', animationDelay: '1s'}}></div>
-          </>
-        )}
-      </div>
-      
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        
-        {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 mb-12">
-          
-          {/* Brand Section */}
-          <div className="lg:col-span-1">
-            <div className="flex items-center space-x-3 mb-6">
-              <div className="w-10 h-10 bg-gradient-to-br from-seafoam-500 to-ocean-500 rounded-xl flex items-center justify-center text-white shadow-lg">
-                <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6z"/>
-                  <path d="M14 8h4l-4-4v4z" opacity="0.7"/>
-                  <circle cx="12" cy="15" r="2" fill="white"/>
-                </svg>
-              </div>
-              <h3 className="text-xl font-bold text-gradient-ocean">LocalPDF</h3>
-            </div>
-            
-            <p className="text-gray-700 dark:text-privacy-400 mb-6 leading-relaxed">
-              {t('footer.description')}
-            </p>
 
-          </div>
-
-          {/* Footer Links */}
+        {/* Footer Links */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
           {footerLinks.map((section, index) => (
             <div key={section.title}>
-              <h4 className="text-lg font-semibold text-privacy-900 dark:text-privacy-100 mb-4">
+              <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">
                 {section.title}
               </h4>
-              <ul className="space-y-3">
+              <ul className="space-y-1">
                 {section.links.map((link) => (
                   <li key={link.name}>
                     {link.internal ? (
                       <Link
                         to={link.href}
-                        className="text-gray-700 dark:text-privacy-400 hover:text-seafoam-600 dark:hover:text-seafoam-400 transition-colors text-sm font-medium group"
+                        className="text-xs text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                       >
-                        <span className="border-b border-transparent group-hover:border-seafoam-400 transition-colors">
-                          {link.name}
-                        </span>
+                        {link.name}
                       </Link>
                     ) : (
                       <a
                         href={link.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-gray-700 dark:text-privacy-400 hover:text-ocean-600 dark:hover:text-ocean-400 transition-colors text-sm font-medium group flex items-center gap-1"
+                        className="text-xs text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center gap-1"
                       >
-                        <span className="border-b border-transparent group-hover:border-ocean-400 transition-colors">
-                          {link.name}
-                        </span>
-                        <svg className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" viewBox="0 0 24 24" fill="currentColor">
+                        {link.name}
+                        <svg className="w-2.5 h-2.5" viewBox="0 0 24 24" fill="currentColor">
                           <path d="M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z" />
                         </svg>
                       </a>
@@ -151,50 +138,29 @@ const ModernFooter: React.FC = () => {
           ))}
         </div>
 
+        {/* Bottom Section - Compact */}
+        <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+          <div className="flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0">
 
-        {/* Bottom Section */}
-        <div className="border-t border-privacy-200 dark:border-privacy-700 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-6 md:space-y-0">
-            
-            {/* Copyright & Tech Stack */}
-            <div className="text-center md:text-left">
-              <div className="text-gray-700 dark:text-privacy-400 text-sm mb-2">
-                {t('footer.copyright', { year: currentYear })}
-              </div>
-              <div className="flex flex-wrap items-center gap-2 text-xs text-gray-600 dark:text-privacy-500">
-                <span>{t('footer.builtWith')}</span>
-                <div className="flex items-center gap-1 px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full">
-                  <span>React</span>
-                </div>
-                <span>+</span>
-                <div className="flex items-center gap-1 px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full">
-                  <span>TypeScript</span>
-                </div>
-                <span>+</span>
-                <div className="flex items-center gap-1 px-2 py-1 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full">
-                  <span>pdf-lib</span>
-                </div>
-              </div>
+            {/* Copyright */}
+            <div className="text-xs text-gray-500 dark:text-gray-400 text-center sm:text-left">
+              {t('footer.copyright', { year: currentYear })}
             </div>
 
-            {/* Social Links */}
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-700 dark:text-privacy-400 font-medium">
-                {t('footer.followProject')}
-              </span>
-              <div className="flex gap-3">
+            {/* Tech Stack & Social */}
+            <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
+              <span className="hidden sm:inline">Built with React + TypeScript</span>
+              <div className="flex gap-2">
                 {socialLinks.map((social) => (
                   <a
                     key={social.name}
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-10 h-10 bg-white/60 dark:bg-privacy-900/60 backdrop-blur-sm rounded-lg flex items-center justify-center text-gray-700 dark:text-privacy-400 hover:text-privacy-900 dark:hover:text-privacy-100 hover:bg-white/80 dark:hover:bg-privacy-800/60 border border-white/20 dark:border-privacy-700/30 transition-all duration-300 group"
+                    className="w-6 h-6 flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                     aria-label={social.name}
                   >
-                    <div className={`transform ${shouldAnimate ? 'group-hover:scale-110' : ''} transition-transform`}>
-                      {social.icon}
-                    </div>
+                    {social.icon}
                   </a>
                 ))}
               </div>

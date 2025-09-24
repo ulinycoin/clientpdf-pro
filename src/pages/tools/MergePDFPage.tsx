@@ -3,18 +3,27 @@ import { getToolSEOData } from '../../data/seoData';
 import { StandardToolPageTemplate } from '../../components/templates';
 import { ModernMergeTool, RelatedToolsSection } from '../../components/organisms';
 import { ModernUploadZone } from '../../components/molecules';
+import { SemanticContent, SemanticTitle } from '../../components/molecules/SemanticContent';
 import { useI18n } from '../../hooks/useI18n';
 import { useFileUpload } from '../../hooks/useFileUpload';
 import { useDynamicSEO } from '../../hooks/useDynamicSEO';
 import { getCombinedFAQs } from '../../data/faqData';
+import { useEntity } from '../../components/providers/EntityProvider';
+import { entityHelper } from '../../utils/entityHelpers';
 
 const MergePDFPage: React.FC = () => {
   const { t, language } = useI18n();
   const seoData = getToolSEOData('merge', language);
   const [toolActive, setToolActive] = useState(false);
 
+  // Get entity data for semantic content
+  const { entity, name, description, structuredData, keywords } = useEntity();
+
   // Get FAQ data for SEO schema
   const mergeFAQs = getCombinedFAQs('merge');
+
+  // Generate AI-optimized FAQ content
+  const aiOptimizedContent = entity ? entityHelper.getAIOptimizedContent(entity, language) : null;
 
   // Dynamic SEO updates
   useDynamicSEO('merge');
@@ -67,10 +76,19 @@ const MergePDFPage: React.FC = () => {
             </div>
             <div>
               <h3 className="text-xl font-black text-black dark:text-white">
-                {t('pages.tools.merge.selectedFiles')} ({files.length})
+                <SemanticContent
+                  entity={entity || 'PDFProcessing'}
+                  context="heading"
+                  fallback={t('pages.tools.merge.selectedFiles')}
+                /> ({files.length})
               </h3>
               <p className="text-gray-800 dark:text-gray-100 font-medium text-sm">
-                {t('pages.tools.merge.readyToMerge')}
+                <SemanticContent
+                  entity={entity || 'PDFProcessing'}
+                  context="description"
+                  fallback={t('pages.tools.merge.readyToMerge')}
+                  maxVariants={1}
+                />
               </p>
             </div>
           </div>
@@ -107,7 +125,12 @@ const MergePDFPage: React.FC = () => {
               onClick={() => setToolActive(true)}
               className="btn-privacy-modern text-lg px-8 py-4 min-w-[250px] ripple-effect btn-press"
             >
-              {t('pages.tools.merge.buttons.startMerging', { count: files.length })}
+              <SemanticContent
+                entity={entity || 'PDFProcessing'}
+                context="body"
+                fallback={t('pages.tools.merge.buttons.startMerging', { count: files.length })}
+                maxVariants={1}
+              />
             </button>
           </div>
         </div>
@@ -121,16 +144,38 @@ const MergePDFPage: React.FC = () => {
     />
   );
 
+  // Enhanced SEO data with entity information
+  const enhancedSEOData = {
+    ...seoData,
+    structuredData: entity ? structuredData : seoData.structuredData,
+    keywords: entity ? keywords.primary.join(', ') : seoData.keywords,
+    entityData: {
+      primaryEntity: entity,
+      name,
+      description,
+      semanticVariants: entity ? entityHelper.getSemanticVariants(entity, language) : []
+    }
+  };
+
+  // Enhanced FAQ with AI-optimized questions
+  const enhancedFAQs = [
+    ...mergeFAQs.map(faq => ({
+      question: faq.question,
+      answer: faq.answer
+    })),
+    ...(aiOptimizedContent?.conversationalQueries.slice(0, 2).map(query => ({
+      question: query,
+      answer: description || t('pages.tools.merge.pageDescription')
+    })) || [])
+  ];
+
   return (
     <StandardToolPageTemplate
-      seoData={seoData}
+      seoData={enhancedSEOData}
       toolId="merge-pdf"
-      faqSchema={mergeFAQs.map(faq => ({
-        question: faq.question,
-        answer: faq.answer
-      }))}
-      pageTitle={t('pages.tools.merge.pageTitle')}
-      pageDescription={t('pages.tools.merge.pageDescription')}
+      faqSchema={enhancedFAQs}
+      pageTitle={name ? `${name} - ${t('pages.tools.merge.pageTitle')}` : t('pages.tools.merge.pageTitle')}
+      pageDescription={description || t('pages.tools.merge.pageDescription')}
       toolComponent={toolComponent}
       breadcrumbKey="merge-pdf"
       relatedToolsSection={<RelatedToolsSection currentTool="merge-pdf" />}

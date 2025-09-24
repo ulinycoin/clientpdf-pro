@@ -95,6 +95,7 @@ const HomePage: React.FC = () => {
         {/* Bento Tools Grid - Modern asymmetric design */}
         <BentoToolsGrid />
 
+
         {/* Privacy Benefits Section */}
         <PrivacyBenefitsSection animated={true} />
 

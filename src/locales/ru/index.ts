@@ -10,6 +10,7 @@ import { pages } from './core/pages';
 import { components } from './core/components';
 import { gdpr } from './core/gdpr';
 import { relatedTools } from './core/relatedTools';
+import { authority } from './core/authority';
 
 // Import template module
 import { toolTemplate } from './template/toolTemplate';
@@ -89,9 +90,12 @@ export const ru = {
   pages: {
     // Static pages (faq, privacy, terms)
     ...pages,
-    
+
     // GDPR page
     gdpr,
+
+    // Authority pages
+    authority,
     
     // Tool pages (nested under pages.tools.* for individual tools)
     tools: {
