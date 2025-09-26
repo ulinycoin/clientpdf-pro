@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { getToolSEOData } from '../../data/seoData';
 import { StandardToolPageTemplate } from '../../components/templates';
 import { ModernCompressionTool, RelatedToolsSection } from '../../components/organisms';
-import { ModernUploadZone } from '../../components/molecules';
+import ToolUploadZone from '../../components/molecules/ToolUploadZone';
 import { useFileUpload } from '../../hooks/useFileUpload';
 import { useI18n } from '../../hooks/useI18n';
 import { useDynamicSEO } from '../../hooks/useDynamicSEO';
 import { getCombinedFAQs } from '../../data/faqData';
 import { PDFProcessingResult } from '../../types';
-import { Download, CheckCircle } from 'lucide-react';
+import { Download, CheckCircle, FileDown } from 'lucide-react';
 
 const CompressPDFPage: React.FC = () => {
   const { t, language } = useI18n();
@@ -46,6 +46,18 @@ const CompressPDFPage: React.FC = () => {
       setResult(result);
     }
     setToolActive(false);
+
+    // Auto-scroll to results after compression is complete
+    setTimeout(() => {
+      const resultsSection = document.querySelector('[data-results-section]');
+      if (resultsSection) {
+        resultsSection.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+          inline: 'nearest'
+        });
+      }
+    }, 100);
   };
 
   const handleReset = () => {
@@ -84,6 +96,28 @@ const CompressPDFPage: React.FC = () => {
     setToolActive(false);
   };
 
+  // Auto scroll to upload zone on component mount
+  useEffect(() => {
+    const scrollToUploadZone = () => {
+      const uploadZone = document.getElementById('tool-upload-zone');
+      if (uploadZone) {
+        const rect = uploadZone.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const headerOffset = 120;
+        const targetPosition = rect.top + scrollTop - headerOffset;
+        const finalPosition = Math.max(0, targetPosition);
+
+        window.scrollTo({
+          top: finalPosition,
+          behavior: 'smooth'
+        });
+      }
+    };
+
+    const timer = setTimeout(scrollToUploadZone, 800);
+    return () => clearTimeout(timer);
+  }, []);
+
   // Create the tool component based on state
   const toolComponent = (() => {
     // Show results if we have them
@@ -92,7 +126,7 @@ const CompressPDFPage: React.FC = () => {
       const compressedSize = result.size;
       
       return (
-        <div className="max-w-4xl mx-auto space-y-8">
+        <div className="max-w-4xl mx-auto space-y-8" data-results-section>
           {/* Success Header */}
           <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg border border-white/20 dark:border-gray-600/20 rounded-2xl shadow-lg p-8">
             <div className="flex items-center gap-3 mb-6">
@@ -168,16 +202,20 @@ const CompressPDFPage: React.FC = () => {
     return (
       <div className="max-w-4xl mx-auto space-y-8">
         {/* Upload Zone */}
-        <ModernUploadZone
+        <ToolUploadZone
           onFilesSelected={handleFileSelect}
+          title={t('tools.compress.uploadTitle')}
+          subtitle={t('tools.compress.uploadSubtitle')}
+          supportedFormats={t('tools.compress.supportedFormats')}
+          gradientFrom="green-500"
+          gradientTo="green-600"
+          IconComponent={FileDown}
           accept="application/pdf"
           acceptedTypes={['application/pdf']}
           multiple={false}
           maxSize={100 * 1024 * 1024}
           disabled={false}
-          title={t('tools.compress.uploadTitle')}
-          subtitle={t('tools.compress.uploadSubtitle')}
-          supportedFormats={t('tools.compress.supportedFormats')}
+          toolId="compress-pdf"
         />
         
         {/* File List & Start Button */}

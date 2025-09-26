@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { getToolSEOData } from '../../data/seoData';
 import { StandardToolPageTemplate } from '../../components/templates';
 import PdfToImageTool from '../../components/organisms/PdfToImageTool';
 import { RelatedToolsSection } from '../../components/organisms';
-import { ModernUploadZone } from '../../components/molecules';
+import ToolUploadZone from '../../components/molecules/ToolUploadZone';
 import { useFileUpload } from '../../hooks/useFileUpload';
 import { useI18n } from '../../hooks/useI18n';
 import { useDynamicSEO } from '../../hooks/useDynamicSEO';
@@ -50,6 +50,28 @@ const PDFToImagePage: React.FC = () => {
   const handleToolClose = () => {
     setToolActive(false);
   };
+
+  // Auto scroll to upload zone on component mount
+  useEffect(() => {
+    const scrollToUploadZone = () => {
+      const uploadZone = document.getElementById('tool-upload-zone');
+      if (uploadZone) {
+        const rect = uploadZone.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const headerOffset = 120;
+        const targetPosition = rect.top + scrollTop - headerOffset;
+        const finalPosition = Math.max(0, targetPosition);
+
+        window.scrollTo({
+          top: finalPosition,
+          behavior: 'smooth'
+        });
+      }
+    };
+
+    const timer = setTimeout(scrollToUploadZone, 800);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Create the tool component based on state
   const toolComponent = (() => {
@@ -101,16 +123,20 @@ const PDFToImagePage: React.FC = () => {
     return (
       <div className="max-w-4xl mx-auto space-y-8">
         {/* Upload Zone */}
-        <ModernUploadZone
+        <ToolUploadZone
           onFilesSelected={handleFileSelect}
+          title={t('pages.tools.pdfToImage.uploadTitle') || 'Upload PDF file to convert to images'}
+          subtitle={t('pages.tools.pdfToImage.uploadSubtitle') || 'Transform PDF pages into high-quality JPG, PNG or WebP images'}
+          supportedFormats={t('pages.tools.pdfToImage.supportedFormats') || 'PDF files'}
+          gradientFrom="pink-500"
+          gradientTo="pink-600"
+          IconComponent={FileImage}
           accept="application/pdf"
           acceptedTypes={['application/pdf']}
           multiple={false}
           maxSize={100 * 1024 * 1024}
           disabled={false}
-          title={t('pages.tools.pdfToImage.uploadTitle') || 'Upload PDF file to convert to images'}
-          subtitle={t('pages.tools.pdfToImage.uploadSubtitle') || 'Transform PDF pages into high-quality JPG, PNG or WebP images'}
-          supportedFormats={t('pages.tools.pdfToImage.supportedFormats') || 'PDF files'}
+          toolId="pdf-to-image"
         />
         
         {/* File List & Start Button */}

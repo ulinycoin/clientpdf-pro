@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { getToolSEOData } from '../../data/seoData';
 import { StandardToolPageTemplate } from '../../components/templates';
 import { ModernMergeTool, RelatedToolsSection } from '../../components/organisms';
 import { ModernUploadZone } from '../../components/molecules';
+import MergePDFUploadZone from '../../components/molecules/MergePDFUploadZone';
 import { SemanticContent, SemanticTitle } from '../../components/molecules/SemanticContent';
 import { useI18n } from '../../hooks/useI18n';
 import { useFileUpload } from '../../hooks/useFileUpload';
@@ -35,6 +36,33 @@ const MergePDFPage: React.FC = () => {
     clearFiles
   } = useFileUpload();
 
+  // Auto-scroll to upload zone when page loads
+  useEffect(() => {
+    const scrollToUploadZone = () => {
+      const uploadZone = document.getElementById('merge-upload-zone');
+
+      if (uploadZone) {
+        const rect = uploadZone.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const headerOffset = 120; // Space from top
+        const targetPosition = rect.top + scrollTop - headerOffset;
+
+
+        // Ensure we don't scroll above 0
+        const finalPosition = Math.max(0, targetPosition);
+
+        window.scrollTo({
+          top: finalPosition,
+          behavior: 'smooth'
+        });
+      }
+    };
+
+    // Single delayed scroll
+    const timer = setTimeout(scrollToUploadZone, 800);
+    return () => clearTimeout(timer);
+  }, []);
+
   const handleFileSelect = (selectedFiles: File[]) => {
     addFiles(selectedFiles);
     if (selectedFiles.length > 0) {
@@ -55,7 +83,7 @@ const MergePDFPage: React.FC = () => {
   const toolComponent = !toolActive ? (
     <div className="max-w-4xl mx-auto space-y-8">
       {/* Upload Zone */}
-      <ModernUploadZone
+      <MergePDFUploadZone
         onFilesSelected={handleFileSelect}
         accept="application/pdf"
         acceptedTypes={['application/pdf']}

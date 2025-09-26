@@ -39,6 +39,7 @@ import { wordToPdf } from './tools/wordToPdf';
 import { excelToPdf } from './tools/excelToPdf';
 import { protect } from './tools/protect';
 import { smartMerge } from './tools/smartMerge';
+import { smartCompression } from './tools/smartCompression';
 
 // Construct the complete DE translations object
 export const de = {
@@ -83,7 +84,8 @@ export const de = {
     wordToPdf,
     excelToPdf,
     protect,
-    smartMerge
+    smartMerge,
+    smartCompression
   },
   
   // Page-specific translations
@@ -116,7 +118,8 @@ export const de = {
       wordToPdf,
       excelToPdf,
       protect,
-      smartMerge
+      smartMerge,
+    smartCompression
     }
   }
 };

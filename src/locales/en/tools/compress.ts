@@ -33,6 +33,12 @@ export const compress = {
   removeFile: 'Remove file',
   compressPdfFile: 'Compress PDF File 🗜️',
   fileSizeUnit: 'MB',
+
+  // Smart AI Recommendations
+  smartRecommendations: {
+    title: 'Smart AI Recommendations',
+    description: 'Get AI-powered optimization suggestions for better compression results'
+  },
   
   // Results section (like rotate had)
   results: {

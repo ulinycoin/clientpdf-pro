@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { getToolSEOData } from '../../data/seoData';
 import { StandardToolPageTemplate } from '../../components/templates';
 import { ModernOCRTool, RelatedToolsSection } from '../../components/organisms';
-import { ModernUploadZone } from '../../components/molecules';
+import ToolUploadZone from '../../components/molecules/ToolUploadZone';
 import { useI18n } from '../../hooks/useI18n';
 import { useDynamicSEO } from '../../hooks/useDynamicSEO';
 import { useFileUpload } from '../../hooks/useFileUpload';
 import { getCombinedFAQs } from '../../data/faqData';
-import { Download, CheckCircle, FileText } from 'lucide-react';
+import { Download, CheckCircle, FileText, Eye } from 'lucide-react';
 
 const OCRPDFPage: React.FC = () => {
   const { t, language } = useI18n();
@@ -58,6 +58,28 @@ const OCRPDFPage: React.FC = () => {
   const handleToolClose = () => {
     setToolActive(false);
   };
+
+  // Auto scroll to upload zone on component mount
+  useEffect(() => {
+    const scrollToUploadZone = () => {
+      const uploadZone = document.getElementById('tool-upload-zone');
+      if (uploadZone) {
+        const rect = uploadZone.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const headerOffset = 120;
+        const targetPosition = rect.top + scrollTop - headerOffset;
+        const finalPosition = Math.max(0, targetPosition);
+
+        window.scrollTo({
+          top: finalPosition,
+          behavior: 'smooth'
+        });
+      }
+    };
+
+    const timer = setTimeout(scrollToUploadZone, 800);
+    return () => clearTimeout(timer);
+  }, []);
 
   const downloadResult = () => {
     if (result && result.downloadUrl) {
@@ -253,16 +275,20 @@ const OCRPDFPage: React.FC = () => {
     return (
       <div className="max-w-4xl mx-auto space-y-8">
         {/* Upload Zone */}
-        <ModernUploadZone
+        <ToolUploadZone
           onFilesSelected={handleFileSelect}
+          title={t('tools.ocr.upload.title') || 'OCR Document'}
+          subtitle={t('tools.ocr.upload.description') || 'Extract text from PDF and images'}
+          supportedFormats={t('tools.ocr.upload.supportedFormats') || 'PDF and images up to 50MB'}
+          gradientFrom="cyan-500"
+          gradientTo="cyan-600"
+          IconComponent={Eye}
           accept="application/pdf,image/*"
           acceptedTypes={['application/pdf', 'image/*']}
           multiple={false}
           maxSize={50 * 1024 * 1024}
           disabled={false}
-          title={t('tools.ocr.upload.title') || 'OCR Document'}
-          subtitle={t('tools.ocr.upload.description') || 'Extract text from PDF and images'}
-          supportedFormats={t('tools.ocr.upload.supportedFormats') || 'PDF and images up to 50MB'}
+          toolId="ocr-pdf"
         />
         
         {/* File List & Start Button */}

@@ -3,6 +3,8 @@ import { CompressionToolProps, PDFProcessingResult, CompressionOptions } from '.
 import { compressionService } from '../../services/compressionService';
 import { useTranslation } from '../../hooks/useI18n';
 import { useMotionPreferences } from '../../hooks/useAccessibilityPreferences';
+import SmartCompressionRecommendations from '../molecules/SmartCompressionRecommendations';
+import { OptimizationSettings, CompressionRecommendations } from '../../types/smartCompression.types';
 
 const ModernCompressionTool: React.FC<CompressionToolProps> = React.memo(({
   files,
@@ -16,6 +18,7 @@ const ModernCompressionTool: React.FC<CompressionToolProps> = React.memo(({
   const [progress, setProgress] = useState(0);
   const [progressMessage, setProgressMessage] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [showSmartRecommendations, setShowSmartRecommendations] = useState(true);
   
   const [options, setOptions] = useState<CompressionOptions>(() => {
     // Get recommended settings for the first file
@@ -99,6 +102,67 @@ const ModernCompressionTool: React.FC<CompressionToolProps> = React.memo(({
   const canCompress = useMemo(() => {
     return files.length > 0 && !isProcessing;
   }, [files.length, isProcessing]);
+
+  // Smart Compression handlers
+  const handleApplyRecommendations = (smartSettings: OptimizationSettings) => {
+    console.log('Applying smart compression recommendations:', smartSettings);
+
+    // Map smart settings to compression options
+    setOptions(prev => ({
+      ...prev,
+      quality: smartSettings.imageQuality / 100,
+      imageCompression: smartSettings.imageCompression,
+      removeMetadata: smartSettings.removeMetadata,
+      optimizeForWeb: smartSettings.linearizeForWeb
+    }));
+  };
+
+  const handleApplyStrategy = (strategy: CompressionRecommendations) => {
+    console.log('Applying compression strategy:', strategy);
+
+    // Apply strategy-based settings
+    let qualityValue = 0.8; // default
+
+    if (strategy.compressionLevel === 'conservative') {
+      qualityValue = 0.9;
+    } else if (strategy.compressionLevel === 'aggressive') {
+      qualityValue = 0.6;
+    } else { // balanced
+      qualityValue = 0.8;
+    }
+
+    setOptions(prev => ({
+      ...prev,
+      quality: qualityValue,
+      imageCompression: strategy.compressionLevel !== 'conservative',
+      removeMetadata: strategy.compressionLevel === 'aggressive',
+      optimizeForWeb: strategy.compressionLevel !== 'conservative'
+    }));
+  };
+
+  const handleCustomizeSettings = (customSettings: Partial<OptimizationSettings>) => {
+    console.log('Customizing settings:', customSettings);
+
+    // Apply partial settings
+    setOptions(prev => {
+      const updated = { ...prev };
+
+      if (customSettings.imageQuality !== undefined) {
+        updated.quality = customSettings.imageQuality / 100;
+      }
+      if (customSettings.imageCompression !== undefined) {
+        updated.imageCompression = customSettings.imageCompression;
+      }
+      if (customSettings.removeMetadata !== undefined) {
+        updated.removeMetadata = customSettings.removeMetadata;
+      }
+      if (customSettings.linearizeForWeb !== undefined) {
+        updated.optimizeForWeb = customSettings.linearizeForWeb;
+      }
+
+      return updated;
+    });
+  };
 
   if (!currentFile) {
     return (
@@ -199,6 +263,46 @@ const ModernCompressionTool: React.FC<CompressionToolProps> = React.memo(({
               {t('tools.compress.trustIndicators.intelligentCompression')}
             </span>
           </div>
+        </div>
+      </div>
+
+      {/* Smart Compression Recommendations */}
+      {showSmartRecommendations && (
+        <SmartCompressionRecommendations
+          files={files}
+          onApplyRecommendations={handleApplyRecommendations}
+          onApplyStrategy={handleApplyStrategy}
+          onCustomizeSettings={handleCustomizeSettings}
+          isProcessing={isProcessing}
+          className={`mb-8 ${shouldAnimate ? 'smooth-reveal staggered-reveal' : ''}`}
+        />
+      )}
+
+      {/* AI Toggle */}
+      <div className={`bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg border border-white/20 dark:border-gray-600/20 rounded-2xl shadow-lg p-6 mb-8 ${shouldAnimate ? 'smooth-reveal staggered-reveal' : ''}`}>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg flex items-center justify-center text-white text-lg">
+              🧠
+            </div>
+            <div>
+              <h4 className="text-lg font-bold text-black dark:text-white">
+                {t('tools.compress.smartRecommendations.title', 'Smart AI Recommendations')}
+              </h4>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                {t('tools.compress.smartRecommendations.description', 'Get AI-powered optimization suggestions')}
+              </p>
+            </div>
+          </div>
+          <label className="relative inline-flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              checked={showSmartRecommendations}
+              onChange={(e) => setShowSmartRecommendations(e.target.checked)}
+              className="sr-only peer"
+            />
+            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+          </label>
         </div>
       </div>
 
