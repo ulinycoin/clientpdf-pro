@@ -4,6 +4,7 @@ import { useTranslation, useI18n } from '../../hooks/useI18n';
 import { useMotionPreferences } from '../../hooks/useAccessibilityPreferences';
 import LanguageSwitcher from '../molecules/LanguageSwitcher';
 import DarkModeToggle from '../molecules/DarkModeToggle';
+import LocalPDFLogo from '../atoms/LocalPDFLogo';
 
 interface ModernHeaderProps {
   title?: string;
@@ -68,13 +69,8 @@ const ModernHeader: React.FC<ModernHeaderProps> = ({
                 `}></div>
                 
                 {/* Logo container */}
-                <div className="relative w-12 h-12 bg-gradient-to-br from-seafoam-500 to-ocean-500 rounded-2xl flex items-center justify-center text-white shadow-lg transform group-hover:scale-105 group-hover:rotate-3 transition-all duration-300">
-                  <svg className="w-7 h-7" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6z"/>
-                    <path d="M14 8h4l-4-4v4z" opacity="0.7"/>
-                    <circle cx="12" cy="15" r="2" fill="white"/>
-                    <path d="M10 17h4M10 19h2" stroke="white" strokeWidth="1" fill="none"/>
-                  </svg>
+                <div className="relative transform group-hover:scale-105 group-hover:rotate-3 transition-all duration-300">
+                  <LocalPDFLogo size="lg" showText={false} />
                 </div>
               </div>
             )}

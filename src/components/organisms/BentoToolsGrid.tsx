@@ -261,64 +261,33 @@ const BentoToolsGrid: React.FC<BentoToolsGridProps> = ({
         )}
 
         {/* Content */}
-        <div className={`
-          relative z-10 h-full flex flex-col
-          ${isXL ? 'p-8 justify-center' : isLarge || isMedium ? 'p-6 justify-center' : 'p-4 justify-between'}
-        `}>
+        <div className="
+          relative z-10 h-full flex flex-col justify-center items-center
+          p-6 space-y-4
+        ">
           {/* Icon */}
-          <div className={`
-            ${isXL ? 'mb-8' : isLarge ? 'mb-6' : isMedium ? 'mb-4' : 'mb-3'}
-            flex items-center justify-center
-          `}>
-            <div className={`
-              ${isXL ? 'w-24 h-24' : isLarge ? 'w-20 h-20' : isMedium ? 'w-16 h-16' :
-                // Специальные увеличенные контейнеры для определенных инструментов
-                (['addText', 'watermark', 'rotate', 'extractPages', 'extractText', 'wordToPdf', 'extractImagesFromPdf', 'excelToPdf'].includes(layoutItem.id))
-                  ? 'w-14 h-14' : 'w-12 h-12'
-              }
+          <div className="flex items-center justify-center">
+            <div className="
+              w-16 h-16
               flex items-center justify-center
               bg-white/30 dark:bg-white/20 backdrop-blur-md rounded-2xl
               border border-white/30 dark:border-white/20
               shadow-lg shadow-black/10
-              ${shouldAnimate ? 'group-hover:scale-110 group-hover:bg-white/40 group-hover:shadow-xl transition-all duration-300' : ''}
-            `}>
-              <IconComponent
-                className={`
-                  ${isXL ? 'w-12 h-12' : isLarge ? 'w-10 h-10' : isMedium ? 'w-8 h-8' :
-                    // Специальные увеличенные размеры для определенных инструментов
-                    (['addText', 'watermark', 'rotate', 'extractPages', 'extractText', 'wordToPdf', 'extractImagesFromPdf', 'excelToPdf'].includes(layoutItem.id))
-                      ? 'w-8 h-8' : 'w-6 h-6'
-                  }
-                  text-gray-700 dark:text-white drop-shadow-lg
-                `}
-              />
+              group-hover:scale-110 group-hover:bg-white/40 group-hover:shadow-xl transition-all duration-300
+            ">
+              <IconComponent className="w-8 h-8 text-gray-700 dark:text-white drop-shadow-lg" />
             </div>
           </div>
 
-          {/* Title and Description */}
-          <div className={`text-center ${isXL || isLarge ? 'space-y-3' : isMedium ? 'space-y-2' : 'space-y-1'}`}>
-            <h3 className={`
-              ${isXL ? 'text-3xl' : isLarge ? 'text-2xl' : isMedium ? 'text-xl' : 'text-base'}
+          {/* Title */}
+          <div className="text-center">
+            <h3 className="
+              text-xl
               font-bold text-gray-800 dark:text-white drop-shadow-lg
-              ${shouldAnimate ? 'group-hover:scale-105 transition-transform duration-300' : ''}
-            `}>
+              group-hover:scale-105 transition-transform duration-300
+            ">
               {tool.title}
             </h3>
-
-            {(isXL || isLarge) && (
-              <p className={`
-                text-gray-700 dark:text-white/90 leading-relaxed drop-shadow-md mx-auto
-                ${isXL ? 'text-base max-w-sm' : 'text-sm max-w-xs'}
-              `}>
-                {tool.description}
-              </p>
-            )}
-
-            {isMedium && (
-              <p className="text-gray-600 dark:text-white/80 text-xs leading-relaxed drop-shadow-md max-w-32 mx-auto line-clamp-2">
-                {tool.description}
-              </p>
-            )}
           </div>
 
           {/* Hover Arrow */}

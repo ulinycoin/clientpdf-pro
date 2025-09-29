@@ -4,6 +4,7 @@ import { Shield, Zap, Github, Menu, X } from 'lucide-react';
 import { useTranslation } from '../../hooks/useI18n';
 import LanguageSwitcher from '../molecules/LanguageSwitcher';
 import { useLocalizedPath } from '../../hooks/useLocalizedPath';
+import LocalPDFLogo from '../atoms/LocalPDFLogo';
 
 interface HeaderProps {
   title?: string;
@@ -23,6 +24,7 @@ const Header: React.FC<HeaderProps> = ({
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+
 
   useEffect(() => {
     const handleScroll = () => {
@@ -49,8 +51,8 @@ const Header: React.FC<HeaderProps> = ({
               <div className="relative">
                 {/* Pulse ring effect for trust */}
                 <div className="absolute inset-0 bg-primary-400 rounded-xl animate-pulse-slow opacity-20 group-hover:opacity-40 transition-opacity"></div>
-                <div className="relative w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center text-white text-2xl transform group-hover:scale-105 transition-transform duration-200 shadow-soft">
-                  📄
+                <div className="relative transform group-hover:scale-105 transition-transform duration-200">
+                  <LocalPDFLogo size="md" showText={false} />
                 </div>
               </div>
             )}
