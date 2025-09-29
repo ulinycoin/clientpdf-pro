@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Grid } from 'lucide-react';
 import { getToolSEOData } from '../../data/seoData';
 // Force bundle regeneration - fix asset hash mismatch
 import { StandardToolPageTemplate } from '../../components/templates';
-import { ModernUploadZone } from '../../components/molecules';
+import { ToolUploadZone } from '../../components/molecules';
 import { RelatedToolsSection } from '../../components/organisms';
 import ExcelToPDFTool from '../../components/organisms/ExcelToPDFTool';
 import { useFileUpload } from '../../hooks/useFileUpload';
@@ -21,6 +22,28 @@ const ExcelToPDFPage: React.FC = () => {
 
   // Dynamic SEO updates
   useDynamicSEO('excel-to-pdf');
+
+  // Auto-scroll to upload zone
+  useEffect(() => {
+    const scrollToUploadZone = () => {
+      const uploadZone = document.getElementById('tool-upload-zone');
+      if (uploadZone) {
+        const rect = uploadZone.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const headerOffset = 120;
+        const targetPosition = rect.top + scrollTop - headerOffset;
+        const finalPosition = Math.max(0, targetPosition);
+
+        window.scrollTo({
+          top: finalPosition,
+          behavior: 'smooth'
+        });
+      }
+    };
+
+    const timer = setTimeout(scrollToUploadZone, 800);
+    return () => clearTimeout(timer);
+  }, []);
 
   const {
     files,
@@ -54,17 +77,20 @@ const ExcelToPDFPage: React.FC = () => {
   const toolComponent = !toolActive ? (
     <div className="max-w-4xl mx-auto space-y-8">
       {/* Upload Zone */}
-      <ModernUploadZone
+      <ToolUploadZone
         onFilesSelected={handleFileSelect}
+        title={t('pages.tools.excelToPdf.uploadSection.title') || 'Upload Excel File'}
+        subtitle={t('pages.tools.excelToPdf.uploadSection.subtitle') || 'Convert Excel spreadsheets to PDF with full formatting and data preservation'}
+        supportedFormats={t('pages.tools.excelToPdf.uploadSection.supportedFormats') || 'XLSX, XLS files up to 100MB'}
+        gradientFrom="emerald-500"
+        gradientTo="emerald-600"
+        IconComponent={Grid}
         accept=".xlsx,.xls"
         acceptedTypes={['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel']}
         multiple={false}
         maxSize={100 * 1024 * 1024}
         disabled={false}
-        title={t('pages.tools.excelToPdf.uploadSection.title') || 'Upload Excel File'}
-        subtitle={t('pages.tools.excelToPdf.uploadSection.subtitle') || 'Convert Excel spreadsheets to PDF with full formatting and data preservation'}
-        supportedFormats={t('pages.tools.excelToPdf.uploadSection.supportedFormats') || 'XLSX, XLS files up to 100MB'}
-        icon="📊"
+        toolId="excel-to-pdf"
       />
       
       {/* Features Info */}

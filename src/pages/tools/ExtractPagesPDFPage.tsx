@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Grid } from 'lucide-react';
 import { getToolSEOData } from '../../data/seoData';
 import { StandardToolPageTemplate } from '../../components/templates';
 import ExtractPagesTool from '../../components/organisms/ExtractPagesTool';
-import { ModernUploadZone } from '../../components/molecules';
+import { ToolUploadZone } from '../../components/molecules';
 import { RelatedToolsSection } from '../../components/organisms';
 import { useI18n } from '../../hooks/useI18n';
 import { useFileUpload } from '../../hooks/useFileUpload';
@@ -20,6 +21,28 @@ const ExtractPagesPDFPage: React.FC = () => {
 
   // Dynamic SEO updates
   useDynamicSEO('extractPages');
+
+  // Auto-scroll to upload zone
+  useEffect(() => {
+    const scrollToUploadZone = () => {
+      const uploadZone = document.getElementById('tool-upload-zone');
+      if (uploadZone) {
+        const rect = uploadZone.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const headerOffset = 120;
+        const targetPosition = rect.top + scrollTop - headerOffset;
+        const finalPosition = Math.max(0, targetPosition);
+
+        window.scrollTo({
+          top: finalPosition,
+          behavior: 'smooth'
+        });
+      }
+    };
+
+    const timer = setTimeout(scrollToUploadZone, 800);
+    return () => clearTimeout(timer);
+  }, []);
 
   const {
     files,
@@ -56,18 +79,21 @@ const ExtractPagesPDFPage: React.FC = () => {
   const toolComponent = !toolActive ? (
     <div className="max-w-4xl mx-auto space-y-8">
       {/* Upload Zone */}
-      <ModernUploadZone
+      <ToolUploadZone
         onFilesSelected={handleFileSelect}
+        title={t('pages.tools.extractPages.uploadTitle') || 'Извлечь страницы из PDF'}
+        subtitle={t('pages.tools.extractPages.uploadSubtitle') || 'Select specific pages from PDF document to create a new file'}
+        supportedFormats={t('pages.tools.extractPages.supportedFormats') || 'PDF files up to 100MB'}
+        gradientFrom="teal-500"
+        gradientTo="teal-600"
+        IconComponent={Grid}
         accept="application/pdf"
         acceptedTypes={['application/pdf']}
         multiple={false}
         maxFiles={1}
         maxSize={100 * 1024 * 1024}
         disabled={false}
-        title={t('pages.tools.extractPages.uploadTitle') || 'Извлечь страницы из PDF'}
-        subtitle={t('pages.tools.extractPages.uploadSubtitle') || 'Select specific pages from PDF document to create a new file'}
-        supportedFormats={t('pages.tools.extractPages.supportedFormats') || 'PDF files up to 100MB'}
-        icon="📑"
+        toolId="extract-pages-pdf"
       />
       
       {/* File List & Start Button */}

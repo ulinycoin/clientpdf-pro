@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { getToolSEOData } from '../../data/seoData';
 import { StandardToolPageTemplate } from '../../components/templates';
 import { ExtractImagesFromPdfTool } from '../../components/organisms/ExtractImagesFromPdfTool';
 import { RelatedToolsSection } from '../../components/organisms';
-import { ModernUploadZone } from '../../components/molecules';
+import { ToolUploadZone } from '../../components/molecules';
 import { useFileUpload } from '../../hooks/useFileUpload';
 import { useI18n } from '../../hooks/useI18n';
 import { useDynamicSEO } from '../../hooks/useDynamicSEO';
 import { getCombinedFAQs } from '../../data/faqData';
-import { Download, CheckCircle, FileImage, Image } from 'lucide-react';
+import { Download, CheckCircle, FileImage, Image, ImageIcon } from 'lucide-react';
 import { ImageExtractionResult } from '../../types/imageExtraction.types';
 
 const ExtractImagesFromPDFPage: React.FC = () => {
@@ -22,6 +22,28 @@ const ExtractImagesFromPDFPage: React.FC = () => {
 
   // Dynamic SEO updates
   useDynamicSEO('extract-images-from-pdf');
+
+  // Auto-scroll to upload zone
+  useEffect(() => {
+    const scrollToUploadZone = () => {
+      const uploadZone = document.getElementById('tool-upload-zone');
+      if (uploadZone) {
+        const rect = uploadZone.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const headerOffset = 120;
+        const targetPosition = rect.top + scrollTop - headerOffset;
+        const finalPosition = Math.max(0, targetPosition);
+
+        window.scrollTo({
+          top: finalPosition,
+          behavior: 'smooth'
+        });
+      }
+    };
+
+    const timer = setTimeout(scrollToUploadZone, 800);
+    return () => clearTimeout(timer);
+  }, []);
 
   const {
     files,
@@ -121,14 +143,20 @@ const ExtractImagesFromPDFPage: React.FC = () => {
           faqs={extractImagesFAQs}
           toolComponent={
             <>
-              <ModernUploadZone
+              <ToolUploadZone
                 onFilesSelected={handleFileSelect}
                 title={t('pages.tools.extractImagesFromPdf.upload.title')}
                 subtitle={t('pages.tools.extractImagesFromPdf.upload.subtitle')}
                 supportedFormats="PDF files up to 100MB"
+                gradientFrom="lime-500"
+                gradientTo="lime-600"
+                IconComponent={ImageIcon}
                 accept="application/pdf"
                 acceptedTypes={['application/pdf']}
-                icon="🖼️"
+                multiple={false}
+                maxSize={100 * 1024 * 1024}
+                disabled={false}
+                toolId="extract-images-from-pdf"
               />
               
               {result && result.success && (

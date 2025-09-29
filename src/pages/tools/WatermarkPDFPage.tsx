@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { getToolSEOData } from '../../data/seoData';
 import { StandardToolPageTemplate } from '../../components/templates';
 import { WatermarkTool, RelatedToolsSection } from '../../components/organisms';
-import { ModernUploadZone } from '../../components/molecules';
+import { ToolUploadZone } from '../../components/molecules';
 import { useFileUpload } from '../../hooks/useFileUpload';
 import { useI18n } from '../../hooks/useI18n';
 import { useDynamicSEO } from '../../hooks/useDynamicSEO';
@@ -21,6 +21,28 @@ const WatermarkPDFPage: React.FC = () => {
 
   // Dynamic SEO updates
   useDynamicSEO('watermark');
+
+  // Auto-scroll to upload zone
+  useEffect(() => {
+    const scrollToUploadZone = () => {
+      const uploadZone = document.getElementById('tool-upload-zone');
+      if (uploadZone) {
+        const rect = uploadZone.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const headerOffset = 120;
+        const targetPosition = rect.top + scrollTop - headerOffset;
+        const finalPosition = Math.max(0, targetPosition);
+
+        window.scrollTo({
+          top: finalPosition,
+          behavior: 'smooth'
+        });
+      }
+    };
+
+    const timer = setTimeout(scrollToUploadZone, 800);
+    return () => clearTimeout(timer);
+  }, []);
 
   const {
     files,
@@ -162,16 +184,20 @@ const WatermarkPDFPage: React.FC = () => {
     return (
       <div className="max-w-4xl mx-auto space-y-8">
         {/* Upload Zone */}
-        <ModernUploadZone
+        <ToolUploadZone
           onFilesSelected={handleFileSelect}
+          title={t('tools.watermark.upload.title')}
+          subtitle={t('tools.watermark.upload.description')}
+          supportedFormats={t('tools.watermark.upload.supportedFormats')}
+          gradientFrom="indigo-500"
+          gradientTo="indigo-600"
+          IconComponent={Shield}
           accept="application/pdf"
           acceptedTypes={['application/pdf']}
           multiple={false}
           maxSize={100 * 1024 * 1024}
           disabled={false}
-          title={t('tools.watermark.upload.title')}
-          subtitle={t('tools.watermark.upload.description')}
-          supportedFormats={t('tools.watermark.upload.supportedFormats')}
+          toolId="watermark-pdf"
         />
         
         {/* File List & Start Button */}

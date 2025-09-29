@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Wand2 } from 'lucide-react';
 import { getToolSEOData } from '../../data/seoData';
 import { StandardToolPageTemplate } from '../../components/templates';
 import AddTextTool from '../../components/organisms/AddTextTool';
 import { RelatedToolsSection } from '../../components/organisms';
-import { ModernUploadZone } from '../../components/molecules';
+import { ToolUploadZone } from '../../components/molecules';
 import { useI18n } from '../../hooks/useI18n';
 import { useFileUpload } from '../../hooks/useFileUpload';
 import { useDynamicSEO } from '../../hooks/useDynamicSEO';
@@ -19,6 +20,28 @@ const AddTextPDFPage: React.FC = () => {
 
   // Dynamic SEO updates
   useDynamicSEO('addText');
+
+  // Auto-scroll to upload zone
+  useEffect(() => {
+    const scrollToUploadZone = () => {
+      const uploadZone = document.getElementById('tool-upload-zone');
+      if (uploadZone) {
+        const rect = uploadZone.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const headerOffset = 120;
+        const targetPosition = rect.top + scrollTop - headerOffset;
+        const finalPosition = Math.max(0, targetPosition);
+
+        window.scrollTo({
+          top: finalPosition,
+          behavior: 'smooth'
+        });
+      }
+    };
+
+    const timer = setTimeout(scrollToUploadZone, 800);
+    return () => clearTimeout(timer);
+  }, []);
 
   const {
     files,
@@ -59,17 +82,20 @@ const AddTextPDFPage: React.FC = () => {
   const toolComponent = !toolActive ? (
     <div className="max-w-4xl mx-auto space-y-8">
       {/* Upload Zone */}
-      <ModernUploadZone
+      <ToolUploadZone
         onFilesSelected={handleFileSelect}
+        title={t('tools.addText.uploadTitle')}
+        subtitle={t('tools.addText.uploadSubtitle')}
+        supportedFormats={t('tools.addText.supportedFormats')}
+        gradientFrom="purple-500"
+        gradientTo="purple-600"
+        IconComponent={Wand2}
         accept="application/pdf"
         acceptedTypes={['application/pdf']}
         multiple={false}
         maxSize={100 * 1024 * 1024}
         disabled={false}
-        title={t('tools.addText.uploadTitle')}
-        subtitle={t('tools.addText.uploadSubtitle')}
-        supportedFormats={t('tools.addText.supportedFormats')}
-        icon="✏️"
+        toolId="add-text-pdf"
       />
       
       {/* File List & Start Button */}

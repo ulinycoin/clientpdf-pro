@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { getToolSEOData } from '../../data/seoData';
 import { StandardToolPageTemplate } from '../../components/templates';
 import { ModernRotateTool, RelatedToolsSection } from '../../components/organisms';
-import { ModernUploadZone } from '../../components/molecules';
+import { ToolUploadZone } from '../../components/molecules';
 import { useFileUpload } from '../../hooks/useFileUpload';
 import { useI18n } from '../../hooks/useI18n';
 import { useDynamicSEO } from '../../hooks/useDynamicSEO';
 import { getCombinedFAQs } from '../../data/faqData';
 import { PDFProcessingResult } from '../../types';
-import { Download, CheckCircle, RefreshCw } from 'lucide-react';
+import { Download, CheckCircle, RotateCcw } from 'lucide-react';
 
 
 const RotatePDFPage: React.FC = () => {
@@ -22,6 +22,28 @@ const RotatePDFPage: React.FC = () => {
 
   // Dynamic SEO updates
   useDynamicSEO('rotate');
+
+  // Auto-scroll to upload zone
+  useEffect(() => {
+    const scrollToUploadZone = () => {
+      const uploadZone = document.getElementById('tool-upload-zone');
+      if (uploadZone) {
+        const rect = uploadZone.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const headerOffset = 120;
+        const targetPosition = rect.top + scrollTop - headerOffset;
+        const finalPosition = Math.max(0, targetPosition);
+
+        window.scrollTo({
+          top: finalPosition,
+          behavior: 'smooth'
+        });
+      }
+    };
+
+    const timer = setTimeout(scrollToUploadZone, 800);
+    return () => clearTimeout(timer);
+  }, []);
 
   const {
     files,
@@ -166,16 +188,20 @@ const RotatePDFPage: React.FC = () => {
     return (
       <div className="max-w-4xl mx-auto space-y-8">
         {/* Upload Zone */}
-        <ModernUploadZone
+        <ToolUploadZone
           onFilesSelected={handleFileSelect}
+          title={t('tools.rotate.upload.title')}
+          subtitle={t('tools.rotate.upload.description')}
+          supportedFormats={t('tools.rotate.upload.supportedFormats')}
+          gradientFrom="orange-500"
+          gradientTo="orange-600"
+          IconComponent={RotateCcw}
           accept="application/pdf"
           acceptedTypes={['application/pdf']}
           multiple={false}
           maxSize={100 * 1024 * 1024}
           disabled={false}
-          title={t('tools.rotate.upload.title')}
-          subtitle={t('tools.rotate.upload.description')}
-          supportedFormats={t('tools.rotate.upload.supportedFormats')}
+          toolId="rotate-pdf"
         />
         
         {/* File List & Start Button */}

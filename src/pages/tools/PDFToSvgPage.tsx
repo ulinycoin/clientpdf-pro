@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { getToolSEOData } from '../../data/seoData';
 import { StandardToolPageTemplate } from '../../components/templates';
 import PdfToSvgTool from '../../components/organisms/PdfToSvgTool';
 import { RelatedToolsSection } from '../../components/organisms';
-import { ModernUploadZone } from '../../components/molecules';
+import { ToolUploadZone } from '../../components/molecules';
 import { useFileUpload } from '../../hooks/useFileUpload';
 import { useI18n } from '../../hooks/useI18n';
 import { useDynamicSEO } from '../../hooks/useDynamicSEO';
 import { getCombinedFAQs } from '../../data/faqData';
-import { Download, CheckCircle, Shapes } from 'lucide-react';
+import { Download, CheckCircle, FileType } from 'lucide-react';
 
 const PDFToSvgPage: React.FC = () => {
   const { t, language } = useI18n();
@@ -21,6 +21,28 @@ const PDFToSvgPage: React.FC = () => {
 
   // Dynamic SEO updates
   useDynamicSEO('pdf-to-svg');
+
+  // Auto-scroll to upload zone
+  useEffect(() => {
+    const scrollToUploadZone = () => {
+      const uploadZone = document.getElementById('tool-upload-zone');
+      if (uploadZone) {
+        const rect = uploadZone.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const headerOffset = 120;
+        const targetPosition = rect.top + scrollTop - headerOffset;
+        const finalPosition = Math.max(0, targetPosition);
+
+        window.scrollTo({
+          top: finalPosition,
+          behavior: 'smooth'
+        });
+      }
+    };
+
+    const timer = setTimeout(scrollToUploadZone, 800);
+    return () => clearTimeout(timer);
+  }, []);
 
   const {
     files,
@@ -101,16 +123,20 @@ const PDFToSvgPage: React.FC = () => {
     return (
       <div className="max-w-4xl mx-auto space-y-8">
         {/* Upload Zone */}
-        <ModernUploadZone
+        <ToolUploadZone
           onFilesSelected={handleFileSelect}
+          title={t('pages.tools.pdfToSvg.uploadTitle') || 'Upload PDF file to convert to SVG'}
+          subtitle={t('pages.tools.pdfToSvg.uploadSubtitle') || 'Transform PDF pages into scalable vector graphics'}
+          supportedFormats={t('pages.tools.pdfToSvg.supportedFormats') || 'PDF files'}
+          gradientFrom="fuchsia-500"
+          gradientTo="fuchsia-600"
+          IconComponent={FileType}
           accept="application/pdf"
           acceptedTypes={['application/pdf']}
           multiple={false}
           maxSize={100 * 1024 * 1024}
           disabled={false}
-          title={t('pages.tools.pdfToSvg.uploadTitle') || 'Upload PDF file to convert to SVG'}
-          subtitle={t('pages.tools.pdfToSvg.uploadSubtitle') || 'Transform PDF pages into scalable vector graphics'}
-          supportedFormats={t('pages.tools.pdfToSvg.supportedFormats') || 'PDF files'}
+          toolId="pdf-to-svg"
         />
         
         {/* File List & Start Button */}

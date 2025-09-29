@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { Shield } from 'lucide-react';
 import { StandardToolPageTemplate } from '../../components/templates';
 import { ModernProtectTool } from '../../components/organisms/ModernProtectTool';
-import { ModernUploadZone } from '../../components/molecules';
+import { ToolUploadZone } from '../../components/molecules';
 import { useI18n } from '../../hooks/useI18n';
 import { useFileUpload } from '../../hooks/useFileUpload';
 import { checkFileSize, FILE_SIZE_LIMITS } from '../../services/protectService';
@@ -77,6 +78,28 @@ const ProtectPDFPage: React.FC = () => {
     clearFiles();
   };
 
+  // Auto-scroll to upload zone
+  useEffect(() => {
+    const scrollToUploadZone = () => {
+      const uploadZone = document.getElementById('tool-upload-zone');
+      if (uploadZone) {
+        const rect = uploadZone.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const headerOffset = 120;
+        const targetPosition = rect.top + scrollTop - headerOffset;
+        const finalPosition = Math.max(0, targetPosition);
+
+        window.scrollTo({
+          top: finalPosition,
+          behavior: 'smooth'
+        });
+      }
+    };
+
+    const timer = setTimeout(scrollToUploadZone, 800);
+    return () => clearTimeout(timer);
+  }, []);
+
   // Автоматическая прокрутка к секции выбранного файла когда файл загружен
   useEffect(() => {
     if (selectedFile && selectedFileRef.current) {
@@ -94,16 +117,20 @@ const ProtectPDFPage: React.FC = () => {
   const toolComponent = !toolActive || !selectedFile ? (
     <div className="max-w-4xl mx-auto space-y-8">
       {/* Upload Zone */}
-      <ModernUploadZone
+      <ToolUploadZone
         onFilesSelected={handleFileSelect}
-        accept="application/pdf"
-        acceptedTypes={['application/pdf']}
-        multiple={false} // Only single file for protection
-        maxSize={100 * 1024 * 1024} // 100MB limit
-        disabled={false}
         title={t('pages.tools.protect.uploadTitle')}
         subtitle={t('pages.tools.protect.uploadSubtitle')}
         supportedFormats={t('pages.tools.protect.supportedFormats')}
+        gradientFrom="slate-500"
+        gradientTo="slate-600"
+        IconComponent={Shield}
+        accept="application/pdf"
+        acceptedTypes={['application/pdf']}
+        multiple={false}
+        maxSize={100 * 1024 * 1024}
+        disabled={false}
+        toolId="protect-pdf"
       />
       
       {/* Selected File Preview */}

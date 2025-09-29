@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { BookOpen } from 'lucide-react';
 import { getToolSEOData } from '../../data/seoData';
 import { StandardToolPageTemplate } from '../../components/templates';
 import { ModernWordToPDFTool, RelatedToolsSection } from '../../components/organisms';
-import { ModernUploadZone } from '../../components/molecules';
+import { ToolUploadZone } from '../../components/molecules';
 import { useI18n } from '../../hooks/useI18n';
 import { useDynamicSEO } from '../../hooks/useDynamicSEO';
 import { getCombinedFAQs } from '../../data/faqData';
@@ -18,6 +19,28 @@ const WordToPDFPage: React.FC = () => {
 
   // Dynamic SEO updates
   useDynamicSEO('word-to-pdf');
+
+  // Auto-scroll to upload zone
+  useEffect(() => {
+    const scrollToUploadZone = () => {
+      const uploadZone = document.getElementById('tool-upload-zone');
+      if (uploadZone) {
+        const rect = uploadZone.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const headerOffset = 120;
+        const targetPosition = rect.top + scrollTop - headerOffset;
+        const finalPosition = Math.max(0, targetPosition);
+
+        window.scrollTo({
+          top: finalPosition,
+          behavior: 'smooth'
+        });
+      }
+    };
+
+    const timer = setTimeout(scrollToUploadZone, 800);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleFileSelect = (selectedFiles: File[]) => {
     const file = selectedFiles[0];
@@ -40,17 +63,21 @@ const WordToPDFPage: React.FC = () => {
   const toolComponent = !toolActive ? (
     <div className="max-w-4xl mx-auto space-y-8">
       {/* Upload Zone */}
-      <ModernUploadZone
+      <ToolUploadZone
         onFilesSelected={handleFileSelect}
+        title={t('pages.tools.wordToPdf.uploadTitle')}
+        subtitle={t('pages.tools.wordToPdf.uploadSubtitle')}
+        supportedFormats={t('pages.tools.wordToPdf.supportedFormats')}
+        gradientFrom="amber-500"
+        gradientTo="amber-600"
+        IconComponent={BookOpen}
         accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         acceptedTypes={['application/vnd.openxmlformats-officedocument.wordprocessingml.document', '.docx']}
         multiple={false}
         maxFiles={1}
         maxSize={100 * 1024 * 1024}
         disabled={false}
-        title={t('pages.tools.wordToPdf.uploadTitle')}
-        subtitle={t('pages.tools.wordToPdf.uploadSubtitle')}
-        supportedFormats={t('pages.tools.wordToPdf.supportedFormats')}
+        toolId="word-to-pdf"
       />
 
       {/* File Selected & Start Button */}

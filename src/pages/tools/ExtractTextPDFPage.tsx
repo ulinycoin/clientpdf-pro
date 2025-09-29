@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { FileText } from 'lucide-react';
 import { getToolSEOData } from '../../data/seoData';
 import { StandardToolPageTemplate } from '../../components/templates';
 import ExtractTextTool from '../../components/organisms/ExtractTextTool';
 import { RelatedToolsSection } from '../../components/organisms';
-import { ModernUploadZone } from '../../components/molecules';
+import { ToolUploadZone } from '../../components/molecules';
 import { useI18n } from '../../hooks/useI18n';
 import { useFileUpload } from '../../hooks/useFileUpload';
 import { useDynamicSEO } from '../../hooks/useDynamicSEO';
@@ -19,6 +20,28 @@ const ExtractTextPDFPage: React.FC = () => {
 
   // Dynamic SEO updates
   useDynamicSEO('extractText');
+
+  // Auto-scroll to upload zone
+  useEffect(() => {
+    const scrollToUploadZone = () => {
+      const uploadZone = document.getElementById('tool-upload-zone');
+      if (uploadZone) {
+        const rect = uploadZone.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const headerOffset = 120;
+        const targetPosition = rect.top + scrollTop - headerOffset;
+        const finalPosition = Math.max(0, targetPosition);
+
+        window.scrollTo({
+          top: finalPosition,
+          behavior: 'smooth'
+        });
+      }
+    };
+
+    const timer = setTimeout(scrollToUploadZone, 800);
+    return () => clearTimeout(timer);
+  }, []);
 
   const {
     files,
@@ -48,17 +71,20 @@ const ExtractTextPDFPage: React.FC = () => {
   const toolComponent = !toolActive ? (
     <div className="max-w-4xl mx-auto space-y-8">
       {/* Upload Zone */}
-      <ModernUploadZone
+      <ToolUploadZone
         onFilesSelected={handleFileSelect}
+        title={t('pages.tools.extractText.uploadTitle')}
+        subtitle={t('pages.tools.extractText.uploadSubtitle')}
+        supportedFormats={t('pages.tools.extractText.supportedFormats')}
+        gradientFrom="rose-500"
+        gradientTo="rose-600"
+        IconComponent={FileText}
         accept="application/pdf"
         acceptedTypes={['application/pdf']}
         multiple={false}
         maxSize={100 * 1024 * 1024}
         disabled={false}
-        title={t('pages.tools.extractText.uploadTitle')}
-        subtitle={t('pages.tools.extractText.uploadSubtitle')}
-        supportedFormats={t('pages.tools.extractText.supportedFormats')}
-        icon="📝"
+        toolId="extract-text-pdf"
       />
       
       {/* File List & Start Button */}
