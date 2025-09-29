@@ -111,3 +111,28 @@ localpdf-docs.json
 # Cache warmer artifacts
 cache-warmer-*.log
 cache-warmer-results-*.json
+
+# Service and documentation files (keep local, ignore from git)
+API_AUTOMATION_GUIDE.md
+CACHE_WARMER_GUIDE.md
+DEPLOYMENT_SUMMARY.md
+FINAL_SUMMARY.md
+MANUAL_SETUP_GUIDE.md
+PRERENDER_DASHBOARD_SETUP.md
+SCHEDULED_RENDERING_IMPLEMENTATION.md
+UPLOAD_ZONE_MIGRATION_PLAN.md
+LocalPDF-Documentation.md
+
+# Temporary service files
+COMMIT_MESSAGE.txt
+claude_code_smart_analysis_task.md
+prepare-for-claude-code.sh
+generate-context7-docs.sh
+generate-docs.js
+
+# Deployment and monitoring scripts (keep local)
+deploy-scheduled-rendering.sh
+test-scheduled-rendering.sh
+cache-warmer.cjs
+prerender-api-manager.cjs
+prerender-monitor.cjs
