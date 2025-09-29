@@ -273,7 +273,7 @@ const SecurityPage: React.FC = () => {
     "@type": "WebPage",
     "name": "PDF Security & Privacy Center - LocalPDF",
     "description": "Comprehensive guide to PDF security, privacy protection, and compliance. Learn about GDPR compliance, data protection, and secure document processing.",
-    "url": "https://localpdf.tech/pdf-hub/security",
+    "url": "https://localpdf.online/pdf-hub/security",
     "about": {
       "@type": "Thing",
       "name": "PDF Security and Privacy",
@@ -299,7 +299,7 @@ const SecurityPage: React.FC = () => {
           content="Complete guide to PDF security and privacy. Learn about GDPR compliance, client-side processing, and secure document handling with LocalPDF."
         />
         <meta name="keywords" content="pdf security, document privacy, gdpr compliance, hipaa compliant pdf, secure pdf processing, data protection" />
-        <link rel="canonical" href={"https://localpdf.tech/pdf-hub/security"} />
+        <link rel="canonical" href={"https://localpdf.online/pdf-hub/security"} />
         <script type="application/ld+json">
           {JSON.stringify(schemaData)}
         </script>

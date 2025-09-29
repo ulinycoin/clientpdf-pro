@@ -185,7 +185,7 @@ const ComparisonPage: React.FC = () => {
           content="Compare PDF tools and features to choose the best solution for your needs. Side-by-side comparisons of merge, split, compress, protect, and conversion tools."
         />
         <meta name="keywords" content="PDF tool comparison, best PDF tool, PDF software comparison, document processing tools" />
-        <link rel="canonical" href="https://localpdf.tech/pdf-hub/comparison" />
+        <link rel="canonical" href="https://localpdf.online/pdf-hub/comparison" />
 
         {/* Schema.org Markup */}
         <script type="application/ld+json">
@@ -194,11 +194,11 @@ const ComparisonPage: React.FC = () => {
             "@type": "WebPage",
             "name": "PDF Tools Comparison",
             "description": "Comprehensive comparison of PDF processing tools to help you choose the right solution",
-            "url": "https://localpdf.tech/pdf-hub/comparison",
+            "url": "https://localpdf.online/pdf-hub/comparison",
             "isPartOf": {
               "@type": "WebSite",
               "name": "LocalPDF",
-              "url": "https://localpdf.tech"
+              "url": "https://localpdf.online"
             },
             "about": {
               "@type": "Thing",

@@ -78,7 +78,7 @@ const PDFHubPage: React.FC = () => {
     "@type": "WebPage",
     "name": "PDF Hub - Complete Guide to PDF Processing",
     "description": "Comprehensive PDF processing guide with 20+ tools, privacy-first approach, and industry-specific solutions.",
-    "url": "https://localpdf.tech/pdf-hub",
+    "url": "https://localpdf.online/pdf-hub",
     "mainEntity": {
       "@type": "SoftwareApplication",
       "name": "LocalPDF",
@@ -97,13 +97,13 @@ const PDFHubPage: React.FC = () => {
           "@type": "ListItem",
           "position": 1,
           "name": "Home",
-          "item": "https://localpdf.tech"
+          "item": "https://localpdf.online"
         },
         {
           "@type": "ListItem",
           "position": 2,
           "name": "PDF Hub",
-          "item": "https://localpdf.tech/pdf-hub"
+          "item": "https://localpdf.online/pdf-hub"
         }
       ]
     }
@@ -127,7 +127,7 @@ const PDFHubPage: React.FC = () => {
       {/* PDF Hub specific hreflang tags (English-only) */}
       <PDFHubHreflang
         pagePath="/pdf-hub"
-        canonicalUrl="https://localpdf.tech/pdf-hub"
+        canonicalUrl="https://localpdf.online/pdf-hub"
       />
 
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-blue-900 flex flex-col">

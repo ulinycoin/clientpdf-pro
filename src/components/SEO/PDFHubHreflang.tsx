@@ -48,7 +48,7 @@ export const StandardHreflang: React.FC<{
   currentLanguage: string;
 }> = ({ basePath, currentLanguage }) => {
   const supportedLanguages = ['en', 'de', 'fr', 'es', 'ru'];
-  const baseUrl = 'https://localpdf.tech';
+  const baseUrl = 'https://localpdf.online';
 
   return (
     <Helmet>

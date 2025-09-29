@@ -1,7 +1,7 @@
 {
   "buildCommand": "npm run build:full",
   "outputDirectory": "dist",
-  "trailingSlash": true,
+  "trailingSlash": false,
   "headers": [
     {
       "source": "/robots.txt",

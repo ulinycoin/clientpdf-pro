@@ -429,7 +429,7 @@ const GuidesPage: React.FC = () => {
     "@type": "WebPage",
     "name": "PDF Processing Guides - Complete Tutorials",
     "description": "Comprehensive step-by-step guides for PDF processing, from basic document management to advanced automation workflows.",
-    "url": "https://localpdf.tech/pdf-hub/guides",
+    "url": "https://localpdf.online/pdf-hub/guides",
     "mainEntity": {
       "@type": "ItemList",
       "itemListElement": guides.map((guide, index) => ({
@@ -457,7 +457,7 @@ const GuidesPage: React.FC = () => {
           content="Master PDF processing with our comprehensive guides. Step-by-step tutorials for document management, security, conversion, and automation."
         />
         <meta name="keywords" content="pdf guides, pdf tutorials, document management, pdf security, pdf conversion, pdf automation" />
-        <link rel="canonical" href={"https://localpdf.tech/pdf-hub/guides"} />
+        <link rel="canonical" href={"https://localpdf.online/pdf-hub/guides"} />
         <script type="application/ld+json">
           {JSON.stringify(schemaData)}
         </script>

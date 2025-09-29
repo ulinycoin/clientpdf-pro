@@ -208,7 +208,7 @@ const WorkflowsPage: React.FC = () => {
           content="Complete step-by-step PDF workflows for legal, business, healthcare, and educational document processing. Industry-specific guides with tool recommendations."
         />
         <meta name="keywords" content="PDF workflow, document process, business workflow, legal documents, medical records, educational materials" />
-        <link rel="canonical" href="https://localpdf.tech/pdf-hub/workflows" />
+        <link rel="canonical" href="https://localpdf.online/pdf-hub/workflows" />
 
         {/* Schema.org Markup */}
         <script type="application/ld+json">
@@ -217,11 +217,11 @@ const WorkflowsPage: React.FC = () => {
             "@type": "WebPage",
             "name": "PDF Workflows - Process Guides",
             "description": "Comprehensive step-by-step workflows for professional PDF document processing across different industries",
-            "url": "https://localpdf.tech/pdf-hub/workflows",
+            "url": "https://localpdf.online/pdf-hub/workflows",
             "isPartOf": {
               "@type": "WebSite",
               "name": "LocalPDF",
-              "url": "https://localpdf.tech"
+              "url": "https://localpdf.online"
             },
             "about": {
               "@type": "Thing",
