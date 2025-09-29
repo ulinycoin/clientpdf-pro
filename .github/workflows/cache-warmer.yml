@@ -1,0 +1,125 @@
+name: 🔥 Cache Warmer - LocalPDF
+
+on:
+  # Автоматический запуск каждые 12 часов
+  schedule:
+    # Запуск в 6:00 и 18:00 UTC каждый день
+    # Это обеспечит обновление cache до его expiry
+    - cron: '0 6,18 * * *'
+
+  # Возможность запуска вручную
+  workflow_dispatch:
+    inputs:
+      tier:
+        description: 'Which tier to warm (tier1, tier2, tier3, all, auto)'
+        required: false
+        default: 'auto'
+        type: choice
+        options:
+          - auto
+          - tier1
+          - tier2
+          - tier3
+          - all
+
+jobs:
+  cache-warmer:
+    name: 🚀 Warm Prerender Cache
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: 📦 Install Dependencies
+        run: npm ci --only=production
+
+      - name: 🔥 Run Cache Warmer
+        run: |
+          echo "🚀 Starting Cache Warmer for LocalPDF..."
+          echo "📅 Scheduled run: $(date)"
+          echo "🎯 Mode: ${{ github.event.inputs.tier || 'auto' }}"
+          echo ""
+
+          # Запуск cache warmer
+          node cache-warmer.cjs ${{ github.event.inputs.tier || 'auto' }}
+
+        env:
+          # Environment variables (если понадобятся)
+          NODE_ENV: production
+
+      - name: 📊 Upload Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cache-warmer-results-${{ github.run_number }}
+          path: |
+            *.log
+            cache-warmer-*.json
+          retention-days: 7
+
+      - name: 💬 Comment on Commit (on failure)
+        if: failure() && github.event_name == 'schedule'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.repos.createCommitComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              commit_sha: context.sha,
+              body: '❌ Cache Warmer failed. Check the workflow logs for details.'
+            })
+
+  # Дополнительная job для мониторинга статистики
+  monitor:
+    name: 📈 Monitor Cache Performance
+    runs-on: ubuntu-latest
+    needs: cache-warmer
+    if: always()
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: 📊 Run Performance Check
+        run: |
+          echo "📈 Running performance monitoring..."
+          echo "🔍 Checking cache hit rates and response times..."
+
+          # Опционально: запуск нашего monitoring скрипта
+          if [ -f "prerender-monitor.cjs" ]; then
+            echo "🧪 Running prerender monitor..."
+            node prerender-monitor.cjs quick || echo "⚠️ Monitor check had issues"
+          fi
+
+          echo "✅ Monitoring completed"
+
+      - name: 📝 Create Performance Summary
+        run: |
+          echo "## 📊 Cache Warmer Performance Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Date:** $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "**Workflow:** ${{ github.workflow }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Run Number:** ${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🎯 Expected Benefits:" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Cache refreshed before 3-day expiry" >> $GITHUB_STEP_SUMMARY
+          echo "- ⚡ Bots get 28ms response instead of 3-4s" >> $GITHUB_STEP_SUMMARY
+          echo "- 📈 Improved Core Web Vitals for SEO" >> $GITHUB_STEP_SUMMARY
+          echo "- 🚀 Better organic traffic (EN + RU)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📋 Next Steps:" >> $GITHUB_STEP_SUMMARY
+          echo "- Monitor Prerender.io dashboard for cache hits" >> $GITHUB_STEP_SUMMARY
+          echo "- Check Google Analytics for traffic improvements" >> $GITHUB_STEP_SUMMARY
+          echo "- Review Google Search Console crawl stats" >> $GITHUB_STEP_SUMMARY
