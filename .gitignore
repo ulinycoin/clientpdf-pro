@@ -104,3 +104,10 @@ temp/
 
 # Local development
 *.local
+# Generated documentation
+LocalPDF-Documentation.md
+localpdf-docs.json
+
+# Cache warmer artifacts
+cache-warmer-*.log
+cache-warmer-results-*.json

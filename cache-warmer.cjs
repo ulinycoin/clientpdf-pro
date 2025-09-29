@@ -11,6 +11,8 @@
 
 const https = require('https');
 const { URL } = require('url');
+const fs = require('fs');
+const path = require('path');
 
 // Configuration - используем ту же логику что в middleware
 const CONFIG = {
@@ -105,11 +107,21 @@ class CacheWarmer {
       errors: []
     };
     this.startTime = Date.now();
+    this.logFile = `cache-warmer-${new Date().toISOString().split('T')[0]}.log`;
+    this.jsonFile = `cache-warmer-results-${Date.now()}.json`;
   }
 
   log(message, data = '') {
     const timestamp = new Date().toISOString();
-    console.log(`[${timestamp}] ${message}`, data);
+    const logLine = `[${timestamp}] ${message} ${data}`;
+    console.log(logLine);
+
+    // Записываем в файл лога
+    try {
+      fs.appendFileSync(this.logFile, logLine + '\n');
+    } catch (error) {
+      // Игнорируем ошибки записи лога
+    }
   }
 
   async warmCache(tier = null) {
@@ -126,6 +138,7 @@ class CacheWarmer {
     }
 
     this.printSummary();
+    this.saveResults();
   }
 
   getTiersToWarm() {
@@ -260,6 +273,24 @@ class CacheWarmer {
 
     const status = successRate >= 80 ? '🎉 SUCCESS!' : '⚠️ PARTIAL SUCCESS';
     this.log(`\n🚦 Status: ${status}`);
+  }
+
+  saveResults() {
+    const results = {
+      timestamp: new Date().toISOString(),
+      duration: Math.round((Date.now() - this.startTime) / 1000),
+      total: this.results.total,
+      success: this.results.success,
+      errors: this.results.errors,
+      successRate: Math.round((this.results.success / this.results.total) * 100)
+    };
+
+    try {
+      fs.writeFileSync(this.jsonFile, JSON.stringify(results, null, 2));
+      this.log(`📊 Results saved to ${this.jsonFile}`);
+    } catch (error) {
+      this.log(`❌ Failed to save results: ${error.message}`);
+    }
   }
 
   sleep(ms) {

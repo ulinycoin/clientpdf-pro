@@ -60,9 +60,10 @@ jobs:
         with:
           name: cache-warmer-results-${{ github.run_number }}
           path: |
-            *.log
-            cache-warmer-*.json
+            cache-warmer-*.log
+            cache-warmer-results-*.json
           retention-days: 7
+          if-no-files-found: warn
 
       - name: 💬 Comment on Commit (on failure)
         if: failure() && github.event_name == 'schedule'
