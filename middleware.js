@@ -63,6 +63,40 @@ const BOT_USER_AGENTS = [
   'scraper'
 ];
 
+// Scheduled Rendering Whitelist for Prerender.io
+// Only these paths will be eligible for scheduled rendering (EN + RU only)
+const SCHEDULED_RENDERING_WHITELIST = [
+  // Tier 1: Critical (every 2 days)
+  '/',
+  '/merge-pdf',
+  '/split-pdf',
+  '/compress-pdf',
+  '/protect-pdf',
+  '/ocr-pdf',
+
+  // Tier 2: Standard (every 3 days)
+  '/add-text-pdf',
+  '/watermark-pdf',
+  '/pdf-to-image',
+  '/images-to-pdf',
+  '/word-to-pdf',
+  '/excel-to-pdf',
+  '/rotate-pdf',
+  '/extract-pages-pdf',
+  '/extract-text-pdf',
+  '/extract-images-from-pdf',
+  '/pdf-to-svg',
+
+  // Tier 3: Blog (every 5 days)
+  '/blog',
+  '/blog/complete-guide-pdf-merging-2025',
+  '/blog/pdf-compression-guide',
+  '/blog/protect-pdf-guide',
+];
+
+// Supported languages for scheduled rendering (EN + RU only)
+const SCHEDULED_RENDERING_LANGUAGES = ['en', 'ru'];
+
 // Prerender.io configuration
 const PRERENDER_IO_CONFIG = {
   serviceUrl: process.env.PRERENDER_IO_SERVICE_URL || 'https://service.prerender.io',
@@ -79,6 +113,25 @@ function isBotUserAgent(userAgent) {
 
   const lowerUserAgent = userAgent.toLowerCase();
   return BOT_USER_AGENTS.some(bot => lowerUserAgent.includes(bot));
+}
+
+/**
+ * Check if path is eligible for scheduled rendering
+ * Only EN and RU languages are supported for scheduled rendering
+ */
+function isScheduledRenderingEligible(pathname) {
+  // Extract language and clean path
+  const langMatch = pathname.match(/^\/([a-z]{2})\//);
+  const language = langMatch ? langMatch[1] : 'en'; // default to 'en' for root paths
+  const cleanPath = langMatch ? pathname.replace(/^\/[a-z]{2}/, '') : pathname;
+
+  // Check if language is supported for scheduled rendering
+  if (!SCHEDULED_RENDERING_LANGUAGES.includes(language)) {
+    return false;
+  }
+
+  // Check if path is in whitelist
+  return SCHEDULED_RENDERING_WHITELIST.includes(cleanPath);
 }
 
 /**
@@ -109,15 +162,19 @@ function shouldPrerender(request) {
     return false;
   }
 
-  // Allow blog URLs for prerendering
-  // Blog posts are available in blogPosts.ts and should be prerendered for SEO
-
   // Skip verification files and random hash files
   if (pathname.match(/^\/[a-f0-9]{32,}\.txt$/)) {
     return false;
   }
 
-  // Only allow known good routes
+  // NEW: Check scheduled rendering whitelist for EN + RU only
+  // This implements the plan: only 42 critical pages for EN + RU get scheduled rendering
+  if (isScheduledRenderingEligible(pathname)) {
+    return true;
+  }
+
+  // Fallback: Allow other valid routes for other languages (DE, FR, ES)
+  // but only for real-time bot requests (not scheduled rendering)
   const validRoutes = [
     '/', '/privacy', '/faq', '/terms', '/gdpr', '/how-to-use',
     '/merge-pdf', '/split-pdf', '/compress-pdf', '/add-text-pdf',
@@ -211,7 +268,8 @@ export default async function middleware(request) {
   logActivity('Processing request', {
     url: url.pathname,
     userAgent: userAgent.slice(0, 100) + '...', // Truncate for logging
-    isBot: isBotUserAgent(userAgent)
+    isBot: isBotUserAgent(userAgent),
+    scheduledRenderingEligible: isScheduledRenderingEligible(url.pathname)
   });
 
   // Handle common truncated URLs with 301 redirects
