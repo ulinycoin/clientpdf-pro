@@ -97,11 +97,12 @@ const SCHEDULED_RENDERING_WHITELIST = [
 // Supported languages for scheduled rendering (EN + RU only)
 const SCHEDULED_RENDERING_LANGUAGES = ['en', 'ru'];
 
-// Prerender.io configuration
+// Rendertron configuration (migrated from Prerender.io for cost savings)
+// Free self-hosted solution on Render.com vs Prerender.io $90/month
 const PRERENDER_IO_CONFIG = {
-  serviceUrl: process.env.PRERENDER_IO_SERVICE_URL || 'https://service.prerender.io',
-  token: process.env.PRERENDER_IO_TOKEN,
-  timeout: 10000, // 10 seconds timeout
+  serviceUrl: process.env.PRERENDER_SERVICE_URL || 'https://localpdf-rendertron.onrender.com/render',
+  token: null, // Rendertron doesn't require authentication token
+  timeout: 30000, // 30 seconds timeout (Rendertron can be slower on cold start)
   enableLogging: process.env.NODE_ENV === 'development'
 };
 
@@ -196,18 +197,14 @@ function shouldPrerender(request) {
 }
 
 /**
- * Create prerender request URL
+ * Create prerender request URL for Rendertron
  */
 function createPrerenderUrl(originalUrl) {
-  const { serviceUrl, token } = PRERENDER_IO_CONFIG;
+  const { serviceUrl } = PRERENDER_IO_CONFIG;
 
-  if (!token) {
-    throw new Error('PRERENDER_IO_TOKEN environment variable is required');
-  }
-
-  // Encode the URL properly for Prerender.io
-  const encodedUrl = encodeURIComponent(originalUrl);
-  return `${serviceUrl}/${encodedUrl}`;
+  // Rendertron API format: /render/https://example.com
+  // No need to encode the URL, Rendertron handles it
+  return `${serviceUrl}/${originalUrl}`;
 }
 
 /**
@@ -217,7 +214,7 @@ function addBotHeaders(response) {
   // Cache prerendered content for bots for 1 hour
   response.headers.set('Cache-Control', 'public, max-age=3600, stale-while-revalidate=86400');
   response.headers.set('X-Prerender-Bot', 'true');
-  response.headers.set('X-Prerender-Service', 'prerender.io');
+  response.headers.set('X-Prerender-Service', 'rendertron');
 
   // SEO-friendly headers
   response.headers.set('X-Robots-Tag', 'index, follow');
@@ -310,15 +307,8 @@ export default async function middleware(request) {
     return;
   }
 
-  // Check if Prerender.io token is configured
-  if (!PRERENDER_IO_CONFIG.token) {
-    logActivity('WARNING: PRERENDER_IO_TOKEN not configured, serving original content');
-    // Let the request continue to the app
-    return;
-  }
-
   try {
-    logActivity('Fetching prerendered content from Prerender.io');
+    logActivity('Fetching prerendered content from Rendertron');
 
     // Create prerender request
     const prerenderUrl = createPrerenderUrl(request.url);
@@ -329,11 +319,9 @@ export default async function middleware(request) {
 
     const prerenderResponse = await fetch(prerenderUrl, {
       headers: {
-        'X-Prerender-Token': PRERENDER_IO_CONFIG.token,
         'User-Agent': userAgent,
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
         'Accept-Language': 'en-US,en;q=0.5',
-        'Accept-Encoding': 'gzip, deflate',
         'Cache-Control': 'no-cache'
       },
       signal: controller.signal
@@ -343,7 +331,7 @@ export default async function middleware(request) {
 
     // Check if prerender was successful
     if (!prerenderResponse.ok) {
-      throw new Error(`Prerender.io returned status ${prerenderResponse.status}`);
+      throw new Error(`Rendertron returned status ${prerenderResponse.status}`);
     }
 
     // Get prerendered HTML

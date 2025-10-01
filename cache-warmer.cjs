@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
 /**
- * LocalPDF Cache Warmer
+ * LocalPDF Cache Warmer for Rendertron
  *
- * Автоматически обновляет cache в Prerender.io каждые 2-3 дня,
- * решая проблему 3-дневного TTL на free plan.
+ * Автоматически прогревает Rendertron на Render.com каждые 2-3 дня,
+ * предотвращая cold starts (15-минутный sleep на free tier).
  *
  * Работает с нашим middleware whitelist - только EN+RU страницы.
  */
@@ -267,9 +267,10 @@ class CacheWarmer {
     }
 
     this.log('\n🎯 Next Steps:');
-    this.log('• Monitor Prerender.io dashboard for cache hits');
+    this.log('• Monitor Rendertron uptime (https://localpdf-rendertron.onrender.com)');
     this.log('• Check Core Web Vitals improvements');
     this.log('• Track organic traffic growth (EN + RU)');
+    this.log('• Rendertron stays warm and avoids cold starts');
 
     const status = successRate >= 80 ? '🎉 SUCCESS!' : '⚠️ PARTIAL SUCCESS';
     this.log(`\n🚦 Status: ${status}`);
