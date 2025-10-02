@@ -52,9 +52,28 @@ export default defineConfig({
     target: 'es2020',
     minify: 'esbuild',
     sourcemap: false,
+    chunkSizeWarningLimit: 500, // Warn if chunks exceed 500kb
     rollupOptions: {
       // Включаем markdown файлы в сборку как статические ресурсы
       external: [],
+      output: {
+        // Aggressive code splitting for better caching and performance
+        manualChunks: {
+          // Core React libraries
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          // PDF processing libraries (large dependencies)
+          'pdf-lib': ['pdf-lib', '@pdf-lib/fontkit'],
+          'pdfjs': ['pdfjs-dist'],
+          // OCR library (Tesseract is very large)
+          'tesseract': ['tesseract.js'],
+          // UI libraries
+          'ui-vendor': ['react-helmet-async'],
+        },
+        // Optimize chunk naming for better caching
+        chunkFileNames: 'assets/js/[name]-[hash].js',
+        entryFileNames: 'assets/js/[name]-[hash].js',
+        assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',
+      },
     },
     // Копируем markdown файлы в dist
     copyPublicDir: true,

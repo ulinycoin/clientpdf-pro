@@ -10,6 +10,8 @@
     <!-- Preconnect to external domains -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+    <link rel="dns-prefetch" href="https://www.google-analytics.com" />
 
     <!-- Favicon and app icons -->
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
@@ -41,8 +43,7 @@
     <!-- Google Search Console verification -->
     <meta name="google-site-verification" content="34adca022b79f1a0" />
 
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-MS36WTHPCZ"></script>
+    <!-- Google Analytics - Deferred loading -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
@@ -51,6 +52,14 @@
         anonymize_ip: true,
         allow_google_signals: false,
         allow_ad_personalization_signals: false
+      });
+
+      // Load GA script after page load to avoid blocking render
+      window.addEventListener('load', function() {
+        var script = document.createElement('script');
+        script.async = true;
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=G-MS36WTHPCZ';
+        document.head.appendChild(script);
       });
     </script>
 
