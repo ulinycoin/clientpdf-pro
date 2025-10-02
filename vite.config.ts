@@ -41,6 +41,22 @@ export default defineConfig({
         }
       }
     },
+    // Remove unnecessary modulepreload hints for mobile performance
+    {
+      name: 'remove-heavy-preloads',
+      apply: 'build',
+      transformIndexHtml(html) {
+        // Remove modulepreload for heavy chunks that aren't needed on first load
+        return html
+          .replace(/<link rel="modulepreload"[^>]*pdf-lib[^>]*>/g, '')
+          .replace(/<link rel="modulepreload"[^>]*xlsx[^>]*>/g, '')
+          .replace(/<link rel="modulepreload"[^>]*pdfjs[^>]*>/g, '')
+          .replace(/<link rel="modulepreload"[^>]*tesseract[^>]*>/g, '')
+          .replace(/<link rel="modulepreload"[^>]*authority[^>]*>/g, '')
+          .replace(/<link rel="modulepreload"[^>]*blog[^>]*>/g, '')
+          .replace(/<link rel="modulepreload"[^>]*html2canvas[^>]*>/g, '');
+      }
+    },
   ],
 
   server: {
@@ -57,17 +73,58 @@ export default defineConfig({
       // Включаем markdown файлы в сборку как статические ресурсы
       external: [],
       output: {
-        // Aggressive code splitting for better caching and performance
-        manualChunks: {
+        // Aggressive code splitting for better caching and mobile performance
+        manualChunks: (id) => {
           // Core React libraries
-          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          // PDF processing libraries (large dependencies)
-          'pdf-lib': ['pdf-lib', '@pdf-lib/fontkit'],
-          'pdfjs': ['pdfjs-dist'],
-          // OCR library (Tesseract is very large)
-          'tesseract': ['tesseract.js'],
+          if (id.includes('node_modules/react') || id.includes('node_modules/react-dom')) {
+            return 'react-vendor';
+          }
+          if (id.includes('node_modules/react-router')) {
+            return 'react-router';
+          }
+
+          // PDF processing libraries (large dependencies) - load on demand
+          if (id.includes('node_modules/pdf-lib') || id.includes('@pdf-lib/fontkit')) {
+            return 'pdf-lib';
+          }
+          if (id.includes('node_modules/pdfjs-dist')) {
+            return 'pdfjs';
+          }
+
+          // OCR library (Tesseract is very large) - only for OCR pages
+          if (id.includes('node_modules/tesseract')) {
+            return 'tesseract';
+          }
+
+          // html2canvas - ONLY for Watermark/AddText/PDFToSvg pages
+          if (id.includes('node_modules/html2canvas')) {
+            return 'html2canvas';
+          }
+
+          // xlsx library - ONLY for Excel to PDF
+          if (id.includes('node_modules/xlsx')) {
+            return 'xlsx';
+          }
+
+          // DOMPurify - security library
+          if (id.includes('node_modules/dompurify')) {
+            return 'purify';
+          }
+
           // UI libraries
-          'ui-vendor': ['react-helmet-async'],
+          if (id.includes('node_modules/react-helmet-async')) {
+            return 'ui-vendor';
+          }
+
+          // Blog-related code - separate chunk
+          if (id.includes('/pages/Blog') || id.includes('/hooks/useSimpleBlog')) {
+            return 'blog';
+          }
+
+          // Authority pages - separate chunk
+          if (id.includes('/pages/authority/')) {
+            return 'authority';
+          }
         },
         // Optimize chunk naming for better caching
         chunkFileNames: 'assets/js/[name]-[hash].js',
