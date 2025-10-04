@@ -39,7 +39,7 @@ You are the **Lead Developer** for LocalPDF, a privacy-first PDF toolkit. Your r
 - `./check-bot-cache.sh` - Quick GCS cache health check (recommended daily)
 - `node cache-warmer-gcs.cjs all` - Warm all 82 URLs (~7 minutes)
 - `node cache-warmer-gcs.cjs tier1` - Warm critical pages only (EN+RU)
-- `gcloud storage ls -r gs://localpdf-rendertron-cache/cache/` - View cached files
+- `gcloud storage ls -r gs://localpdf-pro-rendertron-cache/cache/` - View cached files
 - `gcloud run services logs read rendertron --region us-central1` - Check Rendertron logs
 
 ### Testing and Quality
@@ -348,7 +348,7 @@ Request Flow:
 - **Total savings**: **$1,079.76/year** (99.98% cost reduction)
 
 **GCS Cache Configuration:**
-- Bucket: `localpdf-rendertron-cache`
+- Bucket: `localpdf-pro-rendertron-cache`
 - TTL: 24 hours (auto-cleanup)
 - Size: ~3MB for 79 pages
 - Structure: `/cache/{language}/{page}.html`
@@ -384,7 +384,7 @@ Shows: cached pages count, storage size, cache hit test, response times
 - Project: `localpdf-rendertron`
 
 **3. GCS Bucket** (Cache storage)
-- URL: https://console.cloud.google.com/storage/browser/localpdf-rendertron-cache
+- URL: https://console.cloud.google.com/storage/browser/localpdf-pro-rendertron-cache
 - Check: file count, last updated timestamps, storage size
 - Structure: `/cache/{language}/{page}.html`
 
@@ -429,7 +429,7 @@ curl -I "https://localpdf.online/merge-pdf" \
 
 **Problem: GCS cache files missing**
 - Check: Cloud Run service has GCS permissions
-- Verify: `localpdf-rendertron-cache` bucket exists
+- Verify: `localpdf-pro-rendertron-cache` bucket exists
 - Test: Render one URL manually via Rendertron endpoint
 
 ## Critical Technical Details - GCS Caching System
@@ -501,7 +501,7 @@ exec node cache-proxy.js                         # Uses ENV PORT=8080
 
 ### GCS Bucket Structure
 ```
-localpdf-rendertron-cache/
+localpdf-pro-rendertron-cache/
 └── cache/
     ├── en/
     │   ├── index.html

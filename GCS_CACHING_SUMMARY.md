@@ -52,7 +52,7 @@ Provides **instant prerendered HTML** for search engine bots (Googlebot, YandexB
                        ▼
          ┌──────────────────────────┐
          │ Google Cloud Storage     │
-         │ localpdf-rendertron-cache│
+         │ localpdf-pro-rendertron-cache│
          │                          │
          │ /cache/                  │
          │   ├── en/ (23 files)     │
@@ -106,7 +106,7 @@ curl -I "https://localpdf.online/merge-pdf" \
 
 ### View Cached Files
 ```bash
-gcloud storage ls -r gs://localpdf-rendertron-cache/cache/
+gcloud storage ls -r gs://localpdf-pro-rendertron-cache/cache/
 ```
 
 ### Check Cloud Run Logs
@@ -123,7 +123,7 @@ gcloud run services logs read rendertron \
 
 1. **Vercel Logs** (Bot detection): https://vercel.com/localpdf/logs
 2. **Cloud Run** (Rendertron): https://console.cloud.google.com/run/detail/us-central1/rendertron/logs
-3. **GCS Bucket** (Cache storage): https://console.cloud.google.com/storage/browser/localpdf-rendertron-cache
+3. **GCS Bucket** (Cache storage): https://console.cloud.google.com/storage/browser/localpdf-pro-rendertron-cache
 4. **GitHub Actions** (Cache warmer): https://github.com/ulinycoin/clientpdf-pro/actions/workflows/cache-warmer-gcs.yml
 5. **Search Console** (Indexing): https://search.google.com/search-console
 
@@ -186,7 +186,7 @@ gcloud run services describe rendertron \
 ### Problem: Cache files missing in GCS
 ```bash
 # Verify bucket exists
-gcloud storage ls gs://localpdf-rendertron-cache/
+gcloud storage ls gs://localpdf-pro-rendertron-cache/
 
 # Check Cloud Run permissions
 gcloud run services get-iam-policy rendertron \

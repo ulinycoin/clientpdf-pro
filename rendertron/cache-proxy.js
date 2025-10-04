@@ -15,7 +15,7 @@ const app = express();
 const storage = new Storage();
 
 const CONFIG = {
-  bucketName: 'localpdf-rendertron-cache',
+  bucketName: 'localpdf-pro-rendertron-cache',
   cachePrefix: 'cache/',
   rendertronUrl: 'http://localhost:3000', // Rendertron running locally
   cacheTTL: 86400, // 24 hours in seconds
