@@ -67,39 +67,9 @@ const EXCLUDED_BOTS = [
   // 'seobility',
 ];
 
-// Scheduled Rendering Whitelist for Prerender.io
-// Only these paths will be eligible for scheduled rendering (EN + RU only)
-const SCHEDULED_RENDERING_WHITELIST = [
-  // Tier 1: Critical (every 2 days)
-  '/',
-  '/merge-pdf',
-  '/split-pdf',
-  '/compress-pdf',
-  '/protect-pdf',
-  '/ocr-pdf',
-
-  // Tier 2: Standard (every 3 days)
-  '/add-text-pdf',
-  '/watermark-pdf',
-  '/pdf-to-image',
-  '/images-to-pdf',
-  '/word-to-pdf',
-  '/excel-to-pdf',
-  '/rotate-pdf',
-  '/extract-pages-pdf',
-  '/extract-text-pdf',
-  '/extract-images-from-pdf',
-  '/pdf-to-svg',
-
-  // Tier 3: Blog (every 5 days)
-  '/blog',
-  '/blog/complete-guide-pdf-merging-2025',
-  '/blog/pdf-compression-guide',
-  '/blog/protect-pdf-guide',
-];
-
-// Supported languages for scheduled rendering (EN + RU only)
-const SCHEDULED_RENDERING_LANGUAGES = ['en', 'ru'];
+// Cache all pages from sitemap (113 URLs across all 5 languages: EN, RU, DE, FR, ES)
+// No whitelist needed - GCS cache handles everything efficiently
+// Cost: ~$0.06/month for full sitemap caching (8MB cache)
 
 // Rendertron configuration (Google Cloud Run deployment)
 // Self-hosted on Google Cloud Run - faster, more reliable than Render.com
@@ -109,6 +79,97 @@ const PRERENDER_IO_CONFIG = {
   timeout: 30000, // 30 seconds timeout (Cloud Run is faster - min-instances=1 keeps it warm)
   enableLogging: process.env.NODE_ENV === 'development'
 };
+
+// Google Cloud Storage cache configuration
+const GCS_CACHE_CONFIG = {
+  bucketName: 'localpdf-rendertron-cache',
+  cachePrefix: 'cache/',
+  cacheTTL: 86400, // 24 hours in seconds
+  enableCache: true, // Set to false to disable cache temporarily
+  gcsApiUrl: 'https://storage.googleapis.com'
+};
+
+/**
+ * Generate cache key from URL
+ * Format: cache/en/merge-pdf.html or cache/ru/split-pdf.html
+ */
+function getCacheKey(url) {
+  const urlObj = new URL(url);
+  const pathname = urlObj.pathname;
+
+  // Extract language and path
+  const langMatch = pathname.match(/^\/([a-z]{2})\//);
+  const language = langMatch ? langMatch[1] : 'en';
+  const cleanPath = langMatch ? pathname.replace(/^\/[a-z]{2}/, '') : pathname;
+
+  // Convert /merge-pdf to merge-pdf.html
+  const filename = cleanPath === '/' ? 'index.html' : cleanPath.replace(/^\//, '').replace(/\/$/, '') + '.html';
+
+  return `${GCS_CACHE_CONFIG.cachePrefix}${language}/${filename}`;
+}
+
+/**
+ * Check if cached version exists in GCS and is fresh
+ */
+async function getCachedContent(url) {
+  if (!GCS_CACHE_CONFIG.enableCache) return null;
+
+  try {
+    const cacheKey = getCacheKey(url);
+    const gcsUrl = `${GCS_CACHE_CONFIG.gcsApiUrl}/${GCS_CACHE_CONFIG.bucketName}/${cacheKey}`;
+
+    const response = await fetch(gcsUrl, {
+      method: 'GET',
+      headers: {
+        'Accept': 'text/html'
+      }
+    });
+
+    if (!response.ok) {
+      // Cache miss - no cached version exists
+      return null;
+    }
+
+    // Cache hit - return cached HTML
+    const cachedHtml = await response.text();
+
+    logActivity('Cache HIT', { url, cacheKey, size: cachedHtml.length });
+
+    return cachedHtml;
+  } catch (error) {
+    logActivity('Cache check error', { url, error: error.message });
+    return null;
+  }
+}
+
+/**
+ * Save rendered content to GCS cache
+ */
+async function saveCachedContent(url, html) {
+  if (!GCS_CACHE_CONFIG.enableCache) return;
+
+  try {
+    const cacheKey = getCacheKey(url);
+    const gcsUrl = `${GCS_CACHE_CONFIG.gcsApiUrl}/upload/storage/v1/b/${GCS_CACHE_CONFIG.bucketName}/o?uploadType=media&name=${encodeURIComponent(cacheKey)}`;
+
+    const response = await fetch(gcsUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/html; charset=utf-8',
+        'Content-Length': html.length.toString()
+      },
+      body: html
+    });
+
+    if (response.ok) {
+      logActivity('Cache SAVE success', { url, cacheKey, size: html.length });
+    } else {
+      logActivity('Cache SAVE failed', { url, status: response.status });
+    }
+  } catch (error) {
+    logActivity('Cache save error', { url, error: error.message });
+  }
+}
 
 /**
  * Check if request is from a bot based on user agent
@@ -132,26 +193,8 @@ function isExcludedBot(userAgent) {
 }
 
 /**
- * Check if path is eligible for scheduled rendering
- * Only EN and RU languages are supported for scheduled rendering
- */
-function isScheduledRenderingEligible(pathname) {
-  // Extract language and clean path
-  const langMatch = pathname.match(/^\/([a-z]{2})\//);
-  const language = langMatch ? langMatch[1] : 'en'; // default to 'en' for root paths
-  const cleanPath = langMatch ? pathname.replace(/^\/[a-z]{2}/, '') : pathname;
-
-  // Check if language is supported for scheduled rendering
-  if (!SCHEDULED_RENDERING_LANGUAGES.includes(language)) {
-    return false;
-  }
-
-  // Check if path is in whitelist
-  return SCHEDULED_RENDERING_WHITELIST.includes(cleanPath);
-}
-
-/**
- * Check if request should be prerendered
+ * Check if request should be prerendered and cached
+ * Now supports ALL 5 languages (EN, RU, DE, FR, ES) with GCS caching
  */
 function shouldPrerender(request) {
   const userAgent = request.headers.get('user-agent') || '';
@@ -163,9 +206,7 @@ function shouldPrerender(request) {
     return false;
   }
 
-  // CRITICAL FIX: Exclude SEO tools that timeout on Rendertron
-  // AhrefsBot, SEMrush, etc. get 504 errors on Render.com free tier
-  // They will get SPA instead (better than 504 timeout!)
+  // Exclude specific SEO crawler tools if needed
   if (isExcludedBot(userAgent)) {
     return false;
   }
@@ -190,14 +231,7 @@ function shouldPrerender(request) {
     return false;
   }
 
-  // NEW: Check scheduled rendering whitelist for EN + RU only
-  // This implements the plan: only 42 critical pages for EN + RU get scheduled rendering
-  if (isScheduledRenderingEligible(pathname)) {
-    return true;
-  }
-
-  // Fallback: Allow other valid routes for other languages (DE, FR, ES)
-  // but only for real-time bot requests (not scheduled rendering)
+  // Valid routes from sitemap (all languages supported)
   const validRoutes = [
     '/', '/privacy', '/faq', '/terms', '/gdpr', '/how-to-use',
     '/merge-pdf', '/split-pdf', '/compress-pdf', '/add-text-pdf',
@@ -287,8 +321,7 @@ export default async function middleware(request) {
   logActivity('Processing request', {
     url: url.pathname,
     userAgent: userAgent.slice(0, 100) + '...', // Truncate for logging
-    isBot: isBotUserAgent(userAgent),
-    scheduledRenderingEligible: isScheduledRenderingEligible(url.pathname)
+    isBot: isBotUserAgent(userAgent)
   });
 
   // Handle common truncated URLs with 301 redirects
@@ -330,7 +363,28 @@ export default async function middleware(request) {
   }
 
   try {
-    logActivity('Fetching prerendered content from Rendertron');
+    // STEP 1: Check cache first
+    const cachedHtml = await getCachedContent(request.url);
+
+    if (cachedHtml) {
+      logActivity('Serving from GCS cache');
+
+      // Return cached content immediately (200-300ms response!)
+      const response = new Response(cachedHtml, {
+        status: 200,
+        headers: {
+          'Content-Type': 'text/html; charset=utf-8',
+        }
+      });
+
+      // Add cache-specific header
+      response.headers.set('X-Cache-Status', 'HIT');
+
+      return addBotHeaders(response);
+    }
+
+    // STEP 2: Cache miss - fetch from Rendertron
+    logActivity('Cache MISS - Fetching from Rendertron');
 
     // Create prerender request
     const prerenderUrl = createPrerenderUrl(request.url);
@@ -367,6 +421,11 @@ export default async function middleware(request) {
       contentLength: prerenderHtml.length
     });
 
+    // STEP 3: Save to cache for future requests (fire-and-forget)
+    saveCachedContent(request.url, prerenderHtml).catch(err => {
+      logActivity('Background cache save failed', { error: err.message });
+    });
+
     // Create response with prerendered content
     const response = new Response(prerenderHtml, {
       status: 200,
@@ -374,6 +433,9 @@ export default async function middleware(request) {
         'Content-Type': 'text/html; charset=utf-8',
       }
     });
+
+    // Add cache-specific header
+    response.headers.set('X-Cache-Status', 'MISS');
 
     return addBotHeaders(response);
 

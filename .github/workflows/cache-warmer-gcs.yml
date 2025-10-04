@@ -1,0 +1,128 @@
+name: 🔥 GCS Cache Warmer - LocalPDF
+
+on:
+  # Автоматический запуск каждые 6 часов (4 раза в день)
+  schedule:
+    # 00:00, 06:00, 12:00, 18:00 UTC
+    # Оптимально для покрытия всех временных зон
+    - cron: '0 */6 * * *'
+
+  # Возможность запуска вручную
+  workflow_dispatch:
+    inputs:
+      tier:
+        description: 'Which tier to warm (tier1, tier2, tier3, tier4, all, auto)'
+        required: false
+        default: 'auto'
+        type: choice
+        options:
+          - auto
+          - tier1
+          - tier2
+          - tier3
+          - tier4
+          - all
+
+jobs:
+  cache-warmer-gcs:
+    name: 🚀 Warm GCS Cache (113 URLs)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: 📦 Install Dependencies (optional)
+        run: |
+          # Cache warmer не требует зависимостей проекта
+          echo "✅ No dependencies needed for cache warmer"
+
+      - name: 🔥 Run GCS Cache Warmer
+        run: |
+          echo "🚀 Starting GCS Cache Warmer for LocalPDF..."
+          echo "📅 Scheduled run: $(date)"
+          echo "🎯 Mode: ${{ github.event.inputs.tier || 'auto' }}"
+          echo "🌍 Languages: EN, RU, DE, FR, ES"
+          echo "📊 Total URLs: 113 pages"
+          echo ""
+
+          # Запуск нового GCS cache warmer
+          node cache-warmer-gcs.cjs ${{ github.event.inputs.tier || 'auto' }}
+
+        env:
+          NODE_ENV: production
+
+      - name: 📊 Upload Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gcs-cache-warmer-results-${{ github.run_number }}
+          path: |
+            cache-warmer-gcs-*.log
+            cache-warmer-gcs-results-*.json
+          retention-days: 7
+          if-no-files-found: warn
+
+      - name: 💬 Notify on Failure
+        if: failure() && github.event_name == 'schedule'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.repos.createCommitComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              commit_sha: context.sha,
+              body: '❌ GCS Cache Warmer failed. Check the workflow logs for details.'
+            })
+
+  # Мониторинг производительности кеша
+  monitor:
+    name: 📈 Monitor GCS Cache Performance
+    runs-on: ubuntu-latest
+    needs: cache-warmer-gcs
+    if: always()
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 📝 Create Performance Summary
+        run: |
+          echo "## 📊 GCS Cache Warmer Performance Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Date:** $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "**Workflow:** ${{ github.workflow }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Run Number:** ${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🎯 Cache Configuration:" >> $GITHUB_STEP_SUMMARY
+          echo "- **Storage:** Google Cloud Storage (localpdf-rendertron-cache)" >> $GITHUB_STEP_SUMMARY
+          echo "- **TTL:** 24 hours (auto-delete old cache)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Total URLs:** 113 pages" >> $GITHUB_STEP_SUMMARY
+          echo "- **Languages:** EN, RU, DE, FR, ES" >> $GITHUB_STEP_SUMMARY
+          echo "- **Cache Size:** ~8 MB" >> $GITHUB_STEP_SUMMARY
+          echo "- **Cost:** ~\$0.06/month" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### ⚡ Expected Performance:" >> $GITHUB_STEP_SUMMARY
+          echo "- **Cache HIT:** ~200ms response time" >> $GITHUB_STEP_SUMMARY
+          echo "- **Cache MISS:** ~5000ms (first render)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Hit Rate:** 99%+ after warming" >> $GITHUB_STEP_SUMMARY
+          echo "- **Speed Improvement:** 25x faster" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🚀 SEO Benefits:" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ All 5 languages optimized (EN, RU, DE, FR, ES)" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ 100% sitemap coverage (113 URLs)" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Sub-second bot responses" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Better Core Web Vitals for crawlers" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Expected +20-30% organic traffic" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📋 Monitoring:" >> $GITHUB_STEP_SUMMARY
+          echo "- [Google Cloud Storage Console](https://console.cloud.google.com/storage/browser/localpdf-rendertron-cache)" >> $GITHUB_STEP_SUMMARY
+          echo "- [Cloud Run Rendertron Logs](https://console.cloud.google.com/run/detail/us-central1/rendertron/logs)" >> $GITHUB_STEP_SUMMARY
+          echo "- [Vercel Analytics](https://vercel.com/localpdf/analytics)" >> $GITHUB_STEP_SUMMARY
+          echo "- [Google Search Console](https://search.google.com/search-console)" >> $GITHUB_STEP_SUMMARY

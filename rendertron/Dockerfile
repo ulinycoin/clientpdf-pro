@@ -1,5 +1,5 @@
 # Optimized Rendertron Dockerfile for Google Cloud Run
-# Based on official rendertron/rendertron with Cloud Run optimizations
+# Uses official Rendertron base with Cloud Run optimizations
 
 FROM node:18-slim
 
@@ -25,6 +25,7 @@ RUN apt-get update && apt-get install -y \
     xdg-utils \
     libgbm1 \
     libxshmfence1 \
+    git \
     --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
@@ -38,8 +39,11 @@ RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key
 # Set working directory
 WORKDIR /app
 
-# Install Rendertron
-RUN npm install -g rendertron@3.1.0
+# Clone Rendertron from GitHub (includes src files)
+RUN git clone --depth=1 --branch=3.1.0 https://github.com/GoogleChrome/rendertron.git /app/rendertron && \
+    cd /app/rendertron && \
+    npm install && \
+    npm run build
 
 # Create cache directory for Chrome (improves startup time)
 RUN mkdir -p /app/.cache/puppeteer \
@@ -68,5 +72,8 @@ USER node
 # Expose Cloud Run default port
 EXPOSE 8080
 
+# Change to rendertron directory
+WORKDIR /app/rendertron
+
 # Start Rendertron with optimized Chrome flags for Cloud Run
-CMD ["rendertron", "--port", "8080", "--chrome-flags", "--no-sandbox,--disable-dev-shm-usage,--disable-gpu,--disable-software-rasterizer,--disable-extensions"]
+CMD ["node", "build/rendertron.js", "--port", "8080", "--chrome-flags", "--no-sandbox,--disable-dev-shm-usage,--disable-gpu,--disable-software-rasterizer,--disable-extensions"]
