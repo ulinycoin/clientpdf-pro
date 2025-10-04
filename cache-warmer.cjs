@@ -3,8 +3,8 @@
 /**
  * LocalPDF Cache Warmer for Rendertron
  *
- * Автоматически прогревает Rendertron на Render.com каждые 2-3 дня,
- * предотвращая cold starts (15-минутный sleep на free tier).
+ * Автоматически прогревает Rendertron на Google Cloud Run каждые 2-3 дня,
+ * обеспечивая быстрые ответы для поисковых ботов (min-instances=1 держит сервис теплым).
  *
  * Работает с нашим middleware whitelist - только EN+RU страницы.
  */

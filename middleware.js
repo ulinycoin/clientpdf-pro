@@ -54,16 +54,17 @@ const BOT_USER_AGENTS = [
   'scraper'
 ];
 
-// SEO tools that TIMEOUT on Rendertron (Render.com free tier too slow)
-// These bots get STATIC SPA instead of prerendered content
+// SEO tools excluded from prerendering (optional - can be removed if Cloud Run handles well)
+// These crawler tools can be heavy and may consume quota
 const EXCLUDED_BOTS = [
-  'ahrefsbot',      // 504 timeout - confirmed by user
-  'semrushbot',     // Likely timeout
-  'mj12bot',        // Likely timeout
-  'dotbot',         // Likely timeout
-  'screaming frog', // Desktop tool - timeout
-  'sitebulb',       // Desktop tool - timeout
-  'seobility',      // Likely timeout
+  // Uncomment if you want to exclude specific SEO crawlers
+  // 'ahrefsbot',
+  // 'semrushbot',
+  // 'mj12bot',
+  // 'dotbot',
+  // 'screaming frog',
+  // 'sitebulb',
+  // 'seobility',
 ];
 
 // Scheduled Rendering Whitelist for Prerender.io
@@ -100,12 +101,12 @@ const SCHEDULED_RENDERING_WHITELIST = [
 // Supported languages for scheduled rendering (EN + RU only)
 const SCHEDULED_RENDERING_LANGUAGES = ['en', 'ru'];
 
-// Rendertron configuration (migrated from Prerender.io for cost savings)
-// Free self-hosted solution on Render.com vs Prerender.io $90/month
+// Rendertron configuration (Google Cloud Run deployment)
+// Self-hosted on Google Cloud Run - faster, more reliable than Render.com
 const PRERENDER_IO_CONFIG = {
-  serviceUrl: process.env.PRERENDER_SERVICE_URL || 'https://localpdf-rendertron.onrender.com/render',
+  serviceUrl: process.env.PRERENDER_SERVICE_URL || 'https://rendertron-741929692017.us-central1.run.app/render',
   token: null, // Rendertron doesn't require authentication token
-  timeout: 30000, // 30 seconds timeout (Rendertron can be slower on cold start)
+  timeout: 30000, // 30 seconds timeout (Cloud Run is faster - min-instances=1 keeps it warm)
   enableLogging: process.env.NODE_ENV === 'development'
 };
 

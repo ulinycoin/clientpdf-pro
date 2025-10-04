@@ -1,0 +1,63 @@
+# Google Cloud Build configuration for Rendertron
+# Automatically builds and deploys to Cloud Run
+
+steps:
+  # Build the container image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/rendertron:$SHORT_SHA'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/rendertron:latest'
+      - '-f'
+      - 'rendertron/Dockerfile'
+      - '.'
+
+  # Push the container image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/rendertron:$SHORT_SHA'
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/rendertron:latest'
+
+  # Deploy to Cloud Run with optimized settings
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'rendertron'
+      - '--image=gcr.io/$PROJECT_ID/rendertron:$SHORT_SHA'
+      - '--region=us-central1'
+      - '--platform=managed'
+      - '--allow-unauthenticated'
+      # Performance optimizations
+      - '--memory=1Gi'
+      - '--cpu=1'
+      - '--timeout=60s'
+      - '--max-instances=10'
+      - '--min-instances=1'
+      # Critical: Keep 1 instance always warm to avoid cold starts
+      - '--concurrency=80'
+      # Environment variables
+      - '--set-env-vars=NODE_ENV=production,PUPPETEER_TIMEOUT=25000'
+      # Labels for monitoring
+      - '--labels=app=rendertron,service=prerendering,project=localpdf'
+
+# Store built images
+images:
+  - 'gcr.io/$PROJECT_ID/rendertron:$SHORT_SHA'
+  - 'gcr.io/$PROJECT_ID/rendertron:latest'
+
+# Build configuration
+timeout: '1200s'
+options:
+  # Use high performance machine for faster builds
+  machineType: 'N1_HIGHCPU_8'
+  # Logging
+  logging: CLOUD_LOGGING_ONLY

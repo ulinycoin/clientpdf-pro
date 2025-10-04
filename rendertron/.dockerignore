@@ -1,0 +1,54 @@
+# Optimize Docker build context - exclude unnecessary files
+
+# Dependencies
+node_modules
+npm-debug.log
+yarn-error.log
+.pnpm-debug.log
+
+# Project files (not needed in Rendertron container)
+src
+public
+tests
+scripts
+.github
+
+# Documentation
+*.md
+docs
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Build artifacts
+dist
+build
+.cache
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Other configs
+.prettierrc
+.eslintrc*
+tsconfig.json
+vite.config.ts
+vitest.config.ts
+playwright.config.ts
+tailwind.config.js
+postcss.config.js
