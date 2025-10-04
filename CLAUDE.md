@@ -23,7 +23,8 @@ You are the **Lead Developer** for LocalPDF, a privacy-first PDF toolkit. Your r
 - **AI-powered features** for smart document analysis and recommendations
 - **UI/UX improvements** following the glass morphism design system
 - **Accessibility enhancements** for better user experience
-- **SEO and multilingual** optimization across all 5 supported languages
+- **SEO and multilingual** optimization across all 5 supported languages (EN, RU, DE, FR, ES)
+- **Prerendering infrastructure** - Google Cloud Run + GCS caching for search bots
 - **Code quality** improvements and technical debt reduction
 
 ## Common Commands
@@ -33,6 +34,13 @@ You are the **Lead Developer** for LocalPDF, a privacy-first PDF toolkit. Your r
 - `npm run build` - Build for production (skips type checking for speed)
 - `npm run build:full` - Full production build with sitemap generation and IndexNow submission
 - `npm run preview` - Preview production build locally
+
+### SEO & Cache Management
+- `./check-bot-cache.sh` - Quick GCS cache health check (recommended daily)
+- `node cache-warmer-gcs.cjs all` - Warm all 82 URLs (~7 minutes)
+- `node cache-warmer-gcs.cjs tier1` - Warm critical pages only (EN+RU)
+- `gcloud storage ls -r gs://localpdf-rendertron-cache/cache/` - View cached files
+- `gcloud run services logs read rendertron --region us-central1` - Check Rendertron logs
 
 ### Testing and Quality
 - `npm run type-check` - Run TypeScript type checking
@@ -296,26 +304,276 @@ node cache-warmer.cjs auto     # Smart mode (GitHub Actions default)
 - **c38ff5c** - Cache Warmer solution to solve Prerender.io 3-day cache expiry issue
 - **Problem:** Prerender.io free plan cache expires after 3 days → 3-4s Miss responses
 
-**Phase 3: Rendertron Migration (Oct 2025)** ⭐ **CURRENT**
+**Phase 3: Rendertron Migration (Oct 2025)** ⭐ **DEPRECATED - Replaced by Phase 4**
 - **1a48f32** - Migrated from Prerender.io to self-hosted Rendertron on Render.com
 - **Problem:** Prerender.io costs $90/month, has request limits, vendor lock-in
 - **Solution:** Free self-hosted Rendertron with Cache Warmer preventing cold starts
+- **Result:** Deprecated in favor of Google Cloud Run + GCS for better performance
 
-**Migration Results:**
-1. ✅ **Cost savings** - $1,080/year ($90/month → $0/month)
-2. ✅ **No limits** - Unlimited rendering on Render.com free tier
-3. ✅ **Full control** - Self-hosted, open-source solution
-4. ✅ **Cache Warmer adapted** - Now prevents Render.com cold starts (15min sleep)
-5. ✅ **92% success rate** - Cache warming keeps Rendertron always warm
-6. ⚠️ **Performance trade-off** - 5-15s (warm) vs old 28ms, but always fresh content
+**Phase 4: GCS Caching Implementation (Oct 4, 2025)** ⭐ **CURRENT**
+- **Migration:** Moved from Render.com to Google Cloud Run with GCS caching layer
+- **Problem:** Render.com had slow responses (5-15s), cold starts, no persistent cache
+- **Solution:** Two-tier architecture on Cloud Run with Google Cloud Storage caching
+
+**Architecture:**
+```
+Request Flow:
+1. Bot request → Vercel Middleware (bot detection)
+2. Middleware → Cloud Run Rendertron (port 8080)
+3. Cache Proxy checks GCS bucket
+   └─ Cache HIT → Return in ~175-1250ms
+   └─ Cache MISS → Render with Rendertron (port 3000) → Save to GCS → Return in ~4500-6500ms
+4. Vercel Edge Cache (1 hour) → Subsequent requests in ~168-686ms
+```
+
+**Key Components:**
+- **rendertron/cache-proxy.js** (221 lines) - Express server with GCS integration
+- **rendertron/start.sh** - Sequential startup script (Rendertron on 3000, Cache Proxy on 8080)
+- **rendertron/Dockerfile** - Two-service container with proper PORT management
+- **cache-warmer-gcs.cjs** - Automated cache warming for all 113 URLs (5 languages)
+- **check-bot-cache.sh** - Quick cache health check script
+- **.github/workflows/cache-warmer-gcs.yml** - GitHub Actions automation
+
+**Performance Results:**
+1. ✅ **Vercel Edge Cache** (1 hour TTL): **168-686ms** ⚡⚡⚡
+2. ✅ **GCS Cache HIT** (24 hour TTL): **175-1250ms** ⚡⚡
+3. ✅ **First Render** (cache MISS): **4500-6500ms** ⚡
+4. ✅ **Speed improvement**: **28-34x faster** (vs cold render)
+5. ✅ **Cache coverage**: **79/82 pages** (96% success rate)
+
+**Cost Breakdown:**
+- **Prerender.io** (old): $90/month = $1,080/year
+- **Render.com** (Phase 3): $0/month but slow performance
+- **Cloud Run + GCS** (current): **~$0.02/month** = **$0.24/year**
+- **Total savings**: **$1,079.76/year** (99.98% cost reduction)
+
+**GCS Cache Configuration:**
+- Bucket: `localpdf-rendertron-cache`
+- TTL: 24 hours (auto-cleanup)
+- Size: ~3MB for 79 pages
+- Structure: `/cache/{language}/{page}.html`
+- Languages: EN (23), RU (22), DE (11), FR (12), ES (11)
 
 **Current Status:**
-- ✅ Rendertron deployed on Render.com free tier
-- ✅ Middleware configured for EN+RU whitelist (42 URLs)
-- ✅ Cache Warmer running every 12 hours via GitHub Actions
-- ✅ Health monitoring with `monitor-rendertron.sh`
-- ✅ Expected +25-40% organic traffic improvement for EN+RU
-- ✅ Zero monthly costs for prerendering infrastructure
+- ✅ Rendertron deployed on Google Cloud Run (us-central1)
+- ✅ GCS caching operational with 96% coverage (79/82 URLs)
+- ✅ Cache Warmer running every 6 hours via GitHub Actions
+- ✅ Three-tier caching: Vercel Edge (1h) → GCS (24h) → Rendertron
+- ✅ Monitoring tools: `./check-bot-cache.sh`, Cloud Run logs, GCS bucket
+- ✅ Expected +25-40% organic traffic improvement (all 5 languages)
+- ✅ Zero meaningful costs (~$0.02/month)
+
+## Monitoring Bot Activity & SEO Performance
+
+### Quick Health Check (Daily)
+```bash
+./check-bot-cache.sh
+```
+Shows: cached pages count, storage size, cache hit test, response times
+
+### Monitoring Tools & Dashboards
+
+**1. Vercel Logs** (Real-time bot detection)
+- URL: https://vercel.com/localpdf/logs
+- Filters: `user-agent contains "Googlebot"` or `x-prerender-bot: true`
+- Headers to watch: `x-cache-status`, `x-prerender-service`
+
+**2. Cloud Run Logs** (Rendertron rendering)
+- URL: https://console.cloud.google.com/run/detail/us-central1/rendertron/logs
+- Look for: "Cache HIT/MISS", response times, errors
+- Project: `localpdf-rendertron`
+
+**3. GCS Bucket** (Cache storage)
+- URL: https://console.cloud.google.com/storage/browser/localpdf-rendertron-cache
+- Check: file count, last updated timestamps, storage size
+- Structure: `/cache/{language}/{page}.html`
+
+**4. Google Search Console** (Indexing & Performance)
+- URL: https://search.google.com/search-console
+- Tools: URL Inspection, Coverage Report, Performance metrics
+- Expected results: 2-4 weeks for traffic improvements
+
+**5. GitHub Actions** (Cache Warmer automation)
+- URL: https://github.com/ulinycoin/clientpdf-pro/actions/workflows/cache-warmer-gcs.yml
+- Schedule: Every 6 hours (Tier-based warming)
+- Success threshold: ≥95%
+
+### Manual Cache Operations
+
+**Warm specific tier:**
+```bash
+node cache-warmer-gcs.cjs tier1    # Critical pages (EN+RU)
+node cache-warmer-gcs.cjs tier2    # Standard tools (EN+RU)
+node cache-warmer-gcs.cjs tier3    # DE/FR/ES translations
+node cache-warmer-gcs.cjs tier4    # Blog & other pages
+node cache-warmer-gcs.cjs all      # All 82 URLs (~7 minutes)
+```
+
+**Test specific URL:**
+```bash
+curl -I "https://localpdf.online/merge-pdf" \
+  -A "Mozilla/5.0 (compatible; Googlebot/2.1)"
+# Look for: x-cache-status: HIT
+```
+
+### Troubleshooting
+
+**Problem: Cache MISS rate too high**
+- Solution: Run `node cache-warmer-gcs.cjs all`
+- Check: GCS bucket has recent files (last 24 hours)
+
+**Problem: Slow bot responses (>2s)**
+- Check: Vercel Edge Cache expiry (1 hour TTL)
+- Check: Cloud Run min-instances=1 (no cold starts)
+- Run: `./check-bot-cache.sh` to verify cache health
+
+**Problem: GCS cache files missing**
+- Check: Cloud Run service has GCS permissions
+- Verify: `localpdf-rendertron-cache` bucket exists
+- Test: Render one URL manually via Rendertron endpoint
+
+## Critical Technical Details - GCS Caching System
+
+### Architecture Overview
+The prerendering system uses a **two-service architecture** running in a single Docker container on Google Cloud Run:
+
+1. **Rendertron** (Internal, port 3000)
+   - Headless Chrome renderer
+   - Cloned from GitHub (v3.1.0)
+   - Handles actual page rendering (~5s per page)
+   - Started in background with health checks
+
+2. **Cache Proxy** (Public, port 8080)
+   - Express.js server wrapping Rendertron
+   - Checks GCS before rendering
+   - Saves successful renders to GCS
+   - Returns cached HTML when available
+
+### PORT Management (CRITICAL - DO NOT MODIFY)
+The container uses **dual PORT configuration**:
+
+```dockerfile
+# Dockerfile sets PORT=8080 for Cloud Run
+ENV PORT=8080
+ENV RENDERTRON_PORT=3000
+```
+
+```bash
+# start.sh MUST override PORT for Rendertron
+PORT=3000 node build/rendertron.js --port 3000  # Forces port 3000
+exec node cache-proxy.js                         # Uses ENV PORT=8080
+```
+
+**Why this matters:**
+- Cloud Run expects service on PORT=8080 (from ENV)
+- Rendertron would default to PORT=8080 without override
+- Port conflict causes "EADDRINUSE" error
+- Sequential startup prevents race conditions
+
+### File Locations & Key Code
+
+**rendertron/cache-proxy.js** (221 lines)
+- Main caching logic
+- GCS integration: `@google-cloud/storage`
+- Cache key generation: `/cache/{language}/{page}.html`
+- TTL check: 24 hours (86400 seconds)
+- Headers: `X-Cache-Status`, `X-Cache-Key`, `X-Renderer`
+
+**rendertron/start.sh** (Sequential startup - DO NOT PARALLELIZE)
+```bash
+# CORRECT order:
+1. Start Rendertron in background (PORT=3000)
+2. Wait for Rendertron health check (curl localhost:3000)
+3. Start Cache Proxy in foreground (exec, PORT=8080)
+
+# INCORRECT (causes failures):
+- Starting both in background
+- Starting Cache Proxy first
+- Not waiting for Rendertron ready
+```
+
+**rendertron/Dockerfile**
+- Base: `node:18-slim`
+- Chrome dependencies + curl (for health checks)
+- Two npm installs: Rendertron + Cache Proxy
+- User permissions: `node:node` (non-root)
+- Exposes: 8080 (Cloud Run port)
+
+### GCS Bucket Structure
+```
+localpdf-rendertron-cache/
+└── cache/
+    ├── en/
+    │   ├── index.html
+    │   ├── merge-pdf.html
+    │   └── ... (23 files)
+    ├── ru/ (22 files)
+    ├── de/ (11 files)
+    ├── fr/ (12 files)
+    └── es/ (11 files)
+```
+
+### Deployment Commands (Reference)
+
+**Build new image:**
+```bash
+cd rendertron
+gcloud builds submit --tag gcr.io/localpdf-rendertron/rendertron:latest \
+  --project localpdf-rendertron --timeout=10m
+```
+
+**Deploy to Cloud Run:**
+```bash
+gcloud run deploy rendertron \
+  --image gcr.io/localpdf-rendertron/rendertron:latest \
+  --region us-central1 \
+  --platform managed \
+  --allow-unauthenticated \
+  --memory 1Gi \
+  --cpu 1 \
+  --timeout 60s \
+  --max-instances 10 \
+  --min-instances 1 \
+  --concurrency 80 \
+  --set-env-vars NODE_ENV=production,PUPPETEER_TIMEOUT=25000 \
+  --project localpdf-rendertron
+```
+
+**Why min-instances=1:**
+- Prevents cold starts (Cloud Run keeps 1 instance warm)
+- Worth the cost (~$5/month vs $0) for consistent performance
+- Without it: first request takes 10-30s for cold start
+
+### Known Issues & Solutions
+
+**Issue: 4 redirect errors (308) in cache warmer**
+- URLs: `/ru/`, `/de/`, `/fr/`, `/es/` (root language pages)
+- Cause: Next.js redirects root language URLs to non-trailing slash
+- Impact: Harmless - these URLs redirect anyway
+- Solution: None needed, expected behavior
+
+**Issue: Cache HIT rate low after deploy**
+- Cause: GCS bucket empty, needs warming
+- Solution: Run `node cache-warmer-gcs.cjs all` after deploy
+- Takes: ~7 minutes for all 82 URLs
+- Result: 96% success rate (79/82 URLs cached)
+
+**Issue: Slow bot responses despite cache**
+- Check: Vercel Edge Cache (1 hour TTL) - might be expired
+- Check: GCS cache age (24 hour TTL) - might need re-warming
+- Fix: Cache Warmer runs every 6 hours automatically
+
+### Performance Expectations
+
+**Normal operation:**
+- Vercel Edge Cache HIT: **168-686ms** (most common)
+- GCS Cache HIT: **175-1250ms** (after Edge expires)
+- Cache MISS (first render): **4500-6500ms** (rare after warming)
+
+**If seeing slower times:**
+- >2s consistently = Check min-instances=1 setting
+- >10s = Possible cold start (min-instances=0)
+- >30s = Timeout/failure (check Cloud Run logs)
 
 When working on this codebase:
 1. Always use the path aliases (`@/components`, `@/services`, etc.)
@@ -323,8 +581,10 @@ When working on this codebase:
 3. Add translations for all 5 supported languages
 4. Test with both light and dark modes
 5. Ensure all PDF operations work client-side without server dependencies
-6. **Monitor Rendertron health** with `./monitor-rendertron.sh` weekly (30 seconds)
-7. **Check GitHub Actions** - Cache Warmer should run every 12 hours with ≥80% success rate
-8. **Focus EN + RU** for scheduled rendering (42 URLs), other languages work as SPA
-9. **Render.com Dashboard** - Check logs weekly for timeout errors or cold starts
+6. **Monitor cache health** with `./check-bot-cache.sh` daily or weekly
+7. **Check GitHub Actions** - Cache Warmer should run every 6 hours with ≥95% success rate
+8. **All languages optimized** - EN, RU, DE, FR, ES all get GCS caching (79/82 URLs)
+9. **Cloud Run Dashboard** - Service should have min-instances=1, no cold starts
 10. **SEO Performance** - Track Google Search Console metrics (2-4 weeks for results)
+11. **Never modify** cache-proxy.js PORT logic or start.sh sequential startup without testing
+12. **Before modifying Rendertron** - Read this section again, especially PORT management

@@ -1,11 +1,12 @@
-# Optimized Rendertron Dockerfile for Google Cloud Run
-# Uses official Rendertron base with Cloud Run optimizations
+# Optimized Rendertron Dockerfile for Google Cloud Run with GCS Caching
+# Two-service architecture: Cache Proxy (port 8080) + Rendertron (port 3000)
 
 FROM node:18-slim
 
-# Install Chrome dependencies
+# Install Chrome dependencies + curl for health checks
 RUN apt-get update && apt-get install -y \
     wget \
+    curl \
     gnupg \
     ca-certificates \
     fonts-liberation \
@@ -45,35 +46,40 @@ RUN git clone --depth=1 --branch=3.1.0 https://github.com/GoogleChrome/rendertro
     npm install && \
     npm run build
 
+# Install cache proxy dependencies
+COPY cache-proxy.js /app/cache-proxy.js
+COPY package.json /app/package.json
+RUN cd /app && npm install --production
+
 # Create cache directory for Chrome (improves startup time)
 RUN mkdir -p /app/.cache/puppeteer \
     && chmod -R 777 /app/.cache
 
 # Environment variables for Cloud Run optimization
 ENV PORT=8080 \
+    RENDERTRON_PORT=3000 \
     NODE_ENV=production \
     CHROME_BIN=/usr/bin/google-chrome-stable \
     PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
     PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable \
-    # Performance optimizations
     PUPPETEER_TIMEOUT=25000 \
     CHROME_CACHE_DIR=/app/.cache/puppeteer \
-    # Memory optimization for Cloud Run (512MB-1GB instances)
     NODE_OPTIONS="--max-old-space-size=768"
 
 # Health check for Cloud Run
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
     CMD node -e "require('http').get('http://localhost:8080/', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
 
-# Non-root user for security (use existing node user in node:18-slim)
+# Non-root user for security
 RUN chown -R node:node /app
 USER node
 
 # Expose Cloud Run default port
 EXPOSE 8080
 
-# Change to rendertron directory
-WORKDIR /app/rendertron
-
-# Start Rendertron with optimized Chrome flags for Cloud Run
-CMD ["node", "build/rendertron.js", "--port", "8080", "--chrome-flags", "--no-sandbox,--disable-dev-shm-usage,--disable-gpu,--disable-software-rasterizer,--disable-extensions"]
+# Start script that runs both Rendertron and Cache Proxy
+COPY start.sh /app/start.sh
+USER root
+RUN chmod +x /app/start.sh
+USER node
+CMD ["/app/start.sh"]
