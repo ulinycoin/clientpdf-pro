@@ -108,5 +108,20 @@ export const merge = {
     fileTooLarge: 'El tamaño del archivo excede el límite de 100MB',
     processingFailed: 'Error al procesar el archivo PDF',
     noFilesUploaded: 'No hay archivos subidos para combinar'
+  },
+
+  // Detailed unique content for this tool (replaces generic template)
+  detailed: {
+    title: '¿Por qué elegir nuestra herramienta de fusión PDF?',
+    functionality: {
+      title: 'Tecnología avanzada de fusión',
+      description1: 'Nuestra herramienta de fusión PDF utiliza tecnología de navegador de vanguardia para combinar múltiples documentos PDF en un solo archivo mientras preserva todo el formato original, fuentes, imágenes y estructura del documento. A diferencia de la simple concatenación de archivos, nuestra herramienta procesa inteligentemente cada página para mantener la calidad profesional.',
+      description2: 'El motor de fusión maneja características PDF complejas incluyendo fuentes incrustadas, gráficos vectoriales, campos de formulario, anotaciones y marcadores. Los documentos se procesan en tu navegador utilizando las bibliotecas PDF-lib y pdf.js, asegurando compatibilidad con todos los estándares PDF desde 1.4 hasta 2.0.'
+    },
+    capabilities: {
+      title: 'Procesamiento inteligente de documentos',
+      description1: 'Combina archivos PDF ilimitados sin restricciones en el tamaño del documento o número de páginas. Reordena páginas arrastrando archivos hacia arriba o abajo antes de fusionar. Nuestro procesamiento inteligente preserva los metadatos del documento, incluyendo información del autor, fechas de creación y propiedades personalizadas.',
+      description2: 'Procesa contratos comerciales, trabajos académicos, facturas, presentaciones e informes con confianza. La herramienta mantiene imágenes de alta resolución, diseños complejos, texto multi-columna, tablas y medios incrustados. Todo el procesamiento ocurre instantáneamente en tu navegador con seguimiento de progreso en tiempo real.'
+    }
   }
 };

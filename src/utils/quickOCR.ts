@@ -104,31 +104,43 @@ export class QuickOCR {
 
       console.log('✅ QuickOCR: Canvas extracted, size:', sampleCanvas.width + 'x' + sampleCanvas.height);
 
-      // First, try with English to get some text
-      const worker = await this.getWorker();
-      console.log('🔤 QuickOCR: Starting English OCR analysis');
+      // For images, try Russian OCR first to avoid misdetection
+      // (English OCR can't detect Cyrillic, leading to wrong language detection)
+      let extractedText = '';
+      let shouldTryRussian = false;
 
-      const englishResult = await worker.recognize(sampleCanvas, {
-        rectangle: undefined,
-      }, {
-        text: true,
-        blocks: false,
-        hocr: false,
-        tsv: false,
-      });
+      if (file.type.startsWith('image/')) {
+        console.log('🖼️ QuickOCR: Image file detected - trying Russian OCR first for better detection');
+        shouldTryRussian = true; // Always try Russian for images
+      } else {
+        // For PDFs, try English first
+        const worker = await this.getWorker();
+        console.log('🔤 QuickOCR: Starting English OCR analysis');
 
-      const extractedText = englishResult.data.text?.slice(0, 500) || '';
-      console.log('📝 QuickOCR: Extracted text preview:', extractedText.substring(0, 100) + '...');
-      console.log('📊 QuickOCR: Text length:', extractedText.length);
+        const englishResult = await worker.recognize(sampleCanvas, {
+          rectangle: undefined,
+        }, {
+          text: true,
+          blocks: false,
+          hocr: false,
+          tsv: false,
+        });
 
-      // If we detect Cyrillic characters, try again with Russian OCR for better accuracy
-      const cyrillicMatches = extractedText.match(/[а-яё]/gi);
-      const cyrillicRatio = extractedText.length > 0 ? (cyrillicMatches?.length || 0) / extractedText.length : 0;
+        extractedText = englishResult.data.text?.slice(0, 500) || '';
+        console.log('📝 QuickOCR: Extracted text preview:', extractedText.substring(0, 100) + '...');
+        console.log('📊 QuickOCR: Text length:', extractedText.length);
 
-      console.log('🔍 QuickOCR: Cyrillic analysis - matches:', cyrillicMatches?.length || 0, 'ratio:', Math.round(cyrillicRatio * 100) + '%');
+        // If we detect Cyrillic characters, try again with Russian OCR for better accuracy
+        const cyrillicMatches = extractedText.match(/[а-яё]/gi);
+        const cyrillicRatio = extractedText.length > 0 ? (cyrillicMatches?.length || 0) / extractedText.length : 0;
 
-      // Lower threshold for triggering Russian OCR - even 5% Cyrillic should trigger it
-      if (cyrillicRatio > 0.05 || (cyrillicMatches && cyrillicMatches.length >= 3)) {
+        console.log('🔍 QuickOCR: Cyrillic analysis - matches:', cyrillicMatches?.length || 0, 'ratio:', Math.round(cyrillicRatio * 100) + '%');
+
+        // Lower threshold for triggering Russian OCR - even 5% Cyrillic should trigger it
+        shouldTryRussian = cyrillicRatio > 0.05 || (cyrillicMatches && cyrillicMatches.length >= 3);
+      }
+
+      if (shouldTryRussian) {
         console.log('🇷🇺 QuickOCR: High Cyrillic ratio detected, trying Russian OCR');
         try {
           // Create a Russian worker for better text extraction

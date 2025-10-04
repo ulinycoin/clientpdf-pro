@@ -108,5 +108,20 @@ export const merge = {
     fileTooLarge: 'Dateigröße überschreitet 100MB-Limit',
     processingFailed: 'Fehler beim Verarbeiten der PDF-Datei',
     noFilesUploaded: 'Keine Dateien zum Zusammenführen hochgeladen'
+  },
+
+  // Detailed unique content for this tool (replaces generic template)
+  detailed: {
+    title: 'Warum unseren PDF-Zusammenführer wählen?',
+    functionality: {
+      title: 'Fortschrittliche Zusammenführungstechnologie',
+      description1: 'Unser PDF-Zusammenführer nutzt modernste Browser-Technologie, um mehrere PDF-Dokumente zu einer einzigen Datei zu kombinieren und dabei alle ursprünglichen Formatierungen, Schriftarten, Bilder und Dokumentstrukturen beizubehalten. Im Gegensatz zur einfachen Dateiverkettung verarbeitet unser Tool intelligent jede Seite, um professionelle Qualität zu gewährleisten.',
+      description2: 'Die Zusammenführungs-Engine verarbeitet komplexe PDF-Funktionen einschließlich eingebetteter Schriftarten, Vektorgrafiken, Formularfelder, Annotationen und Lesezeichen. Dokumente werden in Ihrem Browser mithilfe der PDF-lib und pdf.js-Bibliotheken verarbeitet und gewährleisten Kompatibilität mit allen PDF-Standards von 1.4 bis 2.0.'
+    },
+    capabilities: {
+      title: 'Intelligente Dokumentenverarbeitung',
+      description1: 'Führen Sie unbegrenzt viele PDF-Dateien ohne Einschränkungen bei Dokumentgröße oder Seitenanzahl zusammen. Ordnen Sie Seiten durch Ziehen von Dateien nach oben oder unten vor dem Zusammenführen neu an. Unsere intelligente Verarbeitung bewahrt Dokument-Metadaten, einschließlich Autoreninformationen, Erstellungsdaten und benutzerdefinierten Eigenschaften.',
+      description2: 'Verarbeiten Sie Geschäftsverträge, wissenschaftliche Arbeiten, Rechnungen, Präsentationen und Berichte mit Vertrauen. Das Tool behält hochauflösende Bilder, komplexe Layouts, mehrspaltigen Text, Tabellen und eingebettete Medien bei. Die gesamte Verarbeitung erfolgt sofort in Ihrem Browser mit Echtzeit-Fortschrittsanzeige.'
+    }
   }
 };

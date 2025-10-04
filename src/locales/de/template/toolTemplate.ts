@@ -53,18 +53,5 @@ export const toolTemplate = {
         metadata: 'Metadaten-Unterstützung: Dokumenteigenschaften bleiben erhalten'
       }
     }
-  },
-  detailed: {
-    title: 'Warum unser PDF-Tool wählen?',
-    business: {
-      title: 'Für Geschäftsanwendungen',
-      description1: 'Perfekt für professionelle Dokumentenworkflows. Verarbeiten Sie Verträge, Berichte, Präsentationen und offizielle Dokumente mit Vertrauen. Unser Tool bewahrt die Dokumentintegrität und Formatierungspräzision, die für Geschäftsanwendungen erforderlich ist.',
-      description2: 'Sparen Sie Zeit und Ressourcen mit sofortiger Verarbeitung. Keine Abonnementgebühren, keine Kosten pro Dokument und kein Warten auf Server-Verarbeitung. Behandeln Sie sensible Geschäftsdokumente mit vollständigem Datenschutz.'
-    },
-    personal: {
-      title: 'Für persönliche Projekte',
-      description1: 'Ideal für persönliche Dokumentenverwaltung, Schulprojekte, Reisedokumente und Hobby-Aktivitäten. Die benutzerfreundliche Oberfläche macht komplexe PDF-Operationen für jeden zugänglich, unabhängig von der technischen Expertise.',
-      description2: 'Vollkommen kostenlos für unbegrenzte Nutzung. Keine Kontoregistrierung, keine Sammlung persönlicher Informationen und keine Dateigrößenbeschränkungen für typische persönliche Dokumente. Ihr Datenschutz ist vollständig geschützt.'
-    }
   }
 };

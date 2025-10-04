@@ -159,5 +159,20 @@ export const compress = {
   compressAnother: 'Weitere PDF komprimieren',
   sizeReduced: 'Größe reduziert von',
   to: 'auf',
-  readyForDownload: 'Ihre komprimierte PDF ist zum Download bereit'
+  readyForDownload: 'Ihre komprimierte PDF ist zum Download bereit',
+
+  // Detailed unique content for this tool
+  detailed: {
+    title: 'Warum unseren PDF-Kompressor wählen?',
+    functionality: {
+      title: 'Intelligente Komprimierungsalgorithmen',
+      description1: 'Unser PDF-Kompressor verwendet intelligente Algorithmen zur Analyse Ihres Dokuments und zur Anwendung optimaler Kompressionstechniken. Im Gegensatz zu einfachen Tools, die lediglich die Bildqualität reduzieren, verarbeitet unser System intelligent Bilder, Schriftarten und eingebettete Objekte unter Beibehaltung der visuellen Genauigkeit. Fortgeschrittene Optimierungstechniken umfassen Bild-Downsampling, Schriftart-Subsetting und Inhaltsstream-Komprimierung.',
+      description2: 'Die Komprimierungs-Engine unterstützt mehrere Qualitätsstufen von maximaler Komprimierung (kleinste Größe) bis zu hoher Qualität (minimale visuelle Änderungen). Wählen Sie optimale Balance für Web-Anzeige, hohe Komprimierung für E-Mail-Anhänge oder maximale Qualität für den Druck. Die gesamte Verarbeitung erfolgt in Ihrem Browser mit modernen JavaScript-Kompressionsbibliotheken und gewährleistet schnelle, sichere und private Komprimierung.'
+    },
+    capabilities: {
+      title: 'Erweiterte Dateigrößenreduzierung',
+      description1: 'Reduzieren Sie PDF-Dateigrößen um 40-90% je nach Inhaltstyp und Qualitätseinstellungen. Das Tool erkennt automatisch bildlastige PDFs und wendet entsprechende Komprimierungsstrategien an. Entfernen Sie unnötige Metadaten, optimieren Sie eingebettete Schriftarten und komprimieren Sie hochauflösende Bilder bei gleichzeitiger Beibehaltung der Dokumentlesbarkeit und des professionellen Erscheinungsbilds.',
+      description2: 'Verarbeiten Sie große PDFs bis zu 100MB mit Echtzeit-Fortschrittsverfolgung und geschätzten Kompressionsverhältnissen. Perfekt zur Reduzierung von E-Mail-Anhängen, Beschleunigung von Website-Downloads, Einsparung von Cloud-Speicherplatz und Verbesserung von Dokumenten-Sharing-Workflows. Alle Komprimierung ist verlustfrei, wo möglich, mit kontrollierter verlustbehafteter Komprimierung für Bilder basierend auf Ihren Qualitätspräferenzen.'
+    }
+  }
 };

@@ -53,18 +53,5 @@ export const toolTemplate = {
         metadata: 'Support métadonnées : Propriétés du document préservées'
       }
     }
-  },
-  detailed: {
-    title: 'Pourquoi choisir notre outil PDF ?',
-    business: {
-      title: 'Pour usage professionnel',
-      description1: 'Parfait pour les flux de travail documentaires professionnels. Traitez contrats, rapports, présentations et documents officiels en toute confiance. Notre outil maintient l\'intégrité des documents et la précision de formatage requise pour les applications métier.',
-      description2: 'Économisez du temps et des ressources avec un traitement instantané. Aucun frais d\'abonnement, aucun coût par document et aucune attente de traitement serveur. Gérez les documents métier sensibles avec une protection complète de la confidentialité.'
-    },
-    personal: {
-      title: 'Pour projets personnels',
-      description1: 'Idéal pour la gestion de documents personnels, projets scolaires, documents de voyage et activités de loisir. L\'interface conviviale rend les opérations PDF complexes accessibles à tous, indépendamment de l\'expertise technique.',
-      description2: 'Complètement gratuit pour un usage illimité. Aucune inscription de compte, aucune collecte d\'informations personnelles et aucune restriction de taille de fichier pour les documents personnels typiques. Votre confidentialité est entièrement protégée.'
-    }
   }
 };

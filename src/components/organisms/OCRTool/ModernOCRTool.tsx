@@ -7,6 +7,8 @@ import Button from '../../atoms/Button';
 import OCRSettings from './components/OCRSettings';
 import OCRToolbar from './components/OCRToolbar';
 import OCRTextEditor from './components/OCRTextEditor';
+import SmartOCRRecommendations from '../../molecules/SmartOCRRecommendations';
+import type { OCRStrategyAdvanced } from '../../../services/smartPDFService';
 import {
   detectLanguageAdvanced,
   type LanguageDetectionResult
@@ -66,11 +68,17 @@ const ModernOCRTool: React.FC<ModernOCRToolProps> = ({
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [languageDetection, setLanguageDetection] = useState<LanguageDetectionResult | null>(null);
   const [tesseractSupported, setTesseractSupported] = useState<boolean | null>(null);
-  
+
   // Text editing state
   const [showEditor, setShowEditor] = useState(false);
   const [editedText, setEditedText] = useState<string>('');
   const currentTextRef = useRef<string>(''); // Track current text for closing
+
+  // New: Advanced mode toggle
+  const [showAdvanced, setShowAdvanced] = useState(false);
+  const [aiAnalysisComplete, setAiAnalysisComplete] = useState(false);
+  const [aiRecommendedStrategy, setAiRecommendedStrategy] = useState<OCRStrategyAdvanced | null>(null);
+  const [showQualityWarning, setShowQualityWarning] = useState(false);
 
   // Check Tesseract.js support on component mount
   useEffect(() => {
@@ -170,6 +178,55 @@ const ModernOCRTool: React.FC<ModernOCRToolProps> = ({
     initializeFile();
   }, [selectedFile, canProcess, updateOptions]);
 
+  // Auto-run AI analysis in background
+  useEffect(() => {
+    const runBackgroundAnalysis = async () => {
+      if (!selectedFile || !useAIEnhancement || aiAnalysisComplete) return;
+
+      try {
+        console.log('🤖 Running background AI analysis...');
+        const { smartPDFService } = await import('../../../services/smartPDFService');
+
+        const recommendations = await smartPDFService.analyzePDFForOCR(selectedFile);
+
+        // Find best strategy (highest confidence)
+        const bestStrategy = recommendations.strategies
+          .sort((a, b) => b.confidence - a.confidence)[0];
+
+        setAiRecommendedStrategy(bestStrategy);
+        setAiAnalysisComplete(true);
+
+        // Show warning if document quality is low
+        if (recommendations.documentAnalysis.imageQuality.clarity < 70 ||
+            recommendations.documentAnalysis.imageQuality.recommendPreprocessing) {
+          setShowQualityWarning(true);
+        }
+
+        console.log('✅ AI analysis complete:', bestStrategy.name);
+      } catch (error) {
+        console.error('❌ Background AI analysis failed:', error);
+        setAiAnalysisComplete(true); // Mark as complete even if failed
+      }
+    };
+
+    runBackgroundAnalysis();
+  }, [selectedFile, useAIEnhancement, aiAnalysisComplete]);
+
+  // Handle Smart OCR - one-click processing with AI recommendations
+  const handleSmartOCR = async () => {
+    if (!selectedFile) return;
+
+    // If AI analysis is complete and we have a recommendation, use it
+    if (aiAnalysisComplete && aiRecommendedStrategy) {
+      console.log('🤖 Using AI-recommended strategy:', aiRecommendedStrategy.name);
+      await handleApplyStrategy(aiRecommendedStrategy);
+    } else {
+      // Fallback to standard processing
+      console.log('📄 Using standard OCR (AI analysis not ready)');
+      await processFile(selectedFile);
+    }
+  };
+
   // Handle processing - simplified for full document only
   const handleProcess = async () => {
     if (!selectedFile) return;
@@ -178,7 +235,7 @@ const ModernOCRTool: React.FC<ModernOCRToolProps> = ({
       fileName: selectedFile?.name,
       outputFormat: options.outputFormat
     });
-    
+
     await processFile(selectedFile);
   };
 
@@ -193,6 +250,24 @@ const ModernOCRTool: React.FC<ModernOCRToolProps> = ({
     setShowEditor(false);
     setEditedText('');
     resetState();
+  };
+
+  // Handle AI strategy application
+  const handleApplyStrategy = async (strategy: OCRStrategyAdvanced) => {
+    console.log('🎯 Applying OCR strategy:', strategy.id, strategy.settings);
+
+    // Update OCR options based on strategy settings
+    updateOptions({
+      language: strategy.settings.languages.join('+'),
+      preserveLayout: strategy.settings.preserveLayout,
+      outputFormat: options.outputFormat, // Keep user's output format choice
+      imagePreprocessing: strategy.settings.preprocessImage
+    });
+
+    // Auto-trigger processing with the new settings
+    if (selectedFile) {
+      await handleProcess();
+    }
   };
 
   // Handle text editor actions
@@ -740,25 +815,125 @@ const ModernOCRTool: React.FC<ModernOCRToolProps> = ({
         </div>
       </div>
 
+      {/* Smart OCR Main Action - Simple Mode */}
+      {!result && !isProcessing && selectedFile && !showAdvanced && (
+        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 backdrop-blur-lg border border-blue-200/50 dark:border-blue-800/50 rounded-2xl shadow-lg p-8 mb-6">
+          {/* AI Analysis Status */}
+          {!aiAnalysisComplete && useAIEnhancement && (
+            <div className="flex items-center justify-center gap-3 mb-6">
+              <Loader2 className="w-5 h-5 animate-spin text-blue-600" />
+              <span className="text-sm font-medium text-blue-900 dark:text-blue-300">
+                🤖 AI analyzing document...
+              </span>
+            </div>
+          )}
+
+          {/* Quality Warning - only show if needed */}
+          {showQualityWarning && aiAnalysisComplete && (
+            <div className="mb-6 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800/50 rounded-xl">
+              <div className="flex items-start gap-3">
+                <div className="text-2xl">⚠️</div>
+                <div>
+                  <h4 className="font-bold text-yellow-900 dark:text-yellow-300 mb-1">
+                    Document Quality Issues Detected
+                  </h4>
+                  <p className="text-sm text-yellow-800 dark:text-yellow-400 mb-3">
+                    AI has detected low image quality. We recommend using High Accuracy mode for better results.
+                  </p>
+                  <button
+                    onClick={() => setShowAdvanced(true)}
+                    className="text-sm font-medium text-yellow-900 dark:text-yellow-300 underline hover:no-underline"
+                  >
+                    View recommended settings →
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Main Smart OCR Button */}
+          <div className="text-center">
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+              Ready to extract text
+            </h3>
+            <p className="text-gray-600 dark:text-gray-400 mb-6">
+              {useAIEnhancement && aiAnalysisComplete
+                ? "AI has analyzed your document and selected optimal settings"
+                : "Click below to start text recognition"}
+            </p>
+
+            <button
+              onClick={handleSmartOCR}
+              disabled={isProcessing || (useAIEnhancement && !aiAnalysisComplete)}
+              className="group relative inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-lg rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+            >
+              {useAIEnhancement ? (
+                <>
+                  <Brain className="w-6 h-6" />
+                  <span>Start Smart OCR</span>
+                  <Sparkles className="w-5 h-5 group-hover:animate-pulse" />
+                </>
+              ) : (
+                <>
+                  <FileText className="w-6 h-6" />
+                  <span>Start OCR</span>
+                </>
+              )}
+            </button>
+
+            {/* Advanced Settings Toggle */}
+            <div className="mt-6">
+              <button
+                onClick={() => setShowAdvanced(!showAdvanced)}
+                className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 flex items-center gap-2 mx-auto group"
+              >
+                <svg
+                  className={`w-4 h-4 transform transition-transform ${showAdvanced ? 'rotate-180' : ''}`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+                <span>Advanced Settings</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* AI Recommendations Section - Collapsible Advanced Mode */}
+      {showAdvanced && useAIEnhancement && !result && !isProcessing && selectedFile && (
+        <div className="mb-6 animate-in slide-in-from-top duration-300">
+          <SmartOCRRecommendations
+            file={selectedFile}
+            onApplyStrategy={handleApplyStrategy}
+            isProcessing={isProcessing}
+          />
+        </div>
+      )}
+
       {/* Main content */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Settings Panel */}
-        <OCRSettings
-          selectedFile={selectedFile}
-          fileInfo={fileInfo}
-          options={options}
-          supportedLanguages={supportedLanguages}
-          onOptionsChange={updateOptions}
-          languageDetection={languageDetection}
-          isAnalyzing={isAnalyzing}
-          isProcessing={isProcessing}
-          progress={progress}
-          result={result}
-          error={error}
-          onProcess={handleProcess}
-          onDownload={downloadResult}
-          onReset={handleReset}
-        />
+        {/* Settings Panel - Only show in Advanced mode or when processing/complete */}
+        {(showAdvanced || isProcessing || result) && (
+          <OCRSettings
+            selectedFile={selectedFile}
+            fileInfo={fileInfo}
+            options={options}
+            supportedLanguages={supportedLanguages}
+            onOptionsChange={updateOptions}
+            languageDetection={languageDetection}
+            isAnalyzing={isAnalyzing}
+            isProcessing={isProcessing}
+            progress={progress}
+            result={result}
+            error={error}
+            onProcess={handleProcess}
+            onDownload={downloadResult}
+            onReset={handleReset}
+          />
+        )}
 
         {/* Results and Preview area */}
         <div className="flex-1 flex flex-col overflow-hidden">
@@ -785,13 +960,13 @@ const ModernOCRTool: React.FC<ModernOCRToolProps> = ({
                 className="h-full"
               />
             ) : result ? (
-              // OCR Results Display
-              <div className="h-full flex flex-col bg-white border border-gray-200 rounded-lg">
+              // OCR Results Display - A4 page size (1122px height at 96 DPI)
+              <div className="h-full max-h-[1122px] flex flex-col bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
                 {/* Results Header */}
-                <div className="flex-shrink-0 p-4 border-b border-gray-200 bg-gray-50">
+                <div className="flex-shrink-0 p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                      <FileText className="w-5 h-5 text-green-600" />
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                      <FileText className="w-5 h-5 text-green-600 dark:text-green-400" />
                       OCR Results
                     </h3>
                     <div className="flex items-center gap-2">
@@ -806,7 +981,7 @@ const ModernOCRTool: React.FC<ModernOCRToolProps> = ({
                         </svg>
                         {t('tools.ocr.buttons.editText') || 'Edit Text'}
                       </Button>
-                      <div className="flex items-center gap-4 text-sm text-gray-600">
+                      <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
                         <span>Confidence: {(result?.result?.confidence || 0).toFixed(1)}%</span>
                         <span>Words: {result?.result?.words?.length || 0}</span>
                         <span>Time: {((result?.processingTime || 0) / 1000).toFixed(1)}s</span>
@@ -815,19 +990,33 @@ const ModernOCRTool: React.FC<ModernOCRToolProps> = ({
                   </div>
                 </div>
 
-                {/* Scrollable Text Content */}
-                <div className="flex-1 overflow-auto p-4">
+                {/* Scrollable Text Content - A4 height minus header */}
+                <div className="flex-1 overflow-y-auto overflow-x-hidden p-4" style={{ maxHeight: '950px' }}>
                   {result.result?.text && result.result.text.trim() ? (
                     <div className="space-y-4">
-                      <div className="bg-gray-50 rounded-lg p-4">
-                        <h4 className="text-sm font-medium text-gray-700 mb-2">Extracted Text:</h4>
-                        <div className="text-gray-900 text-sm leading-relaxed whitespace-pre-wrap font-mono">
-                          {result.result?.text}
+                      <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
+                        <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Extracted Text:</h4>
+                        <div className="text-gray-900 dark:text-gray-100 text-sm leading-relaxed font-mono" style={{
+                          wordBreak: 'break-word',
+                          overflowWrap: 'break-word'
+                        }}>
+                          {result.result.text.split('\n').map((line, index) => {
+                            // Highlight page separators
+                            if (line.startsWith('═══')) {
+                              return <div key={index} className="text-blue-600 dark:text-blue-400 font-bold my-1">{line}</div>;
+                            }
+                            // Highlight page numbers
+                            if (line.match(/^PAGE \d+$/)) {
+                              return <div key={index} className="text-blue-700 dark:text-blue-300 font-bold text-center my-1 bg-blue-50 dark:bg-blue-900/30 py-1 px-2 rounded">{line}</div>;
+                            }
+                            // Regular line
+                            return <div key={index}>{line || '\u00A0'}</div>;
+                          })}
                         </div>
                       </div>
 
                       {/* Character and word count */}
-                      <div className="grid grid-cols-2 gap-4 text-xs text-gray-500">
+                      <div className="grid grid-cols-2 gap-4 text-xs text-gray-500 dark:text-gray-400">
                         <div>Characters: {result.result?.text?.length || 0}</div>
                         <div>Lines: {result.result?.text?.split('\n').length || 0}</div>
                       </div>

@@ -166,13 +166,10 @@ export const PermissionsPanel: React.FC<PermissionsPanelProps> = ({
   return (
     <div className={`space-y-4 ${className}`}>
       <div className="space-y-3">
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white">
-          {t('pages.tools.protect.documentRestrictions')}
-        </h3>
         <p className="text-sm text-gray-700 dark:text-gray-300">
           {t('pages.tools.protect.permissionsDesc')}
         </p>
-        
+
         {/* Basic Permissions */}
         <div className="space-y-3">
           {basicPermissions.map((permission) => (

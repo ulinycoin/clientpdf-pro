@@ -16,7 +16,10 @@ export const ocr = {
     downloadPdf: 'Скачать PDF',
     downloadDocx: 'Скачать Word',
     downloadRtf: 'Скачать RTF',
+    downloadJson: 'Данные JSON',
+    downloadMarkdown: 'Markdown',
     downloadFile: 'Скачать',
+    downloadFormat: 'Выберите формат скачивания',
     processAnother: 'Обработать еще раз',
     editText: 'Редактировать текст'
   },
@@ -100,5 +103,65 @@ export const ocr = {
     changesSaved: 'Сохранено',
     downloadTxt: 'Скачать .txt',
     downloadPdf: 'Скачать PDF'
+  },
+  ai: {
+    strategies: {
+      fast: {
+        title: 'Быстрый режим',
+        description: 'Быстрое распознавание с базовыми настройками',
+        reasoning: 'Лучше всего для качественных документов с четким текстом',
+        reasoningNeeded: 'Подходит для документов с отличным качеством'
+      },
+      balanced: {
+        title: 'Сбалансированный режим',
+        description: 'Хороший баланс скорости и точности',
+        reasoning: 'Универсальный режим для большинства документов'
+      },
+      accurate: {
+        title: 'Режим высокой точности',
+        description: 'Максимальная точность с полной предобработкой',
+        reasoning: 'Лучше всего для критичных документов',
+        reasoningNeeded: 'Рекомендуется для документов низкого качества'
+      },
+      multilang: {
+        title: 'Мультиязычный режим',
+        description: 'Оптимизировано для документов на нескольких языках',
+        reasoning: 'Документ содержит несколько языков'
+      }
+    },
+    pros: {
+      fast: 'Самая быстрая обработка',
+      goodForClear: 'Подходит для четких документов',
+      balanced: 'Хороший баланс точности и скорости',
+      preprocessing: 'Включает предобработку',
+      multiLang: 'Поддержка 2 языков',
+      multiLang3: 'До 3 языков',
+      highAccuracy: 'Высочайшая точность',
+      fullPreprocessing: 'Полная предобработка',
+      goodAccuracy: 'Хорошая точность'
+    },
+    cons: {
+      lowerAccuracy: 'Ниже точность при плохом качестве',
+      singleLanguage: 'Только один язык',
+      mediumSpeed: 'Средняя скорость обработки',
+      slowest: 'Самая медленная обработка',
+      highCPU: 'Высокая нагрузка на ЦП',
+      slowerProcessing: 'Медленнее быстрого режима',
+      moreMemory: 'Использует больше памяти'
+    },
+    warnings: {
+      lowClarity: {
+        message: 'Обнаружена низкая четкость изображения',
+        suggestion: 'Используйте режим высокой точности для лучших результатов'
+      },
+      noise: {
+        message: 'Обнаружен шум на изображении',
+        suggestion: 'Предобработка улучшит точность'
+      },
+      columns: {
+        message: 'Обнаружена многоколоночная компоновка',
+        suggestion: 'Включите сохранение макета'
+      }
+    }
   }
 };

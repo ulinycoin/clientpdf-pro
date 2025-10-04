@@ -288,6 +288,7 @@ const CompressPDFPage: React.FC = () => {
       pageDescription={t('tools.compress.pageDescription')}
       toolComponent={toolComponent}
       breadcrumbKey="compress-pdf"
+      detailedContentKey="tools.compress.detailed"
       relatedToolsSection={<RelatedToolsSection currentTool="compress-pdf" />}
     />
   );

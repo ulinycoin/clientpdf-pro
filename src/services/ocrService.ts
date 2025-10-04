@@ -15,7 +15,13 @@ import {
   OCRProcessingOptions,
   ProcessedOCRResult,
   SupportedLanguage,
-  OCRError
+  OCRError,
+  ImagePreprocessingOptions,
+  ImageQualityAnalysis,
+  LanguageDetectionResult,
+  DocumentStructure,
+  AdvancedOCROptions,
+  AdvancedOCRResult
 } from '../types/ocr.types';
 
 // Supported languages for OCR
@@ -708,44 +714,81 @@ class OCRService {
             progress: 10,
           });
 
-          console.log('🔍 Converting PDF to images...');
-          images = await this.pdfToImages(file);
-          console.log('✅ PDF converted to images:', images.length, 'pages');
+          // SMART APPROACH: Try to extract text directly first (for text-based PDFs)
+          console.log('🔍 Checking if PDF contains extractable text...');
+          const extractedText = await this.tryExtractTextFromPDF(file);
 
-          onProgress?.({
-            status: 'loading language',
-            progress: 30,
-          });
+          if (extractedText && extractedText.trim().length > 50) {
+            // PDF has good text content - use it directly!
+            console.log('✅ PDF contains extractable text! Using direct extraction instead of OCR');
+            console.log(`📝 Extracted ${extractedText.length} characters directly from PDF`);
 
-          // Process each page
-          const pageResults: OCRResult[] = [];
-          for (let i = 0; i < images.length; i++) {
-            try {
-              onProgress?.({
-                status: 'recognizing text',
-                progress: 30 + (i / images.length) * 60,
-                currentPage: i + 1,
-                totalPages: images.length,
-              });
+            onProgress?.({
+              status: 'complete',
+              progress: 100,
+            });
 
-              console.log(`🔍 Processing page ${i + 1}/${images.length}...`);
-              const pageResult = await this.processImage(images[i], ocrOptions, onProgress);
-              pageResults.push(pageResult);
-              console.log(`✅ Page ${i + 1} processed, confidence: ${pageResult.confidence}%`);
-            } catch (pageError) {
-              console.error(`❌ Error processing page ${i + 1}:`, pageError);
-              throw pageError;
+            // Return result without OCR
+            ocrResult = {
+              text: extractedText,
+              confidence: 99, // High confidence for direct text extraction
+              words: extractedText.split(/\s+/).map(text => ({ text, confidence: 99, bbox: { x0: 0, y0: 0, x1: 0, y1: 0 } })),
+              blocks: [{ text: extractedText, confidence: 99, bbox: { x0: 0, y0: 0, x1: 0, y1: 0 }, words: [] }],
+              pages: [{
+                text: extractedText,
+                confidence: 99,
+                blocks: [],
+                dimensions: { width: 0, height: 0 }
+              }],
+            };
+          } else {
+            // No extractable text - need OCR
+            console.log('📸 PDF has no extractable text (scanned document), using OCR...');
+            console.log('🔍 Converting PDF to images...');
+            images = await this.pdfToImages(file);
+            console.log('✅ PDF converted to images:', images.length, 'pages');
+
+            onProgress?.({
+              status: 'loading language',
+              progress: 30,
+            });
+
+            // Process each page
+            const pageResults: OCRResult[] = [];
+            for (let i = 0; i < images.length; i++) {
+              try {
+                onProgress?.({
+                  status: 'recognizing text',
+                  progress: 30 + (i / images.length) * 60,
+                  currentPage: i + 1,
+                  totalPages: images.length,
+                });
+
+                console.log(`🔍 Processing page ${i + 1}/${images.length}...`);
+                const pageResult = await this.processImage(images[i], ocrOptions, onProgress);
+                pageResults.push(pageResult);
+                console.log(`✅ Page ${i + 1} processed, confidence: ${pageResult.confidence}%`);
+              } catch (pageError) {
+                console.error(`❌ Error processing page ${i + 1}:`, pageError);
+                throw pageError;
+              }
             }
-          }
 
-          // Combine results
-          ocrResult = {
-            text: pageResults.map(r => r.text).join('\n\n'),
-            confidence: pageResults.reduce((sum, r) => sum + r.confidence, 0) / pageResults.length,
-            words: pageResults.flatMap(r => r.words),
-            blocks: pageResults.flatMap(r => r.blocks),
-            pages: pageResults.map(r => r.pages[0]),
-          };
+            // Combine results with page separators
+            const combinedText = pageResults.map((r, index) => {
+              const pageNum = index + 1;
+              const separator = '═'.repeat(60);
+              return `${separator}\nPAGE ${pageNum}\n${separator}\n\n${this.smartFormatText(r.text)}`;
+            }).join('\n\n');
+
+            ocrResult = {
+              text: combinedText,
+              confidence: pageResults.reduce((sum, r) => sum + r.confidence, 0) / pageResults.length,
+              words: pageResults.flatMap(r => r.words),
+              blocks: pageResults.flatMap(r => r.blocks),
+              pages: pageResults.map(r => r.pages[0]),
+            };
+          }
 
         } catch (pdfError) {
           console.error('❌ PDF processing failed:', {
@@ -864,16 +907,30 @@ class OCRService {
               downloadUrl = URL.createObjectURL(processedBlob);
               console.log('✅ Searchable PDF created successfully');
             } else {
-              console.warn('⚠️ No images available for searchable PDF, falling back to text');
-              // Fallback to text if no images available with proper content handling
-              const fallbackText = ocrResult.text && ocrResult.text.trim() ? ocrResult.text : 'No text was extracted from the image. Please try a clearer image or different language setting.';
-              processedBlob = new Blob([fallbackText], { type: 'text/plain' });
+              // No images means we extracted text directly from PDF
+              console.log('📄 Creating text-based PDF from extracted text');
+              const pdfText = ocrResult.text && ocrResult.text.trim() ? ocrResult.text : 'No text was extracted.';
+
+              // Use textToPDFGenerator to create a clean PDF
+              const originalName = file.name.replace(/\.[^/.]+$/, '');
+              processedBlob = await textToPDFGenerator.generatePDF(
+                pdfText,
+                `${originalName}_ocr`,
+                {
+                  fontSize: 11,
+                  pageSize: 'A4',
+                  orientation: 'portrait',
+                  margins: 50,
+                  lineHeight: 1.4
+                }
+              );
               downloadUrl = URL.createObjectURL(processedBlob);
+              console.log('✅ Text-based PDF created successfully');
             }
           } catch (pdfCreationError) {
-            console.error('❌ Searchable PDF creation failed, falling back to text:', pdfCreationError);
-            // Fallback to text format if PDF creation fails with proper content handling
-            const fallbackText = ocrResult.text && ocrResult.text.trim() ? ocrResult.text : 'No text was extracted from the image. Please try a clearer image or different language setting.';
+            console.error('❌ PDF creation failed, falling back to text file:', pdfCreationError);
+            // Fallback to text format if PDF creation fails
+            const fallbackText = ocrResult.text && ocrResult.text.trim() ? ocrResult.text : 'No text was extracted.';
             processedBlob = new Blob([fallbackText], { type: 'text/plain' });
             downloadUrl = URL.createObjectURL(processedBlob);
           }
@@ -1034,6 +1091,611 @@ class OCRService {
     } finally {
       this.isProcessing = false;
     }
+  }
+
+  // === ADVANCED OCR METHODS ===
+
+  /**
+   * Analyze image quality and provide preprocessing recommendations
+   */
+  async analyzeImageQuality(file: File): Promise<ImageQualityAnalysis> {
+    console.log('🔍 Analyzing image quality:', file.name);
+
+    try {
+      const img = await this.loadImageFromFile(file);
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d')!;
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.drawImage(img, 0, 0);
+
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const { data, width, height } = imageData;
+
+      // Calculate DPI (approximate based on image dimensions)
+      const resolution = Math.round((width + height) / 2 / 8.5); // Assuming 8.5" average dimension
+
+      // Analyze clarity (edge detection approximation)
+      const clarity = this.calculateClarity(data, width, height);
+
+      // Analyze contrast
+      const contrast = this.calculateContrast(data);
+
+      // Detect skew angle (simplified)
+      const skewAngle = this.detectSkewAngle(data, width, height);
+
+      // Determine if scanned or photo
+      const isScanned = resolution > 150 && clarity > 60;
+
+      // Check for noise
+      const hasNoise = this.detectNoise(data);
+
+      // Generate preprocessing recommendations
+      const recommendPreprocessing = clarity < 70 || contrast < 50 || hasNoise || Math.abs(skewAngle) > 2;
+
+      const suggestedOptions: ImagePreprocessingOptions = {
+        denoise: hasNoise,
+        deskew: Math.abs(skewAngle) > 2,
+        contrast: contrast < 60,
+        binarization: clarity < 50,
+        removeBackground: false
+      };
+
+      const analysis: ImageQualityAnalysis = {
+        resolution,
+        clarity,
+        contrast,
+        skewAngle,
+        isScanned,
+        hasNoise,
+        recommendPreprocessing,
+        suggestedOptions
+      };
+
+      console.log('✅ Image quality analysis complete:', analysis);
+      return analysis;
+
+    } catch (error) {
+      console.error('❌ Image quality analysis failed:', error);
+      // Return default analysis
+      return {
+        resolution: 150,
+        clarity: 60,
+        contrast: 60,
+        skewAngle: 0,
+        isScanned: true,
+        hasNoise: false,
+        recommendPreprocessing: false,
+        suggestedOptions: {
+          denoise: false,
+          deskew: false,
+          contrast: false,
+          binarization: false,
+          removeBackground: false
+        }
+      };
+    }
+  }
+
+  /**
+   * Detect document languages with content analysis
+   */
+  async detectDocumentLanguages(file: File): Promise<LanguageDetectionResult> {
+    console.log('🌍 Detecting document languages:', file.name);
+
+    try {
+      // Start with filename-based hints
+      const filename = file.name.toLowerCase();
+      let primary = 'eng';
+      let script: 'latin' | 'cyrillic' | 'chinese' = 'latin';
+      let confidence = 50; // Low confidence from filename alone
+      const secondary: string[] = [];
+      let mixedLanguages = false;
+
+      // Check filename for language hints (low confidence)
+      if (filename.includes('rus') || filename.includes('russian') || filename.includes('русск')) {
+        primary = 'rus';
+        script = 'cyrillic';
+        confidence = 70;
+      } else if (filename.includes('deu') || filename.includes('german') || filename.includes('deutsch')) {
+        primary = 'deu';
+        confidence = 70;
+      } else if (filename.includes('fra') || filename.includes('french') || filename.includes('français')) {
+        primary = 'fra';
+        confidence = 70;
+      } else if (filename.includes('spa') || filename.includes('spanish') || filename.includes('español')) {
+        primary = 'spa';
+        confidence = 70;
+      }
+
+      // Try QuickOCR for actual content analysis (high confidence)
+      try {
+        console.log('🔍 Attempting quick content analysis for language detection...');
+        const { QuickOCR } = await import('../utils/quickOCR');
+        const contentDetection = await QuickOCR.quickAnalyzeForLanguage(file);
+
+        console.log('✅ Content detection result:', contentDetection);
+
+        // Always use content detection, adjust confidence based on QuickOCR result
+        primary = contentDetection.language;
+
+        // Convert string confidence to number
+        if (contentDetection.confidence === 'high') {
+          confidence = 95;
+        } else if (contentDetection.confidence === 'medium') {
+          confidence = 75;
+        } else {
+          confidence = 60; // low confidence from content analysis
+        }
+
+        // Determine script from detected language
+        if (primary === 'rus' || primary === 'ukr' || primary === 'bul') {
+          script = 'cyrillic';
+        } else if (primary === 'chi_sim' || primary === 'chi_tra' || primary === 'jpn' || primary === 'kor') {
+          script = 'chinese';
+        } else {
+          script = 'latin';
+        }
+
+        console.log('🎯 Using content-based detection:', { primary, script, confidence, details: contentDetection.details });
+      } catch (quickOCRError) {
+        console.warn('⚠️ QuickOCR analysis failed, using filename-based detection:', quickOCRError);
+      }
+
+      // Check for multiple languages
+      if (filename.includes('multi') || filename.includes('bilingual')) {
+        mixedLanguages = true;
+        secondary.push('eng');
+        if (primary !== 'rus') secondary.push('rus');
+      }
+
+      const recommendedTesseractLangs = mixedLanguages
+        ? `${primary}+${secondary.join('+')}`
+        : primary;
+
+      const result: LanguageDetectionResult = {
+        primary,
+        secondary: secondary.length > 0 ? secondary : undefined,
+        confidence,
+        script,
+        mixedLanguages,
+        recommendedTesseractLangs
+      };
+
+      console.log('✅ Final language detection:', result);
+      return result;
+
+    } catch (error) {
+      console.error('❌ Language detection failed:', error);
+      return {
+        primary: 'eng',
+        confidence: 50,
+        script: 'latin',
+        mixedLanguages: false,
+        recommendedTesseractLangs: 'eng'
+      };
+    }
+  }
+
+  /**
+   * Analyze document structure
+   */
+  async analyzeDocumentStructure(file: File): Promise<DocumentStructure> {
+    console.log('📊 Analyzing document structure:', file.name);
+
+    try {
+      const img = await this.loadImageFromFile(file);
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d')!;
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.drawImage(img, 0, 0);
+
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const { width, height } = imageData;
+
+      // Detect layout based on aspect ratio and dimensions
+      const aspectRatio = width / height;
+      let layout: 'single' | 'double' | 'complex' = 'single';
+
+      if (aspectRatio > 1.5) {
+        layout = 'double'; // Wide format suggests multiple columns
+      }
+
+      // Estimate text density (simplified)
+      const textDensity = this.estimateTextDensity(imageData);
+
+      // Detect columns (simplified heuristic)
+      const hasColumns = aspectRatio > 1.3 || width > 2000;
+
+      // Estimate font size
+      const averageFontSize = Math.round(Math.max(10, Math.min(14, height / 60)));
+
+      const structure: DocumentStructure = {
+        hasColumns,
+        hasTables: false, // Would need more complex analysis
+        hasImages: false, // Would need more complex analysis
+        hasHandwriting: false, // Would need ML model
+        layout,
+        textDensity,
+        averageFontSize
+      };
+
+      console.log('✅ Document structure analysis complete:', structure);
+      return structure;
+
+    } catch (error) {
+      console.error('❌ Document structure analysis failed:', error);
+      return {
+        hasColumns: false,
+        hasTables: false,
+        hasImages: false,
+        hasHandwriting: false,
+        layout: 'single',
+        textDensity: 50,
+        averageFontSize: 12
+      };
+    }
+  }
+
+  /**
+   * Perform advanced OCR with full options
+   */
+  async performAdvancedOCR(
+    file: File,
+    options: AdvancedOCROptions,
+    onProgress?: (progress: number) => void
+  ): Promise<AdvancedOCRResult> {
+    console.log('🚀 Starting advanced OCR:', options);
+    const startTime = Date.now();
+
+    try {
+      // Apply preprocessing if requested
+      let processedFile = file;
+      if (options.preprocessImage && options.preprocessOptions) {
+        processedFile = await this.applyPreprocessing(file, options.preprocessOptions);
+      }
+
+      // Convert advanced options to standard OCR options
+      const standardOptions: OCROptions = {
+        language: options.languages.join('+'),
+        preserveLayout: options.preserveLayout,
+        outputFormat: 'text',
+        imagePreprocessing: options.preprocessImage
+      };
+
+      // Process with standard OCR
+      const result = await this.processImage(processedFile, standardOptions, (progress) => {
+        onProgress?.(progress.progress);
+      });
+
+      // Build advanced result
+      const processingTime = Date.now() - startTime;
+      const wordCount = result.text.split(/\s+/).filter(w => w.length > 0).length;
+
+      const advancedResult: AdvancedOCRResult = {
+        ...result,
+        wordCount,
+        processingTime,
+        languages: options.languages,
+        warnings: []
+      };
+
+      console.log('✅ Advanced OCR complete:', advancedResult);
+      return advancedResult;
+
+    } catch (error) {
+      console.error('❌ Advanced OCR failed:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Apply image preprocessing
+   */
+  private async applyPreprocessing(
+    file: File,
+    options: ImagePreprocessingOptions
+  ): Promise<File> {
+    console.log('🔧 Applying preprocessing:', options);
+
+    try {
+      const img = await this.loadImageFromFile(file);
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d')!;
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.drawImage(img, 0, 0);
+
+      let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+      // Apply preprocessing steps
+      if (options.contrast) {
+        imageData = this.enhanceContrast(imageData);
+      }
+
+      if (options.denoise) {
+        imageData = this.applyDenoise(imageData);
+      }
+
+      if (options.binarization) {
+        imageData = this.applyBinarization(imageData);
+      }
+
+      ctx.putImageData(imageData, 0, 0);
+
+      // Convert back to file
+      const blob = await new Promise<Blob>((resolve, reject) => {
+        canvas.toBlob((b) => b ? resolve(b) : reject(new Error('Failed to create blob')), 'image/png');
+      });
+
+      return new File([blob], file.name, { type: 'image/png' });
+
+    } catch (error) {
+      console.warn('⚠️ Preprocessing failed, using original:', error);
+      return file;
+    }
+  }
+
+  // === IMAGE PROCESSING HELPERS ===
+
+  private async loadImageFromFile(file: File): Promise<HTMLImageElement> {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = reject;
+      img.src = URL.createObjectURL(file);
+    });
+  }
+
+  private calculateClarity(data: Uint8ClampedArray, width: number, height: number): number {
+    // Simplified edge detection for clarity measurement
+    let edgeStrength = 0;
+    const sampleSize = Math.min(10000, data.length / 4);
+
+    for (let i = 0; i < sampleSize; i++) {
+      const idx = Math.floor(Math.random() * (data.length / 4)) * 4;
+      if (idx + width * 4 < data.length) {
+        const current = data[idx];
+        const below = data[idx + width * 4];
+        edgeStrength += Math.abs(current - below);
+      }
+    }
+
+    return Math.min(100, (edgeStrength / sampleSize) * 2);
+  }
+
+  private calculateContrast(data: Uint8ClampedArray): number {
+    let min = 255, max = 0;
+    for (let i = 0; i < data.length; i += 4) {
+      const gray = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+      min = Math.min(min, gray);
+      max = Math.max(max, gray);
+    }
+    return Math.round((max - min) / 255 * 100);
+  }
+
+  private detectSkewAngle(data: Uint8ClampedArray, width: number, height: number): number {
+    // Simplified skew detection - would need Hough transform for accuracy
+    return 0; // Placeholder
+  }
+
+  private detectNoise(data: Uint8ClampedArray): boolean {
+    // Simple noise detection based on variance
+    let sum = 0, count = 0;
+    for (let i = 0; i < Math.min(10000, data.length); i += 4) {
+      const gray = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+      sum += gray;
+      count++;
+    }
+    const mean = sum / count;
+
+    let variance = 0;
+    for (let i = 0; i < Math.min(10000, data.length); i += 4) {
+      const gray = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+      variance += Math.pow(gray - mean, 2);
+    }
+    variance /= count;
+
+    return variance > 2000; // High variance suggests noise
+  }
+
+  private estimateTextDensity(imageData: ImageData): number {
+    const { data } = imageData;
+    let darkPixels = 0;
+    const sampleSize = Math.min(10000, data.length / 4);
+
+    for (let i = 0; i < sampleSize; i++) {
+      const idx = Math.floor(Math.random() * (data.length / 4)) * 4;
+      const gray = 0.299 * data[idx] + 0.587 * data[idx + 1] + 0.114 * data[idx + 2];
+      if (gray < 128) darkPixels++;
+    }
+
+    return Math.round((darkPixels / sampleSize) * 100);
+  }
+
+  private enhanceContrast(imageData: ImageData): ImageData {
+    const { data } = imageData;
+    for (let i = 0; i < data.length; i += 4) {
+      const gray = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+      const enhanced = Math.min(255, Math.max(0, (gray - 128) * 1.5 + 128));
+      data[i] = data[i + 1] = data[i + 2] = enhanced;
+    }
+    return imageData;
+  }
+
+  private applyDenoise(imageData: ImageData): ImageData {
+    // Simplified median filter
+    const { data, width, height } = imageData;
+    const newData = new Uint8ClampedArray(data);
+
+    for (let y = 1; y < height - 1; y++) {
+      for (let x = 1; x < width - 1; x++) {
+        const idx = (y * width + x) * 4;
+        const neighbors = [
+          data[idx], data[idx - 4], data[idx + 4],
+          data[idx - width * 4], data[idx + width * 4]
+        ];
+        neighbors.sort((a, b) => a - b);
+        const median = neighbors[2];
+        newData[idx] = newData[idx + 1] = newData[idx + 2] = median;
+      }
+    }
+
+    return new ImageData(newData, width, height);
+  }
+
+  private applyBinarization(imageData: ImageData): ImageData {
+    const { data } = imageData;
+    // Otsu's method approximation
+    const threshold = 128; // Simplified
+
+    for (let i = 0; i < data.length; i += 4) {
+      const gray = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+      const binary = gray > threshold ? 255 : 0;
+      data[i] = data[i + 1] = data[i + 2] = binary;
+    }
+
+    return imageData;
+  }
+
+  /**
+   * Try to extract text directly from PDF (for text-based PDFs)
+   * Returns null if PDF contains no extractable text (scanned document)
+   */
+  private async tryExtractTextFromPDF(file: File): Promise<string | null> {
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+
+      let fullText = '';
+
+      // Extract text from all pages with smart formatting
+      for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+        const page = await pdf.getPage(pageNum);
+        const textContent = await page.getTextContent();
+
+        // Add page separator
+        if (pageNum > 1) {
+          fullText += '\n\n' + '═'.repeat(60) + '\n';
+          fullText += `PAGE ${pageNum}\n`;
+          fullText += '═'.repeat(60) + '\n\n';
+        } else {
+          fullText += '═'.repeat(60) + '\n';
+          fullText += `PAGE 1\n`;
+          fullText += '═'.repeat(60) + '\n\n';
+        }
+
+        // Smart text extraction with positioning awareness
+        const items = textContent.items as any[];
+        let lastY = 0;
+        let pageText = '';
+
+        for (let i = 0; i < items.length; i++) {
+          const item = items[i];
+          const text = item.str;
+          const y = item.transform[5]; // Y coordinate
+
+          // Detect line breaks based on Y position
+          if (lastY !== 0 && Math.abs(y - lastY) > 3) {
+            pageText += '\n';
+          }
+
+          // Add space between words if needed
+          if (pageText.length > 0 && !pageText.endsWith('\n') && !pageText.endsWith(' ') && text.trim()) {
+            pageText += ' ';
+          }
+
+          pageText += text;
+          lastY = y;
+        }
+
+        // Smart paragraph detection and formatting
+        pageText = this.smartFormatText(pageText);
+        fullText += pageText;
+      }
+
+      // Clean up excessive whitespace
+      fullText = fullText.replace(/\n{4,}/g, '\n\n\n');
+
+      if (fullText.length > 0) {
+        console.log(`✅ Extracted ${fullText.length} characters from ${pdf.numPages} pages`);
+        return fullText;
+      }
+
+      console.log('⚠️ PDF contains no extractable text');
+      return null;
+
+    } catch (error) {
+      console.error('❌ Failed to extract text from PDF:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Smart text formatting - detects paragraphs, headings, lists
+   */
+  private smartFormatText(text: string): string {
+    // Split into lines
+    let lines = text.split('\n').map(line => line.trim());
+    let formatted = '';
+    let inList = false;
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      if (!line) continue;
+
+      const nextLine = lines[i + 1] || '';
+
+      // Detect headings (short lines followed by content, or ALL CAPS)
+      const isHeading = (
+        (line.length < 60 && nextLine.length > 60) ||
+        (line === line.toUpperCase() && line.length > 3 && line.length < 80 && /^[А-ЯA-Z\s\d.,!?:;-]+$/.test(line))
+      );
+
+      // Detect list items
+      const isListItem = /^[\-•·●○▪▫]/.test(line) || /^\d+[\.\)]/.test(line) || /^[a-zа-я][\.\)]/.test(line);
+
+      if (isHeading) {
+        // Add spacing before heading
+        if (formatted.length > 0) {
+          formatted += '\n\n';
+        }
+        formatted += line + '\n';
+        inList = false;
+      } else if (isListItem) {
+        if (!inList && formatted.length > 0) {
+          formatted += '\n';
+        }
+        formatted += line + '\n';
+        inList = true;
+      } else {
+        // Regular paragraph
+        if (inList) {
+          formatted += '\n';
+          inList = false;
+        }
+
+        // Check if this continues previous line
+        const shouldContinue = formatted.length > 0 &&
+                               !formatted.endsWith('\n\n') &&
+                               !formatted.endsWith('.\n') &&
+                               !formatted.endsWith('!\n') &&
+                               !formatted.endsWith('?\n') &&
+                               !formatted.endsWith(':\n') &&
+                               line.length > 0 &&
+                               line[0] === line[0].toLowerCase();
+
+        if (shouldContinue && formatted.endsWith('\n')) {
+          // Continue on same line
+          formatted = formatted.slice(0, -1) + ' ' + line + '\n';
+        } else {
+          formatted += line + '\n';
+        }
+      }
+    }
+
+    return formatted;
   }
 
   // Clean up resources

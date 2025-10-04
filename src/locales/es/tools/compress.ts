@@ -159,5 +159,20 @@ export const compress = {
   compressAnother: 'Comprimir otro PDF',
   sizeReduced: 'Tamaño reducido de',
   to: 'a',
-  readyForDownload: 'Su PDF comprimido está listo para descargar'
+  readyForDownload: 'Su PDF comprimido está listo para descargar',
+
+  // Detailed unique content for this tool
+  detailed: {
+    title: '¿Por qué elegir nuestro compresor PDF?',
+    functionality: {
+      title: 'Algoritmos de compresión inteligentes',
+      description1: 'Nuestro compresor PDF utiliza algoritmos inteligentes para analizar su documento y aplicar técnicas de compresión óptimas. A diferencia de las herramientas básicas que simplemente reducen la calidad de imagen, nuestro sistema procesa inteligentemente imágenes, fuentes y objetos incrustados mientras mantiene la fidelidad visual. Las técnicas de optimización avanzadas incluyen submuestreo de imágenes, subconjunto de fuentes y compresión de flujo de contenido.',
+      description2: 'El motor de compresión soporta múltiples niveles de calidad desde compresión máxima (tamaño mínimo) hasta alta calidad (cambios visuales mínimos). Elija equilibrio óptimo para visualización web, alta compresión para archivos adjuntos de correo o máxima calidad para impresión. Todo el procesamiento ocurre en su navegador usando bibliotecas de compresión JavaScript modernas asegurando compresión rápida, segura y privada.'
+    },
+    capabilities: {
+      title: 'Reducción avanzada de tamaño de archivos',
+      description1: 'Reduzca los tamaños de archivos PDF en 40-90% dependiendo del tipo de contenido y configuraciones de calidad. La herramienta detecta automáticamente PDFs con muchas imágenes y aplica estrategias de compresión apropiadas. Elimine metadatos innecesarios, optimice fuentes incrustadas y comprima imágenes de alta resolución mientras preserva la legibilidad del documento y apariencia profesional.',
+      description2: 'Procese PDFs grandes hasta 100MB con seguimiento de progreso en tiempo real y ratios de compresión estimados. Perfecto para reducir archivos adjuntos de correo, acelerar descargas de sitios web, ahorrar espacio de almacenamiento en la nube y mejorar flujos de trabajo de compartición de documentos. Toda compresión es sin pérdidas donde sea posible, con compresión con pérdidas controlada para imágenes basada en sus preferencias de calidad.'
+    }
+  }
 };

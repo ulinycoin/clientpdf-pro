@@ -46,6 +46,9 @@ export const common = {
   comingSoon: 'Bientôt disponible',
   featured: 'Populaire',
   progress: 'Progrès',
+  startOver: 'Recommencer',
+  yes: 'Oui',
+  no: 'Non',
   fileSizeUnit: 'MB',
   free: 'Gratuit'
 };

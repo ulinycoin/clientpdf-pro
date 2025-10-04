@@ -35,7 +35,7 @@ interface OCRSettingsProps {
   
   // Actions
   onProcess: () => void;
-  onDownload: () => void;
+  onDownload: (format?: string) => void;
   onReset: () => void;
   
   className?: string;
@@ -135,135 +135,12 @@ const OCRSettings: React.FC<OCRSettingsProps> = ({
           </p>
         </div>
 
-        {/* Output Format */}
-        <div className="space-y-3">
-          <h4 className="font-medium text-gray-900">
-            {t('tools.ocr.settings.outputFormat') || 'Output Format'}
-          </h4>
-          
-          <div className="space-y-2">
-            <label className="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
-              <input
-                type="radio"
-                name="outputFormat"
-                value="text"
-                checked={options.outputFormat === 'text'}
-                onChange={(e) => onOptionsChange({ outputFormat: 'text' })}
-                className="mr-3"
-              />
-              <div>
-                <div className="font-medium">{t('tools.ocr.settings.plainText') || 'Plain Text (.txt)'}</div>
-                <div className="text-xs text-gray-500">{t('tools.ocr.settings.plainTextDesc') || 'Extract text only'}</div>
-              </div>
-            </label>
-            
-            <label className="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
-              <input
-                type="radio"
-                name="outputFormat"
-                value="searchable-pdf"
-                checked={options.outputFormat === 'searchable-pdf'}
-                onChange={(e) => onOptionsChange({ outputFormat: 'searchable-pdf' })}
-                className="mr-3"
-              />
-              <div>
-                <div className="font-medium">{t('tools.ocr.settings.searchablePdf') || 'Searchable PDF'}</div>
-                <div className="text-xs text-gray-500">{t('tools.ocr.settings.searchablePdfDesc') || 'PDF with searchable text layer'}</div>
-              </div>
-            </label>
 
-            <label className="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
-              <input
-                type="radio"
-                name="outputFormat"
-                value="docx"
-                checked={options.outputFormat === 'docx'}
-                onChange={(e) => onOptionsChange({ outputFormat: 'docx' })}
-                className="mr-3"
-              />
-              <div>
-                <div className="font-medium">📄 Word Document (.docx)</div>
-                <div className="text-xs text-gray-500">Microsoft Word format with formatting</div>
-              </div>
-            </label>
+        {/* Advanced Options section removed - these settings had no effect:
+            - preserveLayout: Never used in Tesseract.js configuration
+            - imagePreprocessing: Always enabled by default, checkbox was misleading
+            Smart OCR handles everything automatically now. */}
 
-            <label className="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
-              <input
-                type="radio"
-                name="outputFormat"
-                value="rtf"
-                checked={options.outputFormat === 'rtf'}
-                onChange={(e) => onOptionsChange({ outputFormat: 'rtf' })}
-                className="mr-3"
-              />
-              <div>
-                <div className="font-medium">📝 Rich Text (.rtf)</div>
-                <div className="text-xs text-gray-500">Universal format for all text editors</div>
-              </div>
-            </label>
-          </div>
-        </div>
-
-        {/* Advanced Options */}
-        <div className="space-y-3">
-          <h4 className="font-medium text-gray-900">
-            {t('tools.ocr.settings.advancedOptions') || 'Advanced Options'}
-          </h4>
-          
-          <div className="space-y-2">
-            <label className="flex items-center">
-              <input
-                type="checkbox"
-                checked={options.preserveLayout}
-                onChange={(e) => onOptionsChange({ preserveLayout: e.target.checked })}
-                className="mr-3"
-              />
-              <div>
-                <div className="font-medium text-sm">{t('tools.ocr.settings.preserveLayout') || 'Preserve Layout'}</div>
-                <div className="text-xs text-gray-500">{t('tools.ocr.settings.preserveLayoutDesc') || 'Maintain document structure'}</div>
-              </div>
-            </label>
-            
-            <label className="flex items-center">
-              <input
-                type="checkbox"
-                checked={options.imagePreprocessing}
-                onChange={(e) => onOptionsChange({ imagePreprocessing: e.target.checked })}
-                className="mr-3"
-              />
-              <div>
-                <div className="font-medium text-sm">{t('tools.ocr.settings.imagePreprocessing') || 'Image Preprocessing'}</div>
-                <div className="text-xs text-gray-500">{t('tools.ocr.settings.imagePreprocessingDesc') || 'Enhance image quality'}</div>
-              </div>
-            </label>
-
-            {/* Selection-only processing option removed - simplified interface */}
-          </div>
-        </div>
-
-        {/* Results Summary */}
-        {result && (
-          <div className="space-y-3">
-            <h4 className="font-medium text-gray-900">{t('tools.ocr.results.title') || 'Results Summary'}</h4>
-            
-            <div className="bg-green-50 rounded-lg p-3 space-y-2">
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <div className="font-medium text-green-800">{t('tools.ocr.results.processingTime') || 'Processing Time'}</div>
-                  <div className="text-green-600">{((result.processingTime || 0) / 1000).toFixed(1)}s</div>
-                </div>
-                <div>
-                  <div className="font-medium text-green-800">{t('tools.ocr.results.confidence') || 'Confidence'}</div>
-                  <div className="text-green-600">{(result.result.confidence || 0).toFixed(1)}%</div>
-                </div>
-              </div>
-              <div className="text-sm">
-                <div className="font-medium text-green-800">{t('tools.ocr.results.wordsFound') || 'Words Found'}</div>
-                <div className="text-green-600">{result.result.words?.length || 0}</div>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Action Buttons */}
@@ -280,28 +157,45 @@ const OCRSettings: React.FC<OCRSettingsProps> = ({
           </Button>
         )}
 
-        {/* Download Button */}
+        {/* Download Dropdown */}
         {result && (
-          <Button
-            onClick={onDownload}
-            className="w-full bg-green-600 hover:bg-green-700 text-white"
-          >
-            <Download className="w-4 h-4 mr-2" />
-{(() => {
-              switch (options.outputFormat) {
-                case 'text':
-                  return t('tools.ocr.buttons.downloadText') || 'Download Text';
-                case 'searchable-pdf':
-                  return t('tools.ocr.buttons.downloadPdf') || 'Download PDF';
-                case 'docx':
-                  return t('tools.ocr.buttons.downloadDocx') || 'Download Word';
-                case 'rtf':
-                  return t('tools.ocr.buttons.downloadRtf') || 'Download RTF';
-                default:
-                  return t('tools.ocr.buttons.downloadFile') || 'Download';
-              }
-            })()}
-          </Button>
+          <div className="space-y-2">
+            <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              {t('tools.ocr.results.downloadTitle') || 'Download Results'}
+            </div>
+            <select
+              onChange={(e) => {
+                if (e.target.value) {
+                  onDownload(e.target.value);
+                  e.target.value = ''; // Reset selection
+                }
+              }}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white text-gray-900 font-medium cursor-pointer hover:bg-gray-50 transition-colors"
+              defaultValue=""
+            >
+              <option value="" disabled>
+                📥 {t('tools.ocr.buttons.downloadFormat') || 'Choose Download Format'}
+              </option>
+              <option value="searchable-pdf">
+                📄 {t('tools.ocr.buttons.downloadPdf') || 'PDF (Searchable)'}
+              </option>
+              <option value="text">
+                📝 {t('tools.ocr.buttons.downloadText') || 'Text File (.txt)'}
+              </option>
+              <option value="docx">
+                📘 {t('tools.ocr.buttons.downloadDocx') || 'Word Document (.docx)'}
+              </option>
+              <option value="rtf">
+                📋 {t('tools.ocr.buttons.downloadRtf') || 'Rich Text (.rtf)'}
+              </option>
+              <option value="json">
+                🔧 {t('tools.ocr.buttons.downloadJson') || 'JSON Data (.json)'}
+              </option>
+              <option value="markdown">
+                ✍️ {t('tools.ocr.buttons.downloadMarkdown') || 'Markdown (.md)'}
+              </option>
+            </select>
+          </div>
         )}
 
         {/* Reset Button */}

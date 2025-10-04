@@ -63,7 +63,14 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
 
   return (
     <>
-      <Helmet>
+      <Helmet
+        onChangeClientState={() => {
+          // Signal to Rendertron that React Helmet has updated the page
+          if (typeof window !== 'undefined') {
+            window.document.documentElement.setAttribute('data-helmet-updated', 'true');
+          }
+        }}
+      >
         {/* Basic SEO */}
         <title>{fullTitle}</title>
         <meta name="description" content={description} />

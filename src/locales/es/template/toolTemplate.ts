@@ -53,18 +53,5 @@ export const toolTemplate = {
         metadata: 'Soporte de metadatos: Propiedades del documento preservadas'
       }
     }
-  },
-  detailed: {
-    title: '¿Por qué elegir nuestra herramienta PDF?',
-    business: {
-      title: 'Para uso empresarial',
-      description1: 'Perfect para flujos de trabajo documentales profesionales. Procesa contratos, informes, presentaciones y documentos oficiales con confianza. Nuestra herramienta mantiene la integridad del documento y la precisión de formato requerida para aplicaciones empresariales.',
-      description2: 'Ahorra tiempo y recursos con procesamiento instantáneo. Sin tarifas de suscripción, sin cargos por documento y sin espera de procesamiento en servidor. Maneja documentos empresariales sensibles con protección completa de privacidad.'
-    },
-    personal: {
-      title: 'Para proyectos personales',
-      description1: 'Ideal para gestión de documentos personales, proyectos escolares, documentos de viaje y actividades de hobby. La interfaz fácil de usar hace accesibles las operaciones PDF complejas para todos, independientemente de la experiencia técnica.',
-      description2: 'Completamente gratis para uso ilimitado. Sin registro de cuenta, sin recopilación de información personal y sin restricciones de tamaño de archivo para documentos personales típicos. Tu privacidad está completamente protegida.'
-    }
   }
 };

@@ -108,5 +108,20 @@ export const merge = {
     fileTooLarge: 'La taille du fichier dépasse la limite de 100MB',
     processingFailed: 'Échec du traitement du fichier PDF',
     noFilesUploaded: 'Aucun fichier téléversé pour la fusion'
+  },
+
+  // Detailed unique content for this tool (replaces generic template)
+  detailed: {
+    title: 'Pourquoi choisir notre outil de fusion PDF ?',
+    functionality: {
+      title: 'Technologie de fusion avancée',
+      description1: 'Notre outil de fusion PDF utilise une technologie de navigateur de pointe pour combiner plusieurs documents PDF en un seul fichier tout en préservant tous les formatages, polices, images et structures de document d\'origine. Contrairement à la simple concaténation de fichiers, notre outil traite intelligemment chaque page pour maintenir une qualité professionnelle.',
+      description2: 'Le moteur de fusion gère les fonctionnalités PDF complexes, notamment les polices intégrées, les graphiques vectoriels, les champs de formulaire, les annotations et les signets. Les documents sont traités dans votre navigateur à l\'aide des bibliothèques PDF-lib et pdf.js, assurant la compatibilité avec toutes les normes PDF de 1.4 à 2.0.'
+    },
+    capabilities: {
+      title: 'Traitement intelligent des documents',
+      description1: 'Fusionnez un nombre illimité de fichiers PDF sans restrictions sur la taille du document ou le nombre de pages. Réorganisez les pages en faisant glisser les fichiers vers le haut ou vers le bas avant la fusion. Notre traitement intelligent préserve les métadonnées du document, y compris les informations sur l\'auteur, les dates de création et les propriétés personnalisées.',
+      description2: 'Traitez des contrats commerciaux, des articles académiques, des factures, des présentations et des rapports en toute confiance. L\'outil conserve les images haute résolution, les mises en page complexes, le texte multi-colonnes, les tableaux et les médias intégrés. Tout le traitement s\'effectue instantanément dans votre navigateur avec un suivi de progression en temps réel.'
+    }
   }
 };

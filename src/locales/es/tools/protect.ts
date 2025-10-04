@@ -112,7 +112,8 @@ export const protect = {
   realPDFEncryption: "Encriptación PDF real",
   securityLevel: "Nivel de seguridad",
   simpleView: "Vista simple",
-  
+  showAI: "Mostrar recomendaciones IA",
+  hideAI: "Ocultar recomendaciones IA",  
   // Optional field labels
   documentPasswordOptional: "Contraseña del documento (Opcional)",
   leaveEmptyForPermissions: "Dejar vacío para protección solo por permisos",
@@ -213,5 +214,78 @@ export const protect = {
   success: {
     protected: "¡PDF protegido exitosamente con contraseña!",
     downloaded: "PDF protegido descargado exitosamente"
+  },
+
+  // AI Recommendations
+  ai: {
+    analysis: {
+      analyzing: "Análisis de seguridad IA",
+      analyzingDescription: "Analizando documento y recomendando configuración de seguridad óptima...",
+      failed: "Análisis fallido",
+      retry: "Reintentar análisis",
+      completed: "Análisis completado a las {time}",
+      refresh: "Actualizar análisis"
+    },
+    recommendations: {
+      title: "🤖 Recomendaciones de seguridad IA",
+      confidence: "{percent}% de confianza",
+      recommended: "Recomendado",
+      showDetails: "Mostrar detalles",
+      hideDetails: "Ocultar detalles",
+      applyButton: "Aplicar configuración"
+    },
+    securityLevels: {
+      title: "Opciones de nivel de seguridad"
+    },
+    levels: {
+      basic: {
+        title: "Protección básica",
+        description: "Protección con contraseña estándar con restricciones de visualización",
+        reasoning: "Adecuado para documentos generales que necesitan privacidad básica"
+      },
+      medium: {
+        title: "Seguridad media",
+        description: "Protección mejorada con restricciones completas",
+        reasoning: "Recomendado para documentos empresariales sensibles"
+      },
+      high: {
+        title: "Seguridad máxima",
+        description: "Encriptación más fuerte con todas las restricciones activadas",
+        reasoning: "Ideal para documentos confidenciales o altamente sensibles"
+      }
+    },
+    suggestions: {
+      title: "Sugerencias de seguridad IA"
+    },
+    passwords: {
+      suggestion1: "Use una combinación de mayúsculas, minúsculas, números y símbolos",
+      suggestion2: "Haga su contraseña de al menos 12 caracteres",
+      suggestion3: "Evite palabras comunes o información personal",
+      contractSuggestion: "Para contratos, use una contraseña muy fuerte y compártala de forma segura"
+    },
+    details: {
+      title: "Análisis de seguridad detallado",
+      permissions: "Permisos permitidos",
+      restrictions: "Restricciones",
+      passwordStrength: "Fuerza de contraseña requerida"
+    },
+    errors: {
+      analysisError: "No se pudo analizar la seguridad del documento"
+    }
+  },
+
+  // Contenido único detallado para esta herramienta
+  detailed: {
+    title: '¿Por qué elegir nuestra herramienta de protección PDF?',
+    functionality: {
+      title: 'Encriptación de nivel militar',
+      description1: 'Nuestra herramienta de protección PDF implementa el cifrado estándar de la industria AES-256 con compatibilidad de respaldo RC4 – el mismo cifrado utilizado por bancos y agencias gubernamentales. Cada documento se cifra localmente en su navegador utilizando el módulo de seguridad de PDF-lib, garantizando que sus contraseñas y archivos nunca abandonen su dispositivo.',
+      description2: 'El motor de cifrado admite sistemas de doble contraseña: contraseñas de usuario para restricciones de visualización y contraseñas de propietario para permisos de edición. Elija entre protección completa del documento o controles de permisos granulares. Establezca restricciones específicas para calidad de impresión, copia de texto, modificación de contenido, llenado de formularios, anotaciones y ensamblaje de páginas.'
+    },
+    capabilities: {
+      title: 'Controles de seguridad avanzados',
+      description1: 'Proteja contratos confidenciales, informes financieros, documentos legales, registros médicos y materiales comerciales propietarios con preajustes de seguridad personalizables. Nuestro asesor de seguridad impulsado por IA analiza el contenido del documento y recomienda niveles de protección óptimos basados en marcadores de sensibilidad detectados.',
+      description2: 'Cuatro niveles de seguridad preestablecidos brindan configuración instantánea: Básico para documentos generales, Estándar para archivos comerciales, Profesional para datos sensibles y Máximo para materiales altamente confidenciales. Cada preajuste configura inteligentemente requisitos de fortaleza de contraseña, métodos de cifrado y restricciones de permisos. El análisis en tiempo real de la fortaleza de la contraseña garantiza una seguridad adecuada mientras previene vulnerabilidades comunes como palabras de diccionario o patrones predecibles.'
+    }
   }
 };

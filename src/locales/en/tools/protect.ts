@@ -112,6 +112,8 @@ export const protect = {
   realPDFEncryption: "Real PDF Encryption",
   securityLevel: "Security Level",
   simpleView: "Simple View",
+  showAI: "Show AI Recommendations",
+  hideAI: "Hide AI Recommendations",
   
   // Optional field labels
   documentPasswordOptional: "Document Password (Optional)",
@@ -213,5 +215,78 @@ export const protect = {
   success: {
     protected: "PDF successfully protected with password!",
     downloaded: "Protected PDF downloaded successfully"
+  },
+
+  // AI Recommendations
+  ai: {
+    analysis: {
+      analyzing: "AI Security Analysis",
+      analyzingDescription: "Analyzing document and recommending optimal security settings...",
+      failed: "Analysis Failed",
+      retry: "Retry Analysis",
+      completed: "Analysis completed at {time}",
+      refresh: "Refresh Analysis"
+    },
+    recommendations: {
+      title: "🤖 AI Security Recommendations",
+      confidence: "{percent}% Confidence",
+      recommended: "Recommended",
+      showDetails: "Show Details",
+      hideDetails: "Hide Details",
+      applyButton: "Apply Settings"
+    },
+    securityLevels: {
+      title: "Security Level Options"
+    },
+    levels: {
+      basic: {
+        title: "Basic Protection",
+        description: "Standard password protection with viewing restrictions",
+        reasoning: "Good for general documents that need basic privacy"
+      },
+      medium: {
+        title: "Medium Security",
+        description: "Enhanced protection with comprehensive restrictions",
+        reasoning: "Recommended for sensitive business documents"
+      },
+      high: {
+        title: "Maximum Security",
+        description: "Strongest encryption with all restrictions enabled",
+        reasoning: "Best for confidential or highly sensitive documents"
+      }
+    },
+    suggestions: {
+      title: "AI Security Suggestions"
+    },
+    passwords: {
+      suggestion1: "Use a combination of uppercase, lowercase, numbers, and symbols",
+      suggestion2: "Make your password at least 12 characters long",
+      suggestion3: "Avoid using common words or personal information",
+      contractSuggestion: "For contracts, use a very strong password and share it securely"
+    },
+    details: {
+      title: "Detailed Security Analysis",
+      permissions: "Allowed Permissions",
+      restrictions: "Restrictions",
+      passwordStrength: "Required Password Strength"
+    },
+    errors: {
+      analysisError: "Failed to analyze document security"
+    }
+  },
+
+  // Detailed unique content for this tool (replaces generic template)
+  detailed: {
+    title: 'Why Choose Our PDF Protection Tool?',
+    functionality: {
+      title: 'Military-Grade PDF Encryption',
+      description1: 'Our PDF protection tool implements industry-standard AES-256 encryption with RC4 fallback compatibility, the same encryption used by banks and government agencies. Every document is encrypted locally in your browser using PDF-lib\'s security module, ensuring your passwords and files never leave your device.',
+      description2: 'The encryption engine supports dual-password systems: user passwords for viewing restrictions and owner passwords for editing permissions. Choose between full document protection or granular permission controls. Set specific restrictions for printing quality, text copying, content modification, form filling, annotations, and page assembly.'
+    },
+    capabilities: {
+      title: 'Advanced Security Controls',
+      description1: 'Protect confidential contracts, financial reports, legal documents, medical records, and proprietary business materials with customizable security presets. Our AI-powered security advisor analyzes document content and recommends optimal protection levels based on detected sensitivity markers.',
+      description2: 'Four preset security levels provide instant configuration: Basic for general documents, Standard for business files, Professional for sensitive data, and Maximum for highly confidential materials. Each preset intelligently configures password strength requirements, encryption methods, and permission restrictions. Real-time password strength analysis ensures adequate security while preventing common vulnerabilities like dictionary words or predictable patterns.'
+    }
   }
 };

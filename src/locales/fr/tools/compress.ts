@@ -159,5 +159,20 @@ export const compress = {
   compressAnother: 'Compresser un autre PDF',
   sizeReduced: 'Taille réduite de',
   to: 'à',
-  readyForDownload: 'Votre PDF compressé est prêt pour le téléchargement'
+  readyForDownload: 'Votre PDF compressé est prêt pour le téléchargement',
+
+  // Detailed unique content for this tool
+  detailed: {
+    title: 'Pourquoi choisir notre compresseur PDF ?',
+    functionality: {
+      title: 'Algorithmes de compression intelligents',
+      description1: 'Notre compresseur PDF utilise des algorithmes intelligents pour analyser votre document et appliquer des techniques de compression optimales. Contrairement aux outils basiques qui réduisent simplement la qualité d\'image, notre système traite intelligemment les images, les polices et les objets intégrés tout en maintenant la fidélité visuelle. Les techniques d\'optimisation avancées incluent le sous-échantillonnage d\'images, le sous-ensemble de polices et la compression des flux de contenu.',
+      description2: 'Le moteur de compression prend en charge plusieurs niveaux de qualité, de la compression maximale (taille minimale) à la haute qualité (changements visuels minimaux). Choisissez l\'équilibre optimal pour la visualisation Web, une compression élevée pour les pièces jointes e-mail ou une qualité maximale pour l\'impression. Tout le traitement se fait dans votre navigateur à l\'aide de bibliothèques de compression JavaScript modernes garantissant une compression rapide, sécurisée et privée.'
+    },
+    capabilities: {
+      title: 'Réduction avancée de la taille des fichiers',
+      description1: 'Réduisez la taille des fichiers PDF de 40 à 90% selon le type de contenu et les paramètres de qualité. L\'outil détecte automatiquement les PDF riches en images et applique des stratégies de compression appropriées. Supprimez les métadonnées inutiles, optimisez les polices intégrées et compressez les images haute résolution tout en préservant la lisibilité du document et l\'apparence professionnelle.',
+      description2: 'Traitez de grands PDF jusqu\'à 100 Mo avec suivi de progression en temps réel et ratios de compression estimés. Parfait pour réduire les pièces jointes e-mail, accélérer les téléchargements de sites Web, économiser l\'espace de stockage cloud et améliorer les flux de travail de partage de documents. Toute compression est sans perte dans la mesure du possible, avec compression avec perte contrôlée pour les images en fonction de vos préférences de qualité.'
+    }
+  }
 };

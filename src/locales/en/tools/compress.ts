@@ -165,5 +165,20 @@ export const compress = {
   compressAnother: 'Compress Another PDF',
   sizeReduced: 'Size reduced from',
   to: 'to',
-  readyForDownload: 'Your compressed PDF is ready for download'
+  readyForDownload: 'Your compressed PDF is ready for download',
+
+  // Detailed unique content for this tool
+  detailed: {
+    title: 'Why Choose Our PDF Compressor?',
+    functionality: {
+      title: 'Smart Compression Algorithms',
+      description1: 'Our PDF compressor uses intelligent algorithms to analyze your document and apply optimal compression techniques. Unlike basic tools that simply reduce image quality, our system intelligently processes images, fonts, and embedded objects while maintaining visual fidelity. Advanced optimization techniques include image downsampling, font subsetting, and content stream compression.',
+      description2: 'The compression engine supports multiple quality levels from maximum compression (smallest size) to high quality (minimal visual changes). Choose optimal balance for web viewing, high compression for email attachments, or maximum quality for printing. All processing happens in your browser using modern JavaScript compression libraries ensuring fast, secure, and private compression.'
+    },
+    capabilities: {
+      title: 'Advanced File Size Reduction',
+      description1: 'Reduce PDF file sizes by 40-90% depending on content type and quality settings. The tool automatically detects image-heavy PDFs and applies appropriate compression strategies. Remove unnecessary metadata, optimize embedded fonts, and compress high-resolution images while preserving document readability and professional appearance.',
+      description2: 'Process large PDFs up to 100MB with real-time progress tracking and estimated compression ratios. Perfect for reducing email attachments, speeding up website downloads, saving cloud storage space, and improving document sharing workflows. All compression is lossless where possible, with controlled lossy compression for images based on your quality preferences.'
+    }
+  }
 };

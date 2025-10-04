@@ -112,7 +112,8 @@ export const protect = {
   realPDFEncryption: "Echte PDF-Verschlüsselung",
   securityLevel: "Sicherheitsstufe",
   simpleView: "Einfache Ansicht",
-  
+  showAI: "KI-Empfehlungen anzeigen",
+  hideAI: "KI-Empfehlungen ausblenden",  
   // Optional field labels
   documentPasswordOptional: "Dokumentpasswort (Optional)",
   leaveEmptyForPermissions: "Leer lassen für nur Berechtigungsschutz",
@@ -213,5 +214,78 @@ export const protect = {
   success: {
     protected: "PDF erfolgreich mit Passwort geschützt!",
     downloaded: "Geschützte PDF erfolgreich heruntergeladen"
+  },
+
+  // AI Recommendations
+  ai: {
+    analysis: {
+      analyzing: "KI-Sicherheitsanalyse",
+      analyzingDescription: "Dokumentanalyse und Empfehlung optimaler Sicherheitseinstellungen...",
+      failed: "Analyse fehlgeschlagen",
+      retry: "Analyse wiederholen",
+      completed: "Analyse abgeschlossen um {time}",
+      refresh: "Analyse aktualisieren"
+    },
+    recommendations: {
+      title: "🤖 KI-Sicherheitsempfehlungen",
+      confidence: "{percent}% Sicherheit",
+      recommended: "Empfohlen",
+      showDetails: "Details anzeigen",
+      hideDetails: "Details ausblenden",
+      applyButton: "Einstellungen anwenden"
+    },
+    securityLevels: {
+      title: "Sicherheitsstufenoptionen"
+    },
+    levels: {
+      basic: {
+        title: "Grundschutz",
+        description: "Standard-Passwortschutz mit Anzeigebeschränkungen",
+        reasoning: "Gut für allgemeine Dokumente mit grundlegendem Datenschutzbedarf"
+      },
+      medium: {
+        title: "Mittlere Sicherheit",
+        description: "Erweiterte Schutz mit umfassenden Einschränkungen",
+        reasoning: "Empfohlen für sensible Geschäftsdokumente"
+      },
+      high: {
+        title: "Maximale Sicherheit",
+        description: "Stärkste Verschlüsselung mit allen Einschränkungen",
+        reasoning: "Optimal für vertrauliche oder hochsensible Dokumente"
+      }
+    },
+    suggestions: {
+      title: "KI-Sicherheitsvorschläge"
+    },
+    passwords: {
+      suggestion1: "Verwenden Sie eine Kombination aus Groß-, Kleinbuchstaben, Zahlen und Symbolen",
+      suggestion2: "Machen Sie Ihr Passwort mindestens 12 Zeichen lang",
+      suggestion3: "Vermeiden Sie gängige Wörter oder persönliche Informationen",
+      contractSuggestion: "Für Verträge verwenden Sie ein sehr starkes Passwort und teilen Sie es sicher"
+    },
+    details: {
+      title: "Detaillierte Sicherheitsanalyse",
+      permissions: "Erlaubte Berechtigungen",
+      restrictions: "Einschränkungen",
+      passwordStrength: "Erforderliche Passwortstärke"
+    },
+    errors: {
+      analysisError: "Dokumentsicherheit konnte nicht analysiert werden"
+    }
+  },
+
+  // Detaillierter einzigartiger Inhalt für dieses Tool
+  detailed: {
+    title: 'Warum unser PDF-Schutztool wählen?',
+    functionality: {
+      title: 'Verschlüsselung auf militärischem Niveau',
+      description1: 'Unser PDF-Schutztool implementiert die branchenübliche AES-256-Verschlüsselung mit RC4-Fallback-Kompatibilität – dieselbe Verschlüsselung, die von Banken und Regierungsbehörden verwendet wird. Jedes Dokument wird lokal in Ihrem Browser mit dem Sicherheitsmodul von PDF-lib verschlüsselt, sodass Ihre Passwörter und Dateien niemals Ihr Gerät verlassen.',
+      description2: 'Die Verschlüsselungs-Engine unterstützt Dual-Passwort-Systeme: Benutzerpasswörter für Anzeigebeschränkungen und Eigentümerpasswörter für Bearbeitungsberechtigungen. Wählen Sie zwischen vollständigem Dokumentenschutz oder granularen Berechtigungskontrollen. Legen Sie spezifische Einschränkungen für Druckqualität, Textkopieren, Inhaltsänderung, Formularausfüllung, Anmerkungen und Seitenzusammenstellung fest.'
+    },
+    capabilities: {
+      title: 'Erweiterte Sicherheitskontrollen',
+      description1: 'Schützen Sie vertrauliche Verträge, Finanzberichte, Rechtsdokumente, Krankenakten und proprietäre Geschäftsmaterialien mit anpassbaren Sicherheitsvoreinstellungen. Unser KI-gestützter Sicherheitsberater analysiert Dokumentinhalte und empfiehlt optimale Schutzstufen basierend auf erkannten Sensibilitätsmarkern.',
+      description2: 'Vier voreingestellte Sicherheitsstufen bieten sofortige Konfiguration: Basic für allgemeine Dokumente, Standard für Geschäftsdateien, Professional für sensible Daten und Maximum für hochvertrauliche Materialien. Jede Voreinstellung konfiguriert intelligent Anforderungen an die Passwortstärke, Verschlüsselungsmethoden und Berechtigungseinschränkungen. Die Echtzeit-Analyse der Passwortstärke gewährleistet angemessene Sicherheit und verhindert häufige Schwachstellen wie Wörterbuchwörter oder vorhersehbare Muster.'
+    }
   }
 };

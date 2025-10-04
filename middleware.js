@@ -322,7 +322,10 @@ export default async function middleware(request) {
         'User-Agent': userAgent,
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
         'Accept-Language': 'en-US,en;q=0.5',
-        'Cache-Control': 'no-cache'
+        'Cache-Control': 'no-cache',
+        // Add Rendertron-specific headers for better rendering
+        'X-Prerender-Wait-For': 'helmet-updated', // Wait for React Helmet to update title
+        'X-Prerender-Timeout': '25000' // 25 seconds max wait time
       },
       signal: controller.signal
     });

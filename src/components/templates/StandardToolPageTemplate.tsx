@@ -22,20 +22,21 @@ export interface StandardToolPageTemplateProps {
   seoData: SEOData;
   toolId: string;
   faqSchema?: Array<{ question: string; answer: string }>;
-  
+
   // Page Content
   pageTitle: string;
   pageDescription: string;
   toolComponent: React.ReactNode;
-  
+
   // Optional Sections
   howToSection?: React.ReactNode;
   faqSection?: React.ReactNode;
   relatedToolsSection?: React.ReactNode;
-  
+  detailedContentKey?: string; // Key for tool-specific detailed content (e.g., 'pages.tools.merge.detailed')
+
   // Breadcrumbs
   breadcrumbKey: string;
-  
+
   // Layout Props
   className?: string;
   showSectionsWhenToolActive?: boolean;
@@ -51,6 +52,7 @@ const StandardToolPageTemplate: React.FC<StandardToolPageTemplateProps> = ({
   howToSection,
   faqSection,
   relatedToolsSection,
+  detailedContentKey,
   breadcrumbKey,
   className = '',
   showSectionsWhenToolActive = false
@@ -198,7 +200,7 @@ const StandardToolPageTemplate: React.FC<StandardToolPageTemplateProps> = ({
           <section className="relative py-16">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="
-                bg-white/10 dark:bg-gray-800/10 backdrop-blur-xl 
+                bg-white/10 dark:bg-gray-800/10 backdrop-blur-xl
                 border border-white/20 dark:border-gray-700/30
                 rounded-3xl shadow-2xl shadow-black/10 p-8 md:p-12
               ">
@@ -207,11 +209,50 @@ const StandardToolPageTemplate: React.FC<StandardToolPageTemplateProps> = ({
             </div>
           </section>
 
+          {/* Detailed Information Section - Tool Specific */}
+          {detailedContentKey && (
+            <section className="py-16">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="bg-white/70 dark:bg-gray-800/10 backdrop-blur-lg border border-gray-200/50 dark:border-gray-700/30 rounded-2xl p-8 md:p-12 shadow-lg">
+                  <h2 className="text-2xl sm:text-3xl font-extrabold mb-8 bg-gradient-to-r from-gray-900 via-seafoam-green to-ocean-blue dark:from-white dark:via-seafoam-200 dark:to-ocean-200 bg-clip-text text-transparent text-center">
+                    {t(`${detailedContentKey}.title`)}
+                  </h2>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                    <div>
+                      <h3 className="text-xl font-black text-gray-900 dark:text-white mb-4">
+                        {t(`${detailedContentKey}.functionality.title`)}
+                      </h3>
+                      <p className="text-gray-700 dark:text-gray-400 leading-relaxed mb-4">
+                        {t(`${detailedContentKey}.functionality.description1`)}
+                      </p>
+                      <p className="text-gray-700 dark:text-gray-400 leading-relaxed">
+                        {t(`${detailedContentKey}.functionality.description2`)}
+                      </p>
+                    </div>
+
+                    <div>
+                      <h3 className="text-xl font-black text-gray-900 dark:text-white mb-4">
+                        {t(`${detailedContentKey}.capabilities.title`)}
+                      </h3>
+                      <p className="text-gray-700 dark:text-gray-400 leading-relaxed mb-4">
+                        {t(`${detailedContentKey}.capabilities.description1`)}
+                      </p>
+                      <p className="text-gray-700 dark:text-gray-400 leading-relaxed">
+                        {t(`${detailedContentKey}.capabilities.description2`)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          )}
+
           {/* SEO Content Section */}
           <section className="py-16 bg-white/5 dark:bg-gray-800/5">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                
+
                 {/* Преимущества */}
                 <div className="bg-white/70 dark:bg-gray-800/10 backdrop-blur-lg border border-gray-200/50 dark:border-gray-700/30 rounded-2xl p-8 shadow-lg">
                   <div className="w-12 h-12 bg-gradient-to-br from-seafoam-500 to-ocean-500 rounded-xl flex items-center justify-center text-white text-2xl mb-6 shadow-lg">
@@ -260,39 +301,6 @@ const StandardToolPageTemplate: React.FC<StandardToolPageTemplateProps> = ({
                   </ul>
                 </div>
 
-              </div>
-            </div>
-          </section>
-
-          {/* Detailed Information Section */}
-          <section className="py-16">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="bg-white/70 dark:bg-gray-800/10 backdrop-blur-lg border border-gray-200/50 dark:border-gray-700/30 rounded-2xl p-8 md:p-12 shadow-lg">
-                <h2 className="text-2xl sm:text-3xl font-extrabold mb-8 bg-gradient-to-r from-gray-900 via-seafoam-green to-ocean-blue dark:from-white dark:via-seafoam-200 dark:to-ocean-200 bg-clip-text text-transparent text-center">
-                  {t('toolTemplate.detailed.title')}
-                </h2>
-                
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                  <div>
-                    <h3 className="text-xl font-black text-gray-900 dark:text-white mb-4">{t('toolTemplate.detailed.business.title')}</h3>
-                    <p className="text-gray-700 dark:text-gray-400 leading-relaxed mb-4">
-                      {t('toolTemplate.detailed.business.description1')}
-                    </p>
-                    <p className="text-gray-700 dark:text-gray-400 leading-relaxed">
-                      {t('toolTemplate.detailed.business.description2')}
-                    </p>
-                  </div>
-                  
-                  <div>
-                    <h3 className="text-xl font-black text-gray-900 dark:text-white mb-4">{t('toolTemplate.detailed.personal.title')}</h3>
-                    <p className="text-gray-700 dark:text-gray-400 leading-relaxed mb-4">
-                      {t('toolTemplate.detailed.personal.description1')}
-                    </p>
-                    <p className="text-gray-700 dark:text-gray-400 leading-relaxed">
-                      {t('toolTemplate.detailed.personal.description2')}
-                    </p>
-                  </div>
-                </div>
               </div>
             </div>
           </section>

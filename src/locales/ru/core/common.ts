@@ -47,7 +47,10 @@ export const common = {
   comingSoon: 'Скоро',
   featured: 'Популярно',
   progress: 'Прогресс',
-  fileSizeUnit: 'МБ',
+  startOver: 'Начать заново',
+  yes: 'Да',
+  no: 'Нет',
+  fileSizeUnit: 'МБ'
 };
 
 // Header navigation

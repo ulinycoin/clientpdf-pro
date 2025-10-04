@@ -225,24 +225,38 @@ const OCRTextEditor: React.FC<OCRTextEditorProps> = ({
         </div>
       </div>
 
-      {/* Editor Content */}
-      <div className="flex-1 overflow-hidden flex">
+      {/* Editor Content - A4 height (1122px at 96 DPI) */}
+      <div className="flex-1 overflow-hidden flex max-h-[1030px]">
         {/* Text Content */}
         <div className="w-full flex flex-col">
-          <div className="flex-1 overflow-auto p-4">
+          <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 max-h-[950px]">
             {isEditing ? (
               <textarea
                 ref={textareaRef}
                 value={editedText}
                 onChange={(e) => handleTextChange(e.target.value)}
                 placeholder={t('tools.ocr.editor.placeholder') || 'Start editing your extracted text...'}
-                className="w-full h-full min-h-[400px] p-4 border border-gray-300 rounded-lg font-mono text-sm leading-relaxed resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                style={{ minHeight: '400px', height: 'auto' }}
+                className="w-full h-full min-h-[900px] p-4 border border-gray-300 dark:border-gray-600 rounded-lg font-mono text-sm leading-relaxed resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-gray-200"
+                style={{ minHeight: '900px', height: 'auto' }}
               />
             ) : (
-              <div className="w-full h-full p-4 bg-gray-50 rounded-lg">
-                <pre className="font-mono text-sm leading-relaxed whitespace-pre-wrap text-gray-800">
-                  {editedText || t('tools.ocr.editor.noText') || 'No text content'}
+              <div className="w-full h-full p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
+                <pre className="font-mono text-sm leading-relaxed whitespace-pre-wrap text-gray-800 dark:text-gray-200" style={{
+                  wordBreak: 'break-word',
+                  overflowWrap: 'break-word'
+                }}>
+                  {editedText ? editedText.split('\n').map((line, index) => {
+                    // Highlight page separators
+                    if (line.startsWith('═══')) {
+                      return <div key={index} className="text-blue-600 dark:text-blue-400 font-bold my-1">{line}</div>;
+                    }
+                    // Highlight page numbers
+                    if (line.match(/^PAGE \d+$/)) {
+                      return <div key={index} className="text-blue-700 dark:text-blue-300 font-bold text-center my-1 bg-blue-50 dark:bg-blue-900/30 py-1 px-2 rounded">{line}</div>;
+                    }
+                    // Regular line
+                    return <div key={index}>{line || '\u00A0'}</div>;
+                  }) : t('tools.ocr.editor.noText') || 'No text content'}
                 </pre>
               </div>
             )}

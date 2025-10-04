@@ -108,5 +108,20 @@ export const merge = {
     fileTooLarge: 'File size exceeds 100MB limit',
     processingFailed: 'Failed to process PDF file',
     noFilesUploaded: 'No files uploaded for merging'
+  },
+
+  // Detailed unique content for this tool (replaces generic template)
+  detailed: {
+    title: 'Why Choose Our PDF Merger?',
+    functionality: {
+      title: 'Advanced Merging Technology',
+      description1: 'Our PDF merger uses cutting-edge browser-based technology to combine multiple PDF documents into a single file while preserving all original formatting, fonts, images, and document structure. Unlike simple file concatenation, our tool intelligently processes each page to maintain professional quality.',
+      description2: 'The merging engine handles complex PDF features including embedded fonts, vector graphics, form fields, annotations, and bookmarks. Documents are processed in your browser using PDF-lib and pdf.js libraries, ensuring compatibility with all PDF standards from 1.4 to 2.0.'
+    },
+    capabilities: {
+      title: 'Intelligent Document Processing',
+      description1: 'Merge unlimited PDF files without restrictions on document size or page count. Reorder pages by dragging files up or down before merging. Our smart processing preserves document metadata, including author information, creation dates, and custom properties.',
+      description2: 'Process business contracts, academic papers, invoices, presentations, and reports with confidence. The tool maintains high-resolution images, complex layouts, multi-column text, tables, and embedded media. All processing happens instantly in your browser with real-time progress tracking.'
+    }
   }
 };

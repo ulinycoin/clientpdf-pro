@@ -47,7 +47,10 @@ export const common = {
   pdfFiles: 'PDF files',
   faqTitle: 'Frequently Asked Questions',
   comingSoon: 'Coming Soon',
-  progress: 'Progress'
+  progress: 'Progress',
+  startOver: 'Start Over',
+  yes: 'Yes',
+  no: 'No'
 };
 
 // Header navigation

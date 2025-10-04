@@ -22,6 +22,7 @@ export class TextToPDFGenerator {
 
   /**
    * Generate PDF from text with proper UTF-8 and Cyrillic support
+   * Smart page splitting: splits text by PAGE markers if present
    */
   async generatePDF(
     text: string,
@@ -71,59 +72,15 @@ export class TextToPDFGenerator {
       const textWidth = pageDimensions.width - 2 * margins;
       const textHeight = pageDimensions.height - 2 * margins;
 
-      // Split text into lines that fit the page width
-      const lines = this.wrapTextToLines(renderText, textWidth, fontSize, fontResult.font);
-      console.log(`📄 Text split into ${lines.length} lines`);
+      // Check if text has PAGE markers (OCR output with page separators)
+      const hasPageMarkers = /═+\nPAGE \d+\n═+/.test(renderText);
 
-      // Calculate lines per page
-      const lineHeightPoints = fontSize * lineHeight;
-      const linesPerPage = Math.floor(textHeight / lineHeightPoints);
-      console.log(`📏 ${linesPerPage} lines per page, line height: ${lineHeightPoints}pt`);
-
-      // Add pages and text
-      let currentLine = 0;
-      while (currentLine < lines.length) {
-        // Add new page
-        const page = pdfDoc.addPage([pageDimensions.width, pageDimensions.height]);
-
-        // Calculate starting Y position (top of page minus top margin)
-        let yPosition = pageDimensions.height - margins;
-
-        // Add lines to this page
-        const linesToAdd = Math.min(linesPerPage, lines.length - currentLine);
-        for (let i = 0; i < linesToAdd; i++) {
-          const line = lines[currentLine + i];
-          
-          try {
-            page.drawText(line, {
-              x: margins,
-              y: yPosition,
-              size: fontSize,
-              font: fontResult.font,
-              color: rgb(0, 0, 0),
-            });
-          } catch (error) {
-            console.warn(`⚠️ Failed to render line: "${line.substring(0, 50)}..."`, error);
-            // Try with fallback transliteration
-            const fallbackLine = this.transliterateCyrillic(line);
-            try {
-              page.drawText(fallbackLine, {
-                x: margins,
-                y: yPosition,
-                size: fontSize,
-                font: fontResult.font,
-                color: rgb(0, 0, 0),
-              });
-            } catch (fallbackError) {
-              console.error(`❌ Even fallback failed for line`, fallbackError);
-            }
-          }
-
-          yPosition -= lineHeightPoints;
-        }
-
-        currentLine += linesToAdd;
-        console.log(`📄 Page ${Math.ceil(currentLine / linesPerPage)} completed (lines ${currentLine - linesToAdd + 1}-${currentLine})`);
+      if (hasPageMarkers) {
+        console.log('📑 Detected PAGE markers - splitting text by original pages');
+        await this.generatePDFWithPageMarkers(pdfDoc, renderText, fontResult, pageDimensions, margins, fontSize, lineHeight);
+      } else {
+        console.log('📄 No PAGE markers - using standard pagination');
+        await this.generatePDFStandard(pdfDoc, renderText, fontResult, pageDimensions, margins, fontSize, lineHeight);
       }
 
       // Generate PDF blob
@@ -141,6 +98,136 @@ export class TextToPDFGenerator {
     } catch (error) {
       console.error('❌ PDF generation failed:', error);
       throw new Error(`Failed to generate PDF: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
+  /**
+   * Generate PDF with PAGE markers - each marked page becomes a PDF page
+   */
+  private async generatePDFWithPageMarkers(
+    pdfDoc: PDFDocument,
+    text: string,
+    fontResult: FontLoadResult,
+    pageDimensions: { width: number; height: number },
+    margins: number,
+    fontSize: number,
+    lineHeight: number
+  ): Promise<void> {
+    // Split text by page separators
+    const pagePattern = /═+\nPAGE \d+\n═+\n\n?/g;
+    const pages = text.split(pagePattern).filter(p => p.trim());
+
+    console.log(`📄 Split into ${pages.length} pages by PAGE markers`);
+
+    const textWidth = pageDimensions.width - 2 * margins;
+    const textHeight = pageDimensions.height - 2 * margins;
+    const lineHeightPoints = fontSize * lineHeight;
+
+    for (let pageIndex = 0; pageIndex < pages.length; pageIndex++) {
+      const pageText = pages[pageIndex];
+
+      // Split page text into lines that fit the page width
+      const lines = this.wrapTextToLines(pageText, textWidth, fontSize, fontResult.font);
+
+      // Add new PDF page
+      const page = pdfDoc.addPage([pageDimensions.width, pageDimensions.height]);
+      let yPosition = pageDimensions.height - margins;
+
+      // Add lines to this page
+      for (const line of lines) {
+        // Check if we've run out of space
+        if (yPosition < margins) {
+          console.warn(`⚠️ Page ${pageIndex + 1} content exceeds page height, truncating`);
+          break;
+        }
+
+        try {
+          page.drawText(line, {
+            x: margins,
+            y: yPosition,
+            size: fontSize,
+            font: fontResult.font,
+            color: rgb(0, 0, 0),
+          });
+        } catch (error) {
+          console.warn(`⚠️ Failed to render line on page ${pageIndex + 1}`, error);
+        }
+
+        yPosition -= lineHeightPoints;
+      }
+
+      console.log(`✅ Page ${pageIndex + 1} rendered with ${lines.length} lines`);
+    }
+  }
+
+  /**
+   * Generate PDF with standard pagination - fills pages by line count
+   */
+  private async generatePDFStandard(
+    pdfDoc: PDFDocument,
+    text: string,
+    fontResult: FontLoadResult,
+    pageDimensions: { width: number; height: number },
+    margins: number,
+    fontSize: number,
+    lineHeight: number
+  ): Promise<void> {
+    const textWidth = pageDimensions.width - 2 * margins;
+    const textHeight = pageDimensions.height - 2 * margins;
+
+    // Split text into lines that fit the page width
+    const lines = this.wrapTextToLines(text, textWidth, fontSize, fontResult.font);
+    console.log(`📄 Text split into ${lines.length} lines`);
+
+    // Calculate lines per page
+    const lineHeightPoints = fontSize * lineHeight;
+    const linesPerPage = Math.floor(textHeight / lineHeightPoints);
+    console.log(`📏 ${linesPerPage} lines per page, line height: ${lineHeightPoints}pt`);
+
+    // Add pages and text
+    let currentLine = 0;
+    while (currentLine < lines.length) {
+      // Add new page
+      const page = pdfDoc.addPage([pageDimensions.width, pageDimensions.height]);
+
+      // Calculate starting Y position (top of page minus top margin)
+      let yPosition = pageDimensions.height - margins;
+
+      // Add lines to this page
+      const linesToAdd = Math.min(linesPerPage, lines.length - currentLine);
+      for (let i = 0; i < linesToAdd; i++) {
+        const line = lines[currentLine + i];
+
+        try {
+          page.drawText(line, {
+            x: margins,
+            y: yPosition,
+            size: fontSize,
+            font: fontResult.font,
+            color: rgb(0, 0, 0),
+          });
+        } catch (error) {
+          console.warn(`⚠️ Failed to render line: "${line.substring(0, 50)}..."`, error);
+          // Try with fallback transliteration
+          const fallbackLine = this.transliterateCyrillic(line);
+          try {
+            page.drawText(fallbackLine, {
+              x: margins,
+              y: yPosition,
+              size: fontSize,
+              font: fontResult.font,
+              color: rgb(0, 0, 0),
+            });
+          } catch (fallbackError) {
+            console.error(`❌ Even fallback failed for line`, fallbackError);
+          }
+        }
+
+        yPosition -= lineHeightPoints;
+      }
+
+      currentLine += linesToAdd;
+      console.log(`📄 Page ${Math.ceil(currentLine / linesPerPage)} completed (lines ${currentLine - linesToAdd + 1}-${currentLine})`);
     }
   }
 

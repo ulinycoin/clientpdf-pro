@@ -408,18 +408,27 @@ export const toolsSEOData = getToolsSEOData();
 export function getToolSEOData(toolId: string, language: SupportedLanguage): SEOData {
   const toolsData = getToolsSEOData();
 
-  // Try to get data for requested language
-  if (toolsData[toolId]?.[language]) {
-    return toolsData[toolId][language];
+  // Convert short translation key to full tool ID if needed
+  // e.g., 'merge' → 'merge-pdf', 'split' → 'split-pdf'
+  const reverseMapping: { [key: string]: string } = {};
+  for (const [fullId, shortKey] of Object.entries(TOOL_TRANSLATION_KEYS)) {
+    reverseMapping[shortKey] = fullId;
+  }
+
+  const fullToolId = reverseMapping[toolId] || toolId;
+
+  // Try to get data for requested language with full ID
+  if (toolsData[fullToolId]?.[language]) {
+    return toolsData[fullToolId][language];
   }
 
   // Fallback to English
-  if (toolsData[toolId]?.['en']) {
-    return toolsData[toolId]['en'];
+  if (toolsData[fullToolId]?.['en']) {
+    return toolsData[fullToolId]['en'];
   }
 
-  // Ultimate fallback
-  return generateFallbackSEOData(toolId, language);
+  // Ultimate fallback - use full ID for canonical
+  return generateFallbackSEOData(fullToolId, language);
 }
 
 // Homepage SEO data for all languages

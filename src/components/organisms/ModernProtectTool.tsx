@@ -5,8 +5,10 @@ import { useI18n } from '../../hooks/useI18n';
 import { useCelebration } from '../../hooks/useCelebration';
 import { PasswordInput } from '../molecules/PasswordInput';
 import { PermissionsPanel } from '../molecules/PermissionsPanel';
+import SmartProtectionRecommendations from '../molecules/SmartProtectionRecommendations';
 import { SECURITY_PRESETS } from '../../services/protectService';
 import type { SecurityPreset } from '../../types/protect.types';
+import type { SecurityLevel } from '../../services/smartPDFService';
 
 interface ModernProtectToolProps {
   file: File;
@@ -50,7 +52,8 @@ export const ModernProtectTool: React.FC<ModernProtectToolProps> = ({
   const [selectedPreset, setSelectedPreset] = useState<keyof typeof SECURITY_PRESETS>('basic');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [protectionMode, setProtectionMode] = useState<'document' | 'permissions'>('document');
-  
+  const [showAIRecommendations, setShowAIRecommendations] = useState(true);
+
   // Ref для прокрутки к секции успеха (скачивания)
   const successSectionRef = useRef<HTMLDivElement>(null);
 
@@ -135,6 +138,28 @@ export const ModernProtectTool: React.FC<ModernProtectToolProps> = ({
   const handleDownload = () => {
     downloadProtected();
     onComplete?.();
+  };
+
+  const handleApplyAILevel = (level: SecurityLevel) => {
+    // Apply AI recommended security level
+    console.log('🤖 Applying AI security level:', level);
+
+    // Map AI level to preset
+    const presetMap: Record<string, keyof typeof SECURITY_PRESETS> = {
+      'basic': 'basic',
+      'medium': 'standard',
+      'high': 'maximum'
+    };
+
+    const presetKey = presetMap[level.level] || 'standard';
+    setSelectedPreset(presetKey);
+    applyPreset(presetKey);
+
+    // Scroll to password section for user input
+    setTimeout(() => {
+      const passwordSection = document.querySelector('.password-protection-section');
+      passwordSection?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 300);
   };
 
   // Автоматическая прокрутка к секции успеха когда обработка завершена
@@ -228,6 +253,26 @@ export const ModernProtectTool: React.FC<ModernProtectToolProps> = ({
           </p>
         </div>
       </div>
+
+      {/* AI Recommendations Toggle */}
+      <div className="flex justify-center">
+        <button
+          onClick={() => setShowAIRecommendations(!showAIRecommendations)}
+          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-100 to-blue-100 dark:from-purple-900/30 dark:to-blue-900/30 text-purple-700 dark:text-purple-300 rounded-lg hover:from-purple-200 hover:to-blue-200 dark:hover:from-purple-800/30 dark:hover:to-blue-800/30 transition-all duration-200 text-sm font-medium border border-purple-200 dark:border-purple-700"
+        >
+          <span className="text-lg">🤖</span>
+          {showAIRecommendations ? t('pages.tools.protect.hideAI') || 'Hide AI Recommendations' : t('pages.tools.protect.showAI') || 'Show AI Recommendations'}
+        </button>
+      </div>
+
+      {/* AI Recommendations Section */}
+      {showAIRecommendations && file && (
+        <SmartProtectionRecommendations
+          file={file}
+          onApplyLevel={handleApplyAILevel}
+          isProcessing={isProcessing}
+        />
+      )}
 
       {/* Protection Mode Selector */}
       <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg rounded-2xl border border-white/20 dark:border-gray-600/20 p-6">
@@ -332,7 +377,7 @@ export const ModernProtectTool: React.FC<ModernProtectToolProps> = ({
       </div>
 
       {/* Password Configuration */}
-      <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg rounded-2xl border border-white/20 dark:border-gray-600/20 p-6 space-y-6">
+      <div className="password-protection-section bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg rounded-2xl border border-white/20 dark:border-gray-600/20 p-6 space-y-6">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-bold text-gray-900 dark:text-white">
             {t('pages.tools.protect.passwordProtection')}

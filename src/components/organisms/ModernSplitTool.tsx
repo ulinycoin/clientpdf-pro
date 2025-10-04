@@ -3,6 +3,7 @@ import { PDFProcessingResult } from '../../types';
 import { SplitService } from '../../services/splitService';
 import { useMotionPreferences } from '../../hooks/useAccessibilityPreferences';
 import { useTranslation } from '../../hooks/useI18n';
+import SmartSplitRecommendations from '../molecules/SmartSplitRecommendations';
 
 interface ModernSplitToolProps {
   files: File[];
@@ -29,6 +30,7 @@ const ModernSplitTool: React.FC<ModernSplitToolProps> = React.memo(({
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const [showAIRecommendations, setShowAIRecommendations] = useState(true);
 
   const selectedFile = files?.[0]; // Split works with single file
 
@@ -106,6 +108,25 @@ const ModernSplitTool: React.FC<ModernSplitToolProps> = React.memo(({
       setError(error instanceof Error ? error.message : t('tools.split.tool.errors.unknownError'));
     } finally {
       setIsProcessing(false);
+    }
+  };
+
+  // AI Recommendation handlers
+  const handleApplyStrategy = (strategy: any) => {
+    console.log('🧠 Applying AI strategy:', strategy);
+
+    if (strategy.type === 'chapters' || strategy.type === 'equal') {
+      setMode('all');
+    } else if (strategy.type === 'single') {
+      setMode('specific');
+      // Convert ranges to specific pages
+      const pages = strategy.ranges.map((range: any) => range.start).join(', ');
+      setSpecificPages(pages);
+    }
+
+    // Set ZIP option for multiple files
+    if (strategy.ranges && strategy.ranges.length > 3) {
+      setUseZip(true);
     }
   };
 
@@ -196,6 +217,32 @@ const ModernSplitTool: React.FC<ModernSplitToolProps> = React.memo(({
           </div>
         </div>
       </div>
+
+      {/* AI Smart Recommendations */}
+      {selectedFile && showAIRecommendations && (
+        <div className="mb-8">
+          <SmartSplitRecommendations
+            file={selectedFile}
+            onApplyStrategy={handleApplyStrategy}
+            isProcessing={isProcessing}
+          />
+        </div>
+      )}
+
+      {/* Toggle AI Recommendations */}
+      {selectedFile && (
+        <div className="mb-6 text-center">
+          <button
+            onClick={() => setShowAIRecommendations(!showAIRecommendations)}
+            className="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 flex items-center space-x-2 mx-auto px-4 py-2 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-xl border border-white/20 dark:border-gray-600/20 hover:bg-white/70 dark:hover:bg-gray-800/70 transition-all duration-200"
+          >
+            <span className="text-lg">{showAIRecommendations ? '🧠' : '🤖'}</span>
+            <span>
+              {showAIRecommendations ? 'Hide' : 'Show'} AI Recommendations
+            </span>
+          </button>
+        </div>
+      )}
 
       {/* Mode Selection */}
       <div className={`bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg border border-white/20 dark:border-gray-600/20 rounded-2xl shadow-lg hover:shadow-xl p-8 mb-8 transition-all duration-300 ${shouldAnimate ? 'smooth-reveal staggered-reveal' : ''}`}>

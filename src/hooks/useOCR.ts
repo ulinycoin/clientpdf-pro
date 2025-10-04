@@ -23,7 +23,7 @@ interface UseOCRReturn {
   processFile: (file: File) => Promise<void>;
   updateOptions: (newOptions: Partial<OCROptions>) => void;
   resetState: () => void;
-  downloadResult: () => void;
+  downloadResult: (format?: string) => Promise<void>;
 
   // Utils
   canProcess: (file: File) => boolean;
@@ -192,37 +192,161 @@ export const useOCR = (): UseOCRReturn => {
   }, []);
 
   // Download result
-  const downloadResult = useCallback(() => {
+  const downloadResult = useCallback(async (format?: string) => {
     if (!result) return;
 
-    const link = document.createElement('a');
-    link.href = result.downloadUrl;
-
-    // Generate filename based on output format
+    const downloadFormat = format || options.outputFormat;
     const originalName = result.originalFile.name;
     const nameWithoutExt = originalName.replace(/\.[^/.]+$/, '');
 
-    switch (options.outputFormat) {
-      case 'text':
-        link.download = `${nameWithoutExt}_ocr.txt`;
-        break;
-      case 'searchable-pdf':
-        link.download = `${nameWithoutExt}_searchable.pdf`;
-        break;
-      case 'docx':
-        link.download = `${nameWithoutExt}_ocr.docx`;
-        break;
-      case 'rtf':
-        link.download = `${nameWithoutExt}_ocr.rtf`;
-        break;
-      default:
-        link.download = `${nameWithoutExt}_ocr.txt`;
+    // If downloading the same format that was processed, use existing blob
+    if (downloadFormat === result.result.outputFormat && result.downloadUrl) {
+      const link = document.createElement('a');
+      link.href = result.downloadUrl;
+
+      switch (downloadFormat) {
+        case 'text':
+          link.download = `${nameWithoutExt}_ocr.txt`;
+          break;
+        case 'searchable-pdf':
+          link.download = `${nameWithoutExt}_searchable.pdf`;
+          break;
+        case 'docx':
+          link.download = `${nameWithoutExt}_ocr.docx`;
+          break;
+        case 'rtf':
+          link.download = `${nameWithoutExt}_ocr.rtf`;
+          break;
+        default:
+          link.download = `${nameWithoutExt}_ocr.txt`;
+      }
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      return;
     }
 
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }, [result, options.outputFormat]);
+    // Otherwise, generate the format on-the-fly
+    try {
+      const text = result.result.text || '';
+      let blob: Blob;
+      let filename: string;
+
+      switch (downloadFormat) {
+        case 'text':
+          blob = new Blob([text], { type: 'text/plain' });
+          filename = `${nameWithoutExt}_ocr.txt`;
+          break;
+
+        case 'docx': {
+          const { documentGenerator } = await import('../utils/documentGenerator');
+          const metadata = {
+            confidence: result.result.confidence,
+            processingTime: result.processingTime,
+            wordsCount: result.result.words?.length || 0,
+            language: options.language,
+            originalFileName: originalName
+          };
+          blob = await documentGenerator.generateDOCX(text, metadata, {
+            title: `${nameWithoutExt} - OCR Results`,
+            includeMetadata: true
+          });
+          filename = `${nameWithoutExt}_ocr.docx`;
+          break;
+        }
+
+        case 'rtf': {
+          const { documentGenerator } = await import('../utils/documentGenerator');
+          const metadata = {
+            confidence: result.result.confidence,
+            processingTime: result.processingTime,
+            wordsCount: result.result.words?.length || 0,
+            language: options.language,
+            originalFileName: originalName
+          };
+          blob = documentGenerator.generateRTF(text, metadata, {
+            title: `${nameWithoutExt} - OCR Results`,
+            includeMetadata: true
+          });
+          filename = `${nameWithoutExt}_ocr.rtf`;
+          break;
+        }
+
+        case 'json': {
+          const { documentGenerator } = await import('../utils/documentGenerator');
+          const metadata = {
+            confidence: result.result.confidence,
+            processingTime: result.processingTime,
+            wordsCount: result.result.words?.length || 0,
+            language: options.language,
+            originalFileName: originalName
+          };
+          blob = documentGenerator.generateJSON(text, metadata, {
+            title: `${nameWithoutExt} - OCR Results`,
+            includeMetadata: true
+          });
+          filename = `${nameWithoutExt}_ocr.json`;
+          break;
+        }
+
+        case 'markdown': {
+          const { documentGenerator } = await import('../utils/documentGenerator');
+          const metadata = {
+            confidence: result.result.confidence,
+            processingTime: result.processingTime,
+            wordsCount: result.result.words?.length || 0,
+            language: options.language,
+            originalFileName: originalName
+          };
+          blob = documentGenerator.generateMarkdown(text, metadata, {
+            title: `${nameWithoutExt} - OCR Results`,
+            includeMetadata: true
+          });
+          filename = `${nameWithoutExt}_ocr.md`;
+          break;
+        }
+
+        case 'searchable-pdf':
+        default: {
+          const { textToPDFGenerator } = await import('../utils/textToPDFGenerator');
+          blob = await textToPDFGenerator.generatePDF(text, `${nameWithoutExt}_ocr`, {
+            fontSize: 11,
+            pageSize: 'A4',
+            orientation: 'portrait',
+            margins: 50,
+            lineHeight: 1.4
+          });
+          filename = `${nameWithoutExt}_searchable.pdf`;
+          break;
+        }
+      }
+
+      // Download the generated blob
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+    } catch (error) {
+      console.error('Failed to generate download:', error);
+      // Fallback to text
+      const text = result.result.text || 'Failed to extract text';
+      const blob = new Blob([text], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${nameWithoutExt}_ocr.txt`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+  }, [result, options.outputFormat, options.language]);
 
   return {
     // State

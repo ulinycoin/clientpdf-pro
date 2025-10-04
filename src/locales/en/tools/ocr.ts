@@ -16,7 +16,10 @@ export const ocr = {
     downloadPdf: 'Download PDF',
     downloadDocx: 'Download Word',
     downloadRtf: 'Download RTF',
+    downloadJson: 'JSON Data',
+    downloadMarkdown: 'Markdown',
     downloadFile: 'Download',
+    downloadFormat: 'Choose Download Format',
     processAnother: 'Process Again',
     editText: 'Edit Text'
   },
@@ -100,5 +103,65 @@ export const ocr = {
     changesSaved: 'Saved',
     downloadTxt: 'Download .txt',
     downloadPdf: 'Download PDF'
+  },
+  ai: {
+    strategies: {
+      fast: {
+        title: 'Fast Mode',
+        description: 'Quick OCR with basic settings',
+        reasoning: 'Best for high-quality documents with clear text',
+        reasoningNeeded: 'Suitable for excellent quality documents'
+      },
+      balanced: {
+        title: 'Balanced Mode',
+        description: 'Good balance of speed and accuracy',
+        reasoning: 'Universal mode for most documents'
+      },
+      accurate: {
+        title: 'High Accuracy Mode',
+        description: 'Maximum accuracy with full preprocessing',
+        reasoning: 'Best for critical documents',
+        reasoningNeeded: 'Recommended for low-quality documents'
+      },
+      multilang: {
+        title: 'Multi-Language Mode',
+        description: 'Optimized for mixed-language documents',
+        reasoning: 'Document contains multiple languages'
+      }
+    },
+    pros: {
+      fast: 'Fastest processing time',
+      goodForClear: 'Good for clear documents',
+      balanced: 'Good accuracy-speed balance',
+      preprocessing: 'Includes preprocessing',
+      multiLang: 'Supports 2 languages',
+      multiLang3: 'Up to 3 languages',
+      highAccuracy: 'Highest accuracy',
+      fullPreprocessing: 'Full preprocessing',
+      goodAccuracy: 'Good accuracy'
+    },
+    cons: {
+      lowerAccuracy: 'Lower accuracy on poor quality',
+      singleLanguage: 'Single language only',
+      mediumSpeed: 'Medium processing time',
+      slowest: 'Slowest processing',
+      highCPU: 'High CPU usage',
+      slowerProcessing: 'Slower than fast mode',
+      moreMemory: 'Uses more memory'
+    },
+    warnings: {
+      lowClarity: {
+        message: 'Low image clarity detected',
+        suggestion: 'Use High Accuracy mode for better results'
+      },
+      noise: {
+        message: 'Image noise detected',
+        suggestion: 'Preprocessing will improve accuracy'
+      },
+      columns: {
+        message: 'Multi-column layout detected',
+        suggestion: 'Enable layout preservation'
+      }
+    }
   }
 };

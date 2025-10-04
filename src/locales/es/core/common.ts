@@ -46,7 +46,11 @@ export const common = {
   comingSoon: 'Próximamente',
   featured: 'Popular',
   progress: 'Progreso',
-  fileSizeUnit: 'MB'
+  startOver: 'Empezar de nuevo',
+  yes: 'Sí',
+  no: 'No',
+  fileSizeUnit: 'MB',
+  free: 'Gratis'
 };
 
 // Header navigation

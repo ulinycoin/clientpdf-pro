@@ -20,6 +20,7 @@ You are the **Lead Developer** for LocalPDF, a privacy-first PDF toolkit. Your r
 
 ### Areas of Focus
 - **Performance optimization** for client-side PDF processing
+- **AI-powered features** for smart document analysis and recommendations
 - **UI/UX improvements** following the glass morphism design system
 - **Accessibility enhancements** for better user experience
 - **SEO and multilingual** optimization across all 5 supported languages
@@ -93,6 +94,54 @@ This is a browser-based PDF toolkit with client-side processing:
 - `fontManager.ts` - Font loading and management
 - `imageToPDFService.ts` - Image to PDF conversion
 
+**AI-Powered Services** (Smart Recommendations):
+- `smartPDFService.ts` - Universal AI analysis engine (1361 lines) for all PDF tools
+  - Supports: Split, Compress, Protect, OCR (Advanced), Watermark
+  - Document analysis, quality estimation, language detection
+  - Multilingual i18n integration with automatic re-analysis on language change
+- `smartMergeService.ts` - Intelligent merge recommendations (order, compatibility)
+- `smartCompressionService.ts` - Smart compression level suggestions
+
+**AI Components** (`src/components/molecules/`):
+- `SmartMergeRecommendations.tsx` - AI suggestions for Merge PDF
+- `SmartSplitRecommendations.tsx` - AI suggestions for Split PDF
+- `SmartCompressionRecommendations.tsx` - AI compression optimization
+- `SmartProtectionRecommendations.tsx` - AI security recommendations
+- `SmartOCRRecommendations.tsx` - AI OCR optimization suggestions
+
+### AI Features & Smart Recommendations
+LocalPDF includes AI-powered analysis and recommendations for various PDF operations:
+
+**Core AI Capabilities:**
+- **Document Analysis** - Automatic detection of PDF characteristics (pages, size, type)
+- **Smart Recommendations** - Context-aware suggestions for optimal settings
+- **Quality Predictions** - Estimates of output quality and file size
+- **Warning System** - Proactive alerts for potential issues
+
+**Implementation Status:**
+- ✅ **Merge PDF** - Intelligent file ordering, compatibility checks, size predictions
+- ✅ **Split PDF** - Smart page range suggestions, chapter detection
+- ✅ **Compress PDF** - Optimal compression level recommendations
+- ✅ **Protect PDF** - Security level suggestions, password strength recommendations
+- ✅ **OCR PDF** - Advanced language detection, image quality analysis, preprocessing optimization
+- 🔄 **Watermark PDF** - Placement suggestions, text recommendations (partial implementation)
+
+**AI Architecture:**
+- Client-side analysis using `smartPDFService.ts` universal engine
+- No external AI API calls - all processing happens in browser
+- Privacy-first design - documents never leave user's device
+- Specialized services per tool for domain-specific intelligence
+
+**Usage Pattern:**
+```typescript
+// Example: Using Smart Recommendations
+import { analyzeDocument } from '@/services/smartPDFService';
+
+const analysis = await analyzeDocument(pdfFile);
+const recommendations = getToolRecommendations(analysis, 'merge');
+// Display AI suggestions to user
+```
+
 ### Styling System
 Uses Tailwind CSS with extensive customization:
 - Custom color palette focused on privacy/ocean theme (seafoam, ocean, privacy colors)
@@ -134,14 +183,19 @@ The application includes extensive Node.js polyfills in `src/main.tsx` to make s
 
 ## SEO Infrastructure Solutions
 
-### Prerender.io Integration
-The project uses Prerender.io for server-side rendering to improve SEO for search engine crawlers:
+### Rendertron Self-Hosted Solution (Migrated from Prerender.io)
+**Migration Date:** October 1, 2025 (commit `1a48f32`)
+**Cost Savings:** $1,080/year ($90/month Prerender.io → $0/month Rendertron)
+
+The project uses **self-hosted Rendertron on Render.com** for server-side rendering to improve SEO for search engine crawlers:
 
 **Current Setup:**
-- **middleware.js** - Edge runtime middleware with bot detection and prerendering
+- **middleware.js** - Edge runtime middleware with bot detection and Rendertron integration
+- **Rendertron service** - Free tier on Render.com: `localpdf-rendertron.onrender.com`
 - **Whitelist system** - Only EN + RU languages get scheduled rendering (42 URLs total)
 - **Smart filtering** - DE/FR/ES work as SPA, but can get real-time prerendering
-- **Cache TTL limitation** - Free plan = 3 days cache expiry (limitation)
+- **No authentication** - Rendertron is open-source, no token required
+- **Cold start handling** - 30s timeout to handle Render.com free tier 15min sleep
 
 **Key Components:**
 ```javascript
@@ -161,83 +215,107 @@ const SCHEDULED_RENDERING_WHITELIST = [
 const SCHEDULED_RENDERING_LANGUAGES = ['en', 'ru'];
 ```
 
-### Cache Warmer Solution
-**Problem:** Prerender.io free plan cache expires after 3 days → Miss (3-4s response) → Bad SEO
-**Solution:** Automatic cache warming system → Always Hit (28ms response) → Better SEO
+### Cache Warmer Solution (Adapted for Rendertron)
+**Problem:** Render.com free tier sleeps after 15min inactivity → Cold start (10-30s) → Bad SEO
+**Solution:** Automatic cache warming system → Always warm (5-15s response) → Better SEO
 
 **Implementation:**
-- **cache-warmer.cjs** - Node.js script that simulates bot visits to refresh cache
-- **.github/workflows/cache-warmer.yml** - GitHub Actions automation (every 12 hours)
+- **cache-warmer.cjs** - Node.js script that simulates bot visits to keep Rendertron warm
+- **.github/workflows/cache-warmer.yml** - GitHub Actions automation (every 12 hours: 6:00 and 18:00 UTC)
 - **Smart scheduling** - Tier 1 every 2 days, Tier 2 every 3 days, Tier 3 every 5 days
-- **Cost efficiency** - $0 solution vs $90/month Prerender.io upgrade
+- **Cost efficiency** - $0 solution on Render.com free tier
 
 **Usage:**
 ```bash
-# Manual cache warming
+# Manual cache warming (works with Rendertron)
 node cache-warmer.cjs tier1    # Critical pages only
 node cache-warmer.cjs all      # All URLs
 node cache-warmer.cjs auto     # Smart mode (GitHub Actions default)
 
-# Monitoring
-node prerender-monitor.cjs check  # Performance analysis
+# Monitoring Rendertron health
+./monitor-rendertron.sh        # Health check script (30 seconds)
 ```
 
 **Expected Results:**
 - +25-40% organic traffic for EN + RU languages
-- 100% cache hit rate for critical pages
-- Elimination of 3-4s Miss responses for search bots
+- 92%+ success rate for cache warming
+- Prevention of cold starts for search bots
+- Response times: 5-15s (warm) vs 10-30s (cold start)
 - Better Core Web Vitals and SEO ranking
 
 ### Monitoring Tools
-**prerender-monitor.cjs** - Comprehensive monitoring and analytics:
-- **Performance testing** - Response times and prerender rates by tier
-- **Cache analysis** - Hit/Miss ratios and recommendations
-- **Bot simulation** - Tests with Googlebot user agent
-- **Automatic recommendations** - Optimization suggestions based on data
+**monitor-rendertron.sh** - Main health check script (recommended weekly):
+- ✅ **Service health** - Checks Rendertron is online
+- ✅ **Page rendering** - Tests actual page rendering
+- ✅ **Middleware integration** - Verifies bot detection works
+- ✅ **Response time** - Ensures < 30s response times
+- **Usage:** `./monitor-rendertron.sh` (takes 30 seconds)
 
-**Key monitoring commands:**
-```bash
-node prerender-monitor.cjs check    # Full comprehensive check
-node prerender-monitor.cjs quick    # Quick API status check
-```
+**Render.com Dashboard** - Real-time monitoring:
+- 🔗 https://dashboard.render.com/web/srv-d3ejtk3ipnbc73c0645g
+- **Logs** - Monitor renders and errors in real-time
+- **Events** - Track deploys, restarts, suspensions
+- **Metrics** - CPU/Memory usage (paid plans only)
 
-**Other diagnostic tools:**
-- **test-scheduled-rendering.sh** - Manual curl testing for all 42 URLs
-- **prerender-api-manager.cjs** - API automation (requires paid plan)
-- **deploy-scheduled-rendering.sh** - One-click deployment script
+**GitHub Actions** - Cache Warmer status:
+- 🔗 https://github.com/ulinycoin/clientpdf-pro/actions/workflows/cache-warmer.yml
+- **Runs** - Every 12 hours (6:00 and 18:00 UTC)
+- **Success rate** - Should be ≥80%
+- **Artifacts** - Contains logs and JSON results for debugging
 
-### API Limitations Encountered
-- **Prerender.io API access** requires paid plan ($90/month)
-- **Free plan limitations** - 3-day cache TTL, no programmatic scheduled rendering
-- **Workaround success** - Cache Warmer provides same benefits at $0 cost
+### Key Differences: Rendertron vs Prerender.io
+| Feature | Prerender.io (old) | Rendertron (current) |
+|---------|-------------------|---------------------|
+| **Cost** | $90/month (paid) | $0/month (free) |
+| **Cache** | 3-day TTL limit | No cache (always fresh) |
+| **Speed** | 28ms (hit), 3-4s (miss) | 5-15s (warm), 10-30s (cold) |
+| **Auth** | Token required | No auth needed |
+| **Limits** | Request limits | No limits on free tier |
+| **Control** | SaaS vendor | Self-hosted |
+| **Cold starts** | None | 15min inactivity → sleep |
+
+**Migration Benefits:**
+- ✅ **Cost savings** - $1,080/year eliminated
+- ✅ **Full control** - Self-hosted, open-source
+- ✅ **No limits** - Unlimited rendering on free tier
+- ⚠️ **Trade-off** - Slower (5-15s vs 28ms), but always fresh content
 
 ### Documentation Files
+- **RENDERTRON_MONITORING.md** - Comprehensive monitoring guide for Rendertron
 - **CACHE_WARMER_GUIDE.md** - Setup and usage instructions for cache warmer
-- **SCHEDULED_RENDERING_IMPLEMENTATION.md** - Technical implementation details
-- **API_AUTOMATION_GUIDE.md** - API usage guide (for paid plans)
-- **PRERENDER_DASHBOARD_SETUP.md** - Manual dashboard configuration
-- **MANUAL_SETUP_GUIDE.md** - Step-by-step manual setup instructions
+- **SCHEDULED_RENDERING_IMPLEMENTATION.md** - Technical implementation details (legacy)
+- **README.md** - Project overview with Rendertron migration details
 
 ### Implementation History
-**Key Commits:**
+
+**Phase 1: Scheduled Rendering (Dec 2024)**
 - **d4d59c1** - Initial scheduled rendering implementation with middleware whitelist
-- **c38ff5c** - Cache Warmer solution to solve 3-day cache expiry issue
+- **Problem:** Needed SEO optimization for critical EN+RU pages
 
-**Problem Solved:**
-User reported that Prerender.io free plan has 3-day cache TTL, causing search bots to get Miss (3-4s) responses after cache expiry, hurting SEO performance.
+**Phase 2: Cache Warmer (Dec 2024)**
+- **c38ff5c** - Cache Warmer solution to solve Prerender.io 3-day cache expiry issue
+- **Problem:** Prerender.io free plan cache expires after 3 days → 3-4s Miss responses
 
-**Solution Delivered:**
-1. **Middleware whitelist** - Smart filtering for EN+RU priority (42 URLs)
-2. **Cache Warmer system** - Automatic GitHub Actions to refresh cache every 2 days
-3. **Cost optimization** - $0 solution vs $90/month Prerender.io upgrade
-4. **Comprehensive monitoring** - Tools to track performance and success metrics
+**Phase 3: Rendertron Migration (Oct 2025)** ⭐ **CURRENT**
+- **1a48f32** - Migrated from Prerender.io to self-hosted Rendertron on Render.com
+- **Problem:** Prerender.io costs $90/month, has request limits, vendor lock-in
+- **Solution:** Free self-hosted Rendertron with Cache Warmer preventing cold starts
+
+**Migration Results:**
+1. ✅ **Cost savings** - $1,080/year ($90/month → $0/month)
+2. ✅ **No limits** - Unlimited rendering on Render.com free tier
+3. ✅ **Full control** - Self-hosted, open-source solution
+4. ✅ **Cache Warmer adapted** - Now prevents Render.com cold starts (15min sleep)
+5. ✅ **92% success rate** - Cache warming keeps Rendertron always warm
+6. ⚠️ **Performance trade-off** - 5-15s (warm) vs old 28ms, but always fresh content
 
 **Current Status:**
-- ✅ Middleware configured with EN+RU whitelist
-- ✅ Cache Warmer deployed with GitHub Actions automation
-- ✅ 100% cache hit rate achievable for critical pages
+- ✅ Rendertron deployed on Render.com free tier
+- ✅ Middleware configured for EN+RU whitelist (42 URLs)
+- ✅ Cache Warmer running every 12 hours via GitHub Actions
+- ✅ Health monitoring with `monitor-rendertron.sh`
 - ✅ Expected +25-40% organic traffic improvement for EN+RU
-- ✅ All solutions working on free Prerender.io plan
+- ✅ Zero monthly costs for prerendering infrastructure
 
 When working on this codebase:
 1. Always use the path aliases (`@/components`, `@/services`, etc.)
@@ -245,6 +323,8 @@ When working on this codebase:
 3. Add translations for all 5 supported languages
 4. Test with both light and dark modes
 5. Ensure all PDF operations work client-side without server dependencies
-6. **Monitor SEO performance** with cache-warmer.cjs and prerender-monitor.cjs
-7. **Focus EN + RU** for scheduled rendering, other languages work as SPA
-8. **Check Prerender.io dashboard** weekly for cache hit rates and usage
+6. **Monitor Rendertron health** with `./monitor-rendertron.sh` weekly (30 seconds)
+7. **Check GitHub Actions** - Cache Warmer should run every 12 hours with ≥80% success rate
+8. **Focus EN + RU** for scheduled rendering (42 URLs), other languages work as SPA
+9. **Render.com Dashboard** - Check logs weekly for timeout errors or cold starts
+10. **SEO Performance** - Track Google Search Console metrics (2-4 weeks for results)

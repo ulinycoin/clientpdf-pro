@@ -45,7 +45,12 @@ export const common = {
   readyToUse: 'Einsatzbereit',
   comingSoon: 'Demnächst',
   featured: 'Beliebt',
-  fileSizeUnit: 'MB'
+  progress: 'Fortschritt',
+  startOver: 'Von vorne beginnen',
+  yes: 'Ja',
+  no: 'Nein',
+  fileSizeUnit: 'MB',
+  free: 'Kostenlos'
 };
 
 // Header navigation

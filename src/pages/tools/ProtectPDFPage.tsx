@@ -260,54 +260,7 @@ const ProtectPDFPage: React.FC = () => {
       pageDescription={t('pages.tools.protect.pageDescription')}
       toolComponent={toolComponent}
       breadcrumbKey="protect-pdf"
-      howToSection={
-        <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg rounded-2xl border border-white/20 dark:border-gray-600/20 p-8">
-          <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-            {t('pages.tools.protect.quickSteps.title')}
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[1, 2, 3, 4].map((step) => (
-              <div key={step} className="text-center space-y-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-seafoam-500 to-ocean-500 rounded-full flex items-center justify-center text-white font-bold text-lg mx-auto">
-                  {step}
-                </div>
-                <div>
-                  <h4 className="font-semibold text-gray-900 dark:text-white mb-2">
-                    {t(`pages.tools.protect.quickSteps.step${step}.title`)}
-                  </h4>
-                  <p className="text-sm text-gray-700 dark:text-gray-300">
-                    {t(`pages.tools.protect.quickSteps.step${step}.description`)}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      }
-      faqSection={
-        <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg rounded-2xl border border-white/20 dark:border-gray-600/20 p-8">
-          <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-            {t('pages.tools.protect.benefits.title')}
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {['privacy', 'control', 'compliance', 'professional'].map((benefit) => (
-              <div key={benefit} className="flex items-start gap-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-seafoam-500/20 to-ocean-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <div className="w-6 h-6 bg-gradient-to-br from-seafoam-500 to-ocean-500 rounded-full"></div>
-                </div>
-                <div>
-                  <h4 className="font-semibold text-gray-900 dark:text-white mb-2">
-                    {t(`pages.tools.protect.benefits.${benefit}.title`)}
-                  </h4>
-                  <p className="text-sm text-gray-700 dark:text-gray-300">
-                    {t(`pages.tools.protect.benefits.${benefit}.description`)}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      }
+      detailedContentKey="pages.tools.protect.detailed"
     />
   );
 };

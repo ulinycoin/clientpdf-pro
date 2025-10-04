@@ -14,7 +14,7 @@ import { entityHelper } from '../../utils/entityHelpers';
 
 const MergePDFPage: React.FC = () => {
   const { t, language } = useI18n();
-  const seoData = getToolSEOData('merge', language);
+  const seoData = getToolSEOData('merge-pdf', language);
   const [toolActive, setToolActive] = useState(false);
 
   // Get entity data for semantic content
@@ -206,6 +206,7 @@ const MergePDFPage: React.FC = () => {
       pageDescription={description || t('pages.tools.merge.pageDescription')}
       toolComponent={toolComponent}
       breadcrumbKey="merge-pdf"
+      detailedContentKey="pages.tools.merge.detailed"
       relatedToolsSection={<RelatedToolsSection currentTool="merge-pdf" />}
     />
   );

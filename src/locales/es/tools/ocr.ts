@@ -20,7 +20,10 @@ export const ocr = {
     downloadPdf: 'Descargar PDF',
     downloadDocx: 'Descargar Word',
     downloadRtf: 'Descargar RTF',
+    downloadJson: 'Datos JSON',
+    downloadMarkdown: 'Markdown',
     downloadFile: 'Descargar',
+    downloadFormat: 'Elegir formato de descarga',
     processAnother: 'Procesar de nuevo',
     editText: 'Editar texto'
   },

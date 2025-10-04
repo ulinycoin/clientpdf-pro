@@ -112,7 +112,8 @@ export const protect = {
   realPDFEncryption: "Chiffrement PDF réel",
   securityLevel: "Niveau de sécurité",
   simpleView: "Vue simple",
-  
+  showAI: "Afficher les recommandations IA",
+  hideAI: "Masquer les recommandations IA",  
   // Optional field labels
   documentPasswordOptional: "Mot de passe du document (Optionnel)",
   leaveEmptyForPermissions: "Laissez vide pour la protection par permissions uniquement",
@@ -213,5 +214,78 @@ export const protect = {
   success: {
     protected: "PDF protégé avec succès par mot de passe!",
     downloaded: "PDF protégé téléchargé avec succès"
+  },
+
+  // AI Recommendations
+  ai: {
+    analysis: {
+      analyzing: "Analyse de sécurité IA",
+      analyzingDescription: "Analyse du document et recommandation des paramètres de sécurité optimaux...",
+      failed: "Analyse échouée",
+      retry: "Réessayer l'analyse",
+      completed: "Analyse terminée à {time}",
+      refresh: "Actualiser l'analyse"
+    },
+    recommendations: {
+      title: "🤖 Recommandations de sécurité IA",
+      confidence: "{percent}% de confiance",
+      recommended: "Recommandé",
+      showDetails: "Afficher les détails",
+      hideDetails: "Masquer les détails",
+      applyButton: "Appliquer les paramètres"
+    },
+    securityLevels: {
+      title: "Options de niveau de sécurité"
+    },
+    levels: {
+      basic: {
+        title: "Protection de base",
+        description: "Protection par mot de passe standard avec restrictions de visualisation",
+        reasoning: "Convient aux documents généraux nécessitant une confidentialité de base"
+      },
+      medium: {
+        title: "Sécurité moyenne",
+        description: "Protection renforcée avec restrictions complètes",
+        reasoning: "Recommandé pour les documents professionnels sensibles"
+      },
+      high: {
+        title: "Sécurité maximale",
+        description: "Chiffrement le plus fort avec toutes les restrictions activées",
+        reasoning: "Idéal pour les documents confidentiels ou hautement sensibles"
+      }
+    },
+    suggestions: {
+      title: "Suggestions de sécurité IA"
+    },
+    passwords: {
+      suggestion1: "Utilisez une combinaison de majuscules, minuscules, chiffres et symboles",
+      suggestion2: "Faites un mot de passe d'au moins 12 caractères",
+      suggestion3: "Évitez les mots courants ou les informations personnelles",
+      contractSuggestion: "Pour les contrats, utilisez un mot de passe très fort et partagez-le en toute sécurité"
+    },
+    details: {
+      title: "Analyse de sécurité détaillée",
+      permissions: "Permissions autorisées",
+      restrictions: "Restrictions",
+      passwordStrength: "Force du mot de passe requise"
+    },
+    errors: {
+      analysisError: "Impossible d'analyser la sécurité du document"
+    }
+  },
+
+  // Contenu unique détaillé pour cet outil
+  detailed: {
+    title: 'Pourquoi choisir notre outil de protection PDF ?',
+    functionality: {
+      title: 'Chiffrement de niveau militaire',
+      description1: 'Notre outil de protection PDF implémente le chiffrement AES-256 standard de l\'industrie avec compatibilité de secours RC4 – le même chiffrement utilisé par les banques et les agences gouvernementales. Chaque document est chiffré localement dans votre navigateur à l\'aide du module de sécurité PDF-lib, garantissant que vos mots de passe et fichiers ne quittent jamais votre appareil.',
+      description2: 'Le moteur de chiffrement prend en charge les systèmes à double mot de passe : mots de passe utilisateur pour les restrictions d\'affichage et mots de passe propriétaire pour les autorisations de modification. Choisissez entre la protection complète du document ou des contrôles d\'autorisation granulaires. Définissez des restrictions spécifiques pour la qualité d\'impression, la copie de texte, la modification du contenu, le remplissage de formulaires, les annotations et l\'assemblage de pages.'
+    },
+    capabilities: {
+      title: 'Contrôles de sécurité avancés',
+      description1: 'Protégez les contrats confidentiels, les rapports financiers, les documents juridiques, les dossiers médicaux et les matériaux commerciaux propriétaires avec des préréglages de sécurité personnalisables. Notre conseiller en sécurité alimenté par IA analyse le contenu des documents et recommande des niveaux de protection optimaux basés sur des marqueurs de sensibilité détectés.',
+      description2: 'Quatre niveaux de sécurité prédéfinis offrent une configuration instantanée : Basic pour les documents généraux, Standard pour les fichiers professionnels, Professional pour les données sensibles et Maximum pour les matériaux hautement confidentiels. Chaque préréglage configure intelligemment les exigences de force du mot de passe, les méthodes de chiffrement et les restrictions d\'autorisation. L\'analyse en temps réel de la force du mot de passe garantit une sécurité adéquate tout en prévenant les vulnérabilités courantes comme les mots du dictionnaire ou les motifs prévisibles.'
+    }
   }
 };
