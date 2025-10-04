@@ -15,7 +15,7 @@
 
 // Bot user agents - comprehensive list including AI crawlers
 const BOT_USER_AGENTS = [
-  // Search engine bots
+  // Search engine bots - CRITICAL FOR INDEXING
   'googlebot',
   'bingbot',
   'yandexbot',
@@ -47,20 +47,23 @@ const BOT_USER_AGENTS = [
   'gemini',
   'bard',
 
-  // SEO and monitoring tools
-  'ahrefsbot',
-  'semrushbot',
-  'mj12bot',
-  'dotbot',
-  'screaming frog',
-  'sitebulb',
-  'seobility',
-
   // Generic crawlers
   'crawler',
   'spider',
   'bot/',
   'scraper'
+];
+
+// SEO tools that TIMEOUT on Rendertron (Render.com free tier too slow)
+// These bots get STATIC SPA instead of prerendered content
+const EXCLUDED_BOTS = [
+  'ahrefsbot',      // 504 timeout - confirmed by user
+  'semrushbot',     // Likely timeout
+  'mj12bot',        // Likely timeout
+  'dotbot',         // Likely timeout
+  'screaming frog', // Desktop tool - timeout
+  'sitebulb',       // Desktop tool - timeout
+  'seobility',      // Likely timeout
 ];
 
 // Scheduled Rendering Whitelist for Prerender.io
@@ -117,6 +120,17 @@ function isBotUserAgent(userAgent) {
 }
 
 /**
+ * Check if bot should be EXCLUDED from Rendertron (gets SPA instead)
+ * Used for SEO tools that timeout on Render.com free tier
+ */
+function isExcludedBot(userAgent) {
+  if (!userAgent) return false;
+
+  const lowerUserAgent = userAgent.toLowerCase();
+  return EXCLUDED_BOTS.some(bot => lowerUserAgent.includes(bot));
+}
+
+/**
  * Check if path is eligible for scheduled rendering
  * Only EN and RU languages are supported for scheduled rendering
  */
@@ -145,6 +159,13 @@ function shouldPrerender(request) {
 
   // Only prerender if it's a bot
   if (!isBotUserAgent(userAgent)) {
+    return false;
+  }
+
+  // CRITICAL FIX: Exclude SEO tools that timeout on Rendertron
+  // AhrefsBot, SEMrush, etc. get 504 errors on Render.com free tier
+  // They will get SPA instead (better than 504 timeout!)
+  if (isExcludedBot(userAgent)) {
     return false;
   }
 
