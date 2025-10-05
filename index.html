@@ -42,25 +42,7 @@
     <meta name="twitter:image" content="https://localpdf.online/og-image.png" />
 
     <!-- SEO -->
-    <!-- Canonical tag is dynamically managed by React Helmet for each page -->
-    <!-- Early canonical setup for SSR/prerendering (will be updated by React Helmet) -->
-    <script>
-      // Set initial canonical URL before React loads (for Rendertron/prerendering)
-      // Only runs if no canonical exists yet (avoids duplicate with React Helmet)
-      (function() {
-        // Skip if canonical already exists (from SSR/prerendering)
-        if (document.querySelector('link[rel="canonical"]')) {
-          return;
-        }
-
-        const path = window.location.pathname;
-        const canonical = document.createElement('link');
-        canonical.rel = 'canonical';
-        canonical.href = 'https://localpdf.online' + (path === '/' ? '' : path.replace(/\/$/, ''));
-        canonical.setAttribute('data-early-canonical', 'true');
-        document.head.appendChild(canonical);
-      })();
-    </script>
+    <!-- Canonical tag will be set dynamically by React Helmet for each page -->
     <meta name="robots" content="index, follow" />
 
     <!-- Google Search Console verification -->
