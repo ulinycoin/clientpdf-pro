@@ -251,8 +251,13 @@ const FEATURE_LISTS = {
 
 // Generate URL for language and tool
 function generateUrl(language: SupportedLanguage, toolId: string): string {
-  // ALL canonical URLs point to English version for proper SEO hierarchy
-  return `${BASE_URL}/${toolId}`;
+  // Each language version has canonical pointing to itself (Google best practice for multilingual sites)
+  // EN: /merge-pdf → canonical: https://localpdf.online/merge-pdf
+  // RU: /ru/merge-pdf → canonical: https://localpdf.online/ru/merge-pdf
+  if (language === 'en') {
+    return `${BASE_URL}/${toolId}`;
+  }
+  return `${BASE_URL}/${language}/${toolId}`;
 }
 
 // Generate SEO data for a specific tool and language (safe version for build time)

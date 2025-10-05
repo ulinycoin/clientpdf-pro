@@ -15,7 +15,11 @@ import {
 const HomePage: React.FC = () => {
   const { t } = useTranslation();
   const { currentLanguage } = useI18n();
-  
+
+  // Generate canonical URL based on language
+  const canonicalUrl = currentLanguage === 'en'
+    ? 'https://localpdf.online/'
+    : `https://localpdf.online/${currentLanguage}/`;
 
   return (
     <>
@@ -24,13 +28,13 @@ const HomePage: React.FC = () => {
         <meta name="description" content={`${t('home.hero.description')} - ${t('home.hero.descriptionSecondary')}`} />
         <meta name="robots" content="index, follow" />
         <meta name="google-site-verification" content="34adca022b79f1a0" />
-        <link rel="canonical" href="https://localpdf.online/" />
+        <link rel="canonical" href={canonicalUrl} />
 
         {/* Open Graph */}
         <meta property="og:title" content={`LocalPDF - ${t('home.hero.subtitle')}`} />
         <meta property="og:description" content={t('home.hero.description')} />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://localpdf.online/" />
+        <meta property="og:url" content={canonicalUrl} />
         <meta property="og:image" content="https://localpdf.online/og-image.png" />
 
         {/* Twitter Cards */}
