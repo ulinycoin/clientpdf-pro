@@ -362,6 +362,7 @@ Request Flow:
 - ✅ Monitoring tools: `./check-bot-cache.sh`, Cloud Run logs, GCS bucket
 - ✅ Expected +25-40% organic traffic improvement (all 5 languages)
 - ✅ Zero meaningful costs (~$0.02/month)
+- ✅ **Canonical tags fixed** (October 5, 2025) - see "Canonical Tags Issue Resolution" below
 
 ## Monitoring Bot Activity & SEO Performance
 
@@ -588,3 +589,126 @@ When working on this codebase:
 10. **SEO Performance** - Track Google Search Console metrics (2-4 weeks for results)
 11. **Never modify** cache-proxy.js PORT logic or start.sh sequential startup without testing
 12. **Before modifying Rendertron** - Read this section again, especially PORT management
+
+## Canonical Tags Issue Resolution (October 5, 2025)
+
+### Problem Identified
+Google Search Console showed only 61 pages indexed with 3 impressions/day, while Yandex indexed 41 pages successfully. Root cause: **Duplicate canonical tags**.
+
+**Symptoms:**
+- All tool pages had TWO canonical tags in bot-rendered HTML:
+  1. ❌ `<link rel="canonical" href="https://localpdf.online">` (wrong - pointing to homepage)
+  2. ✅ `<link rel="canonical" href="https://localpdf.online/merge-pdf" data-rh="true">` (correct - from React Helmet)
+- Google read the FIRST tag → thought all pages were homepage duplicates → didn't index
+- Yandex read the LAST tag → indexed correctly
+
+**Diagnosis:**
+```bash
+curl -A "Googlebot" https://localpdf.online/merge-pdf | grep canonical
+# Showed: 2 canonical tags (one wrong, one right)
+```
+
+### Solution Implemented
+
+**Commit:** `00626f2` (October 5, 2025)
+
+**What was tried (failed attempts):**
+1. ❌ Added JavaScript to set early canonical → created duplicates
+2. ❌ Added check to skip if canonical exists → still duplicated due to timing
+3. ❌ Tried to modify React Helmet behavior → not feasible
+
+**Final solution (success):**
+- **Removed ALL static canonical logic from index.html**
+- Let React Helmet manage canonical tags exclusively
+- index.html now has ONLY comment: `<!-- Canonical tag will be set dynamically by React Helmet for each page -->`
+- Cleared entire GCS cache (128 URLs)
+- Re-warmed cache with clean canonical tags
+
+**Files changed:**
+- `index.html` - removed early canonical script (lines 44-63 deleted)
+- `CLAUDE.md` - added this documentation section
+
+**Verification:**
+```bash
+# Direct Rendertron test (bypasses Vercel cache)
+curl -s "https://rendertron-741929692017.us-central1.run.app/render/https://localpdf.online/merge-pdf" | grep canonical
+
+# Expected output (SUCCESS):
+<link rel="canonical" href="https://localpdf.online/merge-pdf" data-rh="true">
+
+# Only ONE canonical tag, pointing to correct URL
+```
+
+### How Canonical Tags Should Work
+
+**CORRECT - Each page points to itself:**
+```
+https://localpdf.online/              → canonical: https://localpdf.online
+https://localpdf.online/merge-pdf     → canonical: https://localpdf.online/merge-pdf
+https://localpdf.online/split-pdf     → canonical: https://localpdf.online/split-pdf
+https://localpdf.online/ru/merge-pdf  → canonical: https://localpdf.online/ru/merge-pdf
+```
+
+**WRONG - All pages point to homepage:**
+```
+https://localpdf.online/merge-pdf     → canonical: https://localpdf.online  ❌
+https://localpdf.online/split-pdf     → canonical: https://localpdf.online  ❌
+```
+This tells Google pages are duplicates → won't index them.
+
+**Implementation location:**
+- `src/data/seoData.ts:253` - `generateUrl()` function creates correct canonical URLs
+- `src/components/SEO/SEOHead.tsx` - React Helmet applies canonical to DOM
+- `index.html` - NO static canonical (React Helmet manages everything)
+
+### Cache Management After Fix
+
+**Steps to update after canonical changes:**
+```bash
+# 1. Clear entire GCS cache
+gcloud storage rm "gs://localpdf-pro-rendertron-cache/cache/**" --recursive --project localpdf-rendertron
+
+# 2. Warm all URLs with fresh canonical tags
+node cache-warmer-gcs.cjs all
+
+# 3. Wait 1 hour for Vercel Edge Cache to expire (TTL: 3600s)
+
+# 4. Verify fix
+curl -A "Googlebot" https://localpdf.online/merge-pdf | grep canonical
+```
+
+### Expected Results (2-4 weeks)
+
+- ✅ Google will see correct canonical tags (one per page)
+- ✅ Google will index tool pages as unique content
+- ✅ Indexation: 61 → 100+ pages
+- ✅ Impressions: 3/day → 100+/day
+- ✅ Organic traffic: +25-40%
+
+### Prevention - DO NOT:
+
+1. ❌ Add static `<link rel="canonical">` to index.html
+2. ❌ Use JavaScript to create canonical tags before React loads
+3. ❌ Modify React Helmet canonical logic without testing with Rendertron
+4. ❌ Deploy without clearing GCS cache after canonical changes
+
+### If Canonical Issues Return:
+
+**Quick diagnostic:**
+```bash
+# Test what bots see
+curl -A "Googlebot" https://localpdf.online/merge-pdf | grep -o '<link[^>]*canonical[^>]*>'
+
+# Should show EXACTLY ONE tag:
+# <link rel="canonical" href="https://localpdf.online/merge-pdf" data-rh="true">
+
+# If multiple tags appear:
+# 1. Check index.html has no static canonical
+# 2. Clear GCS cache
+# 3. Check React Helmet in SEOHead.tsx
+```
+
+**Monitoring:**
+- Daily: `./check-bot-cache.sh`
+- Weekly: Test 5-10 random URLs with curl -A "Googlebot"
+- Monthly: Review Google Search Console Coverage Report
