@@ -249,7 +249,10 @@ function shouldPrerender(request) {
   const isBlogPost = /^\/blog\/[a-zA-Z0-9-]+$/.test(pathWithoutLang);
   const isBlogCategory = /^\/blog\/category\/[a-zA-Z0-9-]+$/.test(pathWithoutLang);
 
-  return isValidRoute || isBlogPost || isBlogCategory;
+  // Handle blog query parameters: /blog?tag=workflows, /blog?category=tutorials, /blog?search=pdf
+  const isBlogWithQuery = pathWithoutLang === '/blog' && (url.searchParams.has('tag') || url.searchParams.has('category') || url.searchParams.has('search'));
+
+  return isValidRoute || isBlogPost || isBlogCategory || isBlogWithQuery;
 }
 
 /**
