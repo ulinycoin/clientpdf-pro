@@ -17,9 +17,10 @@ const HomePage: React.FC = () => {
   const { currentLanguage } = useI18n();
 
   // Generate canonical URL based on language
+  // Remove trailing slash to match query parameter URLs and prevent duplicate content
   const canonicalUrl = currentLanguage === 'en'
-    ? 'https://localpdf.online/'
-    : `https://localpdf.online/${currentLanguage}/`;
+    ? 'https://localpdf.online'
+    : `https://localpdf.online/${currentLanguage}`;
 
   return (
     <>
