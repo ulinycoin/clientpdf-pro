@@ -46,8 +46,13 @@
     <!-- Early canonical setup for SSR/prerendering (will be updated by React Helmet) -->
     <script>
       // Set initial canonical URL before React loads (for Rendertron/prerendering)
-      // React Helmet will replace this with the correct page-specific canonical
+      // Only runs if no canonical exists yet (avoids duplicate with React Helmet)
       (function() {
+        // Skip if canonical already exists (from SSR/prerendering)
+        if (document.querySelector('link[rel="canonical"]')) {
+          return;
+        }
+
         const path = window.location.pathname;
         const canonical = document.createElement('link');
         canonical.rel = 'canonical';
