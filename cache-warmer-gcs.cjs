@@ -53,7 +53,20 @@ const CONFIG = {
     name: 'Blog Posts & Other Pages',
     frequency_days: 7, // Раз в неделю
     paths: [
-      '/blog', '/privacy', '/faq', '/terms', '/gdpr', '/how-to-use'
+      '/blog',
+      // Top 10 Featured Blog Posts (80% SEO traffic)
+      '/blog/complete-guide-pdf-merging-2025',
+      '/blog/how-to-add-text-to-pdf',
+      '/blog/how-to-convert-image-to-pdf',
+      '/blog/how-to-split-pdf-files',
+      '/blog/pdf-compression-guide',
+      '/blog/protect-pdf-guide',
+      '/blog/how-to-convert-pdf-to-image',
+      '/blog/how-to-extract-text-from-pdf',
+      '/blog/how-to-convert-word-to-pdf',
+      '/blog/how-to-extract-images-from-pdf',
+      // Static pages
+      '/privacy', '/faq', '/terms', '/gdpr', '/how-to-use'
     ],
     languages: ['en', 'ru', 'de', 'fr', 'es']
   }

@@ -112,7 +112,8 @@ function generateSitemap() {
       if (lang === defaultLanguage) {
         href = primaryLoc;
       } else {
-        href = route.path === '/' ? `${baseUrl}/${lang}/` : `${baseUrl}/${lang}${route.path}`;
+        // Remove trailing slash for language root pages to match actual routing
+        href = route.path === '/' ? `${baseUrl}/${lang}` : `${baseUrl}/${lang}${route.path}`;
       }
       return `    <xhtml:link rel="alternate" hreflang="${lang}" href="${href}"/>`;
     }).join('\n');
