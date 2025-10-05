@@ -1,0 +1,18 @@
+# Priority URLs for Google Indexing API
+# "Просканирована, но не проиндексирована" - 10 страниц из GSC
+
+# Valid pages - need priority boost
+https://localpdf.online/ru/extract-pages-pdf
+https://localpdf.online/excel-to-pdf
+https://localpdf.online/extract-text-pdf
+https://localpdf.online/es/extract-pages-pdf
+https://localpdf.online/how-to-use
+
+# Redirects - fixed in sitemap.xml (will auto-resolve)
+# https://localpdf.online/compress-pdf/ -> /compress-pdf
+# https://localpdf.online/merge-pdf/ -> /merge-pdf
+
+# Query params - Google doesn't index (ignore)
+# https://localpdf.online/blog/?tag=workflows
+# https://localpdf.online/blog?tag=tips
+# https://localpdf.online/blog?tag=conversion
