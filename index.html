@@ -43,6 +43,19 @@
 
     <!-- SEO -->
     <!-- Canonical tag is dynamically managed by React Helmet for each page -->
+    <!-- Early canonical setup for SSR/prerendering (will be updated by React Helmet) -->
+    <script>
+      // Set initial canonical URL before React loads (for Rendertron/prerendering)
+      // React Helmet will replace this with the correct page-specific canonical
+      (function() {
+        const path = window.location.pathname;
+        const canonical = document.createElement('link');
+        canonical.rel = 'canonical';
+        canonical.href = 'https://localpdf.online' + (path === '/' ? '' : path.replace(/\/$/, ''));
+        canonical.setAttribute('data-early-canonical', 'true');
+        document.head.appendChild(canonical);
+      })();
+    </script>
     <meta name="robots" content="index, follow" />
 
     <!-- Google Search Console verification -->
