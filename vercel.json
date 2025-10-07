@@ -20,6 +20,42 @@
   ],
   "redirects": [
     {
+      "source": "/wordpress/:path*",
+      "destination": "/404",
+      "permanent": false,
+      "statusCode": 404
+    },
+    {
+      "source": "/wp-admin/:path*",
+      "destination": "/404",
+      "permanent": false,
+      "statusCode": 404
+    },
+    {
+      "source": "/wp-:path*",
+      "destination": "/404",
+      "permanent": false,
+      "statusCode": 404
+    },
+    {
+      "source": "/:path*.(php|asp|aspx|jsp|cgi)",
+      "destination": "/404",
+      "permanent": false,
+      "statusCode": 404
+    },
+    {
+      "source": "/admin/:path*",
+      "destination": "/404",
+      "permanent": false,
+      "statusCode": 404
+    },
+    {
+      "source": "/.env",
+      "destination": "/404",
+      "permanent": false,
+      "statusCode": 404
+    },
+    {
       "source": "/(de|fr|es|ru)$",
       "destination": "/$1/",
       "permanent": true
