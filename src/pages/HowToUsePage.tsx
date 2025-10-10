@@ -1,6 +1,6 @@
 import React from 'react';
-import Header from '../components/organisms/Header';
-import Footer from '../components/organisms/Footer';
+import ModernHeader from '../components/organisms/ModernHeader';
+import ModernFooter from '../components/organisms/ModernFooter';
 import { Helmet } from 'react-helmet-async';
 
 const HowToUsePage: React.FC = () => {
@@ -80,7 +80,7 @@ const HowToUsePage: React.FC = () => {
       </Helmet>
 
       <div className="min-h-screen bg-gray-50 flex flex-col">
-        <Header />
+        <ModernHeader />
 
         <main className="flex-grow max-w-5xl mx-auto px-4 py-16">
           <div className="bg-white rounded-lg shadow-lg p-8">
@@ -449,7 +449,7 @@ const HowToUsePage: React.FC = () => {
           </div>
         </main>
 
-        <Footer />
+        <ModernFooter />
       </div>
     </>
   );

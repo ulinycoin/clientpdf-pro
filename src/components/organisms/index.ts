@@ -1,10 +1,4 @@
-// Core layout components
-export { default as Header } from './Header';
-export { default as Footer } from './Footer';
-export { default as ToolsGrid } from './ToolsGrid';
-export { default as ToolCard } from './ToolCard';
-
-// Modern layout components
+// Modern layout components (primary - using these instead of old Header/Footer)
 export { default as ModernHeader } from './ModernHeader';
 export { default as ModernFooter } from './ModernFooter';
 export { default as ModernToolsGrid } from './ModernToolsGrid';
@@ -38,6 +32,9 @@ export { default as ModernWordToPDFTool } from './ModernWordToPDFTool';
 
 // Modular AddTextTool - now correctly points to the modular version
 export { default as AddTextTool } from './AddTextTool';
+
+// Edit PDF Tool
+export { EditPDFTool } from './EditPDFTool';
 
 // Shared components
 export { ToolContainer } from '../shared';

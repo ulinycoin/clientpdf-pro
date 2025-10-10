@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { Chrome } from 'lucide-react';
 import { useTranslation, useI18n } from '../../hooks/useI18n';
 import { useMotionPreferences } from '../../hooks/useAccessibilityPreferences';
 import LanguageSwitcher from '../molecules/LanguageSwitcher';
@@ -122,6 +123,23 @@ const ModernHeader: React.FC<ModernHeaderProps> = ({
 
             {/* Controls */}
             <div className="flex items-center gap-4">
+              {/* Browser Extension Button */}
+              <a
+                href="https://chromewebstore.google.com/detail/localpdf/mjidkeobnlijdjmioniboflmoelmckfl"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative"
+                aria-label={t('header.navigation.browserExtension')}
+              >
+                <div className="absolute -inset-1 bg-gradient-to-r from-ocean-400/30 to-seafoam-400/30 rounded-xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="relative flex items-center gap-2 px-3 py-2 bg-white/80 dark:bg-privacy-800/80 backdrop-blur-sm border border-privacy-200 dark:border-privacy-700 rounded-xl hover:bg-white dark:hover:bg-privacy-800 transition-all duration-200">
+                  <Chrome className="w-4 h-4 text-ocean-600 dark:text-ocean-400" />
+                  <span className="hidden xl:inline text-sm font-medium text-privacy-700 dark:text-privacy-300">
+                    {t('header.navigation.browserExtension')}
+                  </span>
+                </div>
+              </a>
+
               <DarkModeToggle variant="icon-only" />
               <LanguageSwitcher variant="compact" />
             </div>
@@ -179,7 +197,19 @@ const ModernHeader: React.FC<ModernHeaderProps> = ({
               </svg>
 {t('header.navigation.faq')}
             </Link>
-            
+
+            {/* Browser Extension Link */}
+            <a
+              href="https://chromewebstore.google.com/detail/localpdf/mjidkeobnlijdjmioniboflmoelmckfl"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 px-4 py-3 text-privacy-700 dark:text-privacy-300 hover:text-ocean-600 dark:hover:text-ocean-400 hover:bg-white/50 dark:hover:bg-privacy-800/50 rounded-xl transition-all duration-200 font-medium"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <Chrome className="w-5 h-5" />
+              {t('header.navigation.browserExtension')}
+            </a>
+
 
             {/* Mobile Controls */}
             <div className="px-4 pt-4 border-t border-privacy-200/30 dark:border-privacy-700/30 space-y-4">

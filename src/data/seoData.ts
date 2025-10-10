@@ -77,7 +77,8 @@ const TOOL_IDS = [
   'word-to-pdf',
   'excel-to-pdf',
   'protect-pdf',
-  'ocr-pdf'
+  'ocr-pdf',
+  'edit-pdf'
 ] as const;
 
 // Translation key mapping
@@ -98,7 +99,8 @@ const TOOL_TRANSLATION_KEYS = {
   'word-to-pdf': 'wordToPdf',
   'excel-to-pdf': 'excelToPdf',
   'protect-pdf': 'protect',
-  'ocr-pdf': 'ocr'
+  'ocr-pdf': 'ocr',
+  'edit-pdf': 'edit'
 } as const;
 
 // Language-specific keywords for each tool category
@@ -119,7 +121,8 @@ const KEYWORDS_BY_CATEGORY = {
     wordToPdf: ['word to pdf', 'docx to pdf', 'convert word pdf', 'document converter', 'doc to pdf'],
     excelToPdf: ['excel to pdf', 'xlsx to pdf', 'convert excel pdf', 'spreadsheet to pdf', 'xls to pdf'],
     protect: ['password protect pdf', 'secure pdf', 'pdf encryption', 'protect pdf documents', 'pdf security'],
-    ocr: ['ocr pdf', 'text recognition', 'extract text pdf', 'pdf ocr', 'image to text', 'scan to text']
+    ocr: ['ocr pdf', 'text recognition', 'extract text pdf', 'pdf ocr', 'image to text', 'scan to text'],
+    edit: ['edit pdf', 'pdf editor', 'modify pdf', 'pdf editing tool', 'annotate pdf', 'organize pdf pages', 'pdf annotation']
   },
   de: {
     merge: ['pdf zusammenfügen', 'pdf verbinden', 'pdf dateien kombinieren', 'pdf merger', 'pdfs zusammenführen'],
@@ -137,7 +140,8 @@ const KEYWORDS_BY_CATEGORY = {
     wordToPdf: ['word zu pdf', 'docx zu pdf', 'word in pdf umwandeln', 'dokument konverter', 'doc zu pdf'],
     excelToPdf: ['excel zu pdf', 'xlsx zu pdf', 'excel in pdf umwandeln', 'tabelle zu pdf', 'xls zu pdf'],
     protect: ['pdf passwort schützen', 'pdf sichern', 'pdf verschlüsselung', 'pdf dokumente schützen', 'pdf sicherheit'],
-    ocr: ['ocr pdf', 'texterkennung', 'text aus pdf extrahieren', 'pdf ocr', 'bild zu text', 'scan zu text']
+    ocr: ['ocr pdf', 'texterkennung', 'text aus pdf extrahieren', 'pdf ocr', 'bild zu text', 'scan zu text'],
+    edit: ['pdf bearbeiten', 'pdf editor', 'pdf ändern', 'pdf bearbeitungstool', 'pdf annotieren', 'pdf seiten organisieren']
   },
   fr: {
     merge: ['fusionner pdf', 'combiner pdf', 'joindre pdf', 'fusionner documents pdf', 'merger pdf'],
@@ -155,7 +159,8 @@ const KEYWORDS_BY_CATEGORY = {
     wordToPdf: ['word vers pdf', 'docx vers pdf', 'convertir word pdf', 'convertisseur document', 'doc vers pdf'],
     excelToPdf: ['excel vers pdf', 'xlsx vers pdf', 'convertir excel pdf', 'tableau vers pdf', 'xls vers pdf'],
     protect: ['protéger pdf mot de passe', 'sécuriser pdf', 'chiffrement pdf', 'protéger documents pdf', 'sécurité pdf'],
-    ocr: ['ocr pdf', 'reconnaissance texte', 'extraire texte pdf', 'pdf ocr', 'image vers texte', 'scan vers texte']
+    ocr: ['ocr pdf', 'reconnaissance texte', 'extraire texte pdf', 'pdf ocr', 'image vers texte', 'scan vers texte'],
+    edit: ['éditer pdf', 'éditeur pdf', 'modifier pdf', 'outil édition pdf', 'annoter pdf', 'organiser pages pdf']
   },
   es: {
     merge: ['combinar pdf', 'unir pdf', 'fusionar pdf', 'juntar archivos pdf', 'merger pdf'],
@@ -173,7 +178,8 @@ const KEYWORDS_BY_CATEGORY = {
     wordToPdf: ['word a pdf', 'docx a pdf', 'convertir word pdf', 'convertidor documento', 'doc a pdf'],
     excelToPdf: ['excel a pdf', 'xlsx a pdf', 'convertir excel pdf', 'hoja cálculo pdf', 'xls a pdf'],
     protect: ['proteger pdf contraseña', 'asegurar pdf', 'cifrado pdf', 'proteger documentos pdf', 'seguridad pdf'],
-    ocr: ['ocr pdf', 'reconocimiento texto', 'extraer texto pdf', 'pdf ocr', 'imagen a texto', 'escanear a texto']
+    ocr: ['ocr pdf', 'reconocimiento texto', 'extraer texto pdf', 'pdf ocr', 'imagen a texto', 'escanear a texto'],
+    edit: ['editar pdf', 'editor pdf', 'modificar pdf', 'herramienta edición pdf', 'anotar pdf', 'organizar páginas pdf']
   },
   ru: {
     merge: ['объединить пдф', 'соединить pdf', 'склеить pdf', 'объединение pdf файлов', 'слияние pdf'],
@@ -191,7 +197,8 @@ const KEYWORDS_BY_CATEGORY = {
     wordToPdf: ['ворд в пдф', 'docx в pdf', 'конвертировать word в pdf', 'конвертер документов', 'doc в pdf'],
     excelToPdf: ['эксель в пдф', 'xlsx в pdf', 'конвертировать excel в pdf', 'таблица в pdf', 'xls в pdf'],
     protect: ['защитить пдф паролем', 'безопасность pdf', 'шифрование pdf', 'защита документов pdf', 'безопасность pdf'],
-    ocr: ['распознавание текста пдф', 'ocr pdf', 'извлечь текст', 'pdf ocr', 'картинка в текст', 'сканирование в текст']
+    ocr: ['распознавание текста пдф', 'ocr pdf', 'извлечь текст', 'pdf ocr', 'картинка в текст', 'сканирование в текст'],
+    edit: ['редактировать пдф', 'редактор pdf', 'изменить pdf', 'инструмент редактирования pdf', 'аннотация pdf', 'организация страниц pdf']
   }
 };
 
@@ -266,12 +273,12 @@ function generateToolSEOData(toolId: string, language: SupportedLanguage): SEODa
     const translations = getTranslations(language);
     const translationKey = TOOL_TRANSLATION_KEYS[toolId as keyof typeof TOOL_TRANSLATION_KEYS];
 
-    if (!translationKey || !translations.pages?.tools?.[translationKey]) {
+    if (!translationKey || !translations.tools?.[translationKey]) {
       // Fallback to basic data if translations not available
       return generateFallbackSEOData(toolId, language);
     }
 
-    const toolTranslations = translations.pages.tools[translationKey];
+    const toolTranslations = translations.tools[translationKey];
     const categoryKeywords = KEYWORDS_BY_CATEGORY[language]?.[translationKey] || [];
     const baseFeatures = FEATURE_LISTS[language].base;
 

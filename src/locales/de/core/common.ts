@@ -62,7 +62,8 @@ export const header = {
     docs: 'Docs',
     privacy: 'Datenschutz',
     faq: 'FAQ',
-    github: 'GitHub'
+    github: 'GitHub',
+    browserExtension: 'Browser-Erweiterung'
   },
   badges: {
     tools: 'PDF Tools',
@@ -101,7 +102,8 @@ export const footer = {
     privacy: 'Datenschutz',
     terms: 'AGB',
     faq: 'FAQ',
-    github: 'GitHub'
+    github: 'GitHub',
+    browserExtension: 'Erweiterung'
   },
   copyright: '© {year} LocalPDF. Open Source Projekt.',
   builtWith: 'Erstellt mit',

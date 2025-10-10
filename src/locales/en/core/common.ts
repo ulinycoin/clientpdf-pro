@@ -17,6 +17,9 @@ export const common = {
   cancel: 'Cancel',
   close: 'Close',
   save: 'Save',
+  saveDownload: 'Save & Download',
+  undo: 'Undo',
+  redo: 'Redo',
   delete: 'Delete',
   clear: 'Clear',
   preview: 'Preview',
@@ -62,7 +65,8 @@ export const header = {
     docs: 'Docs',
     privacy: 'Privacy',
     faq: 'FAQ',
-    github: 'GitHub'
+    github: 'GitHub',
+    browserExtension: 'Browser Extension'
   },
   badges: {
     tools: 'PDF Tools',
@@ -100,7 +104,8 @@ export const footer = {
   links: {
     privacy: 'Privacy Policy',
     terms: 'Terms of Service',
-    faq: 'FAQ'
+    faq: 'FAQ',
+    browserExtension: 'Browser Extension'
   },
   copyright: '� {year} LocalPDF. All rights reserved.',
   builtWith: 'Built with',

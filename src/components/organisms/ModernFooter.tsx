@@ -50,6 +50,7 @@ const ModernFooter: React.FC = () => {
       title: t('footer.sections.developers.title'),
       links: [
         { name: 'GitHub', href: 'https://github.com/ulinycoin/clientpdf-pro', internal: false },
+        { name: t('footer.links.browserExtension'), href: 'https://chromewebstore.google.com/detail/localpdf/mjidkeobnlijdjmioniboflmoelmckfl', internal: false },
         { name: t('footer.sections.developers.apiDocs'), href: 'https://github.com/ulinycoin/clientpdf-pro#api', internal: false },
         { name: t('footer.sections.developers.contribute'), href: 'https://github.com/ulinycoin/clientpdf-pro/contributing', internal: false },
         { name: 'GDPR', href: getLocalizedPath('/gdpr'), internal: true }
