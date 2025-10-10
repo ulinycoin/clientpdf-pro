@@ -106,7 +106,6 @@ temp/
 *.local
 # Generated documentation
 LocalPDF-Documentation.md
-localpdf-docs.json
 
 # Cache warmer artifacts
 cache-warmer*.log
@@ -152,7 +151,6 @@ deploy-scheduled-rendering.sh
 diagnose-seo-issues.sh
 generate-context7-docs.sh
 generate-docs.js
-localpdf-docs.json
 monitor-bot-activity.sh
 monitor-rendertron.sh
 prepare-for-claude-code.sh

@@ -1,0 +1,348 @@
+{
+  "meta": {
+    "generatedAt": "2025-01-19T20:00:00.000Z",
+    "generator": "LocalPDF Documentation Generator v1.0",
+    "inspired": "Context7 by Upstash",
+    "version": "2.0.0"
+  },
+  "overview": {
+    "name": "localpdf",
+    "version": "2.0.0", 
+    "description": "LocalPDF v2.0 - Ultra-fast, privacy-first PDF tools with full multilingual support (5 languages) that work entirely in your browser",
+    "homepage": "https://localpdf.online",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/ulinycoin/clientpdf-pro.git"
+    },
+    "keywords": ["pdf", "privacy", "local", "browser", "multilingual", "i18n", "merge", "split", "compress", "watermark", "text", "convert", "free", "tools", "online", "secure", "german", "french", "spanish", "russian", "glassmorphism", "template"]
+  },
+  "libraries": [
+    {
+      "name": "pdf-lib",
+      "version": "^1.17.1",
+      "description": "Core PDF manipulation library",
+      "usage": {
+        "purpose": "PDF document creation, manipulation, merging, splitting",
+        "files": ["src/services/pdfService.ts"],
+        "features": ["Merge PDFs", "Split PDFs", "Add text", "Watermarks", "Password protection"]
+      }
+    },
+    {
+      "name": "pdfjs-dist",
+      "version": "^3.11.174", 
+      "description": "PDF.js for rendering and text extraction",
+      "usage": {
+        "purpose": "PDF rendering, text extraction, image extraction",
+        "files": ["src/workers/", "src/services/"],
+        "features": ["PDF to Image conversion", "Text extraction", "Page rendering"]
+      }
+    },
+    {
+      "name": "tesseract.js",
+      "version": "^5.1.1",
+      "description": "OCR functionality for PDF text recognition", 
+      "usage": {
+        "purpose": "OCR functionality for scanned PDFs",
+        "files": ["src/pages/tools/OCRPDFPage.tsx"],
+        "features": ["Text recognition from images", "Multiple language support"]
+      }
+    },
+    {
+      "name": "react",
+      "version": "^18.2.0",
+      "description": "UI framework",
+      "usage": {
+        "purpose": "UI framework for all components",
+        "files": ["src/components/", "src/pages/"],
+        "features": ["Component architecture", "State management", "Multilingual UI"]
+      }
+    }
+  ],
+  "tools": [
+    {
+      "name": "Merge PDF",
+      "slug": "merge-pdf",
+      "description": "Combine multiple PDF files into one document", 
+      "multilingual": true,
+      "techStack": ["pdf-lib"],
+      "file": "MergePDFPage.tsx",
+      "path": "src/pages/tools/MergePDFPage.tsx"
+    },
+    {
+      "name": "Split PDF", 
+      "slug": "split-pdf",
+      "description": "Split PDF into separate pages or ranges",
+      "multilingual": true,
+      "techStack": ["pdf-lib"],
+      "file": "SplitPDFPage.tsx",
+      "path": "src/pages/tools/SplitPDFPage.tsx"
+    },
+    {
+      "name": "Compress PDF",
+      "slug": "compress-pdf",
+      "description": "Reduce PDF file size while maintaining quality",
+      "multilingual": true,
+      "techStack": ["pdf-lib"],
+      "file": "CompressPDFPage.tsx", 
+      "path": "src/pages/tools/CompressPDFPage.tsx"
+    },
+    {
+      "name": "Add Text PDF",
+      "slug": "add-text-pdf",
+      "description": "Add custom text overlays to PDF pages",
+      "multilingual": true,
+      "techStack": ["pdf-lib"],
+      "file": "AddTextPDFPage.tsx",
+      "path": "src/pages/tools/AddTextPDFPage.tsx"
+    },
+    {
+      "name": "Watermark PDF",
+      "slug": "watermark-pdf",
+      "description": "Add watermarks for document protection",
+      "multilingual": true,
+      "techStack": ["pdf-lib"],
+      "file": "WatermarkPDFPage.tsx", 
+      "path": "src/pages/tools/WatermarkPDFPage.tsx"
+    },
+    {
+      "name": "Rotate PDF",
+      "slug": "rotate-pdf",
+      "description": "Rotate PDF pages in any direction", 
+      "multilingual": true,
+      "techStack": ["pdf-lib"],
+      "file": "RotatePDFPage.tsx",
+      "path": "src/pages/tools/RotatePDFPage.tsx"
+    },
+    {
+      "name": "Extract Pages PDF",
+      "slug": "extract-pages-pdf",
+      "description": "Extract specific pages from PDF",
+      "multilingual": true,
+      "techStack": ["pdf-lib"],
+      "file": "ExtractPagesPDFPage.tsx",
+      "path": "src/pages/tools/ExtractPagesPDFPage.tsx"
+    },
+    {
+      "name": "Extract Text PDF", 
+      "slug": "extract-text-pdf",
+      "description": "Extract text content from PDF files",
+      "multilingual": true,
+      "techStack": ["pdfjs-dist"],
+      "file": "ExtractTextPDFPage.tsx",
+      "path": "src/pages/tools/ExtractTextPDFPage.tsx"
+    },
+    {
+      "name": "OCR PDF",
+      "slug": "ocr-pdf", 
+      "description": "Optical Character Recognition for scanned PDFs",
+      "multilingual": true,
+      "techStack": ["tesseract.js"],
+      "file": "OCRPDFPage.tsx",
+      "path": "src/pages/tools/OCRPDFPage.tsx"
+    },
+    {
+      "name": "PDF to Image",
+      "slug": "pdf-to-image", 
+      "description": "Convert PDF pages to image files",
+      "multilingual": true,
+      "techStack": ["pdfjs-dist"],
+      "file": "PDFToImagePage.tsx",
+      "path": "src/pages/tools/PDFToImagePage.tsx"
+    },
+    {
+      "name": "Images to PDF",
+      "slug": "images-to-pdf",
+      "description": "Create PDF from multiple images",
+      "multilingual": true,
+      "techStack": ["jspdf"],
+      "file": "ImageToPDFPage.tsx",
+      "path": "src/pages/tools/ImageToPDFPage.tsx"
+    },
+    {
+      "name": "Word to PDF",
+      "slug": "word-to-pdf",
+      "description": "Convert Word documents to PDF format",
+      "multilingual": true,
+      "techStack": ["mammoth", "jspdf"],
+      "file": "WordToPDFPage.tsx",
+      "path": "src/pages/tools/WordToPDFPage.tsx"
+    },
+    {
+      "name": "Excel to PDF", 
+      "slug": "excel-to-pdf",
+      "description": "Convert Excel spreadsheets to PDF",
+      "multilingual": true,
+      "techStack": ["xlsx", "jspdf"],
+      "file": "ExcelToPDFPage.tsx",
+      "path": "src/pages/tools/ExcelToPDFPage.tsx"
+    },
+    {
+      "name": "PDF to SVG",
+      "slug": "pdf-to-svg",
+      "description": "Convert PDF to vector SVG format",
+      "multilingual": true,
+      "techStack": ["pdfjs-dist"],
+      "file": "PDFToSvgPage.tsx",
+      "path": "src/pages/tools/PDFToSvgPage.tsx"
+    },
+    {
+      "name": "Extract Images From PDF",
+      "slug": "extract-images-from-pdf", 
+      "description": "Extract embedded images from PDF",
+      "multilingual": true,
+      "techStack": ["pdfjs-dist"],
+      "file": "ExtractImagesFromPDFPage.tsx",
+      "path": "src/pages/tools/ExtractImagesFromPDFPage.tsx"
+    },
+    {
+      "name": "Protect PDF",
+      "slug": "protect-pdf",
+      "description": "Add password protection to PDF files", 
+      "multilingual": true,
+      "techStack": ["pdf-lib-plus-encrypt"],
+      "file": "ProtectPDFPage.tsx",
+      "path": "src/pages/tools/ProtectPDFPage.tsx"
+    }
+  ],
+  "multilingual": {
+    "supportedLanguages": ["en", "de", "fr", "es", "ru"],
+    "defaultLanguage": "en",
+    "totalTranslations": 80,
+    "totalTools": 16,
+    "structure": [
+      {
+        "code": "en",
+        "name": "English",
+        "toolsTranslated": 16,
+        "exampleUrl": "https://localpdf.online/"
+      },
+      {
+        "code": "de", 
+        "name": "Deutsch (German)",
+        "toolsTranslated": 16,
+        "exampleUrl": "https://localpdf.online/de/"
+      },
+      {
+        "code": "fr",
+        "name": "Français (French)",
+        "toolsTranslated": 16,
+        "exampleUrl": "https://localpdf.online/fr/"
+      },
+      {
+        "code": "es",
+        "name": "Español (Spanish)",
+        "toolsTranslated": 16,
+        "exampleUrl": "https://localpdf.online/es/"
+      },
+      {
+        "code": "ru",
+        "name": "Русский (Russian)", 
+        "toolsTranslated": 16,
+        "exampleUrl": "https://localpdf.online/ru/"
+      }
+    ]
+  },
+  "components": [
+    {
+      "category": "atoms",
+      "description": "Basic UI elements (buttons, inputs, icons)",
+      "components": ["Button", "Input", "Icon", "Badge"]
+    },
+    {
+      "category": "molecules", 
+      "description": "Simple combinations of atoms (upload zones, file lists)",
+      "components": ["ModernUploadZone", "FileList", "ProgressBar", "SmartMergeRecommendations"]
+    },
+    {
+      "category": "organisms",
+      "description": "Complex UI sections (PDF tools, navigation)",
+      "components": ["ModernMergeTool", "Navigation", "RelatedToolsSection"] 
+    },
+    {
+      "category": "templates",
+      "description": "Page layouts and structures", 
+      "components": ["StandardToolPageTemplate", "BlogTemplate"]
+    }
+  ],
+  "aiOptimization": {
+    "crawlerStats": {
+      "chatGPT": "68.99%",
+      "yandex": "16.93%", 
+      "google": "3.49%",
+      "apple": "3.36%",
+      "others": "7.23%"
+    },
+    "features": [
+      "Structured data for better AI understanding",
+      "Clear component hierarchy", 
+      "Semantic HTML and accessibility",
+      "Privacy-first messaging that resonates with AI systems",
+      "Component documentation with clear naming conventions"
+    ],
+    "totalIndexedPages": 774,
+    "indexingSuccess": "100% success rate",
+    "aiTrafficDominant": true
+  },
+  "performance": {
+    "buildSystem": "Vite 4.5.0 (ESM-first)",
+    "loadTime": "3.1s average",
+    "processing": "Client-side only",
+    "privacy": "100% local processing",
+    "deployment": "Vercel with SSG",
+    "browserSupport": ["Chrome", "Firefox", "Safari", "Edge"],
+    "bundleOptimization": "Code splitting enabled",
+    "renderPages": 629
+  },
+  "analytics": {
+    "platform": "Prerender.io + Google Analytics + Vercel Analytics",
+    "crawlerActivity": {
+      "totalCrawled": 774,
+      "thisWeek": 629,
+      "errorRate": "0%",
+      "cacheHitRatio": "N/A"
+    },
+    "trafficSources": {
+      "aiCrawlers": "68.99%",
+      "searchEngines": "23.9%",
+      "seoTools": "0.26%",
+      "socialMedia": "0.13%",
+      "others": "6.72%"
+    }
+  },
+  "deployment": {
+    "platform": "Vercel",
+    "buildCommand": "npm run build:full",
+    "environment": {
+      "development": ".env",
+      "production": ".env.production"
+    },
+    "features": [
+      "Automated sitemap generation",
+      "Multilingual prerendering",
+      "IndexNow submission",
+      "Performance monitoring"
+    ]
+  },
+  "keyDifferentiators": [
+    {
+      "name": "Complete Privacy",
+      "description": "No server uploads, client-side processing only, GDPR compliant"
+    },
+    {
+      "name": "AI-Optimized",
+      "description": "69% AI crawler traffic, structured data implementation, ChatGPT-friendly content"
+    },
+    {
+      "name": "Multilingual Excellence", 
+      "description": "5 languages, 16 tools, 80 total translations, localized routing"
+    },
+    {
+      "name": "Modern Architecture",
+      "description": "React 18 + TypeScript, glassmorphism design, atomic component structure"
+    },
+    {
+      "name": "Production Ready",
+      "description": "Comprehensive testing, automated deployment, performance monitoring"
+    }
+  ]
+}
