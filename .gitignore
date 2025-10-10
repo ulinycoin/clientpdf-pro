@@ -109,30 +109,68 @@ LocalPDF-Documentation.md
 localpdf-docs.json
 
 # Cache warmer artifacts
-cache-warmer-*.log
-cache-warmer-results-*.json
+cache-warmer*.log
+cache-warmer*.json
+*.log
 
-# Service and documentation files (keep local, ignore from git)
+# Local archive (backup of removed files)
+.local-archive/
+
+# Internal documentation files (keep local only)
+AI_IMPLEMENTATION_PLAN.md
 API_AUTOMATION_GUIDE.md
 CACHE_WARMER_GUIDE.md
+CLOUD_RUN_DEPLOYMENT.md
 DEPLOYMENT_SUMMARY.md
+EDIT_PDF_PROGRESS.md
+EDIT_PDF_TECHNICAL_SPECIFICATION.md
 FINAL_SUMMARY.md
+GOOGLE_SEARCH_CONSOLE_REPORT.md
+GSC_*.md
 MANUAL_SETUP_GUIDE.md
+OCR_AI_TASK.md
 PRERENDER_DASHBOARD_SETUP.md
+RAILWAY_DEPLOYMENT.md
+RENDERTRON_CLOUD_RUN_MIGRATION.md
+RENDERTRON_MONITORING.md
 SCHEDULED_RENDERING_IMPLEMENTATION.md
+SEO_FIXES_*.md
+SEO_REPORT_*.md
 UPLOAD_ZONE_MIGRATION_PLAN.md
 LocalPDF-Documentation.md
+reddit-post-*.md
 
 # Temporary service files
 COMMIT_MESSAGE.txt
 claude_code_smart_analysis_task.md
-prepare-for-claude-code.sh
+
+# Development and monitoring scripts (keep local)
+# Note: Exceptions below are for GitHub Actions and public utilities
+cache-warmer.cjs
+check-sitemap-urls.py
+deploy-scheduled-rendering.sh
+diagnose-seo-issues.sh
 generate-context7-docs.sh
 generate-docs.js
-
-# Deployment and monitoring scripts (keep local)
-deploy-scheduled-rendering.sh
+localpdf-docs.json
+monitor-bot-activity.sh
+monitor-rendertron.sh
+prepare-for-claude-code.sh
 test-scheduled-rendering.sh
-cache-warmer.cjs
-prerender-api-manager.cjs
-prerender-monitor.cjs
+warm-gcs-direct.sh
+
+# Deployment configs (internal only)
+railway.json
+Dockerfile.rendertron
+cloudbuild.yaml
+prerender-api-manager.js
+prerender-monitor.js
+.vercel-cache-refresh
+
+# Demo and prototype files
+public/complete-redesign-demo.html
+public/icon-concept-2024.html
+public/integration-complete-demo.html
+public/localpdf-prototype.html
+public/modern-tools-section-demo.html
+public/site-robots.txt
