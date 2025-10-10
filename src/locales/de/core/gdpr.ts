@@ -65,7 +65,11 @@ export const gdpr = {
     },
     contact: {
       title: 'Datenschutzbeauftragter Kontakt',
-      content: 'Für DSGVO-bezogene Fragen oder Anliegen kontaktieren Sie uns bitte:'
+      content: 'Für DSGVO-bezogene Fragen oder Anliegen kontaktieren Sie uns bitte:',
+      company: 'SIA "Ul-coin"',
+      regNumber: 'Reg.Nr. 50203429241',
+      email: 'support@localpdf.online',
+      emailContact: 'contact@localpdf.online'
     }
   }
 };

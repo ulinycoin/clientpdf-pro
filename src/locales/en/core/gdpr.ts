@@ -65,7 +65,11 @@ export const gdpr = {
     },
     contact: {
       title: 'Data Protection Officer Contact',
-      content: 'For any GDPR-related questions or concerns, please contact us:'
+      content: 'For any GDPR-related questions or concerns, please contact us:',
+      company: 'SIA "Ul-coin"',
+      regNumber: 'Reg.Nr. 50203429241',
+      email: 'support@localpdf.online',
+      emailContact: 'contact@localpdf.online'
     }
   }
 };

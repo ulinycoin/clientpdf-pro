@@ -65,7 +65,11 @@ export const gdpr = {
     },
     contact: {
       title: 'Контакт сотрудника по защите данных',
-      content: 'По любым вопросам или проблемам, связанным с GDPR, свяжитесь с нами:'
+      content: 'По любым вопросам или проблемам, связанным с GDPR, свяжитесь с нами:',
+      company: 'SIA "Ul-coin"',
+      regNumber: 'Reg.Nr. 50203429241',
+      email: 'support@localpdf.online',
+      emailContact: 'contact@localpdf.online'
     }
   }
 };

@@ -65,7 +65,11 @@ export const gdpr = {
     },
     contact: {
       title: 'Contacto del Oficial de Protección de Datos',
-      content: 'Para cualquier pregunta o inquietud relacionada con GDPR, por favor contáctenos:'
+      content: 'Para cualquier pregunta o inquietud relacionada con GDPR, por favor contáctenos:',
+      company: 'SIA "Ul-coin"',
+      regNumber: 'Reg.Nr. 50203429241',
+      email: 'support@localpdf.online',
+      emailContact: 'contact@localpdf.online'
     }
   }
 };

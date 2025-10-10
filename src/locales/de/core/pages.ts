@@ -86,6 +86,10 @@ export const pages = {
         },
         contact: {
           title: 'Kontaktinformationen',
+          company: 'SIA "Ul-coin"',
+          regNumber: 'Reg.Nr. 50203429241',
+          email: 'support@localpdf.online',
+          emailContact: 'contact@localpdf.online',
           github: '🐛 Probleme auf GitHub melden',
           discussions: '💬 An GitHub-Diskussionen teilnehmen'
         }
@@ -288,6 +292,10 @@ export const pages = {
       contact: {
         title: 'Kontakt',
         description: 'Fragen zu diesen Bedingungen? Wir helfen gerne.',
+        company: 'SIA "Ul-coin"',
+        regNumber: 'Reg.Nr. 50203429241',
+        email: 'support@localpdf.online',
+        emailContact: 'contact@localpdf.online',
         github: 'Support & Probleme',
         website: 'Website'
       }

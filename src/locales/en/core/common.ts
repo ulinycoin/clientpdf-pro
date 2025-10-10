@@ -108,6 +108,10 @@ export const footer = {
     browserExtension: 'Browser Extension'
   },
   copyright: '� {year} LocalPDF. All rights reserved.',
+  company: 'SIA "Ul-coin"',
+  regNumber: 'Reg.Nr. 50203429241',
+  email: 'support@localpdf.online',
+  emailContact: 'contact@localpdf.online',
   builtWith: 'Built with',
   followProject: 'Follow the project:'
 };

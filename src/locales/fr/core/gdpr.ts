@@ -65,7 +65,11 @@ export const gdpr = {
     },
     contact: {
       title: 'Contact du délégué à la protection des données',
-      content: 'Pour toute question ou préoccupation liée au RGPD, veuillez nous contacter :'
+      content: 'Pour toute question ou préoccupation liée au RGPD, veuillez nous contacter :',
+      company: 'SIA "Ul-coin"',
+      regNumber: 'Reg.Nr. 50203429241',
+      email: 'support@localpdf.online',
+      emailContact: 'contact@localpdf.online'
     }
   }
 };
