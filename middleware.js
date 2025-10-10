@@ -74,7 +74,7 @@ const EXCLUDED_BOTS = [
 // Rendertron configuration (Google Cloud Run deployment)
 // Self-hosted on Google Cloud Run - faster, more reliable than Render.com
 const PRERENDER_IO_CONFIG = {
-  serviceUrl: process.env.PRERENDER_SERVICE_URL || 'https://rendertron-741929692017.us-central1.run.app/render',
+  serviceUrl: process.env.PRERENDER_SERVICE_URL || 'https://rendertron-zvgskjoguq-uc.a.run.app/render',
   token: null, // Rendertron doesn't require authentication token
   timeout: 30000, // 30 seconds timeout (Cloud Run is faster - min-instances=1 keeps it warm)
   enableLogging: process.env.NODE_ENV === 'development'

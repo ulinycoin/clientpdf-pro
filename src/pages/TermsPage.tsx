@@ -266,23 +266,50 @@ const TermsPage: React.FC = () => {
                   <span className="mr-3">📧</span>
                   {t('pages.terms.sections.contact.title')}
                 </h2>
-                <p className="text-blue-700 mb-4">
+                <p className="text-blue-700 mb-6">
                   {t('pages.terms.sections.contact.description')}
                 </p>
+
+                {/* Company Information */}
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+                  <h3 className="font-semibold text-blue-900 mb-3">Company Information</h3>
+                  <div className="space-y-2 text-blue-800">
+                    <p><strong>Company:</strong> {t('pages.terms.sections.contact.company')}</p>
+                    <p><strong>Registration:</strong> {t('pages.terms.sections.contact.regNumber')}</p>
+                    <p><strong>Support Email:</strong>
+                      <a
+                        href={`mailto:${t('pages.terms.sections.contact.email')}`}
+                        className="ml-2 underline hover:text-blue-900 transition-colors"
+                      >
+                        {t('pages.terms.sections.contact.email')}
+                      </a>
+                    </p>
+                    <p><strong>Contact Email:</strong>
+                      <a
+                        href={`mailto:${t('pages.terms.sections.contact.emailContact')}`}
+                        className="ml-2 underline hover:text-blue-900 transition-colors"
+                      >
+                        {t('pages.terms.sections.contact.emailContact')}
+                      </a>
+                    </p>
+                  </div>
+                </div>
+
+                {/* Other Links */}
                 <div className="space-y-2 text-blue-700">
-                  <p><strong>{t('pages.terms.sections.contact.github')}:</strong> 
-                    <a 
-                      href="https://github.com/ulinycoin/clientpdf-pro/issues" 
-                      target="_blank" 
+                  <p><strong>{t('pages.terms.sections.contact.github')}:</strong>
+                    <a
+                      href="https://github.com/ulinycoin/clientpdf-pro/issues"
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="ml-2 underline hover:text-blue-900 transition-colors"
                     >
                       GitHub Issues
                     </a>
                   </p>
-                  <p><strong>{t('pages.terms.sections.contact.website')}:</strong> 
-                    <a 
-                      href="https://localpdf.online" 
+                  <p><strong>{t('pages.terms.sections.contact.website')}:</strong>
+                    <a
+                      href="https://localpdf.online"
                       className="ml-2 underline hover:text-blue-900 transition-colors"
                     >
                       localpdf.online

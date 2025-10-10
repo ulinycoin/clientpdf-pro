@@ -215,21 +215,61 @@ const GDPRPage: React.FC = () => {
                   {t('pages.gdpr.sections.contact.title')}
                 </h2>
                 <div className="bg-teal-50 dark:bg-teal-900/20 border border-teal-200 dark:border-teal-700 p-6 rounded-lg">
-                  <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+                  <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
                     {t('pages.gdpr.sections.contact.content')}
                   </p>
+
+                  {/* Company Information */}
+                  <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-6 mb-6">
+                    <h3 className="font-semibold text-blue-900 dark:text-blue-300 mb-3">Company Information</h3>
+                    <div className="space-y-2 text-blue-800 dark:text-blue-400">
+                      <p><strong>Company:</strong> {t('pages.terms.sections.contact.company')}</p>
+                      <p><strong>Registration:</strong> {t('pages.terms.sections.contact.regNumber')}</p>
+                      <p><strong>Support Email:</strong>
+                        <a
+                          href={`mailto:${t('pages.terms.sections.contact.email')}`}
+                          className="ml-2 underline hover:text-blue-900 dark:hover:text-blue-200 transition-colors"
+                        >
+                          {t('pages.terms.sections.contact.email')}
+                        </a>
+                      </p>
+                      <p><strong>Contact Email:</strong>
+                        <a
+                          href={`mailto:${t('pages.terms.sections.contact.emailContact')}`}
+                          className="ml-2 underline hover:text-blue-900 dark:hover:text-blue-200 transition-colors"
+                        >
+                          {t('pages.terms.sections.contact.emailContact')}
+                        </a>
+                      </p>
+                    </div>
+                  </div>
+
                   <div className="space-y-2 text-gray-600 dark:text-gray-400">
                     <p className="flex items-center">
                       <svg className="w-4 h-4 mr-2 text-teal-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
                       </svg>
-                      Email: localpdfpro@gmail.com
+                      <strong>GitHub:</strong>
+                      <a
+                        href="https://github.com/ulinycoin/clientpdf-pro/issues"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="ml-2 underline hover:text-teal-700 dark:hover:text-teal-300 transition-colors"
+                      >
+                        GitHub Issues
+                      </a>
                     </p>
                     <p className="flex items-center">
                       <svg className="w-4 h-4 mr-2 text-teal-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
                       </svg>
-                      GitHub: https://github.com/ulinycoin/clientpdf-pro
+                      <strong>Website:</strong>
+                      <a
+                        href="https://localpdf.online"
+                        className="ml-2 underline hover:text-teal-700 dark:hover:text-teal-300 transition-colors"
+                      >
+                        localpdf.online
+                      </a>
                     </p>
                   </div>
                 </div>
