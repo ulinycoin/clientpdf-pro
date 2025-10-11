@@ -77,9 +77,9 @@ const ModernHeader: React.FC<ModernHeaderProps> = ({
             )}
             
             <div className="flex flex-col">
-              <h1 className="text-2xl font-bold text-gradient-ocean group-hover:scale-105 transition-transform duration-200">
+              <div className="text-2xl font-bold text-gradient-ocean group-hover:scale-105 transition-transform duration-200">
                 {title}
-              </h1>
+              </div>
               <p className="text-sm text-gray-700 dark:text-privacy-400 font-medium hidden sm:block">
                 {t('header.subtitle')}
               </p>
