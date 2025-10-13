@@ -7,11 +7,22 @@
     <title>LocalPDF - Privacy-First PDF Tools</title>
     <!-- Meta description will be set dynamically by React Helmet for each page -->
 
-    <!-- Preconnect to external domains -->
+    <!-- Preconnect to external domains for faster resource loading -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
     <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+
+    <!-- Optimized Google Fonts loading with font-display: swap for better LCP -->
+    <!-- Loading only critical font (Inter) as preload, others deferred -->
+    <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" /></noscript>
+
+    <!-- Other fonts loaded asynchronously (non-blocking) -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&subset=latin,cyrillic&display=swap" media="print" onload="this.media='all'" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&subset=latin,cyrillic&display=swap" media="print" onload="this.media='all'" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&subset=latin,cyrillic&display=swap" media="print" onload="this.media='all'" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&subset=latin,cyrillic&display=swap" media="print" onload="this.media='all'" />
 
     <!-- SEO: Suggest search engines to crawl important pages -->
     <link rel="prerender" href="https://localpdf.online/merge-pdf" />
@@ -26,6 +37,10 @@
 
     <!-- Theme color -->
     <meta name="theme-color" content="#4ECDC4" />
+
+    <!-- Preload critical CSS for faster rendering (LCP optimization) -->
+    <link rel="preload" as="style" href="/assets/css/index.css" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="/assets/css/index.css" /></noscript>
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />

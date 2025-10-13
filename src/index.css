@@ -1,8 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&subset=latin,cyrillic&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&subset=latin,cyrillic&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&subset=latin,cyrillic&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&subset=latin,cyrillic&display=swap');
+/* Google Fonts are now loaded asynchronously via index.html for better LCP performance */
+/* Critical font (Inter) is preloaded, others load in background */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
