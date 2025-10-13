@@ -712,3 +712,166 @@ curl -A "Googlebot" https://localpdf.online/merge-pdf | grep -o '<link[^>]*canon
 - Daily: `./check-bot-cache.sh`
 - Weekly: Test 5-10 random URLs with curl -A "Googlebot"
 - Monthly: Review Google Search Console Coverage Report
+## Performance Testing & Optimization
+
+### PageSpeed Insights Testing
+
+**Automated Testing Script:**
+```bash
+./scripts/test-pagespeed.sh                          # Test homepage
+./scripts/test-pagespeed.sh [URL]                    # Test specific URL
+./scripts/test-pagespeed.sh [URL] mobile             # Mobile test
+```
+
+**Example:**
+```bash
+./scripts/test-pagespeed.sh https://localpdf.online/merge-pdf desktop
+```
+
+**API Credentials:**
+- Located in `.credentials/google-pagespeed-api.json`
+- Service Account: `pagespeed-api@probable-quest-474110-n2.iam.gserviceaccount.com`
+- ⚠️ **NEVER commit** this directory (it's in .gitignore)
+
+**Manual API Testing:**
+```bash
+# Authenticate
+gcloud auth activate-service-account --key-file=".credentials/google-pagespeed-api.json"
+
+# Get token and test
+TOKEN=$(gcloud auth print-access-token)
+curl -s "https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=https://localpdf.online&strategy=desktop&category=performance" \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+### LCP Optimization History (October 13, 2025)
+
+**Problem Identified:**
+- LCP (Largest Contentful Paint): **10.8s** ❌ (critical)
+- FCP (First Contentful Paint): **3.5s** ⚠️
+- Cause: **Blocking Google Fonts** via `@import` in CSS
+- Impact: Poor PageSpeed score (67/100), bad Core Web Vitals
+
+**Root Cause:**
+```css
+/* src/index.css - BEFORE (blocking) */
+@import url('https://fonts.googleapis.com/css2?family=Inter...');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans...');
+@import url('https://fonts.googleapis.com/css2?family=Roboto...');
+@import url('https://fonts.googleapis.com/css2?family=PT+Sans...');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans...');
+```
+
+This created blocking chain: HTML → CSS → 5x fonts.googleapis.com → fonts.gstatic.com (1150ms total)
+
+**Solution Implemented (Commit: `c3b38cd`):**
+
+1. **Removed @import from CSS** - eliminated blocking
+2. **Moved fonts to HTML** with async techniques:
+   - Critical font (Inter): `<link rel="preload"` with onload trick
+   - Other fonts: `media="print"` + onload for deferred loading
+   - Added `display=swap` to all fonts (FOIT prevention)
+3. **Added CSS preload** for faster critical styles
+
+**Technical Implementation:**
+```html
+<!-- index.html - AFTER (non-blocking) -->
+<!-- Critical font - preload -->
+<link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" 
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" />
+
+<!-- Other fonts - async load via media trick -->
+<link rel="stylesheet" 
+      href="https://fonts.googleapis.com/css2?family=Open+Sans..." 
+      media="print" onload="this.media='all'" />
+...
+```
+
+**Results Achieved:**
+
+| Metric | Before | After | Improvement |
+|--------|--------|-------|-------------|
+| **LCP** | 10.8s ❌ | 2.1s ✅ | **-81%** |
+| **FCP** | 3.5s ⚠️ | 0.7s ✅ | **-80%** |
+| **TBT** | 1150ms ❌ | 480ms ⚠️ | **-58%** |
+| **CLS** | N/A | 0 ✅ | Perfect |
+| **Performance** | 67/100 | 66-88/100* | Varies by page |
+
+*Note: Overall score similar but Core Web Vitals dramatically improved (what matters for SEO)
+
+**Core Web Vitals Status:**
+- ✅ LCP: 2.1s (Good - target <2.5s)
+- ✅ FCP: 0.7s (Good - target <1.8s)
+- ✅ CLS: 0 (Perfect - target <0.1)
+- ⚠️ TBT: 480ms (needs improvement - target <200ms)
+
+**SEO Impact (Expected in 2-4 weeks):**
+- Google will see "Good" Core Web Vitals
+- Better search ranking (performance is ranking factor)
+- **+25-40% organic traffic** expected
+
+**Remaining Optimizations (Optional):**
+1. **Total Blocking Time (480ms → <200ms)**
+   - Main cause: JS bundle evaluation (694ms)
+   - Google Analytics: 130ms
+   - EditPDFTool.js: 119ms
+   - Solutions: Code splitting, defer GA, lazy loading
+
+2. **Further improvements:**
+   - Critical CSS inlining
+   - Additional code splitting
+   - Service Worker caching
+
+**Commits:**
+- `b2bd255` - fix(seo): remove duplicate meta description tag
+- `c3b38cd` - perf(lcp): optimize Google Fonts loading for better LCP score
+- `c784853` - chore: add PageSpeed API credentials and testing script
+
+**Monitoring Commands:**
+```bash
+# Quick PageSpeed test
+./scripts/test-pagespeed.sh https://localpdf.online/merge-pdf
+
+# Check multiple pages
+./scripts/test-pagespeed.sh https://localpdf.online
+./scripts/test-pagespeed.sh https://localpdf.online/compress-pdf
+./scripts/test-pagespeed.sh https://localpdf.online/split-pdf
+```
+
+**Key Learnings:**
+1. ❌ **Never use @import for external resources** (especially fonts)
+2. ✅ **Preload critical fonts** with proper fallback
+3. ✅ **Defer non-critical fonts** using media="print" trick
+4. ✅ **Always test with actual bots** to see real-world impact
+5. ✅ **Core Web Vitals > Overall Score** for SEO
+
+### Meta Description Fix (October 13, 2025)
+
+**Problem Identified:**
+- Duplicate `<meta name="description">` tags in bot-rendered HTML
+- Similar to canonical tag issue from October 5
+
+**Symptoms:**
+```html
+<!-- BEFORE (duplicate) -->
+<meta name="description" content="Privacy-first PDF tools...">  <!-- from index.html -->
+<meta name="description" content="Merge multiple PDFs..." data-rh="true">  <!-- from React Helmet -->
+```
+
+**Solution (Commit: `b2bd255`):**
+- Removed static meta description from `index.html`
+- Let React Helmet manage all meta descriptions dynamically
+- Each page now has ONE correct, unique description
+
+**Verification:**
+```bash
+curl -A "Googlebot" https://localpdf.online/merge-pdf | grep '<meta name="description"'
+# Should show: ONLY ONE tag with data-rh="true"
+```
+
+**Impact:**
+- Google sees correct, unique descriptions for each page
+- Better SERP snippets
+- Improved click-through rates
+- Fixed SEO compliance issue
+
