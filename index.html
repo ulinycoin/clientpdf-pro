@@ -8,6 +8,44 @@
     <!-- Meta description will be set dynamically by React Helmet for each page -->
     <!-- Build timestamp: 2025-10-17 02:30 - Force rebuild -->
 
+    <!-- Critical CSS for instant LCP -->
+    <style>
+      /* Reset and base */
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+
+      /* Gradient background (mobile-optimized) */
+      .bg-gradient-to-br { background: linear-gradient(135deg, #f9fafb 0%, #eff6ff 50%, #faf5ff 100%); }
+      .min-h-screen { min-height: 100vh; }
+      .flex { display: flex; }
+      .flex-col { flex-direction: column; }
+
+      /* Layout */
+      .relative { position: relative; }
+      .overflow-hidden { overflow: hidden; }
+      .z-10 { z-index: 10; }
+      .max-w-7xl { max-width: 80rem; }
+      .mx-auto { margin-left: auto; margin-right: auto; }
+      .px-4 { padding-left: 1rem; padding-right: 1rem; }
+      .py-16 { padding-top: 4rem; padding-bottom: 4rem; }
+      .text-center { text-align: center; }
+
+      /* Text utilities */
+      .text-xl { font-size: 1.25rem; }
+      .text-gray-700 { color: #374151; }
+      .max-w-3xl { max-width: 48rem; }
+      .leading-relaxed { line-height: 1.75; }
+
+      @media (min-width: 640px) {
+        .sm\\:px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+        .sm\\:py-20 { padding-top: 5rem; padding-bottom: 5rem; }
+      }
+
+      @media (min-width: 1024px) {
+        .lg\\:px-8 { padding-left: 2rem; padding-right: 2rem; }
+      }
+    </style>
+
     <!-- Preconnect to external domains for faster resource loading -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -111,7 +149,26 @@
     </script>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Static hero content for instant LCP - will be replaced by React -->
+      <div class="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 flex flex-col">
+        <div class="relative overflow-hidden">
+          <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
+            <div class="text-center">
+              <h1 style="font-family: system-ui, -apple-system, sans-serif; font-size: clamp(2rem, 8vw, 5rem); font-weight: 800; line-height: 1.1; margin-bottom: 1.5rem; background: linear-gradient(to right, #1a202c, #4ECDC4, #2B7A78); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                Professional PDF tools, privacy-first
+              </h1>
+              <p style="font-family: system-ui, -apple-system, sans-serif; font-size: clamp(1.125rem, 3vw, 1.5rem); font-weight: 600; color: #4a5568; margin-bottom: 2rem;">
+                Free, secure, browser-based PDF toolkit
+              </p>
+              <p class="text-xl text-gray-700 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed" style="font-family: system-ui, -apple-system, sans-serif; font-size: 1.25rem; color: #4a5568; max-width: 48rem; margin: 0 auto; line-height: 1.75;">
+                Professional tools for all your PDF needs
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
