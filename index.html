@@ -8,43 +8,8 @@
     <!-- Meta description will be set dynamically by React Helmet for each page -->
     <!-- Build timestamp: 2025-10-17 02:30 - Force rebuild -->
 
-    <!-- Critical CSS for instant LCP -->
-    <style>
-      /* Reset and base */
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
-
-      /* Gradient background (mobile-optimized) */
-      .bg-gradient-to-br { background: linear-gradient(135deg, #f9fafb 0%, #eff6ff 50%, #faf5ff 100%); }
-      .min-h-screen { min-height: 100vh; }
-      .flex { display: flex; }
-      .flex-col { flex-direction: column; }
-
-      /* Layout */
-      .relative { position: relative; }
-      .overflow-hidden { overflow: hidden; }
-      .z-10 { z-index: 10; }
-      .max-w-7xl { max-width: 80rem; }
-      .mx-auto { margin-left: auto; margin-right: auto; }
-      .px-4 { padding-left: 1rem; padding-right: 1rem; }
-      .py-16 { padding-top: 4rem; padding-bottom: 4rem; }
-      .text-center { text-align: center; }
-
-      /* Text utilities */
-      .text-xl { font-size: 1.25rem; }
-      .text-gray-700 { color: #374151; }
-      .max-w-3xl { max-width: 48rem; }
-      .leading-relaxed { line-height: 1.75; }
-
-      @media (min-width: 640px) {
-        .sm\\:px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
-        .sm\\:py-20 { padding-top: 5rem; padding-bottom: 5rem; }
-      }
-
-      @media (min-width: 1024px) {
-        .lg\\:px-8 { padding-left: 2rem; padding-right: 2rem; }
-      }
-    </style>
+    <!-- Critical CSS for instant LCP (minimized) -->
+    <style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:system-ui,-apple-system,sans-serif}</style>
 
     <!-- Preconnect to external domains for faster resource loading -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -169,6 +134,6 @@
         </div>
       </div>
     </div>
-    <script type="module" src="/src/main.tsx"></script>
+    <script type="module" defer src="/src/main.tsx"></script>
   </body>
 </html>
