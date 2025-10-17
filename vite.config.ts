@@ -49,7 +49,7 @@ export default defineConfig({
   },
 
   build: {
-    target: 'es2020',
+    target: 'es2020', // Modern browsers only - no legacy polyfills
     minify: 'esbuild',
     sourcemap: false,
     chunkSizeWarningLimit: 500, // Warn if chunks exceed 500kb
@@ -57,17 +57,14 @@ export default defineConfig({
       // Включаем markdown файлы в сборку как статические ресурсы
       external: [],
       output: {
-        // Aggressive code splitting for better caching and performance
+        // CRITICAL: Aggressive code splitting for mobile performance
+        // PDF libraries are NOT in manualChunks - they load only on tool pages via dynamic import
         manualChunks: {
-          // Core React libraries
+          // Core React libraries (always needed)
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          // PDF processing libraries (large dependencies)
-          'pdf-lib': ['pdf-lib', '@pdf-lib/fontkit'],
-          'pdfjs': ['pdfjs-dist'],
-          // OCR library (Tesseract is very large)
-          'tesseract': ['tesseract.js'],
-          // UI libraries
+          // UI libraries (lightweight)
           'ui-vendor': ['react-helmet-async'],
+          // NOTE: pdf-lib, pdfjs, tesseract are NOT here - they load dynamically per route
         },
         // Optimize chunk naming for better caching
         chunkFileNames: 'assets/js/[name]-[hash].js',

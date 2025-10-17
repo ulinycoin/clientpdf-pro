@@ -2,7 +2,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { SupportedLanguage, Translations, DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES, TranslationParams } from '../types/i18n';
-import { getTranslations } from '../locales';
+import { loadTranslations, getTranslations } from '../locales';
 
 interface I18nContextType {
   currentLanguage: SupportedLanguage;
@@ -179,18 +179,40 @@ const getNestedValue = (obj: any, path: string): string => {
 export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  
+
   // Track initialization state
   const [isInitialized, setIsInitialized] = useState(false);
-  
+
   // Initialize language with proper browser detection
   const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguage>(() => {
     return getInitialLanguage();
   });
-  
+
+  // Start with empty translations - will load async
   const [translations, setTranslations] = useState<Translations>(() => {
-    return getTranslations(currentLanguage);
+    return getTranslations(currentLanguage); // Fallback empty object
   });
+
+  // CRITICAL: Load translations asynchronously on mount and language change
+  useEffect(() => {
+    let isMounted = true;
+
+    loadTranslations(currentLanguage).then(loadedTranslations => {
+      if (isMounted) {
+        setTranslations(loadedTranslations);
+        setIsInitialized(true);
+      }
+    }).catch(error => {
+      console.error('Failed to load translations:', error);
+      if (isMounted) {
+        setIsInitialized(true); // Initialize anyway to prevent infinite loading
+      }
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [currentLanguage]);
 
   // Effect for initial language-based redirect
   useEffect(() => {
@@ -220,8 +242,7 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
   // Функция для смены языка
   const setLanguage = (language: SupportedLanguage) => {
     if (SUPPORTED_LANGUAGES.some(lang => lang.code === language)) {
-      setCurrentLanguage(language);
-      setTranslations(getTranslations(language));
+      setCurrentLanguage(language); // Translations will load via useEffect
 
       // Сохраняем выбор как явное предпочтение пользователя
       saveUserLanguagePreference(language);
@@ -330,14 +351,13 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
     
     // Обновляем язык только если он действительно изменился
     if (urlLang !== currentLanguage) {
-      setCurrentLanguage(urlLang);
-      setTranslations(getTranslations(urlLang));
-      
+      setCurrentLanguage(urlLang); // Translations will load via useEffect
+
       // Обновляем HTML lang атрибут
       if (typeof document !== 'undefined') {
         document.documentElement.lang = urlLang;
       }
-      
+
       // Сохраняем новый язык как системное изменение (не пользовательское предпочтение)
       saveSystemLanguage(urlLang);
     }
@@ -348,10 +368,7 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
     }
   }, [location.pathname, currentLanguage, isInitialized]);
 
-  // Обновляем переводы при смене языка
-  useEffect(() => {
-    setTranslations(getTranslations(currentLanguage));
-  }, [currentLanguage]);
+  // Note: Translation loading is now handled by the async useEffect above
 
   const contextValue: I18nContextType = {
     currentLanguage,
