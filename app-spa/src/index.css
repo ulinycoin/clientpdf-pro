@@ -1,0 +1,173 @@
+/* Tailwind directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Inter font from Google Fonts (loaded in index.html) */
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+    @apply antialiased;
+  }
+
+  body {
+    @apply bg-gray-50 dark:bg-privacy-900 text-gray-900 dark:text-gray-100;
+    @apply transition-colors duration-200;
+    margin: 0;
+    min-height: 100vh;
+  }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Custom scrollbar for dark mode */
+  ::-webkit-scrollbar {
+    @apply w-2 h-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-100 dark:bg-privacy-800;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 dark:bg-privacy-600 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-400 dark:bg-privacy-500;
+  }
+}
+
+/* Custom component styles */
+@layer components {
+  /* Button base styles */
+  .btn {
+    @apply px-4 py-2 rounded-lg font-medium transition-all duration-200;
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
+  }
+
+  .btn-primary {
+    @apply bg-ocean-500 hover:bg-ocean-600 text-white;
+    @apply focus:ring-ocean-500;
+  }
+
+  .btn-secondary {
+    @apply bg-gray-200 hover:bg-gray-300 text-gray-900;
+    @apply dark:bg-privacy-700 dark:hover:bg-privacy-600 dark:text-white;
+    @apply focus:ring-gray-500;
+  }
+
+  .btn-success {
+    @apply bg-success-500 hover:bg-success-600 text-white;
+    @apply focus:ring-success-500;
+  }
+
+  .btn-error {
+    @apply bg-error-500 hover:bg-error-600 text-white;
+    @apply focus:ring-error-500;
+  }
+
+  /* Card styles */
+  .card {
+    @apply bg-white dark:bg-privacy-800 rounded-xl shadow-soft;
+    @apply border border-gray-200 dark:border-privacy-700;
+    @apply transition-all duration-200;
+  }
+
+  .card-hover {
+    @apply hover:shadow-medium hover:-translate-y-1;
+  }
+
+  /* Input styles */
+  .input {
+    @apply w-full px-4 py-2 rounded-lg;
+    @apply bg-white dark:bg-privacy-800;
+    @apply border border-gray-300 dark:border-privacy-600;
+    @apply text-gray-900 dark:text-gray-100;
+    @apply placeholder-gray-400 dark:placeholder-gray-500;
+    @apply focus:outline-none focus:ring-2 focus:ring-ocean-500 focus:border-transparent;
+    @apply transition-all duration-200;
+  }
+
+  /* Sidebar styles */
+  .sidebar {
+    @apply fixed left-0 top-0 h-full;
+    @apply bg-white dark:bg-privacy-900;
+    @apply border-r border-gray-200 dark:border-privacy-700;
+    @apply transition-all duration-300 ease-in-out;
+    @apply w-64 z-40;
+  }
+
+  .sidebar.collapsed {
+    @apply w-16;
+  }
+
+  /* Tool button in sidebar */
+  .tool-button {
+    @apply w-full flex items-center gap-3 px-4 py-3 rounded-lg;
+    @apply text-gray-700 dark:text-gray-300;
+    @apply hover:bg-gray-100 dark:hover:bg-privacy-800;
+    @apply transition-all duration-200;
+    @apply relative;
+  }
+
+  .tool-button.active {
+    @apply bg-ocean-50 dark:bg-ocean-900/20 text-ocean-600 dark:text-ocean-400;
+    @apply font-medium;
+  }
+
+  /* Loading skeleton */
+  .skeleton {
+    @apply animate-pulse bg-gray-200 dark:bg-privacy-700 rounded;
+  }
+
+  /* Glass morphism container */
+  .glass-container {
+    @apply glass backdrop-blur-lg rounded-2xl p-6;
+    @apply shadow-large;
+  }
+}
+
+/* Utility classes */
+@layer utilities {
+  /* Text utilities */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Transition utilities */
+  .transition-base {
+    @apply transition-all duration-200 ease-in-out;
+  }
+
+  /* Focus utilities */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-ocean-500 focus:ring-offset-2;
+  }
+
+  /* Responsive container */
+  .container-responsive {
+    @apply container mx-auto px-4 sm:px-6 lg:px-8;
+  }
+}
+
+/* Animation delays for stagger effects */
+@layer utilities {
+  .delay-100 {
+    animation-delay: 100ms;
+  }
+  .delay-200 {
+    animation-delay: 200ms;
+  }
+  .delay-300 {
+    animation-delay: 300ms;
+  }
+  .delay-400 {
+    animation-delay: 400ms;
+  }
+  .delay-500 {
+    animation-delay: 500ms;
+  }
+}

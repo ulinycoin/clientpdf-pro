@@ -1,0 +1,96 @@
+{
+  "app": {
+    "title": "LocalPDF",
+    "subtitle": "Privacy-first PDF tools in your browser"
+  },
+  "welcome": {
+    "title": "Welcome to LocalPDF",
+    "subtitle": "Choose a tool to get started",
+    "firstTimeBanner": "Welcome! All processing happens in your browser - your files never leave your device.",
+    "selectTool": "Select a tool from the sidebar or choose one below"
+  },
+  "sidebar": {
+    "tools": "Tools",
+    "collapse": "Collapse sidebar",
+    "expand": "Expand sidebar",
+    "backToMain": "← Back to main site"
+  },
+  "tools": {
+    "merge-pdf": {
+      "name": "Merge PDF",
+      "description": "Combine multiple PDFs into one"
+    },
+    "split-pdf": {
+      "name": "Split PDF",
+      "description": "Extract pages from PDF"
+    },
+    "compress-pdf": {
+      "name": "Compress PDF",
+      "description": "Reduce PDF file size"
+    },
+    "protect-pdf": {
+      "name": "Protect PDF",
+      "description": "Add password protection"
+    },
+    "ocr-pdf": {
+      "name": "OCR PDF",
+      "description": "Extract text from scanned PDFs"
+    },
+    "watermark-pdf": {
+      "name": "Watermark PDF",
+      "description": "Add watermark to PDF"
+    }
+  },
+  "common": {
+    "upload": "Upload files",
+    "download": "Download",
+    "processing": "Processing...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "done": "Done"
+  },
+  "upload": {
+    "selectFiles": "Select files",
+    "dragOrClick": "Drag files here or click to select",
+    "dropHere": "Drop files here",
+    "multipleFilesAllowed": "Multiple files allowed",
+    "singleFileAllowed": "Single file only",
+    "pasteHint": "Or press Ctrl+V to paste files",
+    "maxFiles": "Maximum files",
+    "maxSize": "Maximum size per file",
+    "acceptedTypes": "Accepted types",
+    "errors": {
+      "tooManyFiles": "Too many files. Maximum: {max}",
+      "invalidFileType": "Invalid file type. Please select PDF files only.",
+      "fileTooLarge": "File too large. Maximum size: {max} MB"
+    }
+  },
+  "merge": {
+    "fileList": "Files to merge",
+    "reorderHint": "Drag to reorder",
+    "mergeButton": "Merge PDFs",
+    "mergeAnother": "Merge another",
+    "minFilesHint": "Add at least 2 PDF files to merge",
+    "errors": {
+      "minFiles": "Please select at least 2 PDF files to merge"
+    },
+    "success": {
+      "title": "PDFs merged successfully!",
+      "pages": "Total pages",
+      "size": "File size",
+      "time": "Processing time"
+    },
+    "quickActions": {
+      "title": "What's next?",
+      "description": "Continue working with your merged PDF using these tools:",
+      "compress": "Reduce file size",
+      "protect": "Add password",
+      "watermark": "Add watermark",
+      "split": "Extract pages"
+    }
+  }
+}
