@@ -71,6 +71,8 @@ const LocalPDFLogo: React.FC<LocalPDFLogoProps> = ({
           height: isCompleteLogo ? (logoSize * 0.75) : logoSize,
           objectFit: 'contain'
         }}
+        fetchpriority="high"
+        loading="eager"
         onError={(e) => {
           // Fallback to a working logo
           (e.target as HTMLImageElement).src = '/logos/localpdf-header-32x32.png';

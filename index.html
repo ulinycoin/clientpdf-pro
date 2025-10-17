@@ -11,22 +11,24 @@
     <!-- Critical CSS for instant LCP (minimized) -->
     <style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:system-ui,-apple-system,sans-serif}</style>
 
-    <!-- Preconnect to external domains for faster resource loading -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Preload critical LCP image (logo) -->
+    <link rel="preload" href="/logos/localpdf-header-64x64.png" as="image" fetchpriority="high" />
+
+    <!-- DNS prefetch for analytics (low priority) -->
     <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
     <link rel="dns-prefetch" href="https://www.google-analytics.com" />
 
-    <!-- Optimized Google Fonts loading with font-display: swap for better LCP -->
-    <!-- Loading only critical font (Inter) as preload, others deferred -->
-    <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" />
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" /></noscript>
+    <!-- Self-hosted fonts for optimal LCP - NO external requests -->
+    <!-- Preload critical font CSS -->
+    <link rel="preload" href="/fonts/fonts.css" as="style" />
+    <link rel="stylesheet" href="/fonts/fonts.css" />
 
-    <!-- Other fonts loaded asynchronously (non-blocking) -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&subset=latin,cyrillic&display=swap" media="print" onload="this.media='all'" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&subset=latin,cyrillic&display=swap" media="print" onload="this.media='all'" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&subset=latin,cyrillic&display=swap" media="print" onload="this.media='all'" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&subset=latin,cyrillic&display=swap" media="print" onload="this.media='all'" />
+    <!-- System font fallback stack (instant render, no FOIT) -->
+    <style>
+      body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      }
+    </style>
 
     <!-- SEO: Suggest search engines to crawl important pages -->
     <link rel="prerender" href="https://localpdf.online/merge-pdf" />

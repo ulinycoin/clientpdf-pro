@@ -1,7 +1,6 @@
 {
   "buildCommand": "npm run build:full",
   "outputDirectory": "dist",
-  "trailingSlash": false,
   "installCommand": "npm install",
   "headers": [
     {
