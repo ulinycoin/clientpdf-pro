@@ -1,20 +1,25 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useTranslation, useI18n } from '../hooks/useI18n';
-// Cache bust v1
+// Cache bust v2 - Mobile optimization
 import {
   ModernHeader,
   ModernFooter,
   BentoToolsGrid,
-  InteractiveHeroSection,
   PrivacyBenefitsSection,
   QuickStartSection
 } from '../components/organisms';
-// Removed PrivacyBadge - using InteractiveHeroSection instead
+// Removed InteractiveHeroSection - using static hero for mobile performance
 
 const HomePage: React.FC = () => {
   const { t } = useTranslation();
   const { currentLanguage } = useI18n();
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect mobile for performance optimization
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 768);
+  }, []);
 
   // Generate canonical URL based on language
   // Remove trailing slash to match query parameter URLs and prevent duplicate content
@@ -88,24 +93,32 @@ const HomePage: React.FC = () => {
       <ModernHeader />
 
       <main className="flex-grow">
-        {/* Enhanced Interactive Hero Section */}
-        <InteractiveHeroSection
-          title={t('home.hero.title')}
-          subtitle={t('home.hero.subtitle')}
-          description={t('home.hero.description')}
-          showStats={true}
-          animated={true}
-        />
+        {/* Static Hero Section for Mobile Performance (80+ score target) */}
+        <section className="relative overflow-hidden">
+          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-20">
+            <div className="text-center">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold mb-4 sm:mb-6 bg-gradient-to-r from-gray-900 via-seafoam-green to-ocean-blue dark:from-white dark:via-seafoam-200 dark:to-ocean-200 bg-clip-text text-transparent leading-tight px-2">
+                {t('home.hero.title')}
+              </h1>
+              <p className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-600 dark:text-gray-200 mb-6 sm:mb-8 px-2">
+                {t('home.hero.subtitle')}
+              </p>
+              <p className="text-base sm:text-lg text-gray-700 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed px-4">
+                {t('home.hero.description')}
+              </p>
+            </div>
+          </div>
+        </section>
 
         {/* Bento Tools Grid - Modern asymmetric design */}
         <BentoToolsGrid />
 
 
-        {/* Privacy Benefits Section */}
-        <PrivacyBenefitsSection animated={true} />
+        {/* Privacy Benefits Section - Disable animations on mobile */}
+        <PrivacyBenefitsSection animated={!isMobile} />
 
-        {/* Quick Start Guide Section */}
-        <QuickStartSection animated={true} />
+        {/* Quick Start Guide Section - Disable animations on mobile */}
+        <QuickStartSection animated={!isMobile} />
 
         </main>
 
