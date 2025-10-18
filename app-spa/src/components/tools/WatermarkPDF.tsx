@@ -23,7 +23,7 @@ interface WatermarkSettings {
 
 export const WatermarkPDF: React.FC = () => {
   const { t } = useI18n();
-  const { setSharedFile } = useSharedFile();
+  const { sharedFile, setSharedFile, clearSharedFile } = useSharedFile();
   const [file, setFile] = useState<UploadedFile | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -57,6 +57,15 @@ export const WatermarkPDF: React.FC = () => {
       setSettings(prev => ({ ...prev, rotation: 0 }));
     }
   }, [settings.position]);
+
+  // Auto-load shared file from other tools
+  useEffect(() => {
+    if (sharedFile && !file) {
+      const sharedFileObj = new File([sharedFile.blob], sharedFile.filename, { type: 'application/pdf' });
+      handleFilesSelected([sharedFileObj]);
+      clearSharedFile();
+    }
+  }, [sharedFile, file, clearSharedFile]);
 
   const handleFilesSelected = async (selectedFiles: File[]) => {
     const selectedFile = selectedFiles[0];
@@ -310,11 +319,15 @@ export const WatermarkPDF: React.FC = () => {
     setPreviewUrl(null);
   };
 
-  const handleQuickAction = (toolId: Tool) => {
+  const handleQuickAction = async (toolId: Tool) => {
     // Save the watermarked PDF to shared state for the next tool
     if (result?.blob) {
       setSharedFile(result.blob, `${file?.name.replace('.pdf', '')}_watermarked.pdf`, 'watermark-pdf');
     }
+
+    // Small delay to ensure state is updated before navigation
+    await new Promise(resolve => setTimeout(resolve, 100));
+
     // Navigate to the selected tool
     window.location.hash = HASH_TOOL_MAP[toolId];
   };
