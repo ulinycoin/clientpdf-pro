@@ -3,6 +3,7 @@ import { FileUpload } from '@/components/common/FileUpload';
 import { ProgressBar } from '@/components/common/ProgressBar';
 import { useI18n } from '@/hooks/useI18n';
 import { PDFDocument, rgb, StandardFonts, degrees } from 'pdf-lib';
+import fontkit from '@pdf-lib/fontkit';
 import { getDocument } from 'pdfjs-dist';
 import type { UploadedFile, PDFFileInfo } from '@/types/pdf';
 
@@ -148,6 +149,33 @@ export const WatermarkPDF: React.FC = () => {
     }
   };
 
+  // Load font with Cyrillic support
+  const loadCyrillicFont = async (pdfDoc: any) => {
+    try {
+      // Check if text contains Cyrillic characters
+      const hasCyrillic = /[а-яА-ЯёЁ]/.test(settings.text);
+
+      if (!hasCyrillic) {
+        // Use standard font for Latin text
+        return await pdfDoc.embedFont(StandardFonts.Helvetica);
+      }
+
+      // Register fontkit for custom fonts
+      pdfDoc.registerFontkit(fontkit);
+
+      // Fetch Roboto font with Cyrillic support from Google Fonts
+      const fontUrl = 'https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxK.woff2';
+      const fontBytes = await fetch(fontUrl).then(res => res.arrayBuffer());
+
+      // Embed the custom font
+      return await pdfDoc.embedFont(fontBytes);
+    } catch (error) {
+      console.error('Failed to load Cyrillic font, falling back to standard:', error);
+      // Fallback to standard font
+      return await pdfDoc.embedFont(StandardFonts.Helvetica);
+    }
+  };
+
   const handleAddWatermark = async () => {
     if (!file || !settings.text.trim()) {
       alert(t('watermark.errors.noText'));
@@ -169,8 +197,8 @@ export const WatermarkPDF: React.FC = () => {
       setProgress(30);
       setProgressMessage(t('watermark.processing'));
 
-      // Load font
-      const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+      // Load font with Cyrillic support if needed
+      const font = await loadCyrillicFont(pdfDoc);
 
       // Get pages
       const pages = pdfDoc.getPages();
