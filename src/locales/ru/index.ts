@@ -40,7 +40,6 @@ import { excelToPdf } from './tools/excelToPdf';
 import { protect } from './tools/protect';
 import { smartMerge } from './tools/smartMerge';
 import { smartCompression } from './tools/smartCompression';
-import { edit } from './tools/edit';
 
 // Construct the complete RU translations object
 export const ru = {
@@ -86,8 +85,7 @@ export const ru = {
     excelToPdf,
     protect,
     smartMerge,
-    smartCompression,
-    edit
+    smartCompression
   },
   
   // Page-specific translations
@@ -121,8 +119,7 @@ export const ru = {
       excelToPdf,
       protect,
       smartMerge,
-      smartCompression,
-    edit
+      smartCompression
     }
   }
 };

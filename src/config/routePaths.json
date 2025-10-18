@@ -22,7 +22,6 @@
   { "path": "/excel-to-pdf", "isTool": true },
   { "path": "/protect-pdf", "isTool": true },
   { "path": "/ocr-pdf", "isTool": true },
-  { "path": "/edit-pdf", "isTool": true },
   { "path": "/pdf-hub", "isTool": false },
   { "path": "/pdf-hub/guides", "isTool": false },
   { "path": "/pdf-hub/security", "isTool": false },

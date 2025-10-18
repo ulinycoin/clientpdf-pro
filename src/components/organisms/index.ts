@@ -33,8 +33,5 @@ export { default as ModernWordToPDFTool } from './ModernWordToPDFTool';
 // Modular AddTextTool - now correctly points to the modular version
 export { default as AddTextTool } from './AddTextTool';
 
-// Edit PDF Tool
-export { EditPDFTool } from './EditPDFTool';
-
 // Shared components
 export { ToolContainer } from '../shared';

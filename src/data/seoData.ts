@@ -77,8 +77,7 @@ const TOOL_IDS = [
   'word-to-pdf',
   'excel-to-pdf',
   'protect-pdf',
-  'ocr-pdf',
-  'edit-pdf'
+  'ocr-pdf'
 ] as const;
 
 // Translation key mapping
@@ -99,8 +98,7 @@ const TOOL_TRANSLATION_KEYS = {
   'word-to-pdf': 'wordToPdf',
   'excel-to-pdf': 'excelToPdf',
   'protect-pdf': 'protect',
-  'ocr-pdf': 'ocr',
-  'edit-pdf': 'edit'
+  'ocr-pdf': 'ocr'
 } as const;
 
 // Language-specific keywords for each tool category

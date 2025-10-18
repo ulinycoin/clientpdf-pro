@@ -5917,7 +5917,7 @@ Efficiently merge multiple document sets:
     author: "LocalPDF Team",
     publishedAt: '2025-02-26',
     category: 'tools',
-    tags: ["add-text-pdf","edit-pdf","fill-pdf","pdf-editor"],
+    tags: ["add-text-pdf","fill-pdf","pdf-editor"],
     readingTime: 2,
     language: 'en',
     seo: {
@@ -6352,7 +6352,7 @@ Efficiently merge multiple document sets:
     author: "LocalPDF Team",
     publishedAt: '2025-02-25',
     category: 'tools',
-    tags: ["extract-pages-pdf","split-pdf","edit-pdf","pdf-tools"],
+    tags: ["extract-pages-pdf","split-pdf","pdf-tools"],
     readingTime: 2,
     language: 'en',
     seo: {
@@ -6476,7 +6476,7 @@ Efficiently merge multiple document sets:
     author: "LocalPDF Team",
     publishedAt: '2025-02-21',
     category: 'tutorials',
-    tags: ["rotate-pdf","edit-pdf","pdf-tools","guide"],
+    tags: ["rotate-pdf","pdf-tools","guide"],
     readingTime: 2,
     language: 'en',
     seo: {
@@ -6624,7 +6624,7 @@ Efficiently merge multiple document sets:
     author: "LocalPDF Team",
     publishedAt: '2025-02-22',
     category: 'tutorials',
-    tags: ["pdf-watermark","pdf-protection","branding","edit-pdf"],
+    tags: ["pdf-watermark","pdf-protection","branding"],
     readingTime: 2,
     language: 'en',
     seo: {
