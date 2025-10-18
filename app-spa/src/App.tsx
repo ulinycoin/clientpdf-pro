@@ -50,7 +50,14 @@ function App() {
   // Sidebar collapsed state
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
     const stored = localStorage.getItem('sidebar_collapsed');
-    return stored === 'true';
+    // On mobile (screen width < 1024px), collapse by default
+    const isMobile = window.innerWidth < 1024;
+
+    if (stored !== null) {
+      return stored === 'true';
+    }
+
+    return isMobile;
   });
 
   useEffect(() => {
