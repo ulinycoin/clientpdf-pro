@@ -49,15 +49,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
         collapsed ? 'w-16' : 'w-64'
       }`}
     >
-      {/* Toggle button */}
-      <button
-        onClick={onToggleCollapse}
-        className="absolute -right-3 top-4 w-6 h-6 rounded-full bg-ocean-500 text-white flex items-center justify-center hover:bg-ocean-600 transition-colors shadow-md"
-        aria-label={collapsed ? t('sidebar.expand') : t('sidebar.collapse')}
-      >
-        <span className="text-xs">{collapsed ? '→' : '←'}</span>
-      </button>
-
       {/* Section title */}
       {!collapsed && (
         <div className="px-4 py-3 border-b border-gray-200 dark:border-privacy-700">
