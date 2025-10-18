@@ -18,11 +18,15 @@ interface OCRResult {
   text: string;
   confidence: number;
   language: string;
+  pagesProcessed: number;
 }
+
+type PageSelectionMode = 'all' | 'range' | 'first';
 
 export const OCRPDF: React.FC = () => {
   const { t, language } = useI18n();
   const [file, setFile] = useState<File | null>(null);
+  const [totalPages, setTotalPages] = useState<number>(1);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [progressMessage, setProgressMessage] = useState('');
@@ -30,13 +34,18 @@ export const OCRPDF: React.FC = () => {
   const [selectedLanguage, setSelectedLanguage] = useState<string>(
     TESSERACT_LANGUAGES[language] || 'eng'
   );
+  const [autoDetectLanguage, setAutoDetectLanguage] = useState(true);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [pageMode, setPageMode] = useState<PageSelectionMode>('all');
+  const [pageRange, setPageRange] = useState({ start: 1, end: 1 });
   const workerRef = useRef<Tesseract.Worker | null>(null);
 
-  // Update selected language when UI language changes
+  // Update selected language when UI language changes (only if not auto-detect)
   useEffect(() => {
-    setSelectedLanguage(TESSERACT_LANGUAGES[language] || 'eng');
-  }, [language]);
+    if (!autoDetectLanguage) {
+      setSelectedLanguage(TESSERACT_LANGUAGES[language] || 'eng');
+    }
+  }, [language, autoDetectLanguage]);
 
   // Cleanup preview URL
   useEffect(() => {
@@ -47,6 +56,45 @@ export const OCRPDF: React.FC = () => {
     };
   }, [previewUrl]);
 
+  const detectLanguageFromText = async (canvas: HTMLCanvasElement): Promise<string> => {
+    // Quick scan with English to detect script
+    const tempWorker = await Tesseract.createWorker('eng', 1, {
+      logger: () => {} // Silent
+    });
+
+    const { data } = await tempWorker.recognize(canvas);
+    await tempWorker.terminate();
+
+    const text = data.text.toLowerCase();
+
+    // Check for Cyrillic characters
+    const cyrillicPattern = /[а-яё]/i;
+    if (cyrillicPattern.test(text)) {
+      return 'rus';
+    }
+
+    // Check for German umlauts
+    const germanPattern = /[äöüß]/i;
+    if (germanPattern.test(text)) {
+      return 'deu';
+    }
+
+    // Check for French accents
+    const frenchPattern = /[àâäçéèêëîïôùûü]/i;
+    if (frenchPattern.test(text)) {
+      return 'fra';
+    }
+
+    // Check for Spanish specific characters
+    const spanishPattern = /[áéíóúñ¿¡]/i;
+    if (spanishPattern.test(text)) {
+      return 'spa';
+    }
+
+    // Default to English
+    return 'eng';
+  };
+
   const handleFilesSelected = async (selectedFiles: File[]) => {
     const selectedFile = selectedFiles[0];
     if (!selectedFile) return;
@@ -54,17 +102,17 @@ export const OCRPDF: React.FC = () => {
     setFile(selectedFile);
     setResult(null);
 
-    // Create preview for images
-    if (selectedFile.type.startsWith('image/')) {
-      const url = URL.createObjectURL(selectedFile);
-      setPreviewUrl(url);
-    } else if (selectedFile.type === 'application/pdf') {
-      // For PDF, render first page as preview
+    // Get total pages for PDF
+    if (selectedFile.type === 'application/pdf') {
       try {
         const arrayBuffer = await selectedFile.arrayBuffer();
         const pdf = await getDocument({ data: arrayBuffer }).promise;
+        const numPages = pdf.numPages;
+        setTotalPages(numPages);
+        setPageRange({ start: 1, end: numPages });
 
-        if (pdf.numPages > 0) {
+        // Render first page as preview
+        if (numPages > 0) {
           const page = await pdf.getPage(1);
           const viewport = page.getViewport({ scale: 1.5 });
 
@@ -80,9 +128,44 @@ export const OCRPDF: React.FC = () => {
 
           const url = canvas.toDataURL();
           setPreviewUrl(url);
+
+          // Auto-detect language if enabled
+          if (autoDetectLanguage) {
+            setProgressMessage(t('ocr.detectingLanguage'));
+            const detectedLang = await detectLanguageFromText(canvas);
+            setSelectedLanguage(detectedLang);
+            setProgressMessage('');
+          }
         }
       } catch (error) {
-        console.error('Failed to render PDF preview:', error);
+        console.error('Failed to load PDF:', error);
+      }
+    } else if (selectedFile.type.startsWith('image/')) {
+      setTotalPages(1);
+      setPageRange({ start: 1, end: 1 });
+      const url = URL.createObjectURL(selectedFile);
+      setPreviewUrl(url);
+
+      // Auto-detect language for images
+      if (autoDetectLanguage) {
+        try {
+          const img = new Image();
+          img.onload = async () => {
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d')!;
+            canvas.width = img.width;
+            canvas.height = img.height;
+            context.drawImage(img, 0, 0);
+
+            setProgressMessage(t('ocr.detectingLanguage'));
+            const detectedLang = await detectLanguageFromText(canvas);
+            setSelectedLanguage(detectedLang);
+            setProgressMessage('');
+          };
+          img.src = url;
+        } catch (error) {
+          console.error('Language detection failed:', error);
+        }
       }
     }
   };
@@ -93,9 +176,11 @@ export const OCRPDF: React.FC = () => {
     setPreviewUrl(null);
     setProgress(0);
     setProgressMessage('');
+    setTotalPages(1);
+    setPageRange({ start: 1, end: 1 });
   };
 
-  const extractImageFromPDF = async (file: File, pageNum: number = 1): Promise<HTMLCanvasElement> => {
+  const extractImageFromPDF = async (file: File, pageNum: number): Promise<HTMLCanvasElement> => {
     const arrayBuffer = await file.arrayBuffer();
     const pdf = await getDocument({ data: arrayBuffer }).promise;
     const page = await pdf.getPage(pageNum);
@@ -126,41 +211,73 @@ export const OCRPDF: React.FC = () => {
     setProgressMessage(t('ocr.initializing'));
 
     try {
+      // Determine pages to process
+      let pagesToProcess: number[] = [];
+      if (file.type.startsWith('image/')) {
+        pagesToProcess = [1];
+      } else {
+        if (pageMode === 'first') {
+          pagesToProcess = [1];
+        } else if (pageMode === 'range') {
+          const start = Math.max(1, pageRange.start);
+          const end = Math.min(totalPages, pageRange.end);
+          for (let i = start; i <= end; i++) {
+            pagesToProcess.push(i);
+          }
+        } else { // 'all'
+          for (let i = 1; i <= totalPages; i++) {
+            pagesToProcess.push(i);
+          }
+        }
+      }
+
       // Create Tesseract worker
       setProgressMessage(t('ocr.loadingModel'));
       workerRef.current = await Tesseract.createWorker(selectedLanguage, 1, {
-        logger: (m) => {
-          if (m.status === 'recognizing text') {
-            const prog = Math.round(m.progress * 100);
-            setProgress(prog);
-            setProgressMessage(`${t('ocr.recognizing')} ${prog}%`);
-          }
-        },
+        logger: () => {} // We'll handle progress manually
       });
 
-      let imageToProcess: string | HTMLCanvasElement;
+      let combinedText = '';
+      let totalConfidence = 0;
 
-      // Process based on file type
-      if (file.type.startsWith('image/')) {
-        setProgressMessage(t('ocr.processingImage'));
-        imageToProcess = URL.createObjectURL(file);
-      } else if (file.type === 'application/pdf') {
-        setProgressMessage(t('ocr.processingPDF'));
-        // Extract first page (for simplicity, could be extended to all pages)
-        const canvas = await extractImageFromPDF(file, 1);
-        imageToProcess = canvas;
-      } else {
-        throw new Error('Unsupported file type');
+      // Process each page
+      for (let i = 0; i < pagesToProcess.length; i++) {
+        const pageNum = pagesToProcess[i];
+        const pageProgress = (i / pagesToProcess.length) * 100;
+
+        setProgressMessage(t('ocr.processingPage', { current: pageNum, total: pagesToProcess.length }));
+        setProgress(Math.round(pageProgress));
+
+        let imageToProcess: string | HTMLCanvasElement;
+
+        if (file.type.startsWith('image/')) {
+          imageToProcess = URL.createObjectURL(file);
+        } else {
+          const canvas = await extractImageFromPDF(file, pageNum);
+          imageToProcess = canvas;
+        }
+
+        // Perform OCR on this page
+        const { data } = await workerRef.current.recognize(imageToProcess);
+
+        // Add page separator for multi-page documents
+        if (i > 0) {
+          combinedText += '\n\n' + '='.repeat(50) + '\n';
+          combinedText += `Page ${pageNum}\n`;
+          combinedText += '='.repeat(50) + '\n\n';
+        }
+
+        combinedText += data.text;
+        totalConfidence += data.confidence;
       }
 
-      // Perform OCR
-      setProgressMessage(t('ocr.recognizing'));
-      const { data } = await workerRef.current.recognize(imageToProcess);
+      const avgConfidence = totalConfidence / pagesToProcess.length;
 
       setResult({
-        text: data.text,
-        confidence: data.confidence,
+        text: combinedText,
+        confidence: avgConfidence,
         language: selectedLanguage,
+        pagesProcessed: pagesToProcess.length,
       });
 
       setProgress(100);
@@ -235,7 +352,7 @@ export const OCRPDF: React.FC = () => {
               <div>
                 <h3 className="font-medium text-gray-900 dark:text-white">{file.name}</h3>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                  {(file.size / 1024 / 1024).toFixed(2)} MB
+                  {(file.size / 1024 / 1024).toFixed(2)} MB • {totalPages} {totalPages === 1 ? t('ocr.page') : t('ocr.pages')}
                 </p>
               </div>
             </div>
@@ -259,16 +376,101 @@ export const OCRPDF: React.FC = () => {
             </div>
           )}
 
+          {/* Page Selection (for PDF) */}
+          {file.type === 'application/pdf' && totalPages > 1 && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                {t('ocr.pageSelection')}
+              </label>
+              <div className="space-y-2">
+                <label className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    checked={pageMode === 'first'}
+                    onChange={() => setPageMode('first')}
+                    disabled={isProcessing}
+                    className="text-ocean-500 focus:ring-ocean-500"
+                  />
+                  <span className="text-sm text-gray-700 dark:text-gray-300">
+                    {t('ocr.firstPageOnly')}
+                  </span>
+                </label>
+                <label className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    checked={pageMode === 'all'}
+                    onChange={() => setPageMode('all')}
+                    disabled={isProcessing}
+                    className="text-ocean-500 focus:ring-ocean-500"
+                  />
+                  <span className="text-sm text-gray-700 dark:text-gray-300">
+                    {t('ocr.allPages')} ({totalPages} {t('ocr.pages')})
+                  </span>
+                </label>
+                <label className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    checked={pageMode === 'range'}
+                    onChange={() => setPageMode('range')}
+                    disabled={isProcessing}
+                    className="text-ocean-500 focus:ring-ocean-500"
+                  />
+                  <span className="text-sm text-gray-700 dark:text-gray-300">
+                    {t('ocr.pageRange')}
+                  </span>
+                </label>
+                {pageMode === 'range' && (
+                  <div className="ml-6 flex items-center gap-3">
+                    <input
+                      type="number"
+                      min={1}
+                      max={totalPages}
+                      value={pageRange.start}
+                      onChange={(e) => setPageRange({ ...pageRange, start: parseInt(e.target.value) || 1 })}
+                      disabled={isProcessing}
+                      className="w-20 px-2 py-1 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm"
+                    />
+                    <span className="text-sm text-gray-500">—</span>
+                    <input
+                      type="number"
+                      min={1}
+                      max={totalPages}
+                      value={pageRange.end}
+                      onChange={(e) => setPageRange({ ...pageRange, end: parseInt(e.target.value) || totalPages })}
+                      disabled={isProcessing}
+                      className="w-20 px-2 py-1 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm"
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* Language Selection */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               {t('ocr.recognitionLanguage')}
             </label>
+
+            {/* Auto-detect toggle */}
+            <label className="flex items-center gap-2 mb-3">
+              <input
+                type="checkbox"
+                checked={autoDetectLanguage}
+                onChange={(e) => setAutoDetectLanguage(e.target.checked)}
+                disabled={isProcessing}
+                className="rounded text-ocean-500 focus:ring-ocean-500"
+              />
+              <span className="text-sm text-gray-700 dark:text-gray-300">
+                {t('ocr.autoDetect')}
+              </span>
+            </label>
+
             <select
               value={selectedLanguage}
               onChange={(e) => setSelectedLanguage(e.target.value)}
               className="w-full px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-ocean-500"
-              disabled={isProcessing}
+              disabled={isProcessing || autoDetectLanguage}
             >
               <option value="eng">English</option>
               <option value="rus">Русский</option>
@@ -277,7 +479,7 @@ export const OCRPDF: React.FC = () => {
               <option value="spa">Español</option>
             </select>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              {t('ocr.languageHint')}
+              {autoDetectLanguage ? t('ocr.autoDetectHint') : t('ocr.languageHint')}
             </p>
           </div>
 
@@ -310,7 +512,8 @@ export const OCRPDF: React.FC = () => {
                 {t('ocr.results')}
               </h3>
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                {t('ocr.confidence')}: {result.confidence.toFixed(1)}%
+                {t('ocr.confidence')}: {result.confidence.toFixed(1)}% •
+                {result.pagesProcessed} {result.pagesProcessed === 1 ? t('ocr.page') : t('ocr.pages')} {t('ocr.processed')}
               </p>
             </div>
             <button
@@ -360,6 +563,7 @@ export const OCRPDF: React.FC = () => {
           <li>• {t('ocr.info1')}</li>
           <li>• {t('ocr.info2')}</li>
           <li>• {t('ocr.info3')}</li>
+          <li>• {t('ocr.info4')}</li>
         </ul>
       </div>
     </div>
