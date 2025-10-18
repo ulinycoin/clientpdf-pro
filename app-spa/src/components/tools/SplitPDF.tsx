@@ -350,6 +350,9 @@ export const SplitPDF: React.FC = () => {
       const result = resultsToShare[0];
       const filename = file?.name.replace('.pdf', `_page-${result.pageNumbers[0]}.pdf`) || 'split-page.pdf';
       setSharedFile(result.blob, filename, 'split-pdf');
+
+      // Small delay to ensure state is updated before navigation
+      await new Promise(resolve => setTimeout(resolve, 100));
       window.location.hash = HASH_TOOL_MAP[toolId];
       return;
     }
@@ -378,6 +381,9 @@ export const SplitPDF: React.FC = () => {
           ? file?.name.replace('.pdf', '_all-pages.pdf') || 'all-pages.pdf'
           : file?.name.replace('.pdf', '_selected-pages.pdf') || 'selected-pages.pdf';
         setSharedFile(mergeResult.data, filename, 'split-pdf');
+
+        // Small delay to ensure state is updated before navigation
+        await new Promise(resolve => setTimeout(resolve, 100));
         window.location.hash = HASH_TOOL_MAP[toolId];
       } else {
         alert(t('split.mergeFailed'));
