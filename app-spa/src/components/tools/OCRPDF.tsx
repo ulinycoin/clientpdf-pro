@@ -556,18 +556,6 @@ export const OCRPDF: React.FC = () => {
         </div>
       )}
 
-      {/* Info Section */}
-      <div className="bg-ocean-50 dark:bg-ocean-900/20 border border-ocean-200 dark:border-ocean-800 rounded-lg p-4">
-        <h4 className="font-medium text-ocean-900 dark:text-ocean-300 mb-2">
-          {t('ocr.infoTitle')}
-        </h4>
-        <ul className="text-sm text-ocean-700 dark:text-ocean-400 space-y-1">
-          <li>• {t('ocr.info1')}</li>
-          <li>• {t('ocr.info2')}</li>
-          <li>• {t('ocr.info3')}</li>
-          <li>• {t('ocr.info4')}</li>
-        </ul>
-      </div>
     </div>
   );
 };
