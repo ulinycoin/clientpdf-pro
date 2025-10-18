@@ -77,16 +77,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <li key={tool.id}>
                 <button
                   onClick={() => onToolSelect(tool.id)}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 ${
+                  className={`group w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 ${
                     isActive
-                      ? 'bg-ocean-50 dark:bg-ocean-900/20 text-ocean-600 dark:text-ocean-400 font-medium'
-                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-privacy-800'
+                      ? 'bg-ocean-50 dark:bg-ocean-900/20 text-ocean-600 dark:text-ocean-400 font-medium shadow-sm'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-ocean-50 dark:hover:bg-ocean-900/10 hover:text-ocean-600 dark:hover:text-ocean-400 hover:shadow-sm hover:scale-[1.02]'
                   }`}
                   title={collapsed ? t(`tools.${tool.id}.name`) : undefined}
                 >
-                  <span className="text-xl flex-shrink-0">{tool.icon}</span>
+                  <span className="text-xl flex-shrink-0 transition-transform duration-200 group-hover:scale-110">
+                    {tool.icon}
+                  </span>
                   {!collapsed && (
-                    <span className="text-sm truncate">
+                    <span className="text-sm truncate transition-colors duration-200">
                       {t(`tools.${tool.id}.name`)}
                     </span>
                   )}
