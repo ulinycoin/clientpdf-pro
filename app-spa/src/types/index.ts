@@ -8,7 +8,7 @@ export const SUPPORTED_LANGUAGES: Language[] = ['en', 'ru', 'de', 'fr', 'es'];
 // Theme types
 export type Theme = 'light' | 'dark';
 
-// Tool types - all 18 PDF tools
+// Tool types - PDF tools (edit-pdf removed - discontinued)
 export type Tool =
   | 'merge-pdf'
   | 'split-pdf'
@@ -26,8 +26,7 @@ export type Tool =
   | 'pdf-to-word'
   | 'word-to-pdf'
   | 'sign-pdf'
-  | 'flatten-pdf'
-  | 'edit-pdf';
+  | 'flatten-pdf';
 
 // Tool category for grouping
 export type ToolCategory = 'core' | 'edit' | 'convert' | 'security';
@@ -95,7 +94,6 @@ export const TOOL_HASH_MAP: Record<string, Tool> = {
   'word-to-pdf': 'word-to-pdf',
   'sign': 'sign-pdf',
   'flatten': 'flatten-pdf',
-  'edit': 'edit-pdf',
 };
 
 // Reverse mapping for generating hashes from tools
@@ -129,5 +127,4 @@ export const TOOL_TIERS: Record<Tool, ToolTier> = {
   'word-to-pdf': 3,
   'sign-pdf': 3,
   'flatten-pdf': 3,
-  'edit-pdf': 3,
 };

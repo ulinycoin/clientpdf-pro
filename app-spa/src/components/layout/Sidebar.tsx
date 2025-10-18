@@ -33,7 +33,6 @@ const TOOLS: Array<{ id: Tool; icon: string; tier: number }> = [
   { id: 'word-to-pdf', icon: '📄', tier: 3 },
   { id: 'sign-pdf', icon: '✍️', tier: 3 },
   { id: 'flatten-pdf', icon: '📏', tier: 3 },
-  { id: 'edit-pdf', icon: '✏️', tier: 3 },
 ];
 
 export const Sidebar: React.FC<SidebarProps> = ({

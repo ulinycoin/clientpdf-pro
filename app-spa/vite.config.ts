@@ -22,11 +22,32 @@ export default defineConfig({
   },
   build: {
     target: 'es2020',
+    minify: 'esbuild',
+    sourcemap: false,
+    chunkSizeWarningLimit: 500,
     rollupOptions: {
       output: {
+        // CRITICAL: Aggressive code splitting for mobile performance
         manualChunks: {
+          // Core React libraries (always needed)
           'vendor-react': ['react', 'react-dom'],
+
+          // PDF Core libraries (shared by all tools)
+          'vendor-pdf-lib': ['pdf-lib', '@pdf-lib/fontkit'],
+
+          // PDF.js for rendering (used by OCR, Split, Watermark)
+          'vendor-pdfjs': ['pdfjs-dist'],
+
+          // Tesseract for OCR (large library - separate chunk)
+          'vendor-ocr': ['tesseract.js'],
+
+          // NOTE: Tool components are lazy-loaded via React.lazy() - not in manualChunks
         },
+
+        // Optimize chunk naming for better caching
+        chunkFileNames: 'assets/js/[name]-[hash].js',
+        entryFileNames: 'assets/js/[name]-[hash].js',
+        assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',
       },
     },
   },

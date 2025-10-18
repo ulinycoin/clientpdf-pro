@@ -1,15 +1,28 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { useHashRouter } from '@/hooks/useHashRouter';
 import { useI18n } from '@/hooks/useI18n';
 import { WelcomeScreen } from '@/components/WelcomeScreen';
 import { Sidebar } from '@/components/layout/Sidebar';
-import { MergePDF } from '@/components/tools/MergePDF';
-import { CompressPDF } from '@/components/tools/CompressPDF';
-import { SplitPDF } from '@/components/tools/SplitPDF';
-import { ProtectPDF } from '@/components/tools/ProtectPDF';
-import { OCRPDF } from '@/components/tools/OCRPDF';
-import { WatermarkPDF } from '@/components/tools/WatermarkPDF';
 import type { Theme } from '@/types';
+
+// Lazy load tool components for better performance
+// Each tool loads only when user navigates to it
+const MergePDF = lazy(() => import('@/components/tools/MergePDF').then(m => ({ default: m.MergePDF })));
+const CompressPDF = lazy(() => import('@/components/tools/CompressPDF').then(m => ({ default: m.CompressPDF })));
+const SplitPDF = lazy(() => import('@/components/tools/SplitPDF').then(m => ({ default: m.SplitPDF })));
+const ProtectPDF = lazy(() => import('@/components/tools/ProtectPDF').then(m => ({ default: m.ProtectPDF })));
+const OCRPDF = lazy(() => import('@/components/tools/OCRPDF').then(m => ({ default: m.OCRPDF })));
+const WatermarkPDF = lazy(() => import('@/components/tools/WatermarkPDF').then(m => ({ default: m.WatermarkPDF })));
+
+// Loading component for lazy loaded tools
+const ToolLoading = () => (
+  <div className="flex items-center justify-center min-h-[400px]">
+    <div className="text-center">
+      <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-ocean-500 mx-auto mb-4"></div>
+      <p className="text-gray-600 dark:text-gray-300 text-lg">Loading tool...</p>
+    </div>
+  </div>
+);
 
 function App() {
   // Routing
@@ -111,36 +124,38 @@ function App() {
           />
         ) : (
           <div className="container-responsive py-8">
-            {currentTool === 'merge-pdf' ? (
-              <MergePDF />
-            ) : currentTool === 'compress-pdf' ? (
-              <CompressPDF />
-            ) : currentTool === 'split-pdf' ? (
-              <SplitPDF />
-            ) : currentTool === 'protect-pdf' ? (
-              <ProtectPDF />
-            ) : currentTool === 'ocr-pdf' ? (
-              <OCRPDF />
-            ) : currentTool === 'watermark-pdf' ? (
-              <WatermarkPDF />
-            ) : (
-              <div className="card p-8">
-                <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">
-                  {t(`tools.${currentTool}.name`)}
-                </h2>
-                <p className="text-gray-600 dark:text-gray-400 mb-6">
-                  {t(`tools.${currentTool}.description`)}
-                </p>
-                <div className="bg-ocean-50 dark:bg-ocean-900/20 border border-ocean-200 dark:border-ocean-800 rounded-lg p-6">
-                  <p className="text-center text-ocean-700 dark:text-ocean-300">
-                    Tool implementation coming soon...
+            <Suspense fallback={<ToolLoading />}>
+              {currentTool === 'merge-pdf' ? (
+                <MergePDF />
+              ) : currentTool === 'compress-pdf' ? (
+                <CompressPDF />
+              ) : currentTool === 'split-pdf' ? (
+                <SplitPDF />
+              ) : currentTool === 'protect-pdf' ? (
+                <ProtectPDF />
+              ) : currentTool === 'ocr-pdf' ? (
+                <OCRPDF />
+              ) : currentTool === 'watermark-pdf' ? (
+                <WatermarkPDF />
+              ) : (
+                <div className="card p-8">
+                  <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">
+                    {t(`tools.${currentTool}.name`)}
+                  </h2>
+                  <p className="text-gray-600 dark:text-gray-400 mb-6">
+                    {t(`tools.${currentTool}.description`)}
                   </p>
-                  <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-2">
-                    Tool: {currentTool}
-                  </p>
+                  <div className="bg-ocean-50 dark:bg-ocean-900/20 border border-ocean-200 dark:border-ocean-800 rounded-lg p-6">
+                    <p className="text-center text-ocean-700 dark:text-ocean-300">
+                      Tool implementation coming soon...
+                    </p>
+                    <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-2">
+                      Tool: {currentTool}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </Suspense>
           </div>
         )}
       </main>
