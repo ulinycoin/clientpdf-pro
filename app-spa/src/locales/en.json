@@ -95,7 +95,9 @@
     "close": "Close",
     "back": "Back",
     "next": "Next",
-    "done": "Done"
+    "done": "Done",
+    "remove": "Remove",
+    "newFile": "New file"
   },
   "upload": {
     "selectFiles": "Select files",
@@ -319,6 +321,33 @@
     "autoLoaded": {
       "title": "File loaded from previous tool",
       "description": "Your PDF has been automatically loaded"
+    }
+  },
+  "ocr": {
+    "filePreview": "File to process",
+    "recognitionLanguage": "Recognition language",
+    "languageHint": "Select the language of text in your document",
+    "startOCR": "Start OCR",
+    "processing": "Processing OCR...",
+    "initializing": "Initializing OCR engine...",
+    "loadingModel": "Loading language model...",
+    "processingImage": "Processing image...",
+    "processingPDF": "Processing PDF...",
+    "recognizing": "Recognizing text",
+    "completed": "OCR completed!",
+    "results": "Recognized Text",
+    "confidence": "Confidence",
+    "extractedText": "Extracted text",
+    "copyText": "Copy text",
+    "downloadTXT": "Download TXT",
+    "textCopied": "Text copied to clipboard!",
+    "infoTitle": "About OCR",
+    "info1": "Supports PDF documents and images (JPG, PNG)",
+    "info2": "Recognition in 5 languages: EN, RU, DE, FR, ES",
+    "info3": "All processing happens in your browser - files stay private",
+    "errors": {
+      "noFile": "Please select a file first",
+      "processingFailed": "OCR processing failed. Please try again."
     }
   }
 }
