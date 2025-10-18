@@ -333,51 +333,57 @@ export const SplitPDF: React.FC = () => {
   };
 
   const handleQuickAction = async (toolId: Tool) => {
+    // Determine which results to share
+    let resultsToShare: SplitResult[];
+
     if (selectedResults.size === 0) {
-      alert(t('split.selectPagesHint'));
-      return;
+      // No selection - use all results
+      resultsToShare = results;
+    } else {
+      // Use selected results
+      const selectedIndices = Array.from(selectedResults).sort((a, b) => a - b);
+      resultsToShare = selectedIndices.map(index => results[index]);
     }
 
-    // If only one page selected, share it directly
-    if (selectedResults.size === 1) {
-      const selectedIndex = Array.from(selectedResults)[0];
-      const selectedResult = results[selectedIndex];
-      const filename = file?.name.replace('.pdf', `_page-${selectedResult.pageNumbers[0]}.pdf`) || 'split-page.pdf';
-      setSharedFile(selectedResult.blob, filename, 'split-pdf');
+    // If only one result, share it directly
+    if (resultsToShare.length === 1) {
+      const result = resultsToShare[0];
+      const filename = file?.name.replace('.pdf', `_page-${result.pageNumbers[0]}.pdf`) || 'split-page.pdf';
+      setSharedFile(result.blob, filename, 'split-pdf');
       window.location.hash = HASH_TOOL_MAP[toolId];
       return;
     }
 
-    // If multiple pages selected, merge them first
+    // If multiple results, merge them first
     setIsProcessing(true);
     setProgress(0);
     setProgressMessage(t('split.mergingSelected'));
 
     try {
-      // Get selected results in order
-      const selectedIndices = Array.from(selectedResults).sort((a, b) => a - b);
-      const selectedBlobs = selectedIndices.map(index => results[index].blob);
+      const selectedBlobs = resultsToShare.map(r => r.blob);
 
       // Convert blobs to files for merging
       const filesToMerge = selectedBlobs.map((blob, i) =>
         new File([blob], `page-${i + 1}.pdf`, { type: 'application/pdf' })
       );
 
-      // Merge selected pages
+      // Merge pages
       const mergeResult = await pdfService.mergePDFs(filesToMerge, (prog, msg) => {
         setProgress(prog);
         setProgressMessage(msg);
       });
 
       if (mergeResult.success && mergeResult.data) {
-        const filename = file?.name.replace('.pdf', '_selected-pages.pdf') || 'selected-pages.pdf';
+        const filename = selectedResults.size === 0
+          ? file?.name.replace('.pdf', '_all-pages.pdf') || 'all-pages.pdf'
+          : file?.name.replace('.pdf', '_selected-pages.pdf') || 'selected-pages.pdf';
         setSharedFile(mergeResult.data, filename, 'split-pdf');
         window.location.hash = HASH_TOOL_MAP[toolId];
       } else {
         alert(t('split.mergeFailed'));
       }
     } catch (error) {
-      console.error('Failed to merge selected pages:', error);
+      console.error('Failed to merge pages:', error);
       alert(t('split.mergeFailed'));
     } finally {
       setIsProcessing(false);
