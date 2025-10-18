@@ -1,73 +1,163 @@
-# React + TypeScript + Vite
+# LocalPDF app-spa
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Privacy-first PDF toolkit** - Hash-based Single Page Application
 
-Currently, two official plugins are available:
+🚀 **Optimized for performance** - 90% smaller bundle with code splitting and lazy loading
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## 🎯 Quick Start
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```bash
+# Install dependencies
+npm install
 
-## Expanding the ESLint configuration
+# Start dev server
+npm run dev
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# Open browser
+http://localhost:3000
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 📱 Available Tools (6/17 implemented)
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### ✅ Core Tools (Tier 1)
+- **Merge PDF** - `/#merge` - Combine multiple PDF files
+- **Split PDF** - `/#split` - Extract pages from PDF
+- **Compress PDF** - `/#compress` - Reduce PDF file size
+- **Protect PDF** - `/#protect` - Add password protection
+- **OCR PDF** - `/#ocr` - Extract text with OCR
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### ✅ Edit Tools (Tier 2)
+- **Watermark PDF** - `/#watermark` - Add watermark to pages
+
+### ❌ Not Yet Implemented (11 tools)
+- Add Text, Rotate, Delete Pages, Extract Pages, Unlock, Images to PDF, PDF to Images, PDF to Word, Word to PDF, Sign, Flatten
+
+---
+
+## 🚀 Performance Metrics
+
+**After optimization (Oct 18, 2025):**
+
+| Metric | Before | After | Improvement |
+|--------|--------|-------|-------------|
+| **Initial Load** | 817 KB gzip | 74 KB gzip | **-91%** 🔥 |
+| **FCP** | ~3s | ~0.5s | **-83%** ⚡ |
+| **TTI** | ~8s | ~1.5s | **-81%** 🚀 |
+
+**Bundle Breakdown:**
+- Initial: ~74 KB gzip (index + React)
+- Tools: 3-4 KB each (lazy loaded)
+- PDF libs: 509-95 KB (loaded on demand)
+
+---
+
+## 📚 Documentation
+
+📖 **[DEVELOPMENT_GUIDE.md](./DEVELOPMENT_GUIDE.md)** - Complete development guide:
+- Architecture overview
+- How to add new tools
+- Performance best practices
+- Troubleshooting
+- Code splitting principles
+
+**Read this before making changes!**
+
+---
+
+## 🛠️ Commands
+
+```bash
+# Development
+npm run dev          # Start dev server (port 3000)
+
+# Production
+npm run build        # Build for production
+npm run preview      # Preview production build
+
+# Code Quality
+npx tsc --noEmit     # Type check
+npm run lint         # Lint code
 ```
+
+---
+
+## 🔑 Key Features
+
+- ✅ **100% client-side processing** - files never leave your device
+- ✅ **Code splitting** - tools load on demand
+- ✅ **Lazy loading** - optimized for performance
+- ✅ **Multi-language** - EN, RU, DE, FR, ES
+- ✅ **Dark mode** - automatic theme switching
+- ✅ **Hash routing** - works in any environment
+
+---
+
+## 📂 Project Structure
+
+```
+app-spa/
+├── src/
+│   ├── components/
+│   │   ├── tools/           # PDF tools (6 implemented)
+│   │   ├── layout/          # Sidebar navigation
+│   │   └── WelcomeScreen    # Homepage
+│   ├── hooks/
+│   │   ├── useHashRouter    # Hash-based routing
+│   │   └── useI18n          # Internationalization
+│   ├── services/            # PDF processing logic
+│   ├── locales/             # Translations (5 languages)
+│   └── App.tsx              # Main component with lazy loading
+├── vite.config.ts           # ⭐ Code splitting config
+└── DEVELOPMENT_GUIDE.md     # 📖 Development documentation
+```
+
+---
+
+## ⚡ Performance Principles
+
+### 1. Code Splitting
+All PDF libraries split into separate chunks:
+- `vendor-pdf-lib` (509 KB gzip)
+- `vendor-pdfjs` (95 KB gzip)
+- `vendor-ocr` (7 KB gzip)
+
+### 2. Lazy Loading
+Every tool uses `React.lazy()`:
+```typescript
+const MergePDF = lazy(() => import('./components/tools/MergePDF'));
+```
+
+### 3. On-Demand Loading
+Tools and libraries load only when user clicks them.
+
+**Read [DEVELOPMENT_GUIDE.md](./DEVELOPMENT_GUIDE.md) for details!**
+
+---
+
+## 🚫 Important Notes
+
+### This is NOT a replacement for main app
+- **Main app** (`/`) - SEO-optimized, production website
+- **app-spa** (`/app-spa`) - Widget, embed, offline use-case
+
+### Hash Routing vs Browser Routing
+- **app-spa**: `/#merge` (hash-based)
+- **Main app**: `/merge-pdf` (browser routing)
+
+Don't mix them up!
+
+---
+
+## 📞 Support
+
+- **Documentation:** [DEVELOPMENT_GUIDE.md](./DEVELOPMENT_GUIDE.md)
+- **Main Project:** https://localpdf.online
+- **Repository:** https://github.com/ulinycoin/clientpdf-pro
+
+---
+
+**Built with:** React + TypeScript + Vite
+**Optimized:** October 18, 2025
+**Maintainer:** Claude Code
