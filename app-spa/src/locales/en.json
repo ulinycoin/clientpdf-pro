@@ -416,6 +416,10 @@
     "autoLoaded": {
       "title": "File loaded from previous tool",
       "description": "Your PDF has been automatically loaded"
-    }
+    },
+    "infoTitle": "About Watermark",
+    "info1": "Supports text watermarks with full Cyrillic and Latin character support",
+    "info2": "6 position options: diagonal, center, and 4 corners",
+    "info3": "All processing happens in your browser - files stay private"
   }
 }
