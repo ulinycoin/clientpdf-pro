@@ -269,12 +269,14 @@ export const ProtectPDF: React.FC = () => {
     <div className="max-w-3xl mx-auto space-y-6">
       {/* File upload */}
       {!file && (
-        <FileUpload
-          onFilesSelected={handleFileSelect}
-          accept=".pdf"
-          maxFiles={1}
-          maxSizeMB={100}
-        />
+        <div className="card p-6">
+          <FileUpload
+            onFilesSelected={handleFileSelect}
+            accept=".pdf"
+            maxFiles={1}
+            maxSizeMB={100}
+          />
+        </div>
       )}
 
       {/* File loaded indicator */}

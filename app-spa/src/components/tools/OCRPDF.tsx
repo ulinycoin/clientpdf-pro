@@ -334,12 +334,14 @@ export const OCRPDF: React.FC = () => {
 
       {/* File Upload */}
       {!file && (
-        <FileUpload
-          onFilesSelected={handleFilesSelected}
-          accept=".pdf,.jpg,.jpeg,.png"
-          maxFiles={1}
-          maxSizeMB={50}
-        />
+        <div className="card p-6">
+          <FileUpload
+            onFilesSelected={handleFilesSelected}
+            accept=".pdf,.jpg,.jpeg,.png"
+            maxFiles={1}
+            maxSizeMB={50}
+          />
+        </div>
       )}
 
       {/* File Preview & Settings */}

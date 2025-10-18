@@ -406,12 +406,14 @@ export const WatermarkPDF: React.FC = () => {
 
       {/* File Upload */}
       {!file && (
-        <FileUpload
-          onFilesSelected={handleFilesSelected}
-          accept=".pdf"
-          maxFiles={1}
-          maxSizeMB={50}
-        />
+        <div className="card p-6">
+          <FileUpload
+            onFilesSelected={handleFilesSelected}
+            accept=".pdf"
+            maxFiles={1}
+            maxSizeMB={50}
+          />
+        </div>
       )}
 
       {/* Settings & Preview */}
