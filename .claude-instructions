@@ -1,0 +1,112 @@
+# Claude Instructions for LocalPDF Development
+
+## 🎯 Project Structure
+
+**TWO SEPARATE APPLICATIONS:**
+
+1. **Main App** (`/` - root directory)
+   - URL: `https://localpdf.online/merge-pdf`
+   - Routing: BrowserRouter (clean URLs)
+   - Purpose: Production website with SEO
+   - SEO: Rendertron + GCS cache (113 URLs indexed)
+   - Docs: `CLAUDE.md` in root
+
+2. **app-spa** (`/app-spa` directory)
+   - URL: `http://localhost:3000/#merge`
+   - Routing: HashRouter (hash-based)
+   - Purpose: Widget, embed, offline use
+   - SEO: None (not meant for search engines)
+   - Docs: `app-spa/DEVELOPMENT_GUIDE.md` ⭐
+
+## 📖 Read These Files First
+
+**For Main App:**
+- `/CLAUDE.md` - Full project guide
+
+**For app-spa:**
+- `/app-spa/DEVELOPMENT_GUIDE.md` - Complete development guide
+- `/app-spa/README.md` - Quick start
+
+## 🚀 Quick Commands
+
+### Main App
+```bash
+npm run dev                  # Port 3000, BrowserRouter
+npm run build                # Production build
+node cache-warmer-gcs.cjs all # Warm GCS cache
+```
+
+### app-spa
+```bash
+cd app-spa
+npm run dev                  # Port 3000, HashRouter
+npm run build                # Check bundle sizes
+```
+
+## ⚡ Key Principles for app-spa
+
+1. **ALWAYS use lazy loading** for new tools:
+   ```typescript
+   const Tool = lazy(() => import('./tools/Tool').then(m => ({ default: m.Tool })));
+   ```
+
+2. **Check bundle size** after changes:
+   - Initial load must be < 100 KB gzip
+   - Run `npm run build` and check output
+
+3. **Never import tools statically** in App.tsx
+
+4. **PDF libraries are in manualChunks** (vite.config.ts)
+
+5. **edit-pdf is DELETED** - don't add it back!
+
+## 📝 Common Tasks
+
+### Add new tool to app-spa:
+1. Read: `app-spa/DEVELOPMENT_GUIDE.md` section "How to add new tool"
+2. Create component with lazy loading
+3. Add to App.tsx with React.lazy()
+4. Add to Sidebar.tsx
+5. Add translations to locales/
+6. Build and check bundle size
+
+### Optimize main app:
+1. Check: `CLAUDE.md` for architecture
+2. Use code splitting in vite.config.ts
+3. Lazy load tool pages
+4. Monitor GCS cache status
+
+## 🚫 Don't Do This
+
+- ❌ Don't use hash routing in main app
+- ❌ Don't use BrowserRouter in app-spa
+- ❌ Don't add tools without lazy loading in app-spa
+- ❌ Don't mention edit-pdf anywhere (deleted!)
+- ❌ Don't copy code between projects without adapting
+
+## 📊 Current Status
+
+**Main App:**
+- SEO: 113 URLs indexed
+- Tools: All major tools implemented
+- Performance: LCP 1.8s, FCP 0.3s
+
+**app-spa:**
+- Tools: 6/17 implemented
+- Bundle: 74 KB gzip initial load (-91% optimized)
+- Performance: FCP ~0.5s (expected)
+
+## 🔍 When User Says...
+
+"не открывается /#merge" → They're in main app, need to `cd app-spa && npm run dev`
+"добавить новый инструмент" → Ask: main app or app-spa? (Read respective docs)
+"оптимизировать bundle" → app-spa: check DEVELOPMENT_GUIDE.md
+"SEO проблемы" → Main app only (app-spa doesn't have SEO)
+
+## 📞 Reference
+
+- Main repo: https://github.com/ulinycoin/clientpdf-pro
+- Production: https://localpdf.online
+- Last updated: October 18, 2025
+
+**READ DEVELOPMENT_GUIDE.md BEFORE ANY app-spa WORK!**
