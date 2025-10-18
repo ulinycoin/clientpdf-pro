@@ -3,11 +3,15 @@ import { FileUpload } from '@/components/common/FileUpload';
 import { ProgressBar } from '@/components/common/ProgressBar';
 import { PDFPreview } from '@/components/common/PDFPreview';
 import { useI18n } from '@/hooks/useI18n';
+import { useSharedFile } from '@/hooks/useSharedFile';
 import pdfService from '@/services/pdfService';
 import type { UploadedFile } from '@/types/pdf';
+import type { Tool } from '@/types';
+import { HASH_TOOL_MAP } from '@/types';
 
 export const MergePDF: React.FC = () => {
   const { t } = useI18n();
+  const { setSharedFile } = useSharedFile();
   const [files, setFiles] = useState<UploadedFile[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -94,10 +98,13 @@ export const MergePDF: React.FC = () => {
     setProgressMessage('');
   };
 
-  const handleQuickAction = (toolId: string) => {
-    // Save the merged PDF to a temporary state or pass it to the next tool
-    // For now, we'll use URL hash to navigate and the file will be available for re-upload
-    window.location.hash = toolId.replace('-pdf', '');
+  const handleQuickAction = (toolId: Tool) => {
+    // Save the merged PDF to shared state for the next tool
+    if (result?.blob) {
+      setSharedFile(result.blob, 'merged.pdf', 'merge-pdf');
+    }
+    // Navigate to the selected tool
+    window.location.hash = HASH_TOOL_MAP[toolId];
   };
 
   // Drag and drop reordering

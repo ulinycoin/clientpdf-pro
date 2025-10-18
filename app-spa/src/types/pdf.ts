@@ -9,15 +9,17 @@ export interface PDFFileInfo {
   };
 }
 
-export interface PDFProcessingResult {
+export interface PDFProcessingResult<T = Blob> {
   success: boolean;
-  data?: Blob;
+  data?: T;
   error?: ProcessingError;
   metadata?: {
     pageCount: number;
     originalSize: number;
     processedSize: number;
     processingTime: number;
+    compressionRatio?: number; // Percentage reduction
+    filesCreated?: number; // For split operations
   };
 }
 

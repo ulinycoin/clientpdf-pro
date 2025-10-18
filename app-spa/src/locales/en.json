@@ -92,5 +92,115 @@
       "watermark": "Add watermark",
       "split": "Extract pages"
     }
+  },
+  "compress": {
+    "filePreview": "File to compress",
+    "originalSize": "Original size",
+    "pages": "Pages",
+    "changeFile": "Change file",
+    "selectQuality": "Select compression level",
+    "selected": "Selected",
+    "compressButton": "Compress PDF",
+    "compressAnother": "Compress another",
+    "quality": {
+      "low": {
+        "name": "Maximum",
+        "description": "Smallest file size, lower quality"
+      },
+      "medium": {
+        "name": "Balanced",
+        "description": "Good balance between size and quality"
+      },
+      "high": {
+        "name": "Minimum",
+        "description": "Best quality, larger file size"
+      }
+    },
+    "success": {
+      "title": "PDF compressed successfully!",
+      "originalSize": "Original size",
+      "compressedSize": "Compressed size",
+      "saved": "Space saved",
+      "time": "Processing time"
+    },
+    "quickActions": {
+      "title": "What's next?",
+      "description": "Continue working with your compressed PDF:",
+      "protect": "Add password",
+      "merge": "Merge with others",
+      "split": "Extract pages",
+      "watermark": "Add watermark"
+    },
+    "autoLoaded": {
+      "title": "File loaded from previous tool",
+      "description": "Your merged PDF has been automatically loaded"
+    }
+  },
+  "split": {
+    "filePreview": "File to split",
+    "totalPages": "Total pages",
+    "fileSize": "File size",
+    "changeFile": "Change file",
+    "selectMode": "Select split mode",
+    "splitButton": "Split PDF",
+    "splitAnother": "Split another",
+    "downloadAll": "Download all files",
+    "downloadAsZip": "Download as ZIP",
+    "outputFiles": "Output files",
+    "selectAll": "Select all",
+    "deselectAll": "Deselect all",
+    "selectedCount": "{count} pages selected",
+    "selectPagesHint": "Please select at least one page to continue",
+    "mergingSelected": "Merging selected pages...",
+    "mergeFailed": "Failed to merge selected pages",
+    "mode": {
+      "all": {
+        "name": "All Pages",
+        "description": "Split into individual pages"
+      },
+      "range": {
+        "name": "Page Range",
+        "description": "Extract specific page range"
+      },
+      "intervals": {
+        "name": "By Intervals",
+        "description": "Split every N pages"
+      },
+      "custom": {
+        "name": "Custom Pages",
+        "description": "Select specific pages"
+      }
+    },
+    "rangeSettings": "Page Range Settings",
+    "startPage": "Start page",
+    "endPage": "End page",
+    "rangeHint": "Total pages: {total}",
+    "intervalSettings": "Interval Settings",
+    "pagesPerFile": "Pages per file",
+    "intervalHint": "Will create {files} files from {total} pages",
+    "customSettings": "Custom Page Selection",
+    "pageNumbers": "Page numbers",
+    "customHint": "Enter page numbers separated by commas or use ranges (e.g., 1,3,5-7,10)",
+    "success": {
+      "title": "PDF split successfully!",
+      "filesCreated": "{count} files created"
+    },
+    "pageNumber": "Page {page}",
+    "pageRange": "Pages {start}-{end}",
+    "pageCount": "{count} pages",
+    "pageCountSingle": "1 page",
+    "autoLoaded": {
+      "title": "File loaded from previous tool",
+      "description": "Your PDF has been automatically loaded"
+    },
+    "quickActions": {
+      "title": "What's next?",
+      "description": "Select pages above and continue working with them using these tools:",
+      "descriptionWithSelection": "Continue working with {count} selected pages using these tools:",
+      "compress": "Reduce file size",
+      "merge": "Combine with others",
+      "protect": "Add password",
+      "watermark": "Add watermark"
+    }
   }
 }

@@ -20,7 +20,7 @@ const translations: Record<Language, Translations> = {
 export interface I18nReturn {
   language: Language;
   setLanguage: (lang: Language) => void;
-  t: (key: string) => string;
+  t: (key: string, params?: Record<string, string | number>) => string;
 }
 
 // Helper to get nested translation value
@@ -86,10 +86,20 @@ export const useI18n = (): I18nReturn => {
     window.dispatchEvent(event);
   }, [language]);
 
-  // Translation function
-  const t = useCallback((key: string): string => {
+  // Translation function with interpolation support
+  const t = useCallback((key: string, params?: Record<string, string | number>): string => {
     const translation = translations[language];
-    return getNestedValue(translation, key);
+    let text = getNestedValue(translation, key);
+
+    // Replace placeholders with actual values
+    if (params) {
+      Object.entries(params).forEach(([param, value]) => {
+        const placeholder = `{${param}}`;
+        text = text.replace(new RegExp(placeholder.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), String(value));
+      });
+    }
+
+    return text;
   }, [language]);
 
   return {
