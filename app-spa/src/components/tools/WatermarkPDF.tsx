@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { FileUpload } from '@/components/common/FileUpload';
 import { ProgressBar } from '@/components/common/ProgressBar';
 import { useI18n } from '@/hooks/useI18n';
+import { useSharedFile } from '@/hooks/useSharedFile';
 import { PDFDocument, rgb, StandardFonts, degrees } from 'pdf-lib';
 import fontkit from '@pdf-lib/fontkit';
 import { getDocument } from 'pdfjs-dist';
 import type { UploadedFile, PDFFileInfo } from '@/types/pdf';
+import type { Tool } from '@/types';
+import { HASH_TOOL_MAP } from '@/types';
 
 type Position = 'center' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'diagonal';
 
@@ -20,6 +23,7 @@ interface WatermarkSettings {
 
 export const WatermarkPDF: React.FC = () => {
   const { t } = useI18n();
+  const { setSharedFile } = useSharedFile();
   const [file, setFile] = useState<UploadedFile | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -304,6 +308,15 @@ export const WatermarkPDF: React.FC = () => {
   const handleRemoveFile = () => {
     setFile(null);
     setPreviewUrl(null);
+  };
+
+  const handleQuickAction = (toolId: Tool) => {
+    // Save the watermarked PDF to shared state for the next tool
+    if (result?.blob) {
+      setSharedFile(result.blob, `${file?.name.replace('.pdf', '')}_watermarked.pdf`, 'watermark-pdf');
+    }
+    // Navigate to the selected tool
+    window.location.hash = HASH_TOOL_MAP[toolId];
   };
 
   // Color presets
@@ -640,6 +653,83 @@ export const WatermarkPDF: React.FC = () => {
           >
             💾 {t('common.download')}
           </button>
+
+          {/* Quick Actions */}
+          <div className="card p-6 mt-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              {t('watermark.quickActions.title')}
+            </h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+              {t('watermark.quickActions.description')}
+            </p>
+
+            {/* Action buttons grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              {/* Compress */}
+              <button
+                onClick={() => handleQuickAction('compress-pdf')}
+                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
+              >
+                <span className="text-3xl">🗜️</span>
+                <div className="text-left">
+                  <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
+                    {t('tools.compress-pdf.name')}
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    {t('watermark.quickActions.compress')}
+                  </p>
+                </div>
+              </button>
+
+              {/* Protect */}
+              <button
+                onClick={() => handleQuickAction('protect-pdf')}
+                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
+              >
+                <span className="text-3xl">🔒</span>
+                <div className="text-left">
+                  <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
+                    {t('tools.protect-pdf.name')}
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    {t('watermark.quickActions.protect')}
+                  </p>
+                </div>
+              </button>
+
+              {/* Split */}
+              <button
+                onClick={() => handleQuickAction('split-pdf')}
+                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
+              >
+                <span className="text-3xl">✂️</span>
+                <div className="text-left">
+                  <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
+                    {t('tools.split-pdf.name')}
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    {t('watermark.quickActions.split')}
+                  </p>
+                </div>
+              </button>
+
+              {/* Merge */}
+              <button
+                onClick={() => handleQuickAction('merge-pdf')}
+                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
+              >
+                <span className="text-3xl">📑</span>
+                <div className="text-left">
+                  <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
+                    {t('tools.merge-pdf.name')}
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    {t('watermark.quickActions.merge')}
+                  </p>
+                </div>
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
