@@ -266,7 +266,7 @@ export const ProtectPDF: React.FC = () => {
 
   // Main UI
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
+    <div className="protect-pdf space-y-6">
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
@@ -319,7 +319,7 @@ export const ProtectPDF: React.FC = () => {
 
       {/* File preview */}
       {file && (
-        <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg border border-gray-200 dark:border-gray-700 rounded-2xl p-6">
+        <div className="card p-6">
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-center gap-3">
               <span className="text-3xl">📄</span>
