@@ -163,15 +163,24 @@ export const WatermarkPDF: React.FC = () => {
       // Register fontkit for custom fonts
       pdfDoc.registerFontkit(fontkit);
 
-      // Fetch Roboto font with Cyrillic support from Google Fonts
-      const fontUrl = 'https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxK.woff2';
-      const fontBytes = await fetch(fontUrl).then(res => res.arrayBuffer());
+      // Fetch DejaVu Sans font with full Cyrillic support (TTF format)
+      // This font is reliably hosted and has excellent Unicode coverage
+      const fontUrl = 'https://cdn.jsdelivr.net/gh/dejavu-fonts/dejavu-fonts@2.37/ttf/DejaVuSans.ttf';
+
+      const response = await fetch(fontUrl);
+      if (!response.ok) {
+        throw new Error(`Font fetch failed: ${response.status}`);
+      }
+
+      const fontBytes = await response.arrayBuffer();
 
       // Embed the custom font
-      return await pdfDoc.embedFont(fontBytes);
+      const font = await pdfDoc.embedFont(fontBytes);
+      console.log('Successfully loaded DejaVu Sans with Cyrillic support');
+      return font;
     } catch (error) {
       console.error('Failed to load Cyrillic font, falling back to standard:', error);
-      // Fallback to standard font
+      // Fallback to standard font (will show broken Cyrillic)
       return await pdfDoc.embedFont(StandardFonts.Helvetica);
     }
   };
