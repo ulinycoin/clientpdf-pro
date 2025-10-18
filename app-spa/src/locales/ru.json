@@ -39,6 +39,50 @@
     "watermark-pdf": {
       "name": "Водяной знак",
       "description": "Добавить водяной знак на PDF"
+    },
+    "rotate-pdf": {
+      "name": "Повернуть PDF",
+      "description": "Повернуть страницы PDF"
+    },
+    "delete-pages-pdf": {
+      "name": "Удалить страницы",
+      "description": "Удалить ненужные страницы"
+    },
+    "extract-pages-pdf": {
+      "name": "Извлечь страницы",
+      "description": "Извлечь определенные страницы"
+    },
+    "unlock-pdf": {
+      "name": "Разблокировать PDF",
+      "description": "Снять пароль с PDF"
+    },
+    "images-to-pdf": {
+      "name": "Изображения в PDF",
+      "description": "Конвертировать изображения в PDF"
+    },
+    "pdf-to-images": {
+      "name": "PDF в изображения",
+      "description": "Конвертировать PDF в изображения"
+    },
+    "pdf-to-word": {
+      "name": "PDF в Word",
+      "description": "Конвертировать PDF в DOCX"
+    },
+    "word-to-pdf": {
+      "name": "Word в PDF",
+      "description": "Конвертировать DOCX в PDF"
+    },
+    "sign-pdf": {
+      "name": "Подписать PDF",
+      "description": "Добавить цифровую подпись"
+    },
+    "flatten-pdf": {
+      "name": "Свести PDF",
+      "description": "Свести формы PDF"
+    },
+    "edit-pdf": {
+      "name": "Редактировать PDF",
+      "description": "Редактировать содержимое PDF"
     }
   },
   "common": {
@@ -201,6 +245,74 @@
       "merge": "Объединить с другими",
       "protect": "Добавить пароль",
       "watermark": "Добавить водяной знак"
+    }
+  },
+  "protect": {
+    "filePreview": "Файл для защиты",
+    "protectButton": "Защитить PDF",
+    "protectAnother": "Защитить другой",
+    "userPassword": "Пароль для открытия PDF",
+    "userPasswordPlaceholder": "Введите пароль",
+    "ownerPassword": "Пароль владельца (опционально)",
+    "ownerPasswordPlaceholder": "Введите пароль владельца",
+    "useOwnerPassword": "Использовать отдельный пароль владельца",
+    "securityLevel": "Уровень безопасности",
+    "advancedSettings": "Расширенные настройки",
+    "encryptionLevel": "Уровень шифрования",
+    "recommended": "(рекомендуется)",
+    "permissions": "Разрешения",
+    "presets": {
+      "basic": {
+        "name": "Базовая",
+        "description": "Разрешить печать и копирование"
+      },
+      "business": {
+        "name": "Бизнес",
+        "description": "Разрешить только печать"
+      },
+      "confidential": {
+        "name": "Конфиденциальная",
+        "description": "Запретить печать и копирование"
+      }
+    },
+    "permissions": {
+      "printing": "Печать",
+      "printingNone": "Запрещено",
+      "printingLow": "Низкое разрешение",
+      "printingHigh": "Высокое разрешение",
+      "copying": "Разрешить копирование текста",
+      "modifying": "Разрешить изменение содержимого",
+      "annotating": "Разрешить аннотации",
+      "fillingForms": "Разрешить заполнение форм",
+      "contentAccessibility": "Разрешить программы чтения с экрана"
+    },
+    "passwordStrength": {
+      "tooShort": "Пароль слишком короткий (мин. 8 символов)",
+      "useUpperAndLower": "Используйте заглавные и строчные буквы",
+      "useNumbers": "Добавьте цифры",
+      "useSpecialChars": "Добавьте специальные символы"
+    },
+    "errors": {
+      "passwordRequired": "Пароль обязателен",
+      "protectionFailed": "Не удалось защитить PDF"
+    },
+    "success": {
+      "title": "PDF успешно защищён!",
+      "encryption": "Шифрование",
+      "password": "Пароль",
+      "passwordSet": "Защищён"
+    },
+    "quickActions": {
+      "title": "Что дальше?",
+      "description": "Продолжите работу с защищённым PDF:",
+      "compress": "Уменьшить размер",
+      "split": "Извлечь страницы",
+      "watermark": "Добавить водяной знак",
+      "merge": "Объединить с другими"
+    },
+    "autoLoaded": {
+      "title": "Файл загружен из предыдущего инструмента",
+      "description": "Ваш PDF был автоматически загружен"
     }
   }
 }

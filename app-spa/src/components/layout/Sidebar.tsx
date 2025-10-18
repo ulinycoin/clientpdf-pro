@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Tool, Language } from '@/types';
+import type { Tool } from '@/types';
 import { useI18n } from '@/hooks/useI18n';
 
 interface SidebarProps {

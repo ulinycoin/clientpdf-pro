@@ -39,6 +39,50 @@
     "watermark-pdf": {
       "name": "Watermark PDF",
       "description": "Add watermark to PDF"
+    },
+    "rotate-pdf": {
+      "name": "Rotate PDF",
+      "description": "Rotate PDF pages"
+    },
+    "delete-pages-pdf": {
+      "name": "Delete Pages",
+      "description": "Remove unwanted pages"
+    },
+    "extract-pages-pdf": {
+      "name": "Extract Pages",
+      "description": "Extract specific pages"
+    },
+    "unlock-pdf": {
+      "name": "Unlock PDF",
+      "description": "Remove PDF password"
+    },
+    "images-to-pdf": {
+      "name": "Images to PDF",
+      "description": "Convert images to PDF"
+    },
+    "pdf-to-images": {
+      "name": "PDF to Images",
+      "description": "Convert PDF to images"
+    },
+    "pdf-to-word": {
+      "name": "PDF to Word",
+      "description": "Convert PDF to DOCX"
+    },
+    "word-to-pdf": {
+      "name": "Word to PDF",
+      "description": "Convert DOCX to PDF"
+    },
+    "sign-pdf": {
+      "name": "Sign PDF",
+      "description": "Add digital signature"
+    },
+    "flatten-pdf": {
+      "name": "Flatten PDF",
+      "description": "Flatten PDF forms"
+    },
+    "edit-pdf": {
+      "name": "Edit PDF",
+      "description": "Edit PDF content"
     }
   },
   "common": {
@@ -201,6 +245,74 @@
       "merge": "Combine with others",
       "protect": "Add password",
       "watermark": "Add watermark"
+    }
+  },
+  "protect": {
+    "filePreview": "File to protect",
+    "protectButton": "Protect PDF",
+    "protectAnother": "Protect another",
+    "userPassword": "Password to open PDF",
+    "userPasswordPlaceholder": "Enter password",
+    "ownerPassword": "Owner password (optional)",
+    "ownerPasswordPlaceholder": "Enter owner password",
+    "useOwnerPassword": "Use different owner password",
+    "securityLevel": "Security level",
+    "advancedSettings": "Advanced settings",
+    "encryptionLevel": "Encryption level",
+    "recommended": "(recommended)",
+    "permissions": "Permissions",
+    "presets": {
+      "basic": {
+        "name": "Basic",
+        "description": "Allow printing and copying"
+      },
+      "business": {
+        "name": "Business",
+        "description": "Allow printing only"
+      },
+      "confidential": {
+        "name": "Confidential",
+        "description": "No printing or copying"
+      }
+    },
+    "permissions": {
+      "printing": "Printing",
+      "printingNone": "Not allowed",
+      "printingLow": "Low resolution",
+      "printingHigh": "High resolution",
+      "copying": "Allow copying text",
+      "modifying": "Allow modifying content",
+      "annotating": "Allow annotations",
+      "fillingForms": "Allow filling forms",
+      "contentAccessibility": "Allow screen readers"
+    },
+    "passwordStrength": {
+      "tooShort": "Password too short (min 8 chars)",
+      "useUpperAndLower": "Use uppercase and lowercase",
+      "useNumbers": "Add numbers",
+      "useSpecialChars": "Add special characters"
+    },
+    "errors": {
+      "passwordRequired": "Password is required",
+      "protectionFailed": "Failed to protect PDF"
+    },
+    "success": {
+      "title": "PDF protected successfully!",
+      "encryption": "Encryption",
+      "password": "Password",
+      "passwordSet": "Protected"
+    },
+    "quickActions": {
+      "title": "What's next?",
+      "description": "Continue working with your protected PDF:",
+      "compress": "Reduce file size",
+      "split": "Extract pages",
+      "watermark": "Add watermark",
+      "merge": "Combine with others"
+    },
+    "autoLoaded": {
+      "title": "File loaded from previous tool",
+      "description": "Your PDF has been automatically loaded"
     }
   }
 }

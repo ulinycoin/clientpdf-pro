@@ -1,11 +1,14 @@
 import { PDFDocument } from 'pdf-lib';
+import { PDFDocument as PDFDocumentEncrypt } from 'pdf-lib-plus-encrypt';
 import JSZip from 'jszip';
 import type {
   PDFProcessingResult,
   MergeOptions,
   ProgressCallback,
   PDFFileInfo,
-  ProcessingError
+  ProcessingError,
+  ProtectionSettings,
+  ProtectionProgress
 } from '@/types/pdf';
 
 export class PDFService {
@@ -140,7 +143,7 @@ export class PDFService {
 
       // Save merged PDF
       const pdfBytes = await mergedPdf.save();
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const blob = new Blob([pdfBytes as any], { type: 'application/pdf' });
 
       onProgress?.(100, 'Merge completed!');
 
@@ -286,7 +289,7 @@ export class PDFService {
           newPdf.addPage(copiedPage);
 
           const pdfBytes = await newPdf.save();
-          results.push(new Blob([pdfBytes], { type: 'application/pdf' }));
+          results.push(new Blob([pdfBytes as any], { type: 'application/pdf' }));
 
           onProgress?.(
             20 + ((i + 1) / totalPages) * 70,
@@ -312,7 +315,7 @@ export class PDFService {
         onProgress?.(80, 'Saving extracted pages...');
 
         const pdfBytes = await newPdf.save();
-        results.push(new Blob([pdfBytes], { type: 'application/pdf' }));
+        results.push(new Blob([pdfBytes as any], { type: 'application/pdf' }));
       } else if (mode === 'intervals' && options.interval) {
         // Split by intervals
         const interval = options.interval;
@@ -334,7 +337,7 @@ export class PDFService {
           copiedPages.forEach((page) => newPdf.addPage(page));
 
           const pdfBytes = await newPdf.save();
-          results.push(new Blob([pdfBytes], { type: 'application/pdf' }));
+          results.push(new Blob([pdfBytes as any], { type: 'application/pdf' }));
 
           onProgress?.(
             20 + ((i + 1) / numChunks) * 70,
@@ -355,7 +358,7 @@ export class PDFService {
             newPdf.addPage(copiedPage);
 
             const pdfBytes = await newPdf.save();
-            results.push(new Blob([pdfBytes], { type: 'application/pdf' }));
+            results.push(new Blob([pdfBytes as any], { type: 'application/pdf' }));
           }
 
           onProgress?.(
@@ -393,7 +396,7 @@ export class PDFService {
    */
   async compressPDF(
     file: File,
-    quality: 'low' | 'medium' | 'high',
+    _quality: 'low' | 'medium' | 'high',
     onProgress?: ProgressCallback
   ): Promise<PDFProcessingResult> {
     const startTime = performance.now();
@@ -407,14 +410,13 @@ export class PDFService {
 
       onProgress?.(10, 'Analyzing PDF structure...');
 
-      // Quality settings
-      const qualitySettings = {
-        low: { scale: 0.5, jpegQuality: 0.3 },      // ~70% reduction
-        medium: { scale: 0.7, jpegQuality: 0.5 },   // ~50% reduction
-        high: { scale: 0.85, jpegQuality: 0.7 },    // ~30% reduction
-      };
-
-      const settings = qualitySettings[quality];
+      // Quality settings (for future image compression implementation)
+      // const qualitySettings = {
+      //   low: { scale: 0.5, jpegQuality: 0.3 },      // ~70% reduction
+      //   medium: { scale: 0.7, jpegQuality: 0.5 },   // ~50% reduction
+      //   high: { scale: 0.85, jpegQuality: 0.7 },    // ~30% reduction
+      // };
+      // const settings = qualitySettings[quality];
 
       onProgress?.(20, 'Compressing images...');
 
@@ -440,7 +442,7 @@ export class PDFService {
 
       onProgress?.(90, 'Finalizing compression...');
 
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const blob = new Blob([pdfBytes as any], { type: 'application/pdf' });
       const compressionRatio = ((1 - blob.size / file.size) * 100).toFixed(1);
 
       onProgress?.(100, 'Compression completed!');
@@ -463,6 +465,84 @@ export class PDFService {
         success: false,
         error: this.createPDFError(error, 'PDF compression failed')
       };
+    }
+  }
+
+  /**
+   * Protect PDF with password encryption
+   */
+  async protectPDF(
+    file: File,
+    settings: ProtectionSettings,
+    onProgress?: (progress: ProtectionProgress) => void
+  ): Promise<Uint8Array> {
+    try {
+      onProgress?.({
+        stage: 'analyzing',
+        progress: 10,
+        message: 'Loading PDF document...'
+      });
+
+      // Load the original PDF
+      const arrayBuffer = await file.arrayBuffer();
+      const pdfDoc = await PDFDocumentEncrypt.load(arrayBuffer);
+
+      onProgress?.({
+        stage: 'preparing',
+        progress: 30,
+        message: 'Preparing document for encryption...'
+      });
+
+      // Add metadata
+      pdfDoc.setTitle(pdfDoc.getTitle() || 'Protected Document');
+      pdfDoc.setSubject('Password Protected PDF created by LocalPDF');
+      pdfDoc.setCreator('LocalPDF - Privacy-First PDF Tools');
+      pdfDoc.setProducer('LocalPDF with pdf-lib-plus-encrypt');
+
+      onProgress?.({
+        stage: 'encrypting',
+        progress: 60,
+        message: 'Applying encryption and permissions...'
+      });
+
+      // Map printing permission to boolean (pdf-lib-plus-encrypt uses boolean)
+      const printingAllowed = settings.permissions.printing !== 'none';
+
+      // Encrypt the PDF with password and permissions
+      await pdfDoc.encrypt({
+        userPassword: settings.userPassword || '',
+        ownerPassword: settings.ownerPassword || settings.userPassword || '',
+        permissions: {
+          printing: printingAllowed,
+          modifying: settings.permissions.modifying || false,
+          copying: settings.permissions.copying || false,
+          annotating: settings.permissions.annotating || false,
+          fillingForms: settings.permissions.fillingForms || false,
+          contentAccessibility: settings.permissions.contentAccessibility !== false, // Default true
+          documentAssembly: settings.permissions.documentAssembly || false
+        }
+      });
+
+      onProgress?.({
+        stage: 'finalizing',
+        progress: 90,
+        message: 'Finalizing encrypted document...'
+      });
+
+      // Save the encrypted PDF (useObjectStreams must be false for encryption)
+      const pdfBytes = await pdfDoc.save({ useObjectStreams: false });
+
+      onProgress?.({
+        stage: 'complete',
+        progress: 100,
+        message: 'PDF encryption completed successfully!'
+      });
+
+      return new Uint8Array(pdfBytes);
+
+    } catch (error) {
+      console.error('Error encrypting PDF:', error);
+      throw new Error(`Failed to encrypt PDF: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
@@ -501,3 +581,33 @@ export default pdfService;
 // Named exports for compatibility
 export { pdfService };
 export type { PDFFileInfo, PDFProcessingResult };
+
+// Export individual methods for convenience
+export const mergePDFs = (files: File[], onProgress?: ProgressCallback, options?: MergeOptions) =>
+  pdfService.mergePDFs(files, onProgress, options);
+
+export const splitPDF = (
+  file: File,
+  mode: 'pages' | 'range' | 'intervals' | 'custom',
+  options: { pages?: number[]; start?: number; end?: number; interval?: number },
+  onProgress?: ProgressCallback
+) => pdfService.splitPDF(file, mode, options, onProgress);
+
+export const compressPDF = (file: File, quality: 'low' | 'medium' | 'high', onProgress?: ProgressCallback) =>
+  pdfService.compressPDF(file, quality, onProgress);
+
+export const protectPDF = (
+  file: File,
+  settings: ProtectionSettings,
+  onProgress?: (progress: ProtectionProgress) => void
+) => pdfService.protectPDF(file, settings, onProgress);
+
+export const getPDFInfo = (file: File) => pdfService.getPDFInfo(file);
+export const validatePDF = (file: File) => pdfService.validatePDF(file);
+export const downloadFile = (blob: Blob, filename: string) => pdfService.downloadFile(blob, filename);
+export const createZipArchive = (files: Array<{ blob: Blob; filename: string }>, onProgress?: ProgressCallback) =>
+  pdfService.createZipArchive(files, onProgress);
+export const downloadAsZip = (files: Array<{ blob: Blob; filename: string }>, archiveName: string, onProgress?: ProgressCallback) =>
+  pdfService.downloadAsZip(files, archiveName, onProgress);
+export const formatFileSize = (bytes: number) => pdfService.formatFileSize(bytes);
+export const formatTime = (ms: number) => pdfService.formatTime(ms);

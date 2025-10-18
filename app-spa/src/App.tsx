@@ -6,6 +6,7 @@ import { Sidebar } from '@/components/layout/Sidebar';
 import { MergePDF } from '@/components/tools/MergePDF';
 import { CompressPDF } from '@/components/tools/CompressPDF';
 import { SplitPDF } from '@/components/tools/SplitPDF';
+import { ProtectPDF } from '@/components/tools/ProtectPDF';
 import type { Theme } from '@/types';
 
 function App() {
@@ -114,6 +115,8 @@ function App() {
               <CompressPDF />
             ) : currentTool === 'split-pdf' ? (
               <SplitPDF />
+            ) : currentTool === 'protect-pdf' ? (
+              <ProtectPDF />
             ) : (
               <div className="card p-8">
                 <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">
