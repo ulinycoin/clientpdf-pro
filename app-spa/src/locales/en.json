@@ -361,5 +361,61 @@
       "noFile": "Please select a file first",
       "processingFailed": "OCR processing failed. Please try again."
     }
+  },
+  "watermark": {
+    "filePreview": "File to watermark",
+    "text": "Watermark text",
+    "watermarkText": "Watermark text",
+    "watermarkPlaceholder": "Enter watermark text",
+    "position": "Position",
+    "positions": {
+      "diagonal": "Diagonal",
+      "center": "Center",
+      "topLeft": "Top Left",
+      "topRight": "Top Right",
+      "bottomLeft": "Bottom Left",
+      "bottomRight": "Bottom Right"
+    },
+    "color": "Color",
+    "colors": {
+      "black": "Black",
+      "gray": "Gray",
+      "red": "Red",
+      "blue": "Blue"
+    },
+    "opacity": "Opacity",
+    "fontSize": "Font Size",
+    "rotation": "Rotation",
+    "preview": "Preview",
+    "settings": "Watermark Settings",
+    "applyButton": "Apply Watermark",
+    "applyAnother": "Apply to another",
+    "loading": "Loading PDF...",
+    "processing": "Adding watermark...",
+    "processingPage": "Processing page {current} of {total}...",
+    "saving": "Saving PDF...",
+    "completed": "Watermark applied!",
+    "errors": {
+      "noText": "Please enter watermark text",
+      "textRequired": "Please enter watermark text",
+      "failed": "Failed to apply watermark"
+    },
+    "success": {
+      "title": "Watermark applied successfully!",
+      "pages": "Pages watermarked",
+      "time": "Processing time"
+    },
+    "quickActions": {
+      "title": "What's next?",
+      "description": "Continue working with your watermarked PDF:",
+      "compress": "Reduce file size",
+      "protect": "Add password",
+      "split": "Extract pages",
+      "merge": "Combine with others"
+    },
+    "autoLoaded": {
+      "title": "File loaded from previous tool",
+      "description": "Your PDF has been automatically loaded"
+    }
   }
 }

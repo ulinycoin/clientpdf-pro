@@ -8,6 +8,7 @@ import { CompressPDF } from '@/components/tools/CompressPDF';
 import { SplitPDF } from '@/components/tools/SplitPDF';
 import { ProtectPDF } from '@/components/tools/ProtectPDF';
 import { OCRPDF } from '@/components/tools/OCRPDF';
+import { WatermarkPDF } from '@/components/tools/WatermarkPDF';
 import type { Theme } from '@/types';
 
 function App() {
@@ -120,6 +121,8 @@ function App() {
               <ProtectPDF />
             ) : currentTool === 'ocr-pdf' ? (
               <OCRPDF />
+            ) : currentTool === 'watermark-pdf' ? (
+              <WatermarkPDF />
             ) : (
               <div className="card p-8">
                 <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">
