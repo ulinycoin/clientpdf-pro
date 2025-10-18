@@ -267,6 +267,16 @@ export const ProtectPDF: React.FC = () => {
   // Main UI
   return (
     <div className="max-w-3xl mx-auto space-y-6">
+      {/* Header */}
+      <div>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+          {t('tools.protect-pdf.name')}
+        </h1>
+        <p className="text-gray-600 dark:text-gray-400">
+          {t('tools.protect-pdf.description')}
+        </p>
+      </div>
+
       {/* File upload */}
       {!file && (
         <div className="card p-6">

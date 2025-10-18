@@ -100,18 +100,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </ul>
       </nav>
 
-      {/* Footer */}
-      {!collapsed && (
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200 dark:border-privacy-700 bg-white dark:bg-privacy-900">
-          <a
-            href="https://localpdf.online"
-            className="text-xs text-gray-500 dark:text-gray-400 hover:text-ocean-500 dark:hover:text-ocean-400 transition-colors flex items-center gap-2"
-          >
-            <span>←</span>
-            <span>{t('sidebar.backToMain')}</span>
-          </a>
-        </div>
-      )}
     </aside>
   );
 };
