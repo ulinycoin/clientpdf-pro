@@ -8,13 +8,16 @@ import type { ProtectionSettings, PasswordStrength } from '@/types/pdf';
 
 export const ProtectPDF: React.FC = () => {
   const { t } = useI18n();
-  const { sharedFile, setSharedFile } = useSharedFile();
+  const { sharedFile, clearSharedFile } = useSharedFile();
 
   // State
   const [file, setFile] = useState<File | null>(null);
   const [userPassword, setUserPassword] = useState('');
   const [ownerPassword, setOwnerPassword] = useState('');
+  const [showUserPassword, setShowUserPassword] = useState(false);
   const [showOwnerPassword, setShowOwnerPassword] = useState(false);
+  const [showOwnerPasswordToggle, setShowOwnerPasswordToggle] = useState(false);
+  const [permissionsOnly, setPermissionsOnly] = useState(false);
   const [encryptionLevel, setEncryptionLevel] = useState<'aes128' | 'aes256'>('aes256');
   const [permissions, setPermissions] = useState({
     printing: 'highResolution' as 'none' | 'lowResolution' | 'highResolution',
@@ -136,7 +139,7 @@ export const ProtectPDF: React.FC = () => {
 
   const handleProtect = async () => {
     if (!file) return;
-    if (!userPassword) {
+    if (!permissionsOnly && !userPassword) {
       setError(t('protect.errors.passwordRequired'));
       return;
     }
@@ -147,8 +150,8 @@ export const ProtectPDF: React.FC = () => {
 
     try {
       const settings: ProtectionSettings = {
-        userPassword,
-        ownerPassword: showOwnerPassword && ownerPassword ? ownerPassword : userPassword,
+        userPassword: permissionsOnly ? '' : userPassword,
+        ownerPassword: permissionsOnly ? 'owner-only-restrictions' : (showOwnerPassword && ownerPassword ? ownerPassword : userPassword),
         encryption: encryptionLevel,
         permissions,
       };
@@ -177,8 +180,8 @@ export const ProtectPDF: React.FC = () => {
         },
       });
 
-      // Save to shared state for Quick Actions
-      setSharedFile(blob, filename, 'protect-pdf');
+      // Don't save to shared state - encrypted PDFs should only be downloaded
+      // setSharedFile(blob, filename, 'protect-pdf');
 
     } catch (err) {
       console.error('Error protecting PDF:', err);
@@ -209,12 +212,10 @@ export const ProtectPDF: React.FC = () => {
     setError(null);
     setProgress(0);
     setPasswordStrength(null);
+    // Clear shared file to prevent auto-reload
+    clearSharedFile();
   };
 
-  const handleQuickAction = (tool: string) => {
-    // Navigate to another tool via hash
-    window.location.hash = tool;
-  };
 
   // Success screen
   if (result) {
@@ -259,74 +260,6 @@ export const ProtectPDF: React.FC = () => {
             {t('protect.protectAnother')}
           </button>
         </div>
-
-        {/* Quick Actions */}
-        <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg border border-gray-200 dark:border-gray-700 rounded-2xl p-6">
-          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
-            {t('protect.quickActions.title')}
-          </h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-            {t('protect.quickActions.description')}
-          </p>
-          <div className="grid grid-cols-2 gap-3">
-            <button
-              onClick={() => handleQuickAction('compress')}
-              className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl transition-all duration-200 text-left"
-            >
-              <span className="text-2xl">🗜️</span>
-              <div>
-                <div className="font-semibold text-gray-900 dark:text-white text-sm">
-                  {t('tools.compress-pdf.name')}
-                </div>
-                <div className="text-xs text-gray-600 dark:text-gray-400">
-                  {t('protect.quickActions.compress')}
-                </div>
-              </div>
-            </button>
-            <button
-              onClick={() => handleQuickAction('split')}
-              className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl transition-all duration-200 text-left"
-            >
-              <span className="text-2xl">✂️</span>
-              <div>
-                <div className="font-semibold text-gray-900 dark:text-white text-sm">
-                  {t('tools.split-pdf.name')}
-                </div>
-                <div className="text-xs text-gray-600 dark:text-gray-400">
-                  {t('protect.quickActions.split')}
-                </div>
-              </div>
-            </button>
-            <button
-              onClick={() => handleQuickAction('watermark')}
-              className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl transition-all duration-200 text-left"
-            >
-              <span className="text-2xl">💧</span>
-              <div>
-                <div className="font-semibold text-gray-900 dark:text-white text-sm">
-                  {t('tools.watermark-pdf.name')}
-                </div>
-                <div className="text-xs text-gray-600 dark:text-gray-400">
-                  {t('protect.quickActions.watermark')}
-                </div>
-              </div>
-            </button>
-            <button
-              onClick={() => handleQuickAction('merge')}
-              className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl transition-all duration-200 text-left"
-            >
-              <span className="text-2xl">📑</span>
-              <div>
-                <div className="font-semibold text-gray-900 dark:text-white text-sm">
-                  {t('tools.merge-pdf.name')}
-                </div>
-                <div className="text-xs text-gray-600 dark:text-gray-400">
-                  {t('protect.quickActions.merge')}
-                </div>
-              </div>
-            </button>
-          </div>
-        </div>
       </div>
     );
   }
@@ -347,16 +280,27 @@ export const ProtectPDF: React.FC = () => {
       {/* File loaded indicator */}
       {file && sharedFile && (
         <div className="bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-200 dark:border-blue-800 rounded-xl p-4">
-          <div className="flex items-center gap-3">
-            <span className="text-2xl">ℹ️</span>
-            <div>
-              <div className="font-semibold text-blue-900 dark:text-blue-100">
-                {t('protect.autoLoaded.title')}
-              </div>
-              <div className="text-sm text-blue-700 dark:text-blue-300">
-                {t('protect.autoLoaded.description')}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">ℹ️</span>
+              <div>
+                <div className="font-semibold text-blue-900 dark:text-blue-100">
+                  {t('protect.autoLoaded.title')}
+                </div>
+                <div className="text-sm text-blue-700 dark:text-blue-300">
+                  {t('protect.autoLoaded.description')}
+                </div>
               </div>
             </div>
+            <button
+              onClick={() => {
+                clearSharedFile();
+                setFile(null);
+              }}
+              className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200 font-semibold text-sm"
+            >
+              ✕ {t('common.close')}
+            </button>
           </div>
         </div>
       )}
@@ -409,78 +353,140 @@ export const ProtectPDF: React.FC = () => {
             </div>
           </div>
 
+          {/* Permissions-only mode */}
+          <div className="mb-4">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={permissionsOnly}
+                onChange={(e) => {
+                  setPermissionsOnly(e.target.checked);
+                  if (e.target.checked) {
+                    setUserPassword('');
+                    setOwnerPassword('');
+                    setShowOwnerPassword(false);
+                  }
+                }}
+                className="w-4 h-4 text-ocean-500 bg-gray-100 border-gray-300 rounded focus:ring-ocean-500"
+              />
+              <span className="text-sm text-gray-700 dark:text-gray-300">
+                {t('protect.permissionsOnly')}
+              </span>
+            </label>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 ml-6">
+              {t('protect.permissionsOnlyHint')}
+            </p>
+          </div>
+
           {/* Password inputs */}
           <div className="space-y-4">
             {/* User password */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
-                {t('protect.userPassword')} *
-              </label>
-              <input
-                type="password"
-                value={userPassword}
-                onChange={(e) => setUserPassword(e.target.value)}
-                placeholder={t('protect.userPasswordPlaceholder')}
-                className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-ocean-500 text-gray-900 dark:text-white"
-              />
-              {passwordStrength && (
-                <div className="mt-2">
-                  <div className="flex gap-1 mb-1">
-                    {[0, 1, 2, 3, 4].map((level) => (
-                      <div
-                        key={level}
-                        className={`h-1 flex-1 rounded ${
-                          level <= passwordStrength.score
-                            ? passwordStrength.score <= 1
-                              ? 'bg-red-500'
-                              : passwordStrength.score <= 2
-                              ? 'bg-yellow-500'
-                              : passwordStrength.score <= 3
-                              ? 'bg-blue-500'
-                              : 'bg-green-500'
-                            : 'bg-gray-300 dark:bg-gray-600'
-                        }`}
-                      />
-                    ))}
+            {!permissionsOnly && (
+              <>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
+                    {t('protect.userPassword')} *
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showUserPassword ? 'text' : 'password'}
+                      value={userPassword}
+                      onChange={(e) => setUserPassword(e.target.value)}
+                      placeholder={t('protect.userPasswordPlaceholder')}
+                      className="w-full px-4 py-3 pr-12 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-ocean-500 text-gray-900 dark:text-white"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowUserPassword(!showUserPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                    >
+                      {showUserPassword ? '👁️' : '👁️‍🗨️'}
+                    </button>
                   </div>
-                  {passwordStrength.feedback.length > 0 && (
-                    <div className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                      {passwordStrength.feedback.join('. ')}
+                  {passwordStrength && (
+                    <div className="mt-2">
+                      <div className="flex gap-1 mb-1">
+                        {[0, 1, 2, 3, 4].map((level) => (
+                          <div
+                            key={level}
+                            className={`h-1 flex-1 rounded ${
+                              level <= passwordStrength.score
+                                ? passwordStrength.score <= 1
+                                  ? 'bg-red-500'
+                                  : passwordStrength.score <= 2
+                                  ? 'bg-yellow-500'
+                                  : passwordStrength.score <= 3
+                                  ? 'bg-blue-500'
+                                  : 'bg-green-500'
+                                : 'bg-gray-300 dark:bg-gray-600'
+                            }`}
+                          />
+                        ))}
+                      </div>
+                      {passwordStrength.feedback.length > 0 && (
+                        <div className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                          {passwordStrength.feedback.join('. ')}
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
-              )}
-            </div>
 
-            {/* Owner password toggle */}
-            <div>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={showOwnerPassword}
-                  onChange={(e) => setShowOwnerPassword(e.target.checked)}
-                  className="w-4 h-4 text-ocean-500 bg-gray-100 border-gray-300 rounded focus:ring-ocean-500"
-                />
-                <span className="text-sm text-gray-700 dark:text-gray-300">
-                  {t('protect.useOwnerPassword')}
-                </span>
-              </label>
-            </div>
+                {/* Password loss warning */}
+                <div className="bg-amber-50 dark:bg-amber-900/20 border-2 border-amber-200 dark:border-amber-800 rounded-xl p-4">
+                  <div className="flex gap-3">
+                    <span className="text-xl flex-shrink-0">⚠️</span>
+                    <div>
+                      <p className="font-semibold text-amber-900 dark:text-amber-100 text-sm mb-1">
+                        {t('protect.passwordWarning.title')}
+                      </p>
+                      <p className="text-xs text-amber-800 dark:text-amber-200">
+                        {t('protect.passwordWarning.message')}
+                      </p>
+                    </div>
+                  </div>
+                </div>
 
-            {/* Owner password input */}
-            {showOwnerPassword && (
-              <div>
-                <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
-                  {t('protect.ownerPassword')}
-                </label>
-                <input
-                  type="password"
-                  value={ownerPassword}
-                  onChange={(e) => setOwnerPassword(e.target.value)}
-                  placeholder={t('protect.ownerPasswordPlaceholder')}
-                  className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-ocean-500 text-gray-900 dark:text-white"
-                />
-              </div>
+                {/* Owner password toggle */}
+                <div>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={showOwnerPasswordToggle}
+                      onChange={(e) => setShowOwnerPasswordToggle(e.target.checked)}
+                      className="w-4 h-4 text-ocean-500 bg-gray-100 border-gray-300 rounded focus:ring-ocean-500"
+                    />
+                    <span className="text-sm text-gray-700 dark:text-gray-300">
+                      {t('protect.useOwnerPassword')}
+                    </span>
+                  </label>
+                </div>
+
+                {/* Owner password input */}
+                {showOwnerPasswordToggle && (
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
+                      {t('protect.ownerPassword')}
+                    </label>
+                    <div className="relative">
+                      <input
+                        type={showOwnerPassword ? 'text' : 'password'}
+                        value={ownerPassword}
+                        onChange={(e) => setOwnerPassword(e.target.value)}
+                        placeholder={t('protect.ownerPasswordPlaceholder')}
+                        className="w-full px-4 py-3 pr-12 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-ocean-500 text-gray-900 dark:text-white"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowOwnerPassword(!showOwnerPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                      >
+                        {showOwnerPassword ? '👁️' : '👁️‍🗨️'}
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </>
             )}
           </div>
 
@@ -590,9 +596,9 @@ export const ProtectPDF: React.FC = () => {
           {/* Protect button */}
           <button
             onClick={handleProtect}
-            disabled={isProcessing || !userPassword}
+            disabled={isProcessing || (!permissionsOnly && !userPassword)}
             className={`w-full mt-6 py-4 px-8 rounded-xl font-bold text-white transition-all duration-200 ${
-              isProcessing || !userPassword
+              isProcessing || (!permissionsOnly && !userPassword)
                 ? 'bg-gray-400 cursor-not-allowed'
                 : 'bg-gradient-to-r from-ocean-500 to-ocean-600 hover:from-ocean-600 hover:to-ocean-700 shadow-lg hover:shadow-xl'
             }`}

@@ -36,7 +36,7 @@ export class PDFService {
   async validatePDF(file: File): Promise<boolean> {
     try {
       const arrayBuffer = await file.arrayBuffer();
-      const pdfDoc = await PDFDocument.load(arrayBuffer);
+      const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
       return pdfDoc.getPageCount() > 0;
     } catch (error) {
       return false;
@@ -49,7 +49,7 @@ export class PDFService {
   async getPDFInfo(file: File): Promise<PDFFileInfo> {
     try {
       const arrayBuffer = await file.arrayBuffer();
-      const pdfDoc = await PDFDocument.load(arrayBuffer);
+      const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
       const pageCount = pdfDoc.getPageCount();
 
       let dimensions = { width: 0, height: 0 };
@@ -119,7 +119,7 @@ export class PDFService {
         try {
           // Load PDF
           const arrayBuffer = await file.arrayBuffer();
-          const pdf = await PDFDocument.load(arrayBuffer);
+          const pdf = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
 
           // Copy all pages
           const pageIndices = Array.from(
@@ -272,7 +272,7 @@ export class PDFService {
       onProgress?.(0, 'Loading PDF...');
 
       const arrayBuffer = await file.arrayBuffer();
-      const pdfDoc = await PDFDocument.load(arrayBuffer);
+      const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
       const totalPages = pdfDoc.getPageCount();
 
       onProgress?.(10, 'Analyzing PDF structure...');
@@ -405,20 +405,21 @@ export class PDFService {
       onProgress?.(0, 'Loading PDF...');
 
       const arrayBuffer = await file.arrayBuffer();
-      const pdfDoc = await PDFDocument.load(arrayBuffer);
-      const pageCount = pdfDoc.getPageCount();
+      const sourcePdf = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+      const pageCount = sourcePdf.getPageCount();
 
       onProgress?.(10, 'Analyzing PDF structure...');
 
-      // Quality settings (for future image compression implementation)
-      // const qualitySettings = {
-      //   low: { scale: 0.5, jpegQuality: 0.3 },      // ~70% reduction
-      //   medium: { scale: 0.7, jpegQuality: 0.5 },   // ~50% reduction
-      //   high: { scale: 0.85, jpegQuality: 0.7 },    // ~30% reduction
-      // };
-      // const settings = qualitySettings[quality];
+      // Create a new PDF to remove encryption
+      const pdfDoc = await PDFDocument.create();
 
-      onProgress?.(20, 'Compressing images...');
+      onProgress?.(20, 'Removing encryption...');
+
+      // Copy all pages from encrypted PDF to new PDF (removes encryption)
+      const pages = await pdfDoc.copyPages(sourcePdf, Array.from({ length: pageCount }, (_, i) => i));
+      pages.forEach(page => pdfDoc.addPage(page));
+
+      onProgress?.(40, 'Compressing images...');
 
       // Note: pdf-lib doesn't have built-in image compression
       // For basic compression, we remove metadata and optimize structure

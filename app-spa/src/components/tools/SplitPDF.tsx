@@ -419,16 +419,28 @@ export const SplitPDF: React.FC = () => {
           {/* Auto-loaded indicator */}
           {loadedFromShared && (
             <div className="bg-ocean-50 dark:bg-ocean-900/20 border border-ocean-200 dark:border-ocean-800 rounded-lg p-4">
-              <div className="flex items-center gap-3">
-                <span className="text-2xl">✨</span>
-                <div>
-                  <p className="font-medium text-ocean-700 dark:text-ocean-300">
-                    {t('split.autoLoaded.title')}
-                  </p>
-                  <p className="text-sm text-ocean-600 dark:text-ocean-400">
-                    {t('split.autoLoaded.description')}
-                  </p>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">✨</span>
+                  <div>
+                    <p className="font-medium text-ocean-700 dark:text-ocean-300">
+                      {t('split.autoLoaded.title')}
+                    </p>
+                    <p className="text-sm text-ocean-600 dark:text-ocean-400">
+                      {t('split.autoLoaded.description')}
+                    </p>
+                  </div>
                 </div>
+                <button
+                  onClick={() => {
+                    clearSharedFile();
+                    setFile(null);
+                    setLoadedFromShared(false);
+                  }}
+                  className="text-ocean-600 dark:text-ocean-400 hover:text-ocean-800 dark:hover:text-ocean-200 font-semibold text-sm"
+                >
+                  ✕ {t('common.close')}
+                </button>
               </div>
             </div>
           )}

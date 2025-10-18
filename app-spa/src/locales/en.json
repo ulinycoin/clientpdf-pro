@@ -256,6 +256,12 @@
     "ownerPassword": "Owner password (optional)",
     "ownerPasswordPlaceholder": "Enter owner password",
     "useOwnerPassword": "Use different owner password",
+    "permissionsOnly": "Restrictions only (no password to open)",
+    "permissionsOnlyHint": "PDF can be opened without password, but usage will be restricted",
+    "passwordWarning": {
+      "title": "Warning: Password cannot be recovered",
+      "message": "If you lose your password, there is no way to recover it. Keep it in a safe place!"
+    },
     "securityLevel": "Security level",
     "advancedSettings": "Advanced settings",
     "encryptionLevel": "Encryption level",
