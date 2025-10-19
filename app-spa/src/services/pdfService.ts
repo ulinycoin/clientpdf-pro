@@ -548,6 +548,204 @@ export class PDFService {
   }
 
   /**
+   * Extract PDF pages
+   */
+  async extractPDF(
+    file: File,
+    pagesToExtract: number[],
+    onProgress?: ProgressCallback
+  ): Promise<PDFProcessingResult> {
+    const startTime = performance.now();
+
+    try {
+      onProgress?.(0, 'Loading PDF...');
+
+      const arrayBuffer = await file.arrayBuffer();
+      const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+      const totalPages = pdfDoc.getPageCount();
+
+      // Validate page numbers
+      const validPages = pagesToExtract.filter(p => p >= 1 && p <= totalPages);
+      if (validPages.length === 0) {
+        throw new Error('No valid pages to extract');
+      }
+
+      onProgress?.(20, `Extracting ${validPages.length} pages...`);
+
+      // Create new document with extracted pages
+      const newPdfDoc = await PDFDocument.create();
+
+      let copiedCount = 0;
+      for (const pageNum of validPages) {
+        const [copiedPage] = await newPdfDoc.copyPages(pdfDoc, [pageNum - 1]);
+        newPdfDoc.addPage(copiedPage);
+
+        copiedCount++;
+        const progress = 20 + (copiedCount / validPages.length) * 60;
+        onProgress?.(progress, `Extracting page ${copiedCount}/${validPages.length}...`);
+      }
+
+      onProgress?.(80, 'Saving PDF...');
+
+      const pdfBytes = await newPdfDoc.save();
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+
+      const processingTime = performance.now() - startTime;
+      onProgress?.(100, 'Completed!');
+
+      return {
+        success: true,
+        data: blob,
+        metadata: {
+          originalSize: file.size,
+          processedSize: blob.size,
+          compressionRatio: blob.size / file.size,
+          processingTime,
+          pages: validPages.length
+        }
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: this.createPDFError(error, 'Extract pages failed')
+      };
+    }
+  }
+
+  /**
+   * Delete PDF pages
+   */
+  async deletePDF(
+    file: File,
+    pagesToDelete: number[],
+    onProgress?: ProgressCallback
+  ): Promise<PDFProcessingResult> {
+    const startTime = performance.now();
+
+    try {
+      onProgress?.(0, 'Loading PDF...');
+
+      const arrayBuffer = await file.arrayBuffer();
+      const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+      const totalPages = pdfDoc.getPageCount();
+
+      // Calculate pages to keep
+      const allPages = Array.from({ length: totalPages }, (_, i) => i + 1);
+      const pagesToKeep = allPages.filter(p => !pagesToDelete.includes(p));
+
+      if (pagesToKeep.length === 0) {
+        throw new Error('Cannot delete all pages');
+      }
+
+      onProgress?.(20, `Removing ${pagesToDelete.length} pages...`);
+
+      // Create new document with only pages to keep
+      const newPdfDoc = await PDFDocument.create();
+
+      let copiedCount = 0;
+      for (const pageNum of pagesToKeep) {
+        const [copiedPage] = await newPdfDoc.copyPages(pdfDoc, [pageNum - 1]);
+        newPdfDoc.addPage(copiedPage);
+
+        copiedCount++;
+        const progress = 20 + (copiedCount / pagesToKeep.length) * 60;
+        onProgress?.(progress, `Copying page ${copiedCount}/${pagesToKeep.length}...`);
+      }
+
+      onProgress?.(80, 'Saving PDF...');
+
+      const pdfBytes = await newPdfDoc.save();
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+
+      const processingTime = performance.now() - startTime;
+      onProgress?.(100, 'Completed!');
+
+      return {
+        success: true,
+        data: blob,
+        metadata: {
+          originalSize: file.size,
+          processedSize: blob.size,
+          compressionRatio: blob.size / file.size,
+          processingTime,
+          pages: pagesToKeep.length
+        }
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: this.createPDFError(error, 'Delete pages failed')
+      };
+    }
+  }
+
+  /**
+   * Rotate PDF pages
+   */
+  async rotatePDF(
+    file: File,
+    angle: 90 | 180 | 270,
+    pages: number[],
+    onProgress?: ProgressCallback
+  ): Promise<PDFProcessingResult> {
+    const startTime = performance.now();
+
+    try {
+      onProgress?.(0, 'Loading PDF...');
+
+      const arrayBuffer = await file.arrayBuffer();
+      const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+      const totalPages = pdfDoc.getPageCount();
+
+      // Validate page numbers
+      const validPages = pages.filter(p => p >= 1 && p <= totalPages);
+      if (validPages.length === 0) {
+        throw new Error('No valid pages to rotate');
+      }
+
+      onProgress?.(20, `Rotating ${validPages.length} pages...`);
+
+      // Rotate pages (pdf-lib uses degrees)
+      let rotatedCount = 0;
+      for (const pageNum of validPages) {
+        const page = pdfDoc.getPage(pageNum - 1); // 0-indexed
+        const currentRotation = page.getRotation().angle;
+        const newRotation = (currentRotation + angle) % 360;
+        page.setRotation({ type: 'degrees', angle: newRotation });
+
+        rotatedCount++;
+        const progress = 20 + (rotatedCount / validPages.length) * 60;
+        onProgress?.(progress, `Rotated ${rotatedCount}/${validPages.length} pages...`);
+      }
+
+      onProgress?.(80, 'Saving PDF...');
+
+      const pdfBytes = await pdfDoc.save();
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+
+      const processingTime = performance.now() - startTime;
+      onProgress?.(100, 'Completed!');
+
+      return {
+        success: true,
+        data: blob,
+        metadata: {
+          originalSize: file.size,
+          processedSize: blob.size,
+          compressionRatio: blob.size / file.size,
+          processingTime,
+          pages: totalPages
+        }
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: this.createPDFError(error, 'Rotate PDF failed')
+      };
+    }
+  }
+
+  /**
    * Create a standardized PDF error
    */
   private createPDFError(error: any, context: string = 'PDF processing'): ProcessingError {
@@ -602,6 +800,25 @@ export const protectPDF = (
   settings: ProtectionSettings,
   onProgress?: (progress: ProtectionProgress) => void
 ) => pdfService.protectPDF(file, settings, onProgress);
+
+export const rotatePDF = (
+  file: File,
+  angle: 90 | 180 | 270,
+  pages: number[],
+  onProgress?: ProgressCallback
+) => pdfService.rotatePDF(file, angle, pages, onProgress);
+
+export const deletePDF = (
+  file: File,
+  pagesToDelete: number[],
+  onProgress?: ProgressCallback
+) => pdfService.deletePDF(file, pagesToDelete, onProgress);
+
+export const extractPDF = (
+  file: File,
+  pagesToExtract: number[],
+  onProgress?: ProgressCallback
+) => pdfService.extractPDF(file, pagesToExtract, onProgress);
 
 export const getPDFInfo = (file: File) => pdfService.getPDFInfo(file);
 export const validatePDF = (file: File) => pdfService.validatePDF(file);

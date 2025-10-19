@@ -97,7 +97,13 @@
     "next": "Next",
     "done": "Done",
     "remove": "Remove",
-    "newFile": "New file"
+    "newFile": "New file",
+    "filePreview": "File preview",
+    "totalPages": "Total pages",
+    "fileSize": "File size",
+    "changeFile": "Change file",
+    "autoLoaded": "File loaded from previous tool",
+    "autoLoadedDescription": "Your PDF has been automatically loaded"
   },
   "upload": {
     "selectFiles": "Select files",
@@ -421,5 +427,76 @@
     "info1": "Supports text watermarks with full Cyrillic and Latin character support",
     "info2": "6 position options: diagonal, center, and 4 corners",
     "info3": "All processing happens in your browser - files stay private"
+  },
+  "rotate": {
+    "settings": "Rotation settings",
+    "selectAngle": "Select rotation angle",
+    "clockwise": "Clockwise",
+    "upsideDown": "Upside down",
+    "counterClockwise": "Counter-clockwise",
+    "selectPages": "Select pages to rotate",
+    "allPages": "All pages",
+    "rotateAllPages": "Rotate all pages in document",
+    "specificPages": "Specific pages",
+    "choosePages": "Choose which pages to rotate",
+    "pageNumbers": "Page numbers",
+    "pageNumbersHint": "Example: 1,3,5-7,10 (Total pages: {total})",
+    "rotateButton": "Rotate PDF",
+    "rotateAnother": "Rotate another",
+    "invalidPages": "Please enter valid page numbers",
+    "failed": "Failed to rotate PDF",
+    "success": "PDF rotated successfully!",
+    "successDescription": "Your PDF pages have been rotated as specified",
+    "quickActions": {
+      "title": "What's next?",
+      "description": "Continue working with your rotated PDF:",
+      "compress": "Reduce file size",
+      "protect": "Add password",
+      "watermark": "Add watermark",
+      "split": "Extract pages"
+    }
+  },
+  "deletePages": {
+    "selectPages": "Select pages to delete",
+    "pagesToDelete": "Pages to delete",
+    "hint": "Example: 1,3,5-7,10 (Total pages: {total})",
+    "warning": "Warning: This cannot be undone",
+    "warningDescription": "Pages will be permanently removed from the PDF",
+    "deleteButton": "Delete Pages",
+    "deleteAnother": "Delete from another",
+    "invalidPages": "Please enter valid page numbers",
+    "cannotDeleteAll": "Cannot delete all pages from PDF",
+    "failed": "Failed to delete pages",
+    "success": "Pages deleted successfully!",
+    "successDescription": "Selected pages have been removed from your PDF",
+    "quickActions": {
+      "title": "What's next?",
+      "description": "Continue working with your PDF:",
+      "compress": "Reduce file size",
+      "protect": "Add password",
+      "watermark": "Add watermark",
+      "merge": "Combine with others"
+    }
+  },
+  "extractPages": {
+    "selectPages": "Select pages to extract",
+    "pagesToExtract": "Pages to extract",
+    "hint": "Example: 1,3,5-7,10 (Total pages: {total})",
+    "info": "Extract creates a new PDF",
+    "infoDescription": "Original PDF remains unchanged, only selected pages are copied to new file",
+    "extractButton": "Extract Pages",
+    "extractAnother": "Extract from another",
+    "invalidPages": "Please enter valid page numbers",
+    "failed": "Failed to extract pages",
+    "success": "Pages extracted successfully!",
+    "successDescription": "Selected pages have been extracted to a new PDF",
+    "quickActions": {
+      "title": "What's next?",
+      "description": "Continue working with extracted pages:",
+      "compress": "Reduce file size",
+      "protect": "Add password",
+      "watermark": "Add watermark",
+      "merge": "Combine with others"
+    }
   }
 }

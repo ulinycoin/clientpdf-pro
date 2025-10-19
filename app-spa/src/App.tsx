@@ -13,6 +13,9 @@ const SplitPDF = lazy(() => import('@/components/tools/SplitPDF').then(m => ({ d
 const ProtectPDF = lazy(() => import('@/components/tools/ProtectPDF').then(m => ({ default: m.ProtectPDF })));
 const OCRPDF = lazy(() => import('@/components/tools/OCRPDF').then(m => ({ default: m.OCRPDF })));
 const WatermarkPDF = lazy(() => import('@/components/tools/WatermarkPDF').then(m => ({ default: m.WatermarkPDF })));
+const RotatePDF = lazy(() => import('@/components/tools/RotatePDF').then(m => ({ default: m.RotatePDF })));
+const DeletePagesPDF = lazy(() => import('@/components/tools/DeletePagesPDF').then(m => ({ default: m.DeletePagesPDF })));
+const ExtractPagesPDF = lazy(() => import('@/components/tools/ExtractPagesPDF').then(m => ({ default: m.ExtractPagesPDF })));
 
 // Loading component for lazy loaded tools
 const ToolLoading = () => (
@@ -144,6 +147,12 @@ function App() {
                 <OCRPDF />
               ) : currentTool === 'watermark-pdf' ? (
                 <WatermarkPDF />
+              ) : currentTool === 'rotate-pdf' ? (
+                <RotatePDF />
+              ) : currentTool === 'delete-pages-pdf' ? (
+                <DeletePagesPDF />
+              ) : currentTool === 'extract-pages-pdf' ? (
+                <ExtractPagesPDF />
               ) : (
                 <div className="card p-8">
                   <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">
