@@ -22,6 +22,7 @@
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         background: #f9fafb;
+        line-height: 1.5;
       }
 
       /* Prevent FOIT/FOUT - instant text rendering */
@@ -32,6 +33,8 @@
       /* Critical above-the-fold styles for instant LCP */
       #root {
         min-height: 100vh;
+        display: flex;
+        flex-direction: column;
       }
 
       /* Hero section critical styles */
@@ -51,14 +54,48 @@
         max-width: 100%;
         height: auto;
       }
+
+      /* Critical hero text styles for instant LCP rendering */
+      h1 {
+        font-weight: 800;
+        line-height: 1.15;
+        letter-spacing: -0.025em;
+      }
+
+      /* Header critical styles */
+      header {
+        position: relative;
+        z-index: 50;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(8px);
+      }
+
+      /* Loading spinner hidden by default */
+      .loading-spinner {
+        display: none;
+      }
+
+      /* Utility classes for above-fold content */
+      .flex { display: flex; }
+      .flex-col { flex-direction: column; }
+      .items-center { align-items: center; }
+      .justify-center { justify-content: center; }
+      .text-center { text-align: center; }
+      .mx-auto { margin-left: auto; margin-right: auto; }
+      .px-4 { padding-left: 1rem; padding-right: 1rem; }
+      .py-12 { padding-top: 3rem; padding-bottom: 3rem; }
+      .mb-4 { margin-bottom: 1rem; }
+      .mb-6 { margin-bottom: 1.5rem; }
+      .max-w-7xl { max-width: 80rem; }
+      .max-w-3xl { max-width: 48rem; }
     </style>
 
     <!-- Preload critical LCP image (logo) -->
     <link rel="preload" href="/logos/localpdf-header-64x64.png" as="image" fetchpriority="high" />
 
-    <!-- DNS prefetch for analytics (low priority) -->
-    <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
-    <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+    <!-- Preconnect to critical origins -->
+    <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
+    <link rel="preconnect" href="https://www.google-analytics.com" crossorigin />
 
     <!-- SEO: Suggest search engines to crawl important pages -->
     <link rel="prerender" href="https://localpdf.online/merge-pdf" />
@@ -103,7 +140,7 @@
     <!-- Google Search Console verification -->
     <meta name="google-site-verification" content="34adca022b79f1a0" />
 
-    <!-- Google Analytics - Deferred loading -->
+    <!-- Google Analytics - Ultra-deferred loading (after idle) -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
@@ -114,13 +151,22 @@
         allow_ad_personalization_signals: false
       });
 
-      // Load GA script after page load to avoid blocking render
-      window.addEventListener('load', function() {
+      // Ultra-deferred: Load GA only after page is fully idle (requestIdleCallback)
+      // This ensures GA doesn't compete with LCP/FCP rendering
+      function loadGA() {
         var script = document.createElement('script');
         script.async = true;
         script.src = 'https://www.googletagmanager.com/gtag/js?id=G-MS36WTHPCZ';
         document.head.appendChild(script);
-      });
+      }
+
+      if ('requestIdleCallback' in window) {
+        // Modern browsers - load when browser is idle
+        requestIdleCallback(loadGA, { timeout: 3000 });
+      } else {
+        // Fallback - load after 3 seconds
+        setTimeout(loadGA, 3000);
+      }
     </script>
 
     <!-- Structured Data -->
@@ -164,6 +210,54 @@
             </div>
           </div>
         </div>
+
+        <!-- Static Bento Grid for instant LCP - Will be replaced by React -->
+        <section style="padding: 2rem 1rem; max-width: 80rem; margin: 0 auto;">
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 1rem; min-height: 600px;">
+            <!-- Top 6 tools as static cards for instant LCP -->
+            <a href="/merge-pdf" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1.5rem; background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.1)); border-radius: 1.5rem; text-decoration: none; color: #1f2937; min-height: 140px; grid-column: span 2; grid-row: span 2;">
+              <div style="width: 64px; height: 64px; background: rgba(255,255,255,0.3); border-radius: 1rem; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
+                <svg width="32" height="32" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+              </div>
+              <h3 style="font-size: 1.25rem; font-weight: 700; text-align: center;">Merge PDF</h3>
+            </a>
+
+            <a href="/split-pdf" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1.5rem; background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.1)); border-radius: 1.5rem; text-decoration: none; color: #1f2937; min-height: 140px; grid-column: span 2;">
+              <div style="width: 64px; height: 64px; background: rgba(255,255,255,0.3); border-radius: 1rem; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
+                <svg width="32" height="32" fill="currentColor" viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><line x1="20" y1="4" x2="8.12" y2="15.88"></line><line x1="14.47" y1="14.48" x2="20" y2="20"></line></svg>
+              </div>
+              <h3 style="font-size: 1.25rem; font-weight: 700; text-align: center;">Split PDF</h3>
+            </a>
+
+            <a href="/compress-pdf" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1.5rem; background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(22, 163, 74, 0.1)); border-radius: 1.5rem; text-decoration: none; color: #1f2937; min-height: 140px; grid-row: span 2;">
+              <div style="width: 64px; height: 64px; background: rgba(255,255,255,0.3); border-radius: 1rem; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
+                <svg width="32" height="32" fill="currentColor" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              </div>
+              <h3 style="font-size: 1.25rem; font-weight: 700; text-align: center;">Compress PDF</h3>
+            </a>
+
+            <a href="/pdf-to-image" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1.5rem; background: linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(219, 39, 119, 0.1)); border-radius: 1.5rem; text-decoration: none; color: #1f2937; min-height: 140px;">
+              <div style="width: 48px; height: 48px; background: rgba(255,255,255,0.3); border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; margin-bottom: 0.75rem;">
+                <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+              </div>
+              <h3 style="font-size: 1rem; font-weight: 600; text-align: center;">PDF to Image</h3>
+            </a>
+
+            <a href="/image-to-pdf" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1.5rem; background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(124, 58, 237, 0.1)); border-radius: 1.5rem; text-decoration: none; color: #1f2937; min-height: 140px; grid-column: span 2;">
+              <div style="width: 48px; height: 48px; background: rgba(255,255,255,0.3); border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; margin-bottom: 0.75rem;">
+                <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle></svg>
+              </div>
+              <h3 style="font-size: 1rem; font-weight: 600; text-align: center;">Image to PDF</h3>
+            </a>
+
+            <a href="/ocr-pdf" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1.5rem; background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(8, 145, 178, 0.1)); border-radius: 1.5rem; text-decoration: none; color: #1f2937; min-height: 140px; grid-row: span 2;">
+              <div style="width: 48px; height: 48px; background: rgba(255,255,255,0.3); border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; margin-bottom: 0.75rem;">
+                <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+              </div>
+              <h3 style="font-size: 1rem; font-weight: 600; text-align: center;">OCR PDF</h3>
+            </a>
+          </div>
+        </section>
       </div>
     </div>
     <script type="module" defer src="/src/main.tsx"></script>
