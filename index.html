@@ -8,8 +8,50 @@
     <!-- Meta description will be set dynamically by React Helmet for each page -->
     <!-- Build timestamp: 2025-10-17 02:30 - Force rebuild -->
 
-    <!-- Critical CSS for instant LCP (minimized) -->
-    <style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:system-ui,-apple-system,sans-serif}</style>
+    <!-- Critical CSS for instant LCP - ZERO external requests for fonts! -->
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        /* System font stack - ZERO delay, instant render */
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        background: #f9fafb;
+      }
+
+      /* Prevent FOIT/FOUT - instant text rendering */
+      html {
+        font-display: optional;
+      }
+
+      /* Critical above-the-fold styles for instant LCP */
+      #root {
+        min-height: 100vh;
+      }
+
+      /* Hero section critical styles */
+      .hero-gradient {
+        background: linear-gradient(135deg, #f9fafb 0%, #eff6ff 50%, #faf5ff 100%);
+      }
+
+      .gradient-text {
+        background: linear-gradient(to right, #1a202c, #4ECDC4, #2B7A78);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      /* Prevent layout shift */
+      img {
+        max-width: 100%;
+        height: auto;
+      }
+    </style>
 
     <!-- Preload critical LCP image (logo) -->
     <link rel="preload" href="/logos/localpdf-header-64x64.png" as="image" fetchpriority="high" />
@@ -17,18 +59,6 @@
     <!-- DNS prefetch for analytics (low priority) -->
     <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
     <link rel="dns-prefetch" href="https://www.google-analytics.com" />
-
-    <!-- Self-hosted fonts for optimal LCP - NO external requests -->
-    <!-- Preload critical font CSS -->
-    <link rel="preload" href="/fonts/fonts.css" as="style" />
-    <link rel="stylesheet" href="/fonts/fonts.css" />
-
-    <!-- System font fallback stack (instant render, no FOIT) -->
-    <style>
-      body {
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      }
-    </style>
 
     <!-- SEO: Suggest search engines to crawl important pages -->
     <link rel="prerender" href="https://localpdf.online/merge-pdf" />
@@ -43,10 +73,6 @@
 
     <!-- Theme color -->
     <meta name="theme-color" content="#4ECDC4" />
-
-    <!-- Preload critical CSS for faster rendering (LCP optimization) -->
-    <link rel="preload" as="style" href="/assets/css/index.css" onload="this.onload=null;this.rel='stylesheet'" />
-    <noscript><link rel="stylesheet" href="/assets/css/index.css" /></noscript>
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
