@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import routePaths from '../src/config/routePaths.json';
-import blogPostsData from '../src/data/blogPosts';
+import blogPostsData from '../src/data/blogPosts/all';
 
 const baseUrl = 'https://localpdf.online';
 const currentDate = new Date().toISOString().slice(0, 10);
@@ -51,6 +51,12 @@ function getBlogPosts(): { slug: string; language: string; priority: number }[] 
 
   // Generate posts from actual blog data with enhanced priority system
   blogPostsData.forEach(post => {
+    // Skip undefined posts (defensive programming)
+    if (!post || typeof post !== 'object' || !post.slug || !post.language) {
+      console.warn('[Sitemap] Skipping invalid post:', post);
+      return;
+    }
+
     // Enhanced priority determination
     let priority = PAGE_PRIORITIES.regular_blog;
 
