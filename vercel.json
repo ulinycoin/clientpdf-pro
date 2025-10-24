@@ -8,6 +8,10 @@
 
   "rewrites": [
     {
+      "source": "/app",
+      "destination": "/app/index.html"
+    },
+    {
       "source": "/(merge-pdf|split-pdf|compress-pdf|protect-pdf|ocr-pdf|watermark-pdf|rotate-pdf|delete-pages-pdf|extract-pages-pdf|add-text-pdf|images-to-pdf|unlock-pdf|pdf-to-images|pdf-to-word|word-to-pdf|sign-pdf|flatten-pdf)",
       "destination": "/$1/index.html"
     },

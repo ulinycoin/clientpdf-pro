@@ -74,54 +74,63 @@ try {
     throw new Error('App-spa dist not found!');
   }
 
-  // Copy website files to dist (recursively)
-  function copyRecursive(src, dest) {
+  // STEP 1: Move React app to /app subdirectory
+  console.log('  → Moving React app to /app...');
+  const appSubdir = path.join(appDistPath, 'app');
+
+  // Create /app directory
+  if (!fs.existsSync(appSubdir)) {
+    fs.mkdirSync(appSubdir, { recursive: true });
+  }
+
+  // Move app-spa index.html to /app/index.html
+  const appIndexSrc = path.join(appDistPath, 'index.html');
+  const appIndexDest = path.join(appSubdir, 'index.html');
+  if (fs.existsSync(appIndexSrc)) {
+    fs.renameSync(appIndexSrc, appIndexDest);
+    console.log('    ✓ Moved index.html to /app/index.html');
+  }
+
+  // Assets stay in root /assets (shared by both app and website)
+
+  // STEP 2: Copy website files to root
+  console.log('  → Copying website files to root...');
+
+  function copyRecursive(src, dest, skipDirs = []) {
     const exists = fs.existsSync(src);
     const stats = exists && fs.statSync(src);
     const isDirectory = exists && stats.isDirectory();
 
     if (isDirectory) {
+      const baseName = path.basename(src);
+      if (skipDirs.includes(baseName)) {
+        return; // Skip this directory
+      }
+
       if (!fs.existsSync(dest)) {
         fs.mkdirSync(dest, { recursive: true });
       }
       fs.readdirSync(src).forEach(childItemName => {
         copyRecursive(
           path.join(src, childItemName),
-          path.join(dest, childItemName)
+          path.join(dest, childItemName),
+          skipDirs
         );
       });
     } else {
-      // Only copy if destination doesn't exist (don't overwrite app-spa files)
-      if (!fs.existsSync(dest)) {
-        fs.copyFileSync(src, dest);
-      }
+      // Copy file, overwriting if needed
+      fs.copyFileSync(src, dest);
     }
   }
 
-  // Copy all website files
-  copyRecursive(websiteDistPath, appDistPath);
+  // Copy all website files (skip _astro assets, they should stay separate)
+  copyRecursive(websiteDistPath, appDistPath, []);
 
-  // Override specific files that should come from website
-  const filesToOverride = [
-    'robots.txt',
-    'sitemap.xml',
-    'manifest.json',
-    'google34adca022b79f1a0.html',
-    'be13ab7c5d7548a1b51e5ce3c969af42.txt'
-  ];
-
-  filesToOverride.forEach(file => {
-    const srcFile = path.join(websiteDistPath, file);
-    const destFile = path.join(appDistPath, file);
-    if (fs.existsSync(srcFile)) {
-      fs.copyFileSync(srcFile, destFile);
-    }
-  });
-
-  // Copy website public files if they exist
+  // STEP 3: Copy website public files if they exist
   const websitePublicPath = path.join(__dirname, 'website', 'public');
   if (fs.existsSync(websitePublicPath)) {
-    copyRecursive(websitePublicPath, appDistPath);
+    console.log('  → Copying website public files...');
+    copyRecursive(websitePublicPath, appDistPath, []);
   }
 
   console.log('✅ Builds merged successfully');
@@ -137,15 +146,33 @@ try {
   }
   console.log('');
 
-  // Verify SEO pages exist
-  console.log('🔍 Verifying SEO pages:');
+  // Verify deployment structure
+  console.log('🔍 Verifying deployment:');
+
+  // Check SEO homepage
+  const seoHomepage = path.join(appDistPath, 'index.html');
+  if (fs.existsSync(seoHomepage)) {
+    console.log('✓ / → SEO homepage (Astro)');
+  } else {
+    console.error('✗ SEO homepage MISSING!');
+  }
+
+  // Check React app
+  const appIndex = path.join(appDistPath, 'app', 'index.html');
+  if (fs.existsSync(appIndex)) {
+    console.log('✓ /app → React app (SPA)');
+  } else {
+    console.error('✗ React app MISSING!');
+  }
+
+  // Check SEO tool pages
   const seoPages = ['merge-pdf', 'split-pdf', 'compress-pdf'];
   seoPages.forEach(page => {
     const pagePath = path.join(appDistPath, page, 'index.html');
     if (fs.existsSync(pagePath)) {
-      console.log(`✓ ${page}/index.html exists`);
+      console.log(`✓ /${page} → SEO page`);
     } else {
-      console.error(`✗ ${page}/index.html MISSING!`);
+      console.error(`✗ /${page} MISSING!`);
     }
   });
   console.log('');
