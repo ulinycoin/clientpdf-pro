@@ -1,0 +1,49 @@
+# Vercel Ignore File
+# Files/directories to exclude from Vercel deployment
+
+# Source files (already built into dist/)
+src/
+website/src/
+
+# Node modules (Vercel installs its own)
+node_modules/
+website/node_modules/
+
+# Build artifacts (will be regenerated)
+website/dist/
+.astro/
+website/.astro/
+
+# Development files
+*.log
+npm-debug.log*
+.DS_Store
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE files
+.vscode/
+.idea/
+
+# Git files
+.git/
+.gitignore
+
+# Documentation (not needed for production)
+DEVELOPMENT_GUIDE.md
+GITHUB_SETUP.md
+GIT_STATUS.md
+QUICK_PUSH.sh
+build-vercel.sh
+
+# Test files
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+
+# TypeScript config (not needed after build)
+tsconfig*.json

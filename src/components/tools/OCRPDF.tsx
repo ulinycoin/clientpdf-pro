@@ -5,15 +5,6 @@ import { useSharedFile } from '@/hooks/useSharedFile';
 import * as Tesseract from 'tesseract.js';
 import { getDocument } from 'pdfjs-dist';
 
-// Language mapping for Tesseract
-const TESSERACT_LANGUAGES: Record<string, string> = {
-  en: 'eng',
-  ru: 'rus',
-  de: 'deu',
-  fr: 'fra',
-  es: 'spa',
-};
-
 const DEFAULT_LANGUAGE = 'eng';
 
 interface OCRResult {

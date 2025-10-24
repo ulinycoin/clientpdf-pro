@@ -1,9 +1,8 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
 import { useHashRouter } from '@/hooks/useHashRouter';
-import { useSharedFile } from '@/hooks/useSharedFile';
 import { WelcomeScreen } from '@/components/WelcomeScreen';
 import { Sidebar } from '@/components/layout/Sidebar';
-import type { Theme, Tool } from '@/types';
+import type { Theme } from '@/types';
 
 // Lazy load tool components for better performance
 // Each tool loads only when user navigates to it

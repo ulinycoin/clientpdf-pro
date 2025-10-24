@@ -12,28 +12,7 @@ interface UploadedFile {
   preview?: string;
 }
 
-// Tool names and descriptions
-const TOOL_INFO: Record<Tool, { name: string; description: string }> = {
-  'merge-pdf': { name: 'Merge PDF', description: 'Combine multiple PDFs into one' },
-  'split-pdf': { name: 'Split PDF', description: 'Extract pages from PDF' },
-  'compress-pdf': { name: 'Compress PDF', description: 'Reduce PDF file size' },
-  'protect-pdf': { name: 'Protect PDF', description: 'Add password protection' },
-  'ocr-pdf': { name: 'OCR PDF', description: 'Extract text from scanned PDFs' },
-  'watermark-pdf': { name: 'Watermark PDF', description: 'Add watermark to PDF' },
-  'add-text-pdf': { name: 'Add Text to PDF', description: 'Add custom text to PDF pages' },
-  'rotate-pdf': { name: 'Rotate PDF', description: 'Rotate PDF pages' },
-  'delete-pages-pdf': { name: 'Delete Pages', description: 'Remove unwanted pages' },
-  'extract-pages-pdf': { name: 'Extract Pages', description: 'Extract specific pages' },
-  'unlock-pdf': { name: 'Unlock PDF', description: 'Remove PDF password' },
-  'images-to-pdf': { name: 'Images to PDF', description: 'Convert images to PDF' },
-  'pdf-to-images': { name: 'PDF to Images', description: 'Convert PDF to images' },
-  'pdf-to-word': { name: 'PDF to Word', description: 'Convert PDF to DOCX' },
-  'word-to-pdf': { name: 'Word to PDF', description: 'Convert DOCX to PDF' },
-  'sign-pdf': { name: 'Sign PDF', description: 'Add digital signature' },
-  'flatten-pdf': { name: 'Flatten PDF', description: 'Flatten PDF forms' }
-};
-
-export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ context, onToolSelect }) => {
+export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ context }) => {
   const { setSharedFile, setSharedFiles } = useSharedFile();
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [isDragging, setIsDragging] = useState(false);
