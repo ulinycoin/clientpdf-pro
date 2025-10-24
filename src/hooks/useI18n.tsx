@@ -54,13 +54,8 @@ export const useI18n = (): I18nReturn => {
       return storedLang;
     }
 
-    // Priority 3: Browser language
-    const browserLang = navigator.language.split('-')[0] as Language;
-    if (SUPPORTED_LANGUAGES.includes(browserLang)) {
-      return browserLang;
-    }
-
-    // Fallback: English
+    // Default: English (ignoring browser language for now)
+    // Users can manually change language via language selector
     return 'en';
   });
 

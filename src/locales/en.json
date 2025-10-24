@@ -417,7 +417,8 @@
     "errors": {
       "noText": "Please enter watermark text",
       "textRequired": "Please enter watermark text",
-      "failed": "Failed to apply watermark"
+      "failed": "Failed to apply watermark",
+      "cyrillicNotSupported": "Cyrillic characters are not supported. Please use Latin characters."
     },
     "success": {
       "title": "Watermark applied successfully!",

@@ -204,7 +204,7 @@ export const WatermarkPDF: React.FC = () => {
       return font;
     } catch (error) {
       console.error('Failed to load Cyrillic font:', error);
-      alert(t('watermark.errors.failed') + '\n\nКириллица не поддерживается. Используйте латинские символы.');
+      alert(t('watermark.errors.failed') + '\n\n' + t('watermark.errors.cyrillicNotSupported'));
       throw error; // Don't continue with broken Cyrillic
     }
   };
