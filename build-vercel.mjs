@@ -50,8 +50,14 @@ try {
 
   // Step 2: Build website (Astro)
   console.log('📦 Step 2/3: Building website...');
-  execSync('npm run build:web', { stdio: 'inherit', cwd: __dirname });
-  console.log('✅ Website built successfully');
+  try {
+    execSync('npm run build:web', { stdio: 'inherit', cwd: __dirname });
+    console.log('✅ Website built successfully');
+  } catch (error) {
+    console.error('❌ Website build failed');
+    console.error('Error:', error.message);
+    throw error;
+  }
   console.log('');
 
   // Step 3: Merge builds
@@ -129,6 +135,19 @@ try {
   if (distContents.length > 20) {
     console.log(`... and ${distContents.length - 20} more`);
   }
+  console.log('');
+
+  // Verify SEO pages exist
+  console.log('🔍 Verifying SEO pages:');
+  const seoPages = ['merge-pdf', 'split-pdf', 'compress-pdf'];
+  seoPages.forEach(page => {
+    const pagePath = path.join(appDistPath, page, 'index.html');
+    if (fs.existsSync(pagePath)) {
+      console.log(`✓ ${page}/index.html exists`);
+    } else {
+      console.error(`✗ ${page}/index.html MISSING!`);
+    }
+  });
   console.log('');
 
   console.log('✅ Build completed successfully!');
