@@ -7,7 +7,7 @@
     "dev": "vite",
     "dev:web": "astro dev --root website",
     "dev:all": "concurrently \"npm run dev\" \"npm run dev:web\" --names \"APP,WEB\" --prefix-colors \"cyan,magenta\"",
-    "build": "tsc -b && vite build",
+    "build": "vite build",
     "build:web": "astro build --root website",
     "build:all": "node build-vercel.mjs",
     "build:vercel": "node build-vercel.mjs",
