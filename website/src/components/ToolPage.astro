@@ -19,7 +19,29 @@ interface Props {
 const { toolId, title, description, metaDescription, benefits, steps, whyChoose, features } = Astro.props;
 
 const canonicalURL = `https://localpdf.online/${toolId}`;
-const appURL = `/app#${toolId.replace('-pdf', '')}`;
+
+// Map toolId to correct hash for app routing
+const toolHashMap: Record<string, string> = {
+  'merge-pdf': 'merge',
+  'split-pdf': 'split',
+  'compress-pdf': 'compress',
+  'protect-pdf': 'protect',
+  'ocr-pdf': 'ocr',
+  'add-text-pdf': 'add-text',
+  'watermark-pdf': 'watermark',
+  'rotate-pdf': 'rotate',
+  'delete-pages-pdf': 'delete-pages',
+  'extract-pages-pdf': 'extract-pages',
+  'unlock-pdf': 'unlock',
+  'images-to-pdf': 'images-to-pdf',
+  'pdf-to-images': 'pdf-to-images',
+  'pdf-to-word': 'pdf-to-word',
+  'word-to-pdf': 'word-to-pdf',
+  'sign-pdf': 'sign',
+  'flatten-pdf': 'flatten',
+};
+
+const appURL = `/app#${toolHashMap[toolId] || toolId}`;
 
 // Schema.org structured data for SEO
 const structuredData = {
