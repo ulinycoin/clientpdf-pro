@@ -6,8 +6,11 @@
 
 [![Version](https://img.shields.io/badge/version-3.0.0-blue.svg)](https://github.com/ulinycoin/clientpdf-pro)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
+[![Deploy](https://img.shields.io/badge/deploy-auto-brightgreen.svg)](https://localpdf.online)
 
 > **Note:** This is version 3.0 - a complete rewrite with modern architecture. For v2 legacy code, see archived repository.
+>
+> **Auto-deploy:** Pushes to `main` branch automatically deploy to production via Vercel.
 
 ---
 
