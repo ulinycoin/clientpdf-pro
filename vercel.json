@@ -1,82 +1,19 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "version": 2,
-  "name": "localpdf-v3",
   "buildCommand": "npm run build:all",
   "outputDirectory": "dist",
   "framework": null,
   "installCommand": "npm install",
   "devCommand": "npm run dev:all",
 
-  "builds": [
+  "rewrites": [
     {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist"
-      }
-    }
-  ],
-
-  "routes": [
-    {
-      "src": "/robots.txt",
-      "dest": "/robots.txt"
+      "source": "/(merge-pdf|split-pdf|compress-pdf|protect-pdf|ocr-pdf|watermark-pdf|rotate-pdf|delete-pages-pdf|extract-pages-pdf|add-text-pdf|images-to-pdf|unlock-pdf|pdf-to-images|pdf-to-word|word-to-pdf|sign-pdf|flatten-pdf)",
+      "destination": "/$1/index.html"
     },
     {
-      "src": "/sitemap.xml",
-      "dest": "/sitemap.xml"
-    },
-    {
-      "src": "/manifest.json",
-      "dest": "/manifest.json"
-    },
-    {
-      "src": "/google34adca022b79f1a0.html",
-      "dest": "/google34adca022b79f1a0.html"
-    },
-    {
-      "src": "/be13ab7c5d7548a1b51e5ce3c969af42.txt",
-      "dest": "/be13ab7c5d7548a1b51e5ce3c969af42.txt"
-    },
-    {
-      "src": "/logos/(.*)",
-      "dest": "/logos/$1",
-      "headers": {
-        "Cache-Control": "public, max-age=31536000, immutable"
-      }
-    },
-    {
-      "src": "/assets/(.*)",
-      "dest": "/assets/$1",
-      "headers": {
-        "Cache-Control": "public, max-age=31536000, immutable"
-      }
-    },
-    {
-      "src": "/fonts/(.*)",
-      "dest": "/fonts/$1",
-      "headers": {
-        "Cache-Control": "public, max-age=31536000, immutable"
-      }
-    },
-    {
-      "src": "/(merge-pdf|split-pdf|compress-pdf|protect-pdf|ocr-pdf|watermark-pdf|rotate-pdf|delete-pages-pdf|extract-pages-pdf|add-text-pdf|images-to-pdf|unlock-pdf|pdf-to-images|pdf-to-word|word-to-pdf|sign-pdf|flatten-pdf)",
-      "dest": "/$1/index.html",
-      "headers": {
-        "Cache-Control": "public, max-age=3600, s-maxage=86400"
-      }
-    },
-    {
-      "src": "/(about|privacy|terms|comparison|learn)",
-      "dest": "/$1/index.html",
-      "headers": {
-        "Cache-Control": "public, max-age=3600, s-maxage=86400"
-      }
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/$1"
+      "source": "/(about|privacy|terms|comparison|learn)",
+      "destination": "/$1/index.html"
     }
   ],
 
@@ -154,9 +91,5 @@
 
   "trailingSlash": false,
 
-  "cleanUrls": true,
-
-  "github": {
-    "silent": true
-  }
+  "cleanUrls": true
 }

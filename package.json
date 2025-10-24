@@ -9,8 +9,8 @@
     "dev:all": "concurrently \"npm run dev\" \"npm run dev:web\" --names \"APP,WEB\" --prefix-colors \"cyan,magenta\"",
     "build": "tsc -b && vite build",
     "build:web": "astro build --root website",
-    "build:all": "bash build-vercel.sh",
-    "build:vercel": "bash build-vercel.sh",
+    "build:all": "node build-vercel.mjs",
+    "build:vercel": "node build-vercel.mjs",
     "preview:web": "astro preview --root website",
     "lint": "eslint .",
     "preview": "vite preview"
