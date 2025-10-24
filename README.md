@@ -1,8 +1,13 @@
-# LocalPDF app-spa
+# LocalPDF v3.0
 
 **Privacy-first PDF toolkit** - Hash-based Single Page Application
 
-🚀 **Optimized for performance** - 90% smaller bundle with code splitting and lazy loading
+🚀 **Optimized for performance** - 91% smaller bundle with code splitting and lazy loading
+
+[![Version](https://img.shields.io/badge/version-3.0.0-blue.svg)](https://github.com/ulinycoin/clientpdf-pro)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
+
+> **Note:** This is version 3.0 - a complete rewrite with modern architecture. For v2 legacy code, see archived repository.
 
 ---
 
@@ -19,20 +24,25 @@ npm run dev
 http://localhost:3000
 ```
 
-## 📱 Available Tools (6/17 implemented)
+## 📱 Available Tools (11/17 implemented)
 
-### ✅ Core Tools (Tier 1)
+### ✅ Core Tools (Tier 1) - 5/5
 - **Merge PDF** - `/#merge` - Combine multiple PDF files
 - **Split PDF** - `/#split` - Extract pages from PDF
 - **Compress PDF** - `/#compress` - Reduce PDF file size
 - **Protect PDF** - `/#protect` - Add password protection
 - **OCR PDF** - `/#ocr` - Extract text with OCR
 
-### ✅ Edit Tools (Tier 2)
+### ✅ Edit Tools (Tier 2) - 6/6
 - **Watermark PDF** - `/#watermark` - Add watermark to pages
+- **Add Text PDF** - `/#add-text` - Add custom text to PDF pages
+- **Rotate PDF** - `/#rotate` - Rotate pages by 90/180/270 degrees
+- **Delete Pages** - `/#delete-pages` - Remove specific pages
+- **Extract Pages** - `/#extract-pages` - Extract pages to new PDF
+- **Images to PDF** - `/#images-to-pdf` - Convert JPG/PNG to PDF
 
-### ❌ Not Yet Implemented (11 tools)
-- Add Text, Rotate, Delete Pages, Extract Pages, Unlock, Images to PDF, PDF to Images, PDF to Word, Word to PDF, Sign, Flatten
+### ❌ Not Yet Implemented (6 tools)
+- Unlock PDF, PDF to Images, PDF to Word, Word to PDF, Sign PDF, Flatten PDF
 
 ---
 
@@ -97,10 +107,10 @@ npm run lint         # Lint code
 ## 📂 Project Structure
 
 ```
-app-spa/
+localpdf-v3/
 ├── src/
 │   ├── components/
-│   │   ├── tools/           # PDF tools (6 implemented)
+│   │   ├── tools/           # PDF tools (11 implemented)
 │   │   ├── layout/          # Sidebar navigation
 │   │   └── WelcomeScreen    # Homepage
 │   ├── hooks/
@@ -109,7 +119,12 @@ app-spa/
 │   ├── services/            # PDF processing logic
 │   ├── locales/             # Translations (5 languages)
 │   └── App.tsx              # Main component with lazy loading
+├── website/                 # Astro SEO website
+│   ├── src/pages/          # SEO landing pages
+│   └── public/             # Static assets
 ├── vite.config.ts           # ⭐ Code splitting config
+├── CHANGELOG.md             # Version history
+├── GITHUB_SETUP.md          # GitHub push instructions
 └── DEVELOPMENT_GUIDE.md     # 📖 Development documentation
 ```
 
@@ -138,26 +153,45 @@ Tools and libraries load only when user clicks them.
 
 ## 🚫 Important Notes
 
-### This is NOT a replacement for main app
-- **Main app** (`/`) - SEO-optimized, production website
-- **app-spa** (`/app-spa`) - Widget, embed, offline use-case
+### Dual Architecture
+This project contains TWO applications:
 
-### Hash Routing vs Browser Routing
-- **app-spa**: `/#merge` (hash-based)
-- **Main app**: `/merge-pdf` (browser routing)
+1. **App-SPA** (`/src`) - React 19 Single Page Application
+   - Hash routing: `/#merge`, `/#split`, etc.
+   - Client-side PDF processing
+   - Multi-language support
 
-Don't mix them up!
+2. **Website** (`/website`) - Astro Static Site
+   - SEO landing pages: `/merge-pdf`, `/split-pdf`, etc.
+   - Links to app-spa tools
+   - English only (for now)
+
+### Routing
+- **Website**: `/merge-pdf` (SEO page) → Links to app `/#merge`
+- **App-SPA**: `/#merge` (actual PDF tool)
 
 ---
 
 ## 📞 Support
 
 - **Documentation:** [DEVELOPMENT_GUIDE.md](./DEVELOPMENT_GUIDE.md)
+- **Setup Guide:** [GITHUB_SETUP.md](./GITHUB_SETUP.md)
+- **Changelog:** [CHANGELOG.md](./CHANGELOG.md)
 - **Main Project:** https://localpdf.online
 - **Repository:** https://github.com/ulinycoin/clientpdf-pro
 
 ---
 
-**Built with:** React + TypeScript + Vite
-**Optimized:** October 18, 2025
+## 📋 Version History
+
+- **v3.0.0** (Current) - Complete rewrite with modern architecture
+- **v2.x** (Legacy) - Archived in separate repository
+
+See [CHANGELOG.md](./CHANGELOG.md) for detailed version history.
+
+---
+
+**Built with:** React 19 + TypeScript + Vite + Astro
+**Version:** 3.0.0
+**Optimized:** October 24, 2025
 **Maintainer:** Claude Code
