@@ -75,11 +75,14 @@ const siteName = 'LocalPDF';
 
   <slot name="head" />
 
-  <!-- Fonts - Preconnect for performance -->
+  <!-- Fonts - Optimized async loading with font-display swap -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="dns-prefetch" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  </noscript>
 
   <!-- Google Analytics - Ultra-deferred loading (after page is idle) -->
   <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>

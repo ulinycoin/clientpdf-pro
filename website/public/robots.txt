@@ -7,10 +7,6 @@ Allow: /
 # Sitemaps
 Sitemap: https://localpdf.online/sitemap.xml
 
-# IndexNow - Instant indexing for Bing, Yandex, Seznam.cz
-# API key for instant content updates
-IndexNow-Key: be13ab7c5d7548a1b51e5ce3c969af42
-
 # Bingbot - Moderate crawling speed
 User-agent: Bingbot
 Crawl-delay: 1

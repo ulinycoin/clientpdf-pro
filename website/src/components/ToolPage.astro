@@ -85,8 +85,7 @@ const howToSchema = {
 };
 ---
 
-<BaseLayout title={title} description={metaDescription}>
-  <link slot="head" rel="canonical" href={canonicalURL} />
+<BaseLayout title={title} description={metaDescription} canonical={canonicalURL}>
 
   <!-- Schema.org structured data -->
   <script type="application/ld+json" slot="head" set:html={JSON.stringify(structuredData)} />
