@@ -81,15 +81,35 @@ http://localhost:3000
 ```bash
 # Development
 npm run dev          # Start dev server (port 3000)
+npm run dev:web      # Start website dev server (port 4321)
+npm run dev:all      # Start both servers simultaneously
 
-# Production
-npm run build        # Build for production
+# Production Build
+npm run build        # Build app-spa only
+npm run build:web    # Build website only
+npm run build:all    # Build both (for Vercel deployment)
 npm run preview      # Preview production build
 
 # Code Quality
 npx tsc --noEmit     # Type check
 npm run lint         # Lint code
 ```
+
+## 🚀 Deployment
+
+### Deploy to Vercel (2 minutes)
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/YOUR_USERNAME/YOUR_REPO)
+
+1. Click button above or go to https://vercel.com/new
+2. Import your GitHub repository
+3. Vercel auto-detects settings from `vercel.json`
+4. Click "Deploy"
+5. Done! 🎉
+
+**Quick Start:** [VERCEL_QUICKSTART.md](./VERCEL_QUICKSTART.md)
+**Full Guide:** [VERCEL_DEPLOYMENT.md](./VERCEL_DEPLOYMENT.md)
+**Status:** [DEPLOYMENT_STATUS.md](./DEPLOYMENT_STATUS.md)
 
 ---
 
@@ -174,9 +194,18 @@ This project contains TWO applications:
 
 ## 📞 Support
 
-- **Documentation:** [DEVELOPMENT_GUIDE.md](./DEVELOPMENT_GUIDE.md)
-- **Setup Guide:** [GITHUB_SETUP.md](./GITHUB_SETUP.md)
-- **Changelog:** [CHANGELOG.md](./CHANGELOG.md)
+### Documentation
+- **Development:** [DEVELOPMENT_GUIDE.md](./DEVELOPMENT_GUIDE.md) - Complete development guide
+- **Deployment:** [VERCEL_DEPLOYMENT.md](./VERCEL_DEPLOYMENT.md) - Vercel deployment guide
+- **Quick Start:** [VERCEL_QUICKSTART.md](./VERCEL_QUICKSTART.md) - 2-minute deployment
+- **Changelog:** [CHANGELOG.md](./CHANGELOG.md) - Version history
+
+### Setup Guides
+- **GitHub:** [GITHUB_SETUP.md](./GITHUB_SETUP.md) - Push to GitHub
+- **Git Status:** [GIT_STATUS.md](./GIT_STATUS.md) - Repository status
+- **Deployment Status:** [DEPLOYMENT_STATUS.md](./DEPLOYMENT_STATUS.md) - Ready to deploy
+
+### Links
 - **Main Project:** https://localpdf.online
 - **Repository:** https://github.com/ulinycoin/clientpdf-pro
 
