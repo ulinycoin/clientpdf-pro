@@ -16,8 +16,25 @@ console.log('====================================');
 console.log('');
 
 try {
-  // Check Node version
+  // Check environment
   console.log('Node version:', process.version);
+  console.log('Working directory:', __dirname);
+  console.log('Current directory:', process.cwd());
+  console.log('');
+
+  // Check files exist
+  const indexHtmlPath = path.join(__dirname, 'index.html');
+  const mainTsxPath = path.join(__dirname, 'src', 'main.tsx');
+
+  if (!fs.existsSync(indexHtmlPath)) {
+    throw new Error(`index.html not found at ${indexHtmlPath}`);
+  }
+  if (!fs.existsSync(mainTsxPath)) {
+    throw new Error(`src/main.tsx not found at ${mainTsxPath}`);
+  }
+
+  console.log('✓ index.html found');
+  console.log('✓ src/main.tsx found');
   console.log('');
 
   // Step 1: Build app-spa (React)
