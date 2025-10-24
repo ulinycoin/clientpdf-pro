@@ -174,12 +174,13 @@ function App() {
       </main>
 
       {/* Footer */}
-      <footer className="py-6 text-center text-sm text-gray-500 dark:text-gray-400">
+      <footer className="py-8 flex justify-center">
         <a
           href="https://localpdf.online"
-          className="hover:text-ocean-500 transition-colors"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-gray-100 dark:bg-privacy-700 hover:bg-ocean-500 hover:text-white dark:hover:bg-ocean-600 text-gray-700 dark:text-gray-200 rounded-lg transition-all duration-200 font-medium shadow-sm hover:shadow-md"
         >
-          ← Back to main site
+          <span className="text-lg">←</span>
+          <span>Back to main site</span>
         </a>
       </footer>
     </div>
