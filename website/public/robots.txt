@@ -1,0 +1,46 @@
+# robots.txt for LocalPDF
+# https://localpdf.online
+
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://localpdf.online/sitemap.xml
+
+# IndexNow - Instant indexing for Bing, Yandex, Seznam.cz
+# API key for instant content updates
+IndexNow-Key: be13ab7c5d7548a1b51e5ce3c969af42
+
+# Bingbot - Moderate crawling speed
+User-agent: Bingbot
+Crawl-delay: 1
+
+# YandexBot - Conservative crawling for European/Russian markets
+User-agent: YandexBot
+Crawl-delay: 1
+
+# Disallow app routes (hash-based SPA)
+Disallow: /app
+
+# Allow all tool pages
+Allow: /merge-pdf
+Allow: /split-pdf
+Allow: /compress-pdf
+Allow: /protect-pdf
+Allow: /ocr-pdf
+Allow: /watermark-pdf
+Allow: /add-text-pdf
+Allow: /rotate-pdf
+Allow: /delete-pages-pdf
+Allow: /extract-pages-pdf
+Allow: /images-to-pdf
+
+# Allow informational pages
+Allow: /about
+Allow: /privacy
+Allow: /terms
+Allow: /learn
+Allow: /comparison
+
+# Crawl-delay (be nice to search engines)
+Crawl-delay: 1

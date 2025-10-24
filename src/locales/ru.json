@@ -1,0 +1,549 @@
+{
+  "app": {
+    "title": "LocalPDF",
+    "subtitle": "PDF инструменты с защитой приватности в вашем браузере"
+  },
+  "welcome": {
+    "title": "Добро пожаловать в LocalPDF",
+    "subtitle": "Выберите инструмент для начала работы",
+    "firstTimeBanner": "Добро пожаловать! Вся обработка происходит в вашем браузере - ваши файлы не покидают устройство.",
+    "selectTool": "Выберите инструмент из боковой панели или ниже"
+  },
+  "sidebar": {
+    "tools": "Инструменты",
+    "collapse": "Свернуть панель",
+    "expand": "Развернуть панель",
+    "backToMain": "← Вернуться на главный сайт"
+  },
+  "tools": {
+    "merge-pdf": {
+      "name": "Объединить PDF",
+      "description": "Объединить несколько PDF в один"
+    },
+    "split-pdf": {
+      "name": "Разделить PDF",
+      "description": "Извлечь страницы из PDF"
+    },
+    "compress-pdf": {
+      "name": "Сжать PDF",
+      "description": "Уменьшить размер PDF файла"
+    },
+    "protect-pdf": {
+      "name": "Защитить PDF",
+      "description": "Добавить защиту паролем"
+    },
+    "ocr-pdf": {
+      "name": "OCR PDF",
+      "description": "Извлечь текст из отсканированных PDF"
+    },
+    "watermark-pdf": {
+      "name": "Водяной знак",
+      "description": "Добавить водяной знак на PDF"
+    },
+    "add-text-pdf": {
+      "name": "Добавить текст",
+      "description": "Добавить текст на страницы PDF"
+    },
+    "rotate-pdf": {
+      "name": "Повернуть PDF",
+      "description": "Повернуть страницы PDF"
+    },
+    "delete-pages-pdf": {
+      "name": "Удалить страницы",
+      "description": "Удалить ненужные страницы"
+    },
+    "extract-pages-pdf": {
+      "name": "Извлечь страницы",
+      "description": "Извлечь определенные страницы"
+    },
+    "unlock-pdf": {
+      "name": "Разблокировать PDF",
+      "description": "Снять пароль с PDF"
+    },
+    "images-to-pdf": {
+      "name": "Изображения в PDF",
+      "description": "Конвертировать изображения в PDF"
+    },
+    "pdf-to-images": {
+      "name": "PDF в изображения",
+      "description": "Конвертировать PDF в изображения"
+    },
+    "pdf-to-word": {
+      "name": "PDF в Word",
+      "description": "Конвертировать PDF в DOCX"
+    },
+    "word-to-pdf": {
+      "name": "Word в PDF",
+      "description": "Конвертировать DOCX в PDF"
+    },
+    "sign-pdf": {
+      "name": "Подписать PDF",
+      "description": "Добавить цифровую подпись"
+    },
+    "flatten-pdf": {
+      "name": "Свести PDF",
+      "description": "Свести формы PDF"
+    },
+    "edit-pdf": {
+      "name": "Редактировать PDF",
+      "description": "Редактировать содержимое PDF"
+    }
+  },
+  "common": {
+    "upload": "Загрузить файлы",
+    "download": "Скачать",
+    "processing": "Обработка...",
+    "error": "Ошибка",
+    "success": "Успешно",
+    "cancel": "Отмена",
+    "close": "Закрыть",
+    "back": "Назад",
+    "next": "Далее",
+    "done": "Готово",
+    "remove": "Удалить",
+    "newFile": "Новый файл",
+    "filePreview": "Предпросмотр файла",
+    "totalPages": "Всего страниц",
+    "fileSize": "Размер файла",
+    "changeFile": "Изменить файл",
+    "autoLoaded": "Файл загружен из предыдущего инструмента",
+    "autoLoadedDescription": "Ваш PDF был автоматически загружен",
+    "reset": "Сбросить",
+    "processAnother": "Обработать другой",
+    "relatedTools": "Похожие инструменты",
+    "clickToEdit": "Нажмите для редактирования",
+    "convertAnother": "Convert another",
+    "quickActions": "Quick Actions",
+    "preview": "Preview",
+    "clearAll": "Clear All",
+    "processingTime": "Processing time"
+  },
+  "upload": {
+    "selectFiles": "Выбрать файлы",
+    "dragOrClick": "Перетащите файлы сюда или нажмите для выбора",
+    "dropHere": "Отпустите файлы здесь",
+    "multipleFilesAllowed": "Можно выбрать несколько файлов",
+    "singleFileAllowed": "Только один файл",
+    "pasteHint": "Или нажмите Ctrl+V для вставки файлов",
+    "maxFiles": "Максимум файлов",
+    "maxSize": "Максимальный размер файла",
+    "acceptedTypes": "Допустимые типы",
+    "errors": {
+      "tooManyFiles": "Слишком много файлов. Максимум: {max}",
+      "invalidFileType": "Неверный тип файла. Пожалуйста, выберите только PDF файлы.",
+      "fileTooLarge": "Файл слишком большой. Максимальный размер: {max} МБ"
+    }
+  },
+  "merge": {
+    "fileList": "Файлы для объединения",
+    "reorderHint": "Перетащите для изменения порядка",
+    "mergeButton": "Объединить PDF",
+    "mergeAnother": "Объединить другие",
+    "minFilesHint": "Добавьте минимум 2 PDF файла для объединения",
+    "errors": {
+      "minFiles": "Пожалуйста, выберите минимум 2 PDF файла для объединения"
+    },
+    "success": {
+      "title": "PDF успешно объединены!",
+      "pages": "Всего страниц",
+      "size": "Размер файла",
+      "time": "Время обработки"
+    },
+    "quickActions": {
+      "title": "Что дальше?",
+      "description": "Продолжите работу с объединённым PDF используя эти инструменты:",
+      "compress": "Уменьшить размер",
+      "protect": "Добавить пароль",
+      "watermark": "Добавить водяной знак",
+      "split": "Извлечь страницы"
+    }
+  },
+  "compress": {
+    "filePreview": "Файл для сжатия",
+    "originalSize": "Исходный размер",
+    "pages": "Страниц",
+    "changeFile": "Изменить файл",
+    "selectQuality": "Выберите уровень сжатия",
+    "selected": "Выбрано",
+    "compressButton": "Сжать PDF",
+    "compressAnother": "Сжать другой",
+    "quality": {
+      "low": {
+        "name": "Максимальное",
+        "description": "Минимальный размер файла, низкое качество"
+      },
+      "medium": {
+        "name": "Сбалансированное",
+        "description": "Хороший баланс между размером и качеством"
+      },
+      "high": {
+        "name": "Минимальное",
+        "description": "Лучшее качество, больший размер файла"
+      }
+    },
+    "success": {
+      "title": "PDF успешно сжат!",
+      "originalSize": "Исходный размер",
+      "compressedSize": "Размер после сжатия",
+      "saved": "Сэкономлено места",
+      "time": "Время обработки"
+    },
+    "quickActions": {
+      "title": "Что дальше?",
+      "description": "Продолжите работу со сжатым PDF:",
+      "protect": "Добавить пароль",
+      "merge": "Объединить с другими",
+      "split": "Извлечь страницы",
+      "watermark": "Добавить водяной знак"
+    },
+    "autoLoaded": {
+      "title": "Файл загружен из предыдущего инструмента",
+      "description": "Ваш объединённый PDF был автоматически загружен"
+    }
+  },
+  "split": {
+    "filePreview": "Файл для разделения",
+    "totalPages": "Всего страниц",
+    "fileSize": "Размер файла",
+    "changeFile": "Изменить файл",
+    "selectMode": "Выберите режим разделения",
+    "splitButton": "Разделить PDF",
+    "splitAnother": "Разделить другой",
+    "downloadAll": "Скачать все файлы",
+    "downloadAsZip": "Скачать как ZIP",
+    "outputFiles": "Выходные файлы",
+    "selectAll": "Выбрать все",
+    "deselectAll": "Отменить выбор",
+    "selectedCount": "Выбрано страниц: {count}",
+    "selectPagesHint": "Пожалуйста, выберите хотя бы одну страницу для продолжения",
+    "mergingSelected": "Объединение выбранных страниц...",
+    "mergeFailed": "Не удалось объединить выбранные страницы",
+    "mode": {
+      "all": {
+        "name": "Все страницы",
+        "description": "Разделить на отдельные страницы"
+      },
+      "range": {
+        "name": "Диапазон страниц",
+        "description": "Извлечь определённый диапазон страниц"
+      },
+      "intervals": {
+        "name": "По интервалам",
+        "description": "Разделить каждые N страниц"
+      },
+      "custom": {
+        "name": "Выборочные страницы",
+        "description": "Выбрать конкретные страницы"
+      }
+    },
+    "rangeSettings": "Настройки диапазона страниц",
+    "startPage": "Начальная страница",
+    "endPage": "Конечная страница",
+    "rangeHint": "Всего страниц: {total}",
+    "intervalSettings": "Настройки интервалов",
+    "pagesPerFile": "Страниц на файл",
+    "intervalHint": "Будет создано {files} файлов из {total} страниц",
+    "customSettings": "Выбор конкретных страниц",
+    "pageNumbers": "Номера страниц",
+    "customHint": "Введите номера страниц через запятую или используйте диапазоны (например, 1,3,5-7,10)",
+    "success": {
+      "title": "PDF успешно разделён!",
+      "filesCreated": "Создано файлов: {count}"
+    },
+    "pageNumber": "Страница {page}",
+    "pageRange": "Страницы {start}-{end}",
+    "pageCount": "{count} стр.",
+    "pageCountSingle": "1 страница",
+    "autoLoaded": {
+      "title": "Файл загружен из предыдущего инструмента",
+      "description": "Ваш PDF был автоматически загружен"
+    },
+    "quickActions": {
+      "title": "Что дальше?",
+      "description": "Выберите страницы выше и продолжите работу с ними используя эти инструменты:",
+      "descriptionWithSelection": "Продолжите работу с {count} выбранными страницами используя эти инструменты:",
+      "compress": "Уменьшить размер",
+      "merge": "Объединить с другими",
+      "protect": "Добавить пароль",
+      "watermark": "Добавить водяной знак"
+    }
+  },
+  "protect": {
+    "filePreview": "Файл для защиты",
+    "protectButton": "Защитить PDF",
+    "protectAnother": "Защитить другой",
+    "userPassword": "Пароль для открытия PDF",
+    "userPasswordPlaceholder": "Введите пароль",
+    "ownerPassword": "Пароль владельца (опционально)",
+    "ownerPasswordPlaceholder": "Введите пароль владельца",
+    "useOwnerPassword": "Использовать отдельный пароль владельца",
+    "permissionsOnly": "Только ограничения (без пароля на открытие)",
+    "permissionsOnlyHint": "PDF можно открыть без пароля, но использование будет ограничено",
+    "passwordWarning": {
+      "title": "Внимание: Пароль невозможно восстановить",
+      "message": "Если вы потеряете пароль, восстановить его будет невозможно. Сохраните его в надежном месте!"
+    },
+    "securityLevel": "Уровень безопасности",
+    "advancedSettings": "Расширенные настройки",
+    "encryptionLevel": "Уровень шифрования",
+    "recommended": "(рекомендуется)",
+    "permissions": "Разрешения",
+    "presets": {
+      "basic": {
+        "name": "Базовая",
+        "description": "Разрешить печать и копирование"
+      },
+      "business": {
+        "name": "Бизнес",
+        "description": "Разрешить только печать"
+      },
+      "confidential": {
+        "name": "Конфиденциальная",
+        "description": "Запретить печать и копирование"
+      }
+    },
+    "permissions": {
+      "printing": "Печать",
+      "printingNone": "Запрещено",
+      "printingLow": "Низкое разрешение",
+      "printingHigh": "Высокое разрешение",
+      "copying": "Разрешить копирование текста",
+      "modifying": "Разрешить изменение содержимого",
+      "annotating": "Разрешить аннотации",
+      "fillingForms": "Разрешить заполнение форм",
+      "contentAccessibility": "Разрешить программы чтения с экрана"
+    },
+    "passwordStrength": {
+      "tooShort": "Пароль слишком короткий (мин. 8 символов)",
+      "useUpperAndLower": "Используйте заглавные и строчные буквы",
+      "useNumbers": "Добавьте цифры",
+      "useSpecialChars": "Добавьте специальные символы"
+    },
+    "errors": {
+      "passwordRequired": "Пароль обязателен",
+      "protectionFailed": "Не удалось защитить PDF"
+    },
+    "success": {
+      "title": "PDF успешно защищён!",
+      "encryption": "Шифрование",
+      "password": "Пароль",
+      "passwordSet": "Защищён"
+    },
+    "quickActions": {
+      "title": "Что дальше?",
+      "description": "Продолжите работу с защищённым PDF:",
+      "compress": "Уменьшить размер",
+      "split": "Извлечь страницы",
+      "watermark": "Добавить водяной знак",
+      "merge": "Объединить с другими"
+    },
+    "autoLoaded": {
+      "title": "Файл загружен из предыдущего инструмента",
+      "description": "Ваш PDF был автоматически загружен"
+    }
+  },
+  "ocr": {
+    "filePreview": "Файл для обработки",
+    "recognitionLanguage": "Язык распознавания",
+    "languageHint": "Выберите язык текста в вашем документе",
+    "autoDetect": "Автоопределение языка",
+    "autoDetectHint": "Язык будет определён автоматически по содержимому документа",
+    "detectingLanguage": "Определение языка...",
+    "pageSelection": "Страницы для обработки",
+    "firstPageOnly": "Только первая страница",
+    "allPages": "Все страницы",
+    "pageRange": "Диапазон страниц",
+    "page": "страница",
+    "pages": "страниц",
+    "processed": "обработано",
+    "processingPage": "Обработка страницы {current} из {total}...",
+    "startOCR": "Начать OCR",
+    "processing": "Обработка OCR...",
+    "initializing": "Инициализация OCR движка...",
+    "loadingModel": "Загрузка языковой модели...",
+    "processingImage": "Обработка изображения...",
+    "processingPDF": "Обработка PDF...",
+    "recognizing": "Распознавание текста",
+    "completed": "OCR завершено!",
+    "results": "Распознанный текст",
+    "confidence": "Точность",
+    "extractedText": "Извлеченный текст",
+    "copyText": "Скопировать текст",
+    "downloadTXT": "Скачать TXT",
+    "textCopied": "Текст скопирован в буфер обмена!",
+    "infoTitle": "Об OCR",
+    "info1": "Поддерживает PDF документы и изображения (JPG, PNG)",
+    "info2": "Распознавание на 5 языках: EN, RU, DE, FR, ES",
+    "info3": "Поддержка многостраничных PDF с выбором диапазона",
+    "info4": "Вся обработка происходит в браузере - файлы остаются приватными",
+    "errors": {
+      "noFile": "Пожалуйста, сначала выберите файл",
+      "processingFailed": "Обработка OCR не удалась. Попробуйте снова."
+    }
+  },
+  "watermark": {
+    "filePreview": "Файл для водяного знака",
+    "text": "Текст водяного знака",
+    "watermarkText": "Текст водяного знака",
+    "watermarkPlaceholder": "Введите текст водяного знака",
+    "position": "Позиция",
+    "positions": {
+      "diagonal": "По диагонали",
+      "center": "По центру",
+      "topLeft": "Сверху слева",
+      "topRight": "Сверху справа",
+      "bottomLeft": "Снизу слева",
+      "bottomRight": "Снизу справа"
+    },
+    "color": "Цвет",
+    "colors": {
+      "black": "Чёрный",
+      "gray": "Серый",
+      "red": "Красный",
+      "blue": "Синий"
+    },
+    "opacity": "Прозрачность",
+    "fontSize": "Размер шрифта",
+    "rotation": "Поворот",
+    "preview": "Предпросмотр",
+    "settings": "Настройки водяного знака",
+    "applyButton": "Применить водяной знак",
+    "applyAnother": "Применить к другому",
+    "loading": "Загрузка PDF...",
+    "processing": "Добавление водяного знака...",
+    "processingPage": "Обработка страницы {current} из {total}...",
+    "saving": "Сохранение PDF...",
+    "completed": "Водяной знак применён!",
+    "errors": {
+      "noText": "Пожалуйста, введите текст водяного знака",
+      "textRequired": "Пожалуйста, введите текст водяного знака",
+      "failed": "Не удалось применить водяной знак"
+    },
+    "success": {
+      "title": "Водяной знак успешно применён!",
+      "pages": "Обработано страниц",
+      "time": "Время обработки"
+    },
+    "quickActions": {
+      "title": "Что дальше?",
+      "description": "Продолжите работу с PDF с водяным знаком:",
+      "compress": "Уменьшить размер",
+      "protect": "Добавить пароль",
+      "split": "Извлечь страницы",
+      "merge": "Объединить с другими"
+    },
+    "autoLoaded": {
+      "title": "Файл загружен из предыдущего инструмента",
+      "description": "Ваш PDF был автоматически загружен"
+    },
+    "infoTitle": "О водяных знаках",
+    "info1": "Поддержка текстовых водяных знаков с кириллицей и латиницей",
+    "info2": "6 вариантов позиционирования: диагональ, центр и 4 угла",
+    "info3": "Вся обработка происходит в браузере - файлы остаются приватными"
+  },
+  "rotate": {
+    "settings": "Настройки поворота",
+    "selectAngle": "Выберите угол поворота",
+    "clockwise": "По часовой",
+    "upsideDown": "Вверх ногами",
+    "counterClockwise": "Против часовой",
+    "selectPages": "Выберите страницы для поворота",
+    "allPages": "Все страницы",
+    "rotateAllPages": "Повернуть все страницы документа",
+    "specificPages": "Определённые страницы",
+    "choosePages": "Выберите какие страницы повернуть",
+    "pageNumbers": "Номера страниц",
+    "pageNumbersHint": "Пример: 1,3,5-7,10 (Всего страниц: {total})",
+    "rotateButton": "Повернуть PDF",
+    "rotateAnother": "Повернуть другой",
+    "invalidPages": "Пожалуйста, введите корректные номера страниц",
+    "failed": "Не удалось повернуть PDF",
+    "success": "PDF успешно повёрнут!",
+    "successDescription": "Страницы вашего PDF были повёрнуты как указано",
+    "quickActions": {
+      "title": "Что дальше?",
+      "description": "Продолжите работу с повёрнутым PDF:",
+      "compress": "Уменьшить размер",
+      "protect": "Добавить пароль",
+      "watermark": "Добавить водяной знак",
+      "split": "Извлечь страницы"
+    }
+  },
+  "deletePages": {
+    "selectPages": "Выберите страницы для удаления",
+    "pagesToDelete": "Страницы для удаления",
+    "hint": "Пример: 1,3,5-7,10 (Всего страниц: {total})",
+    "warning": "Внимание: Это действие необратимо",
+    "warningDescription": "Страницы будут навсегда удалены из PDF",
+    "deleteButton": "Удалить страницы",
+    "deleteAnother": "Удалить из другого",
+    "invalidPages": "Пожалуйста, введите корректные номера страниц",
+    "cannotDeleteAll": "Нельзя удалить все страницы из PDF",
+    "failed": "Не удалось удалить страницы",
+    "success": "Страницы успешно удалены!",
+    "successDescription": "Выбранные страницы были удалены из вашего PDF",
+    "quickActions": {
+      "title": "Что дальше?",
+      "description": "Продолжите работу с PDF:",
+      "compress": "Уменьшить размер",
+      "protect": "Добавить пароль",
+      "watermark": "Добавить водяной знак",
+      "merge": "Объединить с другими"
+    }
+  },
+  "extractPages": {
+    "selectPages": "Выберите страницы для извлечения",
+    "pagesToExtract": "Страницы для извлечения",
+    "hint": "Пример: 1,3,5-7,10 (Всего страниц: {total})",
+    "info": "Извлечение создаёт новый PDF",
+    "infoDescription": "Исходный PDF остаётся неизменным, только выбранные страницы копируются в новый файл",
+    "extractButton": "Извлечь страницы",
+    "extractAnother": "Извлечь из другого",
+    "invalidPages": "Пожалуйста, введите корректные номера страниц",
+    "failed": "Не удалось извлечь страницы",
+    "success": "Страницы успешно извлечены!",
+    "successDescription": "Выбранные страницы были извлечены в новый PDF",
+    "quickActions": {
+      "title": "Что дальше?",
+      "description": "Продолжите работу с извлечёнными страницами:",
+      "compress": "Уменьшить размер",
+      "protect": "Добавить пароль",
+      "watermark": "Добавить водяной знак",
+      "merge": "Объединить с другими"
+    }
+  },
+  "imagesToPdf": {
+    "imagesList": "Изображения",
+    "settings": "Настройки PDF",
+    "pageSize": "Размер страницы",
+    "pageSizes": {
+      "fit": "По размеру изображения",
+      "a4": "A4",
+      "letter": "Letter"
+    },
+    "orientation": "Ориентация",
+    "orientations": {
+      "portrait": "Портретная",
+      "landscape": "Альбомная"
+    },
+    "margin": "Отступ",
+    "convert": "Конвертировать в PDF",
+    "convertAnother": "Конвертировать другой",
+    "errors": {
+      "noImages": "Пожалуйста, выберите хотя бы одно изображение"
+    },
+    "success": {
+      "title": "Изображения успешно конвертированы!",
+      "pages": "Создано страниц"
+    },
+    "successMessage": "Успешно создан PDF с {count} страницами",
+    "quickActions": {
+      "title": "Что дальше?",
+      "description": "Продолжите работу с вашим PDF:",
+      "compress": "Уменьшить размер",
+      "protect": "Добавить пароль",
+      "watermark": "Добавить водяной знак",
+      "merge": "Объединить с другими"
+    }
+  }
+}

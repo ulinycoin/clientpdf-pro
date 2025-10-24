@@ -1,0 +1,171 @@
+{
+  "app": {
+    "title": "LocalPDF",
+    "subtitle": "Datenschutzorientierte PDF-Tools in Ihrem Browser"
+  },
+  "welcome": {
+    "title": "Willkommen bei LocalPDF",
+    "subtitle": "Wählen Sie ein Tool, um zu beginnen",
+    "firstTimeBanner": "Willkommen! Die gesamte Verarbeitung erfolgt in Ihrem Browser - Ihre Dateien verlassen nie Ihr Gerät.",
+    "selectTool": "Wählen Sie ein Tool aus der Seitenleiste oder wählen Sie eines unten"
+  },
+  "sidebar": {
+    "tools": "Werkzeuge",
+    "collapse": "Seitenleiste einklappen",
+    "expand": "Seitenleiste erweitern",
+    "backToMain": "← Zurück zur Hauptseite"
+  },
+  "tools": {
+    "merge-pdf": {
+      "name": "PDF zusammenführen",
+      "description": "Mehrere PDFs zu einer kombinieren"
+    },
+    "split-pdf": {
+      "name": "PDF teilen",
+      "description": "Seiten aus PDF extrahieren"
+    },
+    "compress-pdf": {
+      "name": "PDF komprimieren",
+      "description": "PDF-Dateigröße reduzieren"
+    },
+    "protect-pdf": {
+      "name": "PDF schützen",
+      "description": "Passwortschutz hinzufügen"
+    },
+    "ocr-pdf": {
+      "name": "OCR PDF",
+      "description": "Text aus gescannten PDFs extrahieren"
+    },
+    "watermark-pdf": {
+      "name": "PDF-Wasserzeichen",
+      "description": "Wasserzeichen zu PDF hinzufügen"
+    },
+    "add-text-pdf": {
+      "name": "Text zu PDF hinzufügen",
+      "description": "Benutzerdefinierten Text zu PDF-Seiten hinzufügen"
+    },
+    "rotate-pdf": {
+      "name": "PDF drehen",
+      "description": "PDF-Seiten drehen"
+    },
+    "delete-pages-pdf": {
+      "name": "Seiten löschen",
+      "description": "Unerwünschte Seiten entfernen"
+    },
+    "extract-pages-pdf": {
+      "name": "Seiten extrahieren",
+      "description": "Bestimmte Seiten extrahieren"
+    },
+    "unlock-pdf": {
+      "name": "PDF entsperren",
+      "description": "PDF-Passwort entfernen"
+    },
+    "images-to-pdf": {
+      "name": "Bilder zu PDF",
+      "description": "Bilder in PDF konvertieren"
+    },
+    "pdf-to-images": {
+      "name": "PDF zu Bildern",
+      "description": "PDF in Bilder konvertieren"
+    },
+    "pdf-to-word": {
+      "name": "PDF zu Word",
+      "description": "PDF in DOCX konvertieren"
+    },
+    "word-to-pdf": {
+      "name": "Word zu PDF",
+      "description": "DOCX in PDF konvertieren"
+    },
+    "sign-pdf": {
+      "name": "PDF signieren",
+      "description": "Digitale Signatur hinzufügen"
+    },
+    "flatten-pdf": {
+      "name": "PDF glätten",
+      "description": "PDF-Formulare glätten"
+    },
+    "edit-pdf": {
+      "name": "PDF bearbeiten",
+      "description": "PDF-Inhalt bearbeiten"
+    }
+  },
+  "common": {
+    "upload": "Dateien hochladen",
+    "download": "Herunterladen",
+    "processing": "Verarbeitung läuft...",
+    "error": "Fehler",
+    "success": "Erfolg",
+    "cancel": "Abbrechen",
+    "close": "Schließen",
+    "back": "Zurück",
+    "next": "Weiter",
+    "done": "Fertig",
+    "remove": "Entfernen",
+    "newFile": "Neue Datei",
+    "filePreview": "Dateivorschau",
+    "totalPages": "Gesamtseiten",
+    "fileSize": "Dateigröße",
+    "changeFile": "Datei ändern",
+    "autoLoaded": "Datei vom vorherigen Tool geladen",
+    "autoLoadedDescription": "Ihr PDF wurde automatisch geladen",
+    "reset": "Zurücksetzen",
+    "processAnother": "Weitere verarbeiten",
+    "relatedTools": "Verwandte Tools",
+    "clickToEdit": "Zum Bearbeiten klicken",
+    "convertAnother": "Convert another",
+    "quickActions": "Quick Actions",
+    "preview": "Preview",
+    "clearAll": "Clear All",
+    "processingTime": "Processing time"
+  },
+  "upload": {
+    "selectFiles": "Dateien auswählen",
+    "dragOrClick": "Dateien hierher ziehen oder klicken zum Auswählen",
+    "dropHere": "Dateien hier ablegen",
+    "multipleFilesAllowed": "Mehrere Dateien erlaubt",
+    "singleFileAllowed": "Nur eine Datei",
+    "pasteHint": "Oder drücken Sie Strg+V zum Einfügen von Dateien",
+    "maxFiles": "Maximale Dateien",
+    "maxSize": "Maximale Größe pro Datei",
+    "acceptedTypes": "Akzeptierte Typen",
+    "errors": {
+      "tooManyFiles": "Zu viele Dateien. Maximum: {max}",
+      "invalidFileType": "Ungültiger Dateityp. Bitte wählen Sie nur PDF-Dateien.",
+      "fileTooLarge": "Datei zu groß. Maximale Größe: {max} MB"
+    }
+  },
+  "imagesToPdf": {
+    "imagesList": "Bilder",
+    "settings": "PDF-Einstellungen",
+    "pageSize": "Seitengröße",
+    "pageSizes": {
+      "fit": "An Bild anpassen",
+      "a4": "A4",
+      "letter": "Letter"
+    },
+    "orientation": "Ausrichtung",
+    "orientations": {
+      "portrait": "Hochformat",
+      "landscape": "Querformat"
+    },
+    "margin": "Rand",
+    "convert": "In PDF konvertieren",
+    "convertAnother": "Weitere konvertieren",
+    "errors": {
+      "noImages": "Bitte wählen Sie mindestens ein Bild aus"
+    },
+    "success": {
+      "title": "Bilder erfolgreich konvertiert!",
+      "pages": "Erstellte Seiten"
+    },
+    "successMessage": "PDF mit {count} Seiten erfolgreich erstellt",
+    "quickActions": {
+      "title": "Was als Nächstes?",
+      "description": "Arbeiten Sie weiter mit Ihrer PDF:",
+      "compress": "Dateigröße reduzieren",
+      "protect": "Passwort hinzufügen",
+      "watermark": "Wasserzeichen hinzufügen",
+      "merge": "Mit anderen kombinieren"
+    }
+  }
+}

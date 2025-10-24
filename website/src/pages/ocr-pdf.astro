@@ -1,0 +1,41 @@
+---
+import ToolPage from '../components/ToolPage.astro';
+---
+
+<ToolPage
+  toolId="ocr-pdf"
+  title="OCR PDF Online — Extract Text from Scanned PDFs"
+  metaDescription="Convert scanned PDFs to searchable text with OCR. 100% private client-side processing. No uploads, free unlimited use."
+  description="Extract text from scanned PDFs and images using advanced OCR technology. Convert non-searchable documents to searchable, editable text — all in your browser."
+  benefits={[
+    "⚡ Fast — OCR processing in browser",
+    "🔒 Private — Files never uploaded",
+    "🆓 Free — Unlimited OCR during beta"
+  ]}
+  whyChoose={{
+    title: "Why Choose Our PDF OCR Tool?",
+    reasons: [
+      "Complete Privacy: Your scanned documents never leave your device. Cloud OCR services upload sensitive files to remote servers. LocalPDF runs Tesseract.js locally for maximum privacy.",
+      "No Internet Required: Once loaded, OCR works offline. Perfect for confidential documents like contracts, invoices, or medical records that shouldn't be transmitted.",
+      "Accurate Text Recognition: Powered by Tesseract.js, the industry-standard open-source OCR engine. Supports multiple languages and handles various font types.",
+      "No Page Limits: Many online OCR tools limit free users to 10-50 pages. With LocalPDF, process PDFs of any length without restrictions.",
+      "Preserve Formatting: Extracted text maintains original structure, including paragraphs, headings, and line breaks where possible.",
+      "Free Forever: No paid tiers, no credits system. OCR as many documents as you need without hitting usage caps."
+    ]
+  }}
+  features={[
+    "Extract text from scanned PDFs",
+    "Support for multiple languages",
+    "Convert images (JPG, PNG) to text",
+    "Preserve document structure",
+    "Copy extracted text to clipboard",
+    "Export as searchable PDF or plain text"
+  ]}
+  steps={[
+    'Click "Open Tool" button above',
+    "Upload your scanned PDF or image",
+    "Wait for OCR processing (may take 10-30 seconds)",
+    "Review extracted text",
+    "Download searchable PDF or copy text"
+  ]}
+/>

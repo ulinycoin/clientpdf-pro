@@ -1,0 +1,41 @@
+---
+import ToolPage from '../components/ToolPage.astro';
+---
+
+<ToolPage
+  toolId="split-pdf"
+  title="Split PDF Online — Free & Secure"
+  metaDescription="Split PDF files by pages, ranges, or intervals. 100% private client-side processing. No uploads, no limits. Extract pages instantly."
+  description="Divide PDF documents into separate files or extract specific pages. Choose from multiple splitting modes — all processing happens securely in your browser."
+  benefits={[
+    "⚡ Instant — Split PDFs in seconds",
+    "🔒 Private — No uploads to servers",
+    "🆓 Free — Unlimited splits during beta"
+  ]}
+  whyChoose={{
+    title: "Why Choose Our PDF Splitter?",
+    reasons: [
+      "Complete Privacy: Your PDF never leaves your device. Unlike cloud-based splitters that upload your documents to remote servers, LocalPDF processes everything locally for maximum security.",
+      "Multiple Splitting Modes: Split by individual pages, custom page ranges, fixed intervals, or extract specific pages. Flexible options for any workflow.",
+      "No File Size Restrictions: Split PDFs of any size without hitting upload limits. Your browser's memory is the only constraint.",
+      "Instant Results: No upload time, no processing queues. Split happens in your browser at native speed — usually under 2 seconds.",
+      "Preserve Document Quality: Lossless splitting preserves original resolution, fonts, and formatting. Every page looks identical to the source.",
+      "Batch Operations: Split multiple documents sequentially without re-uploading or leaving the page."
+    ]
+  }}
+  features={[
+    "Split by individual pages (1 page = 1 PDF)",
+    "Split by custom ranges (e.g., pages 1-5, 10-15)",
+    "Split by fixed intervals (every N pages)",
+    "Extract specific pages to new document",
+    "Preview pages before splitting",
+    "Download all splits as a ZIP archive"
+  ]}
+  steps={[
+    'Click "Open Tool" button above',
+    "Upload the PDF file you want to split",
+    "Select splitting mode (pages/ranges/intervals)",
+    "Configure parameters and click \"Split\"",
+    "Download individual PDFs or ZIP archive"
+  ]}
+/>

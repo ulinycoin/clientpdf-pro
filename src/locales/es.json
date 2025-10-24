@@ -1,0 +1,170 @@
+{
+  "app": {
+    "title": "LocalPDF",
+    "subtitle": "Herramientas PDF centradas en la privacidad en su navegador"
+  },
+  "welcome": {
+    "title": "Bienvenido a LocalPDF",
+    "subtitle": "Elija una herramienta para comenzar",
+    "firstTimeBanner": "¡Bienvenido! Todo el procesamiento ocurre en su navegador - sus archivos nunca salen de su dispositivo.",
+    "selectTool": "Seleccione una herramienta de la barra lateral o elija una a continuación"
+  },
+  "sidebar": {
+    "tools": "Herramientas",
+    "collapse": "Contraer barra lateral",
+    "expand": "Expandir barra lateral",
+    "backToMain": "← Volver al sitio principal"
+  },
+  "tools": {
+    "merge-pdf": {
+      "name": "Combinar PDF",
+      "description": "Combinar varios PDF en uno"
+    },
+    "split-pdf": {
+      "name": "Dividir PDF",
+      "description": "Extraer páginas del PDF"
+    },
+    "compress-pdf": {
+      "name": "Comprimir PDF",
+      "description": "Reducir el tamaño del archivo PDF"
+    },
+    "protect-pdf": {
+      "name": "Proteger PDF",
+      "description": "Agregar protección con contraseña"
+    },
+    "ocr-pdf": {
+      "name": "OCR PDF",
+      "description": "Extraer texto de PDF escaneados"
+    },
+    "watermark-pdf": {
+      "name": "Marca de agua PDF",
+      "description": "Agregar marca de agua al PDF"
+    },
+    "add-text-pdf": {
+      "name": "Agregar texto al PDF",
+      "description": "Agregar texto personalizado a las páginas PDF"
+    },
+    "rotate-pdf": {
+      "name": "Rotar PDF",
+      "description": "Rotar páginas PDF"
+    },
+    "delete-pages-pdf": {
+      "name": "Eliminar páginas",
+      "description": "Eliminar páginas no deseadas"
+    },
+    "extract-pages-pdf": {
+      "name": "Extraer páginas",
+      "description": "Extraer páginas específicas"
+    },
+    "unlock-pdf": {
+      "name": "Desbloquear PDF",
+      "description": "Eliminar contraseña del PDF"
+    },
+    "images-to-pdf": {
+      "name": "Imágenes a PDF",
+      "description": "Convertir imágenes a PDF"
+    },
+    "pdf-to-images": {
+      "name": "PDF a imágenes",
+      "description": "Convertir PDF a imágenes"
+    },
+    "pdf-to-word": {
+      "name": "PDF a Word",
+      "description": "Convertir PDF a DOCX"
+    },
+    "word-to-pdf": {
+      "name": "Word a PDF",
+      "description": "Convertir DOCX a PDF"
+    },
+    "sign-pdf": {
+      "name": "Firmar PDF",
+      "description": "Agregar firma digital"
+    },
+    "flatten-pdf": {
+      "name": "Aplanar PDF",
+      "description": "Aplanar formularios PDF"
+    },
+    "edit-pdf": {
+      "name": "Editar PDF",
+      "description": "Editar contenido PDF"
+    }
+  },
+  "common": {
+    "upload": "Subir archivos",
+    "download": "Descargar",
+    "processing": "Procesando...",
+    "error": "Error",
+    "success": "Éxito",
+    "cancel": "Cancelar",
+    "close": "Cerrar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "done": "Hecho",
+    "remove": "Eliminar",
+    "newFile": "Nuevo archivo",
+    "filePreview": "Vista previa del archivo",
+    "totalPages": "Páginas totales",
+    "fileSize": "Tamaño del archivo",
+    "changeFile": "Cambiar archivo",
+    "autoLoaded": "Archivo cargado desde la herramienta anterior",
+    "autoLoadedDescription": "Su PDF se ha cargado automáticamente",
+    "reset": "Restablecer",
+    "processAnother": "Procesar otro",
+    "relatedTools": "Herramientas relacionadas",
+    "convertAnother": "Convert another",
+    "quickActions": "Quick Actions",
+    "preview": "Preview",
+    "clearAll": "Clear All",
+    "processingTime": "Processing time"
+  },
+  "upload": {
+    "selectFiles": "Seleccionar archivos",
+    "dragOrClick": "Arrastra archivos aquí o haz clic para seleccionar",
+    "dropHere": "Suelta los archivos aquí",
+    "multipleFilesAllowed": "Varios archivos permitidos",
+    "singleFileAllowed": "Solo un archivo",
+    "pasteHint": "O presiona Ctrl+V para pegar archivos",
+    "maxFiles": "Archivos máximos",
+    "maxSize": "Tamaño máximo por archivo",
+    "acceptedTypes": "Tipos aceptados",
+    "errors": {
+      "tooManyFiles": "Demasiados archivos. Máximo: {max}",
+      "invalidFileType": "Tipo de archivo no válido. Por favor, seleccione solo archivos PDF.",
+      "fileTooLarge": "Archivo demasiado grande. Tamaño máximo: {max} MB"
+    }
+  },
+  "imagesToPdf": {
+    "imagesList": "Imágenes",
+    "settings": "Configuración de PDF",
+    "pageSize": "Tamaño de página",
+    "pageSizes": {
+      "fit": "Ajustar a imagen",
+      "a4": "A4",
+      "letter": "Carta"
+    },
+    "orientation": "Orientación",
+    "orientations": {
+      "portrait": "Vertical",
+      "landscape": "Horizontal"
+    },
+    "margin": "Margen",
+    "convert": "Convertir a PDF",
+    "convertAnother": "Convertir otro",
+    "errors": {
+      "noImages": "Por favor seleccione al menos una imagen"
+    },
+    "success": {
+      "title": "¡Imágenes convertidas con éxito!",
+      "pages": "Páginas creadas"
+    },
+    "successMessage": "PDF creado con éxito con {count} páginas",
+    "quickActions": {
+      "title": "¿Qué sigue?",
+      "description": "Continúe trabajando con su PDF:",
+      "compress": "Reducir tamaño",
+      "protect": "Agregar contraseña",
+      "watermark": "Agregar marca de agua",
+      "merge": "Combinar con otros"
+    }
+  }
+}

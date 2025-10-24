@@ -1,0 +1,41 @@
+---
+import ToolPage from '../components/ToolPage.astro';
+---
+
+<ToolPage
+  toolId="protect-pdf"
+  title="Password Protect PDF Online — Free & Secure"
+  metaDescription="Add password protection to PDF files. Set encryption and permissions locally. 100% private, no uploads. Secure PDFs in seconds."
+  description="Add password encryption to your PDFs with granular permissions. Protect sensitive documents from unauthorized access — all processing happens locally in your browser."
+  benefits={[
+    "⚡ Instant — Encrypt PDFs in seconds",
+    "🔒 Private — No uploads, local encryption",
+    "🆓 Free — Unlimited protection during beta"
+  ]}
+  whyChoose={{
+    title: "Why Choose Our PDF Password Protector?",
+    reasons: [
+      "Maximum Security: Your unprotected PDF never leaves your device. Cloud-based tools require uploading your sensitive document to remote servers — a major security risk. LocalPDF encrypts locally.",
+      "Granular Permissions: Set user and owner passwords separately. Control printing, copying, editing, and annotation permissions with industry-standard PDF encryption.",
+      "AES-256 Encryption: Uses the same encryption standard as military and banking applications. Your protected PDF is secure against brute-force attacks.",
+      "No Password Storage: We never see or store your password. Only you know the encryption key, ensuring complete confidentiality.",
+      "Works Offline: Once loaded, protect PDFs without internet. Perfect for confidential documents that shouldn't be transmitted over networks.",
+      "Instant Encryption: No upload time, no processing queues. Encryption happens in your browser at native speed — usually under 2 seconds."
+    ]
+  }}
+  features={[
+    "Set user password (required to open PDF)",
+    "Set owner password (required to change permissions)",
+    "Control printing permissions",
+    "Restrict copying text and images",
+    "Prevent editing and modification",
+    "AES-256 encryption standard"
+  ]}
+  steps={[
+    'Click "Open Tool" button above',
+    "Upload the PDF you want to protect",
+    "Enter a strong password",
+    "Configure permissions (optional)",
+    "Download your encrypted PDF instantly"
+  ]}
+/>

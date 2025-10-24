@@ -1,0 +1,654 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const tools = [
+  { id: 'merge-pdf', name: 'Merge PDF', icon: '📑', desc: 'Combine PDFs' },
+  { id: 'split-pdf', name: 'Split PDF', icon: '✂️', desc: 'Divide pages' },
+  { id: 'compress-pdf', name: 'Compress', icon: '🗜️', desc: 'Reduce size' },
+  { id: 'protect-pdf', name: 'Protect', icon: '🔒', desc: 'Add password' },
+  { id: 'ocr-pdf', name: 'OCR', icon: '🔍', desc: 'Extract text' },
+  { id: 'watermark-pdf', name: 'Watermark', icon: '💧', desc: 'Add mark' },
+  { id: 'add-text-pdf', name: 'Add Text', icon: '📝', desc: 'Edit pages' },
+  { id: 'rotate-pdf', name: 'Rotate', icon: '🔄', desc: 'Change view' },
+  { id: 'delete-pages-pdf', name: 'Delete Pages', icon: '🗑️', desc: 'Remove pages' },
+  { id: 'extract-pages-pdf', name: 'Extract', icon: '📄', desc: 'Get pages' },
+];
+
+// Structured data для SEO
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "LocalPDF",
+  "applicationCategory": "UtilityApplication",
+  "operatingSystem": "Any",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "description": "Free online PDF tools for merging, splitting, compressing, and editing PDFs. 100% client-side processing with complete privacy.",
+  "featureList": [
+    "Merge multiple PDF files",
+    "Split PDF by pages or ranges",
+    "Compress PDF to reduce file size",
+    "Password protect PDFs",
+    "OCR text extraction",
+    "Add watermarks and text",
+    "Rotate and edit pages"
+  ]
+};
+---
+
+<BaseLayout
+  title="LocalPDF — Free Online PDF Tools | Privacy-First PDF Editor"
+  description="Free online PDF tools: merge, split, compress, protect, and edit PDFs in your browser. No uploads, 100% private, instant processing. Works offline."
+>
+  <!-- Structured Data -->
+  <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+
+  <!-- Hero Section - Compact -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">Free during beta testing</div>
+      <h1 class="hero-title">Privacy-First PDF Tools</h1>
+      <p class="hero-subtitle">
+        Edit PDFs instantly in your browser. No uploads, no accounts, no tracking. Your files never leave your device.
+      </p>
+
+      <!-- Key Benefits - Horizontal -->
+      <div class="hero-benefits">
+        <div class="benefit">
+          <span class="benefit-icon">🔒</span>
+          <span class="benefit-text"><strong>100% Private</strong> — Files stay local</span>
+        </div>
+        <div class="benefit">
+          <span class="benefit-icon">⚡</span>
+          <span class="benefit-text"><strong>Instant</strong> — No uploads</span>
+        </div>
+        <div class="benefit">
+          <span class="benefit-icon">🆓</span>
+          <span class="benefit-text"><strong>Free Beta</strong> — No limits</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main CTA Button -->
+  <section class="main-cta-section">
+    <a href="/#" class="main-cta-button">
+      <span class="cta-icon">⚡</span>
+      <div class="cta-content">
+        <span class="cta-title">Open PDF Tools</span>
+        <span class="cta-subtitle">Start editing instantly</span>
+      </div>
+      <span class="cta-arrow">→</span>
+    </a>
+  </section>
+
+  <!-- Tools Grid - Compact -->
+  <section class="tools-section" id="tools">
+    <h2 class="section-title">Choose Your Tool</h2>
+    <div class="tools-grid">
+      {tools.map((tool) => (
+        <a href={`/${tool.id}`} class="tool-card">
+          <span class="tool-icon">{tool.icon}</span>
+          <div class="tool-info">
+            <span class="tool-name">{tool.name}</span>
+            <span class="tool-desc">{tool.desc}</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- Trust Indicators -->
+  <section class="trust-section">
+    <div class="trust-grid">
+      <div class="trust-item">
+        <div class="trust-number">0 KB</div>
+        <div class="trust-label">uploaded to servers</div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-number">&lt;2s</div>
+        <div class="trust-label">average processing time</div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-number">100%</div>
+        <div class="trust-label">client-side processing</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEO Content Section - Why Choose LocalPDF -->
+  <article class="seo-content">
+    <h2 class="seo-heading">Why Choose LocalPDF for Your PDF Needs?</h2>
+
+    <p>
+      In an era where data privacy is increasingly under threat, <strong>LocalPDF</strong> stands out as the only truly privacy-first PDF toolkit on the market. Unlike traditional online PDF services like Adobe Acrobat Online, Smallpdf, or iLovePDF—which require uploading your sensitive documents to remote servers—LocalPDF processes everything locally in your web browser. This fundamental architectural difference means your files never leave your device, making it impossible for anyone (including us) to access, scan, or store your data.
+    </p>
+
+    <h3>The Privacy Problem with Cloud-Based PDF Tools</h3>
+    <p>
+      Most online PDF tools follow a simple but concerning workflow: you upload your file to their servers, they process it remotely, and then send the result back. During this process, your document—whether it's a confidential contract, medical record, tax return, or personal letter—passes through systems you don't control. These services may promise to delete files after processing, but there's no way to verify that claim. Worse, many free PDF tools monetize by scanning uploaded documents for keywords to target ads, or sell aggregated data to third parties.
+    </p>
+
+    <p>
+      With <strong>LocalPDF</strong>, this entire risk is eliminated. Since processing happens in your browser using JavaScript and WebAssembly, there are zero network requests during PDF manipulation. Your merge, split, compress, or protect operation runs on your device's CPU, using open-source libraries like pdf-lib and PDF.js. When you close the browser tab, all file data is automatically erased from memory. No servers. No uploads. No traces.
+    </p>
+
+    <h3>Speed That Matches Security</h3>
+    <p>
+      Privacy isn't LocalPDF's only advantage—it's also significantly faster. Cloud-based tools suffer from upload and download bottlenecks. A 50 MB PDF can take 30-60 seconds to upload on typical broadband, plus processing time, plus download time. With LocalPDF, that same file processes in 2-3 seconds because it's already on your device. No network latency. No queues. Just instant results powered by your own hardware.
+    </p>
+
+    <h3>No Artificial Limits or Hidden Costs</h3>
+    <p>
+      Free tiers of competing services often impose frustrating restrictions: 5 MB file size limits, 2 tasks per day, watermarked outputs, or forced account creation. These limitations exist to push users toward paid subscriptions. LocalPDF, currently in beta testing, has no file size caps beyond your browser's memory (typically 2-4 GB), no daily limits, no watermarks, and requires zero registration. While we may introduce premium features in the future, core functionality will always remain free and unrestricted.
+    </p>
+
+    <h3>Works Offline, Respects GDPR</h3>
+    <p>
+      Because LocalPDF runs entirely in your browser, it works offline once loaded—perfect for flights, remote locations, or areas with unreliable internet. For European users, this architecture means automatic GDPR compliance: since we never process personal data, there's no need for consent forms, data processing agreements, or subject access requests. Your right to be forgotten is built into the design—close the tab, and your data is gone.
+    </p>
+
+    <h3>Open-Source Transparency</h3>
+    <p>
+      LocalPDF is built on open-source libraries trusted by millions of developers worldwide. We don't use proprietary "black box" algorithms. Our processing logic is based on pdf-lib (MIT License), PDF.js (Apache 2.0), and Tesseract.js (Apache 2.0). This transparency means security researchers can audit the code, and developers can verify that we're doing exactly what we claim: processing locally, without network calls.
+    </p>
+
+    <div class="seo-cta">
+      <h3>Ready to Experience Privacy-First PDF Tools?</h3>
+      <p>
+        Join thousands of users who've switched to LocalPDF for a safer, faster, and more transparent way to work with PDFs. No registration required. No credit card. Just instant, private processing.
+      </p>
+      <div style="text-align: center; margin-top: 24px;">
+        <a href="#tools" class="cta-link">Explore Our Tools →</a>
+      </div>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  /* Hero Section - Minimal padding, max info */
+  .hero {
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 32px 7vw 24px;
+  }
+
+  .hero-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .hero-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    background: linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%);
+    color: #1E40AF;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 20px;
+    border: 1px solid #93C5FD;
+  }
+
+  .hero-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -0.02em;
+    color: #0A0A0A;
+    line-height: 1.1;
+  }
+
+  .hero-subtitle {
+    font-size: 1.125rem;
+    color: #404040;
+    line-height: 1.6;
+    max-width: 600px;
+    margin: 0;
+  }
+
+  /* Hero Benefits - Horizontal Pills */
+  .hero-benefits {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 8px;
+  }
+
+  .benefit {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: #FAFAFA;
+    border: 1px solid #E5E5E5;
+    border-radius: 24px;
+    font-size: 0.875rem;
+    color: #0A0A0A;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .benefit:hover {
+    border-color: #2563EB;
+    background: #F5F5F5;
+  }
+
+  .benefit-icon {
+    font-size: 1.25rem;
+    line-height: 1;
+  }
+
+  .benefit-text strong {
+    font-weight: 600;
+  }
+
+  /* Main CTA Button - Prominent */
+  .main-cta-section {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 32px 7vw 24px;
+    text-align: center;
+  }
+
+  .main-cta-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 40px;
+    background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+    color: #FFFFFF;
+    text-decoration: none;
+    border-radius: 16px;
+    box-shadow:
+      0 4px 6px rgba(0, 0, 0, 0.05),
+      0 20px 60px rgba(37, 99, 235, 0.25);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .main-cta-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+  }
+
+  .main-cta-button:hover::before {
+    left: 100%;
+  }
+
+  .main-cta-button:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow:
+      0 8px 12px rgba(0, 0, 0, 0.1),
+      0 24px 80px rgba(37, 99, 235, 0.35);
+  }
+
+  .main-cta-button:active {
+    transform: translateY(-2px) scale(1.01);
+  }
+
+  .cta-icon {
+    font-size: 2rem;
+    line-height: 1;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.1);
+    }
+  }
+
+  .cta-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    text-align: left;
+  }
+
+  .cta-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+  }
+
+  .cta-subtitle {
+    font-size: 0.875rem;
+    font-weight: 400;
+    opacity: 0.9;
+    line-height: 1.2;
+  }
+
+  .cta-arrow {
+    font-size: 1.5rem;
+    line-height: 1;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .main-cta-button:hover .cta-arrow {
+    transform: translateX(4px);
+  }
+
+  /* Tools Section - Compact Grid */
+  .tools-section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 32px 7vw 24px;
+  }
+
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #0A0A0A;
+    letter-spacing: -0.01em;
+  }
+
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+  }
+
+  .tool-card {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: #FAFAFA;
+    border: 1px solid #E5E5E5;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .tool-card:hover {
+    border-color: #2563EB;
+    background: #fff;
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.05),
+      0 10px 40px rgba(37, 99, 235, 0.08);
+    transform: translateY(-2px);
+  }
+
+  .tool-icon {
+    font-size: 2rem;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .tool-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .tool-name {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: #0A0A0A;
+    line-height: 1.3;
+  }
+
+  .tool-desc {
+    font-size: 0.75rem;
+    color: #737373;
+    line-height: 1.2;
+  }
+
+  /* Trust Section - Stats */
+  .trust-section {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 24px 7vw 48px;
+  }
+
+  .trust-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    background: linear-gradient(135deg, #FAFAFA 0%, #F5F5F5 100%);
+    border: 1px solid #E5E5E5;
+    border-radius: 12px;
+    padding: 32px 24px;
+  }
+
+  .trust-item {
+    text-align: center;
+  }
+
+  .trust-number {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: #2563EB;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .trust-label {
+    font-size: 0.8125rem;
+    color: #737373;
+    line-height: 1.4;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    font-weight: 500;
+  }
+
+  /* SEO Content Section */
+  .seo-content {
+    max-width: 900px;
+    margin: 48px auto 64px;
+    padding: 0 7vw;
+  }
+
+  .seo-heading {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #0A0A0A;
+    margin: 0 0 24px 0;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    text-align: center;
+  }
+
+  .seo-content h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #0A0A0A;
+    margin: 32px 0 16px 0;
+    letter-spacing: -0.01em;
+  }
+
+  .seo-content p {
+    font-size: 1.0625rem;
+    color: #404040;
+    line-height: 1.8;
+    margin: 0 0 20px 0;
+  }
+
+  .seo-content strong {
+    font-weight: 600;
+    color: #0A0A0A;
+  }
+
+  .seo-cta {
+    margin-top: 48px;
+    padding: 32px;
+    background: linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%);
+    border: 1px solid #93C5FD;
+    border-radius: 12px;
+    text-align: center;
+  }
+
+  .seo-cta h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #0A0A0A;
+    margin: 0 0 12px 0;
+  }
+
+  .seo-cta p {
+    font-size: 1.0625rem;
+    color: #1E40AF;
+    margin: 0;
+  }
+
+  .cta-link {
+    display: inline-block;
+    padding: 14px 40px;
+    background: #2563EB;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.05),
+      0 10px 40px rgba(37, 99, 235, 0.15);
+  }
+
+  .cta-link:hover {
+    background: #1D4ED8;
+    transform: translateY(-2px);
+    box-shadow:
+      0 4px 6px rgba(0, 0, 0, 0.07),
+      0 12px 48px rgba(37, 99, 235, 0.2);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .hero-title {
+      font-size: 2rem;
+    }
+
+    .hero-subtitle {
+      font-size: 1rem;
+    }
+
+    .hero-benefits {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .benefit {
+      justify-content: center;
+    }
+
+    .main-cta-section {
+      padding: 24px 5vw 20px;
+    }
+
+    .main-cta-button {
+      padding: 16px 28px;
+      gap: 12px;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .cta-icon {
+      font-size: 1.75rem;
+    }
+
+    .cta-title {
+      font-size: 1.125rem;
+    }
+
+    .cta-subtitle {
+      font-size: 0.8125rem;
+    }
+
+    .cta-arrow {
+      font-size: 1.25rem;
+    }
+
+    .tools-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .tool-card {
+      flex-direction: column;
+      text-align: center;
+      padding: 20px 12px;
+    }
+
+    .tool-icon {
+      font-size: 2.5rem;
+    }
+
+    .trust-grid {
+      grid-template-columns: 1fr;
+      gap: 24px;
+      padding: 24px 20px;
+    }
+
+    .trust-number {
+      font-size: 1.875rem;
+    }
+
+    .seo-content {
+      padding: 0 5vw;
+      margin: 32px auto 48px;
+    }
+
+    .seo-heading {
+      font-size: 1.75rem;
+    }
+
+    .seo-content h3 {
+      font-size: 1.25rem;
+    }
+
+    .seo-content p {
+      font-size: 1rem;
+    }
+
+    .seo-cta {
+      padding: 24px 20px;
+    }
+
+    .seo-cta h3 {
+      font-size: 1.25rem;
+    }
+
+    .cta-link {
+      padding: 12px 32px;
+      font-size: 0.9375rem;
+    }
+  }
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .tools-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (min-width: 1025px) {
+    .tools-grid {
+      grid-template-columns: repeat(5, 1fr);
+    }
+  }
+</style>

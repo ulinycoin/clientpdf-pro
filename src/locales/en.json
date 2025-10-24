@@ -1,0 +1,549 @@
+{
+  "app": {
+    "title": "LocalPDF",
+    "subtitle": "Privacy-first PDF tools in your browser"
+  },
+  "welcome": {
+    "title": "Welcome to LocalPDF",
+    "subtitle": "Choose a tool to get started",
+    "firstTimeBanner": "Welcome! All processing happens in your browser - your files never leave your device.",
+    "selectTool": "Select a tool from the sidebar or choose one below"
+  },
+  "sidebar": {
+    "tools": "Tools",
+    "collapse": "Collapse sidebar",
+    "expand": "Expand sidebar",
+    "backToMain": "← Back to main site"
+  },
+  "tools": {
+    "merge-pdf": {
+      "name": "Merge PDF",
+      "description": "Combine multiple PDFs into one"
+    },
+    "split-pdf": {
+      "name": "Split PDF",
+      "description": "Extract pages from PDF"
+    },
+    "compress-pdf": {
+      "name": "Compress PDF",
+      "description": "Reduce PDF file size"
+    },
+    "protect-pdf": {
+      "name": "Protect PDF",
+      "description": "Add password protection"
+    },
+    "ocr-pdf": {
+      "name": "OCR PDF",
+      "description": "Extract text from scanned PDFs"
+    },
+    "watermark-pdf": {
+      "name": "Watermark PDF",
+      "description": "Add watermark to PDF"
+    },
+    "add-text-pdf": {
+      "name": "Add Text to PDF",
+      "description": "Add custom text to PDF pages"
+    },
+    "rotate-pdf": {
+      "name": "Rotate PDF",
+      "description": "Rotate PDF pages"
+    },
+    "delete-pages-pdf": {
+      "name": "Delete Pages",
+      "description": "Remove unwanted pages"
+    },
+    "extract-pages-pdf": {
+      "name": "Extract Pages",
+      "description": "Extract specific pages"
+    },
+    "unlock-pdf": {
+      "name": "Unlock PDF",
+      "description": "Remove PDF password"
+    },
+    "images-to-pdf": {
+      "name": "Images to PDF",
+      "description": "Convert images to PDF"
+    },
+    "pdf-to-images": {
+      "name": "PDF to Images",
+      "description": "Convert PDF to images"
+    },
+    "pdf-to-word": {
+      "name": "PDF to Word",
+      "description": "Convert PDF to DOCX"
+    },
+    "word-to-pdf": {
+      "name": "Word to PDF",
+      "description": "Convert DOCX to PDF"
+    },
+    "sign-pdf": {
+      "name": "Sign PDF",
+      "description": "Add digital signature"
+    },
+    "flatten-pdf": {
+      "name": "Flatten PDF",
+      "description": "Flatten PDF forms"
+    },
+    "edit-pdf": {
+      "name": "Edit PDF",
+      "description": "Edit PDF content"
+    }
+  },
+  "common": {
+    "upload": "Upload files",
+    "download": "Download",
+    "processing": "Processing...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "done": "Done",
+    "remove": "Remove",
+    "newFile": "New file",
+    "filePreview": "File preview",
+    "totalPages": "Total pages",
+    "fileSize": "File size",
+    "changeFile": "Change file",
+    "autoLoaded": "File loaded from previous tool",
+    "autoLoadedDescription": "Your PDF has been automatically loaded",
+    "reset": "Reset",
+    "processAnother": "Process another",
+    "relatedTools": "Related tools",
+    "clickToEdit": "Click to edit",
+    "convertAnother": "Convert another",
+    "quickActions": "Quick Actions",
+    "preview": "Preview",
+    "clearAll": "Clear All",
+    "processingTime": "Processing time"
+  },
+  "upload": {
+    "selectFiles": "Select files",
+    "dragOrClick": "Drag files here or click to select",
+    "dropHere": "Drop files here",
+    "multipleFilesAllowed": "Multiple files allowed",
+    "singleFileAllowed": "Single file only",
+    "pasteHint": "Or press Ctrl+V to paste files",
+    "maxFiles": "Maximum files",
+    "maxSize": "Maximum size per file",
+    "acceptedTypes": "Accepted types",
+    "errors": {
+      "tooManyFiles": "Too many files. Maximum: {max}",
+      "invalidFileType": "Invalid file type. Please select PDF files only.",
+      "fileTooLarge": "File too large. Maximum size: {max} MB"
+    }
+  },
+  "merge": {
+    "fileList": "Files to merge",
+    "reorderHint": "Drag to reorder",
+    "mergeButton": "Merge PDFs",
+    "mergeAnother": "Merge another",
+    "minFilesHint": "Add at least 2 PDF files to merge",
+    "errors": {
+      "minFiles": "Please select at least 2 PDF files to merge"
+    },
+    "success": {
+      "title": "PDFs merged successfully!",
+      "pages": "Total pages",
+      "size": "File size",
+      "time": "Processing time"
+    },
+    "quickActions": {
+      "title": "What's next?",
+      "description": "Continue working with your merged PDF using these tools:",
+      "compress": "Reduce file size",
+      "protect": "Add password",
+      "watermark": "Add watermark",
+      "split": "Extract pages"
+    }
+  },
+  "compress": {
+    "filePreview": "File to compress",
+    "originalSize": "Original size",
+    "pages": "Pages",
+    "changeFile": "Change file",
+    "selectQuality": "Select compression level",
+    "selected": "Selected",
+    "compressButton": "Compress PDF",
+    "compressAnother": "Compress another",
+    "quality": {
+      "low": {
+        "name": "Maximum",
+        "description": "Smallest file size, lower quality"
+      },
+      "medium": {
+        "name": "Balanced",
+        "description": "Good balance between size and quality"
+      },
+      "high": {
+        "name": "Minimum",
+        "description": "Best quality, larger file size"
+      }
+    },
+    "success": {
+      "title": "PDF compressed successfully!",
+      "originalSize": "Original size",
+      "compressedSize": "Compressed size",
+      "saved": "Space saved",
+      "time": "Processing time"
+    },
+    "quickActions": {
+      "title": "What's next?",
+      "description": "Continue working with your compressed PDF:",
+      "protect": "Add password",
+      "merge": "Merge with others",
+      "split": "Extract pages",
+      "watermark": "Add watermark"
+    },
+    "autoLoaded": {
+      "title": "File loaded from previous tool",
+      "description": "Your merged PDF has been automatically loaded"
+    }
+  },
+  "split": {
+    "filePreview": "File to split",
+    "totalPages": "Total pages",
+    "fileSize": "File size",
+    "changeFile": "Change file",
+    "selectMode": "Select split mode",
+    "splitButton": "Split PDF",
+    "splitAnother": "Split another",
+    "downloadAll": "Download all files",
+    "downloadAsZip": "Download as ZIP",
+    "outputFiles": "Output files",
+    "selectAll": "Select all",
+    "deselectAll": "Deselect all",
+    "selectedCount": "{count} pages selected",
+    "selectPagesHint": "Please select at least one page to continue",
+    "mergingSelected": "Merging selected pages...",
+    "mergeFailed": "Failed to merge selected pages",
+    "mode": {
+      "all": {
+        "name": "All Pages",
+        "description": "Split into individual pages"
+      },
+      "range": {
+        "name": "Page Range",
+        "description": "Extract specific page range"
+      },
+      "intervals": {
+        "name": "By Intervals",
+        "description": "Split every N pages"
+      },
+      "custom": {
+        "name": "Custom Pages",
+        "description": "Select specific pages"
+      }
+    },
+    "rangeSettings": "Page Range Settings",
+    "startPage": "Start page",
+    "endPage": "End page",
+    "rangeHint": "Total pages: {total}",
+    "intervalSettings": "Interval Settings",
+    "pagesPerFile": "Pages per file",
+    "intervalHint": "Will create {files} files from {total} pages",
+    "customSettings": "Custom Page Selection",
+    "pageNumbers": "Page numbers",
+    "customHint": "Enter page numbers separated by commas or use ranges (e.g., 1,3,5-7,10)",
+    "success": {
+      "title": "PDF split successfully!",
+      "filesCreated": "{count} files created"
+    },
+    "pageNumber": "Page {page}",
+    "pageRange": "Pages {start}-{end}",
+    "pageCount": "{count} pages",
+    "pageCountSingle": "1 page",
+    "autoLoaded": {
+      "title": "File loaded from previous tool",
+      "description": "Your PDF has been automatically loaded"
+    },
+    "quickActions": {
+      "title": "What's next?",
+      "description": "Select pages above and continue working with them using these tools:",
+      "descriptionWithSelection": "Continue working with {count} selected pages using these tools:",
+      "compress": "Reduce file size",
+      "merge": "Combine with others",
+      "protect": "Add password",
+      "watermark": "Add watermark"
+    }
+  },
+  "protect": {
+    "filePreview": "File to protect",
+    "protectButton": "Protect PDF",
+    "protectAnother": "Protect another",
+    "userPassword": "Password to open PDF",
+    "userPasswordPlaceholder": "Enter password",
+    "ownerPassword": "Owner password (optional)",
+    "ownerPasswordPlaceholder": "Enter owner password",
+    "useOwnerPassword": "Use different owner password",
+    "permissionsOnly": "Restrictions only (no password to open)",
+    "permissionsOnlyHint": "PDF can be opened without password, but usage will be restricted",
+    "passwordWarning": {
+      "title": "Warning: Password cannot be recovered",
+      "message": "If you lose your password, there is no way to recover it. Keep it in a safe place!"
+    },
+    "securityLevel": "Security level",
+    "advancedSettings": "Advanced settings",
+    "encryptionLevel": "Encryption level",
+    "recommended": "(recommended)",
+    "permissions": "Permissions",
+    "presets": {
+      "basic": {
+        "name": "Basic",
+        "description": "Allow printing and copying"
+      },
+      "business": {
+        "name": "Business",
+        "description": "Allow printing only"
+      },
+      "confidential": {
+        "name": "Confidential",
+        "description": "No printing or copying"
+      }
+    },
+    "permissions": {
+      "printing": "Printing",
+      "printingNone": "Not allowed",
+      "printingLow": "Low resolution",
+      "printingHigh": "High resolution",
+      "copying": "Allow copying text",
+      "modifying": "Allow modifying content",
+      "annotating": "Allow annotations",
+      "fillingForms": "Allow filling forms",
+      "contentAccessibility": "Allow screen readers"
+    },
+    "passwordStrength": {
+      "tooShort": "Password too short (min 8 chars)",
+      "useUpperAndLower": "Use uppercase and lowercase",
+      "useNumbers": "Add numbers",
+      "useSpecialChars": "Add special characters"
+    },
+    "errors": {
+      "passwordRequired": "Password is required",
+      "protectionFailed": "Failed to protect PDF"
+    },
+    "success": {
+      "title": "PDF protected successfully!",
+      "encryption": "Encryption",
+      "password": "Password",
+      "passwordSet": "Protected"
+    },
+    "quickActions": {
+      "title": "What's next?",
+      "description": "Continue working with your protected PDF:",
+      "compress": "Reduce file size",
+      "split": "Extract pages",
+      "watermark": "Add watermark",
+      "merge": "Combine with others"
+    },
+    "autoLoaded": {
+      "title": "File loaded from previous tool",
+      "description": "Your PDF has been automatically loaded"
+    }
+  },
+  "ocr": {
+    "filePreview": "File to process",
+    "recognitionLanguage": "Recognition language",
+    "languageHint": "Select the language of text in your document",
+    "autoDetect": "Auto-detect language",
+    "autoDetectHint": "Language will be detected automatically from document content",
+    "detectingLanguage": "Detecting language...",
+    "pageSelection": "Pages to process",
+    "firstPageOnly": "First page only",
+    "allPages": "All pages",
+    "pageRange": "Page range",
+    "page": "page",
+    "pages": "pages",
+    "processed": "processed",
+    "processingPage": "Processing page {current} of {total}...",
+    "startOCR": "Start OCR",
+    "processing": "Processing OCR...",
+    "initializing": "Initializing OCR engine...",
+    "loadingModel": "Loading language model...",
+    "processingImage": "Processing image...",
+    "processingPDF": "Processing PDF...",
+    "recognizing": "Recognizing text",
+    "completed": "OCR completed!",
+    "results": "Recognized Text",
+    "confidence": "Confidence",
+    "extractedText": "Extracted text",
+    "copyText": "Copy text",
+    "downloadTXT": "Download TXT",
+    "textCopied": "Text copied to clipboard!",
+    "infoTitle": "About OCR",
+    "info1": "Supports PDF documents and images (JPG, PNG)",
+    "info2": "Recognition in 5 languages: EN, RU, DE, FR, ES",
+    "info3": "Multi-page PDF support with page range selection",
+    "info4": "All processing happens in your browser - files stay private",
+    "errors": {
+      "noFile": "Please select a file first",
+      "processingFailed": "OCR processing failed. Please try again."
+    }
+  },
+  "watermark": {
+    "filePreview": "File to watermark",
+    "text": "Watermark text",
+    "watermarkText": "Watermark text",
+    "watermarkPlaceholder": "Enter watermark text",
+    "position": "Position",
+    "positions": {
+      "diagonal": "Diagonal",
+      "center": "Center",
+      "topLeft": "Top Left",
+      "topRight": "Top Right",
+      "bottomLeft": "Bottom Left",
+      "bottomRight": "Bottom Right"
+    },
+    "color": "Color",
+    "colors": {
+      "black": "Black",
+      "gray": "Gray",
+      "red": "Red",
+      "blue": "Blue"
+    },
+    "opacity": "Opacity",
+    "fontSize": "Font Size",
+    "rotation": "Rotation",
+    "preview": "Preview",
+    "settings": "Watermark Settings",
+    "applyButton": "Apply Watermark",
+    "applyAnother": "Apply to another",
+    "loading": "Loading PDF...",
+    "processing": "Adding watermark...",
+    "processingPage": "Processing page {current} of {total}...",
+    "saving": "Saving PDF...",
+    "completed": "Watermark applied!",
+    "errors": {
+      "noText": "Please enter watermark text",
+      "textRequired": "Please enter watermark text",
+      "failed": "Failed to apply watermark"
+    },
+    "success": {
+      "title": "Watermark applied successfully!",
+      "pages": "Pages watermarked",
+      "time": "Processing time"
+    },
+    "quickActions": {
+      "title": "What's next?",
+      "description": "Continue working with your watermarked PDF:",
+      "compress": "Reduce file size",
+      "protect": "Add password",
+      "split": "Extract pages",
+      "merge": "Combine with others"
+    },
+    "autoLoaded": {
+      "title": "File loaded from previous tool",
+      "description": "Your PDF has been automatically loaded"
+    },
+    "infoTitle": "About Watermark",
+    "info1": "Supports text watermarks with full Cyrillic and Latin character support",
+    "info2": "6 position options: diagonal, center, and 4 corners",
+    "info3": "All processing happens in your browser - files stay private"
+  },
+  "rotate": {
+    "settings": "Rotation settings",
+    "selectAngle": "Select rotation angle",
+    "clockwise": "Clockwise",
+    "upsideDown": "Upside down",
+    "counterClockwise": "Counter-clockwise",
+    "selectPages": "Select pages to rotate",
+    "allPages": "All pages",
+    "rotateAllPages": "Rotate all pages in document",
+    "specificPages": "Specific pages",
+    "choosePages": "Choose which pages to rotate",
+    "pageNumbers": "Page numbers",
+    "pageNumbersHint": "Example: 1,3,5-7,10 (Total pages: {total})",
+    "rotateButton": "Rotate PDF",
+    "rotateAnother": "Rotate another",
+    "invalidPages": "Please enter valid page numbers",
+    "failed": "Failed to rotate PDF",
+    "success": "PDF rotated successfully!",
+    "successDescription": "Your PDF pages have been rotated as specified",
+    "quickActions": {
+      "title": "What's next?",
+      "description": "Continue working with your rotated PDF:",
+      "compress": "Reduce file size",
+      "protect": "Add password",
+      "watermark": "Add watermark",
+      "split": "Extract pages"
+    }
+  },
+  "deletePages": {
+    "selectPages": "Select pages to delete",
+    "pagesToDelete": "Pages to delete",
+    "hint": "Example: 1,3,5-7,10 (Total pages: {total})",
+    "warning": "Warning: This cannot be undone",
+    "warningDescription": "Pages will be permanently removed from the PDF",
+    "deleteButton": "Delete Pages",
+    "deleteAnother": "Delete from another",
+    "invalidPages": "Please enter valid page numbers",
+    "cannotDeleteAll": "Cannot delete all pages from PDF",
+    "failed": "Failed to delete pages",
+    "success": "Pages deleted successfully!",
+    "successDescription": "Selected pages have been removed from your PDF",
+    "quickActions": {
+      "title": "What's next?",
+      "description": "Continue working with your PDF:",
+      "compress": "Reduce file size",
+      "protect": "Add password",
+      "watermark": "Add watermark",
+      "merge": "Combine with others"
+    }
+  },
+  "extractPages": {
+    "selectPages": "Select pages to extract",
+    "pagesToExtract": "Pages to extract",
+    "hint": "Example: 1,3,5-7,10 (Total pages: {total})",
+    "info": "Extract creates a new PDF",
+    "infoDescription": "Original PDF remains unchanged, only selected pages are copied to new file",
+    "extractButton": "Extract Pages",
+    "extractAnother": "Extract from another",
+    "invalidPages": "Please enter valid page numbers",
+    "failed": "Failed to extract pages",
+    "success": "Pages extracted successfully!",
+    "successDescription": "Selected pages have been extracted to a new PDF",
+    "quickActions": {
+      "title": "What's next?",
+      "description": "Continue working with extracted pages:",
+      "compress": "Reduce file size",
+      "protect": "Add password",
+      "watermark": "Add watermark",
+      "merge": "Combine with others"
+    }
+  },
+  "imagesToPdf": {
+    "imagesList": "Images",
+    "settings": "PDF Settings",
+    "pageSize": "Page Size",
+    "pageSizes": {
+      "fit": "Fit to Image",
+      "a4": "A4",
+      "letter": "Letter"
+    },
+    "orientation": "Orientation",
+    "orientations": {
+      "portrait": "Portrait",
+      "landscape": "Landscape"
+    },
+    "margin": "Margin",
+    "convert": "Convert to PDF",
+    "convertAnother": "Convert another",
+    "errors": {
+      "noImages": "Please select at least one image"
+    },
+    "success": {
+      "title": "Images converted successfully!",
+      "pages": "Pages created"
+    },
+    "successMessage": "Successfully created PDF with {count} pages",
+    "quickActions": {
+      "title": "What's next?",
+      "description": "Continue working with your PDF:",
+      "compress": "Reduce file size",
+      "protect": "Add password",
+      "watermark": "Add watermark",
+      "merge": "Combine with others"
+    }
+  }
+}

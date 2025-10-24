@@ -1,0 +1,244 @@
+---
+import ContentPage from '../components/ContentPage.astro';
+---
+
+<ContentPage
+  title="Privacy Policy — LocalPDF"
+  description="LocalPDF Privacy Policy: Learn how we protect your privacy with 100% client-side processing and zero data collection."
+  heading="Privacy Policy"
+  breadcrumbs={[
+    { label: 'Home', href: '/' },
+    { label: 'Privacy Policy' }
+  ]}
+>
+  <p><strong>Last Updated:</strong> October 24, 2025</p>
+
+  <h2>Introduction</h2>
+  <p>
+    At LocalPDF, your privacy is not just a feature—it's our core architecture. Unlike traditional online
+    PDF services that upload your files to remote servers, LocalPDF processes everything locally in your
+    browser. This means we literally cannot access, view, store, or share your documents.
+  </p>
+
+  <p><strong>TL;DR:</strong> We don't collect your data because we never see it.</p>
+
+  <h2>What Data We Collect</h2>
+  <p><strong>None.</strong></p>
+
+  <p>
+    LocalPDF does not collect, process, store, or transmit any of the following:
+  </p>
+
+  <ul>
+    <li>PDF files or documents you upload</li>
+    <li>Personal information (names, emails, addresses)</li>
+    <li>IP addresses or device identifiers</li>
+    <li>Browser fingerprints or usage analytics</li>
+    <li>Cookies (we don't use any cookies)</li>
+    <li>Session data or browsing history</li>
+  </ul>
+
+  <div class="info-box">
+    <strong>Technical Explanation:</strong> When you upload a PDF to LocalPDF, the file is loaded directly
+    into your browser's JavaScript runtime memory. All processing (merging, splitting, compressing, etc.)
+    happens using client-side libraries (pdf-lib, PDF.js, Tesseract.js). There are zero network requests
+    to our servers during processing. When you download the result, it's generated in your browser and
+    saved to your device via the browser's native download API.
+  </div>
+
+  <h2>How LocalPDF Works (Privacy Perspective)</h2>
+
+  <h3>1. File Upload</h3>
+  <p>
+    When you select a PDF file using our file picker, the browser reads the file from your local disk
+    into memory. This happens entirely within your browser—no network transmission occurs.
+  </p>
+
+  <h3>2. Processing</h3>
+  <p>
+    All PDF manipulation happens in your browser using JavaScript and WebAssembly. The pdf-lib library
+    (for merging, splitting, etc.) and PDF.js (for rendering) run locally. Your files never leave your
+    device's RAM.
+  </p>
+
+  <h3>3. Download</h3>
+  <p>
+    When processing is complete, the modified PDF is generated in your browser's memory and offered as
+    a download using the browser's built-in download mechanism. We don't intercept or store this file.
+  </p>
+
+  <h3>4. Cleanup</h3>
+  <p>
+    Once you close the browser tab or navigate away, all file data is automatically cleared from memory.
+    There's no server-side storage, no backups, no "trash" folder.
+  </p>
+
+  <h2>GDPR Compliance (EU Regulation 2016/679)</h2>
+
+  <p>
+    LocalPDF is fully compliant with the General Data Protection Regulation (GDPR) by design. Here's how
+    we address each key GDPR principle:
+  </p>
+
+  <h3>1. Lawfulness, Fairness, and Transparency (Article 5.1.a)</h3>
+  <p>
+    Since we don't process personal data, we don't require a legal basis (consent, contract, legitimate
+    interest, etc.) for data processing. Our service is transparent: what you see is what you get—100%
+    client-side processing.
+  </p>
+
+  <h3>2. Purpose Limitation (Article 5.1.b)</h3>
+  <p>
+    Not applicable—we don't collect data, so there's no purpose to limit.
+  </p>
+
+  <h3>3. Data Minimization (Article 5.1.c)</h3>
+  <p>
+    We've minimized data collection to zero. You can't get more minimal than that.
+  </p>
+
+  <h3>4. Accuracy (Article 5.1.d)</h3>
+  <p>
+    Not applicable—we don't store data, so there's no data to keep accurate.
+  </p>
+
+  <h3>5. Storage Limitation (Article 5.1.e)</h3>
+  <p>
+    Data is stored only in your browser's temporary memory during active use. When you close the tab,
+    it's erased. Storage duration: seconds to minutes, never longer.
+  </p>
+
+  <h3>6. Integrity and Confidentiality (Article 5.1.f)</h3>
+  <p>
+    Your data never leaves your device, so there's no risk of data breaches, unauthorized access, or
+    interception. This is the highest level of confidentiality possible.
+  </p>
+
+  <h2>Your GDPR Rights</h2>
+
+  <p>Under GDPR, you have the following rights. Here's how LocalPDF respects them:</p>
+
+  <div class="card-grid">
+    <div class="card">
+      <h3>Right to Access (Article 15)</h3>
+      <p>
+        You have the right to know what data we hold about you. Answer: None. We can't provide access
+        to data we don't have.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>Right to Rectification (Article 16)</h3>
+      <p>
+        You have the right to correct inaccurate data. Not applicable—we don't store data.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>Right to Erasure / "Right to Be Forgotten" (Article 17)</h3>
+      <p>
+        Automatic. Your data is erased from browser memory when you close the tab. No manual request needed.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>Right to Data Portability (Article 20)</h3>
+      <p>
+        Not applicable—we don't store your data, so there's nothing to port.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>Right to Object (Article 21)</h3>
+      <p>
+        Not applicable—there's no data processing to object to.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>Right to Restrict Processing (Article 18)</h3>
+      <p>
+        Not applicable—processing happens locally in your browser under your full control.
+      </p>
+    </div>
+  </div>
+
+  <h2>Third-Party Services</h2>
+
+  <h3>Hosting</h3>
+  <p>
+    LocalPDF is hosted on standard web hosting infrastructure. When you load our website, your browser
+    makes a standard HTTP request to retrieve static files (HTML, CSS, JavaScript). This is a normal
+    web request and may be logged by our hosting provider (e.g., IP address, timestamp, user agent).
+    However, these logs do not contain any PDF files or document content.
+  </p>
+
+  <h3>Fonts</h3>
+  <p>
+    We load the Inter font from Google Fonts. When your browser loads our site, it may request font
+    files from Google's CDN. This is a standard resource request and does not involve transmitting
+    your PDF files. You can read Google Fonts' privacy policy
+    <a href="https://developers.google.com/fonts/faq#what_does_using_the_google_fonts_api_mean_for_the_privacy_of_my_users" target="_blank">here</a>.
+  </p>
+
+  <h3>Analytics</h3>
+  <p>
+    <strong>We do not use Google Analytics, Facebook Pixel, or any third-party tracking scripts.</strong>
+    There are no cookies, no fingerprinting, no session recording.
+  </p>
+
+  <h2>Data Breaches</h2>
+  <p>
+    Since we don't collect, store, or transmit your personal data, there's nothing for us to breach.
+    If a malicious actor gained access to our servers, they would find zero user data—no PDFs, no
+    personal information, nothing.
+  </p>
+
+  <p>
+    The only theoretical risk is browser-level vulnerabilities (e.g., malicious browser extensions
+    reading your local memory). This is outside our control and applies to all web applications.
+  </p>
+
+  <h2>International Data Transfers</h2>
+  <p>
+    Not applicable. Your data never leaves your device, so there are no cross-border transfers.
+    You could be in Europe, Asia, or Antarctica—your PDFs stay local.
+  </p>
+
+  <h2>Children's Privacy</h2>
+  <p>
+    LocalPDF does not collect personal data from anyone, including children under 13 (COPPA) or 16 (GDPR).
+    Since we don't collect data, we don't need parental consent.
+  </p>
+
+  <h2>Changes to This Policy</h2>
+  <p>
+    If we ever change our privacy practices (unlikely, given our zero-data architecture), we'll update
+    this page and change the "Last Updated" date above. Significant changes will be announced on our
+    homepage.
+  </p>
+
+  <h2>Contact &amp; Data Protection Officer</h2>
+  <p>
+    For privacy-related questions, contact us at:
+    <br><strong>Email:</strong> <a href="mailto:privacy@localpdf.online">privacy@localpdf.online</a>
+  </p>
+
+  <p>
+    Since we don't process personal data, we're not required to appoint a Data Protection Officer (DPO)
+    under GDPR Article 37. However, if you have concerns about GDPR compliance, feel free to reach out.
+  </p>
+
+  <h2>Supervisory Authority</h2>
+  <p>
+    If you're in the EU and believe we're violating GDPR (though we're not sure how, given we don't
+    collect data), you have the right to lodge a complaint with your local data protection authority.
+    Find your authority <a href="https://edpb.europa.eu/about-edpb/board/members_en" target="_blank">here</a>.
+  </p>
+
+  <div class="info-box">
+    <strong>Summary:</strong> LocalPDF is a privacy-first tool. We don't collect, process, store, or
+    share your data. Your files are processed locally in your browser and erased when you close the tab.
+    This is the safest way to work with PDFs online.
+  </div>
+</ContentPage>

@@ -1,0 +1,285 @@
+---
+import ContentPage from '../components/ContentPage.astro';
+---
+
+<ContentPage
+  title="PDF Learning Center — Free Guides &amp; Tutorials"
+  description="Learn how to work with PDFs: merge, split, compress, protect, and more. Free tutorials and best practices for PDF management."
+  heading="PDF Learning Center"
+  breadcrumbs={[
+    { label: 'Home', href: '/' },
+    { label: 'Learning Center' }
+  ]}
+>
+  <p>
+    Welcome to the LocalPDF Learning Center. Here you'll find guides, tutorials, and best practices
+    for working with PDF files efficiently and securely.
+  </p>
+
+  <h2>Getting Started with PDFs</h2>
+
+  <div class="card-grid">
+    <div class="card">
+      <h3>📄 What is a PDF?</h3>
+      <p>
+        PDF (Portable Document Format) is a file format created by Adobe in 1993. It preserves document
+        formatting across all devices and operating systems, making it the standard for sharing documents.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>🔒 Why PDFs for Security?</h3>
+      <p>
+        PDFs support encryption, password protection, and permission controls. They prevent unauthorized
+        editing and ensure recipients see exactly what you intended.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>⚡ PDF vs Word/Excel</h3>
+      <p>
+        Unlike Word/Excel, PDFs are "read-only" by default. They can't be easily edited without specialized
+        tools, making them ideal for contracts, invoices, and official documents.
+      </p>
+    </div>
+  </div>
+
+  <h2>Common PDF Tasks</h2>
+
+  <h3>1. Merging PDFs</h3>
+  <p><strong>Use case:</strong> Combine multiple documents into one file (e.g., contract + appendices).</p>
+  <p><strong>How it works:</strong></p>
+  <ol>
+    <li>Upload all PDFs you want to merge</li>
+    <li>Arrange them in the desired order (drag-and-drop)</li>
+    <li>Click "Merge" and download the combined PDF</li>
+  </ol>
+  <p>
+    <strong>Best practice:</strong> Name files with prefixes (e.g., <code>01_contract.pdf</code>, <code>02_terms.pdf</code>)
+    for easy ordering.
+  </p>
+  <p><a href="/merge-pdf" style="color: #2563EB;">Try Merge PDF Tool →</a></p>
+
+  <h3>2. Splitting PDFs</h3>
+  <p><strong>Use case:</strong> Extract specific pages or divide a large PDF into smaller chunks.</p>
+  <p><strong>Common scenarios:</strong></p>
+  <ul>
+    <li><strong>Extract one page:</strong> Pull out a signed signature page from a contract</li>
+    <li><strong>Split by ranges:</strong> Divide a 100-page report into 5 chapters (20 pages each)</li>
+    <li><strong>Separate scanned documents:</strong> Split a batch scan into individual files</li>
+  </ul>
+  <p><a href="/split-pdf" style="color: #2563EB;">Try Split PDF Tool →</a></p>
+
+  <h3>3. Compressing PDFs</h3>
+  <p><strong>Use case:</strong> Reduce file size for email attachments or faster sharing.</p>
+  <p><strong>What gets removed:</strong></p>
+  <ul>
+    <li>Redundant objects and duplicate resources</li>
+    <li>Encryption overhead (if unprotected)</li>
+    <li>Metadata and hidden content</li>
+  </ul>
+  <p>
+    <strong>Typical results:</strong> 30-70% size reduction without visible quality loss.
+  </p>
+  <p><a href="/compress-pdf" style="color: #2563EB;">Try Compress PDF Tool →</a></p>
+
+  <h3>4. Password Protecting PDFs</h3>
+  <p><strong>Use case:</strong> Secure sensitive documents (e.g., tax returns, medical records).</p>
+  <p><strong>Two types of passwords:</strong></p>
+  <ul>
+    <li><strong>User password:</strong> Required to open the PDF</li>
+    <li><strong>Owner password:</strong> Required to change permissions (e.g., allow/deny printing)</li>
+  </ul>
+  <p>
+    <strong>Security tip:</strong> Use strong passwords (12+ characters, mix of letters/numbers/symbols).
+    Avoid dictionary words.
+  </p>
+  <p><a href="/protect-pdf" style="color: #2563EB;">Try Protect PDF Tool →</a></p>
+
+  <h3>5. OCR (Optical Character Recognition)</h3>
+  <p><strong>Use case:</strong> Extract text from scanned PDFs or images.</p>
+  <p><strong>How it works:</strong></p>
+  <ol>
+    <li>Upload a scanned PDF (e.g., photo of a contract taken with your phone)</li>
+    <li>OCR engine analyzes the image and detects text</li>
+    <li>Extracted text becomes searchable and copyable</li>
+  </ol>
+  <p>
+    <strong>Accuracy tip:</strong> OCR works best with clear, high-resolution scans. Blurry or handwritten
+    text may not be recognized correctly.
+  </p>
+  <p><a href="/ocr-pdf" style="color: #2563EB;">Try OCR PDF Tool →</a></p>
+
+  <h2>Best Practices for PDF Management</h2>
+
+  <h3>File Naming Conventions</h3>
+  <p>Use descriptive names with dates and versions:</p>
+  <ul>
+    <li>✅ <code>2025-01-15_Contract_v2.pdf</code></li>
+    <li>✅ <code>Invoice_12345_ACME_Corp.pdf</code></li>
+    <li>❌ <code>document1.pdf</code></li>
+    <li>❌ <code>Untitled.pdf</code></li>
+  </ul>
+
+  <h3>Backup Strategy</h3>
+  <p>Always keep backups of important PDFs:</p>
+  <ul>
+    <li><strong>3-2-1 Rule:</strong> 3 copies, on 2 different media types, with 1 offsite</li>
+    <li>Use cloud storage (encrypted!) for offsite backups</li>
+    <li>Test backups regularly—can you actually restore them?</li>
+  </ul>
+
+  <h3>When to Use PDF vs. Other Formats</h3>
+
+  <div class="card-grid">
+    <div class="card">
+      <h3>Use PDF for:</h3>
+      <ul style="margin: 8px 0 0 20px;">
+        <li>Contracts and legal documents</li>
+        <li>Invoices and receipts</li>
+        <li>Resumes and portfolios</li>
+        <li>Official reports</li>
+        <li>Print-ready files</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Use Word/Google Docs for:</h3>
+      <ul style="margin: 8px 0 0 20px;">
+        <li>Collaborative editing</li>
+        <li>Drafts and working documents</li>
+        <li>Documents that need frequent updates</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Use Excel/Sheets for:</h3>
+      <ul style="margin: 8px 0 0 20px;">
+        <li>Data analysis and calculations</li>
+        <li>Budgets and financial models</li>
+        <li>Interactive forms with formulas</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Privacy &amp; Security Tips</h2>
+
+  <div class="info-box">
+    <strong>Never upload sensitive PDFs to untrusted services.</strong> Many "free" PDF tools upload your
+    files to their servers, where they may be:
+    <ul style="margin: 8px 0 0 20px;">
+      <li>Stored indefinitely</li>
+      <li>Scanned for keywords (for targeted ads)</li>
+      <li>Accessed by employees or hackers</li>
+    </ul>
+
+    <strong>LocalPDF processes everything locally</strong>—your files never leave your device. This is
+    the safest way to work with confidential documents online.
+  </div>
+
+  <h3>Checking for Hidden Metadata</h3>
+  <p>PDFs can contain hidden metadata like:</p>
+  <ul>
+    <li>Author name and organization</li>
+    <li>Creation/modification dates</li>
+    <li>Software used to create the PDF</li>
+    <li>Comments and tracked changes</li>
+  </ul>
+
+  <p>
+    <strong>How to remove metadata:</strong> Use LocalPDF's <a href="/compress-pdf" style="color: #2563EB;">Compress PDF</a>
+    tool, which strips metadata as part of the compression process.
+  </p>
+
+  <h2>Common PDF Problems &amp; Solutions</h2>
+
+  <h3>Problem: PDF won't open</h3>
+  <p><strong>Possible causes:</strong></p>
+  <ul>
+    <li>File is corrupted</li>
+    <li>PDF is password-protected</li>
+    <li>Incompatible PDF version</li>
+  </ul>
+  <p><strong>Solutions:</strong></p>
+  <ul>
+    <li>Try opening in a different PDF viewer (Adobe Reader, Chrome, Firefox)</li>
+    <li>Ask the sender for the password</li>
+    <li>Re-download the file (may have been corrupted during download)</li>
+  </ul>
+
+  <h3>Problem: PDF is too large to email</h3>
+  <p><strong>Email attachment limits:</strong></p>
+  <ul>
+    <li>Gmail: 25 MB</li>
+    <li>Outlook: 20 MB</li>
+    <li>Yahoo: 25 MB</li>
+  </ul>
+  <p>
+    <strong>Solution:</strong> Use LocalPDF's <a href="/compress-pdf" style="color: #2563EB;">Compress PDF</a>
+    tool to reduce file size, or <a href="/split-pdf" style="color: #2563EB;">Split PDF</a> into smaller chunks.
+  </p>
+
+  <h3>Problem: Can't edit PDF text</h3>
+  <p>
+    PDFs are designed to be read-only. To edit text, you need:
+  </p>
+  <ul>
+    <li>Adobe Acrobat Pro (paid)</li>
+    <li>Convert to Word, edit, then convert back to PDF</li>
+    <li>Use LocalPDF's <a href="/add-text-pdf" style="color: #2563EB;">Add Text</a> tool to overlay new text</li>
+  </ul>
+
+  <h2>Advanced Topics</h2>
+
+  <h3>PDF/A for Long-Term Archiving</h3>
+  <p>
+    PDF/A is a specialized variant of PDF designed for long-term archival. It embeds all fonts and
+    prohibits features that may not work in the future (like external links or encryption).
+  </p>
+  <p><strong>Use PDF/A for:</strong> Legal records, government documents, historical archives.</p>
+
+  <h3>PDF Forms</h3>
+  <p>
+    Interactive PDF forms allow users to fill in fields (text boxes, checkboxes, dropdowns) without
+    printing. They can be created with Adobe Acrobat Pro or specialized form builders.
+  </p>
+
+  <h2>Need Help?</h2>
+  <p>
+    Stuck on a PDF task? Contact us at <a href="mailto:support@localpdf.online">support@localpdf.online</a>
+    or check our <a href="/" style="color: #2563EB;">tools page</a> for guides specific to each feature.
+  </p>
+
+  <h2>Ready to Get Started?</h2>
+  <div class="card-grid">
+    <div class="card">
+      <h3>🔀 Merge PDFs</h3>
+      <p>
+        Combine multiple PDF files into one document. No uploads, instant processing, unlimited files.
+      </p>
+      <p><a href="/merge-pdf" style="color: #2563EB;">Try Merge Tool →</a></p>
+    </div>
+
+    <div class="card">
+      <h3>✂️ Split PDFs</h3>
+      <p>
+        Divide PDFs by pages, ranges, or intervals. Extract specific pages to new documents.
+      </p>
+      <p><a href="/split-pdf" style="color: #2563EB;">Try Split Tool →</a></p>
+    </div>
+
+    <div class="card">
+      <h3>🗜️ Compress PDFs</h3>
+      <p>
+        Reduce file size without quality loss. Perfect for email attachments and faster sharing.
+      </p>
+      <p><a href="/compress-pdf" style="color: #2563EB;">Try Compress Tool →</a></p>
+    </div>
+  </div>
+
+  <div style="text-align: center; margin-top: 32px;">
+    <a href="/" style="display: inline-block; padding: 14px 32px; background: #2563EB; color: #fff; font-weight: 600; text-decoration: none; border-radius: 8px;">
+      View All 11 PDF Tools →
+    </a>
+  </div>
+</ContentPage>

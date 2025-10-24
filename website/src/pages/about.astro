@@ -1,0 +1,171 @@
+---
+import ContentPage from '../components/ContentPage.astro';
+---
+
+<ContentPage
+  title="About LocalPDF — Privacy-First PDF Tools"
+  description="Learn about LocalPDF's mission to provide free, private, and secure PDF tools that process files entirely in your browser."
+  heading="About LocalPDF"
+  breadcrumbs={[
+    { label: 'Home', href: '/' },
+    { label: 'About' }
+  ]}
+>
+  <p>
+    LocalPDF is a privacy-first PDF toolkit designed for users who value security, speed, and simplicity.
+    Unlike traditional online PDF tools that upload your documents to remote servers, LocalPDF processes
+    everything locally in your browser.
+  </p>
+
+  <h2>Our Mission</h2>
+  <p>
+    We believe that working with PDFs shouldn't require sacrificing your privacy. Every day, millions of
+    people upload sensitive documents—contracts, invoices, medical records, tax forms—to cloud-based PDF
+    services without knowing where their files go or who has access to them.
+  </p>
+
+  <p><strong>LocalPDF changes that.</strong></p>
+
+  <p>
+    By leveraging modern web technologies (WebAssembly, PDF.js, pdf-lib), we've built a complete PDF toolkit
+    that runs entirely in your browser. Your files never leave your device. No uploads, no tracking, no data collection.
+  </p>
+
+  <h2>Why We Built This</h2>
+
+  <div class="card-grid">
+    <div class="card">
+      <h3>Privacy Matters</h3>
+      <p>
+        Your documents contain sensitive information. They shouldn't be uploaded to servers you don't control,
+        scanned by algorithms you don't understand, or stored in databases you can't delete.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>Speed Wins</h3>
+      <p>
+        Uploading large PDFs to servers is slow. Processing in your browser is instant—no network delays,
+        no queues, no waiting. Just pure, native performance.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>Simplicity First</h3>
+      <p>
+        No accounts, no subscriptions, no paywalls. Just open a tool, drag your file, and get results.
+        The way software should work.
+      </p>
+    </div>
+  </div>
+
+  <h2>How It Works</h2>
+  <p>
+    LocalPDF uses client-side JavaScript libraries to manipulate PDFs directly in your browser:
+  </p>
+
+  <ul>
+    <li><strong>pdf-lib</strong> — For merging, splitting, compressing, and protecting PDFs</li>
+    <li><strong>PDF.js</strong> — Mozilla's open-source PDF renderer for previews and OCR</li>
+    <li><strong>Tesseract.js</strong> — OCR engine that extracts text from scanned documents</li>
+    <li><strong>React 19</strong> — Modern UI framework for smooth interactions</li>
+  </ul>
+
+  <p>
+    When you upload a file, it stays in your browser's memory. Processing happens using WebAssembly and
+    JavaScript—no network requests, no server communication. When you download the result, the file is
+    generated locally and saved to your device.
+  </p>
+
+  <h2>Open Source &amp; Transparent</h2>
+  <p>
+    LocalPDF is built on open-source technologies. We believe in transparency and community-driven development.
+    Our codebase uses battle-tested libraries trusted by millions of developers worldwide.
+  </p>
+
+  <div class="info-box">
+    <strong>Currently in Beta:</strong> LocalPDF is free during our beta testing period. We're gathering
+    feedback and improving the tools based on real-world usage. Report bugs or suggest features via
+    <a href="https://github.com/ulinycoin/clientpdf-pro" target="_blank">GitHub</a>.
+  </div>
+
+  <h2>Our Principles</h2>
+  <ul>
+    <li><strong>Privacy by Design:</strong> Your files never leave your device. Period.</li>
+    <li><strong>No Tracking:</strong> No cookies, no analytics, no user profiling.</li>
+    <li><strong>No Accounts:</strong> Use all tools without registration or email.</li>
+    <li><strong>Free & Fair:</strong> No artificial limits, no watermarks, no upsells.</li>
+    <li><strong>Performance:</strong> Instant processing with no upload delays.</li>
+  </ul>
+
+  <h2>GDPR Compliance</h2>
+  <p>
+    LocalPDF is inherently GDPR-compliant because we don't process, store, or transfer personal data:
+  </p>
+
+  <div class="card-grid">
+    <div class="card">
+      <h3>Zero Data Collection</h3>
+      <p>
+        We don't collect, process, or store any personal data. No cookies, no tracking scripts, no analytics.
+        Your files are processed entirely in your browser's memory and deleted when you close the tab.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>No Data Controllers</h3>
+      <p>
+        Under GDPR, a "data controller" determines the purposes and means of processing personal data.
+        Since LocalPDF never receives your data, we're not a data controller—there's nothing to control.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>Right to Erasure? Automatic.</h3>
+      <p>
+        GDPR grants you the "right to be forgotten." With LocalPDF, your data is automatically erased
+        from browser memory the moment you close the tab. No manual deletion requests needed.
+      </p>
+    </div>
+  </div>
+
+  <div class="info-box">
+    <strong>For EU Users:</strong> LocalPDF fully respects your rights under GDPR (Regulation EU 2016/679).
+    Since all processing happens locally in your browser with zero server communication, your documents
+    never cross borders, never enter databases, and never require consent forms. Read our full
+    <a href="/privacy">Privacy Policy</a> for details.
+  </div>
+
+  <h2>Contact</h2>
+  <p>
+    Have questions or feedback? Reach out via <a href="mailto:support@localpdf.online">support@localpdf.online</a>
+    or open an issue on <a href="https://github.com/ulinycoin/clientpdf-pro" target="_blank">GitHub</a>.
+  </p>
+
+  <h2>Explore More</h2>
+  <div class="card-grid">
+    <div class="card">
+      <h3>🚀 Try Our Tools</h3>
+      <p>
+        Start using LocalPDF's privacy-first PDF tools. Merge, split, compress, and protect PDFs instantly in your browser.
+      </p>
+      <p><a href="/" style="color: #2563EB;">Browse All Tools →</a></p>
+    </div>
+
+    <div class="card">
+      <h3>📚 Learning Center</h3>
+      <p>
+        Learn best practices for working with PDFs. Free guides, tutorials, and tips for efficient PDF management.
+      </p>
+      <p><a href="/learn" style="color: #2563EB;">Read Guides →</a></p>
+    </div>
+
+    <div class="card">
+      <h3>⚖️ Compare Tools</h3>
+      <p>
+        See how LocalPDF stacks up against Adobe, Smallpdf, and iLovePDF. Privacy, speed, and features compared.
+      </p>
+      <p><a href="/comparison" style="color: #2563EB;">View Comparison →</a></p>
+    </div>
+  </div>
+</ContentPage>

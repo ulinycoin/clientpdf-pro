@@ -1,0 +1,407 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  canonical?: string;
+}
+
+const { title, description, image, canonical } = Astro.props;
+const currentUrl = canonical || Astro.url.href;
+const ogImage = image || 'https://localpdf.online/logos/localpdf-social-1200x630.png';
+const siteName = 'LocalPDF';
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- Primary Meta Tags -->
+  <title>{title}</title>
+  <meta name="title" content={title}>
+  <meta name="description" content={description}>
+  <meta name="keywords" content="PDF tools, merge PDF, split PDF, compress PDF, edit PDF, free PDF editor, online PDF, privacy PDF, client-side PDF">
+  <meta name="author" content="LocalPDF">
+  <meta name="robots" content="index, follow">
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href={currentUrl}>
+
+  <!-- Google Search Console verification -->
+  <meta name="google-site-verification" content="34adca022b79f1a0">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content={currentUrl}>
+  <meta property="og:title" content={title}>
+  <meta property="og:description" content={description}>
+  <meta property="og:image" content={ogImage}>
+  <meta property="og:site_name" content={siteName}>
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content={currentUrl}>
+  <meta name="twitter:title" content={title}>
+  <meta name="twitter:description" content={description}>
+  <meta name="twitter:image" content={ogImage}>
+
+  <!-- Additional SEO -->
+  <meta name="theme-color" content="#2563EB">
+  <meta name="application-name" content={siteName}>
+  <meta name="language" content="English">
+  <meta name="geo.region" content="US">
+  <meta name="geo.placename" content="United States">
+  <meta name="rating" content="General">
+  <meta name="referrer" content="no-referrer-when-downgrade">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content={siteName}>
+
+  <!-- Favicons and Icons -->
+  <link rel="icon" type="image/png" sizes="16x16" href="/logos/localpdf-favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/logos/localpdf-header-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/logos/localpdf-apple-180x180.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/logos/localpdf-pwa-192x192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/logos/localpdf-pwa-512x512.png">
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="/manifest.json">
+
+  <slot name="head" />
+
+  <!-- Fonts - Preconnect for performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Google Analytics - Ultra-deferred loading (after page is idle) -->
+  <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
+  <link rel="preconnect" href="https://www.google-analytics.com" crossorigin>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-MS36WTHPCZ', {
+      anonymize_ip: true,
+      allow_google_signals: false,
+      allow_ad_personalization_signals: false
+    });
+
+    // Ultra-deferred: Load GA only after page is fully idle (requestIdleCallback)
+    // This ensures GA doesn't compete with LCP/FCP rendering
+    function loadGA() {
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.googletagmanager.com/gtag/js?id=G-MS36WTHPCZ';
+      document.head.appendChild(script);
+    }
+
+    if ('requestIdleCallback' in window) {
+      // Modern browsers - load when browser is idle
+      requestIdleCallback(loadGA, { timeout: 3000 });
+    } else {
+      // Fallback - load after 3 seconds
+      setTimeout(loadGA, 3000);
+    }
+  </script>
+
+  <style is:global>
+    /* CSS Reset & Base */
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: #FAFAFA;
+      color: #0A0A0A;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Header - Minimal & Clean */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 7vw;
+      background: rgba(250, 250, 250, 0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid #E5E5E5;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      text-decoration: none;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      group: logo;
+    }
+
+    .logo:hover {
+      transform: scale(1.02);
+    }
+
+    .logo-image {
+      height: 48px;
+      width: 48px;
+      flex-shrink: 0;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .logo:hover .logo-image {
+      transform: scale(1.05) rotate(3deg);
+    }
+
+    .logo-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .logo-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #0A0A0A;
+      line-height: 1.2;
+    }
+
+    .logo-subtitle {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #737373;
+      line-height: 1.2;
+    }
+
+    nav {
+      display: flex;
+      gap: 8px;
+    }
+
+    nav a {
+      padding: 8px 16px;
+      text-decoration: none;
+      color: #404040;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      border-radius: 6px;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    nav a:hover {
+      color: #2563EB;
+      background: #F5F5F5;
+    }
+
+    /* Footer - Minimal */
+    footer {
+      margin-top: 64px;
+      padding: 48px 7vw 24px;
+      border-top: 1px solid #E5E5E5;
+      background: #F5F5F5;
+    }
+
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 32px;
+      max-width: 1000px;
+      margin: 0 auto 32px;
+    }
+
+    .footer-section {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .footer-section strong {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #0A0A0A;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+    }
+
+    .footer-section a {
+      font-size: 0.9375rem;
+      color: #404040;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-section a:hover {
+      color: #2563EB;
+    }
+
+    .footer-bottom {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      align-items: center;
+      font-size: 0.8125rem;
+      color: #737373;
+      padding-top: 24px;
+      border-top: 1px solid #E5E5E5;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .social-links {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .social-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      color: #737373;
+      background: #F5F5F5;
+      border-radius: 8px;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      text-decoration: none;
+    }
+
+    .social-link:hover {
+      color: #2563EB;
+      background: #E5E5E5;
+      transform: translateY(-2px);
+    }
+
+    .social-link svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      header {
+        padding: 16px 5vw;
+      }
+
+      .logo {
+        gap: 12px;
+      }
+
+      .logo-image {
+        height: 36px;
+        width: 36px;
+      }
+
+      .logo-title {
+        font-size: 1.25rem;
+      }
+
+      .logo-subtitle {
+        display: none;
+      }
+
+      nav {
+        gap: 4px;
+      }
+
+      nav a {
+        padding: 6px 12px;
+        font-size: 0.875rem;
+      }
+
+      footer {
+        padding: 20px 5vw;
+        font-size: 0.8125rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="/" class="logo">
+      <img
+        src="/logos/localpdf-header-64x64.png"
+        alt="LocalPDF Logo"
+        class="logo-image"
+      />
+      <div class="logo-text">
+        <div class="logo-title">LocalPDF</div>
+        <div class="logo-subtitle">Privacy-First PDF Tool</div>
+      </div>
+    </a>
+    <nav>
+      <a href="/">Tools</a>
+      <a href="/learn">Learn</a>
+      <a href="/comparison">Compare</a>
+      <a href="/about">About</a>
+    </nav>
+  </header>
+
+  <slot />
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-section">
+        <strong>Resources</strong>
+        <a href="/learn">PDF Learning Center</a>
+        <a href="/comparison">Tool Comparison</a>
+      </div>
+      <div class="footer-section">
+        <strong>Company</strong>
+        <a href="/about">About</a>
+        <a href="/privacy">Privacy Policy</a>
+        <a href="/terms">Terms of Service</a>
+      </div>
+      <div class="footer-section">
+        <strong>Tools</strong>
+        <a href="/merge-pdf">Merge PDF</a>
+        <a href="/split-pdf">Split PDF</a>
+        <a href="/compress-pdf">Compress PDF</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="social-links">
+        <a href="https://github.com/ulinycoin/clientpdf-pro" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="GitHub">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12,2A10,10 0 0,0 2,12C2,16.42 4.87,20.17 8.84,21.5C9.34,21.58 9.5,21.27 9.5,21C9.5,20.77 9.5,20.14 9.5,19.31C6.73,19.91 6.14,17.97 6.14,17.97C5.68,16.81 5.03,16.5 5.03,16.5C4.12,15.88 5.1,15.9 5.1,15.9C6.1,15.97 6.63,16.93 6.63,16.93C7.5,18.45 8.97,18 9.54,17.76C9.63,17.11 9.89,16.67 10.17,16.42C7.95,16.17 5.62,15.31 5.62,11.5C5.62,10.39 6,9.5 6.65,8.79C6.55,8.54 6.2,7.5 6.75,6.15C6.75,6.15 7.59,5.88 9.5,7.17C10.29,6.95 11.15,6.84 12,6.84C12.85,6.84 13.71,6.95 14.5,7.17C16.41,5.88 17.25,6.15 17.25,6.15C17.8,7.5 17.45,8.54 17.35,8.79C18,9.5 18.38,10.39 18.38,11.5C18.38,15.32 16.04,16.16 13.81,16.41C14.17,16.72 14.5,17.33 14.5,18.26C14.5,19.6 14.5,20.68 14.5,21C14.5,21.27 14.66,21.59 15.17,21.5C19.14,20.16 22,16.42 22,12A10,10 0 0,0 12,2Z" />
+          </svg>
+        </a>
+        <a href="https://x.com/LocalPDF" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Twitter/X">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/>
+          </svg>
+        </a>
+        <a href="https://www.reddit.com/user/Salt_Apartment5489/" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Reddit">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/>
+          </svg>
+        </a>
+        <a href="https://localpdf.online" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Website">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M16.36,14C16.44,13.34 16.5,12.68 16.5,12C16.5,11.32 16.44,10.66 16.36,10H19.74C19.9,10.64 20,11.31 20,12C20,12.69 19.9,13.36 19.74,14M14.59,19.56C15.19,18.45 15.65,17.25 15.97,16H18.92C17.96,17.65 16.43,18.93 14.59,19.56M14.34,14H9.66C9.56,13.34 9.5,12.68 9.5,12C9.5,11.32 9.56,10.65 9.66,10H14.34C14.43,10.65 14.5,11.32 14.5,12C14.5,12.68 14.43,13.34 14.34,14M12,19.96C11.17,18.76 10.5,17.43 10.09,16H13.91C13.5,17.43 12.83,18.76 12,19.96M8,8H5.08C6.03,6.34 7.57,5.06 9.4,4.44C8.8,5.55 8.35,6.75 8,8M5.08,16H8C8.35,17.25 8.8,18.45 9.4,19.56C7.57,18.93 6.03,17.65 5.08,16M4.26,14C4.1,13.36 4,12.69 4,12C4,11.31 4.1,10.64 4.26,10H7.64C7.56,10.66 7.5,11.32 7.5,12C7.5,12.68 7.56,13.34 7.64,14M12,4.03C12.83,5.23 13.5,6.57 13.91,8H10.09C10.5,6.57 11.17,5.23 12,4.03M18.92,8H15.97C15.65,6.75 15.19,5.55 14.59,4.44C16.43,5.07 17.96,6.34 18.92,8Z" />
+          </svg>
+        </a>
+      </div>
+      <div>
+        © 2025 LocalPDF. Privacy-First PDF Tools. All files processed locally in your browser.
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

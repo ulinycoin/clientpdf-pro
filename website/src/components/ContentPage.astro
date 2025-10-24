@@ -1,0 +1,156 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from './Breadcrumbs.astro';
+
+interface BreadcrumbItem {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  title: string;
+  description: string;
+  heading?: string;
+  breadcrumbs?: BreadcrumbItem[];
+}
+
+const { title, description, heading, breadcrumbs } = Astro.props;
+---
+
+<BaseLayout title={title} description={description}>
+  {breadcrumbs && <Breadcrumbs items={breadcrumbs} />}
+
+  <article class="content-page">
+    {heading && <h1 class="page-heading">{heading}</h1>}
+    <div class="page-content">
+      <slot />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .content-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 48px 7vw 64px;
+  }
+
+  .page-heading {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #0A0A0A;
+    margin: 0 0 32px 0;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  .page-content {
+    font-size: 1rem;
+    color: #404040;
+    line-height: 1.8;
+  }
+
+  .page-content :global(h2) {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #0A0A0A;
+    margin: 48px 0 20px 0;
+    letter-spacing: -0.01em;
+  }
+
+  .page-content :global(h3) {
+    font-size: 1.375rem;
+    font-weight: 600;
+    color: #0A0A0A;
+    margin: 32px 0 16px 0;
+  }
+
+  .page-content :global(p) {
+    margin: 0 0 20px 0;
+  }
+
+  .page-content :global(ul),
+  .page-content :global(ol) {
+    margin: 0 0 24px 0;
+    padding-left: 32px;
+  }
+
+  .page-content :global(li) {
+    margin-bottom: 12px;
+  }
+
+  .page-content :global(a) {
+    color: #2563EB;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s;
+  }
+
+  .page-content :global(a:hover) {
+    border-bottom-color: #2563EB;
+  }
+
+  .page-content :global(strong) {
+    font-weight: 600;
+    color: #0A0A0A;
+  }
+
+  .page-content :global(code) {
+    background: #F5F5F5;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.875em;
+    color: #DC2626;
+  }
+
+  .page-content :global(.info-box) {
+    background: linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%);
+    border: 1px solid #93C5FD;
+    border-left: 4px solid #2563EB;
+    padding: 20px 24px;
+    border-radius: 8px;
+    margin: 24px 0;
+  }
+
+  .page-content :global(.card-grid) {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin: 32px 0;
+  }
+
+  .page-content :global(.card) {
+    padding: 24px;
+    background: #FAFAFA;
+    border: 1px solid #E5E5E5;
+    border-radius: 8px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .page-content :global(.card:hover) {
+    border-color: #2563EB;
+    background: #fff;
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.05),
+      0 10px 40px rgba(37, 99, 235, 0.08);
+  }
+
+  @media (max-width: 768px) {
+    .content-page {
+      padding: 32px 5vw 48px;
+    }
+
+    .page-heading {
+      font-size: 2rem;
+    }
+
+    .page-content :global(h2) {
+      font-size: 1.5rem;
+    }
+
+    .page-content :global(h3) {
+      font-size: 1.25rem;
+    }
+  }
+</style>

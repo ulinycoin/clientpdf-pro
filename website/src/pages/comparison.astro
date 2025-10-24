@@ -1,0 +1,215 @@
+---
+import ContentPage from '../components/ContentPage.astro';
+---
+
+<ContentPage
+  title="LocalPDF vs Other PDF Tools — Comparison"
+  description="Compare LocalPDF with other online PDF tools: privacy, speed, features, and pricing. See why client-side processing wins."
+  heading="LocalPDF vs Other PDF Tools"
+  breadcrumbs={[
+    { label: 'Home', href: '/' },
+    { label: 'Comparison' }
+  ]}
+>
+  <p>
+    Not all PDF tools are created equal. Here's how LocalPDF compares to popular cloud-based alternatives
+    like Adobe Acrobat Online, Smallpdf, iLovePDF, and PDF24.
+  </p>
+
+  <h2>Quick Comparison Table</h2>
+
+  <div style="overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; margin: 32px 0;">
+      <thead style="background: #F5F5F5;">
+        <tr>
+          <th style="padding: 12px; text-align: left; border: 1px solid #E5E5E5;">Feature</th>
+          <th style="padding: 12px; text-align: center; border: 1px solid #E5E5E5; background: #DBEAFE;"><strong>LocalPDF</strong></th>
+          <th style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">Adobe Acrobat</th>
+          <th style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">Smallpdf</th>
+          <th style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">iLovePDF</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="padding: 12px; border: 1px solid #E5E5E5;"><strong>Files uploaded to servers</strong></td>
+          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5; background: #F0FDF4;">❌ Never</td>
+          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">✅ Yes</td>
+          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">✅ Yes</td>
+          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">✅ Yes</td>
+        </tr>
+        <tr>
+          <td style="padding: 12px; border: 1px solid #E5E5E5;"><strong>Privacy by design</strong></td>
+          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5; background: #F0FDF4;">✅ 100%</td>
+          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">❌ No</td>
+          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">❌ No</td>
+          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">❌ No</td>
+        </tr>
+        <tr>
+          <td style="padding: 12px; border: 1px solid #E5E5E5;"><strong>Processing speed (10 MB PDF)</strong></td>
+          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5; background: #F0FDF4;">&lt;2s</td>
+          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">5-10s</td>
+          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">10-15s</td>
+          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">8-12s</td>
+        </tr>
+        <tr>
+          <td style="padding: 12px; border: 1px solid #E5E5E5;"><strong>File size limit (free tier)</strong></td>
+          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5; background: #F0FDF4;">Unlimited*</td>
+          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">100 MB</td>
+          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">5 MB</td>
+          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">200 MB</td>
+        </tr>
+        <tr>
+          <td style="padding: 12px; border: 1px solid #E5E5E5;"><strong>Requires account/registration</strong></td>
+          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5; background: #F0FDF4;">❌ No</td>
+          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">✅ Yes</td>
+          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">✅ Yes (pro)</td>
+          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">✅ Yes (pro)</td>
+        </tr>
+        <tr>
+          <td style="padding: 12px; border: 1px solid #E5E5E5;"><strong>Free tier pricing</strong></td>
+          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5; background: #F0FDF4;">$0 (beta)</td>
+          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">$12.99/mo</td>
+          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">$9/mo</td>
+          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">$6/mo</td>
+        </tr>
+        <tr>
+          <td style="padding: 12px; border: 1px solid #E5E5E5;"><strong>Works offline</strong></td>
+          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5; background: #F0FDF4;">✅ Yes</td>
+          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">❌ No</td>
+          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">❌ No</td>
+          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">❌ No</td>
+        </tr>
+        <tr>
+          <td style="padding: 12px; border: 1px solid #E5E5E5;"><strong>Watermarks on output</strong></td>
+          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5; background: #F0FDF4;">❌ Never</td>
+          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">❌ No</td>
+          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">✅ Free tier</td>
+          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">❌ No</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p style="font-size: 0.875rem; color: #737373; margin-top: -16px;">
+    *Unlimited within browser memory constraints (typically 2-4 GB depending on device)
+  </p>
+
+  <h2>Key Differences Explained</h2>
+
+  <h3>1. Privacy: Cloud vs. Client-Side</h3>
+
+  <div class="card-grid">
+    <div class="card">
+      <h3>Cloud-Based Tools (Adobe, Smallpdf, etc.)</h3>
+      <p>
+        When you upload a PDF to cloud-based tools, your file is transmitted over the internet to their
+        servers, processed remotely, and stored temporarily (or permanently, depending on their policy).
+      </p>
+      <p><strong>Privacy risks:</strong></p>
+      <ul style="margin: 8px 0 0 20px;">
+        <li>Files can be intercepted during transmission</li>
+        <li>Servers may scan content for analytics or ad targeting</li>
+        <li>Data breaches expose user documents</li>
+        <li>No guarantees of deletion</li>
+      </ul>
+    </div>
+
+    <div class="card" style="border: 2px solid #2563EB;">
+      <h3>LocalPDF (Client-Side)</h3>
+      <p>
+        Your PDF never leaves your device. All processing happens in your browser using JavaScript and
+        WebAssembly. There are zero network requests during processing.
+      </p>
+      <p><strong>Privacy benefits:</strong></p>
+      <ul style="margin: 8px 0 0 20px;">
+        <li>No risk of interception—files stay local</li>
+        <li>No server-side scanning or data collection</li>
+        <li>Impossible to breach what we don't have</li>
+        <li>Automatic deletion (browser memory cleared on tab close)</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>2. Speed: Upload Time = Wasted Time</h3>
+  <p>
+    Cloud-based tools require uploading your PDF to servers before processing can begin. For large files
+    (50+ MB), this can take 30-60 seconds on typical broadband connections.
+  </p>
+
+  <p>
+    <strong>LocalPDF eliminates upload time entirely.</strong> Your file is already on your device—processing
+    starts instantly. A 50 MB PDF that takes 45 seconds to upload to Smallpdf processes in 2-3 seconds with
+    LocalPDF.
+  </p>
+
+  <h3>3. File Size Limits: Arbitrary vs. Real</h3>
+
+  <p><strong>Cloud tools impose artificial limits:</strong></p>
+  <ul>
+    <li>Smallpdf free: 5 MB</li>
+    <li>Adobe Acrobat: 100 MB</li>
+    <li>iLovePDF free: 200 MB</li>
+  </ul>
+
+  <p>
+    These limits exist to reduce server costs and push users toward paid plans.
+  </p>
+
+  <p>
+    <strong>LocalPDF's only limit is your browser's memory</strong> (typically 2-4 GB on modern devices).
+    This is a real technical constraint, not an arbitrary paywall.
+  </p>
+
+  <h3>4. Offline Capability</h3>
+  <p>
+    Cloud tools require an active internet connection—no network, no processing.
+  </p>
+
+  <p>
+    <strong>LocalPDF works offline once loaded.</strong> On a plane? In a remote location with no signal?
+    You can still merge, split, and compress PDFs. Perfect for travelers and users in areas with unreliable
+    connectivity.
+  </p>
+
+  <h2>When Cloud Tools Make Sense</h2>
+  <p>
+    To be fair, cloud-based PDF tools have legitimate use cases:
+  </p>
+
+  <ul>
+    <li><strong>Collaboration:</strong> Shared document editing and commenting (LocalPDF is single-user)</li>
+    <li><strong>Advanced OCR:</strong> Server-side OCR with cloud GPUs can be more accurate (we use browser-based Tesseract.js)</li>
+    <li><strong>Integration:</strong> APIs for automating workflows (LocalPDF has no API—it's a web app)</li>
+    <li><strong>Very large files:</strong> If you need to process a 5 GB PDF, server-side tools with dedicated resources may work better</li>
+  </ul>
+
+  <p>
+    But for <strong>99% of individual users processing personal documents</strong>, client-side processing
+    is faster, more private, and more cost-effective.
+  </p>
+
+  <h2>The Verdict</h2>
+
+  <div class="info-box">
+    <strong>Use LocalPDF if you value:</strong>
+    <ul style="margin: 8px 0 0 20px;">
+      <li>Privacy (files never uploaded)</li>
+      <li>Speed (no upload delays)</li>
+      <li>Simplicity (no accounts, no paywalls)</li>
+      <li>Offline capability</li>
+    </ul>
+
+    <strong>Use cloud tools if you need:</strong>
+    <ul style="margin: 8px 0 0 20px;">
+      <li>Collaboration features</li>
+      <li>API access for automation</li>
+      <li>Advanced server-side OCR</li>
+      <li>Processing files larger than browser memory limits</li>
+    </ul>
+  </div>
+
+  <p style="margin-top: 32px;">
+    <strong>Ready to try the privacy-first approach?</strong>
+    <a href="/" style="color: #2563EB; text-decoration: none; border-bottom: 1px solid #2563EB;">Get started with LocalPDF →</a>
+  </p>
+</ContentPage>
