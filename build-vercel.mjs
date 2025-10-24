@@ -16,10 +16,19 @@ console.log('====================================');
 console.log('');
 
 try {
+  // Check Node version
+  console.log('Node version:', process.version);
+  console.log('');
+
   // Step 1: Build app-spa (React)
   console.log('📦 Step 1/3: Building app-spa...');
-  execSync('npm run build', { stdio: 'inherit', cwd: __dirname });
-  console.log('✅ App-spa built successfully');
+  try {
+    execSync('npm run build', { stdio: 'inherit', cwd: __dirname });
+    console.log('✅ App-spa built successfully');
+  } catch (error) {
+    console.error('❌ App-spa build failed');
+    throw error;
+  }
   console.log('');
 
   // Step 2: Build website (Astro)
