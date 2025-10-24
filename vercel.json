@@ -85,14 +85,6 @@
     }
   ],
 
-  "redirects": [
-    {
-      "source": "/app",
-      "destination": "/#merge",
-      "permanent": false
-    }
-  ],
-
   "trailingSlash": false,
 
   "cleanUrls": true
