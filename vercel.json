@@ -6,6 +6,21 @@
   "installCommand": "npm install",
   "devCommand": "npm run dev:all",
 
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.localpdf.online"
+        }
+      ],
+      "destination": "https://localpdf.online/:path*",
+      "permanent": false,
+      "statusCode": 307
+    }
+  ],
+
   "rewrites": [
     {
       "source": "/app",

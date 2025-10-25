@@ -23,3 +23,9 @@ dist-ssr
 *.sln
 *.sw?
 .vercel
+
+# API Credentials (Google PageSpeed, etc.)
+.credentials/
+*.json.key
+*-credentials.json
+service-account*.json
