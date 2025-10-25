@@ -87,5 +87,9 @@
 
   "trailingSlash": false,
 
-  "cleanUrls": true
+  "cleanUrls": true,
+
+  "analytics": {
+    "enable": true
+  }
 }
