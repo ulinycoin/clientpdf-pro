@@ -1,5 +1,4 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
-import { Analytics } from '@vercel/analytics/react';
 import { useHashRouter } from '@/hooks/useHashRouter';
 import { WelcomeScreen } from '@/components/WelcomeScreen';
 import { Sidebar } from '@/components/layout/Sidebar';
@@ -184,7 +183,6 @@ function App() {
           <span>Back to main site</span>
         </a>
       </footer>
-      <Analytics />
     </div>
   );
 }
