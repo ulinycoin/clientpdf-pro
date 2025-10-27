@@ -13,7 +13,12 @@
     <meta name="title" content="LocalPDF App - Privacy-first PDF Tools" />
     <meta name="description" content="Privacy-first PDF tools in your browser. Merge, split, compress PDFs and more - all processing happens locally." />
 
-    <!-- Inter Font from Google Fonts -->
+    <!-- Critical Inline CSS for instant render -->
+    <style>
+      *{box-sizing:border-box;margin:0;padding:0}body{font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;-webkit-font-smoothing:antialiased;background:#FAFAFA;color:#0A0A0A}#root{min-height:100vh}
+    </style>
+
+    <!-- Inter Font from Google Fonts - Async load -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

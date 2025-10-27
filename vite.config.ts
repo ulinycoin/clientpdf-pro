@@ -26,6 +26,7 @@ export default defineConfig({
     minify: 'esbuild',
     sourcemap: false,
     chunkSizeWarningLimit: 500,
+    cssCodeSplit: true, // Split CSS per route for faster initial load
     rollupOptions: {
       output: {
         // CRITICAL: Aggressive code splitting for mobile performance
@@ -49,6 +50,15 @@ export default defineConfig({
         chunkFileNames: 'assets/js/[name]-[hash].js',
         entryFileNames: 'assets/js/[name]-[hash].js',
         assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',
+      },
+    },
+  },
+  css: {
+    devSourcemap: false,
+    preprocessorOptions: {
+      css: {
+        // Ensure CSS is minified
+        charset: false,
       },
     },
   },

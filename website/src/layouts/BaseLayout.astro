@@ -77,6 +77,12 @@ const siteName = 'LocalPDF';
 
   <slot name="head" />
 
+  <!-- Critical CSS - Inline for immediate render -->
+  <style>
+    /* Critical Above-the-Fold Styles */
+    *{box-sizing:border-box}body{margin:0;padding:0;background:#FAFAFA;color:#0A0A0A;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}header{display:flex;align-items:center;justify-content:space-between;padding:20px 7vw;background:rgba(250,250,250,.8);backdrop-filter:blur(20px);border-bottom:1px solid #E5E5E5;position:sticky;top:0;z-index:100}.logo{display:flex;align-items:center;gap:16px;text-decoration:none}.logo-image{height:48px;width:48px}.logo-title{font-size:1.5rem;font-weight:700;color:#0A0A0A}nav{display:flex;gap:8px}nav a{padding:8px 16px;text-decoration:none;color:#404040;font-size:.9375rem;font-weight:500;border-radius:6px}
+  </style>
+
   <!-- Fonts - Optimized async loading with font-display swap -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -87,8 +93,8 @@ const siteName = 'LocalPDF';
   </noscript>
 
   <!-- Google Analytics - Ultra-deferred loading (after page is idle) -->
-  <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
-  <link rel="preconnect" href="https://www.google-analytics.com" crossorigin>
+  <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+  <link rel="dns-prefetch" href="https://www.google-analytics.com">
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
