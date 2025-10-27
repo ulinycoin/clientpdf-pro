@@ -16,8 +16,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@astrojs/mdx": "^4.3.8",
+    "@astrojs/rss": "^4.0.13",
+    "@astrojs/sitemap": "^3.6.0",
     "@astrojs/tailwind": "^6.0.2",
     "@pdf-lib/fontkit": "^1.1.1",
+    "@tailwindcss/typography": "^0.5.19",
     "@vercel/analytics": "^1.5.0",
     "@vitejs/plugin-react": "^5.0.4",
     "astro": "^5.14.8",
