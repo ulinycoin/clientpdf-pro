@@ -16,7 +16,6 @@
         }
       ],
       "destination": "https://localpdf.online/:path*",
-      "permanent": false,
       "statusCode": 307
     }
   ],
