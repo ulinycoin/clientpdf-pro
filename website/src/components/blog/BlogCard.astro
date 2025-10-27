@@ -1,0 +1,121 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  pubDate: Date;
+  slug: string;
+  coverImage?: string;
+  coverImageAlt?: string;
+  tags: string[];
+  category: string;
+  readingTime?: number;
+  featured?: boolean;
+}
+
+const {
+  title,
+  description,
+  pubDate,
+  slug,
+  coverImage,
+  coverImageAlt,
+  tags,
+  category,
+  readingTime,
+  featured = false
+} = Astro.props;
+
+const formattedDate = pubDate.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric'
+});
+
+const defaultImage = '/logos/localpdf-social-1200x630.png';
+---
+
+<article class={`group relative bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 ${featured ? 'ring-2 ring-blue-500' : ''}`}>
+  {featured && (
+    <div class="absolute top-4 right-4 z-10 px-3 py-1 bg-blue-600 text-white text-xs font-bold rounded-full">
+      Featured
+    </div>
+  )}
+
+  <a href={`/blog/${slug}`} class="block">
+    <!-- Cover Image -->
+    <div class="relative h-48 overflow-hidden bg-gray-100">
+      <img
+        src={coverImage || defaultImage}
+        alt={coverImageAlt || title}
+        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+        loading="lazy"
+      />
+      <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+    </div>
+
+    <!-- Content -->
+    <div class="p-6">
+      <!-- Category Badge -->
+      <div class="mb-3">
+        <span class="inline-block px-3 py-1 bg-blue-100 text-blue-800 text-xs font-semibold rounded-full">
+          {category}
+        </span>
+      </div>
+
+      <!-- Title -->
+      <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors line-clamp-2">
+        {title}
+      </h3>
+
+      <!-- Description -->
+      <p class="text-gray-600 text-sm mb-4 line-clamp-3">
+        {description}
+      </p>
+
+      <!-- Meta Info -->
+      <div class="flex items-center justify-between text-xs text-gray-500 mb-4">
+        <time datetime={pubDate.toISOString()}>
+          {formattedDate}
+        </time>
+        {readingTime && (
+          <span class="flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            {readingTime} min read
+          </span>
+        )}
+      </div>
+
+      <!-- Tags -->
+      <div class="flex flex-wrap gap-2">
+        {tags.slice(0, 3).map(tag => (
+          <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">
+            #{tag}
+          </span>
+        ))}
+        {tags.length > 3 && (
+          <span class="px-2 py-1 text-gray-500 text-xs">
+            +{tags.length - 3} more
+          </span>
+        )}
+      </div>
+    </div>
+  </a>
+</article>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

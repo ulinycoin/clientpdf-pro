@@ -1,0 +1,189 @@
+---
+// Client-side search component with debounce
+---
+
+<div class="search-bar mb-8">
+  <div class="relative max-w-md">
+    <input
+      type="text"
+      id="blog-search"
+      placeholder="Search articles..."
+      class="w-full px-4 py-3 pl-12 text-gray-900 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+    />
+    <svg
+      class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+      />
+    </svg>
+    <div id="search-spinner" class="absolute right-4 top-1/2 transform -translate-y-1/2 hidden">
+      <div class="animate-spin h-5 w-5 border-2 border-blue-600 border-t-transparent rounded-full"></div>
+    </div>
+  </div>
+
+  <div id="search-results" class="mt-4 hidden">
+    <div class="text-sm text-gray-600 mb-3">
+      <span id="results-count">0</span> results found
+    </div>
+    <div id="results-container" class="space-y-4"></div>
+  </div>
+
+  <div id="no-results" class="mt-4 hidden">
+    <p class="text-gray-600 text-center py-8">
+      No articles found. Try different keywords.
+    </p>
+  </div>
+</div>
+
+<script>
+  // Client-side search with debounce
+  let searchIndex: Array<{
+    title: string;
+    description: string;
+    slug: string;
+    tags: string[];
+    category: string;
+  }> = [];
+
+  let debounceTimer: ReturnType<typeof setTimeout>;
+
+  // Load search index
+  async function loadSearchIndex() {
+    try {
+      const response = await fetch('/blog/search.json');
+      searchIndex = await response.json();
+    } catch (error) {
+      console.error('Failed to load search index:', error);
+    }
+  }
+
+  // Debounced search function
+  function debounceSearch(query: string) {
+    const spinner = document.getElementById('search-spinner');
+    const resultsDiv = document.getElementById('search-results');
+    const noResultsDiv = document.getElementById('no-results');
+
+    if (!query.trim()) {
+      resultsDiv?.classList.add('hidden');
+      noResultsDiv?.classList.add('hidden');
+      return;
+    }
+
+    spinner?.classList.remove('hidden');
+
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      performSearch(query);
+      spinner?.classList.add('hidden');
+    }, 300); // 300ms debounce
+  }
+
+  // Perform search
+  function performSearch(query: string) {
+    const resultsDiv = document.getElementById('search-results');
+    const noResultsDiv = document.getElementById('no-results');
+    const resultsContainer = document.getElementById('results-container');
+    const resultsCount = document.getElementById('results-count');
+
+    const lowerQuery = query.toLowerCase();
+
+    const results = searchIndex.filter(post => {
+      return (
+        post.title.toLowerCase().includes(lowerQuery) ||
+        post.description.toLowerCase().includes(lowerQuery) ||
+        post.tags.some(tag => tag.toLowerCase().includes(lowerQuery)) ||
+        post.category.toLowerCase().includes(lowerQuery)
+      );
+    });
+
+    if (results.length > 0) {
+      resultsDiv?.classList.remove('hidden');
+      noResultsDiv?.classList.add('hidden');
+
+      if (resultsCount) {
+        resultsCount.textContent = results.length.toString();
+      }
+
+      if (resultsContainer) {
+        resultsContainer.innerHTML = results
+          .map(
+            post => `
+          <a href="/blog/${post.slug}" class="block p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+            <h3 class="font-semibold text-gray-900 mb-1">${highlightMatch(post.title, query)}</h3>
+            <p class="text-sm text-gray-600 mb-2">${highlightMatch(post.description, query)}</p>
+            <div class="flex gap-2">
+              <span class="text-xs px-2 py-1 bg-blue-100 text-blue-800 rounded">${post.category}</span>
+              ${post.tags
+                .slice(0, 3)
+                .map(tag => `<span class="text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded">#${tag}</span>`)
+                .join('')}
+            </div>
+          </a>
+        `
+          )
+          .join('');
+      }
+    } else {
+      resultsDiv?.classList.add('hidden');
+      noResultsDiv?.classList.remove('hidden');
+    }
+  }
+
+  // Highlight matching text
+  function highlightMatch(text: string, query: string): string {
+    const regex = new RegExp(`(${query})`, 'gi');
+    return text.replace(regex, '<mark class="bg-yellow-200 px-1 rounded">$1</mark>');
+  }
+
+  // Initialize
+  document.addEventListener('DOMContentLoaded', () => {
+    loadSearchIndex();
+
+    const searchInput = document.getElementById('blog-search') as HTMLInputElement;
+    searchInput?.addEventListener('input', (e) => {
+      const target = e.target as HTMLInputElement;
+      debounceSearch(target.value);
+    });
+
+    // Save search query to URL
+    searchInput?.addEventListener('change', (e) => {
+      const target = e.target as HTMLInputElement;
+      const url = new URL(window.location.href);
+      if (target.value) {
+        url.searchParams.set('q', target.value);
+      } else {
+        url.searchParams.delete('q');
+      }
+      window.history.replaceState({}, '', url.toString());
+    });
+
+    // Restore search query from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const savedQuery = urlParams.get('q');
+    if (savedQuery && searchInput) {
+      searchInput.value = savedQuery;
+      debounceSearch(savedQuery);
+    }
+  });
+</script>
+
+<style>
+  #blog-search:focus {
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    #blog-search {
+      background: #1a1a1a;
+      color: #fff;
+      border-color: #333;
+    }
+  }
+</style>

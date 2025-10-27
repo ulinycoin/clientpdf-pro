@@ -1,0 +1,59 @@
+---
+interface Props {
+  allTags: string[];
+  selectedTag?: string;
+}
+
+const { allTags, selectedTag } = Astro.props;
+const sortedTags = [...allTags].sort();
+---
+
+<div class="tag-filter mb-8">
+  <div class="flex flex-wrap gap-2 items-center">
+    <span class="text-sm font-semibold text-gray-700 mr-2">Filter by tag:</span>
+
+    <a
+      href="/blog"
+      class={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+        !selectedTag
+          ? 'bg-blue-600 text-white shadow-md'
+          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+      }`}
+    >
+      All Posts
+    </a>
+
+    {sortedTags.map(tag => (
+      <a
+        href={`/blog?tag=${encodeURIComponent(tag)}`}
+        class={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+          selectedTag === tag
+            ? 'bg-blue-600 text-white shadow-md'
+            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+        }`}
+      >
+        #{tag}
+      </a>
+    ))}
+  </div>
+</div>
+
+<style>
+  .tag-filter a {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .tag-filter a:hover {
+    transform: translateY(-2px);
+  }
+
+  .tag-filter a:active {
+    transform: translateY(0);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .tag-filter {
+      color-scheme: dark;
+    }
+  }
+</style>

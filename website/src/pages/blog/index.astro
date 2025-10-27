@@ -1,0 +1,175 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BlogCard from '../../components/blog/BlogCard.astro';
+import TagFilter from '../../components/blog/TagFilter.astro';
+import SearchBar from '../../components/blog/SearchBar.astro';
+
+// Get all blog posts (excluding drafts)
+const allPosts = await getCollection('blog', ({ data }) => {
+  return data.draft !== true;
+});
+
+// Sort by date (newest first)
+const sortedPosts = allPosts.sort((a, b) =>
+  b.data.pubDate.getTime() - a.data.pubDate.getTime()
+);
+
+// Get featured posts
+const featuredPosts = sortedPosts.filter(post => post.data.featured);
+
+// Get selected tag from URL
+const selectedTag = Astro.url.searchParams.get('tag');
+
+// Filter posts by tag if selected
+const filteredPosts = selectedTag
+  ? sortedPosts.filter(post => post.data.tags.includes(selectedTag))
+  : sortedPosts;
+
+// Get all unique tags
+const allTags = [...new Set(allPosts.flatMap(post => post.data.tags))];
+
+// Calculate reading time (simple estimation: 200 words per minute)
+function calculateReadingTime(content: string): number {
+  const words = content.split(/\s+/).length;
+  return Math.ceil(words / 200);
+}
+
+// Add reading time to posts
+const postsWithReadingTime = filteredPosts.map(post => ({
+  ...post,
+  readingTime: calculateReadingTime(post.body)
+}));
+
+const title = selectedTag
+  ? `Blog - ${selectedTag} | LocalPDF`
+  : 'Blog - PDF Tips, Tutorials & Best Practices | LocalPDF';
+
+const description = selectedTag
+  ? `Articles about ${selectedTag} and PDF tools. Learn tips, tricks, and best practices.`
+  : 'Learn everything about PDF tools, privacy, productivity tips, and best practices. Expert guides and tutorials for working with PDFs.';
+---
+
+<BaseLayout title={title} description={description}>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- Header -->
+    <header class="text-center mb-12">
+      <h1 class="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
+        {selectedTag ? `Articles about #${selectedTag}` : 'LocalPDF Blog'}
+      </h1>
+      <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+        {selectedTag
+          ? `Explore our ${filteredPosts.length} articles about ${selectedTag}`
+          : 'Learn tips, tricks, and best practices for working with PDFs'
+        }
+      </p>
+    </header>
+
+    <!-- Search Bar -->
+    <SearchBar />
+
+    <!-- Tag Filter -->
+    <TagFilter allTags={allTags} selectedTag={selectedTag || undefined} />
+
+    <!-- Featured Posts -->
+    {!selectedTag && featuredPosts.length > 0 && (
+      <section class="mb-12">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Featured Articles</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {featuredPosts.slice(0, 3).map(post => (
+            <BlogCard
+              title={post.data.title}
+              description={post.data.description}
+              pubDate={post.data.pubDate}
+              slug={post.slug}
+              coverImage={post.data.coverImage}
+              coverImageAlt={post.data.coverImageAlt}
+              tags={post.data.tags}
+              category={post.data.category}
+              readingTime={calculateReadingTime(post.body)}
+              featured={true}
+            />
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- All Posts -->
+    <section>
+      <h2 class="text-2xl font-bold text-gray-900 mb-6">
+        {selectedTag ? 'Filtered Articles' : 'All Articles'}
+        <span class="text-gray-500 font-normal text-lg ml-2">
+          ({postsWithReadingTime.length})
+        </span>
+      </h2>
+
+      {postsWithReadingTime.length > 0 ? (
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {postsWithReadingTime.map(post => (
+            <BlogCard
+              title={post.data.title}
+              description={post.data.description}
+              pubDate={post.data.pubDate}
+              slug={post.slug}
+              coverImage={post.data.coverImage}
+              coverImageAlt={post.data.coverImageAlt}
+              tags={post.data.tags}
+              category={post.data.category}
+              readingTime={post.readingTime}
+              featured={false}
+            />
+          ))}
+        </div>
+      ) : (
+        <div class="text-center py-12">
+          <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          <h3 class="text-lg font-medium text-gray-900 mb-2">No articles found</h3>
+          <p class="text-gray-600 mb-4">
+            {selectedTag
+              ? `We don't have any articles about "${selectedTag}" yet.`
+              : 'No articles available at the moment.'
+            }
+          </p>
+          {selectedTag && (
+            <a href="/blog" class="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+              View All Articles
+            </a>
+          )}
+        </div>
+      )}
+    </section>
+
+    <!-- Categories Overview -->
+    {!selectedTag && (
+      <section class="mt-16 pt-12 border-t border-gray-200">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Browse by Category</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[
+            'PDF Basics',
+            'Advanced Features',
+            'Security & Privacy',
+            'Productivity Tips',
+            'Tutorials',
+            'Comparisons',
+            'Use Cases'
+          ].map(category => {
+            const count = sortedPosts.filter(post => post.data.category === category).length;
+            return count > 0 ? (
+              <a
+                href={`/blog?category=${encodeURIComponent(category)}`}
+                class="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group"
+              >
+                <h3 class="font-semibold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">
+                  {category}
+                </h3>
+                <p class="text-sm text-gray-600">{count} article{count !== 1 ? 's' : ''}</p>
+              </a>
+            ) : null;
+          })}
+        </div>
+      </section>
+    )}
+  </div>
+</BaseLayout>
