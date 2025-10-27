@@ -5,7 +5,7 @@ User-agent: *
 Allow: /
 
 # Sitemaps
-Sitemap: https://localpdf.online/sitemap.xml
+Sitemap: https://localpdf.online/sitemap-index.xml
 
 # Bingbot - Moderate crawling speed
 User-agent: Bingbot
@@ -37,6 +37,9 @@ Allow: /privacy
 Allow: /terms
 Allow: /learn
 Allow: /comparison
+
+# Allow blog pages
+Allow: /blog
 
 # Crawl-delay (be nice to search engines)
 Crawl-delay: 1
