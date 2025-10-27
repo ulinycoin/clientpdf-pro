@@ -27,12 +27,20 @@
       "destination": "/app/index.html"
     },
     {
+      "source": "/blog",
+      "destination": "/blog.html"
+    },
+    {
+      "source": "/blog/:slug",
+      "destination": "/blog/:slug.html"
+    },
+    {
       "source": "/(merge-pdf|split-pdf|compress-pdf|protect-pdf|ocr-pdf|watermark-pdf|rotate-pdf|delete-pages-pdf|extract-pages-pdf|add-text-pdf|images-to-pdf|unlock-pdf|pdf-to-images|pdf-to-word|word-to-pdf|sign-pdf|flatten-pdf)",
-      "destination": "/$1/index.html"
+      "destination": "/$1.html"
     },
     {
       "source": "/(about|privacy|terms|comparison|learn)",
-      "destination": "/$1/index.html"
+      "destination": "/$1.html"
     }
   ],
 
@@ -95,6 +103,24 @@
         {
           "key": "Cache-Control",
           "value": "public, max-age=3600, s-maxage=86400"
+        }
+      ]
+    },
+    {
+      "source": "/blog/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, s-maxage=86400"
+        }
+      ]
+    },
+    {
+      "source": "/blog-images/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
         }
       ]
     }
