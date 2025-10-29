@@ -4,6 +4,8 @@ import { ProgressBar } from '@/components/common/ProgressBar';
 import { useSharedFile } from '@/hooks/useSharedFile';
 import * as Tesseract from 'tesseract.js';
 import { getDocument } from 'pdfjs-dist';
+import { detectLanguageAdvanced, type LanguageDetectionResult } from '@/utils/languageDetector';
+import { QuickOCR } from '@/utils/quickOCR';
 
 const DEFAULT_LANGUAGE = 'eng';
 
@@ -15,6 +17,16 @@ interface OCRResult {
 }
 
 type PageSelectionMode = 'all' | 'range' | 'first';
+type OutputFormat = 'text' | 'searchable-pdf';
+
+// Supported languages for OCR
+const SUPPORTED_LANGUAGES = [
+  { code: 'eng', name: 'English', nativeName: 'English' },
+  { code: 'rus', name: 'Russian', nativeName: 'Русский' },
+  { code: 'deu', name: 'German', nativeName: 'Deutsch' },
+  { code: 'fra', name: 'French', nativeName: 'Français' },
+  { code: 'spa', name: 'Spanish', nativeName: 'Español' },
+];
 
 export const OCRPDF: React.FC = () => {
   const { sharedFile, clearSharedFile } = useSharedFile();
@@ -26,9 +38,15 @@ export const OCRPDF: React.FC = () => {
   const [result, setResult] = useState<OCRResult | null>(null);
   const [selectedLanguage, setSelectedLanguage] = useState<string>(DEFAULT_LANGUAGE);
   const [autoDetectLanguage, setAutoDetectLanguage] = useState(true);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [languageDetection, setLanguageDetection] = useState<LanguageDetectionResult | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [pageMode, setPageMode] = useState<PageSelectionMode>('all');
   const [pageRange, setPageRange] = useState({ start: 1, end: 1 });
+  const [outputFormat, setOutputFormat] = useState<OutputFormat>('text');
+  const [showSettings, setShowSettings] = useState(false);
+  const [editedText, setEditedText] = useState<string>('');
+  const [isEditMode, setIsEditMode] = useState(false);
   const workerRef = useRef<Tesseract.Worker | null>(null);
 
   // Auto-load shared file from WelcomeScreen
@@ -61,43 +79,39 @@ export const OCRPDF: React.FC = () => {
     };
   }, [previewUrl]);
 
-  const detectLanguageFromText = async (canvas: HTMLCanvasElement): Promise<string> => {
-    // Quick scan with English to detect script
-    const tempWorker = await Tesseract.createWorker('eng', 1, {
-      logger: () => {} // Silent
-    });
+  // Advanced language detection using new utilities
+  const performLanguageDetection = async (file: File): Promise<void> => {
+    setIsAnalyzing(true);
+    try {
+      // Step 1: Filename-based detection
+      const filenameDetection = detectLanguageAdvanced(file.name);
+      setLanguageDetection(filenameDetection);
+      setSelectedLanguage(filenameDetection.language);
 
-    const { data } = await tempWorker.recognize(canvas);
-    await tempWorker.terminate();
+      // Step 2: Content analysis for better detection (especially for images)
+      const shouldAnalyzeContent = file.type.startsWith('image/') ||
+        (file.type === 'application/pdf' && filenameDetection.confidence !== 'high');
 
-    const text = data.text.toLowerCase();
+      if (shouldAnalyzeContent && autoDetectLanguage) {
+        setProgressMessage('Analyzing document content...');
+        const contentDetection = await QuickOCR.quickAnalyzeForLanguage(file);
 
-    // Check for Cyrillic characters
-    const cyrillicPattern = /[а-яё]/i;
-    if (cyrillicPattern.test(text)) {
-      return 'rus';
+        // For images, prefer content detection over filename
+        const shouldUseContentDetection = file.type.startsWith('image/') ||
+          contentDetection.confidence === 'high' ||
+          (contentDetection.confidence === 'medium' && filenameDetection.confidence === 'low');
+
+        if (shouldUseContentDetection) {
+          setLanguageDetection(contentDetection);
+          setSelectedLanguage(contentDetection.language);
+        }
+      }
+    } catch (error) {
+      console.error('Language detection failed:', error);
+    } finally {
+      setIsAnalyzing(false);
+      setProgressMessage('');
     }
-
-    // Check for German umlauts
-    const germanPattern = /[äöüß]/i;
-    if (germanPattern.test(text)) {
-      return 'deu';
-    }
-
-    // Check for French accents
-    const frenchPattern = /[àâäçéèêëîïôùûü]/i;
-    if (frenchPattern.test(text)) {
-      return 'fra';
-    }
-
-    // Check for Spanish specific characters
-    const spanishPattern = /[áéíóúñ¿¡]/i;
-    if (spanishPattern.test(text)) {
-      return 'spa';
-    }
-
-    // Default to English
-    return 'eng';
   };
 
   const handleFilesSelected = async (selectedFiles: File[]) => {
@@ -106,6 +120,9 @@ export const OCRPDF: React.FC = () => {
 
     setFile(selectedFile);
     setResult(null);
+
+    // Perform advanced language detection
+    await performLanguageDetection(selectedFile);
 
     // Get total pages for PDF
     if (selectedFile.type === 'application/pdf') {
@@ -133,14 +150,6 @@ export const OCRPDF: React.FC = () => {
 
           const url = canvas.toDataURL();
           setPreviewUrl(url);
-
-          // Auto-detect language if enabled
-          if (autoDetectLanguage) {
-            setProgressMessage('Detecting language...');
-            const detectedLang = await detectLanguageFromText(canvas);
-            setSelectedLanguage(detectedLang);
-            setProgressMessage('');
-          }
         }
       } catch (error) {
         console.error('Failed to load PDF:', error);
@@ -150,28 +159,6 @@ export const OCRPDF: React.FC = () => {
       setPageRange({ start: 1, end: 1 });
       const url = URL.createObjectURL(selectedFile);
       setPreviewUrl(url);
-
-      // Auto-detect language for images
-      if (autoDetectLanguage) {
-        try {
-          const img = new Image();
-          img.onload = async () => {
-            const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d')!;
-            canvas.width = img.width;
-            canvas.height = img.height;
-            context.drawImage(img, 0, 0);
-
-            setProgressMessage('Detecting language...');
-            const detectedLang = await detectLanguageFromText(canvas);
-            setSelectedLanguage(detectedLang);
-            setProgressMessage('');
-          };
-          img.src = url;
-        } catch (error) {
-          console.error('Language detection failed:', error);
-        }
-      }
     }
   };
 
@@ -183,6 +170,8 @@ export const OCRPDF: React.FC = () => {
     setProgressMessage('');
     setTotalPages(1);
     setPageRange({ start: 1, end: 1 });
+    setLanguageDetection(null);
+    setIsAnalyzing(false);
   };
 
   const extractImageFromPDF = async (file: File, pageNum: number): Promise<HTMLCanvasElement> => {
@@ -278,12 +267,16 @@ export const OCRPDF: React.FC = () => {
 
       const avgConfidence = totalConfidence / pagesToProcess.length;
 
-      setResult({
+      const ocrResult = {
         text: combinedText,
         confidence: avgConfidence,
         language: selectedLanguage,
         pagesProcessed: pagesToProcess.length,
-      });
+      };
+
+      setResult(ocrResult);
+      setEditedText(combinedText); // Initialize editable text
+      setIsEditMode(false); // Start in view mode
 
       setProgress(100);
       setProgressMessage('OCR completed!');
@@ -301,24 +294,84 @@ export const OCRPDF: React.FC = () => {
   };
 
   const handleCopyText = () => {
-    if (result?.text) {
-      navigator.clipboard.writeText(result.text);
+    const textToCopy = editedText || result?.text;
+    if (textToCopy) {
+      navigator.clipboard.writeText(textToCopy);
       alert('Text copied to clipboard!');
     }
   };
 
-  const handleDownloadTXT = () => {
-    if (!result?.text) return;
+  const handleDownload = async () => {
+    if (!result?.text || !file) return;
 
-    const blob = new Blob([result.text], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${file?.name.replace(/\.[^.]+$/, '')}_ocr.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    const baseName = file.name.replace(/\.[^.]+$/, '');
+    const textToDownload = editedText || result.text; // Use edited text if available
+
+    try {
+      if (outputFormat === 'searchable-pdf') {
+        // Generate searchable PDF with Cyrillic support
+        setProgressMessage('Generating searchable PDF...');
+
+        try {
+          const { textToPDFGenerator } = await import('@/utils/textToPDFGenerator');
+
+          const pdfBlob = await textToPDFGenerator.generatePDF(
+            textToDownload,
+            `${baseName}_searchable`,
+            {
+              fontSize: 11,
+              pageSize: 'A4',
+              orientation: 'portrait',
+              margins: 50,
+              lineHeight: 1.4
+            }
+          );
+
+          const url = URL.createObjectURL(pdfBlob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `${baseName}_searchable.pdf`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+
+          setProgressMessage('');
+        } catch (pdfError) {
+          console.error('PDF generation error:', pdfError);
+
+          // Fallback: save as text if PDF fails
+          console.log('Falling back to text format...');
+          const blob = new Blob([textToDownload], { type: 'text/plain;charset=utf-8' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `${baseName}_ocr.txt`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+
+          alert('PDF generation failed. File saved as TXT instead.');
+          setProgressMessage('');
+        }
+      } else {
+        // Download as plain text
+        const blob = new Blob([textToDownload], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${baseName}_ocr.txt`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+    } catch (error) {
+      console.error('Download failed:', error);
+      alert('Failed to generate file. Please try again.');
+      setProgressMessage('');
+    }
   };
 
   const handleReset = () => {
@@ -453,11 +506,51 @@ export const OCRPDF: React.FC = () => {
             </div>
           )}
 
-          {/* Language Selection */}
+          {/* Language Selection with Detection Info */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Recognition language
             </label>
+
+            {/* Language Detection Info */}
+            {languageDetection && !isAnalyzing && (
+              <div className={`mb-3 p-3 rounded-lg border ${
+                languageDetection.confidence === 'high' ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800' :
+                languageDetection.confidence === 'medium' ? 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800' :
+                'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800'
+              }`}>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-xs font-medium">
+                    {languageDetection.confidence === 'high' ? '✅ High Confidence' :
+                     languageDetection.confidence === 'medium' ? '⚠️ Medium Confidence' :
+                     '❌ Low Confidence'}
+                  </span>
+                  <span className="text-xs text-gray-600 dark:text-gray-400">
+                    ({SUPPORTED_LANGUAGES.find(l => l.code === selectedLanguage)?.name || selectedLanguage})
+                  </span>
+                </div>
+                <p className="text-xs text-gray-600 dark:text-gray-400">
+                  {languageDetection.details}
+                </p>
+                {languageDetection.confidence !== 'high' && (
+                  <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                    💡 Verify language selection for better OCR accuracy
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* Analyzing state */}
+            {isAnalyzing && (
+              <div className="mb-3 p-3 rounded-lg border bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                  <span className="text-xs font-medium text-blue-700 dark:text-blue-300">
+                    Analyzing document content...
+                  </span>
+                </div>
+              </div>
+            )}
 
             {/* Auto-detect toggle */}
             <label className="flex items-center gap-2 mb-3">
@@ -477,26 +570,66 @@ export const OCRPDF: React.FC = () => {
               value={selectedLanguage}
               onChange={(e) => setSelectedLanguage(e.target.value)}
               className="w-full px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-ocean-500"
-              disabled={isProcessing || autoDetectLanguage}
+              disabled={isProcessing || (autoDetectLanguage && isAnalyzing)}
             >
-              <option value="eng">English</option>
-              <option value="rus">Русский</option>
-              <option value="deu">Deutsch</option>
-              <option value="fra">Français</option>
-              <option value="spa">Español</option>
+              {SUPPORTED_LANGUAGES.map(lang => (
+                <option key={lang.code} value={lang.code}>
+                  {lang.name} ({lang.nativeName})
+                </option>
+              ))}
             </select>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
               {autoDetectLanguage ? 'Language will be detected automatically from document content' : 'Select the language of text in your document'}
             </p>
           </div>
 
+          {/* Output Format Selection */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Output Format
+            </label>
+            <div className="space-y-2">
+              <label className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="outputFormat"
+                  value="text"
+                  checked={outputFormat === 'text'}
+                  onChange={(e) => setOutputFormat(e.target.value as OutputFormat)}
+                  disabled={isProcessing}
+                  className="text-ocean-500 focus:ring-ocean-500"
+                />
+                <span className="text-sm text-gray-700 dark:text-gray-300">
+                  📝 Plain Text (.txt)
+                </span>
+              </label>
+              <label className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="outputFormat"
+                  value="searchable-pdf"
+                  checked={outputFormat === 'searchable-pdf'}
+                  onChange={(e) => setOutputFormat(e.target.value as OutputFormat)}
+                  disabled={isProcessing}
+                  className="text-ocean-500 focus:ring-ocean-500"
+                />
+                <span className="text-sm text-gray-700 dark:text-gray-300">
+                  🔍 Searchable PDF (with text layer)
+                </span>
+              </label>
+            </div>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              Choose how you want to save the extracted text
+            </p>
+          </div>
+
           {/* Process Button */}
           <button
             onClick={handleOCR}
-            disabled={isProcessing}
+            disabled={isProcessing || isAnalyzing}
             className="btn-primary w-full"
           >
-            {isProcessing ? 'Processing OCR...' : 'Start OCR'}
+            {isProcessing ? 'Processing OCR...' : isAnalyzing ? 'Analyzing...' : 'Start OCR'}
           </button>
         </div>
       )}
@@ -531,16 +664,49 @@ export const OCRPDF: React.FC = () => {
             </button>
           </div>
 
-          {/* Text Output */}
+          {/* Text Output with Edit Mode */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Extracted text
-            </label>
-            <textarea
-              value={result.text}
-              readOnly
-              className="w-full h-64 px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white font-mono text-sm resize-none"
-            />
+            <div className="flex items-center justify-between mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Extracted text
+              </label>
+              <button
+                onClick={() => setIsEditMode(!isEditMode)}
+                className="text-sm px-3 py-1 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              >
+                {isEditMode ? '👁️ View' : '✏️ Edit'}
+              </button>
+            </div>
+
+            {isEditMode ? (
+              <div className="space-y-2">
+                <textarea
+                  value={editedText}
+                  onChange={(e) => setEditedText(e.target.value)}
+                  className="w-full h-64 px-4 py-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white font-mono text-sm resize-y"
+                  placeholder="Edit your extracted text here..."
+                />
+                {editedText !== result.text && (
+                  <div className="flex items-center gap-2 text-sm text-orange-600 dark:text-orange-400">
+                    <span className="animate-pulse">●</span>
+                    <span>Text has been modified</span>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="w-full h-64 px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 overflow-auto">
+                <pre className="text-gray-900 dark:text-white font-mono text-sm whitespace-pre-wrap break-words">
+                  {editedText || result.text}
+                </pre>
+              </div>
+            )}
+
+            {/* Stats */}
+            <div className="flex items-center gap-4 mt-2 text-xs text-gray-500 dark:text-gray-400">
+              <span>📝 {editedText.split(/\s+/).filter(w => w.length > 0).length} words</span>
+              <span>📄 {editedText.split('\n').length} lines</span>
+              <span>🔤 {editedText.length} characters</span>
+            </div>
           </div>
 
           {/* Action Buttons */}
@@ -552,10 +718,10 @@ export const OCRPDF: React.FC = () => {
               📋 Copy text
             </button>
             <button
-              onClick={handleDownloadTXT}
+              onClick={handleDownload}
               className="btn-primary"
             >
-              💾 Download TXT
+              💾 Download {outputFormat === 'searchable-pdf' ? 'PDF' : 'TXT'}
             </button>
           </div>
         </div>
