@@ -546,5 +546,30 @@
       "watermark": "Add watermark",
       "merge": "Combine with others"
     }
+  },
+  "pdfToImages": {
+    "title": "PDF to Images",
+    "description": "Convert PDF pages to high-quality images",
+    "format": "Output Format",
+    "quality": "Quality",
+    "pages": "Pages to Convert",
+    "allPages": "All pages",
+    "pageRange": "Page range",
+    "specificPages": "Specific pages",
+    "backgroundColor": "Background Color",
+    "convert": "Convert to Images",
+    "success": "Conversion successful!",
+    "imagesCreated": "Images Created",
+    "totalSize": "Total Size",
+    "preview": "Preview",
+    "page": "Page",
+    "download": "Download Images",
+    "downloadZip": "Download as ZIP",
+    "downloadAll": "Download All",
+    "downloadIndividual": "Download individual images:",
+    "errors": {
+      "conversionFailed": "Failed to convert PDF to images",
+      "zipFailed": "Failed to create ZIP archive"
+    }
   }
 }

@@ -92,6 +92,13 @@
     <priority>0.8</priority>
   </url>
 
+  <url>
+    <loc>https://localpdf.online/pdf-to-images</loc>
+    <lastmod>2025-10-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
   <!-- Informational Pages - Medium Priority -->
   <url>
     <loc>https://localpdf.online/about</loc>
@@ -112,6 +119,56 @@
     <lastmod>2025-10-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+  </url>
+
+  <!-- Blog Posts - High Priority -->
+  <url>
+    <loc>https://localpdf.online/blog/convert-pdf-to-images-guide</loc>
+    <lastmod>2025-01-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://localpdf.online/blog/how-to-merge-pdf-files</loc>
+    <lastmod>2025-01-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://localpdf.online/blog/how-to-split-pdf-files</loc>
+    <lastmod>2025-01-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://localpdf.online/blog/compress-pdf-without-losing-quality</loc>
+    <lastmod>2025-01-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://localpdf.online/blog/ocr-pdf-extract-text</loc>
+    <lastmod>2025-01-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://localpdf.online/blog/add-watermark-to-pdf</loc>
+    <lastmod>2025-01-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://localpdf.online/blog/pdf-security-best-practices</loc>
+    <lastmod>2025-01-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
 
   <!-- Legal Pages - Lower Priority -->

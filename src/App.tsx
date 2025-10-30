@@ -17,6 +17,7 @@ const DeletePagesPDF = lazy(() => import('@/components/tools/DeletePagesPDF').th
 const ExtractPagesPDF = lazy(() => import('@/components/tools/ExtractPagesPDF').then(m => ({ default: m.ExtractPagesPDF })));
 const AddTextPDF = lazy(() => import('@/components/tools/AddTextPDF').then(m => ({ default: m.AddTextPDF })));
 const ImagesToPDF = lazy(() => import('@/components/tools/ImagesToPDF').then(m => ({ default: m.ImagesToPDF })));
+const PDFToImages = lazy(() => import('@/components/tools/PDFToImages').then(m => ({ default: m.PDFToImages })));
 
 // Loading component for lazy loaded tools
 const ToolLoading = () => (
@@ -150,6 +151,8 @@ function App() {
                 <AddTextPDF />
               ) : currentTool === 'images-to-pdf' ? (
                 <ImagesToPDF />
+              ) : currentTool === 'pdf-to-images' ? (
+                <PDFToImages />
               ) : (
                 <div className="card p-8">
                   <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">

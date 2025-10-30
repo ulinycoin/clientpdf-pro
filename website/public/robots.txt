@@ -30,6 +30,7 @@ Allow: /rotate-pdf
 Allow: /delete-pages-pdf
 Allow: /extract-pages-pdf
 Allow: /images-to-pdf
+Allow: /pdf-to-images
 
 # Allow informational pages
 Allow: /about

@@ -108,6 +108,35 @@ export const Sidebar: React.FC<SidebarProps> = ({
             );
           })}
         </ul>
+
+        {/* Blog Link */}
+        <div className="mt-4 pt-4 border-t border-gray-200 dark:border-privacy-700">
+          {!collapsed && (
+            <div className="px-3 mb-2">
+              <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-500 uppercase tracking-wide">
+                Resources
+              </h3>
+            </div>
+          )}
+          <ul className="space-y-1">
+            <li>
+              <a
+                href="/blog"
+                className="group w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 text-gray-700 dark:text-gray-300 hover:bg-ocean-50 dark:hover:bg-ocean-900/10 hover:text-ocean-600 dark:hover:text-ocean-400 hover:shadow-sm hover:scale-[1.02]"
+                title={collapsed ? 'Blog' : undefined}
+              >
+                <span className="text-xl flex-shrink-0 transition-transform duration-200 group-hover:scale-110">
+                  📝
+                </span>
+                {!collapsed && (
+                  <span className="text-sm truncate transition-colors duration-200">
+                    Blog
+                  </span>
+                )}
+              </a>
+            </li>
+          </ul>
+        </div>
       </nav>
 
     </aside>

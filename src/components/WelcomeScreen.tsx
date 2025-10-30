@@ -102,9 +102,35 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ context }) => {
         {/* First time banner */}
         {context?.isFirstVisit && uploadedFiles.length === 0 && (
           <div className="card p-6 mb-8 bg-ocean-50 dark:bg-ocean-900/20 border-ocean-200 dark:border-ocean-800 animate-slide-down">
-            <p className="text-center text-ocean-700 dark:text-ocean-300">
+            <p className="text-center text-ocean-700 dark:text-ocean-300 mb-3">
               Welcome! All processing happens in your browser - your files never leave your device.
             </p>
+            <div className="text-center">
+              <a
+                href="/blog"
+                className="inline-flex items-center gap-2 text-sm text-ocean-600 dark:text-ocean-400 hover:text-ocean-700 dark:hover:text-ocean-300 font-medium transition-colors"
+              >
+                <span>📝</span>
+                <span>Learn PDF tips & tricks in our Blog</span>
+                <span>→</span>
+              </a>
+            </div>
+          </div>
+        )}
+
+        {/* Blog CTA for non-first visitors */}
+        {!context?.isFirstVisit && uploadedFiles.length === 0 && (
+          <div className="card p-4 mb-8 bg-gradient-to-r from-ocean-50 to-blue-50 dark:from-ocean-900/20 dark:to-blue-900/20 border-ocean-200 dark:border-ocean-800 animate-fade-in">
+            <div className="flex items-center justify-center gap-3 text-center">
+              <span className="text-2xl">💡</span>
+              <a
+                href="/blog"
+                className="text-sm text-ocean-700 dark:text-ocean-300 hover:text-ocean-800 dark:hover:text-ocean-200 font-medium transition-colors"
+              >
+                Check out our Blog for PDF tips, tutorials & best practices
+              </a>
+              <span className="text-ocean-600 dark:text-ocean-400">→</span>
+            </div>
           </div>
         )}
 
@@ -207,6 +233,30 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ context }) => {
             </div>
           </div>
         )}
+
+        {/* Footer with Blog link */}
+        <div className="mt-12 text-center animate-fade-in">
+          <div className="inline-flex items-center gap-6 text-sm text-gray-500 dark:text-gray-400">
+            <a
+              href="/blog"
+              className="hover:text-ocean-600 dark:hover:text-ocean-400 transition-colors font-medium"
+            >
+              📝 Blog
+            </a>
+            <a
+              href="/about"
+              className="hover:text-ocean-600 dark:hover:text-ocean-400 transition-colors"
+            >
+              About
+            </a>
+            <a
+              href="/privacy"
+              className="hover:text-ocean-600 dark:hover:text-ocean-400 transition-colors"
+            >
+              Privacy
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -3,6 +3,7 @@ export default {
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
+    "./website/src/**/*.{astro,html,js,jsx,ts,tsx,md,mdx}",
   ],
   darkMode: 'class', // Enable class-based dark mode
   theme: {
@@ -196,6 +197,7 @@ export default {
     },
   },
   plugins: [
+    require('@tailwindcss/typography'),
     // Glass morphism effects plugin
     function({ addUtilities }) {
       const newUtilities = {
