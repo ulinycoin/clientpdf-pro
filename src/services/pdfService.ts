@@ -2,6 +2,7 @@ import { PDFDocument, degrees } from 'pdf-lib';
 import { PDFDocument as PDFDocumentEncrypt } from 'pdf-lib-plus-encrypt';
 import JSZip from 'jszip';
 import * as pdfjsLib from 'pdfjs-dist';
+import { Buffer } from 'buffer';
 import type {
   PDFProcessingResult,
   MergeOptions,
@@ -21,6 +22,12 @@ import type {
 
 // Configure PDF.js worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
+
+// Polyfill Buffer for JSZip in browser environment
+if (typeof window !== 'undefined') {
+  (window as any).Buffer = Buffer;
+  (globalThis as any).Buffer = Buffer;
+}
 
 export class PDFService {
   name = 'PDFService';
@@ -1147,8 +1154,10 @@ export class PDFService {
       const zip = new JSZip();
 
       // Add each image to the ZIP
+      // Convert Blob to ArrayBuffer to avoid Buffer.isBuffer issues in browser
       for (const image of images) {
-        zip.file(image.filename, image.blob);
+        const arrayBuffer = await image.blob.arrayBuffer();
+        zip.file(image.filename, arrayBuffer);
       }
 
       // Generate ZIP file

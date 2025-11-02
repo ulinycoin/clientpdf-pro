@@ -1,6 +1,9 @@
 import * as Tesseract from 'tesseract.js';
-import { getDocument } from 'pdfjs-dist';
+import * as pdfjsLib from 'pdfjs-dist';
 import { detectLanguageAdvanced, type LanguageDetectionResult } from './languageDetector';
+
+// Configure PDF.js worker
+pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
 
 // Quick OCR for language detection - processes only a small sample
 export class QuickOCR {
@@ -20,7 +23,7 @@ export class QuickOCR {
   private static async extractPDFSample(file: File): Promise<HTMLCanvasElement | null> {
     try {
       const arrayBuffer = await file.arrayBuffer();
-      const pdf = await getDocument({ data: arrayBuffer }).promise;
+      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
 
       if (pdf.numPages === 0) return null;
 

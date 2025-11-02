@@ -3,9 +3,12 @@ import { FileUpload } from '@/components/common/FileUpload';
 import { ProgressBar } from '@/components/common/ProgressBar';
 import { useSharedFile } from '@/hooks/useSharedFile';
 import * as Tesseract from 'tesseract.js';
-import { getDocument } from 'pdfjs-dist';
+import * as pdfjsLib from 'pdfjs-dist';
 import { detectLanguageAdvanced, type LanguageDetectionResult } from '@/utils/languageDetector';
 import { QuickOCR } from '@/utils/quickOCR';
+
+// Configure PDF.js worker
+pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
 
 const DEFAULT_LANGUAGE = 'eng';
 
@@ -21,11 +24,26 @@ type OutputFormat = 'text' | 'searchable-pdf';
 
 // Supported languages for OCR
 const SUPPORTED_LANGUAGES = [
+  // Top 5 European languages (existing)
   { code: 'eng', name: 'English', nativeName: 'English' },
   { code: 'rus', name: 'Russian', nativeName: 'Русский' },
   { code: 'deu', name: 'German', nativeName: 'Deutsch' },
   { code: 'fra', name: 'French', nativeName: 'Français' },
   { code: 'spa', name: 'Spanish', nativeName: 'Español' },
+
+  // Asian languages (high demand)
+  { code: 'chi_sim', name: 'Chinese Simplified', nativeName: '简体中文' },
+  { code: 'chi_tra', name: 'Chinese Traditional', nativeName: '繁體中文' },
+  { code: 'jpn', name: 'Japanese', nativeName: '日本語' },
+  { code: 'kor', name: 'Korean', nativeName: '한국어' },
+  { code: 'hin', name: 'Hindi', nativeName: 'हिन्दी' },
+
+  // Middle Eastern & other popular languages
+  { code: 'ara', name: 'Arabic', nativeName: 'العربية' },
+  { code: 'por', name: 'Portuguese', nativeName: 'Português' },
+  { code: 'ita', name: 'Italian', nativeName: 'Italiano' },
+  { code: 'tur', name: 'Turkish', nativeName: 'Türkçe' },
+  { code: 'pol', name: 'Polish', nativeName: 'Polski' },
 ];
 
 export const OCRPDF: React.FC = () => {
@@ -128,7 +146,7 @@ export const OCRPDF: React.FC = () => {
     if (selectedFile.type === 'application/pdf') {
       try {
         const arrayBuffer = await selectedFile.arrayBuffer();
-        const pdf = await getDocument({ data: arrayBuffer }).promise;
+        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
         const numPages = pdf.numPages;
         setTotalPages(numPages);
         setPageRange({ start: 1, end: numPages });
@@ -176,7 +194,7 @@ export const OCRPDF: React.FC = () => {
 
   const extractImageFromPDF = async (file: File, pageNum: number): Promise<HTMLCanvasElement> => {
     const arrayBuffer = await file.arrayBuffer();
-    const pdf = await getDocument({ data: arrayBuffer }).promise;
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
     const page = await pdf.getPage(pageNum);
     const viewport = page.getViewport({ scale: 2.0 }); // Higher scale for better OCR
 

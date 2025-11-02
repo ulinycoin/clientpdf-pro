@@ -5,10 +5,13 @@ import { useI18n } from '@/hooks/useI18n';
 import { useSharedFile } from '@/hooks/useSharedFile';
 import { PDFDocument, rgb, StandardFonts, degrees } from 'pdf-lib';
 import fontkit from '@pdf-lib/fontkit';
-import { getDocument } from 'pdfjs-dist';
+import * as pdfjsLib from 'pdfjs-dist';
 import type { UploadedFile, PDFFileInfo } from '@/types/pdf';
 import type { Tool } from '@/types';
 import { HASH_TOOL_MAP } from '@/types';
+
+// Configure PDF.js worker
+pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
 
 type Position = 'center' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'diagonal';
 
@@ -96,7 +99,7 @@ export const WatermarkPDF: React.FC = () => {
     // Generate preview
     try {
       const arrayBuffer = await selectedFile.arrayBuffer();
-      const pdf = await getDocument({ data: arrayBuffer }).promise;
+      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
 
       let dimensions = { width: 0, height: 0 };
 

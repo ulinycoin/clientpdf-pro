@@ -25,6 +25,7 @@
     "@vercel/analytics": "^1.5.0",
     "@vitejs/plugin-react": "^5.0.4",
     "astro": "^5.14.8",
+    "buffer": "^6.0.3",
     "jszip": "^3.10.1",
     "pdf-lib": "^1.17.1",
     "pdf-lib-plus-encrypt": "^1.1.0",
