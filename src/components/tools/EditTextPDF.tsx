@@ -29,6 +29,8 @@ export const EditTextPDF: React.FC = () => {
   const { sharedFile, clearSharedFile, setSharedFile } = useSharedFile();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const renderTaskRef = useRef<any>(null); // Track current render task
+  const isRenderingRef = useRef<boolean>(false); // Prevent concurrent renders
 
   const [file, setFile] = useState<UploadedFile | null>(null);
   const [pdfDocument, setPdfDocument] = useState<any>(null);
@@ -36,6 +38,7 @@ export const EditTextPDF: React.FC = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [scale, setScale] = useState(1.5);
   const [isLoading, setIsLoading] = useState(false);
+  const [canvasKey, setCanvasKey] = useState(0); // Force canvas re-creation
 
   // Text editing state
   const [textItems, setTextItems] = useState<TextItem[]>([]);
@@ -101,7 +104,8 @@ export const EditTextPDF: React.FC = () => {
       setTotalPages(pdf.numPages);
       setCurrentPage(1);
 
-      await renderPage(pdf, 1);
+      // DON'T call renderPage here - let the useEffect handle it
+      // This prevents double rendering race condition
     } catch (error) {
       console.error('Error loading PDF:', error);
       alert('Failed to load PDF');
@@ -112,24 +116,59 @@ export const EditTextPDF: React.FC = () => {
 
   // Render PDF page on canvas
   const renderPage = useCallback(async (pdf: any, pageNumber: number) => {
+    // Cancel any existing render task FIRST
+    if (renderTaskRef.current) {
+      try {
+        renderTaskRef.current.cancel();
+      } catch (e) {
+        // Ignore cancellation errors
+      }
+      renderTaskRef.current = null;
+    }
+
+    // Force canvas re-creation by updating key
+    setCanvasKey(prev => prev + 1);
+
+    // Wait for React to create the new canvas
+    await new Promise(resolve => setTimeout(resolve, 10));
+
     if (!pdf || !canvasRef.current) return;
+
+    // Wait if another render is in progress
+    if (isRenderingRef.current) {
+      await new Promise(resolve => setTimeout(resolve, 50));
+    }
+
+    isRenderingRef.current = true;
 
     try {
       const page = await pdf.getPage(pageNumber);
       const viewport = page.getViewport({ scale });
 
       const canvas = canvasRef.current;
+      if (!canvas) {
+        isRenderingRef.current = false;
+        return;
+      }
+
       const context = canvas.getContext('2d');
-      if (!context) return;
+      if (!context) {
+        isRenderingRef.current = false;
+        return;
+      }
 
       canvas.width = viewport.width;
       canvas.height = viewport.height;
 
-      // Render PDF page
-      await page.render({
+      // Render PDF page and store the task reference
+      const renderTask = page.render({
         canvasContext: context,
         viewport: viewport,
-      }).promise;
+      });
+      renderTaskRef.current = renderTask;
+
+      await renderTask.promise;
+      renderTaskRef.current = null; // Clear after successful render
 
       // Get text content for click detection
       const textContent = await page.getTextContent();
@@ -159,7 +198,13 @@ export const EditTextPDF: React.FC = () => {
 
       setTextItems(items);
     } catch (error) {
+      // Ignore cancellation errors
+      if (error && typeof error === 'object' && 'name' in error && error.name === 'RenderingCancelledException') {
+        return;
+      }
       console.error('Error rendering page:', error);
+    } finally {
+      isRenderingRef.current = false;
     }
   }, [scale]);
 
@@ -175,6 +220,18 @@ export const EditTextPDF: React.FC = () => {
     if (pdfDocument) {
       renderPage(pdfDocument, currentPage);
     }
+
+    // Cleanup: cancel render task when component unmounts or dependencies change
+    return () => {
+      if (renderTaskRef.current) {
+        try {
+          renderTaskRef.current.cancel();
+        } catch (e) {
+          // Ignore cancellation errors
+        }
+        renderTaskRef.current = null;
+      }
+    };
   }, [pdfDocument, currentPage, scale, renderPage]);
 
   const handleFileSelected = async (selectedFiles: File[]) => {
@@ -436,6 +493,7 @@ export const EditTextPDF: React.FC = () => {
                   </div>
                 ) : (
                   <canvas
+                    key={canvasKey}
                     ref={canvasRef}
                     onClick={handleCanvasClick}
                     className="cursor-crosshair"
