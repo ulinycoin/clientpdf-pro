@@ -29,3 +29,7 @@ dist-ssr
 *.json.key
 *-credentials.json
 service-account*.json
+
+# Astro build cache
+.astro/
+website/.astro/
