@@ -472,7 +472,14 @@ export const EditTextPDF: React.FC = () => {
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
               {t('common.preview')}
             </h3>
-            <PDFPreview file={file.file} pageNumber={selectedPage} />
+            <div className="flex flex-col items-center">
+              <PDFPreview
+                file={file.file}
+                pageNumber={selectedPage}
+                width={600}
+                height={800}
+              />
+            </div>
           </div>
         </div>
       )}
