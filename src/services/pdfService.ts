@@ -1,8 +1,11 @@
-import { PDFDocument, degrees } from 'pdf-lib';
+import { PDFDocument, degrees, rgb, StandardFonts } from 'pdf-lib';
+import fontkit from '@pdf-lib/fontkit';
 import { PDFDocument as PDFDocumentEncrypt } from 'pdf-lib-plus-encrypt';
 import JSZip from 'jszip';
 import * as pdfjsLib from 'pdfjs-dist';
 import { Buffer } from 'buffer';
+import mammoth from 'mammoth';
+import { Document, Packer, Paragraph, TextRun } from 'docx';
 import type {
   PDFProcessingResult,
   MergeOptions,
@@ -1176,6 +1179,309 @@ export class PDFService {
   }
 
   /**
+   * Convert Word document (.docx) to PDF
+   * Uses mammoth to convert DOCX → HTML, then renders HTML as PDF
+   */
+  async wordToPDF(
+    file: File,
+    onProgress?: ProgressCallback
+  ): Promise<PDFProcessingResult> {
+    try {
+      onProgress?.(10, 'Reading Word document...');
+
+      // Read Word file as ArrayBuffer
+      const arrayBuffer = await file.arrayBuffer();
+
+      onProgress?.(25, 'Converting Word to HTML...');
+
+      // Convert DOCX to HTML using mammoth
+      const result = await mammoth.convertToHtml({ arrayBuffer });
+      const html = result.value;
+
+      // Strip HTML tags for simple text extraction
+      const textContent = html.replace(/<[^>]*>/g, '\n').trim();
+
+      onProgress?.(40, 'Loading font...');
+
+      // Create new PDF document
+      const pdfDoc = await PDFDocument.create();
+      pdfDoc.registerFontkit(fontkit);
+
+      // Check if text contains non-ASCII characters (Cyrillic, extended Latin, etc.)
+      // WinAnsi only supports basic Latin (0x20-0x7E) plus some Western European chars
+      const needsUnicodeFont = /[^\x00-\xFF]/.test(textContent) || /[\u0080-\u024F\u0400-\u04FF]/.test(textContent);
+      console.log(`🔤 Text needs Unicode font: ${needsUnicodeFont}`);
+
+      // Load appropriate font
+      let font;
+      if (needsUnicodeFont) {
+        console.log('🌍 Loading Unicode font...');
+        try {
+          font = await this.loadUnicodeFont(pdfDoc);
+          console.log('✅ Unicode font loaded successfully');
+        } catch (error) {
+          console.warn('⚠️ Failed to load Unicode font, using Helvetica');
+          font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+        }
+      } else {
+        font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+      }
+
+      onProgress?.(60, 'Creating PDF from text...');
+
+      // Draw text on page
+      const fontSize = 12;
+      const lines = textContent.split('\n').filter(line => line.trim());
+      const lineHeight = fontSize + 4;
+      const margin = 50;
+
+      let currentPage = pdfDoc.addPage();
+      let { width, height } = currentPage.getSize();
+      let yPosition = height - margin;
+
+      for (const line of lines) {
+        if (!line.trim()) continue;
+
+        // Check if we need a new page
+        if (yPosition < margin + lineHeight) {
+          currentPage = pdfDoc.addPage();
+          const pageSize = currentPage.getSize();
+          width = pageSize.width;
+          height = pageSize.height;
+          yPosition = height - margin;
+        }
+
+        // Wrap line to fit page width
+        const maxChars = Math.floor((width - 2 * margin) / (fontSize * 0.5));
+        const displayLine = line.substring(0, maxChars);
+
+        try {
+          currentPage.drawText(displayLine, {
+            x: margin,
+            y: yPosition,
+            size: fontSize,
+            color: rgb(0, 0, 0),
+            font: font,
+          });
+        } catch (error) {
+          console.warn('Failed to draw line:', error);
+        }
+
+        yPosition -= lineHeight;
+      }
+
+      onProgress?.(85, 'Generating PDF...');
+
+      // Save PDF
+      const pdfBytes = await pdfDoc.save();
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+
+      onProgress?.(100, 'Conversion complete!');
+
+      return {
+        success: true,
+        blob,
+        originalSize: file.size,
+        processedSize: blob.size,
+        message: 'Word document successfully converted to PDF'
+      };
+
+    } catch (error) {
+      console.error('Word to PDF conversion error:', error);
+      return {
+        success: false,
+        error: this.createPDFError(error, 'Word to PDF conversion failed')
+      };
+    }
+  }
+
+  /**
+   * Load Unicode-compatible font from CDN (supports Cyrillic, Extended Latin, etc.)
+   */
+  private async loadUnicodeFont(pdfDoc: PDFDocument): Promise<any> {
+    const fontUrls = [
+      'https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxK.woff',
+      'https://cdn.jsdelivr.net/npm/dejavu-fonts-ttf@2.37.3/ttf/DejaVuSans.ttf'
+    ];
+
+    for (const fontUrl of fontUrls) {
+      try {
+        console.log(`🔤 Loading font from: ${fontUrl}`);
+
+        const response = await fetch(fontUrl, {
+          mode: 'cors',
+          headers: {
+            'Accept': 'application/font-woff2,application/font-woff,application/font-ttf,*/*'
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        const fontBytes = await response.arrayBuffer();
+
+        if (fontBytes.byteLength < 1000) {
+          throw new Error('Font data too small');
+        }
+
+        const font = await pdfDoc.embedFont(fontBytes);
+        console.log(`✅ Font loaded successfully from ${fontUrl}`);
+        return font;
+
+      } catch (error) {
+        console.warn(`❌ Failed to load font from ${fontUrl}:`, error);
+        continue;
+      }
+    }
+
+    throw new Error('All font sources failed');
+  }
+
+  /**
+   * Convert PDF to Word document (.docx)
+   * Uses pdfjs to extract text, then docx library to create DOCX
+   */
+  async pdfToWord(
+    file: File,
+    onProgress?: ProgressCallback
+  ): Promise<PDFProcessingResult> {
+    try {
+      onProgress?.(10, 'Reading PDF file...');
+
+      // Load PDF
+      const arrayBuffer = await file.arrayBuffer();
+      const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+      const pdfDoc = await loadingTask.promise;
+      const numPages = pdfDoc.numPages;
+
+      onProgress?.(25, 'Extracting text from PDF...');
+
+      // Extract text from all pages and build document structure
+      const sections: Paragraph[] = [];
+
+      for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+        const page = await pdfDoc.getPage(pageNum);
+        const textContent = await page.getTextContent();
+
+        // Add page header
+        sections.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: `Page ${pageNum}`,
+                bold: true,
+                size: 24,
+              }),
+            ],
+            spacing: {
+              after: 200,
+            },
+          })
+        );
+
+        // Combine text items into paragraphs
+        const items = textContent.items as any[];
+        let currentLine = '';
+
+        for (let i = 0; i < items.length; i++) {
+          const item = items[i];
+          if (item.str) {
+            currentLine += item.str;
+
+            // Check if this is the end of a line
+            const nextItem = items[i + 1];
+            const isEndOfLine = !nextItem ||
+                               (nextItem.transform && Math.abs(item.transform[5] - nextItem.transform[5]) > 5);
+
+            if (isEndOfLine && currentLine.trim()) {
+              sections.push(
+                new Paragraph({
+                  children: [
+                    new TextRun({
+                      text: currentLine.trim(),
+                      size: 22,
+                    }),
+                  ],
+                  spacing: {
+                    after: 100,
+                  },
+                })
+              );
+              currentLine = '';
+            } else if (!isEndOfLine) {
+              currentLine += ' ';
+            }
+          }
+        }
+
+        // Add remaining text if any
+        if (currentLine.trim()) {
+          sections.push(
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: currentLine.trim(),
+                  size: 22,
+                }),
+              ],
+              spacing: {
+                after: 100,
+              },
+            })
+          );
+        }
+
+        // Add page break after each page except the last one
+        if (pageNum < numPages) {
+          sections.push(
+            new Paragraph({
+              children: [],
+              pageBreakBefore: true,
+            })
+          );
+        }
+
+        onProgress?.(25 + (pageNum / numPages) * 50, `Processing page ${pageNum}/${numPages}...`);
+      }
+
+      onProgress?.(80, 'Creating Word document...');
+
+      // Create DOCX document
+      const doc = new Document({
+        sections: [
+          {
+            properties: {},
+            children: sections,
+          },
+        ],
+      });
+
+      onProgress?.(90, 'Generating DOCX file...');
+
+      // Generate blob
+      const docxBuffer = await Packer.toBlob(doc);
+
+      onProgress?.(100, 'Conversion complete!');
+
+      return {
+        success: true,
+        blob: docxBuffer,
+        originalSize: file.size,
+        processedSize: docxBuffer.size,
+        message: 'PDF successfully converted to Word document'
+      };
+
+    } catch (error) {
+      console.error('PDF to Word conversion error:', error);
+      return {
+        success: false,
+        error: this.createPDFError(error, 'PDF to Word conversion failed')
+      };
+    }
+  }
+
+  /**
    * Create a standardized PDF error
    */
   private createPDFError(error: any, context: string = 'PDF processing'): ProcessingError {
@@ -1259,3 +1565,7 @@ export const downloadAsZip = (files: Array<{ blob: Blob; filename: string }>, ar
   pdfService.downloadAsZip(files, archiveName, onProgress);
 export const formatFileSize = (bytes: number) => pdfService.formatFileSize(bytes);
 export const formatTime = (ms: number) => pdfService.formatTime(ms);
+export const wordToPDF = (file: File, onProgress?: ProgressCallback) =>
+  pdfService.wordToPDF(file, onProgress);
+export const pdfToWord = (file: File, onProgress?: ProgressCallback) =>
+  pdfService.pdfToWord(file, onProgress);

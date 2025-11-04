@@ -116,7 +116,10 @@
     "quickActions": "Quick Actions",
     "preview": "Preview",
     "clearAll": "Clear All",
-    "processingTime": "Processing time"
+    "processingTime": "Processing time",
+    "selectedFile": "Selected file",
+    "originalSize": "Original size",
+    "newSize": "New size"
   },
   "upload": {
     "selectFiles": "Select files",
@@ -571,5 +574,25 @@
       "conversionFailed": "Failed to convert PDF to images",
       "zipFailed": "Failed to create ZIP archive"
     }
+  },
+  "wordToPdf": {
+    "convert": "Convert to PDF",
+    "convertAnother": "Convert another",
+    "errors": {
+      "noFile": "Please select a Word document first",
+      "invalidFormat": "Invalid file format. Please select a .docx file",
+      "conversionFailed": "Failed to convert Word to PDF"
+    },
+    "success": "Word document converted successfully!"
+  },
+  "pdfToWord": {
+    "convert": "Convert to Word",
+    "convertAnother": "Convert another",
+    "errors": {
+      "noFile": "Please select a PDF file first",
+      "invalidPdf": "Invalid PDF file. Please select a valid PDF",
+      "conversionFailed": "Failed to convert PDF to Word"
+    },
+    "success": "PDF converted to Word successfully!"
   }
 }

@@ -43,6 +43,9 @@ export default defineConfig({
           // Tesseract for OCR (large library - separate chunk)
           'vendor-ocr': ['tesseract.js'],
 
+          // Word conversion libraries (mammoth for DOCX→PDF, docx for PDF→DOCX)
+          'vendor-word': ['mammoth', 'docx'],
+
           // NOTE: Tool components are lazy-loaded via React.lazy() - not in manualChunks
         },
 

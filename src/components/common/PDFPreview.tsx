@@ -5,7 +5,8 @@ import * as pdfjsLib from 'pdfjs-dist';
 pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
 
 interface PDFPreviewProps {
-  file: File;
+  file?: File;
+  blob?: Blob;
   width?: number;
   height?: number;
   pageNumber?: number; // Which page to show (default: 1)
@@ -15,6 +16,7 @@ interface PDFPreviewProps {
 
 export const PDFPreview: React.FC<PDFPreviewProps> = ({
   file,
+  blob,
   width = 120,
   height = 160,
   pageNumber = 1,
@@ -31,12 +33,20 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({
     const renderPreview = async () => {
       if (!canvasRef.current) return;
 
+      // Validate that either file or blob is provided
+      const source = blob || file;
+      if (!source) {
+        setError('No file or blob provided');
+        setIsLoading(false);
+        return;
+      }
+
       try {
         setIsLoading(true);
         setError(null);
 
         // Load PDF
-        const arrayBuffer = await file.arrayBuffer();
+        const arrayBuffer = await source.arrayBuffer();
         const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
         const pdf = await loadingTask.promise;
 
@@ -89,7 +99,7 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({
     return () => {
       isMounted = false;
     };
-  }, [file, width, height, pageNumber, onLoad, onError]);
+  }, [file, blob, width, height, pageNumber, onLoad, onError]);
 
   return (
     <div
