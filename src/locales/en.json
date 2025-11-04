@@ -44,6 +44,10 @@
       "name": "Add Text to PDF",
       "description": "Add custom text to PDF pages"
     },
+    "edit-text-pdf": {
+      "name": "Edit Text in PDF",
+      "description": "Find and replace text in PDF"
+    },
     "rotate-pdf": {
       "name": "Rotate PDF",
       "description": "Rotate PDF pages"
@@ -91,8 +95,11 @@
   },
   "common": {
     "upload": "Upload files",
+    "uploadFile": "Upload file",
+    "uploadDescription": "Drag and drop or click to upload",
     "download": "Download",
     "processing": "Processing...",
+    "searching": "Searching...",
     "error": "Error",
     "success": "Success",
     "cancel": "Cancel",
@@ -104,6 +111,8 @@
     "newFile": "New file",
     "filePreview": "File preview",
     "totalPages": "Total pages",
+    "page": "Page",
+    "pages": "pages",
     "fileSize": "File size",
     "changeFile": "Change file",
     "autoLoaded": "File loaded from previous tool",
@@ -119,7 +128,8 @@
     "processingTime": "Processing time",
     "selectedFile": "Selected file",
     "originalSize": "Original size",
-    "newSize": "New size"
+    "newSize": "New size",
+    "useInOtherTools": "Use in other tools"
   },
   "upload": {
     "selectFiles": "Select files",
@@ -594,5 +604,28 @@
       "conversionFailed": "Failed to convert PDF to Word"
     },
     "success": "PDF converted to Word successfully!"
+  },
+  "editText": {
+    "rasterizationWarning": "Note: Edited pages will be converted to images. Text on those pages will not be selectable after editing.",
+    "selectPage": "Select Page",
+    "searchText": "Search for Text",
+    "textToFind": "Text to find",
+    "enterTextToFind": "Enter text to find",
+    "findText": "Find Text",
+    "occurrencesFound": "{count} occurrence(s) found",
+    "selectAll": "Select all",
+    "deselectAll": "Deselect all",
+    "replacementSettings": "Replacement Settings",
+    "newText": "New text",
+    "enterNewText": "Enter new text",
+    "backgroundColor": "Background color",
+    "textColor": "Text color",
+    "fontSize": "Font size",
+    "replaceText": "Replace Text",
+    "noOccurrencesSelected": "Please select at least one occurrence to replace",
+    "searchError": "Error occurred while searching for text. Please try again.",
+    "replaceError": "Error occurred while replacing text. Please try again.",
+    "successMessage": "Text replaced successfully!",
+    "useInOtherTools": "Use in other tools"
   }
 }

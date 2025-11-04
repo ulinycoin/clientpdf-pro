@@ -77,3 +77,20 @@ export interface ProtectionProgress {
   progress: number;           // 0-100
   message: string;
 }
+
+// Edit Text Types
+export interface TextOccurrence {
+  pageNumber: number;
+  text: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+export interface TextReplaceOptions {
+  backgroundColor: string;    // Hex color for background rectangle
+  textColor: string;          // Hex color for new text
+  fontSize: number;           // Font size in pixels
+  dpi: number;                // DPI for canvas rendering (72, 150, 300)
+}

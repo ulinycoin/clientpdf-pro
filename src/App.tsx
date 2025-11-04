@@ -16,6 +16,7 @@ const RotatePDF = lazy(() => import('@/components/tools/RotatePDF').then(m => ({
 const DeletePagesPDF = lazy(() => import('@/components/tools/DeletePagesPDF').then(m => ({ default: m.DeletePagesPDF })));
 const ExtractPagesPDF = lazy(() => import('@/components/tools/ExtractPagesPDF').then(m => ({ default: m.ExtractPagesPDF })));
 const AddTextPDF = lazy(() => import('@/components/tools/AddTextPDF').then(m => ({ default: m.AddTextPDF })));
+const EditTextPDF = lazy(() => import('@/components/tools/EditTextPDF').then(m => ({ default: m.EditTextPDF })));
 const ImagesToPDF = lazy(() => import('@/components/tools/ImagesToPDF').then(m => ({ default: m.ImagesToPDF })));
 const PDFToImages = lazy(() => import('@/components/tools/PDFToImages').then(m => ({ default: m.PDFToImages })));
 const WordToPDF = lazy(() => import('@/components/tools/WordToPDF').then(m => ({ default: m.WordToPDF })));
@@ -151,6 +152,8 @@ function App() {
                 <ExtractPagesPDF />
               ) : currentTool === 'add-text-pdf' ? (
                 <AddTextPDF />
+              ) : currentTool === 'edit-text-pdf' ? (
+                <EditTextPDF />
               ) : currentTool === 'images-to-pdf' ? (
                 <ImagesToPDF />
               ) : currentTool === 'pdf-to-images' ? (
