@@ -125,10 +125,9 @@ export const Canvas: React.FC<CanvasProps> = ({
 
   // Render PDF page
   const renderPage = useCallback(async (pdf: any, pageNumber: number) => {
-    if (!pdf || !canvasRef.current || isRenderingRef.current) return;
+    if (!pdf || !canvasRef.current) return;
 
-    isRenderingRef.current = true;
-
+    // Cancel any existing render task
     if (renderTaskRef.current) {
       try {
         await renderTaskRef.current.cancel();
@@ -137,6 +136,13 @@ export const Canvas: React.FC<CanvasProps> = ({
       }
       renderTaskRef.current = null;
     }
+
+    // Wait for any ongoing rendering to complete
+    if (isRenderingRef.current) {
+      return;
+    }
+
+    isRenderingRef.current = true;
 
     try {
       const page = await pdf.getPage(pageNumber);
@@ -303,13 +309,15 @@ export const Canvas: React.FC<CanvasProps> = ({
 
   // Re-render when page or elements change
   useEffect(() => {
-    if (pdfDocument && !isRenderingRef.current) {
-      const timeoutId = setTimeout(() => {
-        renderPage(pdfDocument, currentPage);
-      }, 100);
+    if (!pdfDocument) return;
 
-      return () => clearTimeout(timeoutId);
-    }
+    const timeoutId = setTimeout(() => {
+      renderPage(pdfDocument, currentPage);
+    }, 50);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
   }, [pdfDocument, currentPage, currentPageElements, selectedElementId, scale, renderPage]);
 
   // Cleanup render task on unmount
@@ -321,6 +329,7 @@ export const Canvas: React.FC<CanvasProps> = ({
         } catch (e: unknown) {
           // Task might already be completed
         }
+        renderTaskRef.current = null;
       }
       isRenderingRef.current = false;
     };
