@@ -16,6 +16,7 @@ export type Tool =
   | 'protect-pdf'
   | 'ocr-pdf'
   | 'add-text-pdf'
+  | 'edit-text-pdf'
   | 'watermark-pdf'
   | 'rotate-pdf'
   | 'delete-pages-pdf'
@@ -83,6 +84,7 @@ export const TOOL_HASH_MAP: Record<string, Tool> = {
   'protect': 'protect-pdf',
   'ocr': 'ocr-pdf',
   'add-text': 'add-text-pdf',
+  'edit-text': 'edit-text-pdf',
   'watermark': 'watermark-pdf',
   'rotate': 'rotate-pdf',
   'delete-pages': 'delete-pages-pdf',
@@ -116,6 +118,7 @@ export const TOOL_TIERS: Record<Tool, ToolTier> = {
   'protect-pdf': 1,
   'ocr-pdf': 1,
   'add-text-pdf': 2,
+  'edit-text-pdf': 2,
   'watermark-pdf': 2,
   'rotate-pdf': 2,
   'delete-pages-pdf': 2,

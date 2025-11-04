@@ -1482,6 +1482,199 @@ export class PDFService {
   }
 
   /**
+   * Find text occurrences in PDF using PDF.js
+   */
+  async findTextInPDF(
+    file: File,
+    searchText: string,
+    pageNumber?: number
+  ): Promise<import('@/types/pdf').TextOccurrence[]> {
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      const occurrences: import('@/types/pdf').TextOccurrence[] = [];
+
+      const startPage = pageNumber || 1;
+      const endPage = pageNumber || pdf.numPages;
+
+      for (let pageNum = startPage; pageNum <= endPage; pageNum++) {
+        const page = await pdf.getPage(pageNum);
+        const textContent = await page.getTextContent();
+        const viewport = page.getViewport({ scale: 1.0 });
+
+        // Search through text items
+        for (const item of textContent.items) {
+          if ('str' in item && item.str.toLowerCase().includes(searchText.toLowerCase())) {
+            const transform = item.transform;
+            const x = transform[4];
+            const y = viewport.height - transform[5]; // Convert to top-left origin
+            const width = item.width || 100;
+            const height = item.height || 20;
+
+            occurrences.push({
+              pageNumber: pageNum,
+              text: item.str,
+              x,
+              y,
+              width,
+              height,
+            });
+          }
+        }
+      }
+
+      return occurrences;
+    } catch (error) {
+      console.error('Error finding text in PDF:', error);
+      throw this.createPDFError(error, 'Text search failed');
+    }
+  }
+
+  /**
+   * Replace text in PDF by rasterizing page and overlaying new text
+   */
+  async replaceTextInPDF(
+    file: File,
+    occurrences: Array<{
+      pageNumber: number;
+      text: string;
+      x: number;
+      y: number;
+      width: number;
+      height: number;
+      selected?: boolean;
+    }>,
+    newText: string,
+    options: import('@/types/pdf').TextReplaceOptions,
+    onProgress?: ProgressCallback
+  ): Promise<PDFProcessingResult<Blob>> {
+    const startTime = Date.now();
+
+    try {
+      onProgress?.(0, 'Loading PDF...');
+
+      const arrayBuffer = await file.arrayBuffer();
+      const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+      const pdfjsDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+
+      // Group occurrences by page
+      const pageOccurrences = new Map<number, typeof occurrences>();
+      for (const occ of occurrences) {
+        if (!pageOccurrences.has(occ.pageNumber)) {
+          pageOccurrences.set(occ.pageNumber, []);
+        }
+        pageOccurrences.get(occ.pageNumber)!.push(occ);
+      }
+
+      const totalPages = pageOccurrences.size;
+      let processedPages = 0;
+
+      // Process each page with text replacements
+      for (const [pageNum, pageOccs] of pageOccurrences.entries()) {
+        onProgress?.(
+          10 + (processedPages / totalPages) * 70,
+          `Replacing text on page ${pageNum}...`
+        );
+
+        // Get page from PDF.js for rendering
+        const page = await pdfjsDoc.getPage(pageNum);
+        const viewport = page.getViewport({ scale: options.dpi / 72 });
+
+        // Create canvas
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        if (!context) throw new Error('Failed to get canvas context');
+
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+
+        // Render page to canvas
+        await page.render({
+          canvasContext: context,
+          viewport: viewport,
+        }).promise;
+
+        // Draw replacement rectangles and text
+        for (const occ of pageOccs) {
+          const scale = options.dpi / 72;
+          const x = occ.x * scale;
+          const y = occ.y * scale;
+          const width = occ.width * scale;
+          const height = occ.height * scale;
+
+          // Draw background rectangle
+          context.fillStyle = options.backgroundColor;
+          context.fillRect(x, y - height, width, height);
+
+          // Draw new text
+          context.fillStyle = options.textColor;
+          context.font = `${options.fontSize * scale}px Arial`;
+          context.textBaseline = 'top';
+          context.fillText(newText, x, y - height);
+        }
+
+        // Convert canvas to image
+        const imageDataUrl = canvas.toDataURL('image/jpeg', 0.92);
+        const imageBytes = Uint8Array.from(
+          atob(imageDataUrl.split(',')[1]),
+          (c) => c.charCodeAt(0)
+        );
+
+        // Embed image in PDF
+        const image = await pdfDoc.embedJpg(imageBytes);
+        const pdfPage = pdfDoc.getPage(pageNum - 1);
+        const { width: pageWidth, height: pageHeight } = pdfPage.getSize();
+
+        // Remove all content from page
+        pdfPage.drawRectangle({
+          x: 0,
+          y: 0,
+          width: pageWidth,
+          height: pageHeight,
+          color: rgb(1, 1, 1),
+        });
+
+        // Draw image
+        pdfPage.drawImage(image, {
+          x: 0,
+          y: 0,
+          width: pageWidth,
+          height: pageHeight,
+        });
+
+        processedPages++;
+      }
+
+      onProgress?.(85, 'Finalizing PDF...');
+
+      // Save PDF
+      const pdfBytes = await pdfDoc.save();
+      const resultBlob = new Blob([pdfBytes], { type: 'application/pdf' });
+
+      onProgress?.(100, 'Text replacement complete!');
+
+      const processingTime = Date.now() - startTime;
+
+      return {
+        success: true,
+        data: resultBlob,
+        metadata: {
+          pageCount: pdfDoc.getPageCount(),
+          originalSize: file.size,
+          processedSize: resultBlob.size,
+          processingTime,
+        },
+      };
+    } catch (error) {
+      console.error('Error replacing text in PDF:', error);
+      return {
+        success: false,
+        error: this.createPDFError(error, 'Text replacement failed'),
+      };
+    }
+  }
+
+  /**
    * Create a standardized PDF error
    */
   private createPDFError(error: any, context: string = 'PDF processing'): ProcessingError {
