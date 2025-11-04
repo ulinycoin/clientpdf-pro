@@ -676,11 +676,70 @@ export const SignPDF: React.FC = () => {
             </h3>
             <div className="relative bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden" style={{ minHeight: '400px' }}>
               {previewUrl ? (
-                <img
-                  src={previewUrl}
-                  alt="PDF Preview"
-                  className="w-full h-auto"
-                />
+                <>
+                  <img
+                    src={previewUrl}
+                    alt="PDF Preview"
+                    className="w-full h-auto"
+                  />
+                  {/* Signature Overlay */}
+                  {(signatureImage || (settings.type === 'text' && settings.text)) && (
+                    <div
+                      className="absolute pointer-events-none"
+                      style={(() => {
+                        const margin = 20; // Scaled margin for preview
+                        const sigWidth = settings.width * 0.5; // Scale down for preview
+                        const sigHeight = settings.height * 0.5;
+
+                        let style: React.CSSProperties = {
+                          width: `${sigWidth}px`,
+                          height: `${sigHeight}px`,
+                        };
+
+                        switch (settings.position) {
+                          case 'bottom-left':
+                            style.bottom = `${margin}px`;
+                            style.left = `${margin}px`;
+                            break;
+                          case 'bottom-right':
+                            style.bottom = `${margin}px`;
+                            style.right = `${margin}px`;
+                            break;
+                          case 'top-left':
+                            style.top = `${margin}px`;
+                            style.left = `${margin}px`;
+                            break;
+                          case 'top-right':
+                            style.top = `${margin}px`;
+                            style.right = `${margin}px`;
+                            break;
+                        }
+
+                        return style;
+                      })()}
+                    >
+                      {settings.type === 'text' ? (
+                        <div
+                          className="flex items-center justify-center border-2 border-dashed border-ocean-500 bg-ocean-50/80 dark:bg-ocean-900/40 rounded"
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            fontSize: `${(settings.textSize || 12) * 0.8}px`,
+                            fontFamily: 'cursive',
+                          }}
+                        >
+                          {settings.text}
+                        </div>
+                      ) : (
+                        <img
+                          src={signatureImage || ''}
+                          alt="Signature Preview"
+                          className="w-full h-full object-contain border-2 border-dashed border-ocean-500 bg-white/80 rounded"
+                        />
+                      )}
+                    </div>
+                  )}
+                </>
               ) : (
                 <div className="flex items-center justify-center h-full min-h-[400px]">
                   <p className="text-gray-500 dark:text-gray-400">Loading preview...</p>
