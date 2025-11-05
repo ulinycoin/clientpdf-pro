@@ -44,6 +44,10 @@
       "name": "Ajouter du texte au PDF",
       "description": "Ajouter du texte personnalisé aux pages PDF"
     },
+    "add-form-fields-pdf": {
+      "name": "Ajouter des champs de formulaire",
+      "description": "Créer des formulaires PDF remplissables avec des champs de texte, des cases à cocher et plus"
+    },
     "rotate-pdf": {
       "name": "Faire pivoter PDF",
       "description": "Faire pivoter les pages PDF"

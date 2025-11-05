@@ -17,6 +17,7 @@ export type Tool =
   | 'ocr-pdf'
   | 'add-text-pdf'
   | 'edit-text-pdf'
+  | 'add-form-fields-pdf'
   | 'watermark-pdf'
   | 'rotate-pdf'
   | 'delete-pages-pdf'
@@ -85,6 +86,7 @@ export const TOOL_HASH_MAP: Record<string, Tool> = {
   'ocr': 'ocr-pdf',
   'add-text': 'add-text-pdf',
   'edit-text': 'edit-text-pdf',
+  'add-form-fields': 'add-form-fields-pdf',
   'watermark': 'watermark-pdf',
   'rotate': 'rotate-pdf',
   'delete-pages': 'delete-pages-pdf',
@@ -119,6 +121,7 @@ export const TOOL_TIERS: Record<Tool, ToolTier> = {
   'ocr-pdf': 1,
   'add-text-pdf': 2,
   'edit-text-pdf': 2,
+  'add-form-fields-pdf': 2,
   'watermark-pdf': 2,
   'rotate-pdf': 2,
   'delete-pages-pdf': 2,

@@ -17,6 +17,7 @@ const DeletePagesPDF = lazy(() => import('@/components/tools/DeletePagesPDF').th
 const ExtractPagesPDF = lazy(() => import('@/components/tools/ExtractPagesPDF').then(m => ({ default: m.ExtractPagesPDF })));
 const AddTextPDF = lazy(() => import('@/components/tools/AddTextPDF').then(m => ({ default: m.AddTextPDF })));
 const EditTextPDF = lazy(() => import('@/components/tools/EditTextPDF').then(m => ({ default: m.EditTextPDF })));
+const AddFormFieldsPDF = lazy(() => import('@/components/tools/AddFormFieldsPDF').then(m => ({ default: m.AddFormFieldsPDF })));
 const ImagesToPDF = lazy(() => import('@/components/tools/ImagesToPDF').then(m => ({ default: m.ImagesToPDF })));
 const PDFToImages = lazy(() => import('@/components/tools/PDFToImages').then(m => ({ default: m.PDFToImages })));
 const WordToPDF = lazy(() => import('@/components/tools/WordToPDF').then(m => ({ default: m.WordToPDF })));
@@ -155,6 +156,8 @@ function App() {
                 <AddTextPDF />
               ) : currentTool === 'edit-text-pdf' ? (
                 <EditTextPDF />
+              ) : currentTool === 'add-form-fields-pdf' ? (
+                <AddFormFieldsPDF />
               ) : currentTool === 'images-to-pdf' ? (
                 <ImagesToPDF />
               ) : currentTool === 'pdf-to-images' ? (

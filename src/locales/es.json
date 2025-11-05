@@ -44,6 +44,10 @@
       "name": "Agregar texto al PDF",
       "description": "Agregar texto personalizado a las páginas PDF"
     },
+    "add-form-fields-pdf": {
+      "name": "Añadir campos de formulario",
+      "description": "Crear formularios PDF rellenables con campos de texto, casillas de verificación y más"
+    },
     "rotate-pdf": {
       "name": "Rotar PDF",
       "description": "Rotar páginas PDF"

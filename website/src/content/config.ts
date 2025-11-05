@@ -37,24 +37,25 @@ const blogCollection = defineCollection({
 
     // Internal Linking
     relatedTools: z.array(z.enum([
-      'merge-pdf',
-      'split-pdf',
-      'compress-pdf',
-      'protect-pdf',
-      'ocr-pdf',
+      'add-form-fields-pdf',
       'add-text-pdf',
-      'edit-text-pdf',
-      'watermark-pdf',
-      'rotate-pdf',
+      'compress-pdf',
       'delete-pages-pdf',
+      'edit-text-pdf',
       'extract-pages-pdf',
-      'unlock-pdf',
+      'flatten-pdf',
       'images-to-pdf',
+      'merge-pdf',
+      'ocr-pdf',
       'pdf-to-images',
       'pdf-to-word',
-      'word-to-pdf',
+      'protect-pdf',
+      'rotate-pdf',
       'sign-pdf',
-      'flatten-pdf'
+      'split-pdf',
+      'unlock-pdf',
+      'watermark-pdf',
+      'word-to-pdf'
     ])).optional(),
 
     // Author Info (optional for future)

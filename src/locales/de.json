@@ -44,6 +44,10 @@
       "name": "Text zu PDF hinzufügen",
       "description": "Benutzerdefinierten Text zu PDF-Seiten hinzufügen"
     },
+    "add-form-fields-pdf": {
+      "name": "Formularfelder hinzufügen",
+      "description": "Ausfüllbare PDF-Formulare mit Textfeldern, Kontrollkästchen und mehr erstellen"
+    },
     "rotate-pdf": {
       "name": "PDF drehen",
       "description": "PDF-Seiten drehen"

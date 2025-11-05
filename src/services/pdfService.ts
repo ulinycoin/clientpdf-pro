@@ -22,6 +22,15 @@ import type {
   ImageConversionProgress,
   QUALITY_SETTINGS
 } from '@/types/image.types';
+import type {
+  FormField,
+  FormFieldOptions,
+  TextFormField,
+  MultilineFormField,
+  CheckboxFormField,
+  RadioFormField,
+  DropdownFormField
+} from '@/types/formFields';
 
 // Configure PDF.js worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
@@ -1700,6 +1709,207 @@ export class PDFService {
       details: error instanceof Error ? error.stack : String(error)
     };
   }
+
+  /**
+   * Add form fields to PDF
+   * Creates interactive fillable forms with text fields, checkboxes, radio buttons, and dropdowns
+   */
+  async addFormFieldsToPDF(
+    file: File,
+    options: FormFieldOptions
+  ): Promise<PDFProcessingResult> {
+    try {
+      const { fields, onProgress } = options;
+
+      onProgress?.(10, 'Loading PDF document...');
+
+      // Load the PDF
+      const arrayBuffer = await file.arrayBuffer();
+      const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+
+      onProgress?.(20, 'Creating form...');
+
+      // Get or create the form
+      const form = pdfDoc.getForm();
+
+      // Process each field
+      for (let i = 0; i < fields.length; i++) {
+        const field = fields[i];
+        const progress = 20 + (i / fields.length) * 60;
+        onProgress?.(progress, `Adding field ${i + 1}/${fields.length}...`);
+
+        // Get the page
+        const page = pdfDoc.getPage(field.page);
+        const { height: pageHeight } = page.getSize();
+
+        // Convert Y coordinate (canvas uses top-left origin, PDF uses bottom-left)
+        const pdfY = pageHeight - field.y - field.height;
+
+        try {
+          switch (field.type) {
+            case 'text': {
+              const textField = field as TextFormField;
+              const pdfTextField = form.createTextField(textField.name);
+              pdfTextField.addToPage(page, {
+                x: textField.x,
+                y: pdfY,
+                width: textField.width,
+                height: textField.height,
+              });
+
+              if (textField.defaultValue) {
+                pdfTextField.setText(textField.defaultValue);
+              }
+              if (textField.maxLength) {
+                pdfTextField.setMaxLength(textField.maxLength);
+              }
+              if (textField.fontSize) {
+                pdfTextField.defaultUpdateAppearances(await pdfDoc.embedFont(StandardFonts.Helvetica));
+              }
+              if (textField.required) {
+                pdfTextField.enableRequired();
+              }
+              if (textField.readonly) {
+                pdfTextField.enableReadOnly();
+              }
+              break;
+            }
+
+            case 'multiline': {
+              const multilineField = field as MultilineFormField;
+              const pdfTextField = form.createTextField(multilineField.name);
+              pdfTextField.addToPage(page, {
+                x: multilineField.x,
+                y: pdfY,
+                width: multilineField.width,
+                height: multilineField.height,
+              });
+              pdfTextField.enableMultiline();
+
+              if (multilineField.defaultValue) {
+                pdfTextField.setText(multilineField.defaultValue);
+              }
+              if (multilineField.maxLength) {
+                pdfTextField.setMaxLength(multilineField.maxLength);
+              }
+              if (multilineField.fontSize) {
+                pdfTextField.defaultUpdateAppearances(await pdfDoc.embedFont(StandardFonts.Helvetica));
+              }
+              if (multilineField.required) {
+                pdfTextField.enableRequired();
+              }
+              if (multilineField.readonly) {
+                pdfTextField.enableReadOnly();
+              }
+              break;
+            }
+
+            case 'checkbox': {
+              const checkboxField = field as CheckboxFormField;
+              const pdfCheckbox = form.createCheckBox(checkboxField.name);
+              pdfCheckbox.addToPage(page, {
+                x: checkboxField.x,
+                y: pdfY,
+                width: checkboxField.width,
+                height: checkboxField.height,
+              });
+
+              if (checkboxField.checked) {
+                pdfCheckbox.check();
+              }
+              if (checkboxField.required) {
+                pdfCheckbox.enableRequired();
+              }
+              if (checkboxField.readonly) {
+                pdfCheckbox.enableReadOnly();
+              }
+              break;
+            }
+
+            case 'radio': {
+              const radioField = field as RadioFormField;
+              // Check if radio group already exists
+              let radioGroup;
+              try {
+                radioGroup = form.getRadioGroup(radioField.group);
+              } catch {
+                radioGroup = form.createRadioGroup(radioField.group);
+              }
+
+              radioGroup.addOptionToPage(radioField.value, page, {
+                x: radioField.x,
+                y: pdfY,
+                width: radioField.width,
+                height: radioField.height,
+              });
+
+              if (radioField.selected) {
+                radioGroup.select(radioField.value);
+              }
+              if (radioField.required) {
+                radioGroup.enableRequired();
+              }
+              if (radioField.readonly) {
+                radioGroup.enableReadOnly();
+              }
+              break;
+            }
+
+            case 'dropdown': {
+              const dropdownField = field as DropdownFormField;
+              const pdfDropdown = form.createDropdown(dropdownField.name);
+              pdfDropdown.addToPage(page, {
+                x: dropdownField.x,
+                y: pdfY,
+                width: dropdownField.width,
+                height: dropdownField.height,
+              });
+
+              pdfDropdown.addOptions(dropdownField.options);
+
+              if (dropdownField.selectedIndex !== undefined && dropdownField.options[dropdownField.selectedIndex]) {
+                pdfDropdown.select(dropdownField.options[dropdownField.selectedIndex]);
+              }
+              if (dropdownField.multiSelect) {
+                pdfDropdown.enableMultiselect();
+              }
+              if (dropdownField.required) {
+                pdfDropdown.enableRequired();
+              }
+              if (dropdownField.readonly) {
+                pdfDropdown.enableReadOnly();
+              }
+              break;
+            }
+          }
+        } catch (fieldError) {
+          console.warn(`Failed to add field ${field.name}:`, fieldError);
+          // Continue with other fields even if one fails
+        }
+      }
+
+      onProgress?.(85, 'Saving PDF...');
+
+      // Save the PDF
+      const pdfBytes = await pdfDoc.save();
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+
+      onProgress?.(100, 'Complete');
+
+      return {
+        success: true,
+        data: blob,
+        message: `Successfully added ${fields.length} form field(s)`,
+      };
+    } catch (error) {
+      console.error('Add form fields error:', error);
+      return {
+        success: false,
+        data: null,
+        error: error instanceof Error ? error : new Error('Failed to add form fields'),
+      };
+    }
+  }
 }
 
 // Export singleton instance as default
@@ -1762,3 +1972,5 @@ export const wordToPDF = (file: File, onProgress?: ProgressCallback) =>
   pdfService.wordToPDF(file, onProgress);
 export const pdfToWord = (file: File, onProgress?: ProgressCallback) =>
   pdfService.pdfToWord(file, onProgress);
+export const addFormFieldsToPDF = (file: File, options: FormFieldOptions) =>
+  pdfService.addFormFieldsToPDF(file, options);

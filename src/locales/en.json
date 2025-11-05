@@ -48,6 +48,10 @@
       "name": "Edit Text in PDF",
       "description": "Find and replace text in PDF"
     },
+    "add-form-fields-pdf": {
+      "name": "Add Form Fields",
+      "description": "Create fillable PDF forms with text fields, checkboxes, and more"
+    },
     "rotate-pdf": {
       "name": "Rotate PDF",
       "description": "Rotate PDF pages"

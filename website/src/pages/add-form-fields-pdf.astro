@@ -1,0 +1,53 @@
+---
+import ToolPage from '../components/ToolPage.astro';
+---
+
+<ToolPage
+  toolId="add-form-fields-pdf"
+  title="Create Fillable PDF Forms Online — Free Form Builder"
+  metaDescription="Create fillable PDF forms with text fields, checkboxes, radio buttons, and dropdowns. 100% private client-side processing. No uploads, unlimited forms."
+  description="Transform any PDF into an interactive fillable form. Add text fields, checkboxes, radio buttons, and dropdown menus with full customization — all processed in your browser."
+  benefits={[
+    "📋 Interactive — Create professional fillable forms",
+    "🔒 Private — Forms created locally, no uploads",
+    "🆓 Free — Unlimited form fields during beta"
+  ]}
+  relatedTools={[
+    { id: 'add-text-pdf', icon: '📝', title: 'Add Text to PDF', description: 'Add custom text overlays to PDFs' },
+    { id: 'flatten-pdf', icon: '📏', title: 'Flatten PDF', description: 'Convert fillable forms to static PDFs' },
+    { id: 'protect-pdf', icon: '🔒', title: 'Protect PDF', description: 'Add password protection to forms' },
+    { id: 'sign-pdf', icon: '✍️', title: 'Sign PDF', description: 'Add digital signatures to forms' }
+  ]}
+  whyChoose={{
+    title: "Why Choose Our PDF Form Builder?",
+    reasons: [
+      "Complete Privacy: Your PDF never leaves your device. Cloud form builders upload files to servers for processing. LocalPDF creates forms entirely in your browser using client-side rendering.",
+      "Professional Form Fields: Add text fields, multi-line text areas, checkboxes, radio button groups, and dropdown menus. Each field is fully customizable with validation options.",
+      "No Subscription Required: Most PDF form builders charge $10-30/month for form creation. LocalPDF is completely free during beta with no feature restrictions.",
+      "Real-Time Preview: See exactly how your form will look while building. Drag, drop, and resize fields with instant visual feedback.",
+      "Standards-Compliant: Creates AcroForm fields that work with all PDF readers including Adobe Acrobat, Preview, Chrome, and mobile apps.",
+      "Preserve Original Quality: Form fields are added as an interactive layer. Original PDF content remains untouched and at full resolution."
+    ]
+  }}
+  features={[
+    "Text fields (single-line and multi-line)",
+    "Checkboxes with default states",
+    "Radio button groups",
+    "Dropdown menus with custom options",
+    "Drag-and-drop field placement",
+    "Resize fields visually",
+    "Set required/optional fields",
+    "Read-only field support",
+    "Field name customization",
+    "Multi-page form support"
+  ]}
+  steps={[
+    'Click "Open Tool" button above',
+    "Upload the PDF you want to convert to a form",
+    "Click field type buttons (Text, Checkbox, Radio, Dropdown)",
+    "Drag and position fields on your PDF pages",
+    "Customize field properties in the right panel",
+    "Set field names, defaults, and validation rules",
+    "Download your fillable PDF form"
+  ]}
+/>
