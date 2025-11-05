@@ -43,6 +43,7 @@ const blogCollection = defineCollection({
       'protect-pdf',
       'ocr-pdf',
       'add-text-pdf',
+      'edit-text-pdf',
       'watermark-pdf',
       'rotate-pdf',
       'delete-pages-pdf',

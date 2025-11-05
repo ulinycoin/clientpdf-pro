@@ -1,0 +1,64 @@
+---
+import ToolPage from '../components/ToolPage.astro';
+---
+
+<ToolPage
+  toolId="edit-text-pdf"
+  title="Edit Text in PDF Online — Free & Private | Replace, Cover, Redact"
+  metaDescription="Edit, replace, or cover text in PDF documents instantly. Support for multiple pages, multiline text, and text covering. 100% private, client-side processing. No uploads required."
+  description="Edit and replace text in PDF documents directly in your browser. Create multiple text selections, replace with new text, or simply cover unwanted content. Perfect for correcting typos, updating information, or redacting sensitive data."
+  benefits={[
+    "✏️ Advanced — Multiple selections per page, multiline text support",
+    "🔒 Private — All editing happens locally in your browser",
+    "🆓 Free — No limits during beta testing"
+  ]}
+  relatedTools={[
+    { id: 'add-text-pdf', icon: '📝', title: 'Add Text to PDF', description: 'Add new text overlays to PDF pages' },
+    { id: 'ocr-pdf', icon: '🔍', title: 'OCR PDF', description: 'Extract text from scanned documents' },
+    { id: 'watermark-pdf', icon: '💧', title: 'Watermark PDF', description: 'Add watermarks to protect documents' },
+    { id: 'compress-pdf', icon: '🗜️', title: 'Compress PDF', description: 'Reduce file size after editing' }
+  ]}
+  whyChoose={{
+    title: "Why Choose Our PDF Text Editor?",
+    reasons: [
+      "True Client-Side Processing: Unlike cloud-based PDF editors that upload your documents to remote servers, LocalPDF processes everything locally. Your sensitive documents, contracts, or personal information never leave your device — ensuring complete privacy and security.",
+      "Multiple Editing Modes: Switch between 'Replace Text' mode for corrections and updates, or 'Cover Only' mode for quick redaction of sensitive information. Create unlimited selections on any page and apply all changes at once.",
+      "Multiline Text Support: Our advanced text engine automatically handles line breaks and word wrapping. Replace single words or entire paragraphs with proper formatting.",
+      "Multi-Page Editing: Work with documents of any length. Create selections on different pages, switch between them freely, and apply all changes in a single operation. Perfect for batch corrections across large documents.",
+      "Visual Selection Tool: Click and drag to select text areas directly on the PDF preview. Resize and move selections with precision. Real-time preview shows exactly how changes will look before applying.",
+      "Professional Typography: Full control over font family, size, style (bold/italic), color, and positioning. Auto-detect original font size for seamless replacements. Fine-tune text placement with pixel-perfect X/Y offsets.",
+      "High-Quality Output: All edits are rendered at 2x resolution for crisp, professional results. The final PDF maintains original quality while seamlessly integrating your changes.",
+      "No File Size Limits: Edit PDFs of any size — from single-page forms to hundred-page reports. Your browser memory is the only constraint.",
+      "Works Offline: Once the page loads, you can edit PDFs without an internet connection. Perfect for working with confidential documents that shouldn't be transmitted over networks."
+    ]
+  }}
+  features={[
+    "Replace text with multiline support and automatic word wrapping",
+    "Cover/redact text or images without adding new content",
+    "Create multiple selections on each page",
+    "Edit text across multiple pages simultaneously",
+    "Drag, resize, and position selection areas with precision",
+    "Real-time preview with live updates as you type",
+    "Zoom controls (50%-300%) for detailed work",
+    "Auto-detect original font size from PDF",
+    "Full typography control: font family, size, bold, italic",
+    "Custom text and background colors",
+    "Fine-tune text position with X/Y offset sliders",
+    "Manage selections: view list, switch between pages, delete individually",
+    "Apply all changes across all pages in one click"
+  ]}
+  steps={[
+    'Click "Open Tool" button above to launch the editor',
+    'Select a PDF file from your device (any number of pages)',
+    'Choose editing mode: "Replace Text" ✏️ or "Cover Only" 🎨',
+    'Navigate to the page you want to edit using page controls',
+    'Click and drag on the PDF to select a text area',
+    'For text mode: the original text is auto-extracted — edit or replace it',
+    'Adjust font, size, color, and position as needed',
+    'Use zoom controls (+/−) to work with precision',
+    'Create more selections on the same page or switch to other pages',
+    'Enable "Show live preview" to see changes in real-time',
+    'Click "Apply N Changes" to process all selections',
+    'Download your edited PDF instantly'
+  ]}
+/>

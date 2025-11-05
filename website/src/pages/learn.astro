@@ -136,7 +136,42 @@ import ContentPage from '../components/ContentPage.astro';
     <a href="/pdf-to-word" style="color: #2563EB;">Try PDF to Word Tool →</a>
   </p>
 
-  <h3>7. Signing PDFs Digitally</h3>
+  <h3>7. Editing and Replacing Text in PDFs</h3>
+  <p><strong>Use case:</strong> Fix typos, update information, or redact sensitive data directly in PDF documents.</p>
+  <p><strong>Two editing modes:</strong></p>
+  <ul>
+    <li><strong>Replace Text:</strong> Select text areas and replace with new content (perfect for corrections and updates)</li>
+    <li><strong>Cover Only:</strong> Simply cover text or images without adding replacement text (ideal for redaction)</li>
+  </ul>
+  <p><strong>Real-world examples:</strong></p>
+  <ul>
+    <li>Fix a typo in a contract without recreating the entire document</li>
+    <li>Update contact information on letterhead PDFs</li>
+    <li>Redact confidential data (SSN, account numbers) before sharing</li>
+    <li>Correct pricing in product catalogs across multiple pages</li>
+  </ul>
+  <p><strong>Key features:</strong></p>
+  <ul>
+    <li>Multiple selections per page - create unlimited text areas on any page</li>
+    <li>Multi-page editing - work across all pages simultaneously</li>
+    <li>Multiline text support - automatic word wrapping for longer text</li>
+    <li>Visual selection tool - drag and resize selection areas with precision</li>
+    <li>Live preview - see changes in real-time before applying</li>
+    <li>Typography control - font family, size, bold, italic, colors</li>
+    <li>Zoom controls (50%-300%) for detailed work</li>
+    <li>Auto-detect original font size from PDF</li>
+  </ul>
+  <p><strong>Privacy guarantee:</strong></p>
+  <p>
+    All editing happens locally in your browser. Your documents never leave your device - ensuring complete
+    confidentiality for sensitive edits like redacting personal information or updating private contracts.
+  </p>
+  <p>
+    <a href="/edit-text-pdf" style="color: #2563EB;">Try Edit Text PDF Tool →</a> |
+    <a href="/blog/edit-text-in-pdf-guide" style="color: #2563EB;">Read Complete Guide →</a>
+  </p>
+
+  <h3>8. Signing PDFs Digitally</h3>
   <p><strong>Use case:</strong> Add legally binding electronic signatures to contracts, forms, and approvals.</p>
   <p><strong>Three signature types:</strong></p>
   <ul>
@@ -281,11 +316,12 @@ import ContentPage from '../components/ContentPage.astro';
 
   <h3>Problem: Can't edit PDF text</h3>
   <p>
-    PDFs are designed to be read-only. To edit text, you need:
+    PDFs are designed to be read-only. To edit text, you have several options:
   </p>
   <ul>
-    <li>Adobe Acrobat Pro (paid)</li>
+    <li>Adobe Acrobat Pro (paid software)</li>
     <li>Convert to Word, edit, then convert back to PDF</li>
+    <li>Use LocalPDF's <a href="/edit-text-pdf" style="color: #2563EB;">Edit Text</a> tool to replace or redact existing text</li>
     <li>Use LocalPDF's <a href="/add-text-pdf" style="color: #2563EB;">Add Text</a> tool to overlay new text</li>
   </ul>
 
@@ -377,6 +413,14 @@ import ContentPage from '../components/ContentPage.astro';
     </div>
 
     <div class="card">
+      <h3>✏️ Edit Text in PDF</h3>
+      <p>
+        Replace text or redact sensitive information. Multi-page editing with live preview.
+      </p>
+      <p><a href="/edit-text-pdf" style="color: #2563EB;">Try Edit Text Tool →</a></p>
+    </div>
+
+    <div class="card">
       <h3>✍️ Sign PDF</h3>
       <p>
         Add digital signatures to documents. Draw, upload, or type signatures securely.
@@ -387,7 +431,7 @@ import ContentPage from '../components/ContentPage.astro';
 
   <div style="text-align: center; margin-top: 32px;">
     <a href="/" style="display: inline-block; padding: 14px 32px; background: #2563EB; color: #fff; font-weight: 600; text-decoration: none; border-radius: 8px;">
-      View All 15 PDF Tools →
+      View All 16 PDF Tools →
     </a>
   </div>
 </ContentPage>

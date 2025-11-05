@@ -14,9 +14,15 @@ interface Props {
     reasons: string[];
   };
   features?: string[];
+  relatedTools?: Array<{
+    id: string;
+    icon: string;
+    title: string;
+    description: string;
+  }>;
 }
 
-const { toolId, title, description, metaDescription, benefits, steps, whyChoose, features } = Astro.props;
+const { toolId, title, description, metaDescription, benefits, steps, whyChoose, features, relatedTools } = Astro.props;
 
 const canonicalURL = `https://localpdf.online/${toolId}`;
 
@@ -28,6 +34,7 @@ const toolHashMap: Record<string, string> = {
   'protect-pdf': 'protect',
   'ocr-pdf': 'ocr',
   'add-text-pdf': 'add-text',
+  'edit-text-pdf': 'edit-text',
   'watermark-pdf': 'watermark',
   'rotate-pdf': 'rotate',
   'delete-pages-pdf': 'delete-pages',
@@ -167,41 +174,57 @@ const howToSchema = {
   <section class="related-tools">
     <h2 class="section-heading">Related PDF Tools</h2>
     <div class="tools-grid">
-      {toolId !== 'merge-pdf' && (
-        <a href="/merge-pdf" class="related-tool-card">
-          <span class="tool-icon">📑</span>
-          <div class="tool-info">
-            <strong>Merge PDF</strong>
-            <span>Combine multiple PDFs into one</span>
-          </div>
-        </a>
-      )}
-      {toolId !== 'split-pdf' && (
-        <a href="/split-pdf" class="related-tool-card">
-          <span class="tool-icon">✂️</span>
-          <div class="tool-info">
-            <strong>Split PDF</strong>
-            <span>Divide PDF into pages or ranges</span>
-          </div>
-        </a>
-      )}
-      {toolId !== 'compress-pdf' && (
-        <a href="/compress-pdf" class="related-tool-card">
-          <span class="tool-icon">🗜️</span>
-          <div class="tool-info">
-            <strong>Compress PDF</strong>
-            <span>Reduce file size</span>
-          </div>
-        </a>
-      )}
-      {toolId !== 'protect-pdf' && (
-        <a href="/protect-pdf" class="related-tool-card">
-          <span class="tool-icon">🔒</span>
-          <div class="tool-info">
-            <strong>Protect PDF</strong>
-            <span>Add password encryption</span>
-          </div>
-        </a>
+      {relatedTools && relatedTools.length > 0 ? (
+        // Custom related tools if provided
+        relatedTools.map((tool) => (
+          <a href={`/${tool.id}`} class="related-tool-card">
+            <span class="tool-icon">{tool.icon}</span>
+            <div class="tool-info">
+              <strong>{tool.title}</strong>
+              <span>{tool.description}</span>
+            </div>
+          </a>
+        ))
+      ) : (
+        // Default related tools (core 4)
+        <>
+          {toolId !== 'merge-pdf' && (
+            <a href="/merge-pdf" class="related-tool-card">
+              <span class="tool-icon">📑</span>
+              <div class="tool-info">
+                <strong>Merge PDF</strong>
+                <span>Combine multiple PDFs into one</span>
+              </div>
+            </a>
+          )}
+          {toolId !== 'split-pdf' && (
+            <a href="/split-pdf" class="related-tool-card">
+              <span class="tool-icon">✂️</span>
+              <div class="tool-info">
+                <strong>Split PDF</strong>
+                <span>Divide PDF into pages or ranges</span>
+              </div>
+            </a>
+          )}
+          {toolId !== 'compress-pdf' && (
+            <a href="/compress-pdf" class="related-tool-card">
+              <span class="tool-icon">🗜️</span>
+              <div class="tool-info">
+                <strong>Compress PDF</strong>
+                <span>Reduce file size</span>
+              </div>
+            </a>
+          )}
+          {toolId !== 'protect-pdf' && (
+            <a href="/protect-pdf" class="related-tool-card">
+              <span class="tool-icon">🔒</span>
+              <div class="tool-info">
+                <strong>Protect PDF</strong>
+                <span>Add password encryption</span>
+              </div>
+            </a>
+          )}
+        </>
       )}
     </div>
     <div class="view-all-tools">
