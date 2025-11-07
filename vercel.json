@@ -16,7 +16,7 @@
         }
       ],
       "destination": "https://localpdf.online/:path*",
-      "statusCode": 307
+      "statusCode": 301
     }
   ],
 
