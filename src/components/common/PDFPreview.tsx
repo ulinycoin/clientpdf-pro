@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as pdfjsLib from 'pdfjs-dist';
 
 // Configure worker
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
+pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
 
 interface PDFPreviewProps {
   file?: File;
@@ -87,6 +87,7 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({
       } catch (err) {
         if (isMounted) {
           const error = err instanceof Error ? err : new Error('Failed to render PDF');
+          console.error('PDFPreview error:', error);
           setError(error.message);
           setIsLoading(false);
           onError?.(error);

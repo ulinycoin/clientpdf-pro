@@ -86,7 +86,7 @@
     },
     "flatten-pdf": {
       "name": "Aplanar PDF",
-      "description": "Aplanar formularios PDF"
+      "description": "Hacer que los formularios y anotaciones de PDF no sean editables"
     },
     "edit-pdf": {
       "name": "Editar PDF",
@@ -135,6 +135,31 @@
       "tooManyFiles": "Demasiados archivos. Máximo: {max}",
       "invalidFileType": "Tipo de archivo no válido. Por favor, seleccione solo archivos PDF.",
       "fileTooLarge": "Archivo demasiado grande. Tamaño máximo: {max} MB"
+    }
+  },
+  "flatten": {
+    "filePreview": "Archivo para aplanar",
+    "originalSize": "Tamaño original",
+    "pages": "Páginas",
+    "changeFile": "Cambiar archivo",
+    "flattenButton": "Aplanar PDF",
+    "flattenAnother": "Aplanar otro",
+    "success": {
+      "title": "¡PDF aplanado con éxito!",
+      "originalSize": "Tamaño original",
+      "processedSize": "Tamaño procesado",
+      "time": "Tiempo de procesamiento"
+    },
+    "quickActions": {
+      "title": "¿Qué sigue?",
+      "description": "Continúe trabajando con su PDF aplanado:",
+      "protect": "Agregar contraseña",
+      "merge": "Combinar con otros",
+      "compress": "Reducir tamaño del archivo"
+    },
+    "autoLoaded": {
+      "title": "Archivo cargado desde la herramienta anterior",
+      "description": "Su PDF se ha cargado automáticamente"
     }
   },
   "imagesToPdf": {

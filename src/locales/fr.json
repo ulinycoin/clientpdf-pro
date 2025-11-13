@@ -86,7 +86,7 @@
     },
     "flatten-pdf": {
       "name": "Aplatir PDF",
-      "description": "Aplatir les formulaires PDF"
+      "description": "Rendre les formulaires et annotations PDF non modifiables"
     },
     "edit-pdf": {
       "name": "Modifier PDF",
@@ -135,6 +135,31 @@
       "tooManyFiles": "Trop de fichiers. Maximum : {max}",
       "invalidFileType": "Type de fichier invalide. Veuillez sélectionner uniquement des fichiers PDF.",
       "fileTooLarge": "Fichier trop volumineux. Taille maximale : {max} MB"
+    }
+  },
+  "flatten": {
+    "filePreview": "Fichier à aplatir",
+    "originalSize": "Taille originale",
+    "pages": "Pages",
+    "changeFile": "Changer de fichier",
+    "flattenButton": "Aplatir PDF",
+    "flattenAnother": "Aplatir un autre",
+    "success": {
+      "title": "PDF aplati avec succès !",
+      "originalSize": "Taille originale",
+      "processedSize": "Taille traitée",
+      "time": "Temps de traitement"
+    },
+    "quickActions": {
+      "title": "Et après ?",
+      "description": "Continuez à travailler avec votre PDF aplati :",
+      "protect": "Ajouter un mot de passe",
+      "merge": "Fusionner avec d'autres",
+      "compress": "Réduire la taille du fichier"
+    },
+    "autoLoaded": {
+      "title": "Fichier chargé depuis l'outil précédent",
+      "description": "Votre PDF a été chargé automatiquement"
     }
   },
   "imagesToPdf": {

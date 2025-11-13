@@ -33,3 +33,20 @@ service-account*.json
 # Astro build cache
 .astro/
 website/.astro/
+
+# Reports and temporary documentation
+*_REPORT.md
+*_STATUS.md
+DEPLOYMENT*.md
+VERCEL*.md
+GITHUB_SETUP.md
+GIT_STATUS.md
+CHANGELOG.md
+*PROMO*.md
+build.log
+
+# Temporary shell scripts
+QUICK_PUSH.sh
+build-vercel.sh
+deploy-vercel.sh
+push-and-deploy.sh

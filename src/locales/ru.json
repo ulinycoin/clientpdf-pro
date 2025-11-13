@@ -86,7 +86,7 @@
     },
     "flatten-pdf": {
       "name": "Свести PDF",
-      "description": "Свести формы PDF"
+      "description": "Сделать формы и аннотации в PDF нередактируемыми"
     },
     "edit-pdf": {
       "name": "Редактировать PDF",
@@ -203,6 +203,31 @@
     "autoLoaded": {
       "title": "Файл загружен из предыдущего инструмента",
       "description": "Ваш объединённый PDF был автоматически загружен"
+    }
+  },
+  "flatten": {
+    "filePreview": "Файл для сведения",
+    "originalSize": "Исходный размер",
+    "pages": "Страниц",
+    "changeFile": "Изменить файл",
+    "flattenButton": "Свести PDF",
+    "flattenAnother": "Свести другой",
+    "success": {
+      "title": "PDF успешно сведен!",
+      "originalSize": "Исходный размер",
+      "processedSize": "Обработанный размер",
+      "time": "Время обработки"
+    },
+    "quickActions": {
+      "title": "Что дальше?",
+      "description": "Продолжите работу со сведенным PDF:",
+      "protect": "Добавить пароль",
+      "merge": "Объединить с другими",
+      "compress": "Уменьшить размер"
+    },
+    "autoLoaded": {
+      "title": "Файл загружен из предыдущего инструмента",
+      "description": "Ваш PDF был автоматически загружен"
     }
   },
   "split": {

@@ -86,7 +86,7 @@
     },
     "flatten-pdf": {
       "name": "PDF glätten",
-      "description": "PDF-Formulare glätten"
+      "description": "PDF-Formulare und Anmerkungen nicht bearbeitbar machen"
     },
     "edit-pdf": {
       "name": "PDF bearbeiten",
@@ -136,6 +136,31 @@
       "tooManyFiles": "Zu viele Dateien. Maximum: {max}",
       "invalidFileType": "Ungültiger Dateityp. Bitte wählen Sie nur PDF-Dateien.",
       "fileTooLarge": "Datei zu groß. Maximale Größe: {max} MB"
+    }
+  },
+  "flatten": {
+    "filePreview": "Datei zum Glätten",
+    "originalSize": "Originalgröße",
+    "pages": "Seiten",
+    "changeFile": "Datei ändern",
+    "flattenButton": "PDF glätten",
+    "flattenAnother": "Weitere glätten",
+    "success": {
+      "title": "PDF erfolgreich geglättet!",
+      "originalSize": "Originalgröße",
+      "processedSize": "Verarbeitete Größe",
+      "time": "Verarbeitungszeit"
+    },
+    "quickActions": {
+      "title": "Was als Nächstes?",
+      "description": "Arbeiten Sie weiter mit Ihrer geglätteten PDF:",
+      "protect": "Passwort hinzufügen",
+      "merge": "Mit anderen zusammenführen",
+      "compress": "Dateigröße reduzieren"
+    },
+    "autoLoaded": {
+      "title": "Datei vom vorherigen Tool geladen",
+      "description": "Ihre PDF wurde automatisch geladen"
     }
   },
   "imagesToPdf": {

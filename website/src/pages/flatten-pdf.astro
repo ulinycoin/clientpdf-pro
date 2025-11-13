@@ -1,0 +1,85 @@
+---
+import ToolPage from '../components/ToolPage.astro';
+
+const keywords = "flatten pdf, flatten pdf forms, make pdf non-editable, finalize pdf, lock pdf forms, static pdf";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to Flatten a PDF File",
+  "description": "A step-by-step guide on how to make PDF forms and annotations non-editable using the free and private LocalPDF flatten tool.",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Open Tool and Upload PDF",
+      "text": "Click 'Open Tool' and upload the PDF document with forms or annotations you want to flatten.",
+      "url": "https://localpdf.online/flatten-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Automatic Flattening Process",
+      "text": "The tool automatically starts flattening the PDF, converting interactive elements into static content."
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Review Flattened Document",
+      "text": "Once complete, review the flattened document to ensure all interactive elements are now static."
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Download Finalized PDF",
+      "text": "Click 'Download' to save the finalized, non-editable PDF file to your device."
+    }
+  ],
+  "totalTime": "PT1M"
+};
+---
+
+<ToolPage
+  toolId="flatten-pdf"
+  title="Flatten PDF Forms Online — Free & Private"
+  metaDescription="Make PDF forms and annotations permanent. Flatten interactive elements into static content. 100% private, no uploads. Lock forms instantly."
+  keywords={keywords}
+  description="Convert editable PDF forms into permanent, non-editable content. Protect filled forms from tampering and ensure document integrity — all in your browser."
+  benefits={[
+    "⚡ Instant — Flatten in seconds",
+    "🔒 Private — Files stay local",
+    "🆓 Free — No limits during beta"
+  ]}
+  relatedTools={[
+    { id: 'add-form-fields-pdf', icon: '📋', title: 'Add Form Fields', description: 'Create forms before flattening' },
+    { id: 'sign-pdf', icon: '✍️', title: 'Sign PDF', description: 'Sign before flattening' },
+    { id: 'protect-pdf', icon: '🔒', title: 'Protect PDF', description: 'Add password after flattening' },
+    { id: 'compress-pdf', icon: '🗜️', title: 'Compress PDF', description: 'Reduce size after flattening' }
+  ]}
+  whyChoose={{
+    title: "Why Choose Our PDF Flatten Tool?",
+    reasons: [
+      "True Privacy: Your forms stay on your device. Unlike online tools that upload your sensitive documents, LocalPDF processes everything locally in your browser.",
+      "Prevent Tampering: Lock filled data permanently, making it impossible for recipients to alter your form submissions or annotations.",
+      "Universal Compatibility: Flattened PDFs are static and render consistently across all PDF viewers and operating systems, ensuring your document looks as intended.",
+      "No Data Loss: Our tool preserves all visual content, text, and layout during the flattening process, ensuring no information is lost or distorted.",
+      "Instant Processing: No upload delays or waiting times. Flattening happens at native speed directly in your browser, providing immediate results.",
+      "Professional Results: Achieve clean, finalized documents suitable for official submissions, archiving, or sharing where data integrity is paramount."
+    ]
+  }}
+  features={[
+    "Flatten form fields (text, checkboxes, dropdowns)",
+    "Flatten annotations and comments",
+    "Make signatures permanent",
+    "Lock interactive elements",
+    "Preserve visual appearance",
+    "No quality degradation"
+  ]}
+  steps={[
+    'Click "Open Tool" button above',
+    "Upload PDF with forms or annotations",
+    "Flattening starts automatically",
+    "Review the flattened document",
+    "Download your finalized PDF instantly"
+  ]}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

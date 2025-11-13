@@ -90,7 +90,7 @@
     },
     "flatten-pdf": {
       "name": "Flatten PDF",
-      "description": "Flatten PDF forms"
+      "description": "Make PDF forms and annotations non-editable"
     },
     "edit-pdf": {
       "name": "Edit PDF",
@@ -216,6 +216,31 @@
     "autoLoaded": {
       "title": "File loaded from previous tool",
       "description": "Your merged PDF has been automatically loaded"
+    }
+  },
+  "flatten": {
+    "filePreview": "File to flatten",
+    "originalSize": "Original size",
+    "pages": "Pages",
+    "changeFile": "Change file",
+    "flattenButton": "Flatten PDF",
+    "flattenAnother": "Flatten another",
+    "success": {
+      "title": "PDF flattened successfully!",
+      "originalSize": "Original size",
+      "processedSize": "Processed size",
+      "time": "Processing time"
+    },
+    "quickActions": {
+      "title": "What's next?",
+      "description": "Continue working with your flattened PDF:",
+      "protect": "Add password",
+      "merge": "Merge with others",
+      "compress": "Reduce file size"
+    },
+    "autoLoaded": {
+      "title": "File loaded from previous tool",
+      "description": "Your PDF has been automatically loaded"
     }
   },
   "split": {

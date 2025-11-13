@@ -33,7 +33,7 @@ import type {
 } from '@/types/formFields';
 
 // Configure PDF.js worker
-pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
+pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
 
 // Polyfill Buffer for JSZip in browser environment
 if (typeof window !== 'undefined') {
@@ -705,6 +705,72 @@ export class PDFService {
       return {
         success: false,
         error: this.createPDFError(error, 'Delete pages failed')
+      };
+    }
+  }
+
+  /**
+   * Flatten PDF forms and annotations
+   */
+  async flattenPDF(
+    file: File,
+    onProgress?: ProgressCallback
+  ): Promise<PDFProcessingResult<Blob>> {
+    const startTime = performance.now();
+
+    try {
+      onProgress?.(0, 'Loading PDF...');
+
+      const arrayBuffer = await file.arrayBuffer();
+      const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+
+      onProgress?.(20, 'Flattening form fields...');
+
+      // Flatten form fields
+      const form = pdfDoc.getForm();
+      try {
+        form.flatten();
+      } catch (error) {
+        console.warn('Could not flatten form fields, maybe no form exists.');
+      }
+
+      onProgress?.(50, 'Flattening annotations...');
+
+      // Flatten annotations on each page
+      const pages = pdfDoc.getPages();
+      for (let i = 0; i < pages.length; i++) {
+        const page = pages[i];
+        try {
+          page.flatten();
+        } catch (error) {
+          console.warn(`Could not flatten annotations on page ${i + 1}.`);
+        }
+        const progress = 50 + (i / pages.length) * 30;
+        onProgress?.(progress, `Processing page ${i + 1}/${pages.length}...`);
+      }
+
+      onProgress?.(80, 'Saving PDF...');
+
+      const pdfBytes = await pdfDoc.save();
+      const blob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' });
+
+      const processingTime = performance.now() - startTime;
+      onProgress?.(100, 'Completed!');
+
+      return {
+        success: true,
+        data: blob,
+        metadata: {
+          pageCount: pdfDoc.getPageCount(),
+          originalSize: file.size,
+          processedSize: blob.size,
+          processingTime
+        }
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: this.createPDFError(error, 'PDF flatten failed')
       };
     }
   }
@@ -1952,6 +2018,9 @@ export const deletePDF = (
   pagesToDelete: number[],
   onProgress?: ProgressCallback
 ) => pdfService.deletePDF(file, pagesToDelete, onProgress);
+
+export const flattenPDF = (file: File, onProgress?: ProgressCallback) =>
+  pdfService.flattenPDF(file, onProgress);
 
 export const extractPDF = (
   file: File,
