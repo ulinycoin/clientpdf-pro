@@ -1,11 +1,48 @@
 ---
 import ToolPage from '../components/ToolPage.astro';
+
+const keywords = "compress pdf, reduce pdf size, pdf compressor, optimize pdf, make pdf smaller, free pdf compression";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to Compress a PDF File",
+  "description": "A step-by-step guide on how to reduce the file size of a PDF document without losing quality using the free and private LocalPDF compression tool.",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Open the Tool and Upload PDF",
+      "text": "Click 'Open Tool' and upload the PDF document you want to compress.",
+      "url": "https://localpdf.online/compress-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Automatic Compression",
+      "text": "The tool automatically starts compressing the PDF. It removes redundant data and optimizes the file structure.",
+      "image": "https://localpdf.online/screenshots/compress-progress.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Review Size Reduction",
+      "text": "Once complete, the tool will show you the original size, the new size, and the percentage of reduction.",
+      "image": "https://localpdf.online/screenshots/compress-stats.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Download the Compressed PDF",
+      "text": "Click 'Download' to save the smaller, optimized PDF file to your device.",
+      "image": "https://localpdf.online/screenshots/compress-download.png"
+    }
+  ],
+  "totalTime": "PT1M"
+};
 ---
 
 <ToolPage
   toolId="compress-pdf"
   title="Compress PDF Online — Free & Fast"
   metaDescription="Reduce PDF file size without quality loss. 100% private client-side compression. No uploads, no limits. Optimize PDFs instantly."
+  keywords={keywords}
   description="Reduce PDF file size while maintaining quality. Remove unnecessary data, optimize images, and compress efficiently — all in your browser."
   benefits={[
     "⚡ Instant — Compress in seconds",
@@ -44,4 +81,8 @@ import ToolPage from '../components/ToolPage.astro';
     "Review size reduction statistics",
     "Download your optimized PDF instantly"
   ]}
-/>
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

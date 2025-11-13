@@ -1,11 +1,48 @@
 ---
 import ToolPage from '../components/ToolPage.astro';
+
+const keywords = "word to pdf, convert word to pdf, docx to pdf, word to pdf converter, free word to pdf, save word as pdf";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to Convert Word to PDF",
+  "description": "A step-by-step guide on how to convert a Microsoft Word (.docx) document into a PDF file using the free and private LocalPDF converter.",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Open the Tool and Upload Document",
+      "text": "Click 'Open Tool' and upload the Word document (.docx) you want to convert.",
+      "url": "https://localpdf.online/word-to-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Automatic Conversion",
+      "text": "The tool automatically starts converting the Word document to PDF, preserving formatting and layout.",
+      "image": "https://localpdf.online/screenshots/word-to-pdf-convert.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Preview the PDF",
+      "text": "A preview of the newly created PDF is displayed, allowing you to verify the conversion.",
+      "image": "https://localpdf.online/screenshots/word-to-pdf-preview.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Download the PDF",
+      "text": "Click 'Download' to save the converted PDF file to your device.",
+      "image": "https://localpdf.online/screenshots/word-to-pdf-download.png"
+    }
+  ],
+  "totalTime": "PT1M"
+};
 ---
 
 <ToolPage
   toolId="word-to-pdf"
   title="Convert Word to PDF Online — Free DOCX to PDF Converter"
   metaDescription="Convert Word documents (DOCX) to PDF instantly. 100% private client-side conversion. No uploads, preserve formatting. Convert in seconds."
+  keywords={keywords}
   description="Convert Microsoft Word documents (.docx) to PDF format. Preserve formatting, fonts, and layout — all in your browser with complete privacy."
   benefits={[
     "⚡ Instant — Convert documents in seconds",
@@ -38,4 +75,8 @@ import ToolPage from '../components/ToolPage.astro';
     "Preview the generated PDF",
     "Click \"Download\" to save your PDF"
   ]}
-/>
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

@@ -1,11 +1,54 @@
 ---
 import ToolPage from '../components/ToolPage.astro';
+
+const keywords = "create fillable pdf, pdf form builder, add form fields to pdf, interactive pdf, pdf text field, pdf checkbox, pdf radio button, pdf dropdown";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to Create a Fillable PDF Form",
+  "description": "A step-by-step guide to adding interactive form fields like text boxes, checkboxes, and dropdowns to a PDF document using LocalPDF.",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Open the Tool and Upload PDF",
+      "text": "Click 'Open Tool' and upload the PDF you want to transform into a fillable form.",
+      "url": "https://localpdf.online/add-form-fields-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Add Form Fields",
+      "text": "Select a field type from the toolbar (e.g., Text Field, Checkbox, Dropdown) and click on the PDF to place it.",
+      "image": "https://localpdf.online/screenshots/form-add-field.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Position and Resize",
+      "text": "Drag the field to the correct position on the page and resize it by dragging the corners.",
+      "image": "https://localpdf.online/screenshots/form-resize.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Customize Properties",
+      "text": "Use the right-hand panel to customize the field's properties, such as name, default value, and options (for dropdowns).",
+      "image": "https://localpdf.online/screenshots/form-properties.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Download the Form",
+      "text": "Once all fields are added, click 'Download' to get your new interactive, fillable PDF form.",
+      "image": "https://localpdf.online/screenshots/form-download.png"
+    }
+  ],
+  "totalTime": "PT5M"
+};
 ---
 
 <ToolPage
   toolId="add-form-fields-pdf"
   title="Create Fillable PDF Forms Online — Free Form Builder"
   metaDescription="Create fillable PDF forms with text fields, checkboxes, radio buttons, and dropdowns. 100% private client-side processing. No uploads, unlimited forms."
+  keywords={keywords}
   description="Transform any PDF into an interactive fillable form. Add text fields, checkboxes, radio buttons, and dropdown menus with full customization — all processed in your browser."
   benefits={[
     "📋 Interactive — Create professional fillable forms",
@@ -50,4 +93,8 @@ import ToolPage from '../components/ToolPage.astro';
     "Set field names, defaults, and validation rules",
     "Download your fillable PDF form"
   ]}
-/>
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

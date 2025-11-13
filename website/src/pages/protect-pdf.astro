@@ -1,11 +1,48 @@
 ---
 import ToolPage from '../components/ToolPage.astro';
+
+const keywords = "protect pdf, password protect pdf, encrypt pdf, secure pdf, add password to pdf, pdf encryption";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to Password Protect a PDF",
+  "description": "A step-by-step guide on how to add a password and set encryption permissions on a PDF document using the free and private LocalPDF protection tool.",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Open the Tool and Upload PDF",
+      "text": "Click 'Open Tool' and upload the PDF document you want to protect.",
+      "url": "https://localpdf.online/protect-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Set Password and Permissions",
+      "text": "Enter a strong password to encrypt the file. Optionally, you can set an owner password and configure user permissions for printing, copying, and editing.",
+      "image": "https://localpdf.online/screenshots/protect-settings.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Apply Protection",
+      "text": "Click the 'Protect PDF' button. The tool will instantly encrypt the document with your chosen settings.",
+      "image": "https://localpdf.online/screenshots/protect-apply.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Download the Secure PDF",
+      "text": "Click 'Download' to save the newly encrypted and password-protected PDF file to your device.",
+      "image": "https://localpdf.online/screenshots/protect-download.png"
+    }
+  ],
+  "totalTime": "PT1M"
+};
 ---
 
 <ToolPage
   toolId="protect-pdf"
   title="Password Protect PDF Online — Free & Secure"
   metaDescription="Add password protection to PDF files. Set encryption and permissions locally. 100% private, no uploads. Secure PDFs in seconds."
+  keywords={keywords}
   description="Add password encryption to your PDFs with granular permissions. Protect sensitive documents from unauthorized access — all processing happens locally in your browser."
   benefits={[
     "⚡ Instant — Encrypt PDFs in seconds",
@@ -44,4 +81,8 @@ import ToolPage from '../components/ToolPage.astro';
     "Configure permissions (optional)",
     "Download your encrypted PDF instantly"
   ]}
-/>
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

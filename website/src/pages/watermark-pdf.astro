@@ -1,11 +1,48 @@
 ---
 import ToolPage from '../components/ToolPage.astro';
+
+const keywords = "watermark pdf, add watermark to pdf, text watermark, protect pdf, free watermark tool";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to Add a Watermark to a PDF",
+  "description": "A step-by-step guide on how to add a custom text watermark to a PDF document, with options for position, opacity, and rotation, using the free and private LocalPDF tool.",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Open the Tool and Upload PDF",
+      "text": "Click 'Open Tool' and upload the PDF document you want to watermark.",
+      "url": "https://localpdf.online/watermark-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Configure Watermark",
+      "text": "Enter your watermark text. Use the sidebar to adjust the position, rotation, opacity, font size, and color.",
+      "image": "https://localpdf.online/screenshots/watermark-config.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Apply Watermark",
+      "text": "Click the 'Add Watermark' button. The text will be applied to all pages of the PDF according to your settings.",
+      "image": "https://localpdf.online/screenshots/watermark-apply.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Download Watermarked PDF",
+      "text": "A preview of the watermarked document is shown. Click 'Download' to save the protected PDF file.",
+      "image": "https://localpdf.online/screenshots/watermark-download.png"
+    }
+  ],
+  "totalTime": "PT1M"
+};
 ---
 
 <ToolPage
   toolId="watermark-pdf"
   title="Add Watermark to PDF Online — Free Tool"
   metaDescription="Add text watermarks to PDF files. 100% private client-side processing. No uploads, customize position and opacity. Free unlimited use."
+  keywords={keywords}
   description="Add custom watermarks to PDF pages. Protect your documents with visible text overlays — all processing happens locally in your browser."
   benefits={[
     "⚡ Instant — Add watermarks in seconds",
@@ -44,4 +81,8 @@ import ToolPage from '../components/ToolPage.astro';
     "Customize position, opacity, and rotation",
     "Preview and download watermarked PDF"
   ]}
-/>
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

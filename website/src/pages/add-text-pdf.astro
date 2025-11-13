@@ -1,11 +1,54 @@
 ---
 import ToolPage from '../components/ToolPage.astro';
+
+const keywords = "add text to pdf, write on pdf, pdf text editor, add text box to pdf, type on pdf, free pdf editor";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to Add Text to a PDF",
+  "description": "A step-by-step guide on how to add, format, and position custom text on a PDF document using the free LocalPDF text tool.",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Open Tool and Upload PDF",
+      "text": "Click 'Open Tool' and upload the PDF document you wish to add text to.",
+      "url": "https://localpdf.online/add-text-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Add a Text Box",
+      "text": "Click the 'Add Text' button in the toolbar. A new text box will appear on the current page.",
+      "image": "https://localpdf.online/screenshots/add-text-box.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Enter and Format Text",
+      "text": "Type your desired text into the box. Use the formatting panel to change the font, size, color, and alignment.",
+      "image": "https://localpdf.online/screenshots/add-text-format.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Position the Text",
+      "text": "Drag the text box to place it exactly where you want it on the PDF page.",
+      "image": "https://localpdf.online/screenshots/add-text-position.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Download the PDF",
+      "text": "After adding all necessary text, click 'Download' to save the modified PDF file.",
+      "image": "https://localpdf.online/screenshots/add-text-download.png"
+    }
+  ],
+  "totalTime": "PT2M"
+};
 ---
 
 <ToolPage
   toolId="add-text-pdf"
   title="Add Text to PDF Online — Free Editor"
   metaDescription="Add custom text to PDF files. 100% private client-side processing. No uploads, full formatting control. Edit PDFs instantly."
+  keywords={keywords}
   description="Add custom text to PDF pages with full control over position, size, color, and font. Perfect for annotations, labels, or filling forms — all in your browser."
   benefits={[
     "⚡ Instant — Add text in seconds",
@@ -45,4 +88,8 @@ import ToolPage from '../components/ToolPage.astro';
     "Select which pages to apply text to",
     "Download your edited PDF"
   ]}
-/>
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

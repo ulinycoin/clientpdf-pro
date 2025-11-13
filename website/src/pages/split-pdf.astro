@@ -1,11 +1,48 @@
 ---
 import ToolPage from '../components/ToolPage.astro';
+
+const keywords = "split pdf, divide pdf, separate pdf pages, pdf splitter, extract pdf pages, free pdf splitter";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to Split a PDF File",
+  "description": "A step-by-step guide on how to divide a PDF into multiple files by pages or ranges using the free and private LocalPDF splitting tool.",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Open the Tool and Upload PDF",
+      "text": "Click 'Open Tool' and upload the PDF document you want to split.",
+      "url": "https://localpdf.online/split-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Choose Splitting Mode",
+      "text": "Select your desired splitting mode: by individual pages, by custom ranges, or by fixed intervals.",
+      "image": "https://localpdf.online/screenshots/split-mode.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Configure and Split",
+      "text": "Enter the page ranges or interval number and click the 'Split PDF' button.",
+      "image": "https://localpdf.online/screenshots/split-config.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Download Split Files",
+      "text": "The tool will generate the new PDF files. Download them individually or as a single ZIP archive.",
+      "image": "https://localpdf.online/screenshots/split-download.png"
+    }
+  ],
+  "totalTime": "PT1M"
+};
 ---
 
 <ToolPage
   toolId="split-pdf"
   title="Split PDF Online — Free & Secure"
   metaDescription="Split PDF files by pages, ranges, or intervals. 100% private client-side processing. No uploads, no limits. Extract pages instantly."
+  keywords={keywords}
   description="Divide PDF documents into separate files or extract specific pages. Choose from multiple splitting modes — all processing happens securely in your browser."
   benefits={[
     "⚡ Instant — Split PDFs in seconds",
@@ -38,4 +75,8 @@ import ToolPage from '../components/ToolPage.astro';
     "Configure parameters and click \"Split\"",
     "Download individual PDFs or ZIP archive"
   ]}
-/>
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

@@ -1,11 +1,48 @@
 ---
 import ToolPage from '../components/ToolPage.astro';
+
+const keywords = "rotate pdf, rotate pdf pages, fix pdf orientation, pdf rotator, change pdf orientation, free pdf editor";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to Rotate PDF Pages",
+  "description": "A step-by-step guide on how to change the orientation of specific pages or an entire PDF document using the free and private LocalPDF rotation tool.",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Open the Tool and Upload PDF",
+      "text": "Click 'Open Tool' and upload the PDF document containing pages you want to rotate.",
+      "url": "https://localpdf.online/rotate-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Select Pages and Rotation Angle",
+      "text": "Select the pages to rotate by clicking their thumbnails. Then, choose the rotation angle (90°, 180°, or 270°) from the toolbar.",
+      "image": "https://localpdf.online/screenshots/rotate-select.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Apply Rotation",
+      "text": "Click the 'Rotate Pages' button. The selected pages will be instantly rotated to the new orientation.",
+      "image": "https://localpdf.online/screenshots/rotate-apply.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Download the Rotated PDF",
+      "text": "A preview of the rotated document is shown. Click 'Download' to save the corrected PDF file.",
+      "image": "https://localpdf.online/screenshots/rotate-download.png"
+    }
+  ],
+  "totalTime": "PT1M"
+};
 ---
 
 <ToolPage
   toolId="rotate-pdf"
   title="Rotate PDF Pages Online — Free & Fast"
   metaDescription="Rotate PDF pages 90, 180, 270 degrees. 100% private client-side processing. No uploads, no limits. Fix orientation instantly."
+  keywords={keywords}
   description="Rotate PDF pages to fix orientation issues. Rotate individual pages or entire documents by 90, 180, or 270 degrees — all in your browser."
   benefits={[
     "⚡ Instant — Rotate pages in seconds",
@@ -38,4 +75,8 @@ import ToolPage from '../components/ToolPage.astro';
     "Choose rotation angle (90°, 180°, 270°)",
     "Preview and download rotated PDF"
   ]}
-/>
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

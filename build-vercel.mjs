@@ -168,7 +168,7 @@ try {
   // Check SEO tool pages
   const seoPages = ['merge-pdf', 'split-pdf', 'compress-pdf'];
   seoPages.forEach(page => {
-    const pagePath = path.join(appDistPath, page, 'index.html');
+    const pagePath = path.join(appDistPath, `${page}.html`);
     if (fs.existsSync(pagePath)) {
       console.log(`✓ /${page} → SEO page`);
     } else {

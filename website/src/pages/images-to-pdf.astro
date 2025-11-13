@@ -1,11 +1,48 @@
 ---
 import ToolPage from '../components/ToolPage.astro';
+
+const keywords = "images to pdf, jpg to pdf, png to pdf, image to pdf converter, convert image to pdf, free pdf converter";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to Convert Images to PDF",
+  "description": "A step-by-step guide on how to convert JPG and PNG images into a single PDF document with custom layout options using the free and private LocalPDF converter.",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Open the Tool and Upload Images",
+      "text": "Click 'Open Tool' and upload the JPG or PNG images you want to convert.",
+      "url": "https://localpdf.online/images-to-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Arrange and Configure",
+      "text": "Drag and drop the images to set their order in the PDF. Use the sidebar to choose page size, orientation, and margins.",
+      "image": "https://localpdf.online/screenshots/images-to-pdf-config.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Convert to PDF",
+      "text": "Click the 'Convert to PDF' button. The images will be combined into a new PDF document based on your settings.",
+      "image": "https://localpdf.online/screenshots/images-to-pdf-convert.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Download the PDF",
+      "text": "A preview of the new PDF is shown. Click 'Download' to save the file to your device.",
+      "image": "https://localpdf.online/screenshots/images-to-pdf-download.png"
+    }
+  ],
+  "totalTime": "PT1M"
+};
 ---
 
 <ToolPage
   toolId="images-to-pdf"
   title="Convert Images to PDF Online — Free Converter"
   metaDescription="Convert JPG, PNG images to PDF instantly. 100% private client-side conversion. No uploads, no limits. Create PDFs in seconds."
+  keywords={keywords}
   description="Convert images (JPG, PNG) to PDF documents. Combine multiple images into one PDF with custom page size and orientation — all in your browser."
   benefits={[
     "⚡ Instant — Convert images in seconds",
@@ -38,4 +75,8 @@ import ToolPage from '../components/ToolPage.astro';
     "Choose page size and orientation",
     "Click \"Convert\" and download your PDF"
   ]}
-/>
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

@@ -1,11 +1,48 @@
 ---
 import ToolPage from '../components/ToolPage.astro';
+
+const keywords = "merge pdf, combine pdf, join pdf, pdf merger, combine pdf files, merge pdf files online, free pdf merger";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to Merge PDF Files with LocalPDF",
+  "description": "A step-by-step guide to combining multiple PDF files into a single document using the free and private LocalPDF merge tool.",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Open the Tool",
+      "text": "Click the 'Open Tool' button to launch the PDF merging interface.",
+      "url": "https://localpdf.online/merge-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Select Files",
+      "text": "Select multiple PDF files from your device by clicking the 'Select Files' button or dragging and dropping them into the tool.",
+      "image": "https://localpdf.online/screenshots/merge-select.png" 
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Arrange Order",
+      "text": "Arrange the files in your desired order by dragging and dropping them. You can also preview the pages of each PDF.",
+      "image": "https://localpdf.online/screenshots/merge-arrange.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Merge and Download",
+      "text": "Click the 'Merge' button. The files will be combined instantly, and you can download the final merged PDF.",
+      "image": "https://localpdf.online/screenshots/merge-download.png"
+    }
+  ],
+  "totalTime": "PT1M" 
+};
 ---
 
 <ToolPage
   toolId="merge-pdf"
   title="Merge PDF Files Online — Free & Private"
   metaDescription="Combine multiple PDF files into one instantly. 100% private, client-side processing. No uploads, no registration, no limits. Merge PDFs in seconds."
+  keywords={keywords}
   description="Combine multiple PDF files into one document — instantly and securely. All processing happens in your browser, ensuring complete privacy. No uploads, no registration, no hidden fees."
   benefits={[
     "⚡ Instant — Process in under 2 seconds",
@@ -37,4 +74,8 @@ import ToolPage from '../components/ToolPage.astro';
     "Arrange files in desired order (drag-and-drop)",
     "Click \"Merge\" and download your combined PDF instantly"
   ]}
-/>
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

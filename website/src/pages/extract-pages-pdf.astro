@@ -1,11 +1,48 @@
 ---
 import ToolPage from '../components/ToolPage.astro';
+
+const keywords = "extract pdf pages, get pages from pdf, pdf page extractor, save pages from pdf, create new pdf from pages";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to Extract Pages from a PDF",
+  "description": "A step-by-step guide on how to select and save specific pages from a PDF document into a new file using the free and private LocalPDF page extractor.",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Open the Tool and Upload PDF",
+      "text": "Click 'Open Tool' and upload the PDF document from which you want to extract pages.",
+      "url": "https://localpdf.online/extract-pages-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Select Pages to Extract",
+      "text": "A preview of all pages will be displayed. Click on the thumbnails of the pages you want to include in the new PDF. Selected pages will be highlighted.",
+      "image": "https://localpdf.online/screenshots/extract-select.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Extract Pages",
+      "text": "Click the 'Extract Pages' button. A new PDF document will be created containing only the selected pages.",
+      "image": "https://localpdf.online/screenshots/extract-apply.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Download the New PDF",
+      "text": "A preview of the new document is shown. Click 'Download' to save the extracted PDF to your device.",
+      "image": "https://localpdf.online/screenshots/extract-download.png"
+    }
+  ],
+  "totalTime": "PT1M"
+};
 ---
 
 <ToolPage
   toolId="extract-pages-pdf"
   title="Extract Pages from PDF Online — Free Tool"
   metaDescription="Extract specific pages from PDF documents. 100% private client-side processing. No uploads, no limits. Create new PDFs instantly."
+  keywords={keywords}
   description="Extract specific pages from PDF documents to create new files. Select individual pages or ranges — all processing happens locally in your browser."
   benefits={[
     "⚡ Instant — Extract pages in seconds",
@@ -38,4 +75,8 @@ import ToolPage from '../components/ToolPage.astro';
     "Preview selected pages",
     "Download your extracted PDF"
   ]}
-/>
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

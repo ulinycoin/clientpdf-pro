@@ -1,11 +1,48 @@
 ---
 import ToolPage from '../components/ToolPage.astro';
+
+const keywords = "pdf to word, convert pdf to word, pdf to docx, pdf to word converter, free pdf to word, editable pdf";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to Convert PDF to Word",
+  "description": "A step-by-step guide on how to convert a PDF document into an editable Microsoft Word (.docx) file using the free and private LocalPDF converter.",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Open the Tool and Upload PDF",
+      "text": "Click 'Open Tool' and upload the PDF document you want to convert to Word.",
+      "url": "https://localpdf.online/pdf-to-word#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Start Conversion",
+      "text": "Click the 'Convert to Word' button. The tool will begin extracting text and structure from the PDF.",
+      "image": "https://localpdf.online/screenshots/pdf-to-word-convert.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Processing",
+      "text": "Wait a few moments as the tool processes the document page by page. This usually takes 5-10 seconds.",
+      "image": "https://localpdf.online/screenshots/pdf-to-word-progress.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Download Word Document",
+      "text": "Once complete, click 'Download' to save the resulting .docx file to your device.",
+      "image": "https://localpdf.online/screenshots/pdf-to-word-download.png"
+    }
+  ],
+  "totalTime": "PT1M"
+};
 ---
 
 <ToolPage
   toolId="pdf-to-word"
   title="Convert PDF to Word Online — Free PDF to DOCX Converter"
   metaDescription="Convert PDF to Word (DOCX) instantly. 100% private client-side conversion. Extract text, edit documents. No uploads, unlimited conversions."
+  keywords={keywords}
   description="Convert PDF documents to Microsoft Word (.docx) format. Extract text and make PDFs editable — all in your browser with complete privacy."
   benefits={[
     "⚡ Instant — Convert documents in seconds",
@@ -38,4 +75,8 @@ import ToolPage from '../components/ToolPage.astro';
     "Click \"Convert to Word\" and wait (5-10 seconds)",
     "Download the generated Word document (.docx)"
   ]}
-/>
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

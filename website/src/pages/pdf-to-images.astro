@@ -1,11 +1,48 @@
 ---
 import ToolPage from '../components/ToolPage.astro';
+
+const keywords = "pdf to images, pdf to png, pdf to jpg, convert pdf to image, pdf to jpeg converter, extract images from pdf";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to Convert PDF to Images",
+  "description": "A step-by-step guide on how to convert PDF pages into high-quality PNG or JPG images using the free and private LocalPDF converter.",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Open the Tool and Upload PDF",
+      "text": "Click 'Open Tool' and upload the PDF document you want to convert.",
+      "url": "https://localpdf.online/pdf-to-images#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Configure Output Settings",
+      "text": "Choose the output format (PNG or JPEG), select the desired quality/DPI, and specify which pages to convert.",
+      "image": "https://localpdf.online/screenshots/pdf-to-images-config.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Start Conversion",
+      "text": "Click the 'Convert' button. The tool will process each selected page and render it as an image.",
+      "image": "https://localpdf.online/screenshots/pdf-to-images-convert.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Download Images",
+      "text": "Once complete, you can download the images individually or as a single ZIP file.",
+      "image": "https://localpdf.online/screenshots/pdf-to-images-download.png"
+    }
+  ],
+  "totalTime": "PT1M"
+};
 ---
 
 <ToolPage
   toolId="pdf-to-images"
   title="Convert PDF to Images Online — Free PNG/JPEG Converter"
   metaDescription="Convert PDF pages to PNG or JPEG images instantly. 100% private client-side conversion. No uploads, high quality output. Extract PDF pages as images in seconds."
+  keywords={keywords}
   description="Convert PDF pages to high-quality images (PNG, JPEG). Extract all pages or select specific pages — all processed locally in your browser for complete privacy."
   benefits={[
     "⚡ Fast — Convert PDFs to images in seconds",
@@ -40,4 +77,8 @@ import ToolPage from '../components/ToolPage.astro';
     "Choose which pages to convert",
     "Click \"Convert\" and download your images"
   ]}
-/>
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

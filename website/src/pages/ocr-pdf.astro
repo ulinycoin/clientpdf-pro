@@ -1,11 +1,48 @@
 ---
 import ToolPage from '../components/ToolPage.astro';
+
+const keywords = "ocr pdf, extract text from pdf, scanned pdf to text, searchable pdf, pdf ocr, free ocr online";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to OCR a PDF and Extract Text",
+  "description": "A step-by-step guide on how to convert a scanned PDF or image into searchable text using the free and private LocalPDF OCR tool.",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Open the Tool and Upload File",
+      "text": "Click 'Open Tool' and upload the scanned PDF or image file (JPG, PNG) you want to process.",
+      "url": "https://localpdf.online/ocr-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Start OCR Process",
+      "text": "The OCR process begins automatically. The tool analyzes the document to recognize characters and words.",
+      "image": "https://localpdf.online/screenshots/ocr-progress.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Review Extracted Text",
+      "text": "Once complete, the extracted text will be displayed in a text box, preserving the original layout where possible.",
+      "image": "https://localpdf.online/screenshots/ocr-review.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Download or Copy",
+      "text": "You can download the result as a searchable PDF or a plain text (.txt) file, or simply copy the text to your clipboard.",
+      "image": "https://localpdf.online/screenshots/ocr-download.png"
+    }
+  ],
+  "totalTime": "PT2M"
+};
 ---
 
 <ToolPage
   toolId="ocr-pdf"
   title="OCR PDF Online — Extract Text from Scanned PDFs"
   metaDescription="Convert scanned PDFs to searchable text with OCR. 100% private client-side processing. No uploads, free unlimited use."
+  keywords={keywords}
   description="Extract text from scanned PDFs and images using advanced OCR technology. Convert non-searchable documents to searchable, editable text — all in your browser."
   benefits={[
     "⚡ Fast — OCR processing in browser",
@@ -44,4 +81,8 @@ import ToolPage from '../components/ToolPage.astro';
     "Review extracted text",
     "Download searchable PDF or copy text"
   ]}
-/>
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

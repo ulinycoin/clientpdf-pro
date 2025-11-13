@@ -1,11 +1,48 @@
 ---
 import ToolPage from '../components/ToolPage.astro';
+
+const keywords = "delete pdf pages, remove pages from pdf, pdf page remover, delete pages in pdf, free pdf editor";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to Delete Pages from a PDF",
+  "description": "A step-by-step guide on how to remove specific pages or page ranges from a PDF document using the free and private LocalPDF page deletion tool.",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Open the Tool and Upload PDF",
+      "text": "Click 'Open Tool' and upload the PDF document from which you want to delete pages.",
+      "url": "https://localpdf.online/delete-pages-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Select Pages to Delete",
+      "text": "A preview of all pages will be displayed. Click on the thumbnails of the pages you want to remove. Selected pages will be marked for deletion.",
+      "image": "https://localpdf.online/screenshots/delete-select.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Apply Deletion",
+      "text": "Click the 'Delete Pages' button. The selected pages will be removed from the document.",
+      "image": "https://localpdf.online/screenshots/delete-apply.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Download the New PDF",
+      "text": "A preview of the final document is shown. Click 'Download' to save the PDF with the pages removed.",
+      "image": "https://localpdf.online/screenshots/delete-download.png"
+    }
+  ],
+  "totalTime": "PT1M"
+};
 ---
 
 <ToolPage
   toolId="delete-pages-pdf"
   title="Delete PDF Pages Online — Free Tool"
   metaDescription="Remove unwanted pages from PDF files. 100% private client-side processing. No uploads, no limits. Delete pages instantly."
+  keywords={keywords}
   description="Remove unwanted pages from PDF documents. Select specific pages or ranges to delete — all processing happens locally in your browser."
   benefits={[
     "⚡ Instant — Delete pages in seconds",
@@ -38,4 +75,8 @@ import ToolPage from '../components/ToolPage.astro';
     "Review remaining pages",
     "Download your cleaned PDF"
   ]}
-/>
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

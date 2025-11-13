@@ -1,11 +1,48 @@
 ---
 import ToolPage from '../components/ToolPage.astro';
+
+const keywords = "sign pdf, digital signature, esign pdf, sign pdf online, draw signature on pdf, free signature tool";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to Sign a PDF Document",
+  "description": "A step-by-step guide on how to add a digital signature to a PDF by drawing, typing, or uploading an image using the free and private LocalPDF signature tool.",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Open the Tool and Upload PDF",
+      "text": "Click 'Open Tool' and upload the PDF document you need to sign.",
+      "url": "https://localpdf.online/sign-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Create or Add Your Signature",
+      "text": "Choose your signature method: draw it with your mouse, type it out, or upload an image of your signature.",
+      "image": "https://localpdf.online/screenshots/sign-create.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Place the Signature",
+      "text": "Drag and drop your created signature onto the desired location on the PDF page. You can resize it as needed.",
+      "image": "https://localpdf.online/screenshots/sign-place.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Apply and Download",
+      "text": "Click 'Apply Signature' to embed it into the document. Then, click 'Download' to save the signed PDF.",
+      "image": "https://localpdf.online/screenshots/sign-download.png"
+    }
+  ],
+  "totalTime": "PT2M"
+};
 ---
 
 <ToolPage
   toolId="sign-pdf"
   title="Sign PDF Online — Free Digital Signature Tool"
   metaDescription="Add digital signatures to PDF files. Draw, upload, or type your signature. 100% private client-side processing. No uploads, secure signing. Free unlimited use."
+  keywords={keywords}
   description="Add your digital signature to PDF documents securely. Draw your signature, upload an image, or use text signatures — all processing happens locally in your browser."
   benefits={[
     "⚡ Fast — Sign PDFs in seconds",
@@ -45,4 +82,8 @@ import ToolPage from '../components/ToolPage.astro';
     "Position signature on the page",
     "Download signed PDF"
   ]}
-/>
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

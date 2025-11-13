@@ -1,11 +1,54 @@
 ---
 import ToolPage from '../components/ToolPage.astro';
+
+const keywords = "edit pdf text, replace text in pdf, redact pdf, cover text in pdf, pdf text editor, free pdf editor";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to Edit Text in a PDF",
+  "description": "A step-by-step guide on how to replace, cover, or redact text in a PDF document using the free and private LocalPDF text editor.",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Open the Tool and Upload PDF",
+      "text": "Click 'Open Tool' and upload the PDF document you want to edit.",
+      "url": "https://localpdf.online/edit-text-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Select Text Area",
+      "text": "Navigate to the desired page and drag a selection box over the text you want to edit or cover.",
+      "image": "https://localpdf.online/screenshots/edit-select-area.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Edit or Replace Text",
+      "text": "In 'Replace Text' mode, type the new text in the input field. The original text is auto-detected. Adjust font, size, and color as needed.",
+      "image": "https://localpdf.online/screenshots/edit-replace-text.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Apply Changes",
+      "text": "Create as many selections as you need across multiple pages. When ready, click 'Apply Changes' to process all edits.",
+      "image": "https://localpdf.online/screenshots/edit-apply-changes.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Download the Edited PDF",
+      "text": "After processing, a download button will appear. Click it to save your edited PDF.",
+      "image": "https://localpdf.online/screenshots/edit-download.png"
+    }
+  ],
+  "totalTime": "PT3M"
+};
 ---
 
 <ToolPage
   toolId="edit-text-pdf"
   title="Edit Text in PDF Online — Free & Private | Replace, Cover, Redact"
   metaDescription="Edit, replace, or cover text in PDF documents instantly. Support for multiple pages, multiline text, and text covering. 100% private, client-side processing. No uploads required."
+  keywords={keywords}
   description="Edit and replace text in PDF documents directly in your browser. Create multiple text selections, replace with new text, or simply cover unwanted content. Perfect for correcting typos, updating information, or redacting sensitive data."
   benefits={[
     "✏️ Advanced — Multiple selections per page, multiline text support",
@@ -26,7 +69,7 @@ import ToolPage from '../components/ToolPage.astro';
       "Multiline Text Support: Our advanced text engine automatically handles line breaks and word wrapping. Replace single words or entire paragraphs with proper formatting.",
       "Multi-Page Editing: Work with documents of any length. Create selections on different pages, switch between them freely, and apply all changes in a single operation. Perfect for batch corrections across large documents.",
       "Visual Selection Tool: Click and drag to select text areas directly on the PDF preview. Resize and move selections with precision. Real-time preview shows exactly how changes will look before applying.",
-      "Professional Typography: Full control over font family, size, style (bold/italic), color, and positioning. Auto-detect original font size for seamless replacements. Fine-tune text placement with pixel-perfect X/Y offsets.",
+      "Professional Typography: Full control over font family, size, style (bold/italic), color, and positioning. Auto-detect original font size for PDF.",
       "High-Quality Output: All edits are rendered at 2x resolution for crisp, professional results. The final PDF maintains original quality while seamlessly integrating your changes.",
       "No File Size Limits: Edit PDFs of any size — from single-page forms to hundred-page reports. Your browser memory is the only constraint.",
       "Works Offline: Once the page loads, you can edit PDFs without an internet connection. Perfect for working with confidential documents that shouldn't be transmitted over networks."
@@ -61,4 +104,8 @@ import ToolPage from '../components/ToolPage.astro';
     'Click "Apply N Changes" to process all selections',
     'Download your edited PDF instantly'
   ]}
-/>
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>
