@@ -3,7 +3,7 @@ import * as pdfjsLib from 'pdfjs-dist';
 import { detectLanguageAdvanced, type LanguageDetectionResult } from './languageDetector';
 
 // Configure PDF.js worker
-pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+// Worker configured in pdfService.ts
 
 // Quick OCR for language detection - processes only a small sample
 export class QuickOCR {

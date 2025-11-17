@@ -19,6 +19,7 @@ export default defineConfig({
       '@/types': path.resolve(__dirname, './src/types'),
       '@/services': path.resolve(__dirname, './src/services'),
       '@/locales': path.resolve(__dirname, './src/locales'),
+      '@/lib': path.resolve(__dirname, './src/lib'),
     },
   },
   build: {

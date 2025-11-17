@@ -25,7 +25,8 @@
       "@/utils/*": ["./src/utils/*"],
       "@/types/*": ["./src/types/*"],
       "@/services/*": ["./src/services/*"],
-      "@/locales/*": ["./src/locales/*"]
+      "@/locales/*": ["./src/locales/*"],
+      "@/lib/*": ["./src/lib/*"]
     },
 
     /* Linting */

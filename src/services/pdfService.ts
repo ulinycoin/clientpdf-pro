@@ -3,6 +3,7 @@ import fontkit from '@pdf-lib/fontkit';
 import { PDFDocument as PDFDocumentEncrypt } from 'pdf-lib-plus-encrypt';
 import JSZip from 'jszip';
 import * as pdfjsLib from 'pdfjs-dist';
+import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import { Buffer } from 'buffer';
 import mammoth from 'mammoth';
 import { Document, Packer, Paragraph, TextRun } from 'docx';
@@ -32,8 +33,8 @@ import type {
   DropdownFormField
 } from '@/types/formFields';
 
-// Configure PDF.js worker
-pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+// Configure PDF.js worker - use local worker from node_modules
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
 // Polyfill Buffer for JSZip in browser environment
 if (typeof window !== 'undefined') {

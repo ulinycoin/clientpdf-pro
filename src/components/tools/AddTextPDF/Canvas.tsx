@@ -3,7 +3,7 @@ import * as pdfjsLib from 'pdfjs-dist';
 import type { TextElement } from '@/types/addText';
 
 // Set worker path
-pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+// Worker configured in pdfService.ts
 
 interface CanvasState {
   scale: number;

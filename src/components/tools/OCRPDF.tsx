@@ -8,7 +8,7 @@ import { detectLanguageAdvanced, type LanguageDetectionResult } from '@/utils/la
 import { QuickOCR } from '@/utils/quickOCR';
 
 // Configure PDF.js worker
-pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+// Worker configured in pdfService.ts
 
 const DEFAULT_LANGUAGE = 'eng';
 

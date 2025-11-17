@@ -1,5 +1,6 @@
 import React from 'react';
 import type { Tool } from '@/types';
+import { Button } from '@/components/ui/button';
 
 interface SidebarProps {
   currentTool: Tool | null;
@@ -87,12 +88,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
             return (
               <li key={tool.id}>
-                <button
+                <Button
+                  variant="ghost"
                   onClick={() => onToolSelect(tool.id)}
-                  className={`group w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 ${
+                  className={`group w-full justify-start gap-3 px-3 py-2.5 h-auto transition-all duration-200 border ${
                     isActive
-                      ? 'bg-ocean-50 dark:bg-ocean-900/20 text-ocean-600 dark:text-ocean-400 font-medium shadow-sm'
-                      : 'text-gray-700 dark:text-gray-300 hover:bg-ocean-50 dark:hover:bg-ocean-900/10 hover:text-ocean-600 dark:hover:text-ocean-400 hover:shadow-sm hover:scale-[1.02]'
+                      ? 'bg-ocean-50 dark:bg-ocean-900/20 text-ocean-600 dark:text-ocean-400 font-medium shadow-sm border-ocean-200 dark:border-ocean-700'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-ocean-50 dark:hover:bg-ocean-900/10 hover:text-ocean-600 dark:hover:text-ocean-400 hover:shadow-sm hover:scale-[1.02] border-gray-200 dark:border-gray-700'
                   }`}
                   title={collapsed ? TOOL_NAMES[tool.id] : undefined}
                 >
@@ -107,7 +109,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   {isActive && !collapsed && (
                     <span className="ml-auto w-1.5 h-1.5 rounded-full bg-ocean-500"></span>
                   )}
-                </button>
+                </Button>
               </li>
             );
           })}
@@ -124,20 +126,23 @@ export const Sidebar: React.FC<SidebarProps> = ({
           )}
           <ul className="space-y-1">
             <li>
-              <a
-                href="/blog"
-                className="group w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 text-gray-700 dark:text-gray-300 hover:bg-ocean-50 dark:hover:bg-ocean-900/10 hover:text-ocean-600 dark:hover:text-ocean-400 hover:shadow-sm hover:scale-[1.02]"
+              <Button
+                variant="ghost"
+                asChild
+                className="group w-full justify-start gap-3 px-3 py-2.5 h-auto transition-all duration-200 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-ocean-50 dark:hover:bg-ocean-900/10 hover:text-ocean-600 dark:hover:text-ocean-400 hover:shadow-sm hover:scale-[1.02]"
                 title={collapsed ? 'Blog' : undefined}
               >
-                <span className="text-xl flex-shrink-0 transition-transform duration-200 group-hover:scale-110">
-                  📝
-                </span>
-                {!collapsed && (
-                  <span className="text-sm truncate transition-colors duration-200">
-                    Blog
+                <a href="/blog">
+                  <span className="text-xl flex-shrink-0 transition-transform duration-200 group-hover:scale-110">
+                    📝
                   </span>
-                )}
-              </a>
+                  {!collapsed && (
+                    <span className="text-sm truncate transition-colors duration-200">
+                      Blog
+                    </span>
+                  )}
+                </a>
+              </Button>
             </li>
           </ul>
         </div>

@@ -2,6 +2,8 @@ import { useState, useEffect, lazy, Suspense } from 'react';
 import { useHashRouter } from '@/hooks/useHashRouter';
 import { WelcomeScreen } from '@/components/WelcomeScreen';
 import { Sidebar } from '@/components/layout/Sidebar';
+import { Button } from '@/components/ui/button';
+import { Toaster } from '@/components/ui/sonner';
 import type { Theme } from '@/types';
 
 // Lazy load tool components for better performance
@@ -83,13 +85,15 @@ function App() {
         <div className="flex items-center justify-between h-16 pr-4">
           {/* Logo - aligned with sidebar */}
           <div className="flex items-center gap-3 pl-2">
-            <button
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-privacy-800 transition-colors"
+              className="hover:bg-gray-100 dark:hover:bg-privacy-800"
               aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             >
               <span className="text-2xl">☰</span>
-            </button>
+            </Button>
             <a
               href="/"
               className="text-xl font-bold text-gradient-ocean hover:opacity-80 transition-opacity"
@@ -106,13 +110,15 @@ function App() {
           {/* Actions */}
           <div className="flex items-center gap-4">
             {/* Theme toggle */}
-            <button
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={toggleTheme}
-              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-privacy-800 transition-colors"
+              className="hover:bg-gray-100 dark:hover:bg-privacy-800"
               aria-label="Toggle theme"
             >
               <span className="text-xl">{theme === 'dark' ? '☀️' : '🌙'}</span>
-            </button>
+            </Button>
           </div>
         </div>
       </header>
@@ -193,17 +199,7 @@ function App() {
           </div>
         )}
       </main>
-
-      {/* Footer */}
-      <footer className="py-8 flex justify-center">
-        <a
-          href="https://localpdf.online"
-          className="inline-flex items-center gap-2 px-6 py-3 bg-gray-100 dark:bg-privacy-700 hover:bg-ocean-500 hover:text-white dark:hover:bg-ocean-600 text-gray-700 dark:text-gray-200 rounded-lg transition-all duration-200 font-medium shadow-sm hover:shadow-md"
-        >
-          <span className="text-lg">←</span>
-          <span>Back to main site</span>
-        </a>
-      </footer>
+      <Toaster />
     </div>
   );
 }

@@ -10,7 +10,7 @@ import type { Tool } from '@/types';
 import { HASH_TOOL_MAP } from '@/types';
 
 // Configure PDF.js worker
-pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+// Worker configured in pdfService.ts
 
 type SignatureType = 'draw' | 'upload' | 'text';
 type SignaturePosition = 'bottom-left' | 'bottom-right' | 'top-left' | 'top-right' | 'custom';

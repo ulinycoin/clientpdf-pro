@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { FileUpload } from '@/components/common/FileUpload';
 import { ProgressBar } from '@/components/common/ProgressBar';
 import { PDFPreview } from '@/components/common/PDFPreview';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { useI18n } from '@/hooks/useI18n';
 import { useSharedFile } from '@/hooks/useSharedFile';
 import pdfService from '@/services/pdfService';
 import type { UploadedFile } from '@/types/pdf';
 import type { Tool } from '@/types';
 import { HASH_TOOL_MAP } from '@/types';
+import { toast } from 'sonner';
 
 type SplitMode = 'all' | 'range' | 'intervals' | 'custom';
 
@@ -213,7 +216,7 @@ export const SplitPDF: React.FC = () => {
         const pagesToExtract = parseCustomPages(customPagesInput, maxPages);
 
         if (pagesToExtract.length === 0) {
-          alert('Please enter valid page numbers');
+          toast.error('Please enter valid page numbers');
           setIsProcessing(false);
           return;
         }
@@ -241,8 +244,9 @@ export const SplitPDF: React.FC = () => {
       }
 
       setResults(splitResults);
+      toast.success('PDF split successfully!');
     } catch (error) {
-      alert('An error occurred during split');
+      toast.error('An error occurred during split');
       console.error(error);
     } finally {
       setIsProcessing(false);
@@ -295,8 +299,9 @@ export const SplitPDF: React.FC = () => {
         setProgress(prog);
         setProgressMessage(msg);
       });
+      toast.success('Archive downloaded successfully!');
     } catch (error) {
-      alert('Failed to create archive');
+      toast.error('Failed to create archive');
       console.error(error);
     } finally {
       setIsCreatingArchive(false);
@@ -386,12 +391,12 @@ export const SplitPDF: React.FC = () => {
         await new Promise(resolve => setTimeout(resolve, 100));
         window.location.hash = HASH_TOOL_MAP[toolId];
       } else {
-        alert(t('split.mergeFailed'));
+        toast.error(t('split.mergeFailed'));
       }
     } catch (error) {
       console.error('Failed to merge pages:', error);
-      alert(t('split.mergeFailed'));
-    } finally {
+      toast.error(t('split.mergeFailed'));
+    } finally{
       setIsProcessing(false);
       setProgress(0);
       setProgressMessage('');
@@ -414,15 +419,17 @@ export const SplitPDF: React.FC = () => {
 
       {/* Upload section */}
       {!file && results.length === 0 && (
-        <div className="card p-6">
-          <FileUpload
-            accept=".pdf"
-            multiple={false}
-            onFilesSelected={handleFileSelected}
-            maxSizeMB={100}
-            disabled={isProcessing}
-          />
-        </div>
+        <Card>
+          <CardContent className="p-6">
+            <FileUpload
+              accept=".pdf"
+              multiple={false}
+              onFilesSelected={handleFileSelected}
+              maxSizeMB={100}
+              disabled={isProcessing}
+            />
+          </CardContent>
+        </Card>
       )}
 
       {/* File preview and split options */}
@@ -458,41 +465,45 @@ export const SplitPDF: React.FC = () => {
           )}
 
           {/* File preview */}
-          <div className="card p-6">
-            <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
-              {t('split.filePreview')}
-            </h2>
-            <div className="flex items-start gap-6">
-              <div className="flex-shrink-0">
-                <PDFPreview file={file.file} width={160} height={220} />
-              </div>
-              <div className="flex-1">
-                <h3 className="font-semibold text-lg text-gray-900 dark:text-white mb-2">
-                  {file.name}
-                </h3>
-                <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                  <p>
-                    <span className="font-medium">{t('split.totalPages')}:</span>{' '}
-                    {file.info?.pages || 0}
-                  </p>
-                  <p>
-                    <span className="font-medium">{t('split.fileSize')}:</span>{' '}
-                    {pdfService.formatFileSize(file.size)}
-                  </p>
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
+                {t('split.filePreview')}
+              </h2>
+              <div className="flex items-start gap-6">
+                <div className="flex-shrink-0">
+                  <PDFPreview file={file.file} width={160} height={220} />
                 </div>
-                <button
-                  onClick={handleRemoveFile}
-                  disabled={isProcessing}
-                  className="mt-4 text-sm text-error-500 hover:text-error-600 disabled:opacity-50"
-                >
-                  {t('split.changeFile')}
-                </button>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-lg text-gray-900 dark:text-white mb-2">
+                    {file.name}
+                  </h3>
+                  <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                    <p>
+                      <span className="font-medium">{t('split.totalPages')}:</span>{' '}
+                      {file.info?.pages || 0}
+                    </p>
+                    <p>
+                      <span className="font-medium">{t('split.fileSize')}:</span>{' '}
+                      {pdfService.formatFileSize(file.size)}
+                    </p>
+                  </div>
+                  <Button
+                    onClick={handleRemoveFile}
+                    disabled={isProcessing}
+                    variant="ghost"
+                    className="mt-4 text-error-500 hover:text-error-600 h-auto p-0"
+                  >
+                    {t('split.changeFile')}
+                  </Button>
+                </div>
               </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
 
           {/* Split mode selector */}
-          <div className="card p-6">
+          <Card>
+            <CardContent className="p-6">
             <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
               {t('split.selectMode')}
             </h2>
@@ -702,67 +713,77 @@ export const SplitPDF: React.FC = () => {
             )}
 
             {/* Split button */}
-            <button
+            <Button
               onClick={handleSplit}
               disabled={isProcessing || !file}
-              className="btn btn-primary w-full text-lg py-3"
+              className="w-full text-lg py-3"
+              size="lg"
             >
               {isProcessing ? t('common.processing') : t('split.splitButton')}
-            </button>
-          </div>
+            </Button>
+            </CardContent>
+          </Card>
         </div>
       )}
 
       {/* Progress */}
       {(isProcessing || isCreatingArchive) && (
-        <div className="card p-6">
-          <ProgressBar progress={progress} message={progressMessage} />
-        </div>
+        <Card>
+          <CardContent className="p-6">
+            <ProgressBar progress={progress} message={progressMessage} />
+          </CardContent>
+        </Card>
       )}
 
       {/* Results */}
       {results.length > 0 && (
         <div className="space-y-6">
           {/* Success card */}
-          <div className="card p-8">
-            <div className="text-center space-y-4">
-              <div className="text-6xl">✅</div>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                {t('split.success.title')}
-              </h2>
-              <p className="text-gray-600 dark:text-gray-400">
-                {t('split.success.filesCreated', { count: String(results.length) })}
-              </p>
+          <Card>
+            <CardContent className="p-8">
+              <div className="text-center space-y-4">
+                <div className="text-6xl">✅</div>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  {t('split.success.title')}
+                </h2>
+                <p className="text-gray-600 dark:text-gray-400">
+                  {t('split.success.filesCreated', { count: String(results.length) })}
+                </p>
 
-              {/* Download buttons */}
-              <div className="flex flex-col sm:flex-row gap-3 justify-center mt-6 pt-4">
-                <button
-                  onClick={handleDownloadAsZip}
-                  disabled={isCreatingArchive}
-                  className="btn btn-primary px-8"
-                >
-                  {isCreatingArchive ? '⏳' : '📦'} {t('split.downloadAsZip')}
-                </button>
-                <button
-                  onClick={handleDownloadAll}
-                  disabled={isCreatingArchive}
-                  className="btn btn-secondary px-8"
-                >
-                  📥 {t('split.downloadAll')}
-                </button>
-                <button
-                  onClick={handleReset}
-                  disabled={isCreatingArchive}
-                  className="btn btn-secondary"
-                >
-                  {t('split.splitAnother')}
-                </button>
+                {/* Download buttons */}
+                <div className="flex flex-col sm:flex-row gap-3 justify-center mt-6 pt-4">
+                  <Button
+                    onClick={handleDownloadAsZip}
+                    disabled={isCreatingArchive}
+                    size="lg"
+                    className="px-8 !bg-green-600 hover:!bg-green-700 !text-white"
+                  >
+                    {isCreatingArchive ? 'Creating...' : t('split.downloadAsZip')}
+                  </Button>
+                  <Button
+                    onClick={handleDownloadAll}
+                    disabled={isCreatingArchive}
+                    size="lg"
+                    className="px-8 !bg-green-600 hover:!bg-green-700 !text-white"
+                  >
+                    {t('split.downloadAll')}
+                  </Button>
+                  <Button
+                    onClick={handleReset}
+                    disabled={isCreatingArchive}
+                    variant="outline"
+                    size="lg"
+                  >
+                    {t('split.splitAnother')}
+                  </Button>
+                </div>
               </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
 
           {/* Individual files */}
-          <div className="card p-6">
+          <Card>
+            <CardContent className="p-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                 {t('split.outputFiles')}
@@ -835,10 +856,12 @@ export const SplitPDF: React.FC = () => {
                 </div>
               ))}
             </div>
-          </div>
+            </CardContent>
+          </Card>
 
           {/* Quick Actions */}
-          <div className="card p-6">
+          <Card>
+            <CardContent className="p-6">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
               {t('split.quickActions.title')}
             </h3>
@@ -914,7 +937,8 @@ export const SplitPDF: React.FC = () => {
                 </div>
               </button>
             </div>
-          </div>
+            </CardContent>
+          </Card>
         </div>
       )}
     </div>

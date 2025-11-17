@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import type { Tool, URLContext } from '@/types';
 import { useSharedFile } from '@/hooks/useSharedFile';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 
 interface WelcomeScreenProps {
   context: URLContext | null;
@@ -91,47 +94,26 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ context }) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-mesh">
-      <div className="container-responsive max-w-4xl">
+    <div className="min-h-screen flex items-center justify-center bg-background pb-20">
+      <div className="container-responsive max-w-4xl py-12">
         <div className="text-center mb-12 animate-fade-in">
-          <h1 className="text-5xl md:text-6xl font-bold mb-4 text-gradient-ocean">
+          <h1 className="text-5xl md:text-6xl font-bold mb-4 text-foreground">
             Secure and Fast PDF Processing
           </h1>
+          <p className="text-xl text-muted-foreground">
+            Your files are processed locally and never leave your device.
+          </p>
         </div>
 
         {/* First time banner */}
         {context?.isFirstVisit && uploadedFiles.length === 0 && (
-          <div className="card p-6 mb-8 bg-ocean-50 dark:bg-ocean-900/20 border-ocean-200 dark:border-ocean-800 animate-slide-down">
-            <p className="text-center text-ocean-700 dark:text-ocean-300 mb-3">
-              Welcome! All processing happens in your browser - your files never leave your device.
-            </p>
-            <div className="text-center">
-              <a
-                href="/blog"
-                className="inline-flex items-center gap-2 text-sm text-ocean-600 dark:text-ocean-400 hover:text-ocean-700 dark:hover:text-ocean-300 font-medium transition-colors"
-              >
-                <span>📝</span>
-                <span>Learn PDF tips & tricks in our Blog</span>
-                <span>→</span>
-              </a>
-            </div>
-          </div>
-        )}
-
-        {/* Blog CTA for non-first visitors */}
-        {!context?.isFirstVisit && uploadedFiles.length === 0 && (
-          <div className="card p-4 mb-8 bg-gradient-to-r from-ocean-50 to-blue-50 dark:from-ocean-900/20 dark:to-blue-900/20 border-ocean-200 dark:border-ocean-800 animate-fade-in">
-            <div className="flex items-center justify-center gap-3 text-center">
-              <span className="text-2xl">💡</span>
-              <a
-                href="/blog"
-                className="text-sm text-ocean-700 dark:text-ocean-300 hover:text-ocean-800 dark:hover:text-ocean-200 font-medium transition-colors"
-              >
-                Check out our Blog for PDF tips, tutorials & best practices
-              </a>
-              <span className="text-ocean-600 dark:text-ocean-400">→</span>
-            </div>
-          </div>
+          <Card className="mb-8 bg-secondary border-primary/20 animate-slide-down">
+            <CardContent className="p-6">
+              <p className="text-center text-secondary-foreground">
+                Welcome! All processing happens in your browser - your files never leave your device.
+              </p>
+            </CardContent>
+          </Card>
         )}
 
         {/* File Upload Area */}
@@ -145,8 +127,8 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ context }) => {
                 relative border-2 border-dashed rounded-xl p-12 text-center cursor-pointer
                 transition-all duration-200 outline-none
                 ${isDragging
-                  ? 'border-ocean-500 bg-ocean-50 dark:bg-ocean-900/20 scale-105'
-                  : 'border-gray-300 dark:border-privacy-600 hover:border-ocean-400 dark:hover:border-ocean-600'
+                  ? 'border-primary bg-primary/10 scale-105'
+                  : 'border-border hover:border-primary/50'
                 }
               `}
               onClick={() => document.getElementById('file-input')?.click()}
@@ -166,98 +148,103 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ context }) => {
                 </div>
 
                 <div>
-                  <p className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                  <p className="text-xl font-semibold text-foreground mb-2">
                     {isDragging ? 'Drop your files here' : 'Upload your files'}
                   </p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
+                  <p className="text-sm text-muted-foreground mb-1">
                     Drag & drop or click to select
                   </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-500">
+                  <p className="text-xs text-muted-foreground/80">
                     Supports: PDF, Images (JPG, PNG), Word documents
                   </p>
                 </div>
               </div>
             </div>
+
+            {/* Back to main site button */}
+            <div className="mt-6 text-center">
+              <Button variant="outline" asChild>
+                <a href="/">← Back to main site</a>
+              </Button>
+            </div>
           </div>
         ) : (
           /* File Preview */
           <div className="animate-fade-in">
-            {/* Uploaded Files Preview */}
-            <div className="card p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                  Your Files ({uploadedFiles.length})
-                </h3>
-                <button
+            <Card>
+              <CardHeader className="flex-row items-center justify-between">
+                <CardTitle>Your Files ({uploadedFiles.length})</CardTitle>
+                <Button
                   onClick={clearFiles}
-                  className="text-sm text-gray-500 hover:text-error-600 dark:hover:text-error-400 transition-colors font-medium"
+                  variant="ghost"
+                  size="sm"
                 >
                   Clear All
-                </button>
-              </div>
-
-              <div className="space-y-3 mb-6">
-                {uploadedFiles.map((uploadedFile, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center gap-4 p-4 bg-gray-50 dark:bg-privacy-800 rounded-lg border border-gray-200 dark:border-privacy-700"
-                  >
-                    <div className="flex-shrink-0 w-14 h-14 bg-ocean-100 dark:bg-ocean-900/30 rounded-lg flex items-center justify-center">
-                      <span className="text-3xl">
-                        {detectFileType(uploadedFile.file) === 'pdf' ? '📄' :
-                         detectFileType(uploadedFile.file) === 'image' ? '🖼️' : '📝'}
-                      </span>
+                </Button>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {uploadedFiles.map((uploadedFile, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center gap-4 p-3 bg-secondary rounded-lg border"
+                    >
+                      <div className="flex-shrink-0 w-14 h-14 bg-primary/10 rounded-lg flex items-center justify-center">
+                        <span className="text-3xl">
+                          {detectFileType(uploadedFile.file) === 'pdf' ? '📄' :
+                          detectFileType(uploadedFile.file) === 'image' ? '🖼️' : '📝'}
+                        </span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-semibold text-foreground truncate text-base">
+                          {uploadedFile.file.name}
+                        </p>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          {formatFileSize(uploadedFile.file.size)}
+                        </p>
+                      </div>
+                      <Badge variant={
+                        detectFileType(uploadedFile.file) === 'pdf' ? 'default' :
+                        detectFileType(uploadedFile.file) === 'image' ? 'secondary' : 'outline'
+                      }>
+                        {detectFileType(uploadedFile.file)}
+                      </Badge>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-gray-900 dark:text-white truncate text-lg">
-                        {uploadedFile.file.name}
-                      </p>
-                      <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                        {formatFileSize(uploadedFile.file.size)}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Instruction */}
-              <div className="bg-ocean-50 dark:bg-ocean-900/20 border border-ocean-200 dark:border-ocean-800 rounded-lg p-6 text-center">
-                <div className="text-4xl mb-3">👈</div>
-                <p className="text-lg font-semibold text-ocean-700 dark:text-ocean-300 mb-2">
-                  Select a tool from the sidebar
-                </p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Your file is ready to be processed with any tool you choose
-                </p>
-              </div>
-            </div>
+                  ))}
+                </div>
+              </CardContent>
+              <CardFooter>
+                <div className="bg-primary/10 border border-primary/20 rounded-lg p-6 text-center w-full">
+                  <div className="text-4xl mb-3">👈</div>
+                  <p className="text-lg font-semibold text-primary mb-2">
+                    Select a tool from the sidebar
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Your file is ready to be processed with any tool you choose
+                  </p>
+                </div>
+              </CardFooter>
+            </Card>
           </div>
         )}
 
-        {/* Footer with Blog link */}
-        <div className="mt-12 text-center animate-fade-in">
-          <div className="inline-flex items-center gap-6 text-sm text-gray-500 dark:text-gray-400">
-            <a
-              href="/blog"
-              className="hover:text-ocean-600 dark:hover:text-ocean-400 transition-colors font-medium"
-            >
-              📝 Blog
-            </a>
-            <a
-              href="/about"
-              className="hover:text-ocean-600 dark:hover:text-ocean-400 transition-colors"
-            >
-              About
-            </a>
-            <a
-              href="/privacy"
-              className="hover:text-ocean-600 dark:hover:text-ocean-400 transition-colors"
-            >
-              Privacy
-            </a>
-          </div>
+      </div>
+
+      {/* Footer - always at bottom, aligned with sidebar offset */}
+      <div className="fixed bottom-0 left-64 right-0 py-4 bg-background/80 backdrop-blur-sm border-t border-border">
+        <div className="flex justify-center items-center gap-6 text-sm">
+          <Button variant="link" asChild className="text-muted-foreground hover:text-primary">
+            <a href="/blog">📝 Blog</a>
+          </Button>
+          <Button variant="link" asChild className="text-muted-foreground hover:text-primary">
+            <a href="/about">About</a>
+          </Button>
+          <Button variant="link" asChild className="text-muted-foreground hover:text-primary">
+            <a href="/privacy">Privacy</a>
+          </Button>
         </div>
       </div>
     </div>
   );
 };
+
