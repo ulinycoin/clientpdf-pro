@@ -8,6 +8,8 @@ import pdfService from '@/services/pdfService';
 import type { UploadedFile } from '@/types/pdf';
 import type { Tool } from '@/types';
 import { HASH_TOOL_MAP } from '@/types';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 
 export const FlattenPDF: React.FC = () => {
   const { t } = useI18n();
@@ -157,7 +159,7 @@ export const FlattenPDF: React.FC = () => {
 
       {/* Upload section */}
       {!file && !result && (
-        <div className="card p-6">
+        <Card className="p-6">
           <FileUpload
             accept=".pdf"
             multiple={false}
@@ -165,7 +167,7 @@ export const FlattenPDF: React.FC = () => {
             maxSizeMB={100}
             disabled={isProcessing}
           />
-        </div>
+        </Card>
       )}
 
       {/* File preview and action button */}
@@ -186,22 +188,23 @@ export const FlattenPDF: React.FC = () => {
                     </p>
                   </div>
                 </div>
-                <button
+                <Button
                   onClick={() => {
                     clearSharedFile();
                     setFile(null);
                     setLoadedFromShared(false);
                   }}
+                  variant="ghost"
                   className="text-ocean-600 dark:text-ocean-400 hover:text-ocean-800 dark:hover:text-ocean-200 font-semibold text-sm"
                 >
                   ✕ {t('common.close')}
-                </button>
+                </Button>
               </div>
             </div>
           )}
 
           {/* File preview */}
-          <div className="card p-6">
+          <Card className="p-6">
             <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
               {t('flatten.filePreview')}
             </h2>
@@ -225,44 +228,45 @@ export const FlattenPDF: React.FC = () => {
                     </p>
                   )}
                 </div>
-                <button
+                <Button
                   onClick={handleRemoveFile}
                   disabled={isProcessing}
+                  variant="ghost"
                   className="mt-4 text-sm text-error-500 hover:text-error-600 disabled:opacity-50"
                 >
                   {t('flatten.changeFile')}
-                </button>
+                </Button>
               </div>
             </div>
-          </div>
+          </Card>
 
           {/* Flatten button */}
-          <div className="card p-6">
+          <Card className="p-6">
             <div className="mt-6">
-              <button
+              <Button
                 onClick={handleFlatten}
                 disabled={isProcessing || !file}
-                className="btn btn-primary w-full text-lg py-3"
+                className="w-full text-lg py-3"
               >
                 {isProcessing ? t('common.processing') : t('flatten.flattenButton')}
-              </button>
+              </Button>
             </div>
-          </div>
+          </Card>
         </div>
       )}
 
       {/* Progress */}
       {isProcessing && (
-        <div className="card p-6">
+        <Card className="p-6">
           <ProgressBar progress={progress} message={progressMessage} />
-        </div>
+        </Card>
       )}
 
       {/* Result */}
       {result && (
         <div className="space-y-6">
           {/* Success card */}
-          <div className="card p-8">
+          <Card className="p-8">
             <div className="text-center space-y-4">
               <div className="text-6xl">✅</div>
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -289,18 +293,18 @@ export const FlattenPDF: React.FC = () => {
 
               {/* Primary actions */}
               <div className="flex gap-3 justify-center mt-6 pt-4">
-                <button onClick={handleDownload} className="btn btn-primary px-8">
+                <Button onClick={handleDownload} className="px-8">
                   📥 {t('common.download')}
-                </button>
-                <button onClick={handleReset} className="btn btn-secondary">
+                </Button>
+                <Button onClick={handleReset} variant="outline">
                   {t('flatten.flattenAnother')}
-                </button>
+                </Button>
               </div>
             </div>
-          </div>
+          </Card>
 
           {/* Quick Actions */}
-          <div className="card p-6">
+          <Card className="p-6">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
               {t('flatten.quickActions.title')}
             </h3>
@@ -311,9 +315,10 @@ export const FlattenPDF: React.FC = () => {
             {/* Action buttons grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {/* Protect */}
-              <button
+              <Button
                 onClick={() => handleQuickAction('protect-pdf')}
-                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
+                variant="outline"
+                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group h-auto"
               >
                 <span className="text-3xl">🔒</span>
                 <div className="text-left">
@@ -324,12 +329,13 @@ export const FlattenPDF: React.FC = () => {
                     {t('flatten.quickActions.protect')}
                   </p>
                 </div>
-              </button>
+              </Button>
 
               {/* Merge */}
-              <button
+              <Button
                 onClick={() => handleQuickAction('merge-pdf')}
-                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
+                variant="outline"
+                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group h-auto"
               >
                 <span className="text-3xl">📑</span>
                 <div className="text-left">
@@ -340,12 +346,13 @@ export const FlattenPDF: React.FC = () => {
                     {t('flatten.quickActions.merge')}
                   </p>
                 </div>
-              </button>
+              </Button>
 
               {/* Compress */}
-              <button
+              <Button
                 onClick={() => handleQuickAction('compress-pdf')}
-                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
+                variant="outline"
+                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group h-auto"
               >
                 <span className="text-3xl">🗜️</span>
                 <div className="text-left">
@@ -356,9 +363,9 @@ export const FlattenPDF: React.FC = () => {
                     {t('flatten.quickActions.compress')}
                   </p>
                 </div>
-              </button>
+              </Button>
             </div>
-          </div>
+          </Card>
         </div>
       )}
     </div>

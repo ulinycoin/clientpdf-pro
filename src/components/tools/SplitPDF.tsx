@@ -4,6 +4,10 @@ import { ProgressBar } from '@/components/common/ProgressBar';
 import { PDFPreview } from '@/components/common/PDFPreview';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { useI18n } from '@/hooks/useI18n';
 import { useSharedFile } from '@/hooks/useSharedFile';
 import pdfService from '@/services/pdfService';
@@ -450,16 +454,17 @@ export const SplitPDF: React.FC = () => {
                     </p>
                   </div>
                 </div>
-                <button
+                <Button
                   onClick={() => {
                     clearSharedFile();
                     setFile(null);
                     setLoadedFromShared(false);
                   }}
-                  className="text-ocean-600 dark:text-ocean-400 hover:text-ocean-800 dark:hover:text-ocean-200 font-semibold text-sm"
+                  variant="ghost"
+                  className="text-ocean-600 dark:text-ocean-400 hover:text-ocean-800 dark:hover:text-ocean-200 font-semibold text-sm h-auto p-2"
                 >
                   ✕ {t('common.close')}
-                </button>
+                </Button>
               </div>
             </div>
           )}
@@ -508,115 +513,101 @@ export const SplitPDF: React.FC = () => {
               {t('split.selectMode')}
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-              {/* All pages mode */}
-              <button
-                onClick={() => setSplitMode('all')}
-                disabled={isProcessing}
-                className={`p-6 rounded-xl border-2 transition-all text-left ${
-                  splitMode === 'all'
-                    ? 'border-ocean-500 bg-ocean-50 dark:bg-ocean-900/20'
-                    : 'border-gray-200 dark:border-privacy-700 hover:border-ocean-300 dark:hover:border-ocean-700'
-                } ${isProcessing ? 'opacity-50 cursor-not-allowed' : ''}`}
-              >
-                <div className="flex items-start gap-3">
-                  <span className="text-4xl">📄</span>
-                  <div className="flex-1">
-                    <h3 className={`font-semibold mb-1 ${
-                      splitMode === 'all'
-                        ? 'text-ocean-600 dark:text-ocean-400'
-                        : 'text-gray-900 dark:text-white'
-                    }`}>
-                      {t('split.mode.all.name')}
-                    </h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      {t('split.mode.all.description')}
-                    </p>
+            <Tabs value={splitMode} onValueChange={(value) => setSplitMode(value as SplitMode)} className="w-full">
+              <TabsList className="grid w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 h-auto bg-transparent mb-6">
+                {/* All pages mode */}
+                <TabsTrigger
+                  value="all"
+                  disabled={isProcessing}
+                  className="p-6 rounded-xl border-2 transition-all text-left data-[state=active]:border-ocean-500 data-[state=active]:bg-ocean-50 dark:data-[state=active]:bg-ocean-900/20 border-gray-200 dark:border-privacy-700 hover:border-ocean-300 dark:hover:border-ocean-700 disabled:opacity-50 disabled:cursor-not-allowed h-auto"
+                >
+                  <div className="flex items-start gap-3">
+                    <span className="text-4xl">📄</span>
+                    <div className="flex-1">
+                      <h3 className={`font-semibold mb-1 ${
+                        splitMode === 'all'
+                          ? 'text-ocean-600 dark:text-ocean-400'
+                          : 'text-gray-900 dark:text-white'
+                      }`}>
+                        {t('split.mode.all.name')}
+                      </h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        {t('split.mode.all.description')}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              </button>
+                </TabsTrigger>
 
-              {/* Range mode */}
-              <button
-                onClick={() => setSplitMode('range')}
-                disabled={isProcessing}
-                className={`p-6 rounded-xl border-2 transition-all text-left ${
-                  splitMode === 'range'
-                    ? 'border-ocean-500 bg-ocean-50 dark:bg-ocean-900/20'
-                    : 'border-gray-200 dark:border-privacy-700 hover:border-ocean-300 dark:hover:border-ocean-700'
-                } ${isProcessing ? 'opacity-50 cursor-not-allowed' : ''}`}
-              >
-                <div className="flex items-start gap-3">
-                  <span className="text-4xl">📑</span>
-                  <div className="flex-1">
-                    <h3 className={`font-semibold mb-1 ${
-                      splitMode === 'range'
-                        ? 'text-ocean-600 dark:text-ocean-400'
-                        : 'text-gray-900 dark:text-white'
-                    }`}>
-                      {t('split.mode.range.name')}
-                    </h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      {t('split.mode.range.description')}
-                    </p>
+                {/* Range mode */}
+                <TabsTrigger
+                  value="range"
+                  disabled={isProcessing}
+                  className="p-6 rounded-xl border-2 transition-all text-left data-[state=active]:border-ocean-500 data-[state=active]:bg-ocean-50 dark:data-[state=active]:bg-ocean-900/20 border-gray-200 dark:border-privacy-700 hover:border-ocean-300 dark:hover:border-ocean-700 disabled:opacity-50 disabled:cursor-not-allowed h-auto"
+                >
+                  <div className="flex items-start gap-3">
+                    <span className="text-4xl">📑</span>
+                    <div className="flex-1">
+                      <h3 className={`font-semibold mb-1 ${
+                        splitMode === 'range'
+                          ? 'text-ocean-600 dark:text-ocean-400'
+                          : 'text-gray-900 dark:text-white'
+                      }`}>
+                        {t('split.mode.range.name')}
+                      </h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        {t('split.mode.range.description')}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              </button>
+                </TabsTrigger>
 
-              {/* Intervals mode */}
-              <button
-                onClick={() => setSplitMode('intervals')}
-                disabled={isProcessing}
-                className={`p-6 rounded-xl border-2 transition-all text-left ${
-                  splitMode === 'intervals'
-                    ? 'border-ocean-500 bg-ocean-50 dark:bg-ocean-900/20'
-                    : 'border-gray-200 dark:border-privacy-700 hover:border-ocean-300 dark:hover:border-ocean-700'
-                } ${isProcessing ? 'opacity-50 cursor-not-allowed' : ''}`}
-              >
-                <div className="flex items-start gap-3">
-                  <span className="text-4xl">📚</span>
-                  <div className="flex-1">
-                    <h3 className={`font-semibold mb-1 ${
-                      splitMode === 'intervals'
-                        ? 'text-ocean-600 dark:text-ocean-400'
-                        : 'text-gray-900 dark:text-white'
-                    }`}>
-                      {t('split.mode.intervals.name')}
-                    </h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      {t('split.mode.intervals.description')}
-                    </p>
+                {/* Intervals mode */}
+                <TabsTrigger
+                  value="intervals"
+                  disabled={isProcessing}
+                  className="p-6 rounded-xl border-2 transition-all text-left data-[state=active]:border-ocean-500 data-[state=active]:bg-ocean-50 dark:data-[state=active]:bg-ocean-900/20 border-gray-200 dark:border-privacy-700 hover:border-ocean-300 dark:hover:border-ocean-700 disabled:opacity-50 disabled:cursor-not-allowed h-auto"
+                >
+                  <div className="flex items-start gap-3">
+                    <span className="text-4xl">📚</span>
+                    <div className="flex-1">
+                      <h3 className={`font-semibold mb-1 ${
+                        splitMode === 'intervals'
+                          ? 'text-ocean-600 dark:text-ocean-400'
+                          : 'text-gray-900 dark:text-white'
+                      }`}>
+                        {t('split.mode.intervals.name')}
+                      </h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        {t('split.mode.intervals.description')}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              </button>
+                </TabsTrigger>
 
-              {/* Custom pages mode */}
-              <button
-                onClick={() => setSplitMode('custom')}
-                disabled={isProcessing}
-                className={`p-6 rounded-xl border-2 transition-all text-left ${
-                  splitMode === 'custom'
-                    ? 'border-ocean-500 bg-ocean-50 dark:bg-ocean-900/20'
-                    : 'border-gray-200 dark:border-privacy-700 hover:border-ocean-300 dark:hover:border-ocean-700'
-                } ${isProcessing ? 'opacity-50 cursor-not-allowed' : ''}`}
-              >
-                <div className="flex items-start gap-3">
-                  <span className="text-4xl">🎯</span>
-                  <div className="flex-1">
-                    <h3 className={`font-semibold mb-1 ${
-                      splitMode === 'custom'
-                        ? 'text-ocean-600 dark:text-ocean-400'
-                        : 'text-gray-900 dark:text-white'
-                    }`}>
-                      {t('split.mode.custom.name')}
-                    </h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      {t('split.mode.custom.description')}
-                    </p>
+                {/* Custom pages mode */}
+                <TabsTrigger
+                  value="custom"
+                  disabled={isProcessing}
+                  className="p-6 rounded-xl border-2 transition-all text-left data-[state=active]:border-ocean-500 data-[state=active]:bg-ocean-50 dark:data-[state=active]:bg-ocean-900/20 border-gray-200 dark:border-privacy-700 hover:border-ocean-300 dark:hover:border-ocean-700 disabled:opacity-50 disabled:cursor-not-allowed h-auto"
+                >
+                  <div className="flex items-start gap-3">
+                    <span className="text-4xl">🎯</span>
+                    <div className="flex-1">
+                      <h3 className={`font-semibold mb-1 ${
+                        splitMode === 'custom'
+                          ? 'text-ocean-600 dark:text-ocean-400'
+                          : 'text-gray-900 dark:text-white'
+                      }`}>
+                        {t('split.mode.custom.name')}
+                      </h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        {t('split.mode.custom.description')}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              </button>
-            </div>
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
 
             {/* Mode-specific settings */}
             {splitMode === 'range' && (
@@ -626,31 +617,31 @@ export const SplitPDF: React.FC = () => {
                 </h3>
                 <div className="flex items-center gap-4">
                   <div className="flex-1">
-                    <label className="block text-sm text-gray-600 dark:text-gray-400 mb-1">
+                    <Label className="block text-sm text-gray-600 dark:text-gray-400 mb-1">
                       {t('split.startPage')}
-                    </label>
-                    <input
+                    </Label>
+                    <Input
                       type="number"
                       min={1}
                       max={maxPages}
                       value={rangeStart}
                       onChange={(e) => setRangeStart(Math.max(1, Math.min(maxPages, parseInt(e.target.value) || 1)))}
                       disabled={isProcessing}
-                      className="w-full px-3 py-2 rounded-lg bg-white dark:bg-privacy-900 border border-gray-300 dark:border-privacy-600 focus:outline-none focus:ring-2 focus:ring-ocean-500"
+                      className="w-full"
                     />
                   </div>
                   <div className="flex-1">
-                    <label className="block text-sm text-gray-600 dark:text-gray-400 mb-1">
+                    <Label className="block text-sm text-gray-600 dark:text-gray-400 mb-1">
                       {t('split.endPage')}
-                    </label>
-                    <input
+                    </Label>
+                    <Input
                       type="number"
                       min={1}
                       max={maxPages}
                       value={rangeEnd}
                       onChange={(e) => setRangeEnd(Math.max(1, Math.min(maxPages, parseInt(e.target.value) || 1)))}
                       disabled={isProcessing}
-                      className="w-full px-3 py-2 rounded-lg bg-white dark:bg-privacy-900 border border-gray-300 dark:border-privacy-600 focus:outline-none focus:ring-2 focus:ring-ocean-500"
+                      className="w-full"
                     />
                   </div>
                 </div>
@@ -666,17 +657,17 @@ export const SplitPDF: React.FC = () => {
                   {t('split.intervalSettings')}
                 </h3>
                 <div className="max-w-xs">
-                  <label className="block text-sm text-gray-600 dark:text-gray-400 mb-1">
+                  <Label className="block text-sm text-gray-600 dark:text-gray-400 mb-1">
                     {t('split.pagesPerFile')}
-                  </label>
-                  <input
+                  </Label>
+                  <Input
                     type="number"
                     min={1}
                     max={maxPages}
                     value={intervalSize}
                     onChange={(e) => setIntervalSize(Math.max(1, Math.min(maxPages, parseInt(e.target.value) || 1)))}
                     disabled={isProcessing}
-                    className="w-full px-3 py-2 rounded-lg bg-white dark:bg-privacy-900 border border-gray-300 dark:border-privacy-600 focus:outline-none focus:ring-2 focus:ring-ocean-500"
+                    className="w-full"
                   />
                 </div>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
@@ -694,16 +685,16 @@ export const SplitPDF: React.FC = () => {
                   {t('split.customSettings')}
                 </h3>
                 <div>
-                  <label className="block text-sm text-gray-600 dark:text-gray-400 mb-1">
+                  <Label className="block text-sm text-gray-600 dark:text-gray-400 mb-1">
                     {t('split.pageNumbers')}
-                  </label>
-                  <input
+                  </Label>
+                  <Input
                     type="text"
                     value={customPagesInput}
                     onChange={(e) => setCustomPagesInput(e.target.value)}
                     placeholder="1,3,5-7,10"
                     disabled={isProcessing}
-                    className="w-full px-3 py-2 rounded-lg bg-white dark:bg-privacy-900 border border-gray-300 dark:border-privacy-600 focus:outline-none focus:ring-2 focus:ring-ocean-500"
+                    className="w-full"
                   />
                 </div>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
@@ -788,14 +779,15 @@ export const SplitPDF: React.FC = () => {
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                 {t('split.outputFiles')}
               </h3>
-              <button
+              <Button
                 onClick={toggleSelectAll}
-                className="text-sm text-ocean-600 dark:text-ocean-400 hover:text-ocean-700 dark:hover:text-ocean-300 font-medium"
+                variant="ghost"
+                className="text-sm text-ocean-600 dark:text-ocean-400 hover:text-ocean-700 dark:hover:text-ocean-300 font-medium h-auto p-2"
               >
                 {selectedResults.size === results.length
                   ? t('split.deselectAll')
                   : t('split.selectAll')}
-              </button>
+              </Button>
             </div>
             {selectedResults.size > 0 && (
               <div className="mb-4 px-4 py-2 bg-ocean-50 dark:bg-ocean-900/20 border border-ocean-200 dark:border-ocean-800 rounded-lg">
@@ -847,12 +839,16 @@ export const SplitPDF: React.FC = () => {
                       : t('split.pageCount', { count: String(result.pageNumbers.length) })
                     }
                   </p>
-                  <button
-                    onClick={() => handleDownload(result)}
-                    className="btn btn-primary w-full text-sm py-2"
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDownload(result);
+                    }}
+                    className="w-full text-sm"
+                    size="sm"
                   >
                     {t('common.download')}
-                  </button>
+                  </Button>
                 </div>
               ))}
             </div>
@@ -874,9 +870,10 @@ export const SplitPDF: React.FC = () => {
             {/* Action buttons grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {/* Compress */}
-              <button
+              <Button
                 onClick={() => handleQuickAction('compress-pdf')}
-                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
+                variant="outline"
+                className="flex items-center gap-3 p-4 h-auto rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
               >
                 <span className="text-3xl">🗜️</span>
                 <div className="text-left">
@@ -887,12 +884,13 @@ export const SplitPDF: React.FC = () => {
                     {t('split.quickActions.compress')}
                   </p>
                 </div>
-              </button>
+              </Button>
 
               {/* Merge */}
-              <button
+              <Button
                 onClick={() => handleQuickAction('merge-pdf')}
-                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
+                variant="outline"
+                className="flex items-center gap-3 p-4 h-auto rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
               >
                 <span className="text-3xl">📎</span>
                 <div className="text-left">
@@ -903,12 +901,13 @@ export const SplitPDF: React.FC = () => {
                     {t('split.quickActions.merge')}
                   </p>
                 </div>
-              </button>
+              </Button>
 
               {/* Protect */}
-              <button
+              <Button
                 onClick={() => handleQuickAction('protect-pdf')}
-                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
+                variant="outline"
+                className="flex items-center gap-3 p-4 h-auto rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
               >
                 <span className="text-3xl">🔒</span>
                 <div className="text-left">
@@ -919,12 +918,13 @@ export const SplitPDF: React.FC = () => {
                     {t('split.quickActions.protect')}
                   </p>
                 </div>
-              </button>
+              </Button>
 
               {/* Watermark */}
-              <button
+              <Button
                 onClick={() => handleQuickAction('watermark-pdf')}
-                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
+                variant="outline"
+                className="flex items-center gap-3 p-4 h-auto rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
               >
                 <span className="text-3xl">💧</span>
                 <div className="text-left">
@@ -935,7 +935,7 @@ export const SplitPDF: React.FC = () => {
                     {t('split.quickActions.watermark')}
                   </p>
                 </div>
-              </button>
+              </Button>
             </div>
             </CardContent>
           </Card>

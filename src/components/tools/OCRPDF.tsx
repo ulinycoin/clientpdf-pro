@@ -6,6 +6,14 @@ import * as Tesseract from 'tesseract.js';
 import * as pdfjsLib from 'pdfjs-dist';
 import { detectLanguageAdvanced, type LanguageDetectionResult } from '@/utils/languageDetector';
 import { QuickOCR } from '@/utils/quickOCR';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 // Configure PDF.js worker
 // Worker configured in pdfService.ts
@@ -410,19 +418,19 @@ export const OCRPDF: React.FC = () => {
 
       {/* File Upload */}
       {!file && (
-        <div className="card p-6">
+        <Card className="p-6">
           <FileUpload
             onFilesSelected={handleFilesSelected}
             accept=".pdf,.jpg,.jpeg,.png"
             maxFiles={1}
             maxSizeMB={50}
           />
-        </div>
+        </Card>
       )}
 
       {/* File Preview & Settings */}
       {file && !result && (
-        <div className="card p-6 space-y-4">
+        <Card className="p-6 space-y-4">
           {/* File info */}
           <div className="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-gray-700">
             <div className="flex items-center gap-3">
@@ -434,13 +442,14 @@ export const OCRPDF: React.FC = () => {
                 </p>
               </div>
             </div>
-            <button
+            <Button
               onClick={handleRemoveFile}
-              className="btn-secondary text-sm"
+              variant="secondary"
+              size="sm"
               disabled={isProcessing}
             >
               Remove
-            </button>
+            </Button>
           </div>
 
           {/* Preview */}
@@ -457,78 +466,65 @@ export const OCRPDF: React.FC = () => {
           {/* Page Selection (for PDF) */}
           {file.type === 'application/pdf' && totalPages > 1 && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <Label className="block text-sm font-medium mb-2">
                 Pages to process
-              </label>
-              <div className="space-y-2">
-                <label className="flex items-center gap-2">
-                  <input
-                    type="radio"
-                    checked={pageMode === 'first'}
-                    onChange={() => setPageMode('first')}
-                    disabled={isProcessing}
-                    className="text-ocean-500 focus:ring-ocean-500"
-                  />
-                  <span className="text-sm text-gray-700 dark:text-gray-300">
+              </Label>
+              <RadioGroup
+                value={pageMode}
+                onValueChange={(value) => setPageMode(value as PageSelectionMode)}
+                disabled={isProcessing}
+                className="space-y-2"
+              >
+                <div className="flex items-center gap-2">
+                  <RadioGroupItem value="first" id="first" />
+                  <Label htmlFor="first" className="text-sm font-normal cursor-pointer">
                     First page only
-                  </span>
-                </label>
-                <label className="flex items-center gap-2">
-                  <input
-                    type="radio"
-                    checked={pageMode === 'all'}
-                    onChange={() => setPageMode('all')}
-                    disabled={isProcessing}
-                    className="text-ocean-500 focus:ring-ocean-500"
-                  />
-                  <span className="text-sm text-gray-700 dark:text-gray-300">
+                  </Label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <RadioGroupItem value="all" id="all" />
+                  <Label htmlFor="all" className="text-sm font-normal cursor-pointer">
                     All pages ({totalPages} pages)
-                  </span>
-                </label>
-                <label className="flex items-center gap-2">
-                  <input
-                    type="radio"
-                    checked={pageMode === 'range'}
-                    onChange={() => setPageMode('range')}
-                    disabled={isProcessing}
-                    className="text-ocean-500 focus:ring-ocean-500"
-                  />
-                  <span className="text-sm text-gray-700 dark:text-gray-300">
+                  </Label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <RadioGroupItem value="range" id="range" />
+                  <Label htmlFor="range" className="text-sm font-normal cursor-pointer">
                     Page range
-                  </span>
-                </label>
-                {pageMode === 'range' && (
-                  <div className="ml-6 flex items-center gap-3">
-                    <input
-                      type="number"
-                      min={1}
-                      max={totalPages}
-                      value={pageRange.start}
-                      onChange={(e) => setPageRange({ ...pageRange, start: parseInt(e.target.value) || 1 })}
-                      disabled={isProcessing}
-                      className="w-20 px-2 py-1 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm"
-                    />
-                    <span className="text-sm text-gray-500">—</span>
-                    <input
-                      type="number"
-                      min={1}
-                      max={totalPages}
-                      value={pageRange.end}
-                      onChange={(e) => setPageRange({ ...pageRange, end: parseInt(e.target.value) || totalPages })}
-                      disabled={isProcessing}
-                      className="w-20 px-2 py-1 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm"
-                    />
-                  </div>
-                )}
-              </div>
+                  </Label>
+                </div>
+              </RadioGroup>
+              {pageMode === 'range' && (
+                <div className="ml-6 flex items-center gap-3 mt-2">
+                  <input
+                    type="number"
+                    min={1}
+                    max={totalPages}
+                    value={pageRange.start}
+                    onChange={(e) => setPageRange({ ...pageRange, start: parseInt(e.target.value) || 1 })}
+                    disabled={isProcessing}
+                    className="w-20 px-2 py-1 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm"
+                  />
+                  <span className="text-sm text-gray-500">—</span>
+                  <input
+                    type="number"
+                    min={1}
+                    max={totalPages}
+                    value={pageRange.end}
+                    onChange={(e) => setPageRange({ ...pageRange, end: parseInt(e.target.value) || totalPages })}
+                    disabled={isProcessing}
+                    className="w-20 px-2 py-1 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm"
+                  />
+                </div>
+              )}
             </div>
           )}
 
           {/* Language Selection with Detection Info */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <Label className="block text-sm font-medium mb-2">
               Recognition language
-            </label>
+            </Label>
 
             {/* Language Detection Info */}
             {languageDetection && !isAnalyzing && (
@@ -584,18 +580,22 @@ export const OCRPDF: React.FC = () => {
               </span>
             </label>
 
-            <select
+            <Select
               value={selectedLanguage}
-              onChange={(e) => setSelectedLanguage(e.target.value)}
-              className="w-full px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-ocean-500"
+              onValueChange={setSelectedLanguage}
               disabled={isProcessing || (autoDetectLanguage && isAnalyzing)}
             >
-              {SUPPORTED_LANGUAGES.map(lang => (
-                <option key={lang.code} value={lang.code}>
-                  {lang.name} ({lang.nativeName})
-                </option>
-              ))}
-            </select>
+              <SelectTrigger className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {SUPPORTED_LANGUAGES.map(lang => (
+                  <SelectItem key={lang.code} value={lang.code}>
+                    {lang.name} ({lang.nativeName})
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
               {autoDetectLanguage ? 'Language will be detected automatically from document content' : 'Select the language of text in your document'}
             </p>
@@ -603,53 +603,42 @@ export const OCRPDF: React.FC = () => {
 
           {/* Output Format Selection */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <Label className="block text-sm font-medium mb-2">
               Output Format
-            </label>
-            <div className="space-y-2">
-              <label className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  name="outputFormat"
-                  value="text"
-                  checked={outputFormat === 'text'}
-                  onChange={(e) => setOutputFormat(e.target.value as OutputFormat)}
-                  disabled={isProcessing}
-                  className="text-ocean-500 focus:ring-ocean-500"
-                />
-                <span className="text-sm text-gray-700 dark:text-gray-300">
+            </Label>
+            <RadioGroup
+              value={outputFormat}
+              onValueChange={(value) => setOutputFormat(value as OutputFormat)}
+              disabled={isProcessing}
+              className="space-y-2"
+            >
+              <div className="flex items-center gap-2">
+                <RadioGroupItem value="text" id="text" />
+                <Label htmlFor="text" className="text-sm font-normal cursor-pointer">
                   📝 Plain Text (.txt)
-                </span>
-              </label>
-              <label className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  name="outputFormat"
-                  value="searchable-pdf"
-                  checked={outputFormat === 'searchable-pdf'}
-                  onChange={(e) => setOutputFormat(e.target.value as OutputFormat)}
-                  disabled={isProcessing}
-                  className="text-ocean-500 focus:ring-ocean-500"
-                />
-                <span className="text-sm text-gray-700 dark:text-gray-300">
+                </Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <RadioGroupItem value="searchable-pdf" id="searchable-pdf" />
+                <Label htmlFor="searchable-pdf" className="text-sm font-normal cursor-pointer">
                   🔍 Searchable PDF (with text layer)
-                </span>
-              </label>
-            </div>
+                </Label>
+              </div>
+            </RadioGroup>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
               Choose how you want to save the extracted text
             </p>
           </div>
 
           {/* Process Button */}
-          <button
+          <Button
             onClick={handleOCR}
             disabled={isProcessing || isAnalyzing}
-            className="btn-primary w-full"
+            className="w-full"
           >
             {isProcessing ? 'Processing OCR...' : isAnalyzing ? 'Analyzing...' : 'Start OCR'}
-          </button>
-        </div>
+          </Button>
+        </Card>
       )}
 
       {/* Progress */}
@@ -663,7 +652,7 @@ export const OCRPDF: React.FC = () => {
 
       {/* Results */}
       {result && (
-        <div className="card p-6 space-y-4">
+        <Card className="p-6 space-y-4">
           <div className="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-gray-700">
             <div>
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -674,34 +663,36 @@ export const OCRPDF: React.FC = () => {
                 {result.pagesProcessed} {result.pagesProcessed === 1 ? 'page' : 'pages'} processed
               </p>
             </div>
-            <button
+            <Button
               onClick={handleReset}
-              className="btn-secondary text-sm"
+              variant="secondary"
+              size="sm"
             >
               New file
-            </button>
+            </Button>
           </div>
 
           {/* Text Output with Edit Mode */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              <Label className="block text-sm font-medium">
                 Extracted text
-              </label>
-              <button
+              </Label>
+              <Button
                 onClick={() => setIsEditMode(!isEditMode)}
-                className="text-sm px-3 py-1 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                variant="outline"
+                size="sm"
               >
                 {isEditMode ? '👁️ View' : '✏️ Edit'}
-              </button>
+              </Button>
             </div>
 
             {isEditMode ? (
               <div className="space-y-2">
-                <textarea
+                <Textarea
                   value={editedText}
                   onChange={(e) => setEditedText(e.target.value)}
-                  className="w-full h-64 px-4 py-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white font-mono text-sm resize-y"
+                  className="w-full h-64 font-mono text-sm resize-y"
                   placeholder="Edit your extracted text here..."
                 />
                 {editedText !== result.text && (
@@ -729,20 +720,19 @@ export const OCRPDF: React.FC = () => {
 
           {/* Action Buttons */}
           <div className="grid grid-cols-2 gap-3">
-            <button
+            <Button
               onClick={handleCopyText}
-              className="btn-secondary"
+              variant="secondary"
             >
               📋 Copy text
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={handleDownload}
-              className="btn-primary"
             >
               💾 Download {outputFormat === 'searchable-pdf' ? 'PDF' : 'TXT'}
-            </button>
+            </Button>
           </div>
-        </div>
+        </Card>
       )}
 
     </div>

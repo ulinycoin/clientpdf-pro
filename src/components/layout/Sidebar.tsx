@@ -23,7 +23,6 @@ const TOOL_NAMES: Record<Tool, string> = {
   'rotate-pdf': 'Rotate PDF',
   'delete-pages-pdf': 'Delete Pages',
   'extract-pages-pdf': 'Extract Pages',
-  'unlock-pdf': 'Unlock PDF',
   'images-to-pdf': 'Images to PDF',
   'pdf-to-images': 'PDF to Images',
   'pdf-to-word': 'PDF to Word',
@@ -49,7 +48,6 @@ const TOOLS: Array<{ id: Tool; icon: string; tier: number }> = [
   { id: 'rotate-pdf', icon: '🔄', tier: 2 },
   { id: 'delete-pages-pdf', icon: '🗑️', tier: 2 },
   { id: 'extract-pages-pdf', icon: '📄', tier: 2 },
-  { id: 'unlock-pdf', icon: '🔓', tier: 2 },
 
   // Tier 3: Convert tools
   { id: 'images-to-pdf', icon: '🖼️', tier: 3 },

@@ -8,6 +8,12 @@ import * as pdfjsLib from 'pdfjs-dist';
 import type { UploadedFile, PDFFileInfo } from '@/types/pdf';
 import type { Tool } from '@/types';
 import { HASH_TOOL_MAP } from '@/types';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 // Configure PDF.js worker
 // Worker configured in pdfService.ts
@@ -446,21 +452,21 @@ export const SignPDF: React.FC = () => {
 
       {/* File Upload */}
       {!file && (
-        <div className="card p-6">
+        <Card className="p-6">
           <FileUpload
             onFilesSelected={handleFilesSelected}
             accept=".pdf"
             maxFiles={1}
             maxSizeMB={50}
           />
-        </div>
+        </Card>
       )}
 
       {/* Settings & Preview */}
       {file && !result && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Settings Panel */}
-          <div className="card p-6 space-y-4">
+          <Card className="p-6 space-y-4">
             {/* File info */}
             <div className="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-gray-700">
               <div className="flex items-center gap-3">
@@ -473,63 +479,38 @@ export const SignPDF: React.FC = () => {
                   </p>
                 </div>
               </div>
-              <button
+              <Button
                 onClick={handleRemoveFile}
-                className="btn-secondary text-sm"
+                variant="outline"
+                size="sm"
                 disabled={isProcessing}
               >
                 {t('common.remove')}
-              </button>
+              </Button>
             </div>
 
             {/* Signature Type */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Signature Type
-              </label>
-              <div className="grid grid-cols-3 gap-2">
-                <button
-                  onClick={() => setSettings({ ...settings, type: 'draw' })}
-                  disabled={isProcessing}
-                  className={`px-4 py-2 rounded-lg border-2 transition-all ${
-                    settings.type === 'draw'
-                      ? 'border-ocean-500 bg-ocean-50 dark:bg-ocean-900/20'
-                      : 'border-gray-300 dark:border-gray-600 hover:border-ocean-300'
-                  }`}
-                >
-                  ✍️ Draw
-                </button>
-                <button
-                  onClick={() => setSettings({ ...settings, type: 'upload' })}
-                  disabled={isProcessing}
-                  className={`px-4 py-2 rounded-lg border-2 transition-all ${
-                    settings.type === 'upload'
-                      ? 'border-ocean-500 bg-ocean-50 dark:bg-ocean-900/20'
-                      : 'border-gray-300 dark:border-gray-600 hover:border-ocean-300'
-                  }`}
-                >
-                  📤 Upload
-                </button>
-                <button
-                  onClick={() => setSettings({ ...settings, type: 'text' })}
-                  disabled={isProcessing}
-                  className={`px-4 py-2 rounded-lg border-2 transition-all ${
-                    settings.type === 'text'
-                      ? 'border-ocean-500 bg-ocean-50 dark:bg-ocean-900/20'
-                      : 'border-gray-300 dark:border-gray-600 hover:border-ocean-300'
-                  }`}
-                >
-                  📝 Text
-                </button>
-              </div>
+              <Label className="mb-2">Signature Type</Label>
+              <Tabs value={settings.type} onValueChange={(value) => setSettings({ ...settings, type: value as SignatureType })}>
+                <TabsList className="grid w-full grid-cols-3">
+                  <TabsTrigger value="draw" disabled={isProcessing}>
+                    ✍️ Draw
+                  </TabsTrigger>
+                  <TabsTrigger value="upload" disabled={isProcessing}>
+                    📤 Upload
+                  </TabsTrigger>
+                  <TabsTrigger value="text" disabled={isProcessing}>
+                    📝 Text
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
             </div>
 
             {/* Signature Input */}
             {settings.type === 'draw' && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Draw Signature
-                </label>
+                <Label className="mb-2">Draw Signature</Label>
                 <div className="border-2 border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
                   <canvas
                     ref={canvasRef}
@@ -542,27 +523,25 @@ export const SignPDF: React.FC = () => {
                     className="w-full cursor-crosshair bg-white"
                   />
                 </div>
-                <button
+                <Button
                   onClick={clearCanvas}
-                  className="mt-2 text-sm text-ocean-600 hover:text-ocean-700 dark:text-ocean-400"
+                  variant="link"
+                  className="mt-2 text-sm"
                   disabled={isProcessing}
                 >
                   Clear signature
-                </button>
+                </Button>
               </div>
             )}
 
             {settings.type === 'upload' && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Upload Signature Image
-                </label>
-                <input
+                <Label className="mb-2">Upload Signature Image</Label>
+                <Input
                   type="file"
                   accept="image/png,image/jpeg"
                   onChange={handleImageUpload}
                   disabled={isProcessing}
-                  className="w-full px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600"
                 />
                 {signatureImage && (
                   <div className="mt-2 border rounded-lg p-2 bg-white">
@@ -574,21 +553,18 @@ export const SignPDF: React.FC = () => {
 
             {settings.type === 'text' && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Signature Text
-                </label>
-                <input
+                <Label className="mb-2">Signature Text</Label>
+                <Input
                   type="text"
                   value={settings.text || ''}
                   onChange={(e) => setSettings({ ...settings, text: e.target.value })}
                   disabled={isProcessing}
-                  className="w-full px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-ocean-500"
                   placeholder="Your Name"
                 />
                 <div className="mt-2">
-                  <label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+                  <Label className="text-xs mb-1">
                     Text Size: {settings.textSize}pt
-                  </label>
+                  </Label>
                   <input
                     type="range"
                     min="8"
@@ -605,45 +581,49 @@ export const SignPDF: React.FC = () => {
 
             {/* Position */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Position
-              </label>
-              <select
+              <Label className="mb-2">Position</Label>
+              <Select
                 value={settings.position}
-                onChange={(e) => setSettings({ ...settings, position: e.target.value as SignaturePosition })}
+                onValueChange={(value) => setSettings({ ...settings, position: value as SignaturePosition })}
                 disabled={isProcessing}
-                className="w-full px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-ocean-500"
               >
-                <option value="bottom-right">Bottom Right</option>
-                <option value="bottom-left">Bottom Left</option>
-                <option value="top-right">Top Right</option>
-                <option value="top-left">Top Left</option>
-              </select>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="bottom-right">Bottom Right</SelectItem>
+                  <SelectItem value="bottom-left">Bottom Left</SelectItem>
+                  <SelectItem value="top-right">Top Right</SelectItem>
+                  <SelectItem value="top-left">Top Left</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             {/* Page Selection */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Apply to Pages
-              </label>
-              <select
-                value={settings.pageNumber}
-                onChange={(e) => setSettings({ ...settings, pageNumber: e.target.value === 'all' ? 'all' : parseInt(e.target.value) })}
+              <Label className="mb-2">Apply to Pages</Label>
+              <Select
+                value={String(settings.pageNumber)}
+                onValueChange={(value) => setSettings({ ...settings, pageNumber: value === 'all' ? 'all' : parseInt(value) })}
                 disabled={isProcessing}
-                className="w-full px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-ocean-500"
               >
-                <option value="all">All Pages</option>
-                {file.info && Array.from({ length: file.info.pages }, (_, i) => (
-                  <option key={i + 1} value={i + 1}>Page {i + 1}</option>
-                ))}
-              </select>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Pages</SelectItem>
+                  {file.info && Array.from({ length: file.info.pages }, (_, i) => (
+                    <SelectItem key={i + 1} value={String(i + 1)}>Page {i + 1}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             {/* Size */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <Label className="mb-2">
                 Signature Size: {settings.width} × {settings.height}
-              </label>
+              </Label>
               <input
                 type="range"
                 min="100"
@@ -660,17 +640,17 @@ export const SignPDF: React.FC = () => {
             </div>
 
             {/* Apply Button */}
-            <button
+            <Button
               onClick={handleAddSignature}
               disabled={isProcessing || (!signatureImage && settings.type !== 'text') || (settings.type === 'text' && !settings.text?.trim())}
-              className="btn-primary w-full"
+              className="w-full"
             >
               {isProcessing ? 'Adding signature...' : '✍️ Add Signature'}
-            </button>
-          </div>
+            </Button>
+          </Card>
 
           {/* Preview Panel */}
-          <div className="card p-6">
+          <Card className="p-6">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
               Preview
             </h3>
@@ -746,7 +726,7 @@ export const SignPDF: React.FC = () => {
                 </div>
               )}
             </div>
-          </div>
+          </Card>
         </div>
       )}
 
@@ -761,7 +741,7 @@ export const SignPDF: React.FC = () => {
 
       {/* Result */}
       {result && (
-        <div className="card p-6 space-y-4">
+        <Card className="p-6 space-y-4">
           <div className="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-gray-700">
             <div>
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -771,12 +751,13 @@ export const SignPDF: React.FC = () => {
                 Signed {result.metadata.pagesSigned} of {result.metadata.pageCount} pages
               </p>
             </div>
-            <button
+            <Button
               onClick={handleReset}
-              className="btn-secondary text-sm"
+              variant="outline"
+              size="sm"
             >
               {t('common.newFile')}
-            </button>
+            </Button>
           </div>
 
           {/* Stats */}
@@ -796,15 +777,15 @@ export const SignPDF: React.FC = () => {
           </div>
 
           {/* Download Button */}
-          <button
+          <Button
             onClick={handleDownload}
-            className="btn-primary w-full"
+            className="w-full"
           >
             💾 {t('common.download')}
-          </button>
+          </Button>
 
           {/* Quick Actions */}
-          <div className="card p-6 mt-6">
+          <Card className="p-6 mt-6">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
               What's next?
             </h3>
@@ -815,9 +796,10 @@ export const SignPDF: React.FC = () => {
             {/* Action buttons grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {/* Protect */}
-              <button
+              <Button
                 onClick={() => handleQuickAction('protect-pdf')}
-                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
+                variant="outline"
+                className="flex items-center gap-3 p-4 h-auto justify-start hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
               >
                 <span className="text-3xl">🔒</span>
                 <div className="text-left">
@@ -828,12 +810,13 @@ export const SignPDF: React.FC = () => {
                     Add password
                   </p>
                 </div>
-              </button>
+              </Button>
 
               {/* Compress */}
-              <button
+              <Button
                 onClick={() => handleQuickAction('compress-pdf')}
-                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
+                variant="outline"
+                className="flex items-center gap-3 p-4 h-auto justify-start hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
               >
                 <span className="text-3xl">🗜️</span>
                 <div className="text-left">
@@ -844,12 +827,13 @@ export const SignPDF: React.FC = () => {
                     Reduce size
                   </p>
                 </div>
-              </button>
+              </Button>
 
               {/* Watermark */}
-              <button
+              <Button
                 onClick={() => handleQuickAction('watermark-pdf')}
-                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
+                variant="outline"
+                className="flex items-center gap-3 p-4 h-auto justify-start hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
               >
                 <span className="text-3xl">💧</span>
                 <div className="text-left">
@@ -860,12 +844,13 @@ export const SignPDF: React.FC = () => {
                     Add watermark
                   </p>
                 </div>
-              </button>
+              </Button>
 
               {/* Merge */}
-              <button
+              <Button
                 onClick={() => handleQuickAction('merge-pdf')}
-                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
+                variant="outline"
+                className="flex items-center gap-3 p-4 h-auto justify-start hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
               >
                 <span className="text-3xl">📑</span>
                 <div className="text-left">
@@ -876,10 +861,10 @@ export const SignPDF: React.FC = () => {
                     Combine PDFs
                   </p>
                 </div>
-              </button>
+              </Button>
             </div>
-          </div>
-        </div>
+          </Card>
+        </Card>
       )}
     </div>
   );

@@ -5,6 +5,11 @@ import { useI18n } from '@/hooks/useI18n';
 import { useSharedFile } from '@/hooks/useSharedFile';
 import { protectPDF } from '@/services/pdfService';
 import type { ProtectionSettings, PasswordStrength } from '@/types/pdf';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 
 export const ProtectPDF: React.FC = () => {
   const { t } = useI18n();
@@ -259,18 +264,19 @@ export const ProtectPDF: React.FC = () => {
 
         {/* Actions */}
         <div className="flex gap-4">
-          <button
+          <Button
             onClick={handleDownload}
             className="flex-1 bg-gradient-to-r from-ocean-500 to-ocean-600 hover:from-ocean-600 hover:to-ocean-700 text-white font-bold py-4 px-8 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl"
           >
             {t('common.download')}
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="outline"
             onClick={handleReset}
-            className="flex-1 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-bold py-4 px-8 rounded-xl transition-all duration-200"
+            className="flex-1 font-bold py-4 px-8 rounded-xl"
           >
             {t('protect.protectAnother')}
-          </button>
+          </Button>
         </div>
       </div>
     );
@@ -291,14 +297,14 @@ export const ProtectPDF: React.FC = () => {
 
       {/* File upload */}
       {!file && (
-        <div className="card p-6">
+        <Card className="p-6">
           <FileUpload
             onFilesSelected={handleFileSelect}
             accept=".pdf"
             maxFiles={1}
             maxSizeMB={100}
           />
-        </div>
+        </Card>
       )}
 
       {/* File loaded indicator */}
@@ -316,7 +322,8 @@ export const ProtectPDF: React.FC = () => {
                 </div>
               </div>
             </div>
-            <button
+            <Button
+              variant="ghost"
               onClick={() => {
                 clearSharedFile();
                 setFile(null);
@@ -324,14 +331,14 @@ export const ProtectPDF: React.FC = () => {
               className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200 font-semibold text-sm"
             >
               ✕ {t('common.close')}
-            </button>
+            </Button>
           </div>
         </div>
       )}
 
       {/* File preview */}
       {file && (
-        <div className="card p-6">
+        <Card className="p-6">
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-center gap-3">
               <span className="text-3xl">📄</span>
@@ -342,12 +349,13 @@ export const ProtectPDF: React.FC = () => {
                 </p>
               </div>
             </div>
-            <button
+            <Button
+              variant="ghost"
               onClick={handleReset}
-              className="text-gray-500 hover:text-red-500 transition-colors"
+              className="text-gray-500 hover:text-red-500 transition-colors h-auto p-2"
             >
               ✕
-            </button>
+            </Button>
           </div>
 
           {/* Security presets */}
@@ -357,10 +365,11 @@ export const ProtectPDF: React.FC = () => {
             </h4>
             <div className="grid grid-cols-3 gap-3">
               {(['basic', 'business', 'confidential'] as const).map((preset) => (
-                <button
+                <Button
                   key={preset}
+                  variant="outline"
                   onClick={() => applyPreset(preset)}
-                  className={`p-4 rounded-xl border-2 transition-all duration-200 text-left ${
+                  className={`p-4 rounded-xl border-2 transition-all duration-200 text-left h-auto ${
                     securityPreset === preset
                       ? 'border-ocean-500 bg-ocean-50 dark:bg-ocean-900/20'
                       : 'border-gray-200 dark:border-gray-700 hover:border-ocean-300'
@@ -372,31 +381,30 @@ export const ProtectPDF: React.FC = () => {
                   <div className="text-xs text-gray-600 dark:text-gray-400">
                     {t(`protect.presets.${preset}.description`)}
                   </div>
-                </button>
+                </Button>
               ))}
             </div>
           </div>
 
           {/* Permissions-only mode */}
           <div className="mb-4">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="checkbox"
+            <div className="flex items-center gap-2">
+              <Checkbox
+                id="permissions-only"
                 checked={permissionsOnly}
-                onChange={(e) => {
-                  setPermissionsOnly(e.target.checked);
-                  if (e.target.checked) {
+                onCheckedChange={(checked) => {
+                  setPermissionsOnly(checked as boolean);
+                  if (checked) {
                     setUserPassword('');
                     setOwnerPassword('');
                     setShowOwnerPassword(false);
                   }
                 }}
-                className="w-4 h-4 text-ocean-500 bg-gray-100 border-gray-300 rounded focus:ring-ocean-500"
               />
-              <span className="text-sm text-gray-700 dark:text-gray-300">
+              <Label htmlFor="permissions-only" className="text-sm text-gray-700 dark:text-gray-300 cursor-pointer">
                 {t('protect.permissionsOnly')}
-              </span>
-            </label>
+              </Label>
+            </div>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 ml-6">
               {t('protect.permissionsOnlyHint')}
             </p>
@@ -408,24 +416,25 @@ export const ProtectPDF: React.FC = () => {
             {!permissionsOnly && (
               <>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
+                  <Label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
                     {t('protect.userPassword')} *
-                  </label>
+                  </Label>
                   <div className="relative">
-                    <input
+                    <Input
                       type={showUserPassword ? 'text' : 'password'}
                       value={userPassword}
                       onChange={(e) => setUserPassword(e.target.value)}
                       placeholder={t('protect.userPasswordPlaceholder')}
-                      className="w-full px-4 py-3 pr-12 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-ocean-500 text-gray-900 dark:text-white"
+                      className="w-full px-4 py-3 pr-12 rounded-xl"
                     />
-                    <button
+                    <Button
                       type="button"
+                      variant="ghost"
                       onClick={() => setShowUserPassword(!showUserPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 h-auto p-1"
                     >
                       {showUserPassword ? '👁️' : '👁️‍🗨️'}
-                    </button>
+                    </Button>
                   </div>
                   {passwordStrength && (
                     <div className="mt-2">
@@ -472,41 +481,39 @@ export const ProtectPDF: React.FC = () => {
                 </div>
 
                 {/* Owner password toggle */}
-                <div>
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={showOwnerPasswordToggle}
-                      onChange={(e) => setShowOwnerPasswordToggle(e.target.checked)}
-                      className="w-4 h-4 text-ocean-500 bg-gray-100 border-gray-300 rounded focus:ring-ocean-500"
-                    />
-                    <span className="text-sm text-gray-700 dark:text-gray-300">
-                      {t('protect.useOwnerPassword')}
-                    </span>
-                  </label>
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    id="owner-password-toggle"
+                    checked={showOwnerPasswordToggle}
+                    onCheckedChange={(checked) => setShowOwnerPasswordToggle(checked as boolean)}
+                  />
+                  <Label htmlFor="owner-password-toggle" className="text-sm text-gray-700 dark:text-gray-300 cursor-pointer">
+                    {t('protect.useOwnerPassword')}
+                  </Label>
                 </div>
 
                 {/* Owner password input */}
                 {showOwnerPasswordToggle && (
                   <div>
-                    <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
+                    <Label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
                       {t('protect.ownerPassword')}
-                    </label>
+                    </Label>
                     <div className="relative">
-                      <input
+                      <Input
                         type={showOwnerPassword ? 'text' : 'password'}
                         value={ownerPassword}
                         onChange={(e) => setOwnerPassword(e.target.value)}
                         placeholder={t('protect.ownerPasswordPlaceholder')}
-                        className="w-full px-4 py-3 pr-12 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-ocean-500 text-gray-900 dark:text-white"
+                        className="w-full px-4 py-3 pr-12 rounded-xl"
                       />
-                      <button
+                      <Button
                         type="button"
+                        variant="ghost"
                         onClick={() => setShowOwnerPassword(!showOwnerPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 h-auto p-1"
                       >
                         {showOwnerPassword ? '👁️' : '👁️‍🗨️'}
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 )}
@@ -515,23 +522,24 @@ export const ProtectPDF: React.FC = () => {
           </div>
 
           {/* Advanced settings toggle */}
-          <button
+          <Button
+            variant="ghost"
             onClick={() => setShowAdvanced(!showAdvanced)}
-            className="mt-6 text-sm text-ocean-500 hover:text-ocean-600 font-semibold"
+            className="mt-6 text-sm text-ocean-500 hover:text-ocean-600 font-semibold h-auto p-0"
           >
             {showAdvanced ? '▼' : '▶'} {t('protect.advancedSettings')}
-          </button>
+          </Button>
 
           {/* Advanced settings */}
           {showAdvanced && (
             <div className="mt-4 space-y-4 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
               {/* Encryption level */}
               <div>
-                <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
+                <Label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
                   {t('protect.encryptionLevel')}
-                </label>
+                </Label>
                 <div className="flex gap-3">
-                  <label className="flex items-center gap-2 cursor-pointer">
+                  <Label className="flex items-center gap-2 cursor-pointer">
                     <input
                       type="radio"
                       value="aes128"
@@ -540,8 +548,8 @@ export const ProtectPDF: React.FC = () => {
                       className="w-4 h-4 text-ocean-500"
                     />
                     <span className="text-sm text-gray-700 dark:text-gray-300">AES-128</span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer">
+                  </Label>
+                  <Label className="flex items-center gap-2 cursor-pointer">
                     <input
                       type="radio"
                       value="aes256"
@@ -552,21 +560,21 @@ export const ProtectPDF: React.FC = () => {
                     <span className="text-sm text-gray-700 dark:text-gray-300">
                       AES-256 {t('protect.recommended')}
                     </span>
-                  </label>
+                  </Label>
                 </div>
               </div>
 
               {/* Permissions */}
               <div>
-                <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-3">
+                <Label className="block text-sm font-semibold text-gray-900 dark:text-white mb-3">
                   {t('protect.permissions')}
-                </label>
+                </Label>
                 <div className="space-y-2">
                   {/* Printing */}
                   <div>
-                    <label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+                    <Label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">
                       {t('protect.permissions.printing')}
-                    </label>
+                    </Label>
                     <select
                       value={permissions.printing}
                       onChange={(e) =>
@@ -591,19 +599,18 @@ export const ProtectPDF: React.FC = () => {
                     'fillingForms',
                     'contentAccessibility',
                   ].map((perm) => (
-                    <label key={perm} className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="checkbox"
+                    <div key={perm} className="flex items-center gap-2">
+                      <Checkbox
+                        id={`perm-${perm}`}
                         checked={permissions[perm as keyof typeof permissions] as boolean}
-                        onChange={(e) =>
-                          setPermissions({ ...permissions, [perm]: e.target.checked })
+                        onCheckedChange={(checked) =>
+                          setPermissions({ ...permissions, [perm]: checked })
                         }
-                        className="w-4 h-4 text-ocean-500 bg-gray-100 border-gray-300 rounded focus:ring-ocean-500"
                       />
-                      <span className="text-sm text-gray-700 dark:text-gray-300">
+                      <Label htmlFor={`perm-${perm}`} className="text-sm text-gray-700 dark:text-gray-300 cursor-pointer">
                         {t(`protect.permissions.${perm}`)}
-                      </span>
-                    </label>
+                      </Label>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -618,7 +625,7 @@ export const ProtectPDF: React.FC = () => {
           )}
 
           {/* Protect button */}
-          <button
+          <Button
             onClick={handleProtect}
             disabled={isProcessing || (!permissionsOnly && !userPassword)}
             className={`w-full mt-6 py-4 px-8 rounded-xl font-bold text-white transition-all duration-200 ${
@@ -628,8 +635,8 @@ export const ProtectPDF: React.FC = () => {
             }`}
           >
             {isProcessing ? t('common.processing') : t('protect.protectButton')}
-          </button>
-        </div>
+          </Button>
+        </Card>
       )}
 
       {/* Progress */}

@@ -4,6 +4,7 @@ import { ProgressBar } from '@/components/common/ProgressBar';
 import { PDFPreview } from '@/components/common/PDFPreview';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { useI18n } from '@/hooks/useI18n';
 import { useSharedFile } from '@/hooks/useSharedFile';
 import pdfService from '@/services/pdfService';
@@ -227,7 +228,7 @@ export const MergePDF: React.FC = () => {
                 }`}
               >
                 {/* Preview card */}
-                <div className="card p-3 hover:shadow-medium transition-all duration-200 relative">
+                <Card className="p-3 hover:shadow-medium transition-all duration-200 relative">
                   {/* PDF Preview */}
                   <div className="mb-3">
                     <PDFPreview
@@ -248,9 +249,9 @@ export const MergePDF: React.FC = () => {
                   <div className="space-y-1">
                     {/* File number badge */}
                     <div className="flex items-center justify-between mb-2">
-                      <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-ocean-100 dark:bg-ocean-900/30 text-ocean-600 dark:text-ocean-400 text-xs font-bold">
+                      <Badge variant="secondary" className="w-6 h-6 p-0 flex items-center justify-center bg-ocean-100 dark:bg-ocean-900/30 text-ocean-600 dark:text-ocean-400">
                         {index + 1}
-                      </span>
+                      </Badge>
                       {file.info && (
                         <span className="text-xs text-gray-500 dark:text-gray-400">
                           {file.info.pages} {file.info.pages === 1 ? 'page' : 'pages'}
@@ -280,51 +281,54 @@ export const MergePDF: React.FC = () => {
                   <div className="absolute top-1 right-1 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                     {/* Move up */}
                     {index > 0 && (
-                      <button
+                      <Button
                         onClick={(e) => {
                           e.stopPropagation();
                           handleMoveUp(index);
                         }}
                         disabled={isProcessing}
-                        className="w-7 h-7 flex items-center justify-center rounded-lg bg-ocean-500 text-white hover:bg-ocean-600 disabled:opacity-50 shadow-md"
+                        className="w-7 h-7 p-0 bg-ocean-500 text-white hover:bg-ocean-600 shadow-md"
                         aria-label="Move up"
                         title="Move up"
+                        size="sm"
                       >
                         <span className="text-sm">↑</span>
-                      </button>
+                      </Button>
                     )}
 
                     {/* Move down */}
                     {index < files.length - 1 && (
-                      <button
+                      <Button
                         onClick={(e) => {
                           e.stopPropagation();
                           handleMoveDown(index);
                         }}
                         disabled={isProcessing}
-                        className="w-7 h-7 flex items-center justify-center rounded-lg bg-ocean-500 text-white hover:bg-ocean-600 disabled:opacity-50 shadow-md"
+                        className="w-7 h-7 p-0 bg-ocean-500 text-white hover:bg-ocean-600 shadow-md"
                         aria-label="Move down"
                         title="Move down"
+                        size="sm"
                       >
                         <span className="text-sm">↓</span>
-                      </button>
+                      </Button>
                     )}
 
                     {/* Remove */}
-                    <button
+                    <Button
                       onClick={(e) => {
                         e.stopPropagation();
                         handleRemoveFile(file.id);
                       }}
                       disabled={isProcessing}
-                      className="w-7 h-7 flex items-center justify-center rounded-lg bg-error-500 text-white hover:bg-error-600 disabled:opacity-50 shadow-md"
+                      className="w-7 h-7 p-0 bg-error-500 text-white hover:bg-error-600 shadow-md"
                       aria-label="Remove file"
                       title="Remove file"
+                      size="sm"
                     >
                       <span className="text-sm">×</span>
-                    </button>
+                    </Button>
                   </div>
-                </div>
+                </Card>
               </div>
             ))}
           </div>
@@ -409,12 +413,13 @@ export const MergePDF: React.FC = () => {
               {/* Action buttons grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                 {/* Compress */}
-                <button
+                <Button
                   onClick={() => handleQuickAction('compress-pdf')}
-                  className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
+                  variant="outline"
+                  className="h-auto justify-start p-4 border-2 hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
                 >
                   <span className="text-3xl">🗜️</span>
-                  <div className="text-left">
+                  <div className="text-left ml-3">
                     <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
                       {t('tools.compress-pdf.name')}
                     </p>
@@ -422,15 +427,16 @@ export const MergePDF: React.FC = () => {
                       {t('merge.quickActions.compress')}
                     </p>
                   </div>
-                </button>
+                </Button>
 
                 {/* Protect */}
-                <button
+                <Button
                   onClick={() => handleQuickAction('protect-pdf')}
-                  className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
+                  variant="outline"
+                  className="h-auto justify-start p-4 border-2 hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
                 >
                   <span className="text-3xl">🔒</span>
-                  <div className="text-left">
+                  <div className="text-left ml-3">
                     <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
                       {t('tools.protect-pdf.name')}
                     </p>
@@ -438,15 +444,16 @@ export const MergePDF: React.FC = () => {
                       {t('merge.quickActions.protect')}
                     </p>
                   </div>
-                </button>
+                </Button>
 
                 {/* Watermark */}
-                <button
+                <Button
                   onClick={() => handleQuickAction('watermark-pdf')}
-                  className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
+                  variant="outline"
+                  className="h-auto justify-start p-4 border-2 hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
                 >
                   <span className="text-3xl">💧</span>
-                  <div className="text-left">
+                  <div className="text-left ml-3">
                     <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
                       {t('tools.watermark-pdf.name')}
                     </p>
@@ -454,15 +461,16 @@ export const MergePDF: React.FC = () => {
                       {t('merge.quickActions.watermark')}
                     </p>
                   </div>
-                </button>
+                </Button>
 
                 {/* Split */}
-                <button
+                <Button
                   onClick={() => handleQuickAction('split-pdf')}
-                  className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
+                  variant="outline"
+                  className="h-auto justify-start p-4 border-2 hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
                 >
                   <span className="text-3xl">✂️</span>
-                  <div className="text-left">
+                  <div className="text-left ml-3">
                     <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
                       {t('tools.split-pdf.name')}
                     </p>
@@ -470,7 +478,7 @@ export const MergePDF: React.FC = () => {
                       {t('merge.quickActions.split')}
                     </p>
                   </div>
-                </button>
+                </Button>
               </div>
             </CardContent>
           </Card>

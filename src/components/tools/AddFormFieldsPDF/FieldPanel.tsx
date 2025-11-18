@@ -1,5 +1,9 @@
 import React from 'react';
 import type { FormField, DropdownFormField, RadioFormField, TextFormField, MultilineFormField } from '@/types/formFields';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface FieldPanelProps {
   selectedField: FormField | null;
@@ -33,13 +37,15 @@ export const FieldPanel: React.FC<FieldPanelProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Field Properties</h3>
-          <button
+          <Button
             onClick={() => onFieldDelete(selectedField.id)}
-            className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors"
+            variant="ghost"
+            size="sm"
+            className="text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
             title="Delete field"
           >
             🗑️
-          </button>
+          </Button>
         </div>
 
         {/* Field type badge */}
@@ -49,39 +55,36 @@ export const FieldPanel: React.FC<FieldPanelProps> = ({
 
         {/* Field Name */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          <Label>
             Field Name
-          </label>
-          <input
+          </Label>
+          <Input
             type="text"
             value={selectedField.name}
             onChange={(e) => handleUpdate({ name: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-ocean-500 focus:border-transparent"
           />
         </div>
 
         {/* Position */}
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <Label>
               X Position
-            </label>
-            <input
+            </Label>
+            <Input
               type="number"
               value={Math.round(selectedField.x)}
               onChange={(e) => handleUpdate({ x: Number(e.target.value) })}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-ocean-500 focus:border-transparent"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <Label>
               Y Position
-            </label>
-            <input
+            </Label>
+            <Input
               type="number"
               value={Math.round(selectedField.y)}
               onChange={(e) => handleUpdate({ y: Number(e.target.value) })}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-ocean-500 focus:border-transparent"
             />
           </div>
         </div>
@@ -89,25 +92,23 @@ export const FieldPanel: React.FC<FieldPanelProps> = ({
         {/* Size */}
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <Label>
               Width
-            </label>
-            <input
+            </Label>
+            <Input
               type="number"
               value={Math.round(selectedField.width)}
               onChange={(e) => handleUpdate({ width: Number(e.target.value) })}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-ocean-500 focus:border-transparent"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <Label>
               Height
-            </label>
-            <input
+            </Label>
+            <Input
               type="number"
               value={Math.round(selectedField.height)}
               onChange={(e) => handleUpdate({ height: Number(e.target.value) })}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-ocean-500 focus:border-transparent"
             />
           </div>
         </div>
@@ -116,42 +117,39 @@ export const FieldPanel: React.FC<FieldPanelProps> = ({
         {(selectedField.type === 'text' || selectedField.type === 'multiline') && (
           <>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <Label>
                 Default Value
-              </label>
-              <input
+              </Label>
+              <Input
                 type="text"
                 value={(selectedField as TextFormField | MultilineFormField).defaultValue || ''}
                 onChange={(e) => handleUpdate({ defaultValue: e.target.value })}
                 placeholder="Enter default text..."
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-ocean-500 focus:border-transparent"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <Label>
                 Max Length
-              </label>
-              <input
+              </Label>
+              <Input
                 type="number"
                 value={(selectedField as TextFormField | MultilineFormField).maxLength || ''}
                 onChange={(e) => handleUpdate({ maxLength: e.target.value ? Number(e.target.value) : undefined })}
                 placeholder="No limit"
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-ocean-500 focus:border-transparent"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <Label>
                 Font Size
-              </label>
-              <input
+              </Label>
+              <Input
                 type="number"
                 value={(selectedField as TextFormField | MultilineFormField).fontSize || 12}
                 onChange={(e) => handleUpdate({ fontSize: Number(e.target.value) })}
                 min="6"
                 max="72"
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-ocean-500 focus:border-transparent"
               />
             </div>
           </>
@@ -159,17 +157,15 @@ export const FieldPanel: React.FC<FieldPanelProps> = ({
 
         {/* Checkbox specific options */}
         {selectedField.type === 'checkbox' && (
-          <div className="flex items-center">
-            <input
-              type="checkbox"
+          <div className="flex items-center space-x-2">
+            <Checkbox
               id="checkbox-checked"
               checked={selectedField.checked || false}
-              onChange={(e) => handleUpdate({ checked: e.target.checked })}
-              className="w-4 h-4 text-ocean-500 border-gray-300 rounded focus:ring-ocean-500"
+              onCheckedChange={(checked) => handleUpdate({ checked: checked as boolean })}
             />
-            <label htmlFor="checkbox-checked" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+            <Label htmlFor="checkbox-checked" className="text-sm font-normal cursor-pointer">
               Checked by default
-            </label>
+            </Label>
           </div>
         )}
 
@@ -177,14 +173,13 @@ export const FieldPanel: React.FC<FieldPanelProps> = ({
         {selectedField.type === 'radio' && (
           <>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <Label>
                 Radio Group
-              </label>
-              <input
+              </Label>
+              <Input
                 type="text"
                 value={(selectedField as RadioFormField).group}
                 onChange={(e) => handleUpdate({ group: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-ocean-500 focus:border-transparent"
               />
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                 Radio buttons with the same group name are mutually exclusive
@@ -192,28 +187,25 @@ export const FieldPanel: React.FC<FieldPanelProps> = ({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <Label>
                 Value
-              </label>
-              <input
+              </Label>
+              <Input
                 type="text"
                 value={(selectedField as RadioFormField).value}
                 onChange={(e) => handleUpdate({ value: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-ocean-500 focus:border-transparent"
               />
             </div>
 
-            <div className="flex items-center">
-              <input
-                type="checkbox"
+            <div className="flex items-center space-x-2">
+              <Checkbox
                 id="radio-selected"
                 checked={(selectedField as RadioFormField).selected || false}
-                onChange={(e) => handleUpdate({ selected: e.target.checked })}
-                className="w-4 h-4 text-ocean-500 border-gray-300 rounded focus:ring-ocean-500"
+                onCheckedChange={(checked) => handleUpdate({ selected: checked as boolean })}
               />
-              <label htmlFor="radio-selected" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+              <Label htmlFor="radio-selected" className="text-sm font-normal cursor-pointer">
                 Selected by default
-              </label>
+              </Label>
             </div>
           </>
         )}
@@ -222,9 +214,9 @@ export const FieldPanel: React.FC<FieldPanelProps> = ({
         {selectedField.type === 'dropdown' && (
           <>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <Label>
                 Options (one per line)
-              </label>
+              </Label>
               <textarea
                 value={(selectedField as DropdownFormField).options.join('\n')}
                 onChange={(e) => handleUpdate({ options: e.target.value.split('\n').filter(o => o.trim()) })}
@@ -233,47 +225,41 @@ export const FieldPanel: React.FC<FieldPanelProps> = ({
               />
             </div>
 
-            <div className="flex items-center">
-              <input
-                type="checkbox"
+            <div className="flex items-center space-x-2">
+              <Checkbox
                 id="dropdown-multiselect"
                 checked={(selectedField as DropdownFormField).multiSelect || false}
-                onChange={(e) => handleUpdate({ multiSelect: e.target.checked })}
-                className="w-4 h-4 text-ocean-500 border-gray-300 rounded focus:ring-ocean-500"
+                onCheckedChange={(checked) => handleUpdate({ multiSelect: checked as boolean })}
               />
-              <label htmlFor="dropdown-multiselect" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+              <Label htmlFor="dropdown-multiselect" className="text-sm font-normal cursor-pointer">
                 Allow multiple selections
-              </label>
+              </Label>
             </div>
           </>
         )}
 
         {/* Common options */}
         <div className="pt-4 border-t border-gray-200 dark:border-gray-700 space-y-3">
-          <div className="flex items-center">
-            <input
-              type="checkbox"
+          <div className="flex items-center space-x-2">
+            <Checkbox
               id="field-required"
               checked={selectedField.required || false}
-              onChange={(e) => handleUpdate({ required: e.target.checked })}
-              className="w-4 h-4 text-ocean-500 border-gray-300 rounded focus:ring-ocean-500"
+              onCheckedChange={(checked) => handleUpdate({ required: checked as boolean })}
             />
-            <label htmlFor="field-required" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+            <Label htmlFor="field-required" className="text-sm font-normal cursor-pointer">
               Required field
-            </label>
+            </Label>
           </div>
 
-          <div className="flex items-center">
-            <input
-              type="checkbox"
+          <div className="flex items-center space-x-2">
+            <Checkbox
               id="field-readonly"
               checked={selectedField.readonly || false}
-              onChange={(e) => handleUpdate({ readonly: e.target.checked })}
-              className="w-4 h-4 text-ocean-500 border-gray-300 rounded focus:ring-ocean-500"
+              onCheckedChange={(checked) => handleUpdate({ readonly: checked as boolean })}
             />
-            <label htmlFor="field-readonly" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+            <Label htmlFor="field-readonly" className="text-sm font-normal cursor-pointer">
               Read-only field
-            </label>
+            </Label>
           </div>
         </div>
       </div>

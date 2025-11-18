@@ -8,6 +8,10 @@ import pdfService from '@/services/pdfService';
 import type { UploadedFile } from '@/types/pdf';
 import type { Tool } from '@/types';
 import { HASH_TOOL_MAP } from '@/types';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 export const DeletePagesPDF: React.FC = () => {
   const { t } = useI18n();
@@ -201,7 +205,7 @@ export const DeletePagesPDF: React.FC = () => {
 
       {/* Upload section */}
       {!file && !result && (
-        <div className="card p-6">
+        <Card className="p-6">
           <FileUpload
             accept=".pdf"
             multiple={false}
@@ -209,7 +213,7 @@ export const DeletePagesPDF: React.FC = () => {
             maxSizeMB={100}
             disabled={isProcessing}
           />
-        </div>
+        </Card>
       )}
 
       {/* File preview and delete options */}
@@ -230,18 +234,19 @@ export const DeletePagesPDF: React.FC = () => {
                     </p>
                   </div>
                 </div>
-                <button
+                <Button
                   onClick={handleRemoveFile}
+                  variant="ghost"
                   className="text-ocean-600 dark:text-ocean-400 hover:text-ocean-800 dark:hover:text-ocean-200 font-semibold text-sm"
                 >
                   ✕ {t('common.close')}
-                </button>
+                </Button>
               </div>
             </div>
           )}
 
           {/* File preview */}
-          <div className="card p-6">
+          <Card className="p-6">
             <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
               {t('common.filePreview')}
             </h2>
@@ -263,34 +268,35 @@ export const DeletePagesPDF: React.FC = () => {
                     {pdfService.formatFileSize(file.size)}
                   </p>
                 </div>
-                <button
+                <Button
                   onClick={handleRemoveFile}
                   disabled={isProcessing}
+                  variant="ghost"
                   className="mt-4 text-sm text-error-500 hover:text-error-600 disabled:opacity-50"
                 >
                   {t('common.changeFile')}
-                </button>
+                </Button>
               </div>
             </div>
-          </div>
+          </Card>
 
           {/* Delete settings */}
-          <div className="card p-6">
+          <Card className="p-6">
             <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
               {t('deletePages.selectPages')}
             </h2>
 
             <div className="bg-gray-50 dark:bg-privacy-800 rounded-lg p-4 mb-4">
-              <label className="block text-sm text-gray-600 dark:text-gray-400 mb-1">
+              <Label className="block text-sm text-gray-600 dark:text-gray-400 mb-1">
                 {t('deletePages.pagesToDelete')}
-              </label>
-              <input
+              </Label>
+              <Input
                 type="text"
                 value={pagesToDelete}
                 onChange={(e) => setPagesToDelete(e.target.value)}
                 placeholder="1,3,5-7,10"
                 disabled={isProcessing}
-                className="w-full px-3 py-2 rounded-lg bg-white dark:bg-privacy-900 border border-gray-300 dark:border-privacy-600 focus:outline-none focus:ring-2 focus:ring-ocean-500"
+                className="w-full"
               />
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
                 {t('deletePages.hint', { total: String(maxPages) })}
@@ -313,28 +319,28 @@ export const DeletePagesPDF: React.FC = () => {
             </div>
 
             {/* Delete button */}
-            <button
+            <Button
               onClick={handleDelete}
               disabled={isProcessing || !file || !pagesToDelete}
               className="btn btn-primary w-full text-lg py-3"
             >
               {isProcessing ? t('common.processing') : t('deletePages.deleteButton')}
-            </button>
-          </div>
+            </Button>
+          </Card>
         </div>
       )}
 
       {/* Progress */}
       {isProcessing && (
-        <div className="card p-6">
+        <Card className="p-6">
           <ProgressBar progress={progress} message={progressMessage} />
-        </div>
+        </Card>
       )}
 
       {/* Result */}
       {result && (
         <div className="space-y-6">
-          <div className="card p-8">
+          <Card className="p-8">
             <div className="text-center space-y-4">
               <div className="text-6xl">✅</div>
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -345,24 +351,25 @@ export const DeletePagesPDF: React.FC = () => {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-3 justify-center mt-6 pt-4">
-                <button
+                <Button
                   onClick={handleDownload}
                   className="btn btn-primary px-8"
                 >
                   📥 {t('common.download')}
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={handleReset}
+                  variant="outline"
                   className="btn btn-secondary"
                 >
                   {t('deletePages.deleteAnother')}
-                </button>
+                </Button>
               </div>
             </div>
-          </div>
+          </Card>
 
           {/* Quick Actions */}
-          <div className="card p-6">
+          <Card className="p-6">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
               {t('deletePages.quickActions.title')}
             </h3>
@@ -372,9 +379,10 @@ export const DeletePagesPDF: React.FC = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {/* Compress */}
-              <button
+              <Button
                 onClick={() => handleQuickAction('compress-pdf')}
-                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
+                variant="outline"
+                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group h-auto"
               >
                 <span className="text-3xl">🗜️</span>
                 <div className="text-left">
@@ -385,12 +393,13 @@ export const DeletePagesPDF: React.FC = () => {
                     {t('deletePages.quickActions.compress')}
                   </p>
                 </div>
-              </button>
+              </Button>
 
               {/* Protect */}
-              <button
+              <Button
                 onClick={() => handleQuickAction('protect-pdf')}
-                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
+                variant="outline"
+                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group h-auto"
               >
                 <span className="text-3xl">🔒</span>
                 <div className="text-left">
@@ -401,12 +410,13 @@ export const DeletePagesPDF: React.FC = () => {
                     {t('deletePages.quickActions.protect')}
                   </p>
                 </div>
-              </button>
+              </Button>
 
               {/* Watermark */}
-              <button
+              <Button
                 onClick={() => handleQuickAction('watermark-pdf')}
-                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
+                variant="outline"
+                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group h-auto"
               >
                 <span className="text-3xl">💧</span>
                 <div className="text-left">
@@ -417,12 +427,13 @@ export const DeletePagesPDF: React.FC = () => {
                     {t('deletePages.quickActions.watermark')}
                   </p>
                 </div>
-              </button>
+              </Button>
 
               {/* Merge */}
-              <button
+              <Button
                 onClick={() => handleQuickAction('merge-pdf')}
-                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
+                variant="outline"
+                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group h-auto"
               >
                 <span className="text-3xl">📎</span>
                 <div className="text-left">
@@ -433,9 +444,9 @@ export const DeletePagesPDF: React.FC = () => {
                     {t('deletePages.quickActions.merge')}
                   </p>
                 </div>
-              </button>
+              </Button>
             </div>
-          </div>
+          </Card>
         </div>
       )}
     </div>

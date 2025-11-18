@@ -10,6 +10,8 @@ import type { UploadedFile } from '@/types/pdf';
 import type { Tool } from '@/types';
 import { HASH_TOOL_MAP } from '@/types';
 import type { FormField } from '@/types/formFields';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 
 export const AddFormFieldsPDF: React.FC = () => {
   const { t } = useI18n();
@@ -172,7 +174,7 @@ export const AddFormFieldsPDF: React.FC = () => {
   // If no file, show upload zone
   if (!file) {
     return (
-      <div className="card p-8">
+      <Card className="p-8">
         <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">
           {t('tools.add-form-fields-pdf.name')}
         </h2>
@@ -186,14 +188,14 @@ export const AddFormFieldsPDF: React.FC = () => {
           multiple={false}
           maxSizeMB={100}
         />
-      </div>
+      </Card>
     );
   }
 
   // If result, show success and download
   if (result) {
     return (
-      <div className="card p-8">
+      <Card className="p-8">
         <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">
           {t('tools.add-form-fields-pdf.name')}
         </h2>
@@ -211,23 +213,23 @@ export const AddFormFieldsPDF: React.FC = () => {
           </div>
 
           <div className="flex gap-4">
-            <button
+            <Button
               onClick={handleDownload}
-              className="flex-1 px-6 py-3 bg-ocean-500 hover:bg-ocean-600 text-white rounded-lg font-semibold transition-colors"
+              className="flex-1"
             >
               {t('common.download')}
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={handleReset}
-              className="px-6 py-3 border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg font-semibold transition-colors"
+              variant="outline"
             >
               {t('common.processAnother')}
-            </button>
+            </Button>
           </div>
         </div>
 
         {/* Quick Actions */}
-        <div className="card p-6 mt-6">
+        <Card className="p-6 mt-6">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
             {t('common.whatsNext')}
           </h3>
@@ -236,74 +238,78 @@ export const AddFormFieldsPDF: React.FC = () => {
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            <button
+            <Button
               onClick={() => handleQuickAction('compress-pdf')}
-              className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
+              variant="outline"
+              className="flex items-center gap-3 p-4 h-auto justify-start"
             >
               <span className="text-3xl">🗜️</span>
               <div className="text-left">
-                <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
+                <p className="font-medium text-gray-900 dark:text-white">
                   {t('tools.compress-pdf.name')}
                 </p>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
                   Reduce file size
                 </p>
               </div>
-            </button>
+            </Button>
 
-            <button
+            <Button
               onClick={() => handleQuickAction('protect-pdf')}
-              className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
+              variant="outline"
+              className="flex items-center gap-3 p-4 h-auto justify-start"
             >
               <span className="text-3xl">🔒</span>
               <div className="text-left">
-                <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
+                <p className="font-medium text-gray-900 dark:text-white">
                   {t('tools.protect-pdf.name')}
                 </p>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
                   Add password
                 </p>
               </div>
-            </button>
+            </Button>
 
-            <button
+            <Button
               onClick={() => handleQuickAction('flatten-pdf')}
-              className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
+              variant="outline"
+              className="flex items-center gap-3 p-4 h-auto justify-start"
             >
               <span className="text-3xl">📋</span>
               <div className="text-left">
-                <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
+                <p className="font-medium text-gray-900 dark:text-white">
                   {t('tools.flatten-pdf.name')}
                 </p>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
                   Flatten form
                 </p>
               </div>
-            </button>
+            </Button>
 
-            <button
+            <Button
               onClick={() => handleQuickAction('split-pdf')}
-              className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
+              variant="outline"
+              className="flex items-center gap-3 p-4 h-auto justify-start"
             >
               <span className="text-3xl">✂️</span>
               <div className="text-left">
-                <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
+                <p className="font-medium text-gray-900 dark:text-white">
                   {t('tools.split-pdf.name')}
                 </p>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
                   Extract pages
                 </p>
               </div>
-            </button>
+            </Button>
           </div>
-        </div>
-      </div>
+        </Card>
+      </Card>
     );
   }
 
   // Main editor interface
   return (
-    <div className="card flex flex-col" style={{ height: 'calc(100vh - 120px)', minHeight: '800px' }}>
+    <Card className="flex flex-col" style={{ height: 'calc(100vh - 120px)', minHeight: '800px' }}>
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
         <h2 className="text-xl font-bold text-gray-900 dark:text-white">
@@ -373,7 +379,7 @@ export const AddFormFieldsPDF: React.FC = () => {
       {/* Processing overlay */}
       {isProcessing && (
         <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 text-center shadow-2xl">
+          <Card className="p-8 text-center shadow-2xl">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-ocean-500 mx-auto mb-6"></div>
             <p className="text-gray-900 dark:text-white font-bold text-lg mb-2">{progress.message}</p>
             <div className="w-64 bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-2">
@@ -383,9 +389,9 @@ export const AddFormFieldsPDF: React.FC = () => {
               />
             </div>
             <p className="text-gray-600 dark:text-gray-400 text-sm">{Math.round(progress.percent)}%</p>
-          </div>
+          </Card>
         </div>
       )}
-    </div>
+    </Card>
   );
 };

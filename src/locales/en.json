@@ -64,10 +64,6 @@
       "name": "Extract Pages",
       "description": "Extract specific pages"
     },
-    "unlock-pdf": {
-      "name": "Unlock PDF",
-      "description": "Remove PDF password"
-    },
     "images-to-pdf": {
       "name": "Images to PDF",
       "description": "Convert images to PDF"
@@ -449,9 +445,11 @@
     "rotation": "Rotation",
     "preview": "Preview",
     "settings": "Watermark Settings",
+    "apply": "Apply Watermark",
     "applyButton": "Apply Watermark",
     "applyAnother": "Apply to another",
     "loading": "Loading PDF...",
+    "loadingPreview": "Loading preview...",
     "processing": "Adding watermark...",
     "processingPage": "Processing page {current} of {total}...",
     "saving": "Saving PDF...",
@@ -464,7 +462,9 @@
     },
     "success": {
       "title": "Watermark applied successfully!",
+      "watermarkApplied": "Watermark applied",
       "pages": "Pages watermarked",
+      "size": "File size",
       "time": "Processing time"
     },
     "quickActions": {

@@ -1,9 +1,10 @@
 import React, { useRef, useEffect, useCallback, useState } from 'react';
 import * as pdfjsLib from 'pdfjs-dist';
+import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import type { TextElement } from '@/types/addText';
 
 // Set worker path
-// Worker configured in pdfService.ts
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
 interface CanvasState {
   scale: number;

@@ -8,6 +8,9 @@ import pdfService from '@/services/pdfService';
 import type { UploadedFile } from '@/types/pdf';
 import type { Tool } from '@/types';
 import { HASH_TOOL_MAP } from '@/types';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 
 type CompressionQuality = 'low' | 'medium' | 'high';
 
@@ -189,7 +192,7 @@ export const CompressPDF: React.FC = () => {
 
       {/* Upload section */}
       {!file && !result && (
-        <div className="card p-6">
+        <Card className="p-6">
           <FileUpload
             accept=".pdf"
             multiple={false}
@@ -197,7 +200,7 @@ export const CompressPDF: React.FC = () => {
             maxSizeMB={100}
             disabled={isProcessing}
           />
-        </div>
+        </Card>
       )}
 
       {/* File preview and quality selector */}
@@ -218,7 +221,8 @@ export const CompressPDF: React.FC = () => {
                     </p>
                   </div>
                 </div>
-                <button
+                <Button
+                  variant="ghost"
                   onClick={() => {
                     clearSharedFile();
                     setFile(null);
@@ -227,13 +231,13 @@ export const CompressPDF: React.FC = () => {
                   className="text-ocean-600 dark:text-ocean-400 hover:text-ocean-800 dark:hover:text-ocean-200 font-semibold text-sm"
                 >
                   ✕ {t('common.close')}
-                </button>
+                </Button>
               </div>
             </div>
           )}
 
           {/* File preview */}
-          <div className="card p-6">
+          <Card className="p-6">
             <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
               {t('compress.filePreview')}
             </h2>
@@ -257,19 +261,20 @@ export const CompressPDF: React.FC = () => {
                     </p>
                   )}
                 </div>
-                <button
+                <Button
+                  variant="ghost"
                   onClick={handleRemoveFile}
                   disabled={isProcessing}
                   className="mt-4 text-sm text-error-500 hover:text-error-600 disabled:opacity-50"
                 >
                   {t('compress.changeFile')}
-                </button>
+                </Button>
               </div>
             </div>
-          </div>
+          </Card>
 
           {/* Quality selector */}
-          <div className="card p-6">
+          <Card className="p-6">
             <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
               {t('compress.selectQuality')}
             </h2>
@@ -277,11 +282,12 @@ export const CompressPDF: React.FC = () => {
               {qualityPresets.map((preset) => {
                 const isSelected = quality === preset.id;
                 return (
-                  <button
+                  <Button
                     key={preset.id}
+                    variant="outline"
                     onClick={() => setQuality(preset.id)}
                     disabled={isProcessing}
-                    className={`p-6 rounded-xl border-2 transition-all text-left ${
+                    className={`p-6 h-auto justify-start rounded-xl border-2 transition-all text-left ${
                       isSelected
                         ? 'border-ocean-500 bg-ocean-50 dark:bg-ocean-900/20'
                         : 'border-gray-200 dark:border-privacy-700 hover:border-ocean-300 dark:hover:border-ocean-700'
@@ -322,37 +328,37 @@ export const CompressPDF: React.FC = () => {
                         </span>
                       </div>
                     )}
-                  </button>
+                  </Button>
                 );
               })}
             </div>
 
             {/* Compress button */}
             <div className="mt-6">
-              <button
+              <Button
                 onClick={handleCompress}
                 disabled={isProcessing || !file}
                 className="btn btn-primary w-full text-lg py-3"
               >
                 {isProcessing ? t('common.processing') : t('compress.compressButton')}
-              </button>
+              </Button>
             </div>
-          </div>
+          </Card>
         </div>
       )}
 
       {/* Progress */}
       {isProcessing && (
-        <div className="card p-6">
+        <Card className="p-6">
           <ProgressBar progress={progress} message={progressMessage} />
-        </div>
+        </Card>
       )}
 
       {/* Result */}
       {result && (
         <div className="space-y-6">
           {/* Success card */}
-          <div className="card p-8">
+          <Card className="p-8">
             <div className="text-center space-y-4">
               <div className="text-6xl">✅</div>
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -385,18 +391,18 @@ export const CompressPDF: React.FC = () => {
 
               {/* Primary actions */}
               <div className="flex gap-3 justify-center mt-6 pt-4">
-                <button onClick={handleDownload} className="btn btn-primary px-8">
+                <Button onClick={handleDownload} className="btn btn-primary px-8">
                   📥 {t('common.download')}
-                </button>
-                <button onClick={handleReset} className="btn btn-secondary">
+                </Button>
+                <Button variant="outline" onClick={handleReset} className="btn btn-secondary">
                   {t('compress.compressAnother')}
-                </button>
+                </Button>
               </div>
             </div>
-          </div>
+          </Card>
 
           {/* Quick Actions */}
-          <div className="card p-6">
+          <Card className="p-6">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
               {t('compress.quickActions.title')}
             </h3>
@@ -407,9 +413,10 @@ export const CompressPDF: React.FC = () => {
             {/* Action buttons grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {/* Protect */}
-              <button
+              <Button
+                variant="outline"
                 onClick={() => handleQuickAction('protect-pdf')}
-                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
+                className="flex items-center gap-3 p-4 h-auto justify-start rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
               >
                 <span className="text-3xl">🔒</span>
                 <div className="text-left">
@@ -420,12 +427,13 @@ export const CompressPDF: React.FC = () => {
                     {t('compress.quickActions.protect')}
                   </p>
                 </div>
-              </button>
+              </Button>
 
               {/* Merge */}
-              <button
+              <Button
+                variant="outline"
                 onClick={() => handleQuickAction('merge-pdf')}
-                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
+                className="flex items-center gap-3 p-4 h-auto justify-start rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
               >
                 <span className="text-3xl">📑</span>
                 <div className="text-left">
@@ -436,12 +444,13 @@ export const CompressPDF: React.FC = () => {
                     {t('compress.quickActions.merge')}
                   </p>
                 </div>
-              </button>
+              </Button>
 
               {/* Split */}
-              <button
+              <Button
+                variant="outline"
                 onClick={() => handleQuickAction('split-pdf')}
-                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
+                className="flex items-center gap-3 p-4 h-auto justify-start rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
               >
                 <span className="text-3xl">✂️</span>
                 <div className="text-left">
@@ -452,12 +461,13 @@ export const CompressPDF: React.FC = () => {
                     {t('compress.quickActions.split')}
                   </p>
                 </div>
-              </button>
+              </Button>
 
               {/* Watermark */}
-              <button
+              <Button
+                variant="outline"
                 onClick={() => handleQuickAction('watermark-pdf')}
-                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
+                className="flex items-center gap-3 p-4 h-auto justify-start rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
               >
                 <span className="text-3xl">💧</span>
                 <div className="text-left">
@@ -468,9 +478,9 @@ export const CompressPDF: React.FC = () => {
                     {t('compress.quickActions.watermark')}
                   </p>
                 </div>
-              </button>
+              </Button>
             </div>
-          </div>
+          </Card>
         </div>
       )}
     </div>

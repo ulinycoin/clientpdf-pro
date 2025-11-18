@@ -7,6 +7,9 @@ import { useSharedFile } from '@/hooks/useSharedFile';
 import pdfService from '@/services/pdfService';
 import type { Tool } from '@/types';
 import { HASH_TOOL_MAP } from '@/types';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
 
 interface ImageFile {
   id: string;
@@ -164,7 +167,7 @@ export const ImagesToPDF: React.FC = () => {
         {!result ? (
           <>
             {/* File Upload */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-6">
+            <Card className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-6">
               <FileUpload
                 onFilesSelected={handleFilesSelected}
                 accept="image/jpeg,image/jpg,image/png"
@@ -180,12 +183,13 @@ export const ImagesToPDF: React.FC = () => {
                     <h3 className="text-lg font-semibold text-ocean-900 dark:text-white">
                       {t('imagesToPdf.imagesList')} ({images.length})
                     </h3>
-                    <button
+                    <Button
                       onClick={handleReset}
+                      variant="ghost"
                       className="text-sm text-ocean-600 dark:text-ocean-400 hover:text-ocean-800 dark:hover:text-ocean-200"
                     >
                       {t('common.clearAll')}
-                    </button>
+                    </Button>
                   </div>
 
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
@@ -208,14 +212,15 @@ export const ImagesToPDF: React.FC = () => {
                           className="w-full h-32 object-cover"
                         />
                         <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-opacity flex items-center justify-center">
-                          <button
+                          <Button
                             onClick={() => handleRemoveImage(image.id)}
+                            variant="ghost"
                             className="opacity-0 group-hover:opacity-100 bg-red-500 text-white rounded-full p-2 transition-opacity hover:bg-red-600"
                           >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                             </svg>
-                          </button>
+                          </Button>
                         </div>
                         <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-70 text-white text-xs p-1 truncate">
                           {index + 1}. {image.name}
@@ -225,25 +230,26 @@ export const ImagesToPDF: React.FC = () => {
                   </div>
                 </div>
               )}
-            </div>
+            </Card>
 
             {/* Settings */}
             {images.length > 0 && (
-              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-6">
+              <Card className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-6">
                 <h3 className="text-lg font-semibold text-ocean-900 dark:text-white mb-4">
                   {t('imagesToPdf.settings')}
                 </h3>
 
                 {/* Page Size */}
                 <div className="mb-4">
-                  <label className="block text-sm font-medium text-ocean-700 dark:text-ocean-300 mb-2">
+                  <Label className="block text-sm font-medium text-ocean-700 dark:text-ocean-300 mb-2">
                     {t('imagesToPdf.pageSize')}
-                  </label>
+                  </Label>
                   <div className="grid grid-cols-3 gap-3">
                     {(['fit', 'a4', 'letter'] as PageSize[]).map((size) => (
-                      <button
+                      <Button
                         key={size}
                         onClick={() => setPageSize(size)}
+                        variant="outline"
                         className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                           pageSize === size
                             ? 'bg-ocean-500 text-white'
@@ -251,21 +257,22 @@ export const ImagesToPDF: React.FC = () => {
                         }`}
                       >
                         {t(`imagesToPdf.pageSizes.${size}`)}
-                      </button>
+                      </Button>
                     ))}
                   </div>
                 </div>
 
                 {/* Orientation */}
                 <div className="mb-4">
-                  <label className="block text-sm font-medium text-ocean-700 dark:text-ocean-300 mb-2">
+                  <Label className="block text-sm font-medium text-ocean-700 dark:text-ocean-300 mb-2">
                     {t('imagesToPdf.orientation')}
-                  </label>
+                  </Label>
                   <div className="grid grid-cols-2 gap-3">
                     {(['portrait', 'landscape'] as Orientation[]).map((orient) => (
-                      <button
+                      <Button
                         key={orient}
                         onClick={() => setOrientation(orient)}
+                        variant="outline"
                         className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                           orientation === orient
                             ? 'bg-ocean-500 text-white'
@@ -273,16 +280,16 @@ export const ImagesToPDF: React.FC = () => {
                         }`}
                       >
                         {t(`imagesToPdf.orientations.${orient}`)}
-                      </button>
+                      </Button>
                     ))}
                   </div>
                 </div>
 
                 {/* Margin */}
                 <div>
-                  <label className="block text-sm font-medium text-ocean-700 dark:text-ocean-300 mb-2">
+                  <Label className="block text-sm font-medium text-ocean-700 dark:text-ocean-300 mb-2">
                     {t('imagesToPdf.margin')}: {margin}px
-                  </label>
+                  </Label>
                   <input
                     type="range"
                     min="0"
@@ -293,26 +300,26 @@ export const ImagesToPDF: React.FC = () => {
                     className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
                   />
                 </div>
-              </div>
+              </Card>
             )}
 
             {/* Convert Button */}
             {images.length > 0 && !isProcessing && (
               <div className="flex justify-center">
-                <button
+                <Button
                   onClick={handleConvert}
                   className="px-8 py-4 bg-ocean-500 text-white text-lg font-semibold rounded-xl hover:bg-ocean-600 transition-colors shadow-lg hover:shadow-xl"
                 >
                   {t('imagesToPdf.convert')}
-                </button>
+                </Button>
               </div>
             )}
 
             {/* Progress */}
             {isProcessing && (
-              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+              <Card className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
                 <ProgressBar progress={progress} message={progressMessage} />
-              </div>
+              </Card>
             )}
           </>
         ) : (
@@ -344,7 +351,7 @@ export const ImagesToPDF: React.FC = () => {
             </div>
 
             {/* PDF Preview */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+            <Card className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
               <h3 className="text-lg font-semibold text-ocean-900 dark:text-white mb-4">
                 {t('common.preview')}
               </h3>
@@ -353,41 +360,43 @@ export const ImagesToPDF: React.FC = () => {
                 width={600}
                 height={800}
               />
-            </div>
+            </Card>
 
             {/* Actions */}
             <div className="flex flex-col sm:flex-row gap-4">
-              <button
+              <Button
                 onClick={handleDownload}
                 className="flex-1 px-6 py-4 bg-ocean-500 text-white text-lg font-semibold rounded-xl hover:bg-ocean-600 transition-colors shadow-lg hover:shadow-xl"
               >
                 {t('common.download')}
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={handleReset}
+                variant="outline"
                 className="flex-1 px-6 py-4 bg-gray-200 dark:bg-gray-700 text-ocean-900 dark:text-white text-lg font-semibold rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
               >
                 {t('common.convertAnother')}
-              </button>
+              </Button>
             </div>
 
             {/* Quick Actions */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+            <Card className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
               <h3 className="text-lg font-semibold text-ocean-900 dark:text-white mb-4">
                 {t('common.quickActions')}
               </h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {(['compress-pdf', 'protect-pdf', 'watermark-pdf'] as Tool[]).map((toolId) => (
-                  <button
+                  <Button
                     key={toolId}
                     onClick={() => handleQuickAction(toolId)}
+                    variant="outline"
                     className="px-4 py-3 bg-gray-100 dark:bg-gray-700 text-ocean-700 dark:text-ocean-300 rounded-lg hover:bg-ocean-100 dark:hover:bg-gray-600 transition-colors text-sm font-medium"
                   >
                     {t(`tools.${toolId}.name`)}
-                  </button>
+                  </Button>
                 ))}
               </div>
-            </div>
+            </Card>
           </div>
         )}
       </div>

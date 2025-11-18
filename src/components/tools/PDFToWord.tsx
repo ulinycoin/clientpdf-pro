@@ -7,6 +7,8 @@ import { useSharedFile } from '@/hooks/useSharedFile';
 import pdfService from '@/services/pdfService';
 import type { Tool } from '@/types';
 import { HASH_TOOL_MAP } from '@/types';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 
 export const PDFToWord: React.FC = () => {
   const { t } = useI18n();
@@ -125,7 +127,7 @@ export const PDFToWord: React.FC = () => {
 
       {/* File Info */}
       {file && !result && (
-        <div className="mb-6 p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+        <Card className="mb-6 p-4">
           <div className="flex items-center justify-between">
             <div className="flex-1">
               <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-1">
@@ -136,23 +138,24 @@ export const PDFToWord: React.FC = () => {
                 {formatFileSize(file.size)}
               </p>
             </div>
-            <button
+            <Button
               onClick={handleReset}
-              className="ml-4 px-4 py-2 text-sm text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+              variant="ghost"
+              className="ml-4 text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
             >
               {t('common.remove')}
-            </button>
+            </Button>
           </div>
 
           {/* Convert Button */}
-          <button
+          <Button
             onClick={handleConvert}
             disabled={isProcessing}
-            className="mt-4 w-full px-6 py-3 bg-ocean-600 text-white rounded-lg hover:bg-ocean-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="mt-4 w-full"
           >
             {isProcessing ? t('common.processing') : t('pdfToWord.convert')}
-          </button>
-        </div>
+          </Button>
+        </Card>
       )}
 
       {/* Progress Bar */}
@@ -166,7 +169,7 @@ export const PDFToWord: React.FC = () => {
       {result && (
         <div className="space-y-6">
           {/* Stats */}
-          <div className="grid grid-cols-2 gap-4 p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+          <Card className="grid grid-cols-2 gap-4 p-4">
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-400">{t('common.originalSize')}</p>
               <p className="text-lg font-semibold text-gray-900 dark:text-white">
@@ -179,20 +182,20 @@ export const PDFToWord: React.FC = () => {
                 {formatFileSize(result.processedSize)}
               </p>
             </div>
-          </div>
+          </Card>
 
           {/* Preview of original PDF */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
+          <Card className="p-4">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
               {t('common.preview')} - Original PDF
             </h3>
             <div className="flex justify-center">
               <PDFPreview file={file} width={600} height={800} />
             </div>
-          </div>
+          </Card>
 
           {/* Success Message */}
-          <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+          <Card className="p-4 bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800">
             <div className="flex items-center">
               <svg
                 className="w-5 h-5 text-green-600 dark:text-green-400 mr-3"
@@ -209,22 +212,22 @@ export const PDFToWord: React.FC = () => {
                 {t('pdfToWord.success')}
               </p>
             </div>
-          </div>
+          </Card>
 
           {/* Actions */}
           <div className="flex gap-3">
-            <button
+            <Button
               onClick={handleDownload}
-              className="flex-1 px-6 py-3 bg-ocean-600 text-white rounded-lg hover:bg-ocean-700 transition-colors"
+              className="flex-1"
             >
               {t('common.download')}
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={handleReset}
-              className="px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              variant="outline"
             >
               {t('common.convertAnother')}
-            </button>
+            </Button>
           </div>
 
           {/* Quick Actions */}
@@ -233,30 +236,34 @@ export const PDFToWord: React.FC = () => {
               {t('common.quickActions')}
             </h3>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-              <button
+              <Button
                 onClick={() => handleQuickAction('word-to-pdf')}
-                className="px-4 py-3 text-sm border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                variant="outline"
+                className="text-sm"
               >
                 {t('tools.word-to-pdf.name')}
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={() => handleQuickAction('merge-pdf')}
-                className="px-4 py-3 text-sm border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                variant="outline"
+                className="text-sm"
               >
                 {t('tools.merge-pdf.name')}
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={() => handleQuickAction('split-pdf')}
-                className="px-4 py-3 text-sm border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                variant="outline"
+                className="text-sm"
               >
                 {t('tools.split-pdf.name')}
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={() => handleQuickAction('compress-pdf')}
-                className="px-4 py-3 text-sm border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                variant="outline"
+                className="text-sm"
               >
                 {t('tools.compress-pdf.name')}
-              </button>
+              </Button>
             </div>
           </div>
         </div>

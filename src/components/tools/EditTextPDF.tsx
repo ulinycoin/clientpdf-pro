@@ -8,6 +8,11 @@ import * as pdfjsLib from 'pdfjs-dist';
 import type { UploadedFile } from '@/types/pdf';
 import type { Tool } from '@/types';
 import { HASH_TOOL_MAP } from '@/types';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 // Configure PDF.js worker
 // Worker configured in pdfService.ts
@@ -916,7 +921,7 @@ export const EditTextPDF: React.FC = () => {
           {/* Left Panel - Preview */}
           <div className="lg:col-span-2 space-y-4">
             {/* File Info */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
+            <Card className="p-4">
               <div className="flex items-center justify-between flex-wrap gap-4">
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
@@ -926,55 +931,58 @@ export const EditTextPDF: React.FC = () => {
                     {t('common.page')} {selectedPage} / {totalPages}
                   </p>
                 </div>
-                <button
+                <Button
                   onClick={handleRemoveFile}
-                  className="px-4 py-2 text-sm bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                  variant="destructive"
+                  size="sm"
                 >
                   {t('common.remove')}
-                </button>
+                </Button>
               </div>
-            </div>
+            </Card>
 
             {/* Page Selector with Text Position Controls */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <Card className="p-4">
+              <Label className="mb-2">
                 Select Page to Edit
-              </label>
+              </Label>
               <div className="flex items-center gap-2 mb-3">
-                <button
+                <Button
                   onClick={() => handlePageChange(Math.max(1, selectedPage - 1))}
                   disabled={selectedPage === 1}
-                  className="px-3 py-2 bg-gray-100 dark:bg-gray-700 rounded hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50"
+                  variant="outline"
+                  size="sm"
                 >
                   ←
-                </button>
-                <input
+                </Button>
+                <Input
                   type="number"
                   min={1}
                   max={totalPages}
                   value={selectedPage}
                   onChange={(e) => handlePageChange(Math.min(totalPages, Math.max(1, parseInt(e.target.value) || 1)))}
-                  className="w-20 px-3 py-2 text-center border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-20 text-center"
                 />
-                <button
+                <Button
                   onClick={() => handlePageChange(Math.min(totalPages, selectedPage + 1))}
                   disabled={selectedPage === totalPages}
-                  className="px-3 py-2 bg-gray-100 dark:bg-gray-700 rounded hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50"
+                  variant="outline"
+                  size="sm"
                 >
                   →
-                </button>
+                </Button>
               </div>
 
               {/* Text Position Controls */}
               <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
-                <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <Label className="block text-xs mb-2">
                   Text Position (for selected area)
-                </label>
+                </Label>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+                    <Label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">
                       X: {textOffsetX}px
-                    </label>
+                    </Label>
                     <input
                       type="range"
                       min={-50}
@@ -985,9 +993,9 @@ export const EditTextPDF: React.FC = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+                    <Label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">
                       Y: {textOffsetY}px
-                    </label>
+                    </Label>
                     <input
                       type="range"
                       min={-50}
@@ -999,40 +1007,43 @@ export const EditTextPDF: React.FC = () => {
                   </div>
                 </div>
               </div>
-            </div>
+            </Card>
 
             {/* Canvas Preview */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
+            <Card className="p-4">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                   Page Preview
                 </h3>
                 {/* Zoom Controls */}
                 <div className="flex items-center gap-2">
-                  <button
+                  <Button
                     onClick={() => setCanvasScale(Math.max(0.5, canvasScale - 0.25))}
-                    className="px-2 py-1 text-sm bg-gray-100 dark:bg-gray-700 rounded hover:bg-gray-200 dark:hover:bg-gray-600"
+                    variant="outline"
+                    size="sm"
                     title="Zoom Out"
                   >
                     −
-                  </button>
+                  </Button>
                   <span className="text-sm text-gray-600 dark:text-gray-400 min-w-[60px] text-center">
                     {Math.round(canvasScale * 100)}%
                   </span>
-                  <button
+                  <Button
                     onClick={() => setCanvasScale(Math.min(3.0, canvasScale + 0.25))}
-                    className="px-2 py-1 text-sm bg-gray-100 dark:bg-gray-700 rounded hover:bg-gray-200 dark:hover:bg-gray-600"
+                    variant="outline"
+                    size="sm"
                     title="Zoom In"
                   >
                     +
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={() => setCanvasScale(1.0)}
-                    className="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-700 rounded hover:bg-gray-200 dark:hover:bg-gray-600"
+                    variant="outline"
+                    size="sm"
                     title="Reset Zoom"
                   >
                     100%
-                  </button>
+                  </Button>
                 </div>
               </div>
               <div className="overflow-auto max-h-[70vh] border border-gray-200 dark:border-gray-700 rounded bg-gray-50 dark:bg-gray-900">
@@ -1083,75 +1094,81 @@ export const EditTextPDF: React.FC = () => {
                   </p>
                 );
               })()}
-            </div>
+            </Card>
           </div>
 
           {/* Right Panel - Controls */}
           <div className="space-y-4">
             {/* Mode Selection */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+            <Card className="p-6">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                 Selection Mode
               </h3>
               <div className="grid grid-cols-2 gap-3">
-                <button
+                <Button
                   onClick={() => setEditModeType('text')}
-                  className={`px-4 py-3 rounded-lg border-2 transition-all ${
+                  variant="outline"
+                  className={`px-4 py-3 h-auto flex-col ${
                     editMode_type === 'text'
                       ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300'
-                      : 'border-gray-300 dark:border-gray-600 hover:border-blue-300'
+                      : 'hover:border-blue-300'
                   }`}
                 >
                   <div className="text-2xl mb-1">✏️</div>
                   <div className="text-sm font-medium">Replace Text</div>
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={() => setEditModeType('cover')}
-                  className={`px-4 py-3 rounded-lg border-2 transition-all ${
+                  variant="outline"
+                  className={`px-4 py-3 h-auto flex-col ${
                     editMode_type === 'cover'
                       ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300'
-                      : 'border-gray-300 dark:border-gray-600 hover:border-purple-300'
+                      : 'hover:border-purple-300'
                   }`}
                 >
                   <div className="text-2xl mb-1">🎨</div>
                   <div className="text-sm font-medium">Cover Only</div>
-                </button>
+                </Button>
               </div>
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
                 {editMode_type === 'text' ? 'Draw and add replacement text' : 'Draw to cover text/images without adding new text'}
               </p>
-            </div>
+            </Card>
 
             {/* Selections List */}
             {selections.length > 0 && (() => {
               const pageSelections = selections.filter(s => s.pageNumber === selectedPage);
               return (
-                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                <Card className="p-6">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                       Selections ({pageSelections.length} on page {selectedPage})
                     </h3>
                     <div className="flex gap-2">
                       {pageSelections.length > 0 && (
-                        <button
+                        <Button
                           onClick={() => {
                             setSelections(prev => prev.filter(s => s.pageNumber !== selectedPage));
                             setActiveSelectionId(null);
                           }}
-                          className="text-sm text-orange-500 hover:text-orange-600"
+                          variant="ghost"
+                          size="sm"
+                          className="text-orange-500 hover:text-orange-600"
                         >
                           Clear Page
-                        </button>
+                        </Button>
                       )}
-                      <button
+                      <Button
                         onClick={() => {
                           setSelections([]);
                           setActiveSelectionId(null);
                         }}
-                        className="text-sm text-red-500 hover:text-red-600"
+                        variant="ghost"
+                        size="sm"
+                        className="text-red-500 hover:text-red-600"
                       >
                         Clear All
-                      </button>
+                      </Button>
                     </div>
                   </div>
                   {pageSelections.length > 0 ? (
@@ -1181,7 +1198,7 @@ export const EditTextPDF: React.FC = () => {
                                 {sel.mode === 'text' && sel.text && ` - "${sel.text.substring(0, 20)}..."`}
                               </div>
                             </div>
-                            <button
+                            <Button
                               onClick={(e) => {
                                 e.stopPropagation();
                                 setSelections(prev => prev.filter(s => s.id !== sel.id));
@@ -1190,10 +1207,12 @@ export const EditTextPDF: React.FC = () => {
                                   setActiveSelectionId(remaining.length > 0 ? remaining[0].id : null);
                                 }
                               }}
-                              className="ml-2 text-red-500 hover:text-red-600"
+                              variant="ghost"
+                              size="sm"
+                              className="ml-2 text-red-500 hover:text-red-600 h-6 w-6 p-0"
                             >
                               ✕
-                            </button>
+                            </Button>
                           </div>
                         </div>
                       ))}
@@ -1203,7 +1222,7 @@ export const EditTextPDF: React.FC = () => {
                       No selections on this page. Total: {selections.length} across all pages.
                     </p>
                   )}
-                </div>
+                </Card>
               );
             })()}
 
@@ -1213,7 +1232,7 @@ export const EditTextPDF: React.FC = () => {
               if (!activeSel) return null;
 
               return (
-                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                <Card className="p-6">
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                     Edit Active Selection
                   </h3>
@@ -1221,9 +1240,9 @@ export const EditTextPDF: React.FC = () => {
                   <div className="space-y-4">
                     {activeSel.mode === 'text' && (
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <Label className="mb-2">
                           Replacement Text
-                        </label>
+                        </Label>
                         <textarea
                           value={activeSel.text}
                           onChange={(e) => {
@@ -1241,9 +1260,9 @@ export const EditTextPDF: React.FC = () => {
                     {/* Colors */}
                     <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        <Label className="block text-xs mb-1">
                           Background
-                        </label>
+                        </Label>
                         <input
                           type="color"
                           value={backgroundColor}
@@ -1253,9 +1272,9 @@ export const EditTextPDF: React.FC = () => {
                       </div>
                       {activeSel.mode === 'text' && (
                         <div>
-                          <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                          <Label className="block text-xs mb-1">
                             Text Color
-                          </label>
+                          </Label>
                           <input
                             type="color"
                             value={textColor}
@@ -1272,9 +1291,9 @@ export const EditTextPDF: React.FC = () => {
                         {/* Font Settings - Compact Grid */}
                         <div className="grid grid-cols-2 gap-3">
                           <div>
-                            <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            <Label className="block text-xs mb-1">
                               Size: {fontSize}px
-                            </label>
+                            </Label>
                             <input
                               type="range"
                               min={8}
@@ -1285,21 +1304,22 @@ export const EditTextPDF: React.FC = () => {
                             />
                           </div>
                           <div>
-                            <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            <Label className="block text-xs mb-1">
                               Font
-                            </label>
-                            <select
-                              value={fontFamily}
-                              onChange={(e) => setFontFamily(e.target.value)}
-                              className="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                            >
-                              <option value="Arial">Arial</option>
-                              <option value="Helvetica">Helvetica</option>
-                              <option value="Times New Roman">Times</option>
-                              <option value="Courier New">Courier</option>
-                              <option value="Georgia">Georgia</option>
-                              <option value="Verdana">Verdana</option>
-                            </select>
+                            </Label>
+                            <Select value={fontFamily} onValueChange={setFontFamily}>
+                              <SelectTrigger className="w-full h-8 text-sm">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="Arial">Arial</SelectItem>
+                                <SelectItem value="Helvetica">Helvetica</SelectItem>
+                                <SelectItem value="Times New Roman">Times</SelectItem>
+                                <SelectItem value="Courier New">Courier</SelectItem>
+                                <SelectItem value="Georgia">Georgia</SelectItem>
+                                <SelectItem value="Verdana">Verdana</SelectItem>
+                              </SelectContent>
+                            </Select>
                           </div>
                         </div>
 
@@ -1335,29 +1355,29 @@ export const EditTextPDF: React.FC = () => {
                         onChange={(e) => setShowPreview(e.target.checked)}
                         className="w-4 h-4"
                       />
-                      <label htmlFor="showPreview" className="text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer">
+                      <Label htmlFor="showPreview" className="text-sm font-medium cursor-pointer">
                         Show live preview
-                      </label>
+                      </Label>
                     </div>
                   </div>
-                </div>
+                </Card>
               );
             })()}
 
             {/* Apply All Button */}
             {selections.length > 0 && (
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-                <button
+              <Card className="p-6">
+                <Button
                   onClick={handleReplaceText}
                   disabled={isProcessing}
-                  className="w-full px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="w-full bg-green-500 hover:bg-green-600"
                 >
                   <span>Apply {selections.length} Change{selections.length > 1 ? 's' : ''}</span>
-                </button>
+                </Button>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
                   All selections will be applied to the PDF
                 </p>
-              </div>
+              </Card>
             )}
           </div>
         </div>
@@ -1365,18 +1385,18 @@ export const EditTextPDF: React.FC = () => {
 
       {/* Processing */}
       {isProcessing && (
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8">
+        <Card className="p-8">
           <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
             {t('common.processing')}
           </h3>
           <ProgressBar progress={progress} message={progressMessage} />
-        </div>
+        </Card>
       )}
 
       {/* Result */}
       {hasResult && (
         <div className="space-y-6">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8">
+          <Card className="p-8">
             <div className="text-center">
               <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg
@@ -1401,18 +1421,18 @@ export const EditTextPDF: React.FC = () => {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button
+                <Button
                   onClick={handleDownload}
-                  className="px-6 py-3 bg-ocean-500 text-white rounded-lg hover:bg-ocean-600 transition-colors"
+                  className="bg-ocean-500 hover:bg-ocean-600"
                 >
                   {t('common.download')}
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={handleRemoveFile}
-                  className="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
+                  variant="secondary"
                 >
                   {t('common.processAnother')}
-                </button>
+                </Button>
               </div>
 
               {/* Use in other tools */}
@@ -1423,19 +1443,20 @@ export const EditTextPDF: React.FC = () => {
                 <div className="flex flex-wrap gap-2 justify-center">
                   {(['merge-pdf', 'compress-pdf', 'protect-pdf', 'watermark-pdf'] as Tool[]).map(
                     (tool) => (
-                      <button
+                      <Button
                         key={tool}
                         onClick={() => handleUseInTool(tool)}
-                        className="px-4 py-2 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                        variant="outline"
+                        size="sm"
                       >
                         {t(`tools.${tool}.name`)}
-                      </button>
+                      </Button>
                     )
                   )}
                 </div>
               </div>
             </div>
-          </div>
+          </Card>
         </div>
       )}
     </div>

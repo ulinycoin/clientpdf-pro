@@ -1,4 +1,7 @@
 import React from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface ToolbarProps {
   currentPage: number;
@@ -38,8 +41,8 @@ export const Toolbar: React.FC<ToolbarProps> = ({
     }
   };
 
-  const handleScaleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const newScale = parseFloat(event.target.value);
+  const handleScaleChange = (value: string) => {
+    const newScale = parseFloat(value);
     onScaleChange(newScale);
   };
 
@@ -48,123 +51,133 @@ export const Toolbar: React.FC<ToolbarProps> = ({
       {/* Left side - Tool modes */}
       <div className="flex items-center space-x-4">
         <div className="flex bg-gray-100 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
-          <button
+          <Button
             onClick={() => onToolModeChange('add')}
-            className={`px-4 py-2 text-sm font-medium rounded-l-lg transition-all duration-200 ${
+            variant={toolMode === 'add' ? 'default' : 'ghost'}
+            className={`rounded-l-lg rounded-r-none ${
               toolMode === 'add'
-                ? 'bg-ocean-500 text-white shadow-lg'
-                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                ? 'bg-ocean-500 text-white shadow-lg hover:bg-ocean-600'
+                : ''
             }`}
+            size="sm"
           >
             ✏️ Add Text
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => onToolModeChange('select')}
-            className={`px-4 py-2 text-sm font-medium rounded-r-lg transition-all duration-200 ${
+            variant={toolMode === 'select' ? 'default' : 'ghost'}
+            className={`rounded-r-lg rounded-l-none ${
               toolMode === 'select'
-                ? 'bg-ocean-500 text-white shadow-lg'
-                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                ? 'bg-ocean-500 text-white shadow-lg hover:bg-ocean-600'
+                : ''
             }`}
+            size="sm"
           >
             👆 Select
-          </button>
+          </Button>
         </div>
 
         {/* Undo/Redo */}
         <div className="flex space-x-1">
-          <button
+          <Button
             onClick={onUndo}
             disabled={!canUndo}
-            className="p-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:text-gray-400 disabled:cursor-not-allowed rounded-lg transition-all duration-200"
+            variant="ghost"
+            size="sm"
             title="Undo (Ctrl+Z)"
           >
             ↶
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={onRedo}
             disabled={!canRedo}
-            className="p-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:text-gray-400 disabled:cursor-not-allowed rounded-lg transition-all duration-200"
+            variant="ghost"
+            size="sm"
             title="Redo (Ctrl+Y)"
           >
             ↷
-          </button>
+          </Button>
         </div>
       </div>
 
       {/* Center - Page navigation */}
       <div className="flex items-center space-x-4">
-        <button
+        <Button
           onClick={() => onPageChange(Math.max(1, currentPage - 1))}
           disabled={currentPage <= 1}
-          className="p-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:text-gray-400 disabled:cursor-not-allowed rounded-lg transition-all duration-200"
+          variant="ghost"
+          size="sm"
         >
           ◀️
-        </button>
+        </Button>
 
         <div className="flex items-center space-x-2 bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2">
           <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Page</span>
-          <input
+          <Input
             type="number"
             min={1}
             max={totalPages}
             value={currentPage}
             onChange={handlePageInputChange}
-            className="w-16 px-2 py-1 text-center border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-ocean-500 focus:border-ocean-500"
+            className="w-16 h-8 px-2 py-1 text-center"
           />
           <span className="text-sm font-medium text-gray-700 dark:text-gray-300">of {totalPages}</span>
         </div>
 
-        <button
+        <Button
           onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
           disabled={currentPage >= totalPages}
-          className="p-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:text-gray-400 disabled:cursor-not-allowed rounded-lg transition-all duration-200"
+          variant="ghost"
+          size="sm"
         >
           ▶️
-        </button>
+        </Button>
       </div>
 
       {/* Right side - Zoom and actions */}
       <div className="flex items-center space-x-4">
         {/* Zoom controls */}
         <div className="flex items-center space-x-2 bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2">
-          <button
+          <Button
             onClick={() => onScaleChange(Math.max(0.25, scale - 0.25))}
-            className="p-1 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-all duration-200"
+            variant="ghost"
+            size="sm"
             title="Zoom out (-)"
           >
             🔍-
-          </button>
+          </Button>
 
-          <select
-            value={scale}
-            onChange={handleScaleChange}
-            className="px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-ocean-500 focus:border-ocean-500"
-          >
-            {scaleOptions.map(option => (
-              <option key={option} value={option}>
-                {Math.round(option * 100)}%
-              </option>
-            ))}
-            <option value={scale}>{Math.round(scale * 100)}%</option>
-          </select>
+          <Select value={scale.toString()} onValueChange={handleScaleChange}>
+            <SelectTrigger className="w-24 h-8">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {scaleOptions.map(option => (
+                <SelectItem key={option} value={option.toString()}>
+                  {Math.round(option * 100)}%
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
 
-          <button
+          <Button
             onClick={() => onScaleChange(Math.min(5, scale + 0.25))}
-            className="p-1 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-all duration-200"
+            variant="ghost"
+            size="sm"
             title="Zoom in (+)"
           >
             🔍+
-          </button>
+          </Button>
         </div>
 
         {/* Save button */}
-        <button
+        <Button
           onClick={onSave}
-          className="px-6 py-2 bg-ocean-500 hover:bg-ocean-600 text-white rounded-lg font-semibold transition-colors shadow-lg flex items-center space-x-2"
+          className="bg-ocean-500 hover:bg-ocean-600"
         >
           <span>💾</span>
           <span>Save PDF</span>
-        </button>
+        </Button>
       </div>
     </div>
   );

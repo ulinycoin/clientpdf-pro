@@ -12,6 +12,10 @@ import type {
   FORMAT_DESCRIPTIONS,
   ConvertedImage
 } from '@/types/image.types';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
 
 export const PDFToImages: React.FC = () => {
   const { t } = useI18n();
@@ -172,7 +176,7 @@ export const PDFToImages: React.FC = () => {
 
       {/* Options */}
       {file && !result && (
-        <div className="space-y-6 bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+        <Card className="space-y-6 p-6">
           {/* File Info */}
           <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
             <div className="flex-shrink-0 w-10 h-10 bg-red-100 dark:bg-red-900/30 rounded-lg flex items-center justify-center">
@@ -186,42 +190,44 @@ export const PDFToImages: React.FC = () => {
 
           {/* Format Selection */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <Label className="block text-sm font-medium mb-2">
               {t('pdfToImages.format')}
-            </label>
-            <select
-              value={format}
-              onChange={(e) => setFormat(e.target.value as ImageFormat)}
-              className="w-full px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-ocean-500 focus:border-transparent"
-            >
-              <option value="png">PNG</option>
-              <option value="jpeg">JPEG</option>
-            </select>
+            </Label>
+            <Select value={format} onValueChange={(value) => setFormat(value as ImageFormat)}>
+              <SelectTrigger className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="png">PNG</SelectItem>
+                <SelectItem value="jpeg">JPEG</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Quality Selection */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <Label className="block text-sm font-medium mb-2">
               {t('pdfToImages.quality')}
-            </label>
-            <select
-              value={quality}
-              onChange={(e) => setQuality(e.target.value as ImageQuality)}
-              className="w-full px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-ocean-500 focus:border-transparent"
-            >
-              {qualitySettings && Object.entries(qualitySettings).map(([key, settings]) => (
-                <option key={key} value={key}>
-                  {key.charAt(0).toUpperCase() + key.slice(1)} ({settings.resolution} DPI)
-                </option>
-              ))}
-            </select>
+            </Label>
+            <Select value={quality} onValueChange={(value) => setQuality(value as ImageQuality)}>
+              <SelectTrigger className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {qualitySettings && Object.entries(qualitySettings).map(([key, settings]) => (
+                  <SelectItem key={key} value={key}>
+                    {key.charAt(0).toUpperCase() + key.slice(1)} ({settings.resolution} DPI)
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Page Selection */}
           <div className="space-y-3">
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <Label className="block text-sm font-medium">
               {t('pdfToImages.pages')}
-            </label>
+            </Label>
 
             <div className="space-y-2">
               <label className="flex items-center gap-2 cursor-pointer">
@@ -297,9 +303,9 @@ export const PDFToImages: React.FC = () => {
           {/* Background Color for JPEG */}
           {format === 'jpeg' && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <Label className="block text-sm font-medium mb-2">
                 {t('pdfToImages.backgroundColor')}
-              </label>
+              </Label>
               <div className="flex items-center gap-3">
                 <input
                   type="color"
@@ -314,32 +320,33 @@ export const PDFToImages: React.FC = () => {
 
           {/* Action Buttons */}
           <div className="flex gap-3">
-            <button
+            <Button
               onClick={handleConvert}
               disabled={isProcessing}
-              className="flex-1 px-6 py-3 bg-ocean-600 hover:bg-ocean-700 disabled:bg-gray-400 text-white font-medium rounded-lg transition-colors"
+              className="flex-1 px-6 py-3"
             >
               {isProcessing ? t('common.processing') : t('pdfToImages.convert')}
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={handleReset}
               disabled={isProcessing}
-              className="px-6 py-3 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-medium rounded-lg transition-colors"
+              variant="secondary"
+              className="px-6 py-3"
             >
               {t('common.reset')}
-            </button>
+            </Button>
           </div>
-        </div>
+        </Card>
       )}
 
       {/* Progress */}
       {isProcessing && (
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+        <Card className="p-6">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
             {t('common.processing')}
           </h3>
           <ProgressBar progress={progress} label={progressMessage} />
-        </div>
+        </Card>
       )}
 
       {/* Results */}
@@ -382,7 +389,7 @@ export const PDFToImages: React.FC = () => {
 
               {/* Preview Images */}
               {previewImages.length > 0 && (
-                <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+                <Card className="p-6">
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                     {t('pdfToImages.preview')}
                   </h3>
@@ -408,35 +415,36 @@ export const PDFToImages: React.FC = () => {
                       </div>
                     )}
                   </div>
-                </div>
+                </Card>
               )}
 
               {/* Download Options */}
-              <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm space-y-4">
+              <Card className="p-6 space-y-4">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                   {t('pdfToImages.download')}
                 </h3>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                  <button
+                  <Button
                     onClick={handleDownloadZip}
-                    className="px-6 py-3 bg-ocean-600 hover:bg-ocean-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
+                    className="px-6 py-3 flex items-center justify-center gap-2"
                   >
                     <span>📦</span>
                     <span>{t('pdfToImages.downloadZip')}</span>
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={handleDownloadAll}
-                    className="px-6 py-3 bg-ocean-500 hover:bg-ocean-600 text-white font-medium rounded-lg transition-colors"
+                    className="px-6 py-3"
                   >
                     {t('pdfToImages.downloadAll')} ({result.images.length})
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={handleReset}
-                    className="px-6 py-3 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-medium rounded-lg transition-colors"
+                    variant="secondary"
+                    className="px-6 py-3"
                   >
                     {t('common.convertAnother')}
-                  </button>
+                  </Button>
                 </div>
 
                 {/* Individual Download Buttons */}
@@ -447,18 +455,19 @@ export const PDFToImages: React.FC = () => {
                     </h4>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                       {result.images.map((image, index) => (
-                        <button
+                        <Button
                           key={index}
                           onClick={() => handleDownloadSingle(index)}
-                          className="px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white text-sm font-medium rounded-lg transition-colors"
+                          variant="outline"
+                          className="px-4 py-2 text-sm"
                         >
                           {t('pdfToImages.page')} {image.pageNumber}
-                        </button>
+                        </Button>
                       ))}
                     </div>
                   </div>
                 )}
-              </div>
+              </Card>
             </>
           ) : (
             <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-6">
@@ -466,12 +475,13 @@ export const PDFToImages: React.FC = () => {
                 {t('common.error')}
               </h3>
               <p className="text-red-700 dark:text-red-300">{result.error}</p>
-              <button
+              <Button
                 onClick={handleReset}
-                className="mt-4 px-6 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors"
+                variant="destructive"
+                className="mt-4 px-6 py-2"
               >
                 {t('common.tryAgain')}
-              </button>
+              </Button>
             </div>
           )}
         </div>

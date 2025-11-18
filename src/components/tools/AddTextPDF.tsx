@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { FileUpload } from '@/components/common/FileUpload';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import { useI18n } from '@/hooks/useI18n';
 import { useSharedFile } from '@/hooks/useSharedFile';
 import { useAddTextTool } from '@/hooks/useAddTextTool';
@@ -207,7 +209,7 @@ export const AddTextPDF: React.FC = () => {
   // If no file, show upload zone
   if (!file) {
     return (
-      <div className="card p-8">
+      <Card className="p-8">
         <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">
           Add Text to PDF
         </h2>
@@ -221,14 +223,14 @@ export const AddTextPDF: React.FC = () => {
           multiple={false}
           maxSizeMB={100}
         />
-      </div>
+      </Card>
     );
   }
 
   // If result, show success and download
   if (result) {
     return (
-      <div className="card p-8">
+      <Card className="p-8">
         <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">
           Add Text to PDF
         </h2>
@@ -246,23 +248,23 @@ export const AddTextPDF: React.FC = () => {
           </div>
 
           <div className="flex gap-4">
-            <button
+            <Button
               onClick={handleDownload}
-              className="flex-1 px-6 py-3 bg-ocean-500 hover:bg-ocean-600 text-white rounded-lg font-semibold transition-colors"
+              className="flex-1"
             >
               Download
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={handleReset}
-              className="px-6 py-3 border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg font-semibold transition-colors"
+              variant="outline"
             >
               Process Another
-            </button>
+            </Button>
           </div>
         </div>
 
           {/* Quick Actions */}
-          <div className="card p-6 mt-6">
+          <Card className="p-6 mt-6">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
               What's next?
             </h3>
@@ -273,9 +275,10 @@ export const AddTextPDF: React.FC = () => {
             {/* Action buttons grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {/* Compress */}
-              <button
+              <Button
                 onClick={() => handleQuickAction('compress-pdf')}
-                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
+                variant="outline"
+                className="flex items-center gap-3 p-4 h-auto justify-start hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
               >
                 <span className="text-3xl">🗜️</span>
                 <div className="text-left">
@@ -286,12 +289,13 @@ export const AddTextPDF: React.FC = () => {
                     Reduce file size
                   </p>
                 </div>
-              </button>
+              </Button>
 
               {/* Protect */}
-              <button
+              <Button
                 onClick={() => handleQuickAction('protect-pdf')}
-                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
+                variant="outline"
+                className="flex items-center gap-3 p-4 h-auto justify-start hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
               >
                 <span className="text-3xl">🔒</span>
                 <div className="text-left">
@@ -302,12 +306,13 @@ export const AddTextPDF: React.FC = () => {
                     Add password
                   </p>
                 </div>
-              </button>
+              </Button>
 
               {/* Watermark */}
-              <button
+              <Button
                 onClick={() => handleQuickAction('watermark-pdf')}
-                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
+                variant="outline"
+                className="flex items-center gap-3 p-4 h-auto justify-start hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
               >
                 <span className="text-3xl">💧</span>
                 <div className="text-left">
@@ -318,12 +323,13 @@ export const AddTextPDF: React.FC = () => {
                     Add watermark
                   </p>
                 </div>
-              </button>
+              </Button>
 
               {/* Split */}
-              <button
+              <Button
                 onClick={() => handleQuickAction('split-pdf')}
-                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
+                variant="outline"
+                className="flex items-center gap-3 p-4 h-auto justify-start hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
               >
                 <span className="text-3xl">✂️</span>
                 <div className="text-left">
@@ -334,10 +340,10 @@ export const AddTextPDF: React.FC = () => {
                     Extract pages
                   </p>
                 </div>
-              </button>
+              </Button>
             </div>
-          </div>
-      </div>
+          </Card>
+      </Card>
     );
   }
 

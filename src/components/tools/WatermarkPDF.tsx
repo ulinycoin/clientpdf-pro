@@ -1,17 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { FileUpload } from '@/components/common/FileUpload';
 import { ProgressBar } from '@/components/common/ProgressBar';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useI18n } from '@/hooks/useI18n';
 import { useSharedFile } from '@/hooks/useSharedFile';
 import { PDFDocument, rgb, StandardFonts, degrees } from 'pdf-lib';
 import fontkit from '@pdf-lib/fontkit';
 import * as pdfjsLib from 'pdfjs-dist';
+import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import type { UploadedFile, PDFFileInfo } from '@/types/pdf';
 import type { Tool } from '@/types';
 import { HASH_TOOL_MAP } from '@/types';
 
 // Configure PDF.js worker
-// Worker configured in pdfService.ts
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
 type Position = 'center' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'diagonal';
 
@@ -435,21 +441,21 @@ export const WatermarkPDF: React.FC = () => {
 
       {/* File Upload */}
       {!file && (
-        <div className="card p-6">
+        <Card className="p-6">
           <FileUpload
             onFilesSelected={handleFilesSelected}
             accept=".pdf"
             maxFiles={1}
             maxSizeMB={50}
           />
-        </div>
+        </Card>
       )}
 
       {/* Settings & Preview */}
       {file && !result && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Settings Panel */}
-          <div className="card p-6 space-y-4">
+          <Card className="p-6 space-y-4">
             {/* File info */}
             <div className="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-gray-700">
               <div className="flex items-center gap-3">
@@ -462,67 +468,68 @@ export const WatermarkPDF: React.FC = () => {
                   </p>
                 </div>
               </div>
-              <button
+              <Button
                 onClick={handleRemoveFile}
-                className="btn-secondary text-sm"
+                variant="outline"
+                size="sm"
                 disabled={isProcessing}
               >
                 {t('common.remove')}
-              </button>
+              </Button>
             </div>
 
             {/* Watermark Text */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                {t('watermark.text')}
-              </label>
-              <input
+              <Label>{t('watermark.text')}</Label>
+              <Input
                 type="text"
                 value={settings.text}
                 onChange={(e) => setSettings({ ...settings, text: e.target.value })}
                 disabled={isProcessing}
-                className="w-full px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-ocean-500"
                 placeholder="Enter watermark text..."
+                className="mt-2"
               />
             </div>
 
             {/* Position */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                {t('watermark.position')}
-              </label>
-              <select
+              <Label>{t('watermark.position')}</Label>
+              <Select
                 value={settings.position}
-                onChange={(e) => setSettings({ ...settings, position: e.target.value as Position })}
+                onValueChange={(value) => setSettings({ ...settings, position: value as Position })}
                 disabled={isProcessing}
-                className="w-full px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-ocean-500"
               >
-                <option value="diagonal">{t('watermark.positions.diagonal')}</option>
-                <option value="center">{t('watermark.positions.center')}</option>
-                <option value="top-left">{t('watermark.positions.topLeft')}</option>
-                <option value="top-right">{t('watermark.positions.topRight')}</option>
-                <option value="bottom-left">{t('watermark.positions.bottomLeft')}</option>
-                <option value="bottom-right">{t('watermark.positions.bottomRight')}</option>
-              </select>
+                <SelectTrigger className="mt-2">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="diagonal">{t('watermark.positions.diagonal')}</SelectItem>
+                  <SelectItem value="center">{t('watermark.positions.center')}</SelectItem>
+                  <SelectItem value="top-left">{t('watermark.positions.topLeft')}</SelectItem>
+                  <SelectItem value="top-right">{t('watermark.positions.topRight')}</SelectItem>
+                  <SelectItem value="bottom-left">{t('watermark.positions.bottomLeft')}</SelectItem>
+                  <SelectItem value="bottom-right">{t('watermark.positions.bottomRight')}</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             {/* Color */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                {t('watermark.color')}
-              </label>
-              <div className="grid grid-cols-4 gap-2">
+              <Label>{t('watermark.color')}</Label>
+              <div className="grid grid-cols-4 gap-2 mt-2">
                 {colorPresets.map((preset, index) => (
-                  <button
+                  <Button
                     key={index}
+                    type="button"
                     onClick={() => setSettings({ ...settings, color: preset.value })}
                     disabled={isProcessing}
-                    className={`px-3 py-2 rounded-lg border-2 transition-all ${
+                    variant="outline"
+                    className={`px-3 py-2 h-auto ${
                       settings.color.r === preset.value.r &&
                       settings.color.g === preset.value.g &&
                       settings.color.b === preset.value.b
                         ? 'border-ocean-500 bg-ocean-50 dark:bg-ocean-900/20'
-                        : 'border-gray-300 dark:border-gray-600 hover:border-ocean-300'
+                        : ''
                     }`}
                   >
                     <div
@@ -534,16 +541,16 @@ export const WatermarkPDF: React.FC = () => {
                     <span className="text-xs text-gray-600 dark:text-gray-400 mt-1 block">
                       {preset.name}
                     </span>
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>
 
             {/* Opacity */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <Label>
                 {t('watermark.opacity')}: {settings.opacity}%
-              </label>
+              </Label>
               <input
                 type="range"
                 min="10"
@@ -552,15 +559,15 @@ export const WatermarkPDF: React.FC = () => {
                 value={settings.opacity}
                 onChange={(e) => setSettings({ ...settings, opacity: parseInt(e.target.value) })}
                 disabled={isProcessing}
-                className="w-full"
+                className="w-full mt-2"
               />
             </div>
 
             {/* Font Size */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <Label>
                 {t('watermark.fontSize')}: {settings.fontSize}pt
-              </label>
+              </Label>
               <input
                 type="range"
                 min="24"
@@ -569,15 +576,15 @@ export const WatermarkPDF: React.FC = () => {
                 value={settings.fontSize}
                 onChange={(e) => setSettings({ ...settings, fontSize: parseInt(e.target.value) })}
                 disabled={isProcessing}
-                className="w-full"
+                className="w-full mt-2"
               />
             </div>
 
             {/* Rotation (manual override) */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <Label>
                 {t('watermark.rotation')}: {settings.rotation}°
-              </label>
+              </Label>
               <input
                 type="range"
                 min="-90"
@@ -586,22 +593,22 @@ export const WatermarkPDF: React.FC = () => {
                 value={settings.rotation}
                 onChange={(e) => setSettings({ ...settings, rotation: parseInt(e.target.value) })}
                 disabled={isProcessing}
-                className="w-full"
+                className="w-full mt-2"
               />
             </div>
 
             {/* Apply Button */}
-            <button
+            <Button
               onClick={handleAddWatermark}
               disabled={isProcessing || !settings.text.trim()}
-              className="btn-primary w-full"
+              className="w-full"
             >
               {isProcessing ? t('watermark.processing') : t('watermark.apply')}
-            </button>
-          </div>
+            </Button>
+          </Card>
 
           {/* Preview Panel */}
-          <div className="card p-6">
+          <Card className="p-6">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
               {t('watermark.preview')}
             </h3>
@@ -628,7 +635,7 @@ export const WatermarkPDF: React.FC = () => {
                 </div>
               )}
             </div>
-          </div>
+          </Card>
         </div>
       )}
 
@@ -643,7 +650,7 @@ export const WatermarkPDF: React.FC = () => {
 
       {/* Result */}
       {result && (
-        <div className="card p-6 space-y-4">
+        <Card className="p-6 space-y-4">
           <div className="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-gray-700">
             <div>
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -653,12 +660,13 @@ export const WatermarkPDF: React.FC = () => {
                 {t('watermark.success.watermarkApplied')}: "{result.metadata.watermarkText}"
               </p>
             </div>
-            <button
+            <Button
               onClick={handleReset}
-              className="btn-secondary text-sm"
+              variant="outline"
+              size="sm"
             >
               {t('common.newFile')}
-            </button>
+            </Button>
           </div>
 
           {/* Stats */}
@@ -678,15 +686,15 @@ export const WatermarkPDF: React.FC = () => {
           </div>
 
           {/* Download Button */}
-          <button
+          <Button
             onClick={handleDownload}
-            className="btn-primary w-full"
+            className="w-full"
           >
             💾 {t('common.download')}
-          </button>
+          </Button>
 
           {/* Quick Actions */}
-          <div className="card p-6 mt-6">
+          <Card className="p-6 mt-6">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
               {t('watermark.quickActions.title')}
             </h3>
@@ -697,9 +705,10 @@ export const WatermarkPDF: React.FC = () => {
             {/* Action buttons grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {/* Compress */}
-              <button
+              <Button
                 onClick={() => handleQuickAction('compress-pdf')}
-                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
+                variant="outline"
+                className="flex items-center gap-3 p-4 h-auto justify-start hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
               >
                 <span className="text-3xl">🗜️</span>
                 <div className="text-left">
@@ -710,12 +719,13 @@ export const WatermarkPDF: React.FC = () => {
                     {t('watermark.quickActions.compress')}
                   </p>
                 </div>
-              </button>
+              </Button>
 
               {/* Protect */}
-              <button
+              <Button
                 onClick={() => handleQuickAction('protect-pdf')}
-                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
+                variant="outline"
+                className="flex items-center gap-3 p-4 h-auto justify-start hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
               >
                 <span className="text-3xl">🔒</span>
                 <div className="text-left">
@@ -726,12 +736,13 @@ export const WatermarkPDF: React.FC = () => {
                     {t('watermark.quickActions.protect')}
                   </p>
                 </div>
-              </button>
+              </Button>
 
               {/* Split */}
-              <button
+              <Button
                 onClick={() => handleQuickAction('split-pdf')}
-                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
+                variant="outline"
+                className="flex items-center gap-3 p-4 h-auto justify-start hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
               >
                 <span className="text-3xl">✂️</span>
                 <div className="text-left">
@@ -742,12 +753,13 @@ export const WatermarkPDF: React.FC = () => {
                     {t('watermark.quickActions.split')}
                   </p>
                 </div>
-              </button>
+              </Button>
 
               {/* Merge */}
-              <button
+              <Button
                 onClick={() => handleQuickAction('merge-pdf')}
-                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
+                variant="outline"
+                className="flex items-center gap-3 p-4 h-auto justify-start hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
               >
                 <span className="text-3xl">📑</span>
                 <div className="text-left">
@@ -758,10 +770,10 @@ export const WatermarkPDF: React.FC = () => {
                     {t('watermark.quickActions.merge')}
                   </p>
                 </div>
-              </button>
+              </Button>
             </div>
-          </div>
-        </div>
+          </Card>
+        </Card>
       )}
 
     </div>

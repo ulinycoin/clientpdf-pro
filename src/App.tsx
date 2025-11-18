@@ -74,6 +74,7 @@ function App() {
     localStorage.setItem('sidebar_collapsed', sidebarCollapsed.toString());
   }, [sidebarCollapsed]);
 
+
   const toggleTheme = () => {
     setTheme(prev => prev === 'dark' ? 'light' : 'dark');
   };
@@ -108,7 +109,19 @@ function App() {
           </div>
 
           {/* Actions */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            {/* Buy Me a Coffee */}
+            <a
+              href="https://www.buymeacoffee.com/localpdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden sm:flex items-center gap-2 px-4 py-2 bg-[#5F7FFF] hover:bg-[#4d6ee6] text-white rounded-lg transition-all duration-200 hover:shadow-md font-medium text-sm"
+              aria-label="Buy me a coffee"
+            >
+              <span className="text-lg">☕</span>
+              <span>Buy me a coffee</span>
+            </a>
+
             {/* Theme toggle */}
             <Button
               variant="ghost"

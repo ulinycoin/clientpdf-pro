@@ -1,4 +1,9 @@
 import React from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
 import type { TextElement } from '@/types/addText';
 
 interface FormatPanelProps {
@@ -47,8 +52,9 @@ export const FormatPanel: React.FC<FormatPanelProps> = ({
     }
   };
 
-  const handleFontSizeChange = (fontSize: number) => {
+  const handleFontSizeChange = (value: string | number) => {
     if (selectedElement) {
+      const fontSize = typeof value === 'string' ? parseInt(value) : value;
       onElementUpdate(selectedElement.id, { fontSize });
     }
   };
@@ -92,78 +98,74 @@ export const FormatPanel: React.FC<FormatPanelProps> = ({
 
       {/* Text Content */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          Text Content
-        </label>
-        <textarea
+        <Label>Text Content</Label>
+        <Textarea
           value={selectedElement.text}
           onChange={(e) => handleTextChange(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-ocean-500 focus:border-ocean-500"
           rows={3}
           placeholder="Enter text..."
+          className="mt-2"
         />
       </div>
 
       {/* Font Family */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          Font Family
-        </label>
-        <select
-          value={selectedElement.fontFamily}
-          onChange={(e) => handleFontFamilyChange(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-ocean-500 focus:border-ocean-500"
-        >
-          {fontFamilies.map(font => (
-            <option key={font} value={font} style={{ fontFamily: font }}>
-              {font}
-            </option>
-          ))}
-        </select>
+        <Label>Font Family</Label>
+        <Select value={selectedElement.fontFamily} onValueChange={handleFontFamilyChange}>
+          <SelectTrigger className="mt-2">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {fontFamilies.map(font => (
+              <SelectItem key={font} value={font}>
+                {font}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Font Size */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          Font Size
-        </label>
-        <div className="flex space-x-2">
-          <select
-            value={selectedElement.fontSize}
-            onChange={(e) => handleFontSizeChange(parseInt(e.target.value))}
-            className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-ocean-500 focus:border-ocean-500"
-          >
-            {fontSizes.map(size => (
-              <option key={size} value={size}>
-                {size}px
-              </option>
-            ))}
-          </select>
-          <input
+        <Label>Font Size</Label>
+        <div className="flex space-x-2 mt-2">
+          <Select value={selectedElement.fontSize.toString()} onValueChange={handleFontSizeChange}>
+            <SelectTrigger className="flex-1">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {fontSizes.map(size => (
+                <SelectItem key={size} value={size.toString()}>
+                  {size}px
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Input
             type="number"
             min="6"
             max="200"
             value={selectedElement.fontSize}
             onChange={(e) => handleFontSizeChange(parseInt(e.target.value) || 12)}
-            className="w-20 px-2 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-ocean-500 focus:border-ocean-500"
+            className="w-20"
           />
         </div>
       </div>
 
       {/* Color */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          Text Color
-        </label>
-        <div className="flex flex-wrap gap-2 mb-3">
+        <Label>Text Color</Label>
+        <div className="flex flex-wrap gap-2 mb-3 mt-2">
           {colors.map(color => (
-            <button
+            <Button
               key={color}
               onClick={() => handleColorChange(color)}
-              className={`w-8 h-8 rounded-lg border-2 transition-all duration-200 hover:scale-110 shadow-lg ${
+              variant="outline"
+              size="sm"
+              className={`w-8 h-8 p-0 transition-all duration-200 hover:scale-110 shadow-lg ${
                 selectedElement.color === color
                   ? 'border-ocean-500 ring-2 ring-ocean-500'
-                  : 'border-gray-200 dark:border-gray-600 hover:border-ocean-400'
+                  : 'hover:border-ocean-400'
               }`}
               style={{ backgroundColor: color }}
               title={color}
@@ -180,28 +182,26 @@ export const FormatPanel: React.FC<FormatPanelProps> = ({
 
       {/* Position */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          Position
-        </label>
-        <div className="grid grid-cols-2 gap-3">
+        <Label>Position</Label>
+        <div className="grid grid-cols-2 gap-3 mt-2">
           <div>
-            <label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">X</label>
-            <input
+            <Label className="text-xs">X</Label>
+            <Input
               type="number"
               min="0"
               value={Math.round(selectedElement.x)}
               onChange={(e) => handlePositionChange(parseInt(e.target.value) || 0, undefined)}
-              className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-ocean-500 focus:border-ocean-500"
+              className="mt-1"
             />
           </div>
           <div>
-            <label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">Y</label>
-            <input
+            <Label className="text-xs">Y</Label>
+            <Input
               type="number"
               min="0"
               value={Math.round(selectedElement.y)}
               onChange={(e) => handlePositionChange(undefined, parseInt(e.target.value) || 0)}
-              className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-ocean-500 focus:border-ocean-500"
+              className="mt-1"
             />
           </div>
         </div>
@@ -209,11 +209,9 @@ export const FormatPanel: React.FC<FormatPanelProps> = ({
 
       {/* Preview */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          Preview
-        </label>
+        <Label>Preview</Label>
         <div
-          className="p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 min-h-12"
+          className="mt-2 p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 min-h-12"
           style={{
             fontFamily: selectedElement.fontFamily,
             fontSize: `${Math.min(selectedElement.fontSize, 16)}px`,

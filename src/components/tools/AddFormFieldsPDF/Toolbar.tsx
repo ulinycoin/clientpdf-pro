@@ -1,5 +1,6 @@
 import React from 'react';
 import type { FormField } from '@/types/formFields';
+import { Button } from '@/components/ui/button';
 
 interface ToolbarProps {
   currentPage: number;
@@ -25,96 +26,114 @@ export const Toolbar: React.FC<ToolbarProps> = ({
       {/* Add field buttons */}
       <div className="flex items-center gap-2">
         <span className="text-xs text-gray-600 dark:text-gray-400 font-medium mr-1">Add Field:</span>
-        <button
+        <Button
           onClick={() => onAddField('text')}
-          className="px-3 py-1.5 text-xs bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+          variant="outline"
+          size="sm"
+          className="text-xs"
           title="Add text field"
         >
           📝 Text
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => onAddField('multiline')}
-          className="px-3 py-1.5 text-xs bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+          variant="outline"
+          size="sm"
+          className="text-xs"
           title="Add multiline text field"
         >
           📄 Multiline
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => onAddField('checkbox')}
-          className="px-3 py-1.5 text-xs bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+          variant="outline"
+          size="sm"
+          className="text-xs"
           title="Add checkbox"
         >
           ☑️ Checkbox
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => onAddField('radio')}
-          className="px-3 py-1.5 text-xs bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+          variant="outline"
+          size="sm"
+          className="text-xs"
           title="Add radio button"
         >
           🔘 Radio
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => onAddField('dropdown')}
-          className="px-3 py-1.5 text-xs bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+          variant="outline"
+          size="sm"
+          className="text-xs"
           title="Add dropdown"
         >
           ▼ Dropdown
-        </button>
+        </Button>
       </div>
 
       <div className="flex-1" />
 
       {/* Page navigation */}
       <div className="flex items-center gap-2">
-        <button
+        <Button
           onClick={() => onPageChange(Math.max(0, currentPage - 1))}
           disabled={currentPage === 0}
-          className="px-3 py-1.5 text-xs bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          variant="outline"
+          size="sm"
+          className="text-xs"
         >
           ←
-        </button>
+        </Button>
         <span className="text-sm text-gray-700 dark:text-gray-300 min-w-[80px] text-center">
           {currentPage + 1} / {totalPages}
         </span>
-        <button
+        <Button
           onClick={() => onPageChange(Math.min(totalPages - 1, currentPage + 1))}
           disabled={currentPage >= totalPages - 1}
-          className="px-3 py-1.5 text-xs bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          variant="outline"
+          size="sm"
+          className="text-xs"
         >
           →
-        </button>
+        </Button>
       </div>
 
       {/* Zoom controls */}
       <div className="flex items-center gap-2">
-        <button
+        <Button
           onClick={() => onScaleChange(Math.max(0.25, scale - 0.25))}
           disabled={scale <= 0.25}
-          className="px-3 py-1.5 text-xs bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          variant="outline"
+          size="sm"
+          className="text-xs"
           title="Zoom out"
         >
           −
-        </button>
+        </Button>
         <span className="text-sm text-gray-700 dark:text-gray-300 min-w-[60px] text-center">
           {Math.round(scale * 100)}%
         </span>
-        <button
+        <Button
           onClick={() => onScaleChange(Math.min(3, scale + 0.25))}
           disabled={scale >= 3}
-          className="px-3 py-1.5 text-xs bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          variant="outline"
+          size="sm"
+          className="text-xs"
           title="Zoom in"
         >
           +
-        </button>
+        </Button>
       </div>
 
       {/* Save button */}
-      <button
+      <Button
         onClick={onSave}
-        className="px-6 py-2 bg-ocean-500 hover:bg-ocean-600 text-white text-sm font-medium rounded transition-colors"
+        size="sm"
       >
         Save PDF
-      </button>
+      </Button>
     </div>
   );
 };
