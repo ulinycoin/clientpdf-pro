@@ -1,5 +1,7 @@
 // Advanced language detection for OCR
-// Supports multiple detection methods: filename analysis, script detection, geo keywords, content analysis
+// Supports multiple detection methods: filename analysis, script detection, geo keywords, content analysis with franc
+
+import { francAll } from 'franc-min';
 
 export interface LanguageDetectionResult {
   language: string;
@@ -7,6 +9,21 @@ export interface LanguageDetectionResult {
   detectionMethods: string[];
   details: string;
 }
+
+// Mapping from franc's ISO 639-3 codes to our Tesseract codes if they differ
+const francToTesseractMap: { [key: string]: string } = {
+  cmn: 'chi_sim', // Mandarin -> Chinese Simplified
+  // Franc uses 'srp' for Serbian Latin, Tesseract uses 'srp' for Cyrillic.
+  // We assume content will guide this correctly.
+};
+
+// List of supported Tesseract codes from the UI
+const supportedTesseractCodes = new Set([
+  'eng', 'rus', 'deu', 'fra', 'spa', 'ita', 'por', 'pol', 'lav', 'lit', 'est',
+  'swe', 'nor', 'dan', 'fin', 'isl', 'ukr', 'bel', 'ces', 'slk', 'slv', 'hrv',
+  'srp', 'bul', 'mkd', 'nld', 'cat', 'glg', 'eus', 'ron', 'hun', 'ell', 'tur',
+  'sqi', 'chi_sim', 'chi_tra', 'jpn', 'kor', 'hin', 'tha', 'vie', 'ara', 'heb', 'fas'
+]);
 
 // Advanced language detection with detailed results
 export const detectLanguageAdvanced = (filename: string, contentSample?: string): LanguageDetectionResult => {
@@ -26,6 +43,9 @@ export const detectLanguageAdvanced = (filename: string, contentSample?: string)
     { keywords: ['português', 'portuguese', 'portugal', 'brasil', 'brazil', 'por', 'pt'], lang: 'por' },
     { keywords: ['italiano', 'italian', 'italy', 'italia', 'ita', 'it'], lang: 'ita' },
     { keywords: ['polski', 'polish', 'poland', 'polska', 'pol', 'pl'], lang: 'pol' },
+    { keywords: ['latviešu', 'latvian', 'latvia', 'latvija', 'lav', 'lv'], lang: 'lav' },
+    { keywords: ['lietuvių', 'lithuanian', 'lithuania', 'lietuva', 'lit', 'lt'], lang: 'lit' },
+    { keywords: ['eesti', 'estonian', 'estonia', 'est', 'et'], lang: 'est' },
     { keywords: ['türkçe', 'turkish', 'turkey', 'türkiye', 'tur', 'tr'], lang: 'tur' },
     { keywords: ['english'], lang: 'eng' },
 
@@ -110,6 +130,25 @@ export const detectLanguageAdvanced = (filename: string, contentSample?: string)
         script: 'Polish diacritics',
         minMatches: 1
       },
+      // Baltic languages - specific character detection
+      {
+        pattern: /[āčēģīķļņšūž]/gi,
+        lang: 'lav',
+        script: 'Latvian diacritics',
+        minMatches: 1
+      },
+      {
+        pattern: /[ąčęėįšųūž]/gi,
+        lang: 'lit',
+        script: 'Lithuanian diacritics',
+        minMatches: 1
+      },
+      {
+        pattern: /[äõöšüž]/gi,
+        lang: 'est',
+        script: 'Estonian characters',
+        minMatches: 1
+      },
       {
         pattern: /[çğıöşü]/gi,
         lang: 'tur',
@@ -178,6 +217,9 @@ export const detectLanguageAdvanced = (filename: string, contentSample?: string)
       { keywords: ['lisbon', 'lisboa', 'porto', 'brasilia', 'são paulo', 'rio'], lang: 'por' },
       { keywords: ['rome', 'roma', 'milan', 'milano', 'venice', 'venezia', 'naples', 'napoli'], lang: 'ita' },
       { keywords: ['warsaw', 'warszawa', 'kraków', 'wrocław', 'gdańsk', 'poznań'], lang: 'pol' },
+      { keywords: ['riga', 'rīga', 'rigas', 'rīgas', 'daugavpils', 'liepaja', 'jelgava', 'jūrmala'], lang: 'lav' },
+      { keywords: ['vilnius', 'kaunas', 'klaipeda', 'klaipėda', 'šiauliai', 'panevezys', 'panevėžys'], lang: 'lit' },
+      { keywords: ['tallinn', 'tartu', 'narva', 'pärnu', 'kohtla-järve'], lang: 'est' },
       { keywords: ['istanbul', 'ankara', 'izmir', 'bursa', 'antalya'], lang: 'tur' },
 
       // Asian countries/cities
@@ -228,44 +270,43 @@ export const detectLanguageAdvanced = (filename: string, contentSample?: string)
     }
   }
 
-  // Method 5: Content analysis (if content sample provided)
-  if (contentSample && contentSample.length > 50) {
-    // Calculate ratios for different scripts
-    const scriptRatios = [
-      { pattern: /[а-яё]/gi, lang: 'rus', name: 'Cyrillic', threshold: 0.05, highThreshold: 0.2 },
-      { pattern: /[\u4e00-\u9fff]/g, lang: 'chi_sim', name: 'Chinese', threshold: 0.02, highThreshold: 0.1 },
-      { pattern: /[\u3040-\u309f\u30a0-\u30ff]/g, lang: 'jpn', name: 'Japanese', threshold: 0.02, highThreshold: 0.1 },
-      { pattern: /[\uac00-\ud7af]/g, lang: 'kor', name: 'Korean', threshold: 0.02, highThreshold: 0.1 },
-      { pattern: /[\u0900-\u097f]/g, lang: 'hin', name: 'Hindi', threshold: 0.02, highThreshold: 0.1 },
-      { pattern: /[\u0600-\u06ff]/g, lang: 'ara', name: 'Arabic', threshold: 0.02, highThreshold: 0.1 },
-      { pattern: /[äöüß]/gi, lang: 'deu', name: 'German', threshold: 0.02, highThreshold: 0.05 },
-      { pattern: /[àâäçéèêëïîôùûüÿñæœ]/gi, lang: 'fra', name: 'French', threshold: 0.02, highThreshold: 0.05 },
-      { pattern: /[ñáéíóúü¿¡]/gi, lang: 'spa', name: 'Spanish', threshold: 0.02, highThreshold: 0.05 },
-      { pattern: /[ãáàâçéêíóôõú]/gi, lang: 'por', name: 'Portuguese', threshold: 0.02, highThreshold: 0.05 },
-      { pattern: /[àèéìíîòóùú]/gi, lang: 'ita', name: 'Italian', threshold: 0.02, highThreshold: 0.05 },
-      { pattern: /[ąćęłńóśźż]/gi, lang: 'pol', name: 'Polish', threshold: 0.02, highThreshold: 0.05 },
-      { pattern: /[çğıöşü]/gi, lang: 'tur', name: 'Turkish', threshold: 0.02, highThreshold: 0.05 },
-    ];
+  // Method 5: Content analysis with Franc (high confidence)
+  if (contentSample && contentSample.trim().length > 10 && confidence !== 'high') {
+    console.log('📄 Content sample for Franc analysis:', contentSample.substring(0, 200) + '...');
+    const francResults = francAll(contentSample, { minLength: 3 });
+    console.log('🔍 Franc analysis - top 10 results:');
+    francResults.slice(0, 10).forEach(([code, score], index) => {
+      console.log(`  ${index + 1}. ${code} (score: ${score})`);
+    });
 
-    // Find the script with highest ratio
-    let maxRatio = 0;
-    let detectedScript = null;
+    if (francResults && francResults.length > 0 && francResults[0][0] !== 'und') {
+      // Try to find first supported language in top 10 results
+      let foundLanguage = false;
+      for (let i = 0; i < Math.min(10, francResults.length); i++) {
+        const [francCode, score] = francResults[i];
+        const tesseractCode = francToTesseractMap[francCode] || francCode;
 
-    for (const { pattern, lang, name, threshold, highThreshold } of scriptRatios) {
-      const ratio = (contentSample.match(pattern)?.length || 0) / contentSample.length;
-      if (ratio > threshold && ratio > maxRatio) {
-        maxRatio = ratio;
-        detectedScript = { lang, name, ratio, highThreshold };
+        if (supportedTesseractCodes.has(tesseractCode)) {
+          console.log(`✅ Found supported language at position ${i + 1}: ${francCode} → ${tesseractCode} (score: ${score})`);
+          detectedLang = tesseractCode;
+          confidence = 'high'; // We trust franc's content analysis
+          methods.push('content_analysis_franc');
+          details = `Detected ${tesseractCode} from content via Franc (rank: ${i + 1}, score: ${score.toFixed(3)})`;
+          foundLanguage = true;
+          break;
+        }
       }
-    }
 
-    if (detectedScript) {
-      detectedLang = detectedScript.lang;
-      confidence = maxRatio > detectedScript.highThreshold ? 'high' : 'medium';
-      methods.push('content_analysis');
-      details = `Detected ${detectedScript.name} text in content (${Math.round(maxRatio * 100)}%)`;
+      if (!foundLanguage) {
+        const [topCode, topScore] = francResults[0];
+        console.log(`⚠️ Franc top result '${topCode}' (score: ${topScore}) is not supported by Tesseract`);
+        console.log(`⚠️ None of the top 10 Franc results are supported by Tesseract`);
+      }
+    } else {
+      console.log('⚠️ Franc returned undefined or no results');
     }
   }
+
 
   // Method 6: Filename patterns (very low confidence)
   if (confidence === 'low' && methods.length === 0) {

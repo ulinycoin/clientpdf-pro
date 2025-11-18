@@ -1,52 +1,66 @@
 ---
 import ToolPage from '../components/ToolPage.astro';
 
-const keywords = "ocr pdf, extract text from pdf, scanned pdf to text, searchable pdf, pdf ocr, free ocr online";
+const keywords = "ocr pdf, extract text from pdf, scanned pdf to text, searchable pdf, pdf ocr, free ocr online, multilingual ocr, auto language detection, hocr export";
 
 const howToSchema = {
   "@context": "https://schema.org",
   "@type": "HowTo",
-  "name": "How to OCR a PDF and Extract Text",
-  "description": "A step-by-step guide on how to convert a scanned PDF or image into searchable text using the free and private LocalPDF OCR tool.",
+  "name": "How to OCR a PDF with Automatic Language Detection",
+  "description": "A step-by-step guide on how to convert a scanned PDF or image into searchable text with automatic language detection from 45+ languages using the free and private LocalPDF OCR tool.",
   "step": [
     {
       "@type": "HowToStep",
       "name": "Open the Tool and Upload File",
-      "text": "Click 'Open Tool' and upload the scanned PDF or image file (JPG, PNG) you want to process.",
+      "text": "Click 'Open Tool' and upload the scanned PDF or image file (JPG, PNG) you want to process. The tool supports documents in 45+ languages.",
       "url": "https://localpdf.online/ocr-pdf#tool"
     },
     {
       "@type": "HowToStep",
+      "name": "Automatic Language Detection",
+      "text": "The tool automatically analyzes your document using 6 detection methods: filename keywords, special characters, geographic keywords, document type, content analysis, and pattern matching. You can also manually select from 45+ supported languages if needed.",
+      "image": "https://localpdf.online/screenshots/ocr-language.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Choose Output Format",
+      "text": "Select your preferred output format: Plain Text (.txt) for editing, Searchable PDF with invisible text layer, hOCR (.html) for machine processing, or TSV (.tsv) for data analysis.",
+      "image": "https://localpdf.online/screenshots/ocr-format.png"
+    },
+    {
+      "@type": "HowToStep",
       "name": "Start OCR Process",
-      "text": "The OCR process begins automatically. The tool analyzes the document to recognize characters and words.",
+      "text": "The OCR process begins automatically. The tool uses Tesseract.js to recognize characters and words in your selected language. Multi-page documents are processed sequentially with optimized worker management.",
       "image": "https://localpdf.online/screenshots/ocr-progress.png"
     },
     {
       "@type": "HowToStep",
-      "name": "Review Extracted Text",
-      "text": "Once complete, the extracted text will be displayed in a text box, preserving the original layout where possible.",
+      "name": "Review and Edit Extracted Text",
+      "text": "Once complete, the extracted text will be displayed. You can review accuracy, edit any errors, and copy text to clipboard. For Searchable PDFs, text is overlaid invisibly on the original image.",
       "image": "https://localpdf.online/screenshots/ocr-review.png"
     },
     {
       "@type": "HowToStep",
-      "name": "Download or Copy",
-      "text": "You can download the result as a searchable PDF or a plain text (.txt) file, or simply copy the text to your clipboard.",
+      "name": "Download Result",
+      "text": "Download your result in the chosen format: searchable PDF for archival, plain text for editing, hOCR for machine processing with bounding boxes and confidence scores, or TSV for spreadsheet analysis.",
       "image": "https://localpdf.online/screenshots/ocr-download.png"
     }
   ],
-  "totalTime": "PT2M"
+  "totalTime": "PT3M"
 };
 ---
 
 <ToolPage
   toolId="ocr-pdf"
-  title="OCR PDF Online — Extract Text from Scanned PDFs"
-  metaDescription="Convert scanned PDFs to searchable text with OCR. 100% private client-side processing. No uploads, free unlimited use."
+  title="OCR PDF Online — Extract Text from Scanned PDFs in 45+ Languages"
+  metaDescription="Advanced OCR tool with automatic language detection for 45+ languages. Create searchable PDFs, export to hOCR/TSV. 100% private, no uploads."
   keywords={keywords}
-  description="Extract text from scanned PDFs and images using advanced OCR technology. Convert non-searchable documents to searchable, editable text — all in your browser."
+  description="Extract text from scanned PDFs and images using advanced OCR technology with intelligent language detection. Convert non-searchable documents to searchable PDFs with invisible text layer, or export as plain text, hOCR, or TSV — all in your browser."
   benefits={[
-    "⚡ Fast — OCR processing in browser",
-    "🔒 Private — Files never uploaded",
+    "🌍 45+ Languages — Auto-detect or choose manually",
+    "🔍 True Searchable PDF — Invisible text layer over original",
+    "📊 Multiple Formats — Text, Searchable PDF, hOCR, TSV",
+    "🔒 100% Private — Files never uploaded",
     "🆓 Free — Unlimited OCR during beta"
   ]}
   relatedTools={[
@@ -59,27 +73,34 @@ const howToSchema = {
     title: "Why Choose Our PDF OCR Tool?",
     reasons: [
       "Complete Privacy: Your scanned documents never leave your device. Cloud OCR services upload sensitive files to remote servers. LocalPDF runs Tesseract.js locally for maximum privacy.",
+      "Intelligent Language Detection: Advanced 6-method detection system automatically identifies document language from 45+ supported languages including English, Russian, German, French, Spanish, Chinese, Japanese, Korean, Arabic, Latvian, Lithuanian, Estonian, and more. Analyzes filename, special characters, geographic keywords, and actual content using the Franc library.",
+      "True Searchable PDFs: Unlike simple text extraction, LocalPDF creates genuine searchable PDFs with an invisible text layer overlaid on the original image. Search engines and PDF readers can find text while preserving the exact visual appearance of your scanned document.",
+      "Multiple Export Formats: Export results in 4 different formats: Plain Text (.txt) for simple editing, Searchable PDF for archival, hOCR (.html) for machine processing with bounding boxes and confidence scores, or TSV (.tsv) for spreadsheet analysis.",
       "No Internet Required: Once loaded, OCR works offline. Perfect for confidential documents like contracts, invoices, or medical records that shouldn't be transmitted.",
-      "Accurate Text Recognition: Powered by Tesseract.js, the industry-standard open-source OCR engine. Supports multiple languages and handles various font types.",
       "No Page Limits: Many online OCR tools limit free users to 10-50 pages. With LocalPDF, process PDFs of any length without restrictions.",
-      "Preserve Formatting: Extracted text maintains original structure, including paragraphs, headings, and line breaks where possible.",
-      "Free Forever: No paid tiers, no credits system. OCR as many documents as you need without hitting usage caps."
+      "Worker Optimization: Intelligent worker management reuses language models instead of reloading them, making multi-page OCR and language switching significantly faster.",
+      "Free Forever: No paid tiers, no credits system. OCR as many documents as you need in as many languages as you want without hitting usage caps."
     ]
   }}
   features={[
-    "Extract text from scanned PDFs",
-    "Support for multiple languages",
-    "Convert images (JPG, PNG) to text",
-    "Preserve document structure",
+    "Automatic language detection (45+ languages)",
+    "Create searchable PDFs with invisible text layer",
+    "Export to 4 formats: Text, Searchable PDF, hOCR, TSV",
+    "Extract text from scanned PDFs and images (JPG, PNG)",
+    "Multi-language support: European (English, Russian, German, French, Spanish, Italian, Portuguese, Polish, Latvian, Lithuanian, Estonian, Swedish, Norwegian, Danish, Finnish, Icelandic, Ukrainian, Belarusian, Czech, Slovak, Slovenian, Croatian, Serbian, Bulgarian, Macedonian, Dutch, Catalan, Galician, Basque, Romanian, Hungarian, Greek, Turkish, Albanian), Asian (Chinese Simplified/Traditional, Japanese, Korean, Hindi, Thai, Vietnamese), Middle Eastern (Arabic, Hebrew, Persian)",
+    "Intelligent detection via filename, special characters, content analysis",
+    "Worker optimization for faster multi-page processing",
     "Copy extracted text to clipboard",
-    "Export as searchable PDF or plain text"
+    "Edit extracted text before export"
   ]}
   steps={[
     'Click "Open Tool" button above',
-    "Upload your scanned PDF or image",
-    "Wait for OCR processing (may take 10-30 seconds)",
-    "Review extracted text",
-    "Download searchable PDF or copy text"
+    "Upload your scanned PDF or image (JPG, PNG)",
+    "Language auto-detects or choose from 45+ languages",
+    "Select output format: Text, Searchable PDF, hOCR, or TSV",
+    "Wait for OCR processing (10-30 seconds per page)",
+    "Review and edit extracted text if needed",
+    "Download in your chosen format"
   ]}
 >
   <Fragment slot="head">

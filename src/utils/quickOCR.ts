@@ -1,22 +1,67 @@
 import * as Tesseract from 'tesseract.js';
 import * as pdfjsLib from 'pdfjs-dist';
+import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import { detectLanguageAdvanced, type LanguageDetectionResult } from './languageDetector';
 
 // Configure PDF.js worker
-// Worker configured in pdfService.ts
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
 // Quick OCR for language detection - processes only a small sample
 export class QuickOCR {
   private static worker: Tesseract.Worker | null = null;
+  private static loadedLanguages: Set<string> = new Set();
+  private static isInitializing = false;
+  private static initializationPromise: Promise<Tesseract.Worker> | null = null;
 
   // Initialize a shared worker for quick analysis
   private static async getWorker(): Promise<Tesseract.Worker> {
+    // If already initializing, wait for that to complete
+    if (this.isInitializing && this.initializationPromise) {
+      return this.initializationPromise;
+    }
+
     if (!this.worker) {
-      this.worker = await Tesseract.createWorker('eng', 1, {
-        logger: () => {} // Disable logging for quick analysis
-      });
+      this.isInitializing = true;
+      this.initializationPromise = (async () => {
+        try {
+          this.worker = await Tesseract.createWorker('eng', 1, {
+            logger: () => {} // Disable logging for quick analysis
+          });
+          this.loadedLanguages.add('eng');
+          return this.worker;
+        } finally {
+          this.isInitializing = false;
+          this.initializationPromise = null;
+        }
+      })();
+      return this.initializationPromise;
     }
     return this.worker;
+  }
+
+  // Load a language into the existing worker
+  private static async ensureLanguageLoaded(language: string): Promise<void> {
+    if (this.loadedLanguages.has(language)) {
+      return; // Language already loaded
+    }
+
+    const worker = await this.getWorker();
+
+    console.log(`📥 QuickOCR: Loading language '${language}' into existing worker...`);
+
+    // Load the additional language
+    await worker.loadLanguage(language);
+    await worker.initialize(language);
+
+    this.loadedLanguages.add(language);
+    console.log(`✅ QuickOCR: Language '${language}' loaded successfully`);
+  }
+
+  // Reinitialize worker with a specific language (for recognition)
+  private static async setLanguage(language: string): Promise<void> {
+    await this.ensureLanguageLoaded(language);
+    const worker = await this.getWorker();
+    await worker.reinitialize(language);
   }
 
   // Extract a small sample from PDF for quick analysis
@@ -133,14 +178,13 @@ export class QuickOCR {
       }
 
       if (shouldTryRussian) {
-        console.log('🇷🇺 QuickOCR: Trying Russian OCR');
+        console.log('🇷🇺 QuickOCR: Trying Russian OCR with existing worker');
         try {
-          const russianWorker = await Tesseract.createWorker('rus', 1, {
-            logger: () => {}
-          });
+          // Use the existing worker, just switch to Russian
+          await this.setLanguage('rus');
+          const worker = await this.getWorker();
 
-          const russianResult = await russianWorker.recognize(sampleCanvas);
-          await russianWorker.terminate();
+          const russianResult = await worker.recognize(sampleCanvas);
 
           const russianText = russianResult.data.text?.slice(0, 500) || '';
           console.log('🇷🇺 QuickOCR: Russian OCR result preview:', russianText.substring(0, 100) + '...');
@@ -150,8 +194,18 @@ export class QuickOCR {
             console.log('✅ QuickOCR: Using Russian OCR result');
             return detectLanguageAdvanced(file.name, russianText);
           }
+
+          // Switch back to English for future use
+          await this.setLanguage('eng');
         } catch (russianError) {
           console.warn('❌ QuickOCR: Russian OCR failed:', russianError);
+          // Try to switch back to English in case of error
+          try {
+            await this.setLanguage('eng');
+          } catch (e) {
+            // If this fails, worker might be corrupted, cleanup and recreate
+            await this.cleanup();
+          }
         }
       }
 
@@ -171,11 +225,42 @@ export class QuickOCR {
     }
   }
 
+  // Preload commonly used languages for faster switching
+  public static async preloadLanguages(languages: string[]): Promise<void> {
+    console.log(`📦 QuickOCR: Preloading languages:`, languages.join(', '));
+
+    try {
+      await this.getWorker(); // Ensure worker is initialized
+
+      for (const lang of languages) {
+        if (!this.loadedLanguages.has(lang)) {
+          await this.ensureLanguageLoaded(lang);
+        }
+      }
+
+      console.log(`✅ QuickOCR: All languages preloaded successfully`);
+    } catch (error) {
+      console.warn('❌ QuickOCR: Language preloading failed:', error);
+    }
+  }
+
+  // Get list of currently loaded languages
+  public static getLoadedLanguages(): string[] {
+    return Array.from(this.loadedLanguages);
+  }
+
+  // Check if worker is initialized
+  public static isInitialized(): boolean {
+    return this.worker !== null;
+  }
+
   // Clean up worker when done
   public static async cleanup(): Promise<void> {
     if (this.worker) {
+      console.log('🧹 QuickOCR: Cleaning up worker');
       await this.worker.terminate();
       this.worker = null;
+      this.loadedLanguages.clear();
     }
   }
 }

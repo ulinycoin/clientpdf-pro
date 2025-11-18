@@ -37,6 +37,8 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "docx": "^9.5.1",
+    "franc": "^6.2.0",
+    "franc-min": "^6.2.0",
     "jszip": "^3.10.1",
     "lucide-react": "^0.553.0",
     "mammoth": "^1.11.0",
