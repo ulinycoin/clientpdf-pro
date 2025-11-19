@@ -5,7 +5,7 @@ import { useI18n } from '@/hooks/useI18n';
 import { useSharedFile } from '@/hooks/useSharedFile';
 import pdfService from '@/services/pdfService';
 import * as pdfjsLib from 'pdfjs-dist';
-import type { UploadedFile } from '@/types/pdf';
+import type { UploadedFile, TextOccurrence } from '@/types/pdf';
 import type { Tool } from '@/types';
 import { HASH_TOOL_MAP } from '@/types';
 import { Button } from '@/components/ui/button';
@@ -17,19 +17,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 // Configure PDF.js worker
 // Worker configured in pdfService.ts
 
-interface TextOccurrence {
-  id: string; // Unique ID for managing multiple selections
-  text: string;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  fontSize?: number; // Detected font size from PDF
-  pageNumber: number; // Page number this selection belongs to
-  // New properties
-  mode: 'text' | 'cover'; // 'text' = replace with text, 'cover' = just paint over
-  textAlign?: 'left' | 'center' | 'right'; // Text alignment within selection
-}
+
 
 export const EditTextPDF: React.FC = () => {
   const { t } = useI18n();
@@ -69,7 +57,7 @@ export const EditTextPDF: React.FC = () => {
   const [isBold, setIsBold] = useState(false);
   const [isItalic, setIsItalic] = useState(false);
   const [textAlign, setTextAlign] = useState<'left' | 'center' | 'right'>('left');
-  const [editMode_type, setEditModeType] = useState<'text' | 'cover'>('text'); // Renamed to avoid conflict
+  const [editMode_type, setEditModeType] = useState<'replace' | 'cover'>('replace'); // Replace text or cover only
   const [canvasScale, setCanvasScale] = useState(1.5); // Scale for canvas rendering (1.0 - 3.0)
 
   // Helper function to build font string with styles
@@ -130,7 +118,8 @@ export const EditTextPDF: React.FC = () => {
   const renderPagePreview = React.useCallback(async (
     pdf: any,
     pageNumber: number,
-    tempSelection?: TextOccurrence | null
+    tempSelection?: TextOccurrence | null,
+    currentMode: 'replace' | 'cover' | 'move' | null = null // New parameter
   ) => {
     if (!pdf || !canvasRef.current) {
       return;
@@ -171,7 +160,7 @@ export const EditTextPDF: React.FC = () => {
       const allSelections = tempSelection ? [...pageSelections, tempSelection] : pageSelections;
 
       for (const sel of allSelections) {
-        const isActive = sel.id === activeSelectionId;
+        const isActive = sel.id === activeSelectionId || (tempSelection && sel.id === tempSelection.id);
 
         if (showPreview) {
           // Preview mode: show actual changes
@@ -179,7 +168,7 @@ export const EditTextPDF: React.FC = () => {
           context.fillRect(sel.x, sel.y, sel.width, sel.height);
 
           // Draw new text with styles (if not in cover-only mode)
-          if (sel.mode === 'text' && sel.text) {
+          if (sel.mode === 'replace' && sel.text) {
             context.fillStyle = textColor;
             // Use fontSize scaled to canvas resolution to match final PDF appearance
             const previewFontSize = fontSize * canvasScale;
@@ -214,6 +203,15 @@ export const EditTextPDF: React.FC = () => {
           context.strokeStyle = isActive ? 'rgba(255, 0, 0, 0.9)' : 'rgba(255, 100, 100, 0.6)';
           context.lineWidth = isActive ? 3 : 2;
           context.strokeRect(sel.x, sel.y, sel.width, sel.height);
+
+          // If mode is 'move' and this is an active temporary selection, draw original position dashed
+          if (currentMode === 'move' && isActive && tempSelection && tempSelection.id === sel.id && sel.originalX !== undefined) {
+            context.strokeStyle = 'rgba(0, 0, 255, 0.6)'; // Blue dashed for original move
+            context.lineWidth = 2;
+            context.setLineDash([5, 5]); // Dashed line
+            context.strokeRect(sel.originalX, sel.originalY!, sel.originalWidth!, sel.originalHeight!);
+            context.setLineDash([]); // Reset line dash
+          }
 
           // Draw resize handles only for active selection
           if (isActive) {
@@ -254,7 +252,7 @@ export const EditTextPDF: React.FC = () => {
       }
       console.error('Error rendering preview:', error);
     }
-  }, [selections, activeSelectionId, showPreview, backgroundColor, textColor, fontSize, fontFamily, textOffsetX, textOffsetY, textAlign, canvasScale, getFontString]);
+  }, [selections, activeSelectionId, showPreview, backgroundColor, textColor, fontSize, fontFamily, textOffsetX, textOffsetY, textAlign, canvasScale, getFontString, editMode_type]);
 
   const loadPDF = React.useCallback(async (pdfFile: File) => {
     console.log('Loading PDF:', pdfFile.name);
@@ -489,19 +487,24 @@ export const EditTextPDF: React.FC = () => {
 
     // Handle creating new selection
     if (isSelecting && selectionStart) {
+      const tempX = Math.min(selectionStart.x, x);
+      const tempY = Math.min(selectionStart.y, y);
+      const tempWidth = Math.abs(x - selectionStart.x);
+      const tempHeight = Math.abs(y - selectionStart.y);
+
       const tempSelection: TextOccurrence = {
         id: 'temp',
         text: '',
-        x: Math.min(selectionStart.x, x),
-        y: Math.min(selectionStart.y, y),
-        width: Math.abs(x - selectionStart.x),
-        height: Math.abs(y - selectionStart.y),
+        x: tempX,
+        y: tempY,
+        width: tempWidth,
+        height: tempHeight,
         pageNumber: selectedPage,
         mode: editMode_type,
         textAlign: textAlign,
       };
 
-      renderPagePreview(pdfDocument, selectedPage, tempSelection);
+      renderPagePreview(pdfDocument, selectedPage, tempSelection, editMode_type);
       return;
     }
 
@@ -552,7 +555,7 @@ export const EditTextPDF: React.FC = () => {
     try {
       const page = await pdfDocument.getPage(selectedPage);
       const textContent = await page.getTextContent();
-      const viewport = page.getViewport({ scale: 1.5 });
+      const viewport = page.getViewport({ scale: canvasScale });
 
       let extractedText = '';
       let detectedFontSize = 0;
@@ -576,12 +579,8 @@ export const EditTextPDF: React.FC = () => {
         return 0;
       };
 
-      console.log('Selection bounds:', selection.x, selection.y, selection.width, selection.height);
-      console.log('Viewport:', viewport.width, viewport.height);
-      console.log('Total text items:', textContent.items.length);
-
-      // Log first few items for debugging
       let debugCount = 0;
+
       for (const item of textContent.items) {
         if ('str' in item && item.str.trim()) {
           const transform = item.transform;
@@ -591,12 +590,6 @@ export const EditTextPDF: React.FC = () => {
           const itemY = viewport.height - transform[5] - height;
           const width = item.width || (item.str.length * itemFontSize * 0.6);
 
-          // Debug first 5 items
-          if (debugCount < 5) {
-            console.log(`Item ${debugCount}: "${item.str}" at (${itemX.toFixed(0)}, ${itemY.toFixed(0)}) size:${width.toFixed(0)}x${height.toFixed(0)}`);
-            debugCount++;
-          }
-
           // Check if text item intersects with selection (at least 50% overlap)
           const intersectionPercent = getIntersectionPercentage(
             itemX, itemY, width, height,
@@ -604,26 +597,21 @@ export const EditTextPDF: React.FC = () => {
           );
 
           if (intersectionPercent > 0.5) {
-            extractedText += item.str;
+            extractedText += item.str + ' ';
             detectedFontSize += itemFontSize;
             fontSizeCount++;
-            console.log(`✓ Matched text: "${item.str}" at (${itemX.toFixed(0)}, ${itemY.toFixed(0)}) size:${itemFontSize.toFixed(1)} overlap:${(intersectionPercent*100).toFixed(0)}%`);
           }
         }
       }
-
-      console.log(`Total matched: ${fontSizeCount} items, text: "${extractedText}"`);
 
       // Calculate average font size
       if (fontSizeCount > 0) {
         const avgFontSize = Math.round(detectedFontSize / fontSizeCount);
         selection.fontSize = avgFontSize;
-        // Auto-set the font size slider
         setFontSize(Math.max(8, Math.min(72, avgFontSize)));
-        console.log('Detected font size:', avgFontSize, 'from', fontSizeCount, 'text items');
       }
 
-      selection.text = extractedText;
+      selection.text = extractedText.trim(); // Trim extra space
 
       // Update the selection in the array
       setSelections(prev => prev.map(s => s.id === selection.id ? { ...selection } : s));
@@ -641,10 +629,10 @@ export const EditTextPDF: React.FC = () => {
       setEditMode(null);
       setEditStart(null);
 
-      // Re-extract text from new selection area (only if text mode)
+      // Re-extract text from new selection area (only for replace mode)
       if (activeSelectionId && pdfDocument) {
         const activeSelection = selections.find(s => s.id === activeSelectionId);
-        if (activeSelection && activeSelection.mode === 'text') {
+        if (activeSelection && activeSelection.mode === 'replace') {
           await extractTextFromSelection(activeSelection);
         }
       }
@@ -662,20 +650,25 @@ export const EditTextPDF: React.FC = () => {
     const y = (e.clientY - rect.top) * scaleY;
 
     // Create final selection with unique ID
+    const selX = Math.min(selectionStart.x, x);
+    const selY = Math.min(selectionStart.y, y);
+    const selWidth = Math.abs(x - selectionStart.x);
+    const selHeight = Math.abs(y - selectionStart.y);
+
     const newSelection: TextOccurrence = {
       id: `sel-${Date.now()}-${Math.random()}`,
       text: '',
-      x: Math.min(selectionStart.x, x),
-      y: Math.min(selectionStart.y, y),
-      width: Math.abs(x - selectionStart.x),
-      height: Math.abs(y - selectionStart.y),
+      x: selX,
+      y: selY,
+      width: selWidth,
+      height: selHeight,
       pageNumber: selectedPage,
       mode: editMode_type,
       textAlign: textAlign,
     };
 
-    // Extract text using helper function (only if text mode)
-    if (newSelection.mode === 'text') {
+    // Extract text using helper function (only for replace mode)
+    if (newSelection.mode === 'replace') {
       await extractTextFromSelection(newSelection);
     }
 
@@ -701,171 +694,50 @@ export const EditTextPDF: React.FC = () => {
 
 
   const handleReplaceText = async () => {
-    if (!file || !pdfDocument || selections.length === 0) return;
+    if (!file || selections.length === 0) return;
 
     setIsProcessing(true);
     setProgress(0);
 
     try {
-      // Group selections by page
-      const selectionsByPage = new Map<number, TextOccurrence[]>();
-      for (const selection of selections) {
-        if (!selectionsByPage.has(selection.pageNumber)) {
-          selectionsByPage.set(selection.pageNumber, []);
+      const result = await pdfService.editTextInPDFVector(
+        file.file,
+        {
+          selections,
+          backgroundColor,
+          textColor,
+          fontSize,
+          fontFamily: fontFamily as any, // Cast because the type in service is more specific
+          isBold,
+          isItalic,
+          textOffsetX,
+          textOffsetY,
+          canvasScale
+        },
+        (progress, message) => {
+          setProgress(progress);
+          setProgressMessage(message);
         }
-        selectionsByPage.get(selection.pageNumber)!.push(selection);
+      );
+
+      if (result.success && result.data) {
+        setResult(result.data);
+        const fileName = file.name.replace(/\.pdf$/i, '_edited.pdf') || 'edited.pdf';
+        setSharedFile(result.data, fileName, 'edit-text-pdf');
+      } else {
+        throw result.error || new Error('Failed to edit PDF');
       }
-
-      setProgressMessage('Loading PDF...');
-      setProgress(10);
-
-      // Load original PDF with pdf-lib
-      const arrayBuffer = await file.file.arrayBuffer();
-      const { PDFDocument } = await import('pdf-lib');
-      const pdfDoc = await PDFDocument.load(arrayBuffer);
-
-      const pagesToProcess = Array.from(selectionsByPage.keys()).sort((a, b) => a - b);
-      let processedPages = 0;
-
-      // Process each page that has selections
-      for (const pageNum of pagesToProcess) {
-        const pageSelections = selectionsByPage.get(pageNum)!;
-
-        setProgressMessage(`Processing page ${pageNum} (${processedPages + 1}/${pagesToProcess.length})...`);
-        setProgress(10 + (processedPages / pagesToProcess.length) * 70);
-
-        const page = await pdfDocument.getPage(pageNum);
-        const viewport = page.getViewport({ scale: 2 }); // Higher resolution for better quality
-
-        // Create canvas
-        const canvas = document.createElement('canvas');
-        const context = canvas.getContext('2d');
-        if (!context) throw new Error('Failed to get canvas context');
-
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-
-        // Render original page
-        await page.render({
-          canvasContext: context,
-          viewport: viewport,
-        }).promise;
-
-        // Scale factor for high-res viewport
-        const scale = viewport.scale;
-
-        // Apply all selections for this page
-        for (const selection of pageSelections) {
-        // Scale coordinates to match high-res viewport
-        const scaledSelection = {
-          x: selection.x * (scale / 1.5),
-          y: selection.y * (scale / 1.5),
-          width: selection.width * (scale / 1.5),
-          height: selection.height * (scale / 1.5),
-        };
-
-        // Draw background rectangle to cover old text/image
-        context.fillStyle = backgroundColor;
-        context.fillRect(scaledSelection.x, scaledSelection.y, scaledSelection.width, scaledSelection.height);
-
-        // Draw new text with offsets and styles (only if text mode)
-        if (selection.mode === 'text' && selection.text) {
-          context.fillStyle = textColor;
-          context.font = getFontString(fontSize * scale, fontFamily);
-          context.textBaseline = 'top';
-
-          // Calculate line height and max width
-          const lineHeight = (fontSize * scale) * 1.2;
-          const maxWidth = scaledSelection.width - (textOffsetX * scale / 1.5 * 2);
-          const textX = scaledSelection.x + (textOffsetX * scale / 1.5);
-          const textY = scaledSelection.y + (textOffsetY * scale / 1.5);
-
-          // Draw multiline text with alignment
-          const words = selection.text.split(' ');
-          let line = '';
-          let currentY = textY;
-          const lines: string[] = [];
-
-          // Build lines with word wrapping
-          for (let i = 0; i < words.length; i++) {
-            const testLine = line + words[i] + ' ';
-            const metrics = context.measureText(testLine);
-            const testWidth = metrics.width;
-
-            if (testWidth > maxWidth && i > 0) {
-              lines.push(line);
-              line = words[i] + ' ';
-            } else {
-              line = testLine;
-            }
-          }
-          lines.push(line);
-
-          // Draw each line with alignment
-          for (let i = 0; i < lines.length; i++) {
-            let lineX = textX;
-            const lineText = lines[i].trim();
-            const lineWidth = context.measureText(lineText).width;
-
-            if (selection.textAlign === 'center') {
-              lineX = textX + (maxWidth - lineWidth) / 2;
-            } else if (selection.textAlign === 'right') {
-              lineX = textX + maxWidth - lineWidth;
-            }
-
-            context.fillText(lineText, lineX, currentY);
-            currentY += lineHeight;
-          }
-        }
-      } // End of for (const selection of pageSelections)
-
-        // Convert canvas to image
-        const imageDataUrl = canvas.toDataURL('image/jpeg', 0.95);
-        const imageBytes = Uint8Array.from(
-          atob(imageDataUrl.split(',')[1]),
-          (c) => c.charCodeAt(0)
-        );
-
-        // Embed the modified page image
-        const image = await pdfDoc.embedJpg(imageBytes);
-        const modifiedPage = pdfDoc.getPage(pageNum - 1);
-        const { width: pageWidth, height: pageHeight } = modifiedPage.getSize();
-
-        // Clear the page and draw the image
-        modifiedPage.drawRectangle({
-          x: 0,
-          y: 0,
-          width: pageWidth,
-          height: pageHeight,
-          color: { type: 'RGB', red: 1, green: 1, blue: 1 },
-        });
-
-        modifiedPage.drawImage(image, {
-          x: 0,
-          y: 0,
-          width: pageWidth,
-          height: pageHeight,
-        });
-
-        processedPages++;
-      }
-
-      setProgressMessage('Saving PDF...');
-      setProgress(90);
-
-      // Save the PDF
-      const pdfBytes = await pdfDoc.save();
-      const resultBlob = new Blob([pdfBytes], { type: 'application/pdf' });
-
-      setProgress(100);
-      setResult(resultBlob);
-
-      // Auto-save to shared file
-      const fileName = file.name.replace(/\.pdf$/i, '_edited.pdf') || 'edited.pdf';
-      setSharedFile(resultBlob, fileName, 'edit-text-pdf');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error replacing text:', error);
-      alert(t('editText.replaceError') || 'Failed to replace text');
+
+      // Check if error is due to encoding (non-Latin characters)
+      if (error?.message?.includes('cannot encode') || error?.message?.includes('WinAnsi')) {
+        alert('⚠️ Error: The selected font does not support non-Latin characters (Cyrillic, Asian, etc.).\n\n' +
+              'Current limitation: Only Latin characters (A-Z, a-z, 0-9) are supported.\n\n' +
+              'Please use only Latin text or try a different tool.');
+      } else {
+        alert(t('editText.replaceError') || 'Failed to replace text');
+      }
     } finally {
       setIsProcessing(false);
     }
@@ -1072,7 +944,7 @@ export const EditTextPDF: React.FC = () => {
                         <p className="text-sm text-blue-600 dark:text-blue-400">
                           Active: {activeSel.width.toFixed(0)}x{activeSel.height.toFixed(0)} px
                           {activeSel.mode === 'cover' ? ' (Cover mode 🎨)' : ''}
-                          {activeSel.text && activeSel.mode === 'text' && ` - "${activeSel.text.substring(0, 30)}${activeSel.text.length > 30 ? '...' : ''}"`}
+                          {activeSel.text && activeSel.mode === 'replace' && ` - "${activeSel.text.substring(0, 30)}${activeSel.text.length > 30 ? '...' : ''}"`}
                         </p>
                         {activeSel.fontSize && (
                           <p className="text-sm text-purple-600 dark:text-purple-400">
@@ -1106,10 +978,10 @@ export const EditTextPDF: React.FC = () => {
               </h3>
               <div className="grid grid-cols-2 gap-3">
                 <Button
-                  onClick={() => setEditModeType('text')}
+                  onClick={() => setEditModeType('replace')}
                   variant="outline"
                   className={`px-4 py-3 h-auto flex-col ${
-                    editMode_type === 'text'
+                    editMode_type === 'replace'
                       ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300'
                       : 'hover:border-blue-300'
                   }`}
@@ -1131,7 +1003,7 @@ export const EditTextPDF: React.FC = () => {
                 </Button>
               </div>
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                {editMode_type === 'text' ? 'Draw and add replacement text' : 'Draw to cover text/images without adding new text'}
+                {editMode_type === 'replace' ? 'Draw and add replacement text' : 'Draw to cover text/images without adding new text'}
               </p>
             </Card>
 
@@ -1191,11 +1063,11 @@ export const EditTextPDF: React.FC = () => {
                           <div className="flex items-center justify-between">
                             <div className="flex-1">
                               <div className="text-sm font-medium text-gray-900 dark:text-white">
-                                {sel.mode === 'cover' ? '🎨' : '✏️'} Selection #{idx + 1}
+                                {sel.mode === 'cover' ? '🎨 Cover' : '✏️ Replace'} #{idx + 1}
                               </div>
                               <div className="text-xs text-gray-500 dark:text-gray-400">
                                 {sel.width.toFixed(0)}x{sel.height.toFixed(0)} px
-                                {sel.mode === 'text' && sel.text && ` - "${sel.text.substring(0, 20)}..."`}
+                                {sel.mode === 'replace' && sel.text && ` - "${sel.text.substring(0, 20)}..."`}
                               </div>
                             </div>
                             <Button
@@ -1238,23 +1110,28 @@ export const EditTextPDF: React.FC = () => {
                   </h3>
 
                   <div className="space-y-4">
-                    {activeSel.mode === 'text' && (
-                      <div>
-                        <Label className="mb-2">
-                          Replacement Text
-                        </Label>
-                        <textarea
-                          value={activeSel.text}
-                          onChange={(e) => {
-                            setSelections(prev => prev.map(s =>
-                              s.id === activeSelectionId ? { ...s, text: e.target.value } : s
-                            ));
-                          }}
-                          placeholder="Enter replacement text (multiline supported)..."
-                          rows={3}
-                          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white resize-none"
-                        />
-                      </div>
+                    {activeSel.mode === 'replace' && (
+                      <>
+                        <div>
+                          <Label className="mb-2">
+                            Replacement Text
+                          </Label>
+                          <textarea
+                            value={activeSel.text}
+                            onChange={(e) => {
+                              setSelections(prev => prev.map(s =>
+                                s.id === activeSelectionId ? { ...s, text: e.target.value } : s
+                              ));
+                            }}
+                            placeholder="Enter replacement text (multiline supported)..."
+                            rows={3}
+                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white resize-none"
+                          />
+                          <p className="text-xs text-amber-600 dark:text-amber-400 mt-1">
+                            ⚠️ Only Latin characters (A-Z, 0-9) are supported
+                          </p>
+                        </div>
+                      </>
                     )}
 
                     {/* Colors */}
@@ -1270,7 +1147,7 @@ export const EditTextPDF: React.FC = () => {
                           className="w-full h-8 rounded border border-gray-300 dark:border-gray-600"
                         />
                       </div>
-                      {activeSel.mode === 'text' && (
+                      {activeSel.mode === 'replace' && (
                         <div>
                           <Label className="block text-xs mb-1">
                             Text Color
@@ -1285,7 +1162,7 @@ export const EditTextPDF: React.FC = () => {
                       )}
                     </div>
 
-                    {activeSel.mode === 'text' && (
+                    {activeSel.mode === 'replace' && (
                       <>
 
                         {/* Font Settings - Compact Grid */}
@@ -1343,6 +1220,54 @@ export const EditTextPDF: React.FC = () => {
                             />
                             <span className="text-xs italic">I</span>
                           </label>
+                        </div>
+
+                        {/* Text Alignment */}
+                        <div>
+                          <Label className="block text-xs mb-2">
+                            Text Alignment
+                          </Label>
+                          <div className="flex gap-2">
+                            <Button
+                              onClick={() => {
+                                setTextAlign('left');
+                                setSelections(prev => prev.map(s =>
+                                  s.id === activeSelectionId ? { ...s, textAlign: 'left' } : s
+                                ));
+                              }}
+                              variant="outline"
+                              size="sm"
+                              className={`flex-1 ${activeSel.textAlign === 'left' || !activeSel.textAlign ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-500' : ''}`}
+                            >
+                              ←
+                            </Button>
+                            <Button
+                              onClick={() => {
+                                setTextAlign('center');
+                                setSelections(prev => prev.map(s =>
+                                  s.id === activeSelectionId ? { ...s, textAlign: 'center' } : s
+                                ));
+                              }}
+                              variant="outline"
+                              size="sm"
+                              className={`flex-1 ${activeSel.textAlign === 'center' ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-500' : ''}`}
+                            >
+                              ═
+                            </Button>
+                            <Button
+                              onClick={() => {
+                                setTextAlign('right');
+                                setSelections(prev => prev.map(s =>
+                                  s.id === activeSelectionId ? { ...s, textAlign: 'right' } : s
+                                ));
+                              }}
+                              variant="outline"
+                              size="sm"
+                              className={`flex-1 ${activeSel.textAlign === 'right' ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-500' : ''}`}
+                            >
+                              →
+                            </Button>
+                          </div>
                         </div>
                       </>
                     )}

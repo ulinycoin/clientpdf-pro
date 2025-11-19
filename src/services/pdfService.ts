@@ -1588,8 +1588,10 @@ export class PDFService {
             const height = item.height || 20;
 
             occurrences.push({
+              id: `search-${pageNum}-${x}-${y}`,
               pageNumber: pageNum,
               text: item.str,
+              mode: 'text',
               x,
               y,
               width,
@@ -1603,150 +1605,6 @@ export class PDFService {
     } catch (error) {
       console.error('Error finding text in PDF:', error);
       throw this.createPDFError(error, 'Text search failed');
-    }
-  }
-
-  /**
-   * Replace text in PDF by rasterizing page and overlaying new text
-   */
-  async replaceTextInPDF(
-    file: File,
-    occurrences: Array<{
-      pageNumber: number;
-      text: string;
-      x: number;
-      y: number;
-      width: number;
-      height: number;
-      selected?: boolean;
-    }>,
-    newText: string,
-    options: import('@/types/pdf').TextReplaceOptions,
-    onProgress?: ProgressCallback
-  ): Promise<PDFProcessingResult<Blob>> {
-    const startTime = Date.now();
-
-    try {
-      onProgress?.(0, 'Loading PDF...');
-
-      const arrayBuffer = await file.arrayBuffer();
-      const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
-      const pdfjsDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-
-      // Group occurrences by page
-      const pageOccurrences = new Map<number, typeof occurrences>();
-      for (const occ of occurrences) {
-        if (!pageOccurrences.has(occ.pageNumber)) {
-          pageOccurrences.set(occ.pageNumber, []);
-        }
-        pageOccurrences.get(occ.pageNumber)!.push(occ);
-      }
-
-      const totalPages = pageOccurrences.size;
-      let processedPages = 0;
-
-      // Process each page with text replacements
-      for (const [pageNum, pageOccs] of pageOccurrences.entries()) {
-        onProgress?.(
-          10 + (processedPages / totalPages) * 70,
-          `Replacing text on page ${pageNum}...`
-        );
-
-        // Get page from PDF.js for rendering
-        const page = await pdfjsDoc.getPage(pageNum);
-        const viewport = page.getViewport({ scale: options.dpi / 72 });
-
-        // Create canvas
-        const canvas = document.createElement('canvas');
-        const context = canvas.getContext('2d');
-        if (!context) throw new Error('Failed to get canvas context');
-
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-
-        // Render page to canvas
-        await page.render({
-          canvasContext: context,
-          viewport: viewport,
-        }).promise;
-
-        // Draw replacement rectangles and text
-        for (const occ of pageOccs) {
-          const scale = options.dpi / 72;
-          const x = occ.x * scale;
-          const y = occ.y * scale;
-          const width = occ.width * scale;
-          const height = occ.height * scale;
-
-          // Draw background rectangle
-          context.fillStyle = options.backgroundColor;
-          context.fillRect(x, y - height, width, height);
-
-          // Draw new text
-          context.fillStyle = options.textColor;
-          context.font = `${options.fontSize * scale}px Arial`;
-          context.textBaseline = 'top';
-          context.fillText(newText, x, y - height);
-        }
-
-        // Convert canvas to image
-        const imageDataUrl = canvas.toDataURL('image/jpeg', 0.92);
-        const imageBytes = Uint8Array.from(
-          atob(imageDataUrl.split(',')[1]),
-          (c) => c.charCodeAt(0)
-        );
-
-        // Embed image in PDF
-        const image = await pdfDoc.embedJpg(imageBytes);
-        const pdfPage = pdfDoc.getPage(pageNum - 1);
-        const { width: pageWidth, height: pageHeight } = pdfPage.getSize();
-
-        // Remove all content from page
-        pdfPage.drawRectangle({
-          x: 0,
-          y: 0,
-          width: pageWidth,
-          height: pageHeight,
-          color: rgb(1, 1, 1),
-        });
-
-        // Draw image
-        pdfPage.drawImage(image, {
-          x: 0,
-          y: 0,
-          width: pageWidth,
-          height: pageHeight,
-        });
-
-        processedPages++;
-      }
-
-      onProgress?.(85, 'Finalizing PDF...');
-
-      // Save PDF
-      const pdfBytes = await pdfDoc.save();
-      const resultBlob = new Blob([pdfBytes], { type: 'application/pdf' });
-
-      onProgress?.(100, 'Text replacement complete!');
-
-      const processingTime = Date.now() - startTime;
-
-      return {
-        success: true,
-        data: resultBlob,
-        metadata: {
-          pageCount: pdfDoc.getPageCount(),
-          originalSize: file.size,
-          processedSize: resultBlob.size,
-          processingTime,
-        },
-      };
-    } catch (error) {
-      console.error('Error replacing text in PDF:', error);
-      return {
-        success: false,
-        error: this.createPDFError(error, 'Text replacement failed'),
-      };
     }
   }
 
@@ -1977,13 +1835,228 @@ export class PDFService {
       };
     }
   }
+
+  /**
+   * Edit text in a PDF using a vector-based approach (no rasterization)
+   */
+  async editTextInPDFVector(
+    file: File,
+    options: import('@/types/pdf').VectorEditTextOptions,
+    onProgress?: ProgressCallback
+  ): Promise<PDFProcessingResult<Blob>> {
+    const startTime = Date.now();
+
+    try {
+      onProgress?.(0, 'Loading PDF...');
+      const {
+        selections,
+        backgroundColor,
+        textColor,
+        fontSize,
+        fontFamily,
+        isBold,
+        isItalic,
+        textOffsetX,
+        textOffsetY,
+        canvasScale
+      } = options;
+
+      const arrayBuffer = await file.arrayBuffer();
+      const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+      pdfDoc.registerFontkit(fontkit);
+
+      onProgress?.(10, 'Loading fonts...');
+
+      // Map font family to pdf-lib standard fonts
+      const fontMap = {
+        'Arial': StandardFonts.Helvetica,
+        'Helvetica': StandardFonts.Helvetica,
+        'Times New Roman': StandardFonts.TimesRoman,
+        'Courier New': StandardFonts.Courier,
+        'Georgia': StandardFonts.TimesRoman, // No direct match, use Times
+        'Verdana': StandardFonts.Helvetica, // No direct match, use Helvetica
+      };
+
+      const boldFontMap = {
+        'Arial': StandardFonts.HelveticaBold,
+        'Helvetica': StandardFonts.HelveticaBold,
+        'Times New Roman': StandardFonts.TimesRomanBold,
+        'Courier New': StandardFonts.CourierBold,
+        'Georgia': StandardFonts.TimesRomanBold,
+        'Verdana': StandardFonts.HelveticaBold,
+      };
+
+      const italicFontMap = {
+        'Arial': StandardFonts.HelveticaOblique,
+        'Helvetica': StandardFonts.HelveticaOblique,
+        'Times New Roman': StandardFonts.TimesRomanItalic,
+        'Courier New': StandardFonts.CourierOblique,
+        'Georgia': StandardFonts.TimesRomanItalic,
+        'Verdana': StandardFonts.HelveticaOblique,
+      };
+
+      const boldItalicFontMap = {
+        'Arial': StandardFonts.HelveticaBoldOblique,
+        'Helvetica': StandardFonts.HelveticaBoldOblique,
+        'Times New Roman': StandardFonts.TimesRomanBoldItalic,
+        'Courier New': StandardFonts.CourierBoldOblique,
+        'Georgia': StandardFonts.TimesRomanBoldItalic,
+        'Verdana': StandardFonts.HelveticaBoldOblique,
+      };
+
+      let fontKey = fontMap[fontFamily];
+      if (isBold && isItalic) fontKey = boldItalicFontMap[fontFamily];
+      else if (isBold) fontKey = boldFontMap[fontFamily];
+      else if (isItalic) fontKey = italicFontMap[fontFamily];
+
+      const font = await pdfDoc.embedFont(fontKey);
+
+      // Group selections by page
+      const selectionsByPage = new Map<number, typeof selections>();
+      for (const sel of selections) {
+        if (!selectionsByPage.has(sel.pageNumber)) {
+          selectionsByPage.set(sel.pageNumber, []);
+        }
+        selectionsByPage.get(sel.pageNumber)!.push(sel);
+      }
+
+      const totalPagesToProcess = selectionsByPage.size;
+      let processedPages = 0;
+
+      onProgress?.(20, `Preparing to edit ${totalPagesToProcess} pages...`);
+
+      // Process each page
+      for (const [pageNum, pageSelections] of selectionsByPage.entries()) {
+        const page = pdfDoc.getPage(pageNum - 1);
+        const { height: pageHeight } = page.getSize();
+        const { width: pageWidth } = page.getSize();
+
+        // Get the original page's viewport to calculate scaling
+        const pdfjsDoc = await pdfjsLib.getDocument({ data: arrayBuffer.slice(0) }).promise;
+        const pdfjsPage = await pdfjsDoc.getPage(pageNum);
+        const viewport = pdfjsPage.getViewport({ scale: canvasScale });
+
+        const scaleX = pageWidth / viewport.width;
+        const scaleY = pageHeight / viewport.height;
+
+        for (const sel of pageSelections) {
+          // Scale selection coordinates from canvas space to PDF space
+          const pdfX = sel.x * scaleX;
+          const pdfY = pageHeight - (sel.y * scaleY);
+          const pdfWidth = sel.width * scaleX;
+          const pdfHeight = sel.height * scaleY;
+
+          // Draw background rectangle
+          const bgColor = this.hexToRgb(backgroundColor);
+          page.drawRectangle({
+            x: pdfX,
+            y: pdfY - pdfHeight,
+            width: pdfWidth,
+            height: pdfHeight,
+            color: rgb(bgColor.red, bgColor.green, bgColor.blue),
+            borderWidth: 0,
+          });
+
+          if (sel.mode === 'replace' && sel.text) {
+            // Simple word wrap implementation
+            const words = sel.text.split(' ');
+            const lines: string[] = [];
+            let line = '';
+            // Adjust starting Y for text baseline and offset
+            let currentY = pdfY - (textOffsetY * scaleY) - (fontSize);
+
+            const textWidth = pdfWidth - (textOffsetX * scaleX * 2);
+            const txtColor = this.hexToRgb(textColor);
+            const alignment = sel.textAlign || 'left';
+
+            // Build lines with word wrapping
+            for (let n = 0; n < words.length; n++) {
+              const testLine = line + words[n] + ' ';
+              const width = font.widthOfTextAtSize(testLine, fontSize);
+              if (width > textWidth && n > 0) {
+                lines.push(line.trim());
+                line = words[n] + ' ';
+              } else {
+                line = testLine;
+              }
+            }
+            if (line.trim()) {
+              lines.push(line.trim());
+            }
+
+            // Draw each line with proper alignment
+            for (const lineText of lines) {
+              const lineWidth = font.widthOfTextAtSize(lineText, fontSize);
+              let lineX = pdfX + (textOffsetX * scaleX);
+
+              // Apply text alignment
+              if (alignment === 'center') {
+                lineX += (textWidth - lineWidth) / 2;
+              } else if (alignment === 'right') {
+                lineX += (textWidth - lineWidth);
+              }
+
+              page.drawText(lineText, {
+                x: lineX,
+                y: currentY,
+                font,
+                size: fontSize,
+                color: rgb(txtColor.red, txtColor.green, txtColor.blue),
+              });
+              currentY -= (fontSize * 1.2); // Move to next line
+            }
+          }
+        }
+        processedPages++;
+        onProgress?.(
+          20 + (processedPages / totalPagesToProcess) * 70,
+          `Processing page ${pageNum} (${processedPages}/${totalPagesToProcess})...`
+        );
+      }
+
+      onProgress?.(90, 'Saving PDF...');
+      const pdfBytes = await pdfDoc.save();
+      const resultBlob = new Blob([pdfBytes], { type: 'application/pdf' });
+      onProgress?.(100, 'Edits applied successfully!');
+
+      return {
+        success: true,
+        data: resultBlob,
+        metadata: {
+          pageCount: pdfDoc.getPageCount(),
+          originalSize: file.size,
+          processedSize: resultBlob.size,
+          processingTime: Date.now() - startTime,
+        },
+      };
+    } catch (error) {
+      console.error('Error editing text in PDF (Vector):', error);
+      return {
+        success: false,
+        error: this.createPDFError(error, 'Vector text edit failed'),
+      };
+    }
+  }
+
+  /**
+   * Helper to convert hex color string to RGB object for pdf-lib
+   */
+  private hexToRgb(hex: string): { red: number; green: number; blue: number } {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    if (!result) {
+      return { red: 0, green: 0, blue: 0 }; // Default to black
+    }
+    return {
+      red: parseInt(result[1], 16) / 255,
+      green: parseInt(result[2], 16) / 255,
+      blue: parseInt(result[3], 16) / 255,
+    };
+  }
 }
 
-// Export singleton instance as default
 const pdfService = PDFService.getInstance();
 export default pdfService;
 
-// Named exports for compatibility
 export { pdfService };
 export type { PDFFileInfo, PDFProcessingResult };
 

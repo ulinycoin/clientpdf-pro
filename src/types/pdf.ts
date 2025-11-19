@@ -78,14 +78,30 @@ export interface ProtectionProgress {
   message: string;
 }
 
-// Edit Text Types
 export interface TextOccurrence {
-  pageNumber: number;
+  id: string;
   text: string;
   x: number;
   y: number;
   width: number;
   height: number;
+  fontSize?: number;
+  pageNumber: number;
+  mode: 'replace' | 'cover'; // 'replace' = replace with text, 'cover' = just paint over
+  textAlign?: 'left' | 'center' | 'right';
+}
+
+export interface VectorEditTextOptions {
+  selections: TextOccurrence[];
+  backgroundColor: string;
+  textColor: string;
+  fontSize: number;
+  fontFamily: 'Arial' | 'Helvetica' | 'Times New Roman' | 'Courier New' | 'Georgia' | 'Verdana';
+  isBold: boolean;
+  isItalic: boolean;
+  textOffsetX: number;
+  textOffsetY: number;
+  canvasScale: number; // To properly scale coordinates back
 }
 
 export interface TextReplaceOptions {
