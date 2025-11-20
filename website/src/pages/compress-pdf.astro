@@ -36,6 +36,41 @@ const howToSchema = {
   ],
   "totalTime": "PT1M"
 };
+
+const faqs = [
+  {
+    question: "How much smaller will my PDF become?",
+    answer: "Typical reduction is <strong>30-70%</strong> depending on the original file. PDFs with metadata, encryption, or redundant data compress more. Scanned documents with optimized images may see minimal reduction."
+  },
+  {
+    question: "Will compression affect PDF quality or readability?",
+    answer: "No! Our compression removes redundant data and metadata without touching page content. Text remains sharp, images keep their resolution. We do <strong>not</strong> downsample images or reduce quality like aggressive server-side compressors."
+  },
+  {
+    question: "Can I compress password-protected PDFs?",
+    answer: "Our compression automatically removes encryption and passwords as part of the optimization process. If you need to re-protect the compressed PDF, use our <a href='/protect-pdf'>Protect PDF tool</a> afterward."
+  },
+  {
+    question: "Why does my PDF barely get smaller?",
+    answer: "If your PDF is already optimized (e.g., created by modern software or previously compressed), there's less redundant data to remove. Scanned documents or PDFs with minimal metadata won't compress much."
+  },
+  {
+    question: "What data gets removed during compression?",
+    answer: "We remove: <ul><li>Encryption and password protection</li><li>Document metadata (author, creation date, keywords)</li><li>Hidden embedded data</li><li>Redundant structural elements</li></ul> We <strong>never</strong> remove or modify page content, images, or text."
+  },
+  {
+    question: "Can I compress multiple PDFs at once?",
+    answer: "Yes! You can batch-compress multiple files. Upload all PDFs at once, and each will be compressed individually. You'll download them one by one or as a ZIP archive."
+  },
+  {
+    question: "Is there a file size limit for compression?",
+    answer: "No limits during beta! You can compress PDFs of any size. Processing happens in your browser, so your device's available memory is the only constraint. Most devices handle 100+ MB PDFs easily."
+  },
+  {
+    question: "Are my files uploaded to a server?",
+    answer: "<strong>Never!</strong> All compression happens 100% locally in your browser using JavaScript. Your PDF never leaves your device - complete privacy guaranteed."
+  }
+];
 ---
 
 <ToolPage
@@ -50,10 +85,10 @@ const howToSchema = {
     "🆓 Free — No size limits during beta"
   ]}
   relatedTools={[
+    { id: 'extract-images-pdf', icon: '🖼️', title: 'Extract Images', description: 'Remove images to reduce size' },
     { id: 'add-form-fields-pdf', icon: '📋', title: 'Add Form Fields', description: 'Create forms before compressing' },
     { id: 'protect-pdf', icon: '🔒', title: 'Protect PDF', description: 'Add password after compressing' },
-    { id: 'merge-pdf', icon: '📑', title: 'Merge PDF', description: 'Combine then compress PDFs' },
-    { id: 'split-pdf', icon: '✂️', title: 'Split PDF', description: 'Extract and compress pages' }
+    { id: 'merge-pdf', icon: '📑', title: 'Merge PDF', description: 'Combine then compress PDFs' }
   ]}
   whyChoose={{
     title: "Why Choose Our PDF Compressor?",
@@ -81,6 +116,7 @@ const howToSchema = {
     "Review size reduction statistics",
     "Download your optimized PDF instantly"
   ]}
+  faqs={faqs}
 >
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />

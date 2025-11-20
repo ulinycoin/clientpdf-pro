@@ -91,6 +91,18 @@ export interface TextOccurrence {
   textAlign?: 'left' | 'center' | 'right';
 }
 
+export interface ExtractedImage {
+  id: string;
+  blob: Blob;
+  filename: string;
+  width: number;
+  height: number;
+  pageNumber: number;
+  format: 'jpg' | 'png';
+  size: number;
+  previewUrl?: string;
+}
+
 export interface VectorEditTextOptions {
   selections: TextOccurrence[];
   backgroundColor: string;

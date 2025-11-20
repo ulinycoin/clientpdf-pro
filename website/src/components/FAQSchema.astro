@@ -1,0 +1,138 @@
+---
+export interface FAQ {
+  question: string;
+  answer: string;
+}
+
+interface Props {
+  faqs: FAQ[];
+}
+
+const { faqs } = Astro.props;
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faqs.map(faq => ({
+    "@type": "Question",
+    "name": faq.question,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": faq.answer
+    }
+  }))
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
+<!-- FAQ Section for better UX -->
+<section class="faq-section">
+  <h2 class="faq-title">Frequently Asked Questions</h2>
+  <div class="faq-list">
+    {faqs.map((faq) => (
+      <details class="faq-item">
+        <summary class="faq-question">{faq.question}</summary>
+        <div class="faq-answer" set:html={faq.answer} />
+      </details>
+    ))}
+  </div>
+</section>
+
+<style>
+  .faq-section {
+    margin: 3rem auto;
+    max-width: 800px;
+    padding: 0 1rem;
+  }
+
+  .faq-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: #111827;
+  }
+
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .faq-item {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 1.25rem;
+    transition: all 0.2s;
+  }
+
+  .faq-item:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+
+  .faq-item[open] {
+    border-color: #3b82f6;
+  }
+
+  .faq-question {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .faq-question::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-question::before {
+    content: '+';
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #3b82f6;
+    transition: transform 0.2s;
+    display: inline-block;
+    width: 1.5rem;
+    text-align: center;
+  }
+
+  .faq-item[open] .faq-question::before {
+    content: '−';
+  }
+
+  .faq-answer {
+    margin-top: 1rem;
+    padding-left: 2rem;
+    color: #4b5563;
+    line-height: 1.7;
+  }
+
+  .faq-answer :global(p) {
+    margin-bottom: 0.75rem;
+  }
+
+  .faq-answer :global(strong) {
+    color: #1f2937;
+    font-weight: 600;
+  }
+
+  @media (max-width: 640px) {
+    .faq-title {
+      font-size: 1.5rem;
+    }
+
+    .faq-question {
+      font-size: 1rem;
+    }
+
+    .faq-item {
+      padding: 1rem;
+    }
+  }
+</style>

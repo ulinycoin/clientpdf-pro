@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Breadcrumbs from './Breadcrumbs.astro';
+import FAQSchema from './FAQSchema.astro';
 
 interface Props {
   toolId: string;
@@ -20,9 +21,13 @@ interface Props {
     title: string;
     description: string;
   }>;
+  faqs?: Array<{
+    question: string;
+    answer: string;
+  }>;
 }
 
-const { toolId, title, description, metaDescription, benefits, steps, whyChoose, features, relatedTools } = Astro.props;
+const { toolId, title, description, metaDescription, benefits, steps, whyChoose, features, relatedTools, faqs } = Astro.props;
 
 const canonicalURL = `https://localpdf.online/${toolId}`;
 
@@ -169,6 +174,11 @@ const howToSchema = {
       <strong>100% Private:</strong> Your files never leave your device. All processing happens locally in your browser.
     </div>
   </section>
+
+  <!-- FAQ Section (if provided) -->
+  {faqs && faqs.length > 0 && (
+    <FAQSchema faqs={faqs} />
+  )}
 
   <!-- Related Tools - Internal Linking -->
   <section class="related-tools">

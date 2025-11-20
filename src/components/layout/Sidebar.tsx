@@ -28,7 +28,8 @@ const TOOL_NAMES: Record<Tool, string> = {
   'pdf-to-word': 'PDF to Word',
   'word-to-pdf': 'Word to PDF',
   'sign-pdf': 'Sign PDF',
-  'flatten-pdf': 'Flatten PDF'
+  'flatten-pdf': 'Flatten PDF',
+  'extract-images-pdf': 'Extract/Remove Images'
 };
 
 // Tool definitions with icons
@@ -56,6 +57,7 @@ const TOOLS: Array<{ id: Tool; icon: string; tier: number }> = [
   { id: 'word-to-pdf', icon: '📄', tier: 3 },
   { id: 'sign-pdf', icon: '✍️', tier: 3 },
   { id: 'flatten-pdf', icon: '📏', tier: 3 },
+  { id: 'extract-images-pdf', icon: '🖼️', tier: 3 },
 ];
 
 export const Sidebar: React.FC<SidebarProps> = ({

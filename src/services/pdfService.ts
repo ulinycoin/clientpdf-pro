@@ -1,4 +1,4 @@
-import { PDFDocument, degrees, rgb, StandardFonts } from 'pdf-lib';
+import { PDFDocument, degrees, rgb, StandardFonts, PDFName, PDFDict, PDFArray } from 'pdf-lib';
 import fontkit from '@pdf-lib/fontkit';
 import { PDFDocument as PDFDocumentEncrypt } from 'pdf-lib-plus-encrypt';
 import JSZip from 'jszip';
@@ -798,6 +798,7 @@ export class PDFService {
 
       // Validate page numbers
       const validPages = pages.filter(p => p >= 1 && p <= totalPages);
+
       if (validPages.length === 0) {
         throw new Error('No valid pages to rotate');
       }
@@ -840,6 +841,483 @@ export class PDFService {
       return {
         success: false,
         error: this.createPDFError(error, 'Rotate PDF failed')
+      };
+    }
+  }
+
+  /**
+   * Extract images from PDF using pdf-lib
+   */
+  async extractImages(
+    file: File,
+    onProgress?: ProgressCallback
+  ): Promise<PDFProcessingResult<import('@/types/pdf').ExtractedImage[]>> {
+    const startTime = performance.now();
+
+    try {
+      onProgress?.(0, 'Loading PDF...');
+
+      const arrayBuffer = await file.arrayBuffer();
+      const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+      const pages = pdfDoc.getPages();
+      const totalPages = pages.length;
+
+      const images: import('@/types/pdf').ExtractedImage[] = [];
+      let imageCount = 0;
+
+      onProgress?.(10, 'Extracting images...');
+
+      for (let pageIndex = 0; pageIndex < totalPages; pageIndex++) {
+        const page = pages[pageIndex];
+        const resources = page.node.Resources();
+
+        if (resources && resources instanceof PDFDict) {
+          const xObjects = resources.get(PDFName.of('XObject'));
+
+          if (xObjects && xObjects instanceof PDFDict) {
+            const xObjectKeys = xObjects.keys();
+
+            for (const key of xObjectKeys) {
+              try {
+                const ref = xObjects.get(key);
+                const xObject = pdfDoc.context.lookup(ref);
+
+                if (xObject instanceof PDFDict || (xObject && 'dict' in xObject && xObject.dict instanceof PDFDict)) {
+                  const dict = xObject instanceof PDFDict ? xObject : xObject.dict;
+                  const subtype = dict.get(PDFName.of('Subtype'));
+
+                  // Check if it's an image
+                  if (subtype && subtype.toString() === '/Image') {
+                    // Get image properties
+                    const width = dict.get(PDFName.of('Width'));
+                    const height = dict.get(PDFName.of('Height'));
+                    const colorSpace = dict.get(PDFName.of('ColorSpace'));
+                    const bitsPerComponent = dict.get(PDFName.of('BitsPerComponent')) || 8;
+
+                    if (!width || !height) {
+                      continue;
+                    }
+
+                    // Extract numeric values - width/height can be PDFNumber objects
+                    let w = 0;
+                    let h = 0;
+                    let bpc = 8;
+
+                    // Try different ways to extract the number
+                    if (typeof width === 'number') {
+                      w = width;
+                    } else if (width && typeof (width as any).asNumber === 'function') {
+                      w = (width as any).asNumber();
+                    } else if (width && typeof (width as any).numberValue === 'function') {
+                      w = (width as any).numberValue();
+                    } else if (width && (width as any).value !== undefined) {
+                      w = Number((width as any).value);
+                    } else if (width && (width as any).num !== undefined) {
+                      w = Number((width as any).num);
+                    }
+
+                    if (typeof height === 'number') {
+                      h = height;
+                    } else if (height && typeof (height as any).asNumber === 'function') {
+                      h = (height as any).asNumber();
+                    } else if (height && typeof (height as any).numberValue === 'function') {
+                      h = (height as any).numberValue();
+                    } else if (height && (height as any).value !== undefined) {
+                      h = Number((height as any).value);
+                    } else if (height && (height as any).num !== undefined) {
+                      h = Number((height as any).num);
+                    }
+
+                    if (typeof bitsPerComponent === 'number') {
+                      bpc = bitsPerComponent;
+                    } else if (bitsPerComponent && typeof (bitsPerComponent as any).asNumber === 'function') {
+                      bpc = (bitsPerComponent as any).asNumber();
+                    } else if (bitsPerComponent && typeof (bitsPerComponent as any).numberValue === 'function') {
+                      bpc = (bitsPerComponent as any).numberValue();
+                    } else if (bitsPerComponent && (bitsPerComponent as any).value !== undefined) {
+                      bpc = Number((bitsPerComponent as any).value);
+                    }
+
+                    // Validate dimensions
+                    if (!w || !h || w <= 0 || h <= 0 || !Number.isFinite(w) || !Number.isFinite(h)) {
+                      continue;
+                    }
+
+                    // Skip unreasonably large images (likely errors)
+                    if (w > 10000 || h > 10000) {
+                      continue;
+                    }
+
+                    // Get raw image data
+                    let imageData: Uint8Array | null = null;
+
+                    if ('stream' in xObject && xObject.stream) {
+                      imageData = xObject.stream.contents;
+                    } else if ('contents' in xObject) {
+                      imageData = (xObject as any).contents;
+                    }
+
+                    if (imageData && imageData.length > 0) {
+                      // Try to determine format
+                      const filter = dict.get(PDFName.of('Filter'));
+                      let mimeType = 'image/png';
+                      let ext = 'png';
+
+                      // Check if it's JPEG
+                      if (filter && filter.toString().includes('DCTDecode')) {
+                        mimeType = 'image/jpeg';
+                        ext = 'jpg';
+                        // For JPEG, we can use the raw data directly
+                        const blob = new Blob([imageData], { type: mimeType });
+                        imageCount++;
+                        const id = `img_${pageIndex + 1}_${imageCount}_${Date.now()}`;
+                        images.push({
+                          id,
+                          blob,
+                          filename: `page${pageIndex + 1}_img${imageCount}.${ext}`,
+                          width: w,
+                          height: h,
+                          pageNumber: pageIndex + 1,
+                          format: ext as 'jpg' | 'png',
+                          size: blob.size,
+                          previewUrl: URL.createObjectURL(blob)
+                        });
+                      } else {
+                        // For other formats, render to canvas
+                        try {
+                          // Validate dimensions again before canvas creation
+                          if (w <= 0 || h <= 0 || !Number.isFinite(w) || !Number.isFinite(h)) {
+                            continue;
+                          }
+
+                          const canvas = document.createElement('canvas');
+                          canvas.width = w;
+                          canvas.height = h;
+                          const ctx = canvas.getContext('2d');
+
+                          if (ctx) {
+                            // Determine color channels
+                            let channels = 4; // RGBA default
+                            if (colorSpace) {
+                              const csStr = colorSpace.toString();
+                              if (csStr.includes('DeviceGray')) channels = 1;
+                              else if (csStr.includes('DeviceRGB')) channels = 3;
+                              else if (csStr.includes('DeviceCMYK')) channels = 4;
+                            }
+
+                            // Validate we have enough data
+                            const expectedSize = w * h * channels;
+                            if (imageData.length < expectedSize) {
+                              continue;
+                            }
+
+                            // Create ImageData
+                            const imgDataArray = new Uint8ClampedArray(w * h * 4);
+
+                            // Simple conversion (this is basic, may not work for all color spaces)
+                            for (let i = 0; i < w * h; i++) {
+                              if (channels === 1) {
+                                // Grayscale
+                                const gray = imageData[i];
+                                imgDataArray[i * 4] = gray;
+                                imgDataArray[i * 4 + 1] = gray;
+                                imgDataArray[i * 4 + 2] = gray;
+                                imgDataArray[i * 4 + 3] = 255;
+                              } else if (channels === 3) {
+                                // RGB
+                                imgDataArray[i * 4] = imageData[i * 3];
+                                imgDataArray[i * 4 + 1] = imageData[i * 3 + 1];
+                                imgDataArray[i * 4 + 2] = imageData[i * 3 + 2];
+                                imgDataArray[i * 4 + 3] = 255;
+                              }
+                            }
+
+                            const imgData = new ImageData(imgDataArray, w, h);
+                            ctx.putImageData(imgData, 0, 0);
+
+                            const blob = await new Promise<Blob | null>(resolve =>
+                              canvas.toBlob(resolve, 'image/png')
+                            );
+
+                            if (blob) {
+                              imageCount++;
+                              const id = `img_${pageIndex + 1}_${imageCount}_${Date.now()}`;
+                              images.push({
+                                id,
+                                blob,
+                                filename: `page${pageIndex + 1}_img${imageCount}.${ext}`,
+                                width: w,
+                                height: h,
+                                pageNumber: pageIndex + 1,
+                                format: ext as 'jpg' | 'png',
+                                size: blob.size,
+                                previewUrl: URL.createObjectURL(blob)
+                              });
+                            }
+                          }
+                        } catch (err) {
+                          // Silently skip - these are likely malformed or unsupported images
+                          continue;
+                        }
+                      }
+                    }
+                  }
+                }
+              } catch (err) {
+                // Skip problematic images
+                continue;
+              }
+            }
+          }
+        }
+
+        onProgress?.(
+          10 + ((pageIndex + 1) / totalPages) * 70,
+          `Scanned page ${pageIndex + 1} of ${totalPages}...`
+        );
+      }
+
+      if (images.length === 0) {
+        throw new Error('No images found in the PDF');
+      }
+
+      const processingTime = performance.now() - startTime;
+      onProgress?.(100, 'Extraction completed!');
+
+      return {
+        success: true,
+        data: images,
+        metadata: {
+          pageCount: totalPages,
+          originalSize: file.size,
+          processedSize: images.reduce((sum, img) => sum + img.size, 0),
+          processingTime,
+          filesCreated: images.length
+        }
+      };
+
+    } catch (error) {
+      return {
+        success: false,
+        error: this.createPDFError(error, 'Image extraction failed')
+      };
+    }
+  }
+
+  /**
+   * Remove specific images from PDF by their IDs
+   */
+  async removeSelectedImages(
+    file: File,
+    imageIdsToRemove: string[],
+    extractedImages: import('@/types/pdf').ExtractedImage[],
+    onProgress?: ProgressCallback
+  ): Promise<PDFProcessingResult<Blob>> {
+    const startTime = performance.now();
+
+    try {
+      onProgress?.(0, 'Loading PDF...');
+
+      const arrayBuffer = await file.arrayBuffer();
+      const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+      const pages = pdfDoc.getPages();
+      const totalPages = pages.length;
+
+      onProgress?.(10, 'Processing pages...');
+
+      // Create a map of images to remove grouped by page
+      const imagesToRemoveByPage = new Map<number, Set<string>>();
+      extractedImages.forEach(img => {
+        if (imageIdsToRemove.includes(img.id)) {
+          if (!imagesToRemoveByPage.has(img.pageNumber)) {
+            imagesToRemoveByPage.set(img.pageNumber, new Set());
+          }
+          // Store filename as identifier since we can match it
+          imagesToRemoveByPage.get(img.pageNumber)!.add(img.filename);
+        }
+      });
+
+      let removedCount = 0;
+      let imageCountByPage = new Map<number, number>();
+
+      for (let pageIndex = 0; pageIndex < totalPages; pageIndex++) {
+        const pageNumber = pageIndex + 1;
+        const page = pages[pageIndex];
+        const resources = page.node.Resources();
+
+        if (!imagesToRemoveByPage.has(pageNumber)) {
+          continue; // Skip pages with no images to remove
+        }
+
+        if (resources instanceof PDFDict) {
+          const xObjects = resources.get(PDFName.of('XObject'));
+
+          if (xObjects instanceof PDFDict) {
+            const keysToRemove: PDFName[] = [];
+            const xObjectKeys = xObjects.keys();
+            let currentImageIndex = 0;
+
+            for (const key of xObjectKeys) {
+              const ref = xObjects.get(key);
+              const obj = pdfDoc.context.lookup(ref);
+
+              const dict = obj instanceof PDFDict ? obj : (obj && 'dict' in obj && obj.dict instanceof PDFDict) ? obj.dict : null;
+
+              if (dict) {
+                const subtype = dict.get(PDFName.of('Subtype'));
+
+                if (subtype && subtype.toString() === '/Image') {
+                  currentImageIndex++;
+                  if (!imageCountByPage.has(pageNumber)) {
+                    imageCountByPage.set(pageNumber, 0);
+                  }
+                  const imgIndex = imageCountByPage.get(pageNumber)! + 1;
+                  imageCountByPage.set(pageNumber, imgIndex);
+
+                  const expectedFilename = `page${pageNumber}_img${imgIndex}.jpg`; // or .png
+                  const expectedFilenamePng = `page${pageNumber}_img${imgIndex}.png`;
+
+                  const shouldRemove = imagesToRemoveByPage.get(pageNumber)!.has(expectedFilename) ||
+                                     imagesToRemoveByPage.get(pageNumber)!.has(expectedFilenamePng);
+
+                  if (shouldRemove) {
+                    keysToRemove.push(key);
+                  }
+                }
+              }
+            }
+
+            for (const key of keysToRemove) {
+              xObjects.delete(key);
+              removedCount++;
+            }
+          }
+        }
+
+        onProgress?.(
+          10 + ((pageIndex + 1) / totalPages) * 80,
+          `Processed page ${pageNumber} of ${totalPages}...`
+        );
+      }
+
+      onProgress?.(90, 'Saving PDF...');
+
+      const pdfBytes = await pdfDoc.save({ useObjectStreams: true });
+      const blob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' });
+
+      const processingTime = performance.now() - startTime;
+      onProgress?.(100, 'Removal completed!');
+
+      return {
+        success: true,
+        data: blob,
+        metadata: {
+          pageCount: totalPages,
+          originalSize: file.size,
+          processedSize: blob.size,
+          processingTime,
+          filesCreated: 1
+        }
+      };
+
+    } catch (error) {
+      return {
+        success: false,
+        error: this.createPDFError(error, 'Image removal failed')
+      };
+    }
+  }
+
+  /**
+   * Remove ALL images from PDF
+   */
+  async removeImages(
+    file: File,
+    onProgress?: ProgressCallback
+  ): Promise<PDFProcessingResult<Blob>> {
+    const startTime = performance.now();
+
+    try {
+      onProgress?.(0, 'Loading PDF...');
+
+      const arrayBuffer = await file.arrayBuffer();
+      const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+      const pages = pdfDoc.getPages();
+      const totalPages = pages.length;
+
+      onProgress?.(10, 'Processing pages...');
+
+      let removedCount = 0;
+
+      for (let i = 0; i < totalPages; i++) {
+        const page = pages[i];
+        const resources = page.node.Resources();
+
+        if (resources instanceof PDFDict) {
+          const xObjects = resources.get(PDFName.of('XObject'));
+
+          if (xObjects instanceof PDFDict) {
+            const keysToRemove: PDFName[] = [];
+
+            const xObjectKeys = xObjects.keys();
+            for (const key of xObjectKeys) {
+              const ref = xObjects.get(key);
+              const obj = pdfDoc.context.lookup(ref);
+
+              if (obj instanceof PDFDict) {
+                const subtype = obj.get(PDFName.of('Subtype'));
+                if (subtype === PDFName.of('Image')) {
+                  keysToRemove.push(key);
+                }
+              } else if (obj instanceof PDFArray) {
+                // Unlikely
+              } else {
+                if ('dict' in obj && obj.dict instanceof PDFDict) {
+                  const subtype = obj.dict.get(PDFName.of('Subtype'));
+                  if (subtype === PDFName.of('Image')) {
+                    keysToRemove.push(key);
+                  }
+                }
+              }
+            }
+
+            for (const key of keysToRemove) {
+              xObjects.delete(key);
+              removedCount++;
+            }
+          }
+        }
+
+        onProgress?.(
+          10 + ((i + 1) / totalPages) * 80,
+          `Processed page ${i + 1} of ${totalPages}...`
+        );
+      }
+
+      onProgress?.(90, 'Saving PDF...');
+
+      const pdfBytes = await pdfDoc.save({ useObjectStreams: true });
+      const blob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' });
+
+      const processingTime = performance.now() - startTime;
+      onProgress?.(100, 'Removal completed!');
+
+      return {
+        success: true,
+        data: blob,
+        metadata: {
+          pageCount: totalPages,
+          originalSize: file.size,
+          processedSize: blob.size,
+          processingTime,
+          filesCreated: 1
+        }
+      };
+
+    } catch (error) {
+      return {
+        success: false,
+        error: this.createPDFError(error, 'Image removal failed')
       };
     }
   }

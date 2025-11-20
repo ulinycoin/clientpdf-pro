@@ -1,5 +1,6 @@
 ---
 import BaseLayout from './BaseLayout.astro';
+import FAQSchema from '../components/FAQSchema.astro';
 
 interface Props {
   title: string;
@@ -14,6 +15,10 @@ interface Props {
   difficulty?: 'beginner' | 'intermediate' | 'advanced';
   relatedTools?: string[];
   canonicalURL?: string;
+  faqs?: Array<{
+    question: string;
+    answer: string;
+  }>;
 }
 
 const {
@@ -28,7 +33,8 @@ const {
   readingTime,
   difficulty,
   relatedTools,
-  canonicalURL
+  canonicalURL,
+  faqs
 } = Astro.props;
 
 const formattedDate = pubDate.toLocaleDateString('en-US', {
@@ -221,6 +227,11 @@ const toolNames: Record<string, string> = {
     <div class="blog-content">
       <slot />
     </div>
+
+    <!-- FAQ Section (if provided) -->
+    {faqs && faqs.length > 0 && (
+      <FAQSchema faqs={faqs} />
+    )}
 
     <!-- Related Tools -->
     {relatedTools && relatedTools.length > 0 && (

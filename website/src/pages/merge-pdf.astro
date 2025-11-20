@@ -34,8 +34,43 @@ const howToSchema = {
       "image": "https://localpdf.online/screenshots/merge-download.png"
     }
   ],
-  "totalTime": "PT1M" 
+  "totalTime": "PT1M"
 };
+
+const faqs = [
+  {
+    question: "Can I merge password-protected PDFs?",
+    answer: "Yes, but you'll need to provide the user password for each protected PDF before merging. The merged output won't be password-protected unless you use our <a href='/protect-pdf'>Protect PDF tool</a> afterward."
+  },
+  {
+    question: "Is there a limit on the number of PDFs I can merge?",
+    answer: "No limit during beta! You can merge as many PDF files as you want. The only constraint is your device's available memory. Most modern devices can handle merging dozens of PDFs without issues."
+  },
+  {
+    question: "Will the merged PDF keep bookmarks and links?",
+    answer: "Yes! Our merge tool preserves internal bookmarks, hyperlinks, and document metadata from all source PDFs. Bookmarks are combined in the order you arrange the files."
+  },
+  {
+    question: "Does merging reduce PDF quality?",
+    answer: "No quality loss! Merging is a <strong>lossless operation</strong> - all pages, images, fonts, and formatting are preserved exactly as they appear in the original files. No compression or downsampling occurs."
+  },
+  {
+    question: "Can I change the order of PDFs before merging?",
+    answer: "Absolutely! Before clicking 'Merge', you can drag and drop files to rearrange them in any order. You can also preview pages from each PDF to ensure correct ordering."
+  },
+  {
+    question: "What happens if PDFs have different page sizes?",
+    answer: "The merged PDF will preserve the original page size for each page. For example, if you merge an A4 document with a Letter-size document, the output will contain both page sizes in the final file."
+  },
+  {
+    question: "Are my files uploaded to a server?",
+    answer: "<strong>Never!</strong> All merging happens 100% locally in your browser using JavaScript. Your PDFs never leave your device - that's our core privacy guarantee."
+  },
+  {
+    question: "Can I merge PDFs on mobile devices?",
+    answer: "Yes! Our tool works on iOS (Safari), Android (Chrome), and all modern mobile browsers. The interface adapts to touchscreens for easy drag-and-drop file arrangement."
+  }
+];
 ---
 
 <ToolPage
@@ -74,6 +109,7 @@ const howToSchema = {
     "Arrange files in desired order (drag-and-drop)",
     "Click \"Merge\" and download your combined PDF instantly"
   ]}
+  faqs={faqs}
 >
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />

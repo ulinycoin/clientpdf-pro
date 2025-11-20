@@ -1,0 +1,128 @@
+---
+import ToolPage from '../components/ToolPage.astro';
+
+const keywords = "extract images from pdf, remove images from pdf, pdf image extractor, get images from pdf, save pdf images, download pdf pictures, delete pdf images, free pdf image extraction";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to Extract or Remove Images from a PDF",
+  "description": "A step-by-step guide on how to extract images from a PDF document to save them individually, or remove images to reduce file size using the free and private LocalPDF tool.",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Open the Tool and Upload PDF",
+      "text": "Click 'Open Tool' and upload the PDF document containing the images you want to extract.",
+      "url": "https://localpdf.online/extract-images-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Choose Extract or Remove Mode",
+      "text": "Select 'Extract Images' to save images, or 'Remove Images' to delete them from the PDF.",
+      "image": "https://localpdf.online/screenshots/extract-mode.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Preview and Select Images",
+      "text": "View thumbnails of all images found in the PDF. Select which images you want to extract or remove.",
+      "image": "https://localpdf.online/screenshots/extract-preview.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Download Selected Images",
+      "text": "Click 'Download' to save selected images as individual files (single image) or as a ZIP archive (multiple images).",
+      "image": "https://localpdf.online/screenshots/extract-download.png"
+    }
+  ],
+  "totalTime": "PT1M"
+};
+
+const faqs = [
+  {
+    question: "Can I extract images from password-protected PDFs?",
+    answer: "No, you need to unlock the PDF first using our <a href='/unlock-pdf'>Unlock PDF tool</a> before extracting images. Password protection prevents access to the PDF's internal structure."
+  },
+  {
+    question: "What image formats are supported?",
+    answer: "Our tool extracts images in their original format from the PDF - typically <strong>JPEG</strong> or <strong>PNG</strong>. Images are saved without re-compression, preserving 100% of the original quality."
+  },
+  {
+    question: "How does the Remove Images mode work?",
+    answer: "Remove mode lets you delete selected images from the PDF while keeping all text and other content. After selecting images, you'll download a new PDF with those images removed - perfect for reducing file size."
+  },
+  {
+    question: "Why can't I see some images from my PDF?",
+    answer: "Some PDFs use vector graphics (drawings created with code) rather than embedded images. Our tool only extracts <strong>raster images</strong> (JPEG, PNG) that are embedded in the PDF file. Vector graphics and background images may not appear."
+  },
+  {
+    question: "Is there a limit on PDF file size or image count?",
+    answer: "No limits during beta! You can extract images from PDFs of any size with any number of images. Processing happens entirely in your browser, so your device's available memory is the only constraint."
+  },
+  {
+    question: "Do extracted images lose quality?",
+    answer: "No quality loss! Images are extracted in their original resolution and format without any re-compression or conversion. A 300 DPI image in the PDF will be extracted as a 300 DPI image file."
+  },
+  {
+    question: "Can I extract images from scanned PDFs?",
+    answer: "Yes, if the scanned document was saved with the actual image embedded. However, if it's a pure scan (image-based PDF), you might want to use our <a href='/pdf-to-images'>PDF to Images tool</a> to convert pages to image files instead."
+  },
+  {
+    question: "Are my files uploaded to a server?",
+    answer: "<strong>Never!</strong> All image extraction and removal happens 100% locally in your browser using JavaScript. Your PDF never leaves your device, ensuring complete privacy and security."
+  }
+];
+---
+
+<ToolPage
+  toolId="extract-images-pdf"
+  title="Extract or Remove Images from PDF Online — Free & Private"
+  metaDescription="Extract or remove images from PDF files instantly. Preview, select, and download or delete images. 100% private, browser-based processing."
+  keywords={keywords}
+  description="Extract or remove images from PDF documents with full control. Preview all images, select which ones to save or delete — all in your browser with complete privacy."
+  benefits={[
+    "🖼️ Preview — See all images before extracting or removing",
+    "✅ Selective — Choose which images to save or delete",
+    "🔒 Private — Images never leave your device",
+    "🆓 Free — No limits on file size or image count"
+  ]}
+  relatedTools={[
+    { id: 'pdf-to-images', icon: '📷', title: 'PDF to Images', description: 'Convert PDF pages to images' },
+    { id: 'images-to-pdf', icon: '🖼️', title: 'Images to PDF', description: 'Create PDF from images' },
+    { id: 'compress-pdf', icon: '🗜️', title: 'Compress PDF', description: 'Reduce PDF size after removing images' },
+    { id: 'split-pdf', icon: '✂️', title: 'Split PDF', description: 'Extract pages before getting images' }
+  ]}
+  whyChoose={{
+    title: "Why Choose Our PDF Image Extraction & Removal Tool?",
+    reasons: [
+      "True Privacy: Your PDF and images never leave your computer. Cloud-based tools upload your files to servers where they may be stored or analyzed. LocalPDF keeps everything local and secure.",
+      "Selective Processing: Preview thumbnails and choose exactly which images to extract or remove. Save time and storage by processing only what you need.",
+      "Original Quality: Images are extracted in their original format (JPEG or PNG) without re-compression or quality loss. What you see in the PDF is what you get.",
+      "Dual Mode: Extract images to save them separately, or remove images to reduce PDF file size while keeping text and other content intact.",
+      "Smart Download: Download single images directly, or get multiple images bundled in a convenient ZIP archive automatically.",
+      "No Limits: Process PDFs of any size with any number of images. Online tools often limit file size to 50 MB or cap image count. Your browser's memory is the only constraint."
+    ]
+  }}
+  features={[
+    "Preview all images with thumbnails",
+    "Extract images in original format (JPEG, PNG)",
+    "Select specific images to extract or remove",
+    "View image dimensions and file size",
+    "Download as individual files or ZIP archive",
+    "Remove images to reduce PDF file size",
+    "See which page each image comes from",
+    "Batch selection with 'Select All' option"
+  ]}
+  steps={[
+    'Click "Open Tool" button above',
+    "Upload the PDF containing images",
+    "Choose 'Extract Images' or 'Remove Images' mode",
+    "Preview thumbnails of all detected images",
+    "Select which images to extract or remove",
+    "Click 'Download' to save selected images"
+  ]}
+  faqs={faqs}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>
