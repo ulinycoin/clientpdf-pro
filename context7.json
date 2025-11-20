@@ -1,7 +1,7 @@
 {
   "$schema": "https://context7.com/schema/context7.json",
   "projectTitle": "LocalPDF v3",
-  "description": "Privacy-first PDF toolkit - Dual-application architecture with React 19 SPA (100% client-side PDF processing) and Astro SSG (SEO landing pages). Features 15 fully implemented tools: merge, split, compress, protect, OCR, watermark, add-text, edit-text, add-form-fields, rotate, delete-pages, extract-pages, extract-images, images-to-pdf, flatten. Built with TypeScript, Vite, pdf-lib, pdfjs-dist, tesseract.js. Optimized bundle: 74 KB gzip initial load (91% reduction from 817 KB). Multi-language support (EN, RU, DE, FR, ES). Hash-based routing with context tracking. Deployed on Vercel.",
+  "description": "Privacy-first PDF toolkit - Dual-application architecture with React 19 SPA (100% client-side PDF processing) and Astro SSG (SEO landing pages). Features 19 fully implemented tools: merge, split, compress, protect, OCR, watermark, add-text, edit-text, add-form-fields, rotate, delete-pages, extract-pages, extract-images, images-to-pdf, pdf-to-images, pdf-to-word, word-to-pdf, sign, flatten. Built with TypeScript, Vite, pdf-lib, pdfjs-dist, tesseract.js. Optimized bundle: 74 KB gzip initial load (91% reduction from 817 KB). Currently English-only interface. Hash-based routing with context tracking. Deployed on Vercel.",
   "folders": [
     "src/components/tools",
     "src/components/common",
@@ -43,7 +43,7 @@
     "PDFService singleton: Always use PDFService.getInstance() - never instantiate directly. All methods return PDFProcessingResult<T> with success/error states",
     "Progress callbacks: All PDFService methods accept onProgress?: (progress: number, message: string) => void parameter",
     "Path aliases: Use @ for src root (@/components, @/hooks, @/utils, @/types, @/services, @/locales, @/lib)",
-    "Multi-language: Use useI18n() hook for translations. All UI text must be in src/locales/{en,ru,de,fr,es}.json with nested keys (e.g., t('tools.merge-pdf.name'))",
+    "Language: Currently English-only interface. Locale files exist for future multi-language support (src/locales/{en,ru,de,fr,es}.json), but useI18n() hook is available with nested keys (e.g., t('tools.merge-pdf.name'))",
     "Type safety: All components, hooks, services must have TypeScript types. Import types from @/types",
     "Dual architecture: website/ is Astro SSG for SEO pages (/merge-pdf), src/ is React SPA for tools (/#merge). SEO pages link to app hash routes",
     "Tool component pattern: Use FileUpload, ProgressBar, Button from common/ui. Handle processing state, progress, errors. Download result with downloadBlob()",
