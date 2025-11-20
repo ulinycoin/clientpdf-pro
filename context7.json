@@ -1,14 +1,21 @@
 {
   "$schema": "https://context7.com/schema/context7.json",
   "projectTitle": "LocalPDF v3",
-  "description": "Privacy-first PDF toolkit - A hash-based Single Page Application with 100% client-side PDF processing. Features 11 implemented tools including merge, split, compress, protect, OCR, watermark, rotate, delete pages, extract pages, add text, and images-to-PDF conversion. Built with React 19, TypeScript, and Vite with optimized code splitting (91% smaller bundle). Includes SEO-optimized Astro landing pages.",
+  "description": "Privacy-first PDF toolkit - Dual-application architecture with React 19 SPA (100% client-side PDF processing) and Astro SSG (SEO landing pages). Features 15 fully implemented tools: merge, split, compress, protect, OCR, watermark, add-text, edit-text, add-form-fields, rotate, delete-pages, extract-pages, extract-images, images-to-pdf, flatten. Built with TypeScript, Vite, pdf-lib, pdfjs-dist, tesseract.js. Optimized bundle: 74 KB gzip initial load (91% reduction from 817 KB). Multi-language support (EN, RU, DE, FR, ES). Hash-based routing with context tracking. Deployed on Vercel.",
   "folders": [
-    "src/components",
+    "src/components/tools",
+    "src/components/common",
+    "src/components/ui",
+    "src/components/layout",
     "src/hooks",
     "src/services",
+    "src/utils",
     "src/types",
     "src/locales",
-    "website/src"
+    "website/src/pages",
+    "website/src/components",
+    "website/src/layouts",
+    "website/src/content"
   ],
   "excludeFolders": [
     "node_modules",
@@ -16,29 +23,47 @@
     "website/dist",
     "website/node_modules",
     ".vercel",
-    ".git"
+    ".git",
+    "public",
+    "website/public"
   ],
   "excludeFiles": [
     "*.log",
     "*.lock",
     "package-lock.json",
-    "*.map"
+    "*.map",
+    "*.d.ts"
   ],
   "rules": [
-    "Always use React.lazy() for tool components - NEVER import them directly",
-    "All heavy PDF libraries MUST be in manualChunks in vite.config.ts",
-    "Use hash routing only (#merge, #split, etc.) - no browser routing",
-    "100% client-side processing - no server uploads or API calls",
-    "Preserve bundle size - initial load must stay under 100 KB gzip",
-    "Use PDFService singleton pattern: PDFService.getInstance()",
-    "Multi-language support via useI18n hook (EN, RU, DE, FR, ES)",
-    "Website (Astro) pages are SEO landing pages that link to app-SPA hash routes",
-    "Use path aliases: @ → ./src, @/components, @/hooks, @/utils, @/types, @/services, @/locales"
+    "CRITICAL: Always use React.lazy() for tool components - NEVER import directly. Example: const MergePDF = lazy(() => import('@/components/tools/MergePDF').then(m => ({ default: m.MergePDF })))",
+    "CRITICAL: All PDF libraries MUST be in vite.config.ts manualChunks: vendor-pdf-lib (pdf-lib, @pdf-lib/fontkit), vendor-pdfjs (pdfjs-dist), vendor-ocr (tesseract.js), vendor-word (mammoth, docx)",
+    "CRITICAL: Initial bundle must stay under 100 KB gzip - currently 74 KB (target achieved). Run 'npm run build' to verify after changes",
+    "Hash routing only: Use /#merge, /#split format via useHashRouter hook. NEVER use react-router or browser routing",
+    "100% client-side: All PDF processing in-browser using Web Workers. NO server uploads, NO API calls, NO external dependencies",
+    "PDFService singleton: Always use PDFService.getInstance() - never instantiate directly. All methods return PDFProcessingResult<T> with success/error states",
+    "Progress callbacks: All PDFService methods accept onProgress?: (progress: number, message: string) => void parameter",
+    "Path aliases: Use @ for src root (@/components, @/hooks, @/utils, @/types, @/services, @/locales, @/lib)",
+    "Multi-language: Use useI18n() hook for translations. All UI text must be in src/locales/{en,ru,de,fr,es}.json with nested keys (e.g., t('tools.merge-pdf.name'))",
+    "Type safety: All components, hooks, services must have TypeScript types. Import types from @/types",
+    "Dual architecture: website/ is Astro SSG for SEO pages (/merge-pdf), src/ is React SPA for tools (/#merge). SEO pages link to app hash routes",
+    "Tool component pattern: Use FileUpload, ProgressBar, Button from common/ui. Handle processing state, progress, errors. Download result with downloadBlob()",
+    "Styling: Use Tailwind CSS with custom ocean/privacy palette. Dark mode via dark: prefix. Custom utilities: .glass, .glass-dark, .text-gradient-ocean",
+    "State management: No Redux/Zustand. Use React hooks + singleton patterns (useHashRouter, useI18n, useSharedFile)",
+    "File sharing: Use useSharedFile() hook to share files between tools (e.g., split → merge)",
+    "Adding new tools: 1) Create in src/components/tools/, 2) Add lazy import in App.tsx, 3) Add to Sidebar.tsx, 4) Add translations to 5 locale files, 5) Create SEO page in website/src/pages/, 6) Verify bundle size",
+    "Vercel deployment: build-vercel.mjs builds both apps and merges outputs. App-SPA → /app/, Website → / (root)",
+    "shadcn/ui: All UI components in src/components/ui/ follow shadcn conventions. Use cn() from @/lib/utils for className merging",
+    "Error handling: All PDFService methods return {success, data?, error?}. Display errors with toast.error() from sonner",
+    "Performance: Use Web Workers for heavy operations (OCR, compression). Split operations into chunks with progress updates"
   ],
   "previousVersions": [
     {
       "tag": "v3.0.0",
       "description": "Complete rewrite with modern architecture, code splitting, and performance optimization"
+    },
+    {
+      "tag": "v3.1.0",
+      "description": "Migration to shadcn/ui, Buy Me a Coffee integration, major OCR improvements"
     }
   ]
 }
