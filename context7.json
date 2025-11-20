@@ -1,0 +1,44 @@
+{
+  "$schema": "https://context7.com/schema/context7.json",
+  "projectTitle": "LocalPDF v3",
+  "description": "Privacy-first PDF toolkit - A hash-based Single Page Application with 100% client-side PDF processing. Features 11 implemented tools including merge, split, compress, protect, OCR, watermark, rotate, delete pages, extract pages, add text, and images-to-PDF conversion. Built with React 19, TypeScript, and Vite with optimized code splitting (91% smaller bundle). Includes SEO-optimized Astro landing pages.",
+  "folders": [
+    "src/components",
+    "src/hooks",
+    "src/services",
+    "src/types",
+    "src/locales",
+    "website/src"
+  ],
+  "excludeFolders": [
+    "node_modules",
+    "dist",
+    "website/dist",
+    "website/node_modules",
+    ".vercel",
+    ".git"
+  ],
+  "excludeFiles": [
+    "*.log",
+    "*.lock",
+    "package-lock.json",
+    "*.map"
+  ],
+  "rules": [
+    "Always use React.lazy() for tool components - NEVER import them directly",
+    "All heavy PDF libraries MUST be in manualChunks in vite.config.ts",
+    "Use hash routing only (#merge, #split, etc.) - no browser routing",
+    "100% client-side processing - no server uploads or API calls",
+    "Preserve bundle size - initial load must stay under 100 KB gzip",
+    "Use PDFService singleton pattern: PDFService.getInstance()",
+    "Multi-language support via useI18n hook (EN, RU, DE, FR, ES)",
+    "Website (Astro) pages are SEO landing pages that link to app-SPA hash routes",
+    "Use path aliases: @ → ./src, @/components, @/hooks, @/utils, @/types, @/services, @/locales"
+  ],
+  "previousVersions": [
+    {
+      "tag": "v3.0.0",
+      "description": "Complete rewrite with modern architecture, code splitting, and performance optimization"
+    }
+  ]
+}
