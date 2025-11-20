@@ -24,6 +24,9 @@ function calculateReadingTime(content: string): number {
 
 const readingTime = calculateReadingTime(post.body);
 
+// Generate canonical URL
+const canonicalURL = post.data.canonicalURL || `https://localpdf.online/blog/${post.slug}`;
+
 // Prepare props for BlogLayout
 const layoutProps = {
   title: post.data.title,
@@ -37,7 +40,7 @@ const layoutProps = {
   readingTime,
   difficulty: post.data.difficulty,
   relatedTools: post.data.relatedTools,
-  canonicalURL: post.data.canonicalURL
+  canonicalURL
 };
 ---
 

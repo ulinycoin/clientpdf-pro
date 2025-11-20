@@ -79,7 +79,7 @@ const toolNames: Record<string, string> = {
       "@type": "BlogPosting",
       "headline": title,
       "description": description,
-      "image": coverImage ? `https://localpdf.online${coverImage}` : undefined,
+      "image": coverImage ? `https://localpdf.online${coverImage}` : "https://localpdf.online/logos/localpdf-social-1200x630.png",
       "datePublished": pubDate.toISOString(),
       "author": {
         "@type": "Organization",
@@ -95,7 +95,7 @@ const toolNames: Record<string, string> = {
       },
       "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": `https://localpdf.online/blog/${Astro.url.pathname.split('/').pop()}`
+        "@id": canonicalURL || `https://localpdf.online${Astro.url.pathname}`
       }
     })} />
 

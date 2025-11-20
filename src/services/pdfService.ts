@@ -57,8 +57,8 @@ export class PDFService {
 
   isSupported(): boolean {
     return typeof PDFDocument !== 'undefined' &&
-           typeof File !== 'undefined' &&
-           typeof Blob !== 'undefined';
+      typeof File !== 'undefined' &&
+      typeof Blob !== 'undefined';
   }
 
   /**
@@ -577,6 +577,8 @@ export class PDFService {
       throw new Error(`Failed to encrypt PDF: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
+
+
 
   /**
    * Extract PDF pages
@@ -1468,7 +1470,7 @@ export class PDFService {
             // Check if this is the end of a line
             const nextItem = items[i + 1];
             const isEndOfLine = !nextItem ||
-                               (nextItem.transform && Math.abs(item.transform[5] - nextItem.transform[5]) > 5);
+              (nextItem.transform && Math.abs(item.transform[5] - nextItem.transform[5]) > 5);
 
             if (isEndOfLine && currentLine.trim()) {
               sections.push(

@@ -65,9 +65,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   return (
     <aside
-      className={`fixed left-0 top-16 h-[calc(100vh-4rem)] bg-white dark:bg-privacy-900 border-r border-gray-200 dark:border-privacy-700 transition-all duration-300 ease-in-out z-30 overflow-y-auto ${
-        collapsed ? 'w-16' : 'w-64'
-      }`}
+      className={`fixed left-0 top-16 h-[calc(100vh-4rem)] bg-white dark:bg-privacy-900 border-r border-gray-200 dark:border-privacy-700 transition-all duration-300 ease-in-out z-30 overflow-y-auto ${collapsed ? 'w-16' : 'w-64'
+        }`}
     >
       {/* Section title */}
       {!collapsed && (
@@ -89,11 +88,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <Button
                   variant="ghost"
                   onClick={() => onToolSelect(tool.id)}
-                  className={`group w-full justify-start gap-3 px-3 py-2.5 h-auto transition-all duration-200 border ${
-                    isActive
-                      ? 'bg-ocean-50 dark:bg-ocean-900/20 text-ocean-600 dark:text-ocean-400 font-medium shadow-sm border-ocean-200 dark:border-ocean-700'
-                      : 'text-gray-700 dark:text-gray-300 hover:bg-ocean-50 dark:hover:bg-ocean-900/10 hover:text-ocean-600 dark:hover:text-ocean-400 hover:shadow-sm hover:scale-[1.02] border-gray-200 dark:border-gray-700'
-                  }`}
+                  className={`group w-full justify-start gap-3 px-3 py-2.5 h-auto transition-all duration-200 border ${isActive
+                    ? 'bg-ocean-50 dark:bg-ocean-900/20 text-ocean-600 dark:text-ocean-400 font-medium shadow-sm border-ocean-200 dark:border-ocean-700'
+                    : 'text-gray-700 dark:text-gray-300 hover:bg-ocean-50 dark:hover:bg-ocean-900/10 hover:text-ocean-600 dark:hover:text-ocean-400 hover:shadow-sm hover:scale-[1.02] border-gray-200 dark:border-gray-700'
+                    }`}
                   title={collapsed ? TOOL_NAMES[tool.id] : undefined}
                 >
                   <span className="text-xl flex-shrink-0 transition-transform duration-200 group-hover:scale-110">

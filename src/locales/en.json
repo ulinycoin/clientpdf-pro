@@ -325,7 +325,7 @@
     "advancedSettings": "Advanced settings",
     "encryptionLevel": "Encryption level",
     "recommended": "(recommended)",
-    "permissions": "Permissions",
+    "permissionsTitle": "Permissions",
     "presets": {
       "basic": {
         "name": "Basic",

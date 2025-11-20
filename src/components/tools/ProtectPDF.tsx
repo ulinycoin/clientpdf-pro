@@ -369,11 +369,10 @@ export const ProtectPDF: React.FC = () => {
                   key={preset}
                   variant="outline"
                   onClick={() => applyPreset(preset)}
-                  className={`p-4 rounded-xl border-2 transition-all duration-200 text-left h-auto ${
-                    securityPreset === preset
+                  className={`p-4 rounded-xl border-2 transition-all duration-200 text-left h-auto ${securityPreset === preset
                       ? 'border-ocean-500 bg-ocean-50 dark:bg-ocean-900/20'
                       : 'border-gray-200 dark:border-gray-700 hover:border-ocean-300'
-                  }`}
+                    }`}
                 >
                   <div className="font-semibold text-gray-900 dark:text-white text-sm mb-1">
                     {t(`protect.presets.${preset}.name`)}
@@ -442,17 +441,16 @@ export const ProtectPDF: React.FC = () => {
                         {[0, 1, 2, 3, 4].map((level) => (
                           <div
                             key={level}
-                            className={`h-1 flex-1 rounded ${
-                              level <= passwordStrength.score
+                            className={`h-1 flex-1 rounded ${level <= passwordStrength.score
                                 ? passwordStrength.score <= 1
                                   ? 'bg-red-500'
                                   : passwordStrength.score <= 2
-                                  ? 'bg-yellow-500'
-                                  : passwordStrength.score <= 3
-                                  ? 'bg-blue-500'
-                                  : 'bg-green-500'
+                                    ? 'bg-yellow-500'
+                                    : passwordStrength.score <= 3
+                                      ? 'bg-blue-500'
+                                      : 'bg-green-500'
                                 : 'bg-gray-300 dark:bg-gray-600'
-                            }`}
+                              }`}
                           />
                         ))}
                       </div>
@@ -567,7 +565,7 @@ export const ProtectPDF: React.FC = () => {
               {/* Permissions */}
               <div>
                 <Label className="block text-sm font-semibold text-gray-900 dark:text-white mb-3">
-                  {t('protect.permissions')}
+                  {t('protect.permissionsTitle')}
                 </Label>
                 <div className="space-y-2">
                   {/* Printing */}
@@ -628,11 +626,10 @@ export const ProtectPDF: React.FC = () => {
           <Button
             onClick={handleProtect}
             disabled={isProcessing || (!permissionsOnly && !userPassword)}
-            className={`w-full mt-6 py-4 px-8 rounded-xl font-bold text-white transition-all duration-200 ${
-              isProcessing || (!permissionsOnly && !userPassword)
+            className={`w-full mt-6 py-4 px-8 rounded-xl font-bold text-white transition-all duration-200 ${isProcessing || (!permissionsOnly && !userPassword)
                 ? 'bg-gray-400 cursor-not-allowed'
                 : 'bg-gradient-to-r from-ocean-500 to-ocean-600 hover:from-ocean-600 hover:to-ocean-700 shadow-lg hover:shadow-xl'
-            }`}
+              }`}
           >
             {isProcessing ? t('common.processing') : t('protect.protectButton')}
           </Button>
