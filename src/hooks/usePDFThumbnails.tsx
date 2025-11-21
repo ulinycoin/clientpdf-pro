@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import * as pdfjsLib from 'pdfjs-dist';
 import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 
@@ -37,6 +37,13 @@ export const usePDFThumbnails = ({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pageCount, setPageCount] = useState(0);
+
+  // Use ref to avoid recreating callback on every render
+  const onProgressRef = useRef(onProgress);
+
+  useEffect(() => {
+    onProgressRef.current = onProgress;
+  }, [onProgress]);
 
   const generateThumbnails = useCallback(async () => {
     if (!file) {
@@ -95,8 +102,8 @@ export const usePDFThumbnails = ({
           height: scaledViewport.height,
         });
 
-        // Report progress
-        onProgress?.(pageNum, numPages);
+        // Report progress using ref
+        onProgressRef.current?.(pageNum, numPages);
       }
 
       setThumbnails(generatedThumbnails);
@@ -107,7 +114,7 @@ export const usePDFThumbnails = ({
       setError(error.message);
       setIsLoading(false);
     }
-  }, [file, thumbnailWidth, thumbnailHeight, onProgress]);
+  }, [file, thumbnailWidth, thumbnailHeight]);
 
   useEffect(() => {
     generateThumbnails();
