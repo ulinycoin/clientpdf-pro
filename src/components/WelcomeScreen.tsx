@@ -229,21 +229,6 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ context }) => {
         )}
 
       </div>
-
-      {/* Footer - always at bottom, aligned with sidebar offset */}
-      <div className="fixed bottom-0 left-64 right-0 py-4 bg-background/80 backdrop-blur-sm border-t border-border">
-        <div className="flex justify-center items-center gap-6 text-sm">
-          <Button variant="link" asChild className="text-muted-foreground hover:text-primary">
-            <a href="/blog">📝 Blog</a>
-          </Button>
-          <Button variant="link" asChild className="text-muted-foreground hover:text-primary">
-            <a href="/about">About</a>
-          </Button>
-          <Button variant="link" asChild className="text-muted-foreground hover:text-primary">
-            <a href="/privacy">Privacy</a>
-          </Button>
-        </div>
-      </div>
     </div>
   );
 };

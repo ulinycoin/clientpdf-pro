@@ -8,7 +8,7 @@ import pdfService from '@/services/pdfService';
 import type { Tool } from '@/types';
 import { HASH_TOOL_MAP } from '@/types';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 
 interface ImageFile {
@@ -152,154 +152,157 @@ export const ImagesToPDF: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-ocean-50 via-white to-privacy-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-ocean-900 dark:text-white mb-3">
-            {t('tools.images-to-pdf.name')}
-          </h1>
-          <p className="text-lg text-ocean-700 dark:text-ocean-300">
-            {t('tools.images-to-pdf.description')}
-          </p>
-        </div>
+    <div className="images-to-pdf space-y-6">
+      {/* Header */}
+      <div>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+          {t('tools.images-to-pdf.name')}
+        </h1>
+        <p className="text-gray-600 dark:text-gray-400">
+          {t('tools.images-to-pdf.description')}
+        </p>
+      </div>
 
         {!result ? (
           <>
             {/* File Upload */}
-            <Card className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-6">
-              <FileUpload
-                onFilesSelected={handleFilesSelected}
-                accept="image/jpeg,image/jpg,image/png"
-                multiple={true}
-                maxFiles={50}
-                disabled={isProcessing}
-              />
+            <Card>
+              <CardContent className="p-6">
+                <FileUpload
+                  onFilesSelected={handleFilesSelected}
+                  accept="image/jpeg,image/jpg,image/png"
+                  multiple={true}
+                  maxFiles={50}
+                  disabled={isProcessing}
+                />
 
-              {/* Image List */}
-              {images.length > 0 && (
-                <div className="mt-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold text-ocean-900 dark:text-white">
-                      {t('imagesToPdf.imagesList')} ({images.length})
-                    </h3>
-                    <Button
-                      onClick={handleReset}
-                      variant="ghost"
-                      className="text-sm text-ocean-600 dark:text-ocean-400 hover:text-ocean-800 dark:hover:text-ocean-200"
-                    >
-                      {t('common.clearAll')}
-                    </Button>
-                  </div>
-
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                    {images.map((image, index) => (
-                      <div
-                        key={image.id}
-                        draggable
-                        onDragStart={() => handleDragStart(index)}
-                        onDragOver={(e) => handleDragOver(e, index)}
-                        onDragEnd={handleDragEnd}
-                        className={`relative group cursor-move border-2 rounded-lg overflow-hidden transition-all ${
-                          draggedIndex === index
-                            ? 'border-ocean-500 shadow-lg scale-105'
-                            : 'border-gray-200 dark:border-gray-700'
-                        }`}
+                {/* Image List */}
+                {images.length > 0 && (
+                  <div className="mt-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-lg font-semibold text-ocean-900 dark:text-white">
+                        {t('imagesToPdf.imagesList')} ({images.length})
+                      </h3>
+                      <Button
+                        onClick={handleReset}
+                        variant="ghost"
+                        className="text-sm text-ocean-600 dark:text-ocean-400 hover:text-ocean-800 dark:hover:text-ocean-200"
                       >
-                        <img
-                          src={image.preview}
-                          alt={image.name}
-                          className="w-full h-32 object-cover"
-                        />
-                        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-opacity flex items-center justify-center">
-                          <Button
-                            onClick={() => handleRemoveImage(image.id)}
-                            variant="ghost"
-                            className="opacity-0 group-hover:opacity-100 bg-red-500 text-white rounded-full p-2 transition-opacity hover:bg-red-600"
-                          >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                          </Button>
+                        {t('common.clearAll')}
+                      </Button>
+                    </div>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                      {images.map((image, index) => (
+                        <div
+                          key={image.id}
+                          draggable
+                          onDragStart={() => handleDragStart(index)}
+                          onDragOver={(e) => handleDragOver(e, index)}
+                          onDragEnd={handleDragEnd}
+                          className={`relative group cursor-move border-2 rounded-lg overflow-hidden transition-all ${
+                            draggedIndex === index
+                              ? 'border-ocean-500 shadow-lg scale-105'
+                              : 'border-gray-200 dark:border-gray-700'
+                          }`}
+                        >
+                          <img
+                            src={image.preview}
+                            alt={image.name}
+                            className="w-full h-32 object-cover"
+                          />
+                          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-opacity flex items-center justify-center">
+                            <Button
+                              onClick={() => handleRemoveImage(image.id)}
+                              variant="ghost"
+                              className="opacity-0 group-hover:opacity-100 bg-red-500 text-white rounded-full p-2 transition-opacity hover:bg-red-600"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                              </svg>
+                            </Button>
+                          </div>
+                          <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-70 text-white text-xs p-1 truncate">
+                            {index + 1}. {image.name}
+                          </div>
                         </div>
-                        <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-70 text-white text-xs p-1 truncate">
-                          {index + 1}. {image.name}
-                        </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+              </CardContent>
             </Card>
 
             {/* Settings */}
             {images.length > 0 && (
-              <Card className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-6">
-                <h3 className="text-lg font-semibold text-ocean-900 dark:text-white mb-4">
-                  {t('imagesToPdf.settings')}
-                </h3>
+              <Card>
+                <CardContent className="p-6">
+                  <h3 className="text-lg font-semibold text-ocean-900 dark:text-white mb-4">
+                    {t('imagesToPdf.settings')}
+                  </h3>
 
-                {/* Page Size */}
-                <div className="mb-4">
-                  <Label className="block text-sm font-medium text-ocean-700 dark:text-ocean-300 mb-2">
-                    {t('imagesToPdf.pageSize')}
-                  </Label>
-                  <div className="grid grid-cols-3 gap-3">
-                    {(['fit', 'a4', 'letter'] as PageSize[]).map((size) => (
-                      <Button
-                        key={size}
-                        onClick={() => setPageSize(size)}
-                        variant="outline"
-                        className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                          pageSize === size
-                            ? 'bg-ocean-500 text-white'
-                            : 'bg-gray-100 dark:bg-gray-700 text-ocean-700 dark:text-ocean-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-                        }`}
-                      >
-                        {t(`imagesToPdf.pageSizes.${size}`)}
-                      </Button>
-                    ))}
+                  {/* Page Size */}
+                  <div className="mb-4">
+                    <Label className="block text-sm font-medium text-ocean-700 dark:text-ocean-300 mb-2">
+                      {t('imagesToPdf.pageSize')}
+                    </Label>
+                    <div className="grid grid-cols-3 gap-3">
+                      {(['fit', 'a4', 'letter'] as PageSize[]).map((size) => (
+                        <Button
+                          key={size}
+                          onClick={() => setPageSize(size)}
+                          variant="outline"
+                          className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                            pageSize === size
+                              ? 'bg-ocean-500 text-white'
+                              : 'bg-gray-100 dark:bg-gray-700 text-ocean-700 dark:text-ocean-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                          }`}
+                        >
+                          {t(`imagesToPdf.pageSizes.${size}`)}
+                        </Button>
+                      ))}
+                    </div>
                   </div>
-                </div>
 
-                {/* Orientation */}
-                <div className="mb-4">
-                  <Label className="block text-sm font-medium text-ocean-700 dark:text-ocean-300 mb-2">
-                    {t('imagesToPdf.orientation')}
-                  </Label>
-                  <div className="grid grid-cols-2 gap-3">
-                    {(['portrait', 'landscape'] as Orientation[]).map((orient) => (
-                      <Button
-                        key={orient}
-                        onClick={() => setOrientation(orient)}
-                        variant="outline"
-                        className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                          orientation === orient
-                            ? 'bg-ocean-500 text-white'
-                            : 'bg-gray-100 dark:bg-gray-700 text-ocean-700 dark:text-ocean-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-                        }`}
-                      >
-                        {t(`imagesToPdf.orientations.${orient}`)}
-                      </Button>
-                    ))}
+                  {/* Orientation */}
+                  <div className="mb-4">
+                    <Label className="block text-sm font-medium text-ocean-700 dark:text-ocean-300 mb-2">
+                      {t('imagesToPdf.orientation')}
+                    </Label>
+                    <div className="grid grid-cols-2 gap-3">
+                      {(['portrait', 'landscape'] as Orientation[]).map((orient) => (
+                        <Button
+                          key={orient}
+                          onClick={() => setOrientation(orient)}
+                          variant="outline"
+                          className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                            orientation === orient
+                              ? 'bg-ocean-500 text-white'
+                              : 'bg-gray-100 dark:bg-gray-700 text-ocean-700 dark:text-ocean-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                          }`}
+                        >
+                          {t(`imagesToPdf.orientations.${orient}`)}
+                        </Button>
+                      ))}
+                    </div>
                   </div>
-                </div>
 
-                {/* Margin */}
-                <div>
-                  <Label className="block text-sm font-medium text-ocean-700 dark:text-ocean-300 mb-2">
-                    {t('imagesToPdf.margin')}: {margin}px
-                  </Label>
-                  <input
-                    type="range"
-                    min="0"
-                    max="50"
-                    step="5"
-                    value={margin}
-                    onChange={(e) => setMargin(Number(e.target.value))}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
-                  />
-                </div>
+                  {/* Margin */}
+                  <div>
+                    <Label className="block text-sm font-medium text-ocean-700 dark:text-ocean-300 mb-2">
+                      {t('imagesToPdf.margin')}: {margin}px
+                    </Label>
+                    <input
+                      type="range"
+                      min="0"
+                      max="50"
+                      step="5"
+                      value={margin}
+                      onChange={(e) => setMargin(Number(e.target.value))}
+                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+                    />
+                  </div>
+                </CardContent>
               </Card>
             )}
 
@@ -317,8 +320,10 @@ export const ImagesToPDF: React.FC = () => {
 
             {/* Progress */}
             {isProcessing && (
-              <Card className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
-                <ProgressBar progress={progress} message={progressMessage} />
+              <Card>
+                <CardContent className="p-6">
+                  <ProgressBar progress={progress} message={progressMessage} />
+                </CardContent>
               </Card>
             )}
           </>
@@ -351,55 +356,63 @@ export const ImagesToPDF: React.FC = () => {
             </div>
 
             {/* PDF Preview */}
-            <Card className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
-              <h3 className="text-lg font-semibold text-ocean-900 dark:text-white mb-4">
-                {t('common.preview')}
-              </h3>
-              <PDFPreview
-                file={new File([result.blob], 'images-to-pdf.pdf', { type: 'application/pdf' })}
-                width={600}
-                height={800}
-              />
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="text-lg font-semibold text-ocean-900 dark:text-white mb-4">
+                  {t('common.preview')}
+                </h3>
+                <PDFPreview
+                  file={new File([result.blob], 'images-to-pdf.pdf', { type: 'application/pdf' })}
+                  width={600}
+                  height={800}
+                />
+              </CardContent>
             </Card>
 
             {/* Actions */}
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex gap-3 justify-center">
               <Button
                 onClick={handleDownload}
-                className="flex-1 px-6 py-4 bg-ocean-500 text-white text-lg font-semibold rounded-xl hover:bg-ocean-600 transition-colors shadow-lg hover:shadow-xl"
+                size="lg"
+                className="px-8 !bg-green-600 hover:!bg-green-700 !text-white"
               >
                 {t('common.download')}
               </Button>
               <Button
                 onClick={handleReset}
                 variant="outline"
-                className="flex-1 px-6 py-4 bg-gray-200 dark:bg-gray-700 text-ocean-900 dark:text-white text-lg font-semibold rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                size="lg"
               >
                 {t('common.convertAnother')}
               </Button>
             </div>
 
             {/* Quick Actions */}
-            <Card className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
-              <h3 className="text-lg font-semibold text-ocean-900 dark:text-white mb-4">
-                {t('common.quickActions')}
-              </h3>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                {(['compress-pdf', 'protect-pdf', 'watermark-pdf'] as Tool[]).map((toolId) => (
-                  <Button
-                    key={toolId}
-                    onClick={() => handleQuickAction(toolId)}
-                    variant="outline"
-                    className="px-4 py-3 bg-gray-100 dark:bg-gray-700 text-ocean-700 dark:text-ocean-300 rounded-lg hover:bg-ocean-100 dark:hover:bg-gray-600 transition-colors text-sm font-medium"
-                  >
-                    {t(`tools.${toolId}.name`)}
-                  </Button>
-                ))}
-              </div>
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                  {t('common.quickActions')}
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {(['compress-pdf', 'protect-pdf', 'watermark-pdf'] as Tool[]).map((toolId) => (
+                    <Button
+                      key={toolId}
+                      onClick={() => handleQuickAction(toolId)}
+                      variant="outline"
+                      className="h-auto justify-start p-4 border-2 hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
+                    >
+                      <div className="text-left ml-3">
+                        <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
+                          {t(`tools.${toolId}.name`)}
+                        </p>
+                      </div>
+                    </Button>
+                  ))}
+                </div>
+              </CardContent>
             </Card>
           </div>
         )}
-      </div>
     </div>
   );
 };

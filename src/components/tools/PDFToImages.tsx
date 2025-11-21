@@ -13,7 +13,7 @@ import type {
   ConvertedImage
 } from '@/types/image.types';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 
@@ -153,10 +153,10 @@ export const PDFToImages: React.FC = () => {
   }, []);
 
   return (
-    <div className="max-w-4xl mx-auto p-6 space-y-6">
+    <div className="pdf-to-images space-y-6">
       {/* Header */}
-      <div className="text-center space-y-2">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+      <div>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
           {t('pdfToImages.title')}
         </h1>
         <p className="text-gray-600 dark:text-gray-400">
@@ -166,12 +166,16 @@ export const PDFToImages: React.FC = () => {
 
       {/* File Upload */}
       {!file && (
-        <FileUpload
-          onFilesSelected={handleFileSelected}
-          accept=".pdf,application/pdf"
-          maxFiles={1}
-          maxSize={100 * 1024 * 1024}
-        />
+        <Card>
+          <CardContent className="p-6">
+            <FileUpload
+              onFilesSelected={handleFileSelected}
+              accept=".pdf,application/pdf"
+              maxFiles={1}
+              maxSize={100 * 1024 * 1024}
+            />
+          </CardContent>
+        </Card>
       )}
 
       {/* Options */}

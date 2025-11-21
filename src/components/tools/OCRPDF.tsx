@@ -9,7 +9,7 @@ import { detectLanguageAdvanced, type LanguageDetectionResult } from '@/utils/la
 import { QuickOCR } from '@/utils/quickOCR';
 import { OCRWorkerManager } from '@/utils/ocrWorkerManager';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
@@ -641,19 +641,22 @@ export const OCRPDF: React.FC = () => {
 
       {/* File Upload */}
       {!file && (
-        <Card className="p-6">
-          <FileUpload
-            onFilesSelected={handleFilesSelected}
-            accept=".pdf,.jpg,.jpeg,.png"
-            maxFiles={1}
-            maxSizeMB={50}
-          />
+        <Card>
+          <CardContent className="p-6">
+            <FileUpload
+              onFilesSelected={handleFilesSelected}
+              accept=".pdf,.jpg,.jpeg,.png"
+              maxFiles={1}
+              maxSizeMB={50}
+            />
+          </CardContent>
         </Card>
       )}
 
       {/* File Preview & Settings */}
       {file && !result && (
-        <Card className="p-6 space-y-4">
+        <Card>
+          <CardContent className="p-6 space-y-4">
           {/* File info */}
           <div className="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-gray-700">
             <div className="flex items-center gap-3">
@@ -890,6 +893,7 @@ export const OCRPDF: React.FC = () => {
           >
             {isProcessing ? 'Processing OCR...' : isAnalyzing ? 'Analyzing...' : 'Start OCR'}
           </Button>
+          </CardContent>
         </Card>
       )}
 
@@ -904,7 +908,8 @@ export const OCRPDF: React.FC = () => {
 
       {/* Results */}
       {result && (
-        <Card className="p-6 space-y-4">
+        <Card>
+          <CardContent className="p-6 space-y-4">
           <div className="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-gray-700">
             <div>
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -1048,14 +1053,15 @@ export const OCRPDF: React.FC = () => {
                 onClick={handleCopyText}
                 variant="secondary"
               >
-                📋 Copy text
+                Copy text
               </Button>
             )}
             <Button
               onClick={handleDownload}
-              className={outputFormat === 'searchable-pdf' || outputFormat === 'hocr' || outputFormat === 'tsv' ? 'w-full' : ''}
+              size="lg"
+              className="px-8 !bg-green-600 hover:!bg-green-700 !text-white"
             >
-              💾 {
+              {
                 outputFormat === 'searchable-pdf' ? 'Create Searchable PDF' :
                 outputFormat === 'hocr' ? 'Download hOCR (.html)' :
                 outputFormat === 'tsv' ? 'Download TSV (.tsv)' :
@@ -1063,6 +1069,7 @@ export const OCRPDF: React.FC = () => {
               }
             </Button>
           </div>
+          </CardContent>
         </Card>
       )}
 

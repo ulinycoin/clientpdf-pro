@@ -8,7 +8,7 @@ import pdfService from '@/services/pdfService';
 import type { Tool } from '@/types';
 import { HASH_TOOL_MAP } from '@/types';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 
 export const WordToPDF: React.FC = () => {
   const { t } = useI18n();
@@ -101,9 +101,9 @@ export const WordToPDF: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <div className="word-to-pdf space-y-6">
       {/* Header */}
-      <div className="mb-8">
+      <div>
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
           {t('tools.word-to-pdf.name')}
         </h1>
@@ -114,12 +114,16 @@ export const WordToPDF: React.FC = () => {
 
       {/* Upload Section */}
       {!file && !result && (
-        <FileUpload
-          onFilesSelected={handleFileSelected}
-          accept=".docx"
-          multiple={false}
-          maxFiles={1}
-        />
+        <Card>
+          <CardContent className="p-6">
+            <FileUpload
+              onFilesSelected={handleFileSelected}
+              accept=".docx"
+              multiple={false}
+              maxFiles={1}
+            />
+          </CardContent>
+        </Card>
       )}
 
       {/* File Info */}

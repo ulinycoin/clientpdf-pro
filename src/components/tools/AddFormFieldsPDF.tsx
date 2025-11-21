@@ -11,7 +11,7 @@ import type { Tool } from '@/types';
 import { HASH_TOOL_MAP } from '@/types';
 import type { FormField } from '@/types/formFields';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 
 export const AddFormFieldsPDF: React.FC = () => {
   const { t } = useI18n();
@@ -174,21 +174,29 @@ export const AddFormFieldsPDF: React.FC = () => {
   // If no file, show upload zone
   if (!file) {
     return (
-      <Card className="p-8">
-        <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">
-          {t('tools.add-form-fields-pdf.name')}
-        </h2>
-        <p className="text-gray-600 dark:text-gray-400 mb-6">
-          {t('tools.add-form-fields-pdf.description')}
-        </p>
+      <div className="add-form-fields-pdf space-y-6">
+        {/* Header */}
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            {t('tools.add-form-fields-pdf.name')}
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400">
+            {t('tools.add-form-fields-pdf.description')}
+          </p>
+        </div>
 
-        <FileUpload
-          onFilesSelected={handleFilesSelected}
-          accept=".pdf"
-          multiple={false}
-          maxSizeMB={100}
-        />
-      </Card>
+        {/* Upload section */}
+        <Card>
+          <CardContent className="p-6">
+            <FileUpload
+              onFilesSelected={handleFilesSelected}
+              accept=".pdf"
+              multiple={false}
+              maxSizeMB={100}
+            />
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 

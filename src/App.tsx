@@ -2,9 +2,10 @@ import { useState, useEffect, lazy, Suspense } from 'react';
 import { useHashRouter } from '@/hooks/useHashRouter';
 import { WelcomeScreen } from '@/components/WelcomeScreen';
 import { Sidebar } from '@/components/layout/Sidebar';
+import { ToolGroupNav } from '@/components/layout/ToolGroupNav';
 import { Button } from '@/components/ui/button';
 import { Toaster } from '@/components/ui/sonner';
-import type { Theme } from '@/types';
+import type { Theme, ToolGroup } from '@/types';
 
 // Lazy load tool components for better performance
 // Each tool loads only when user navigates to it
@@ -76,6 +77,16 @@ function App() {
     localStorage.setItem('sidebar_collapsed', sidebarCollapsed.toString());
   }, [sidebarCollapsed]);
 
+  // Tool group selection state
+  const [selectedGroup, setSelectedGroup] = useState<ToolGroup>(() => {
+    const stored = localStorage.getItem('selected_tool_group') as ToolGroup;
+    return stored || 'all';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('selected_tool_group', selectedGroup);
+  }, [selectedGroup]);
+
 
   const toggleTheme = () => {
     setTheme(prev => prev === 'dark' ? 'light' : 'dark');
@@ -138,16 +149,23 @@ function App() {
         </div>
       </header>
 
+      {/* Tool Group Navigation */}
+      <ToolGroupNav
+        selectedGroup={selectedGroup}
+        onGroupSelect={setSelectedGroup}
+      />
+
       {/* Sidebar */}
       <Sidebar
         currentTool={currentTool}
         onToolSelect={setCurrentTool}
         collapsed={sidebarCollapsed}
         onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
+        selectedGroup={selectedGroup}
       />
 
       {/* Main content */}
-      <main className={`pt-16 transition-all duration-300 ${sidebarCollapsed ? 'pl-16' : 'pl-64'}`}>
+      <main className={`transition-all duration-300 ${sidebarCollapsed ? 'pl-16' : 'pl-64'}`} style={{ paddingTop: '7.5rem' }}>
         {!currentTool ? (
           <WelcomeScreen
             context={context}

@@ -9,7 +9,7 @@ import type { UploadedFile, TextOccurrence } from '@/types/pdf';
 import type { Tool } from '@/types';
 import { HASH_TOOL_MAP } from '@/types';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -765,9 +765,9 @@ export const EditTextPDF: React.FC = () => {
   const hasResult = !!result;
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-7xl">
+    <div className="edit-text-pdf space-y-6">
       {/* Header */}
-      <div className="mb-8">
+      <div>
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
           {t('tools.edit-text-pdf.name')}
         </h1>
@@ -778,13 +778,17 @@ export const EditTextPDF: React.FC = () => {
 
       {/* File Upload */}
       {!hasFile && !hasResult && (
-        <FileUpload
-          onFilesSelected={handleFileSelected}
-          accept=".pdf"
-          maxFiles={1}
-          title={t('common.uploadFile')}
-          description={t('common.uploadDescription')}
-        />
+        <Card>
+          <CardContent className="p-6">
+            <FileUpload
+              onFilesSelected={handleFileSelected}
+              accept=".pdf"
+              maxFiles={1}
+              title={t('common.uploadFile')}
+              description={t('common.uploadDescription')}
+            />
+          </CardContent>
+        </Card>
       )}
 
       {/* Main Interface */}

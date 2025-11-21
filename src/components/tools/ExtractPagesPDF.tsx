@@ -9,7 +9,7 @@ import type { UploadedFile } from '@/types/pdf';
 import type { Tool } from '@/types';
 import { HASH_TOOL_MAP } from '@/types';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
@@ -200,14 +200,16 @@ export const ExtractPagesPDF: React.FC = () => {
 
       {/* Upload section */}
       {!file && !result && (
-        <Card className="p-6">
-          <FileUpload
-            accept=".pdf"
-            multiple={false}
-            onFilesSelected={handleFileSelected}
-            maxSizeMB={100}
-            disabled={isProcessing}
-          />
+        <Card>
+          <CardContent className="p-6">
+            <FileUpload
+              accept=".pdf"
+              multiple={false}
+              onFilesSelected={handleFileSelected}
+              maxSizeMB={100}
+              disabled={isProcessing}
+            />
+          </CardContent>
         </Card>
       )}
 
@@ -241,206 +243,218 @@ export const ExtractPagesPDF: React.FC = () => {
           )}
 
           {/* File preview */}
-          <Card className="p-6">
-            <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
-              {t('common.filePreview')}
-            </h2>
-            <div className="flex items-start gap-6">
-              <div className="flex-shrink-0">
-                <PDFPreview file={file.file} width={160} height={220} />
-              </div>
-              <div className="flex-1">
-                <h3 className="font-semibold text-lg text-gray-900 dark:text-white mb-2">
-                  {file.name}
-                </h3>
-                <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                  <p>
-                    <span className="font-medium">{t('common.totalPages')}:</span>{' '}
-                    {file.info?.pages || 0}
-                  </p>
-                  <p>
-                    <span className="font-medium">{t('common.fileSize')}:</span>{' '}
-                    {pdfService.formatFileSize(file.size)}
-                  </p>
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
+                {t('common.filePreview')}
+              </h2>
+              <div className="flex items-start gap-6">
+                <div className="flex-shrink-0">
+                  <PDFPreview file={file.file} width={160} height={220} />
                 </div>
-                <Button
-                  onClick={handleRemoveFile}
-                  disabled={isProcessing}
-                  variant="ghost"
-                  className="mt-4 text-sm text-error-500 hover:text-error-600 disabled:opacity-50"
-                >
-                  {t('common.changeFile')}
-                </Button>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-lg text-gray-900 dark:text-white mb-2">
+                    {file.name}
+                  </h3>
+                  <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                    <p>
+                      <span className="font-medium">{t('common.totalPages')}:</span>{' '}
+                      {file.info?.pages || 0}
+                    </p>
+                    <p>
+                      <span className="font-medium">{t('common.fileSize')}:</span>{' '}
+                      {pdfService.formatFileSize(file.size)}
+                    </p>
+                  </div>
+                  <Button
+                    onClick={handleRemoveFile}
+                    disabled={isProcessing}
+                    variant="ghost"
+                    className="mt-4 text-sm text-error-500 hover:text-error-600 disabled:opacity-50"
+                  >
+                    {t('common.changeFile')}
+                  </Button>
+                </div>
               </div>
-            </div>
+            </CardContent>
           </Card>
 
           {/* Extract settings */}
-          <Card className="p-6">
-            <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
-              {t('extractPages.selectPages')}
-            </h2>
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
+                {t('extractPages.selectPages')}
+              </h2>
 
-            <div className="bg-gray-50 dark:bg-privacy-800 rounded-lg p-4 mb-4">
-              <Label className="block text-sm text-gray-600 dark:text-gray-400 mb-1">
-                {t('extractPages.pagesToExtract')}
-              </Label>
-              <Input
-                type="text"
-                value={pagesToExtract}
-                onChange={(e) => setPagesToExtract(e.target.value)}
-                placeholder="1,3,5-7,10"
-                disabled={isProcessing}
-                className="w-full px-3 py-2 rounded-lg bg-white dark:bg-privacy-900 border border-gray-300 dark:border-privacy-600 focus:outline-none focus:ring-2 focus:ring-ocean-500"
-              />
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                {t('extractPages.hint', { total: String(maxPages) })}
-              </p>
-            </div>
+              <div className="bg-gray-50 dark:bg-privacy-800 rounded-lg p-4 mb-4">
+                <Label className="block text-sm text-gray-600 dark:text-gray-400 mb-1">
+                  {t('extractPages.pagesToExtract')}
+                </Label>
+                <Input
+                  type="text"
+                  value={pagesToExtract}
+                  onChange={(e) => setPagesToExtract(e.target.value)}
+                  placeholder="1,3,5-7,10"
+                  disabled={isProcessing}
+                  className="w-full px-3 py-2 rounded-lg bg-white dark:bg-privacy-900 border border-gray-300 dark:border-privacy-600 focus:outline-none focus:ring-2 focus:ring-ocean-500"
+                />
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                  {t('extractPages.hint', { total: String(maxPages) })}
+                </p>
+              </div>
 
-            {/* Info */}
-            <div className="bg-ocean-50 dark:bg-ocean-900/20 border border-ocean-200 dark:border-ocean-800 rounded-lg p-4 mb-6">
-              <div className="flex items-start gap-3">
-                <span className="text-2xl">ℹ️</span>
-                <div>
-                  <p className="font-medium text-ocean-700 dark:text-ocean-300">
-                    {t('extractPages.info')}
-                  </p>
-                  <p className="text-sm text-ocean-600 dark:text-ocean-400 mt-1">
-                    {t('extractPages.infoDescription')}
-                  </p>
+              {/* Info */}
+              <div className="bg-ocean-50 dark:bg-ocean-900/20 border border-ocean-200 dark:border-ocean-800 rounded-lg p-4 mb-6">
+                <div className="flex items-start gap-3">
+                  <span className="text-2xl">ℹ️</span>
+                  <div>
+                    <p className="font-medium text-ocean-700 dark:text-ocean-300">
+                      {t('extractPages.info')}
+                    </p>
+                    <p className="text-sm text-ocean-600 dark:text-ocean-400 mt-1">
+                      {t('extractPages.infoDescription')}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Extract button */}
-            <Button
-              onClick={handleExtract}
-              disabled={isProcessing || !file || !pagesToExtract}
-              className="btn btn-primary w-full text-lg py-3"
-            >
-              {isProcessing ? t('common.processing') : t('extractPages.extractButton')}
-            </Button>
+              {/* Extract button */}
+              <Button
+                onClick={handleExtract}
+                disabled={isProcessing || !file || !pagesToExtract}
+                className="w-full text-lg py-3"
+                size="lg"
+              >
+                {isProcessing ? t('common.processing') : t('extractPages.extractButton')}
+              </Button>
+            </CardContent>
           </Card>
         </div>
       )}
 
       {/* Progress */}
       {isProcessing && (
-        <Card className="p-6">
-          <ProgressBar progress={progress} message={progressMessage} />
+        <Card>
+          <CardContent className="p-6">
+            <ProgressBar progress={progress} message={progressMessage} />
+          </CardContent>
         </Card>
       )}
 
       {/* Result */}
       {result && (
         <div className="space-y-6">
-          <Card className="p-8">
-            <div className="text-center space-y-4">
-              <div className="text-6xl">✅</div>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                {t('extractPages.success')}
-              </h2>
-              <p className="text-gray-600 dark:text-gray-400">
-                {t('extractPages.successDescription')}
-              </p>
+          <Card>
+            <CardContent className="p-8">
+              <div className="text-center space-y-4">
+                <div className="text-6xl">✅</div>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  {t('extractPages.success')}
+                </h2>
+                <p className="text-gray-600 dark:text-gray-400">
+                  {t('extractPages.successDescription')}
+                </p>
 
-              <div className="flex flex-col sm:flex-row gap-3 justify-center mt-6 pt-4">
-                <Button
-                  onClick={handleDownload}
-                  className="btn btn-primary px-8"
-                >
-                  📥 {t('common.download')}
-                </Button>
-                <Button
-                  onClick={handleReset}
-                  variant="outline"
-                  className="btn btn-secondary"
-                >
-                  {t('extractPages.extractAnother')}
-                </Button>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center mt-6 pt-4">
+                  <Button
+                    onClick={handleDownload}
+                    size="lg"
+                    className="px-8 !bg-green-600 hover:!bg-green-700 !text-white"
+                  >
+                    {t('common.download')}
+                  </Button>
+                  <Button
+                    onClick={handleReset}
+                    variant="outline"
+                    size="lg"
+                  >
+                    {t('extractPages.extractAnother')}
+                  </Button>
+                </div>
               </div>
-            </div>
+            </CardContent>
           </Card>
 
           {/* Quick Actions */}
-          <Card className="p-6">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-              {t('extractPages.quickActions.title')}
-            </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-              {t('extractPages.quickActions.description')}
-            </p>
+          <Card>
+            <CardContent className="p-6">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                {t('extractPages.quickActions.title')}
+              </h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                {t('extractPages.quickActions.description')}
+              </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-              {/* Compress */}
-              <Button
-                onClick={() => handleQuickAction('compress-pdf')}
-                variant="outline"
-                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group h-auto"
-              >
-                <span className="text-3xl">🗜️</span>
-                <div className="text-left">
-                  <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
-                    {t('tools.compress-pdf.name')}
-                  </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    {t('extractPages.quickActions.compress')}
-                  </p>
-                </div>
-              </Button>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                {/* Compress */}
+                <Button
+                  onClick={() => handleQuickAction('compress-pdf')}
+                  variant="outline"
+                  className="h-auto justify-start p-4 border-2 hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
+                >
+                  <span className="text-3xl">🗜️</span>
+                  <div className="text-left ml-3">
+                    <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
+                      {t('tools.compress-pdf.name')}
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      {t('extractPages.quickActions.compress')}
+                    </p>
+                  </div>
+                </Button>
 
-              {/* Protect */}
-              <Button
-                onClick={() => handleQuickAction('protect-pdf')}
-                variant="outline"
-                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group h-auto"
-              >
-                <span className="text-3xl">🔒</span>
-                <div className="text-left">
-                  <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
-                    {t('tools.protect-pdf.name')}
-                  </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    {t('extractPages.quickActions.protect')}
-                  </p>
-                </div>
-              </Button>
+                {/* Protect */}
+                <Button
+                  onClick={() => handleQuickAction('protect-pdf')}
+                  variant="outline"
+                  className="h-auto justify-start p-4 border-2 hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
+                >
+                  <span className="text-3xl">🔒</span>
+                  <div className="text-left ml-3">
+                    <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
+                      {t('tools.protect-pdf.name')}
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      {t('extractPages.quickActions.protect')}
+                    </p>
+                  </div>
+                </Button>
 
-              {/* Watermark */}
-              <Button
-                onClick={() => handleQuickAction('watermark-pdf')}
-                variant="outline"
-                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group h-auto"
-              >
-                <span className="text-3xl">💧</span>
-                <div className="text-left">
-                  <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
-                    {t('tools.watermark-pdf.name')}
-                  </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    {t('extractPages.quickActions.watermark')}
-                  </p>
-                </div>
-              </Button>
+                {/* Watermark */}
+                <Button
+                  onClick={() => handleQuickAction('watermark-pdf')}
+                  variant="outline"
+                  className="h-auto justify-start p-4 border-2 hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
+                >
+                  <span className="text-3xl">💧</span>
+                  <div className="text-left ml-3">
+                    <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
+                      {t('tools.watermark-pdf.name')}
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      {t('extractPages.quickActions.watermark')}
+                    </p>
+                  </div>
+                </Button>
 
-              {/* Merge */}
-              <Button
-                onClick={() => handleQuickAction('merge-pdf')}
-                variant="outline"
-                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group h-auto"
-              >
-                <span className="text-3xl">📎</span>
-                <div className="text-left">
-                  <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
-                    {t('tools.merge-pdf.name')}
-                  </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    {t('extractPages.quickActions.merge')}
-                  </p>
-                </div>
-              </Button>
-            </div>
+                {/* Merge */}
+                <Button
+                  onClick={() => handleQuickAction('merge-pdf')}
+                  variant="outline"
+                  className="h-auto justify-start p-4 border-2 hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
+                >
+                  <span className="text-3xl">📎</span>
+                  <div className="text-left ml-3">
+                    <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
+                      {t('tools.merge-pdf.name')}
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      {t('extractPages.quickActions.merge')}
+                    </p>
+                  </div>
+                </Button>
+              </div>
+            </CardContent>
           </Card>
         </div>
       )}

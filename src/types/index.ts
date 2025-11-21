@@ -34,6 +34,70 @@ export type Tool =
 // Tool category for grouping
 export type ToolCategory = 'core' | 'edit' | 'convert' | 'security';
 
+// Tool groups for UI navigation
+export type ToolGroup = 'all' | 'organize' | 'edit' | 'security' | 'convert';
+
+// Tool group configuration
+export interface ToolGroupConfig {
+  id: ToolGroup;
+  icon: string;
+  tools: Tool[];
+}
+
+// Tool groups mapping
+export const TOOL_GROUPS: Record<ToolGroup, Tool[]> = {
+  'all': [
+    'organize-pdf',
+    'merge-pdf',
+    'split-pdf',
+    'compress-pdf',
+    'protect-pdf',
+    'ocr-pdf',
+    'watermark-pdf',
+    'add-text-pdf',
+    'edit-text-pdf',
+    'add-form-fields-pdf',
+    'rotate-pdf',
+    'delete-pages-pdf',
+    'extract-pages-pdf',
+    'images-to-pdf',
+    'pdf-to-images',
+    'pdf-to-word',
+    'word-to-pdf',
+    'sign-pdf',
+    'flatten-pdf',
+    'extract-images-pdf',
+  ],
+  'organize': [
+    'organize-pdf',
+    'merge-pdf',
+    'split-pdf',
+    'extract-pages-pdf',
+    'delete-pages-pdf',
+    'rotate-pdf',
+  ],
+  'edit': [
+    'add-text-pdf',
+    'edit-text-pdf',
+    'add-form-fields-pdf',
+    'watermark-pdf',
+    'sign-pdf',
+    'flatten-pdf',
+  ],
+  'security': [
+    'protect-pdf',
+    'compress-pdf',
+  ],
+  'convert': [
+    'images-to-pdf',
+    'pdf-to-images',
+    'pdf-to-word',
+    'word-to-pdf',
+    'ocr-pdf',
+    'extract-images-pdf',
+  ],
+};
+
 // Tool tier for performance optimization
 export type ToolTier = 1 | 2 | 3;
 

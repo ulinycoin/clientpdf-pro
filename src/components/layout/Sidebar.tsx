@@ -1,5 +1,6 @@
 import React from 'react';
-import type { Tool } from '@/types';
+import type { Tool, ToolGroup } from '@/types';
+import { TOOL_GROUPS } from '@/types';
 import { Button } from '@/components/ui/button';
 
 interface SidebarProps {
@@ -7,6 +8,7 @@ interface SidebarProps {
   onToolSelect: (tool: Tool) => void;
   collapsed: boolean;
   onToggleCollapse: () => void;
+  selectedGroup: ToolGroup;
 }
 
 // Tool names
@@ -66,11 +68,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
   currentTool,
   onToolSelect,
   collapsed,
+  selectedGroup,
 }) => {
+  // Filter tools based on selected group
+  const filteredTools = TOOLS.filter((tool) =>
+    TOOL_GROUPS[selectedGroup].includes(tool.id)
+  );
+
   return (
     <aside
-      className={`fixed left-0 top-16 h-[calc(100vh-4rem)] bg-white dark:bg-privacy-900 border-r border-gray-200 dark:border-privacy-700 transition-all duration-300 ease-in-out z-30 overflow-y-auto ${collapsed ? 'w-16' : 'w-64'
+      className={`fixed left-0 top-0 h-screen bg-white dark:bg-privacy-900 border-r border-gray-200 dark:border-privacy-700 transition-all duration-300 ease-in-out z-20 overflow-y-auto ${collapsed ? 'w-16' : 'w-64'
         }`}
+      style={{ paddingTop: '7.5rem' }}
     >
       {/* Section title */}
       {!collapsed && (
@@ -84,7 +93,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {/* Tools list */}
       <nav className="p-2">
         <ul className="space-y-1">
-          {TOOLS.map((tool) => {
+          {filteredTools.map((tool) => {
             const isActive = currentTool === tool.id;
 
             return (

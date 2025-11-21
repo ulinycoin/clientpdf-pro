@@ -19,7 +19,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { FileUpload } from '@/components/common/FileUpload';
 import { ProgressBar } from '@/components/common/ProgressBar';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { useI18n } from '@/hooks/useI18n';
 import { useSharedFile } from '@/hooks/useSharedFile';
 import { usePDFThumbnails, type PageThumbnail } from '@/hooks/usePDFThumbnails';
@@ -346,12 +346,12 @@ export const PageEditorPDF: React.FC = () => {
       thumbnails.map((t) => t.pageNumber).join(',');
 
   return (
-    <div className="max-w-7xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-3 text-gray-900 dark:text-white">
+    <div className="page-editor-pdf space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
           {t('tools.organize-pdf.name') || 'Organize PDF Pages'}
         </h1>
-        <p className="text-lg text-gray-600 dark:text-gray-300">
+        <p className="text-gray-600 dark:text-gray-400">
           {t('tools.organize-pdf.description') ||
             'Reorder, rotate, and delete pages in your PDF'}
         </p>
@@ -359,13 +359,15 @@ export const PageEditorPDF: React.FC = () => {
 
       {/* File Upload */}
       {!file && (
-        <Card className="p-8">
-          <FileUpload
-            onFilesSelected={handleFileUpload}
-            accept=".pdf"
-            maxFiles={1}
-            label={t('common.selectFile') || 'Select PDF file'}
-          />
+        <Card>
+          <CardContent className="p-6">
+            <FileUpload
+              onFilesSelected={handleFileUpload}
+              accept=".pdf"
+              maxFiles={1}
+              label={t('common.selectFile') || 'Select PDF file'}
+            />
+          </CardContent>
         </Card>
       )}
 

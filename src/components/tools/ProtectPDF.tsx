@@ -6,7 +6,7 @@ import { useSharedFile } from '@/hooks/useSharedFile';
 import { protectPDF } from '@/services/pdfService';
 import type { ProtectionSettings, PasswordStrength } from '@/types/pdf';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -237,7 +237,7 @@ export const ProtectPDF: React.FC = () => {
   // Success screen
   if (result) {
     return (
-      <div className="max-w-3xl mx-auto space-y-6">
+      <div className="protect-pdf-success space-y-6">
         {/* Success message */}
         <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-2 border-green-200 dark:border-green-800 rounded-2xl p-8">
           <div className="text-center space-y-4">
@@ -263,18 +263,11 @@ export const ProtectPDF: React.FC = () => {
         </div>
 
         {/* Actions */}
-        <div className="flex gap-4">
-          <Button
-            onClick={handleDownload}
-            className="flex-1 bg-gradient-to-r from-ocean-500 to-ocean-600 hover:from-ocean-600 hover:to-ocean-700 text-white font-bold py-4 px-8 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl"
-          >
+        <div className="flex gap-3 justify-center">
+          <Button onClick={handleDownload} size="lg" className="px-8 !bg-green-600 hover:!bg-green-700 !text-white">
             {t('common.download')}
           </Button>
-          <Button
-            variant="outline"
-            onClick={handleReset}
-            className="flex-1 font-bold py-4 px-8 rounded-xl"
-          >
+          <Button variant="outline" onClick={handleReset} size="lg">
             {t('protect.protectAnother')}
           </Button>
         </div>
@@ -297,13 +290,15 @@ export const ProtectPDF: React.FC = () => {
 
       {/* File upload */}
       {!file && (
-        <Card className="p-6">
-          <FileUpload
-            onFilesSelected={handleFileSelect}
-            accept=".pdf"
-            maxFiles={1}
-            maxSizeMB={100}
-          />
+        <Card>
+          <CardContent className="p-6">
+            <FileUpload
+              onFilesSelected={handleFileSelect}
+              accept=".pdf"
+              maxFiles={1}
+              maxSizeMB={100}
+            />
+          </CardContent>
         </Card>
       )}
 
@@ -338,7 +333,8 @@ export const ProtectPDF: React.FC = () => {
 
       {/* File preview */}
       {file && (
-        <Card className="p-6">
+        <Card>
+          <CardContent className="p-6">
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-center gap-3">
               <span className="text-3xl">📄</span>
@@ -633,6 +629,7 @@ export const ProtectPDF: React.FC = () => {
           >
             {isProcessing ? t('common.processing') : t('protect.protectButton')}
           </Button>
+          </CardContent>
         </Card>
       )}
 

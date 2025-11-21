@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { FileUpload } from '@/components/common/FileUpload';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { useI18n } from '@/hooks/useI18n';
 import { useSharedFile } from '@/hooks/useSharedFile';
 import { useAddTextTool } from '@/hooks/useAddTextTool';
@@ -209,62 +209,75 @@ export const AddTextPDF: React.FC = () => {
   // If no file, show upload zone
   if (!file) {
     return (
-      <Card className="p-8">
-        <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">
-          Add Text to PDF
-        </h2>
-        <p className="text-gray-600 dark:text-gray-400 mb-6">
-          Add custom text to your PDF pages with full control over position, style, and formatting
-        </p>
+      <div className="add-text-pdf space-y-6">
+        {/* Header */}
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            {t('tools.add-text-pdf.name')}
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400">
+            {t('tools.add-text-pdf.description')}
+          </p>
+        </div>
 
-        <FileUpload
-          onFilesSelected={handleFilesSelected}
-          accept=".pdf"
-          multiple={false}
-          maxSizeMB={100}
-        />
-      </Card>
+        {/* Upload section */}
+        <Card>
+          <CardContent className="p-6">
+            <FileUpload
+              onFilesSelected={handleFilesSelected}
+              accept=".pdf"
+              multiple={false}
+              maxSizeMB={100}
+            />
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
   // If result, show success and download
   if (result) {
     return (
-      <Card className="p-8">
-        <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">
-          Add Text to PDF
-        </h2>
+      <div className="space-y-6">
+        {/* Success card */}
+        <Card>
+          <CardContent className="p-8">
+            <div className="text-center space-y-4">
+              <div className="text-6xl">✅</div>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                Add Text to PDF
+              </h2>
 
-        <div className="mt-6 space-y-4">
-          <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-            <h3 className="text-lg font-semibold text-green-800 dark:text-green-300 mb-2">
-              ✓ Success
-            </h3>
-            <div className="text-sm text-green-700 dark:text-green-400 space-y-1">
-              <p>Text elements added: {textElements.length}</p>
-              <p>Original size: {(file.size / 1024).toFixed(2)} KB</p>
-              <p>New size: {(result.size / 1024).toFixed(2)} KB</p>
+              <div className="text-gray-600 dark:text-gray-400 space-y-1">
+                <p>Text elements added: <span className="font-semibold">{textElements.length}</span></p>
+                <p>Original size: <span className="font-semibold">{(file.size / 1024).toFixed(2)} KB</span></p>
+                <p>New size: <span className="font-semibold">{(result.size / 1024).toFixed(2)} KB</span></p>
+              </div>
+
+              {/* Primary actions */}
+              <div className="flex gap-3 justify-center mt-6 pt-4">
+                <Button
+                  onClick={handleDownload}
+                  size="lg"
+                  className="px-8 !bg-green-600 hover:!bg-green-700 !text-white"
+                >
+                  Download
+                </Button>
+                <Button
+                  onClick={handleReset}
+                  variant="outline"
+                  size="lg"
+                >
+                  Process Another
+                </Button>
+              </div>
             </div>
-          </div>
+          </CardContent>
+        </Card>
 
-          <div className="flex gap-4">
-            <Button
-              onClick={handleDownload}
-              className="flex-1"
-            >
-              Download
-            </Button>
-            <Button
-              onClick={handleReset}
-              variant="outline"
-            >
-              Process Another
-            </Button>
-          </div>
-        </div>
-
-          {/* Quick Actions */}
-          <Card className="p-6 mt-6">
+        {/* Quick Actions */}
+        <Card>
+          <CardContent className="p-6">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
               What's next?
             </h3>
@@ -278,10 +291,10 @@ export const AddTextPDF: React.FC = () => {
               <Button
                 onClick={() => handleQuickAction('compress-pdf')}
                 variant="outline"
-                className="flex items-center gap-3 p-4 h-auto justify-start hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
+                className="h-auto justify-start p-4 border-2 hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
               >
                 <span className="text-3xl">🗜️</span>
-                <div className="text-left">
+                <div className="text-left ml-3">
                   <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
                     {t('tools.compress-pdf.name')}
                   </p>
@@ -295,10 +308,10 @@ export const AddTextPDF: React.FC = () => {
               <Button
                 onClick={() => handleQuickAction('protect-pdf')}
                 variant="outline"
-                className="flex items-center gap-3 p-4 h-auto justify-start hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
+                className="h-auto justify-start p-4 border-2 hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
               >
                 <span className="text-3xl">🔒</span>
-                <div className="text-left">
+                <div className="text-left ml-3">
                   <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
                     {t('tools.protect-pdf.name')}
                   </p>
@@ -312,10 +325,10 @@ export const AddTextPDF: React.FC = () => {
               <Button
                 onClick={() => handleQuickAction('watermark-pdf')}
                 variant="outline"
-                className="flex items-center gap-3 p-4 h-auto justify-start hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
+                className="h-auto justify-start p-4 border-2 hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
               >
                 <span className="text-3xl">💧</span>
-                <div className="text-left">
+                <div className="text-left ml-3">
                   <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
                     {t('tools.watermark-pdf.name')}
                   </p>
@@ -329,10 +342,10 @@ export const AddTextPDF: React.FC = () => {
               <Button
                 onClick={() => handleQuickAction('split-pdf')}
                 variant="outline"
-                className="flex items-center gap-3 p-4 h-auto justify-start hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
+                className="h-auto justify-start p-4 border-2 hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
               >
                 <span className="text-3xl">✂️</span>
-                <div className="text-left">
+                <div className="text-left ml-3">
                   <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
                     {t('tools.split-pdf.name')}
                   </p>
@@ -342,8 +355,9 @@ export const AddTextPDF: React.FC = () => {
                 </div>
               </Button>
             </div>
-          </Card>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 

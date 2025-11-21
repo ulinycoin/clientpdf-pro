@@ -3,7 +3,7 @@ import { FileUpload } from '@/components/common/FileUpload';
 import { ProgressBar } from '@/components/common/ProgressBar';
 import { PDFPreview } from '@/components/common/PDFPreview';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
@@ -214,14 +214,16 @@ export const RotatePDF: React.FC = () => {
 
       {/* Upload section */}
       {!file && !result && (
-        <Card className="p-6">
-          <FileUpload
-            accept=".pdf"
-            multiple={false}
-            onFilesSelected={handleFileSelected}
-            maxSizeMB={100}
-            disabled={isProcessing}
-          />
+        <Card>
+          <CardContent className="p-6">
+            <FileUpload
+              accept=".pdf"
+              multiple={false}
+              onFilesSelected={handleFileSelected}
+              maxSizeMB={100}
+              disabled={isProcessing}
+            />
+          </CardContent>
         </Card>
       )}
 
@@ -255,10 +257,11 @@ export const RotatePDF: React.FC = () => {
           )}
 
           {/* File preview */}
-          <Card className="p-6">
-            <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
-              {t('common.filePreview')}
-            </h2>
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
+                {t('common.filePreview')}
+              </h2>
             <div className="flex items-start gap-6">
               <div className="flex-shrink-0">
                 <PDFPreview file={file.file} width={160} height={220} />
@@ -287,10 +290,12 @@ export const RotatePDF: React.FC = () => {
                 </Button>
               </div>
             </div>
+            </CardContent>
           </Card>
 
           {/* Rotation settings */}
-          <Card className="p-6">
+          <Card>
+            <CardContent className="p-6">
             <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
               {t('rotate.settings')}
             </h2>
@@ -421,54 +426,64 @@ export const RotatePDF: React.FC = () => {
             <Button
               onClick={handleRotate}
               disabled={isProcessing || !file}
-              className="btn btn-primary w-full text-lg py-3"
+              className="w-full text-lg py-3"
+              size="lg"
             >
               {isProcessing ? t('common.processing') : t('rotate.rotateButton')}
             </Button>
+            </CardContent>
           </Card>
         </div>
       )}
 
       {/* Progress */}
       {isProcessing && (
-        <Card className="p-6">
-          <ProgressBar progress={progress} message={progressMessage} />
+        <Card>
+          <CardContent className="p-6">
+            <ProgressBar progress={progress} message={progressMessage} />
+          </CardContent>
         </Card>
       )}
 
       {/* Result */}
       {result && (
         <div className="space-y-6">
-          <Card className="p-8">
-            <div className="text-center space-y-4">
-              <div className="text-6xl">✅</div>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                {t('rotate.success')}
-              </h2>
-              <p className="text-gray-600 dark:text-gray-400">
-                {t('rotate.successDescription')}
-              </p>
+          <Card>
+            <CardContent className="p-8">
+              <div className="text-center space-y-4">
+                <div className="text-6xl">✅</div>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  {t('rotate.success')}
+                </h2>
+                <p className="text-gray-600 dark:text-gray-400">
+                  {t('rotate.successDescription')}
+                </p>
 
-              <div className="flex flex-col sm:flex-row gap-3 justify-center mt-6 pt-4">
-                <Button
-                  onClick={handleDownload}
-                  className="btn btn-primary px-8"
-                >
-                  📥 {t('common.download')}
-                </Button>
-                <Button
-                  onClick={handleReset}
-                  className="btn btn-secondary"
-                >
-                  {t('rotate.rotateAnother')}
-                </Button>
+                <div className="flex gap-3 justify-center mt-6 pt-4">
+                  <Button
+                    onClick={handleDownload}
+                    size="lg"
+                    className="px-8 !bg-green-600 hover:!bg-green-700 !text-white"
+                  >
+                    {t('common.download')}
+                  </Button>
+                  <Button
+                    onClick={handleReset}
+                    variant="outline"
+                    size="lg"
+                  >
+                    {t('rotate.rotateAnother')}
+                  </Button>
+                </div>
               </div>
-            </div>
+            </CardContent>
           </Card>
 
+
           {/* Quick Actions */}
-          <Card className="p-6">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          <Card>
+            <CardContent className="p-6">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
               {t('rotate.quickActions.title')}
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
@@ -480,10 +495,10 @@ export const RotatePDF: React.FC = () => {
               <Button
                 variant="outline"
                 onClick={() => handleQuickAction('compress-pdf')}
-                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group h-auto justify-start"
+                className="h-auto justify-start p-4 border-2 hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
               >
                 <span className="text-3xl">🗜️</span>
-                <div className="text-left">
+                <div className="text-left ml-3">
                   <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
                     {t('tools.compress-pdf.name')}
                   </p>
@@ -497,10 +512,10 @@ export const RotatePDF: React.FC = () => {
               <Button
                 variant="outline"
                 onClick={() => handleQuickAction('protect-pdf')}
-                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group h-auto justify-start"
+                className="h-auto justify-start p-4 border-2 hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
               >
                 <span className="text-3xl">🔒</span>
-                <div className="text-left">
+                <div className="text-left ml-3">
                   <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
                     {t('tools.protect-pdf.name')}
                   </p>
@@ -514,10 +529,10 @@ export const RotatePDF: React.FC = () => {
               <Button
                 variant="outline"
                 onClick={() => handleQuickAction('watermark-pdf')}
-                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group h-auto justify-start"
+                className="h-auto justify-start p-4 border-2 hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
               >
                 <span className="text-3xl">💧</span>
-                <div className="text-left">
+                <div className="text-left ml-3">
                   <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
                     {t('tools.watermark-pdf.name')}
                   </p>
@@ -531,10 +546,10 @@ export const RotatePDF: React.FC = () => {
               <Button
                 variant="outline"
                 onClick={() => handleQuickAction('split-pdf')}
-                className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group h-auto justify-start"
+                className="h-auto justify-start p-4 border-2 hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
               >
                 <span className="text-3xl">✂️</span>
-                <div className="text-left">
+                <div className="text-left ml-3">
                   <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
                     {t('tools.split-pdf.name')}
                   </p>
@@ -544,6 +559,7 @@ export const RotatePDF: React.FC = () => {
                 </div>
               </Button>
             </div>
+            </CardContent>
           </Card>
         </div>
       )}
