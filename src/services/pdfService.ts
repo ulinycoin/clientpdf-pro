@@ -2532,6 +2532,97 @@ export class PDFService {
       blue: parseInt(result[3], 16) / 255,
     };
   }
+
+  /**
+   * Organize PDF pages - reorder, rotate, and delete pages
+   */
+  async organizePDF(
+    file: File,
+    pageOperations: Array<{
+      originalPageNumber: number;
+      newPosition: number;
+      rotation: number;
+    }>,
+    onProgress?: ProgressCallback
+  ): Promise<PDFProcessingResult<Blob>> {
+    try {
+      onProgress?.(10, 'Loading PDF...');
+
+      // Load source PDF
+      const arrayBuffer = await file.arrayBuffer();
+      const sourcePdf = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+
+      onProgress?.(20, 'Creating new document...');
+
+      // Create new PDF document
+      const newPdf = await PDFDocument.create();
+
+      onProgress?.(30, 'Organizing pages...');
+
+      // Copy pages in new order with rotations
+      const totalOperations = pageOperations.length;
+      for (let i = 0; i < totalOperations; i++) {
+        const operation = pageOperations[i];
+
+        // Progress update
+        const progressPercent = 30 + Math.floor((i / totalOperations) * 50);
+        onProgress?.(
+          progressPercent,
+          `Processing page ${i + 1}/${totalOperations}...`
+        );
+
+        // Get source page (pdf-lib uses 0-based indexing)
+        const sourcePageIndex = operation.originalPageNumber - 1;
+
+        if (sourcePageIndex < 0 || sourcePageIndex >= sourcePdf.getPageCount()) {
+          console.warn(`Invalid page number: ${operation.originalPageNumber}`);
+          continue;
+        }
+
+        // Copy page to new document
+        const [copiedPage] = await newPdf.copyPages(sourcePdf, [sourcePageIndex]);
+
+        // Apply rotation if needed
+        if (operation.rotation !== 0) {
+          const currentRotation = copiedPage.getRotation().angle;
+          copiedPage.setRotation(degrees(currentRotation + operation.rotation));
+        }
+
+        // Add page to new document
+        newPdf.addPage(copiedPage);
+      }
+
+      onProgress?.(85, 'Finalizing document...');
+
+      // Save the new PDF
+      const pdfBytes = await newPdf.save();
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+
+      onProgress?.(100, 'Complete!');
+
+      return {
+        success: true,
+        data: blob,
+        metadata: {
+          pageCount: newPdf.getPageCount(),
+          originalSize: file.size,
+          processedSize: blob.size,
+          processingTime: 0,
+        },
+      };
+    } catch (error) {
+      console.error('Error organizing PDF:', error);
+      const err = error as Error;
+      return {
+        success: false,
+        error: {
+          code: 'ORGANIZE_ERROR',
+          message: err.message || 'Failed to organize PDF',
+          details: err,
+        },
+      };
+    }
+  }
 }
 
 const pdfService = PDFService.getInstance();
@@ -2597,3 +2688,13 @@ export const pdfToWord = (file: File, onProgress?: ProgressCallback) =>
   pdfService.pdfToWord(file, onProgress);
 export const addFormFieldsToPDF = (file: File, options: FormFieldOptions) =>
   pdfService.addFormFieldsToPDF(file, options);
+
+export const organizePDF = (
+  file: File,
+  pageOperations: Array<{
+    originalPageNumber: number;
+    newPosition: number;
+    rotation: number;
+  }>,
+  onProgress?: ProgressCallback
+) => pdfService.organizePDF(file, pageOperations, onProgress);

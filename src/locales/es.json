@@ -36,6 +36,10 @@
       "name": "OCR PDF",
       "description": "Extraer texto de PDF escaneados"
     },
+    "organize-pdf": {
+      "name": "Organizar páginas",
+      "description": "Reordenar, rotar y eliminar páginas PDF"
+    },
     "watermark-pdf": {
       "name": "Marca de agua PDF",
       "description": "Agregar marca de agua al PDF"

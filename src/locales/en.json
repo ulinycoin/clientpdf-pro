@@ -36,6 +36,10 @@
       "name": "OCR PDF",
       "description": "Extract text from scanned PDFs"
     },
+    "organize-pdf": {
+      "name": "Organize Pages",
+      "description": "Reorder, rotate, and delete PDF pages"
+    },
     "watermark-pdf": {
       "name": "Watermark PDF",
       "description": "Add watermark to PDF"

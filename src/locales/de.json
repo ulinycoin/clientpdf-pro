@@ -36,6 +36,10 @@
       "name": "OCR PDF",
       "description": "Text aus gescannten PDFs extrahieren"
     },
+    "organize-pdf": {
+      "name": "Seiten organisieren",
+      "description": "PDF-Seiten neu anordnen, drehen und löschen"
+    },
     "watermark-pdf": {
       "name": "PDF-Wasserzeichen",
       "description": "Wasserzeichen zu PDF hinzufügen"

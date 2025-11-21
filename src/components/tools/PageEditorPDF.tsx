@@ -1,0 +1,469 @@
+import React, { useState, useEffect } from 'react';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+  useSortable,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { FileUpload } from '@/components/common/FileUpload';
+import { ProgressBar } from '@/components/common/ProgressBar';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { useI18n } from '@/hooks/useI18n';
+import { useSharedFile } from '@/hooks/useSharedFile';
+import { usePDFThumbnails, type PageThumbnail } from '@/hooks/usePDFThumbnails';
+import pdfService from '@/services/pdfService';
+import type { UploadedFile } from '@/types/pdf';
+import { toast } from 'sonner';
+import { RotateCw, Trash2, Plus, Download } from 'lucide-react';
+
+interface PageItem extends PageThumbnail {
+  id: string;
+  rotation: number; // 0, 90, 180, 270
+  isDeleted: boolean;
+}
+
+// Sortable page thumbnail component
+const SortablePage: React.FC<{
+  page: PageItem;
+  onRotate: (id: string) => void;
+  onDelete: (id: string) => void;
+  onRestore: (id: string) => void;
+}> = ({ page, onRotate, onDelete, onRestore }) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: page.id, disabled: page.isDeleted });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : page.isDeleted ? 0.4 : 1,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`relative group ${page.isDeleted ? 'grayscale' : ''}`}
+    >
+      <Card className="p-2 hover:shadow-lg transition-shadow">
+        {/* Drag handle */}
+        <div
+          {...attributes}
+          {...listeners}
+          className={`cursor-move mb-2 text-center text-xs font-medium text-gray-500 dark:text-gray-400 ${
+            page.isDeleted ? 'cursor-not-allowed' : ''
+          }`}
+        >
+          ☰ Page {page.pageNumber}
+        </div>
+
+        {/* Thumbnail */}
+        <div className="relative">
+          <img
+            src={page.dataUrl}
+            alt={`Page ${page.pageNumber}`}
+            className="w-full h-auto rounded"
+            style={{
+              transform: `rotate(${page.rotation}deg)`,
+              transition: 'transform 0.3s ease',
+            }}
+          />
+
+          {page.isDeleted && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded">
+              <span className="text-white text-sm font-bold">DELETED</span>
+            </div>
+          )}
+        </div>
+
+        {/* Action buttons */}
+        <div className="flex gap-1 mt-2">
+          {!page.isDeleted ? (
+            <>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => onRotate(page.id)}
+                className="flex-1 text-xs"
+                title="Rotate 90°"
+              >
+                <RotateCw className="w-3 h-3" />
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => onDelete(page.id)}
+                className="flex-1 text-xs text-error-600 hover:text-error-700"
+                title="Delete page"
+              >
+                <Trash2 className="w-3 h-3" />
+              </Button>
+            </>
+          ) : (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => onRestore(page.id)}
+              className="flex-1 text-xs text-success-600 hover:text-success-700"
+              title="Restore page"
+            >
+              Restore
+            </Button>
+          )}
+        </div>
+      </Card>
+    </div>
+  );
+};
+
+export const PageEditorPDF: React.FC = () => {
+  const { t } = useI18n();
+  const { sharedFile, clearSharedFile } = useSharedFile();
+  const [file, setFile] = useState<UploadedFile | null>(null);
+  const [pages, setPages] = useState<PageItem[]>([]);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [progressMessage, setProgressMessage] = useState('');
+  const [loadedFromShared, setLoadedFromShared] = useState(false);
+
+  // Generate thumbnails
+  const {
+    thumbnails,
+    isLoading: thumbnailsLoading,
+    error: thumbnailsError,
+    pageCount,
+  } = usePDFThumbnails({
+    file: file?.file,
+    thumbnailWidth: 150,
+    thumbnailHeight: 200,
+    onProgress: (current, total) => {
+      setProgressMessage(`Generating thumbnails... ${current}/${total}`);
+    },
+  });
+
+  // Convert thumbnails to PageItems
+  useEffect(() => {
+    if (thumbnails.length > 0) {
+      const pageItems: PageItem[] = thumbnails.map((thumb) => ({
+        ...thumb,
+        id: `page-${thumb.pageNumber}`,
+        rotation: 0,
+        isDeleted: false,
+      }));
+      setPages(pageItems);
+    }
+  }, [thumbnails]);
+
+  // Auto-load file from shared state
+  useEffect(() => {
+    if (sharedFile && !file) {
+      const sharedFileObj = new File([sharedFile.blob], sharedFile.name, {
+        type: 'application/pdf',
+      });
+
+      const uploadedFile: UploadedFile = {
+        id: `${Date.now()}`,
+        file: sharedFileObj,
+        name: sharedFile.name,
+        size: sharedFileObj.size,
+        status: 'pending',
+      };
+
+      setFile(uploadedFile);
+      setLoadedFromShared(true);
+
+      pdfService.getPDFInfo(sharedFileObj).then((info) => {
+        setFile((prev) => (prev ? { ...prev, info, status: 'completed' } : null));
+      });
+
+      clearSharedFile();
+    }
+  }, [sharedFile, file, clearSharedFile]);
+
+  // Drag and drop sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  // Handle drag end
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      setPages((items) => {
+        const oldIndex = items.findIndex((item) => item.id === active.id);
+        const newIndex = items.findIndex((item) => item.id === over.id);
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
+  };
+
+  // Handle file upload
+  const handleFileUpload = async (files: File[]) => {
+    if (files.length === 0) return;
+
+    const pdfFile = files[0];
+    const uploadedFile: UploadedFile = {
+      id: `${Date.now()}`,
+      file: pdfFile,
+      name: pdfFile.name,
+      size: pdfFile.size,
+      status: 'pending',
+    };
+
+    setFile(uploadedFile);
+
+    try {
+      const info = await pdfService.getPDFInfo(pdfFile);
+      setFile((prev) => (prev ? { ...prev, info, status: 'completed' } : null));
+    } catch (error) {
+      setFile((prev) =>
+        prev ? { ...prev, status: 'error', error: 'Failed to read PDF' } : null
+      );
+      toast.error('Failed to read PDF file');
+    }
+  };
+
+  // Rotate page
+  const handleRotate = (id: string) => {
+    setPages((items) =>
+      items.map((item) =>
+        item.id === id
+          ? { ...item, rotation: (item.rotation + 90) % 360 }
+          : item
+      )
+    );
+  };
+
+  // Delete page
+  const handleDelete = (id: string) => {
+    setPages((items) =>
+      items.map((item) =>
+        item.id === id ? { ...item, isDeleted: true } : item
+      )
+    );
+  };
+
+  // Restore page
+  const handleRestore = (id: string) => {
+    setPages((items) =>
+      items.map((item) =>
+        item.id === id ? { ...item, isDeleted: false } : item
+      )
+    );
+  };
+
+  // Process and download
+  const handleProcess = async () => {
+    if (!file?.file) return;
+
+    // Filter out deleted pages
+    const activePages = pages.filter((p) => !p.isDeleted);
+
+    if (activePages.length === 0) {
+      toast.error('Cannot create PDF with no pages');
+      return;
+    }
+
+    setIsProcessing(true);
+    setProgress(0);
+
+    try {
+      // Prepare page operations
+      const pageOperations = activePages.map((page, index) => ({
+        originalPageNumber: page.pageNumber,
+        newPosition: index + 1,
+        rotation: page.rotation,
+      }));
+
+      // Call PDFService to organize pages
+      const result = await pdfService.organizePDF(
+        file.file,
+        pageOperations,
+        (prog, msg) => {
+          setProgress(prog);
+          setProgressMessage(msg);
+        }
+      );
+
+      if (result.success && result.data) {
+        // Download result
+        const url = URL.createObjectURL(result.data);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = file.name.replace('.pdf', '_organized.pdf');
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        toast.success('PDF organized successfully!');
+      } else {
+        toast.error(result.error?.message || 'Failed to organize PDF');
+      }
+    } catch (error) {
+      console.error('Error organizing PDF:', error);
+      toast.error('An error occurred while organizing the PDF');
+    } finally {
+      setIsProcessing(false);
+      setProgress(0);
+      setProgressMessage('');
+    }
+  };
+
+  // Reset
+  const handleReset = () => {
+    setFile(null);
+    setPages([]);
+    setProgress(0);
+    setProgressMessage('');
+    setLoadedFromShared(false);
+  };
+
+  const hasChanges =
+    pages.some((p) => p.rotation !== 0 || p.isDeleted) ||
+    pages.map((p) => p.pageNumber).join(',') !==
+      thumbnails.map((t) => t.pageNumber).join(',');
+
+  return (
+    <div className="max-w-7xl mx-auto">
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold mb-3 text-gray-900 dark:text-white">
+          {t('tools.organize-pdf.name') || 'Organize PDF Pages'}
+        </h1>
+        <p className="text-lg text-gray-600 dark:text-gray-300">
+          {t('tools.organize-pdf.description') ||
+            'Reorder, rotate, and delete pages in your PDF'}
+        </p>
+      </div>
+
+      {/* File Upload */}
+      {!file && (
+        <Card className="p-8">
+          <FileUpload
+            onFilesSelected={handleFileUpload}
+            accept=".pdf"
+            maxFiles={1}
+            label={t('common.selectFile') || 'Select PDF file'}
+          />
+        </Card>
+      )}
+
+      {/* Loading thumbnails */}
+      {file && thumbnailsLoading && (
+        <Card className="p-8">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-ocean-500 mx-auto mb-4"></div>
+            <p className="text-gray-600 dark:text-gray-300">
+              {progressMessage || 'Generating thumbnails...'}
+            </p>
+          </div>
+        </Card>
+      )}
+
+      {/* Error */}
+      {thumbnailsError && (
+        <Card className="p-8 bg-error-50 dark:bg-error-900/20">
+          <p className="text-error-600 dark:text-error-400">{thumbnailsError}</p>
+        </Card>
+      )}
+
+      {/* Page Editor */}
+      {file && pages.length > 0 && !thumbnailsLoading && (
+        <>
+          {/* Info */}
+          <Card className="p-4 mb-4">
+            <div className="flex items-center justify-between flex-wrap gap-4">
+              <div className="text-sm text-gray-600 dark:text-gray-300">
+                <span className="font-medium">{file.name}</span>
+                <span className="mx-2">•</span>
+                <span>{pageCount} pages</span>
+                <span className="mx-2">•</span>
+                <span>
+                  {pages.filter((p) => !p.isDeleted).length} pages after edits
+                </span>
+              </div>
+              <Button variant="outline" onClick={handleReset}>
+                Upload New File
+              </Button>
+            </div>
+          </Card>
+
+          {/* Instructions */}
+          <Card className="p-4 mb-4 bg-ocean-50 dark:bg-ocean-900/20">
+            <p className="text-sm text-ocean-700 dark:text-ocean-300">
+              <strong>Drag & drop</strong> to reorder pages •{' '}
+              <strong>Click rotate</strong> to rotate 90° •{' '}
+              <strong>Click delete</strong> to remove pages
+            </p>
+          </Card>
+
+          {/* Pages Grid */}
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext
+              items={pages.map((p) => p.id)}
+              strategy={verticalListSortingStrategy}
+            >
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-6">
+                {pages.map((page) => (
+                  <SortablePage
+                    key={page.id}
+                    page={page}
+                    onRotate={handleRotate}
+                    onDelete={handleDelete}
+                    onRestore={handleRestore}
+                  />
+                ))}
+              </div>
+            </SortableContext>
+          </DndContext>
+
+          {/* Process Button */}
+          {isProcessing && (
+            <ProgressBar progress={progress} message={progressMessage} />
+          )}
+
+          <div className="flex gap-4">
+            <Button
+              onClick={handleProcess}
+              disabled={isProcessing || !hasChanges}
+              size="lg"
+              className="flex-1"
+            >
+              <Download className="w-5 h-5 mr-2" />
+              {isProcessing
+                ? 'Processing...'
+                : hasChanges
+                ? 'Download Organized PDF'
+                : 'No Changes Made'}
+            </Button>
+          </div>
+        </>
+      )}
+    </div>
+  );
+};

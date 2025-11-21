@@ -22,6 +22,7 @@ export type Tool =
   | 'rotate-pdf'
   | 'delete-pages-pdf'
   | 'extract-pages-pdf'
+  | 'organize-pdf'
   | 'images-to-pdf'
   | 'pdf-to-images'
   | 'pdf-to-word'
@@ -91,6 +92,8 @@ export const TOOL_HASH_MAP: Record<string, Tool> = {
   'rotate': 'rotate-pdf',
   'delete-pages': 'delete-pages-pdf',
   'extract-pages': 'extract-pages-pdf',
+  'pages': 'organize-pdf',
+  'organize': 'organize-pdf',
   'images-to-pdf': 'images-to-pdf',
   'pdf-to-images': 'pdf-to-images',
   'pdf-to-word': 'pdf-to-word',
@@ -119,6 +122,7 @@ export const TOOL_TIERS: Record<Tool, ToolTier> = {
   'compress-pdf': 1,
   'protect-pdf': 1,
   'ocr-pdf': 1,
+  'organize-pdf': 1,
   'add-text-pdf': 2,
   'edit-text-pdf': 2,
   'add-form-fields-pdf': 2,

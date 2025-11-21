@@ -36,6 +36,10 @@
       "name": "OCR PDF",
       "description": "Extraire le texte des PDF numérisés"
     },
+    "organize-pdf": {
+      "name": "Organiser les pages",
+      "description": "Réorganiser, faire pivoter et supprimer les pages PDF"
+    },
     "watermark-pdf": {
       "name": "Filigrane PDF",
       "description": "Ajouter un filigrane au PDF"

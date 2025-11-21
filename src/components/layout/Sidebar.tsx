@@ -16,6 +16,7 @@ const TOOL_NAMES: Record<Tool, string> = {
   'compress-pdf': 'Compress PDF',
   'protect-pdf': 'Protect PDF',
   'ocr-pdf': 'OCR PDF',
+  'organize-pdf': 'Organize Pages',
   'watermark-pdf': 'Watermark PDF',
   'add-text-pdf': 'Add Text to PDF',
   'edit-text-pdf': 'Edit Text in PDF',
@@ -40,6 +41,7 @@ const TOOLS: Array<{ id: Tool; icon: string; tier: number }> = [
   { id: 'compress-pdf', icon: '🗜️', tier: 1 },
   { id: 'protect-pdf', icon: '🔒', tier: 1 },
   { id: 'ocr-pdf', icon: '🔍', tier: 1 },
+  { id: 'organize-pdf', icon: '📋', tier: 1 },
 
   // Tier 2: Edit tools
   { id: 'watermark-pdf', icon: '💧', tier: 2 },

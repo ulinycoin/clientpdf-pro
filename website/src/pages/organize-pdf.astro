@@ -1,0 +1,123 @@
+---
+import ToolPage from '../components/ToolPage.astro';
+
+const keywords = "organize pdf pages, reorder pdf pages, rotate pdf pages, delete pdf pages, rearrange pdf, pdf page organizer, pdf editor, free pdf organizer";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to Organize PDF Pages with LocalPDF",
+  "description": "A step-by-step guide to reordering, rotating, and deleting PDF pages using the free and private LocalPDF organize tool.",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Open the Tool",
+      "text": "Click the 'Open Tool' button to launch the PDF page organizer interface.",
+      "url": "https://localpdf.online/organize-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Upload PDF",
+      "text": "Select your PDF file by clicking 'Select File' or dragging and dropping it into the tool. Thumbnails of all pages will be generated.",
+      "image": "https://localpdf.online/screenshots/organize-upload.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Reorder Pages",
+      "text": "Drag and drop page thumbnails to rearrange them in your desired order. You can also rotate pages 90° or delete unwanted pages.",
+      "image": "https://localpdf.online/screenshots/organize-edit.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Download Organized PDF",
+      "text": "Click 'Download Organized PDF' to save your reorganized document. All changes are processed instantly in your browser.",
+      "image": "https://localpdf.online/screenshots/organize-download.png"
+    }
+  ],
+  "totalTime": "PT2M"
+};
+
+const faqs = [
+  {
+    question: "Can I reorder pages in a password-protected PDF?",
+    answer: "Yes! You'll need to provide the user password first. The reorganized output won't be password-protected unless you use our <a href='/protect-pdf'>Protect PDF tool</a> afterward."
+  },
+  {
+    question: "What page operations can I perform?",
+    answer: "You can <strong>reorder pages</strong> by drag-and-drop, <strong>rotate pages</strong> in 90° increments, and <strong>delete unwanted pages</strong>. All operations are instant and work together."
+  },
+  {
+    question: "Does organizing affect PDF quality?",
+    answer: "No quality loss! Organizing is a <strong>lossless operation</strong> - all content, images, fonts, and formatting are preserved exactly. No compression occurs."
+  },
+  {
+    question: "Can I undo changes before downloading?",
+    answer: "Yes! You can reorder pages multiple times, rotate them back, or restore deleted pages before downloading. Nothing is final until you click 'Download Organized PDF'."
+  },
+  {
+    question: "Will bookmarks and links be preserved?",
+    answer: "Internal links and bookmarks are preserved. However, bookmark page references may not update automatically when pages are reordered - you might need to manually update them afterward."
+  },
+  {
+    question: "How many pages can I organize?",
+    answer: "No limit! You can organize PDFs with hundreds of pages. The only constraint is your device's available memory. Most modern devices handle large documents easily."
+  },
+  {
+    question: "Are my files uploaded to a server?",
+    answer: "<strong>Never!</strong> All page organization happens 100% locally in your browser using JavaScript. Your PDFs never leave your device - that's our core privacy guarantee."
+  },
+  {
+    question: "Can I organize PDFs on mobile devices?",
+    answer: "Yes! Our tool works on iOS (Safari), Android (Chrome), and all modern mobile browsers. The drag-and-drop interface is optimized for touchscreens."
+  }
+];
+---
+
+<ToolPage
+  toolId="organize-pdf"
+  title="Organize PDF Pages Online — Free & Private"
+  metaDescription="Reorder, rotate, and delete PDF pages instantly. 100% private, client-side processing. No uploads, no registration, no limits. Organize PDFs in seconds."
+  keywords={keywords}
+  description="Powerful PDF page organizer that lets you reorder, rotate, and delete pages with drag-and-drop ease. 100% private — your files never leave your device."
+  benefits={[
+    "✓ Drag-and-drop page reordering",
+    "✓ Rotate pages in 90° increments",
+    "✓ Delete unwanted pages instantly",
+    "✓ Visual page thumbnails for easy editing",
+    "✓ 100% private - all processing in your browser",
+    "✓ No file size or page count limits",
+    "✓ No uploads or registration required",
+    "✓ Works on desktop and mobile devices"
+  ]}
+  steps={[
+    "Upload your PDF file to generate page thumbnails",
+    "Drag and drop pages to reorder them",
+    "Click rotate button to turn pages 90 degrees",
+    "Click delete to remove unwanted pages",
+    "Download your organized PDF instantly"
+  ]}
+  howToSchema={howToSchema}
+  faqs={faqs}
+  relatedTools={[
+    {
+      id: 'split-pdf',
+      name: 'Split PDF',
+      description: 'Extract specific pages into separate PDFs'
+    },
+    {
+      id: 'merge-pdf',
+      name: 'Merge PDF',
+      description: 'Combine multiple PDFs into one document'
+    },
+    {
+      id: 'rotate-pdf',
+      name: 'Rotate PDF',
+      description: 'Rotate all pages in a PDF at once'
+    },
+    {
+      id: 'delete-pages-pdf',
+      name: 'Delete Pages',
+      description: 'Remove specific pages from PDFs'
+    }
+  ]}
+/>

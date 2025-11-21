@@ -36,6 +36,10 @@
       "name": "OCR PDF",
       "description": "Извлечь текст из отсканированных PDF"
     },
+    "organize-pdf": {
+      "name": "Организовать страницы",
+      "description": "Переупорядочить, повернуть и удалить страницы PDF"
+    },
     "watermark-pdf": {
       "name": "Водяной знак",
       "description": "Добавить водяной знак на PDF"

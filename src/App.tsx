@@ -27,6 +27,7 @@ const PDFToWord = lazy(() => import('@/components/tools/PDFToWord').then(m => ({
 const SignPDF = lazy(() => import('@/components/tools/SignPDF').then(m => ({ default: m.SignPDF })));
 const FlattenPDF = lazy(() => import('@/components/tools/FlattenPDF').then(m => ({ default: m.FlattenPDF })));
 const ExtractImagesPDF = lazy(() => import('@/components/tools/ExtractImagesPDF').then(m => ({ default: m.ExtractImagesPDF })));
+const PageEditorPDF = lazy(() => import('@/components/tools/PageEditorPDF').then(m => ({ default: m.PageEditorPDF })));
 
 // Loading component for lazy loaded tools
 const ToolLoading = () => (
@@ -193,6 +194,8 @@ function App() {
                 <FlattenPDF />
               ) : currentTool === 'extract-images-pdf' ? (
                 <ExtractImagesPDF />
+              ) : currentTool === 'organize-pdf' ? (
+                <PageEditorPDF />
               ) : (
                 <div className="card p-8">
                   <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">
