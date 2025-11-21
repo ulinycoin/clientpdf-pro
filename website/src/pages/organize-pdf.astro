@@ -11,26 +11,26 @@ const howToSchema = {
   "step": [
     {
       "@type": "HowToStep",
-      "name": "Open the Tool",
-      "text": "Click the 'Open Tool' button to launch the PDF page organizer interface.",
+      "name": "Open the Tool and Upload PDF",
+      "text": "Click 'Open Tool' and upload the PDF document you want to organize.",
       "url": "https://localpdf.online/organize-pdf#tool"
     },
     {
       "@type": "HowToStep",
-      "name": "Upload PDF",
-      "text": "Select your PDF file by clicking 'Select File' or dragging and dropping it into the tool. Thumbnails of all pages will be generated.",
-      "image": "https://localpdf.online/screenshots/organize-upload.png"
+      "name": "View Page Thumbnails",
+      "text": "The tool generates thumbnails of all pages, making it easy to see what you're working with.",
+      "image": "https://localpdf.online/screenshots/organize-thumbnails.png"
     },
     {
       "@type": "HowToStep",
-      "name": "Reorder Pages",
-      "text": "Drag and drop page thumbnails to rearrange them in your desired order. You can also rotate pages 90° or delete unwanted pages.",
+      "name": "Drag, Rotate, or Delete",
+      "text": "Drag pages to reorder, click rotate to turn pages 90°, or click delete to remove unwanted pages.",
       "image": "https://localpdf.online/screenshots/organize-edit.png"
     },
     {
       "@type": "HowToStep",
       "name": "Download Organized PDF",
-      "text": "Click 'Download Organized PDF' to save your reorganized document. All changes are processed instantly in your browser.",
+      "text": "Click 'Download Organized PDF' to save your reorganized document instantly.",
       "image": "https://localpdf.online/screenshots/organize-download.png"
     }
   ],
@@ -75,53 +75,44 @@ const faqs = [
 
 <ToolPage
   toolId="organize-pdf"
-  title="Organize PDF Pages Online — Free & Private"
-  metaDescription="Reorder, rotate, and delete PDF pages instantly. 100% private, client-side processing. No uploads, no registration, no limits. Organize PDFs in seconds."
+  title="Organize PDF Pages Online — Free & Secure"
+  metaDescription="Organize PDF pages with drag-and-drop. Reorder, rotate, and delete pages instantly. 100% private client-side processing. No uploads, no limits."
   keywords={keywords}
-  description="Powerful PDF page organizer that lets you reorder, rotate, and delete pages with drag-and-drop ease. 100% private — your files never leave your device."
+  description="Reorganize, rotate, and delete PDF pages with intuitive drag-and-drop controls. All processing happens securely in your browser — your files never leave your device."
   benefits={[
-    "✓ Drag-and-drop page reordering",
-    "✓ Rotate pages in 90° increments",
-    "✓ Delete unwanted pages instantly",
-    "✓ Visual page thumbnails for easy editing",
-    "✓ 100% private - all processing in your browser",
-    "✓ No file size or page count limits",
-    "✓ No uploads or registration required",
-    "✓ Works on desktop and mobile devices"
+    "⚡ Instant — Organize pages in seconds",
+    "🔒 Private — No uploads to servers",
+    "🆓 Free — Unlimited use during beta"
+  ]}
+  whyChoose={{
+    title: "Why Choose Our PDF Page Organizer?",
+    reasons: [
+      "Complete Privacy: Your PDF never leaves your device. Unlike cloud-based organizers that upload documents to remote servers, LocalPDF processes everything locally for maximum security.",
+      "Intuitive Drag-and-Drop: Reorder pages by simply dragging thumbnails. No complex interfaces or confusing options — just grab and move.",
+      "Visual Page Thumbnails: See exactly what each page contains before making changes. No guessing which page is which.",
+      "Combine Multiple Operations: Reorder, rotate, and delete pages all in one session. Make all your changes before downloading the final result.",
+      "No File Size Restrictions: Organize PDFs with hundreds of pages without hitting upload limits. Your browser's memory is the only constraint.",
+      "Instant Preview: See changes in real-time as you drag, rotate, or delete. What you see is what you get."
+    ]
+  }}
+  features={[
+    "Drag-and-drop page reordering",
+    "Rotate pages in 90° increments (0°, 90°, 180°, 270°)",
+    "Delete unwanted pages",
+    "Restore deleted pages before downloading",
+    "Visual page thumbnails for easy navigation",
+    "Process multiple operations in one session"
   ]}
   steps={[
-    "Upload your PDF file to generate page thumbnails",
-    "Drag and drop pages to reorder them",
-    "Click rotate button to turn pages 90 degrees",
-    "Click delete to remove unwanted pages",
-    "Download your organized PDF instantly"
+    'Click "Open Tool" button above',
+    "Upload the PDF file you want to organize",
+    "Drag pages to reorder them in your desired sequence",
+    "Rotate or delete pages as needed",
+    'Click "Download Organized PDF" to save'
   ]}
-  howToSchema={howToSchema}
   faqs={faqs}
-  relatedTools={[
-    {
-      id: 'split-pdf',
-      icon: '✂️',
-      title: 'Split PDF',
-      description: 'Extract specific pages into separate PDFs'
-    },
-    {
-      id: 'merge-pdf',
-      icon: '📑',
-      title: 'Merge PDF',
-      description: 'Combine multiple PDFs into one document'
-    },
-    {
-      id: 'rotate-pdf',
-      icon: '🔄',
-      title: 'Rotate PDF',
-      description: 'Rotate all pages in a PDF at once'
-    },
-    {
-      id: 'delete-pages-pdf',
-      icon: '🗑️',
-      title: 'Delete Pages',
-      description: 'Remove specific pages from PDFs'
-    }
-  ]}
-/>
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>
