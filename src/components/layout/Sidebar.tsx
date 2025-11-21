@@ -36,12 +36,12 @@ const TOOL_NAMES: Record<Tool, string> = {
 // Tool definitions with icons
 const TOOLS: Array<{ id: Tool; icon: string; tier: number }> = [
   // Tier 1: Core tools
+  { id: 'organize-pdf', icon: '📋', tier: 1 },
   { id: 'merge-pdf', icon: '📑', tier: 1 },
   { id: 'split-pdf', icon: '✂️', tier: 1 },
   { id: 'compress-pdf', icon: '🗜️', tier: 1 },
   { id: 'protect-pdf', icon: '🔒', tier: 1 },
   { id: 'ocr-pdf', icon: '🔍', tier: 1 },
-  { id: 'organize-pdf', icon: '📋', tier: 1 },
 
   // Tier 2: Edit tools
   { id: 'watermark-pdf', icon: '💧', tier: 2 },
