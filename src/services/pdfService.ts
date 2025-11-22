@@ -6,7 +6,7 @@ import * as pdfjsLib from 'pdfjs-dist';
 import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import { Buffer } from 'buffer';
 import mammoth from 'mammoth';
-import { Document, Packer, Paragraph, TextRun, ImageRun } from 'docx';
+import { Document, Packer, Paragraph, TextRun, ImageRun, AlignmentType } from 'docx';
 import type {
   PDFProcessingResult,
   MergeOptions,
@@ -2095,10 +2095,11 @@ export class PDFService {
   async pdfToWord(
     file: File,
     onProgress?: ProgressCallback,
-    options?: { includeImages?: boolean; smartHeadings?: boolean }
+    options?: { includeImages?: boolean; smartHeadings?: boolean; extractImages?: boolean }
   ): Promise<PDFProcessingResult> {
     const includeImages = options?.includeImages ?? true;
     const smartHeadings = options?.smartHeadings ?? true;
+    const extractImages = options?.extractImages ?? true; // Extract embedded images when in text mode
 
     try {
       onProgress?.(5, 'Reading PDF file...');
@@ -2108,6 +2109,80 @@ export class PDFService {
       const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
       const pdfDoc = await loadingTask.promise;
       const numPages = pdfDoc.numPages;
+
+      onProgress?.(10, 'Analyzing document structure...');
+
+      // === SMART HEADING DETECTION: Pre-analyze all pages ===
+      // Collect font size statistics across the entire document
+      interface FontSizeStats {
+        size: number;
+        count: number;
+        totalChars: number;
+      }
+      const fontSizeMap = new Map<number, FontSizeStats>();
+      let totalTextItems = 0;
+      let documentAvgFontSize = 12;
+
+      if (smartHeadings && !includeImages) {
+        for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+          const page = await pdfDoc.getPage(pageNum);
+          const textContent = await page.getTextContent();
+          const items = textContent.items as any[];
+
+          for (const item of items) {
+            if (item.height && item.str?.trim()) {
+              // Round to nearest 0.5 to group similar sizes
+              const roundedSize = Math.round(item.height * 2) / 2;
+              const existing = fontSizeMap.get(roundedSize);
+              if (existing) {
+                existing.count++;
+                existing.totalChars += item.str.length;
+              } else {
+                fontSizeMap.set(roundedSize, {
+                  size: roundedSize,
+                  count: 1,
+                  totalChars: item.str.length
+                });
+              }
+              totalTextItems++;
+            }
+          }
+        }
+
+        // Determine body text size (most common size by character count)
+        let maxChars = 0;
+        let bodyTextSize = 12;
+        for (const [size, stats] of fontSizeMap) {
+          if (stats.totalChars > maxChars) {
+            maxChars = stats.totalChars;
+            bodyTextSize = size;
+          }
+        }
+        documentAvgFontSize = bodyTextSize;
+
+        // Identify heading sizes: larger than body text and relatively rare
+        // Sort sizes descending
+        const sortedSizes = Array.from(fontSizeMap.values())
+          .filter(s => s.size > bodyTextSize)
+          .sort((a, b) => b.size - a.size);
+
+        // Assign heading levels to the top 3 largest sizes that are rare (< 10% of items)
+        const headingSizes: Map<number, 'Heading1' | 'Heading2' | 'Heading3'> = new Map();
+        let headingLevel = 1;
+        for (const sizeStats of sortedSizes) {
+          if (headingLevel > 3) break;
+          // Heading should be rare: less than 10% of text items
+          const frequency = sizeStats.count / totalTextItems;
+          if (frequency < 0.1) {
+            headingSizes.set(sizeStats.size, `Heading${headingLevel}` as 'Heading1' | 'Heading2' | 'Heading3');
+            headingLevel++;
+          }
+        }
+
+        // Store for use in page processing
+        (this as any)._headingSizes = headingSizes;
+        (this as any)._bodyTextSize = bodyTextSize;
+      }
 
       onProgress?.(15, 'Extracting content from PDF...');
 
@@ -2179,122 +2254,653 @@ export class PDFService {
             console.warn('Image rendering error on page', pageNum, pageImgError);
           }
         } else {
-          // Mode: Extract text only
+          // Mode: Extract text with optional embedded images
           const textContent = await page.getTextContent();
+          const viewport = page.getViewport({ scale: 1.0 });
+          const pageWidth = viewport.width;
+          const pageHeight = viewport.height;
           const items = textContent.items as any[];
 
-          // Find font size statistics for smart headings
-          let avgFontSize = 12;
-          if (smartHeadings && items.length > 0) {
-            let fontSizeSum = 0;
-            let fontSizeCount = 0;
-            for (const item of items) {
-              if (item.height && item.str?.trim()) {
-                fontSizeSum += item.height;
-                fontSizeCount++;
+          // Use pre-analyzed heading sizes from document analysis
+          const headingSizes = (this as any)._headingSizes as Map<number, 'Heading1' | 'Heading2' | 'Heading3'> | undefined;
+          const bodyTextSize = (this as any)._bodyTextSize as number | undefined;
+          const avgFontSize = bodyTextSize || 12;
+
+          // === EXTRACT EMBEDDED IMAGES ===
+          interface ExtractedImage {
+            data: Uint8Array;
+            x: number;
+            y: number;
+            width: number;
+            height: number;
+            yNormalized: number; // Y position from top (0-1)
+          }
+          const pageImages: ExtractedImage[] = [];
+
+          if (extractImages) {
+            try {
+              const operatorList = await page.getOperatorList();
+              const objs = page.objs as any;
+
+              // Track current transformation matrix
+              let currentMatrix = [1, 0, 0, 1, 0, 0];
+              const matrixStack: number[][] = [];
+
+              for (let i = 0; i < operatorList.fnArray.length; i++) {
+                const fn = operatorList.fnArray[i];
+                const args = operatorList.argsArray[i];
+
+                // Track transformation matrix changes
+                if (fn === 10) { // OPS.save
+                  matrixStack.push([...currentMatrix]);
+                } else if (fn === 11) { // OPS.restore
+                  if (matrixStack.length > 0) {
+                    currentMatrix = matrixStack.pop()!;
+                  }
+                } else if (fn === 12) { // OPS.transform
+                  if (args && args.length >= 6) {
+                    // Multiply matrices
+                    const [a, b, c, d, e, f] = args;
+                    const [a2, b2, c2, d2, e2, f2] = currentMatrix;
+                    currentMatrix = [
+                      a * a2 + b * c2,
+                      a * b2 + b * d2,
+                      c * a2 + d * c2,
+                      c * b2 + d * d2,
+                      e * a2 + f * c2 + e2,
+                      e * b2 + f * d2 + f2
+                    ];
+                  }
+                }
+
+                // OPS.paintImageXObject = 85, OPS.paintJpegXObject = 82, OPS.paintInlineImageXObject = 84
+                if (fn === 85 || fn === 82 || fn === 84) {
+                  try {
+                    let imgData: any = null;
+
+                    if (fn === 84) {
+                      // Inline image - data is directly in args
+                      imgData = args[0];
+                    } else {
+                      // XObject image - need to fetch from objs
+                      const imgName = args[0];
+
+                      // Try different methods to get image data
+                      if (objs._objs && objs._objs.has(imgName)) {
+                        imgData = objs._objs.get(imgName).data;
+                      } else if (typeof objs.get === 'function') {
+                        imgData = await new Promise<any>((resolve) => {
+                          const timeout = setTimeout(() => resolve(null), 1000);
+                          try {
+                            objs.get(imgName, (data: any) => {
+                              clearTimeout(timeout);
+                              resolve(data);
+                            });
+                          } catch {
+                            clearTimeout(timeout);
+                            resolve(null);
+                          }
+                        });
+                      }
+                    }
+
+                    if (imgData && imgData.width && imgData.height) {
+                      // Get position and size from current transformation matrix
+                      const imgWidth = Math.abs(currentMatrix[0]) || imgData.width;
+                      const imgHeight = Math.abs(currentMatrix[3]) || imgData.height;
+                      const imgX = currentMatrix[4] || 0;
+                      const imgY = currentMatrix[5] || 0;
+
+                      // Skip very small images (likely decorative)
+                      if (imgWidth < 20 || imgHeight < 20) continue;
+
+                      // Convert image data to PNG
+                      const canvas = document.createElement('canvas');
+                      canvas.width = imgData.width;
+                      canvas.height = imgData.height;
+                      const ctx = canvas.getContext('2d');
+
+                      if (ctx && imgData.data) {
+                        const canvasImageData = ctx.createImageData(imgData.width, imgData.height);
+                        const srcData = imgData.data;
+                        const dstData = canvasImageData.data;
+                        const pixelCount = imgData.width * imgData.height;
+
+                        // Determine format based on data length
+                        const bytesPerPixel = srcData.length / pixelCount;
+
+                        if (bytesPerPixel >= 4) {
+                          // RGBA format
+                          for (let p = 0; p < pixelCount; p++) {
+                            dstData[p * 4] = srcData[p * 4];
+                            dstData[p * 4 + 1] = srcData[p * 4 + 1];
+                            dstData[p * 4 + 2] = srcData[p * 4 + 2];
+                            dstData[p * 4 + 3] = srcData[p * 4 + 3];
+                          }
+                        } else if (bytesPerPixel >= 3) {
+                          // RGB format
+                          for (let p = 0; p < pixelCount; p++) {
+                            dstData[p * 4] = srcData[p * 3];
+                            dstData[p * 4 + 1] = srcData[p * 3 + 1];
+                            dstData[p * 4 + 2] = srcData[p * 3 + 2];
+                            dstData[p * 4 + 3] = 255;
+                          }
+                        } else if (bytesPerPixel >= 1) {
+                          // Grayscale format
+                          for (let p = 0; p < pixelCount; p++) {
+                            const gray = srcData[p];
+                            dstData[p * 4] = gray;
+                            dstData[p * 4 + 1] = gray;
+                            dstData[p * 4 + 2] = gray;
+                            dstData[p * 4 + 3] = 255;
+                          }
+                        } else {
+                          continue; // Unknown format
+                        }
+
+                        ctx.putImageData(canvasImageData, 0, 0);
+
+                        const pngBlob = await new Promise<Blob | null>((resolve) => {
+                          canvas.toBlob((blob) => resolve(blob), 'image/png', 0.9);
+                        });
+
+                        if (pngBlob && pngBlob.size > 500) { // Skip very small images
+                          const buffer = await pngBlob.arrayBuffer();
+
+                          // Calculate Y position from top (normalized 0-1)
+                          const yFromTop = 1 - (imgY / pageHeight);
+
+                          pageImages.push({
+                            data: new Uint8Array(buffer),
+                            x: imgX,
+                            y: imgY,
+                            width: imgWidth,
+                            height: imgHeight,
+                            yNormalized: Math.max(0, Math.min(1, yFromTop))
+                          });
+                        }
+                      }
+                    }
+                  } catch (imgError) {
+                    // Skip this image if extraction fails
+                    console.warn('Failed to extract image:', imgError);
+                  }
+                }
               }
+            } catch (opError) {
+              console.warn('Failed to get operator list for images:', opError);
             }
-            avgFontSize = fontSizeCount > 0 ? fontSizeSum / fontSizeCount : 12;
           }
 
-          // Group text items by line (same Y position)
-          const lines: Array<{ text: string; fontSize: number; y: number }> = [];
-          let currentLine = '';
-          let currentFontSize = 0;
-          let lastY = -1;
-          let lastX = -1;
+          // === COLUMN DETECTION ===
+          // Detect columns by finding vertical gaps in text distribution
+          const detectColumns = (textItems: any[], pageWidth: number): number[] => {
+            if (textItems.length < 10) return []; // Not enough items to detect columns
 
-          for (let i = 0; i < items.length; i++) {
-            const item = items[i];
-            if (!item.str) continue;
+            // Collect all X positions with their widths
+            const xRanges: Array<{ start: number; end: number }> = [];
+            for (const item of textItems) {
+              if (!item.str?.trim() || !item.transform) continue;
+              const x = item.transform[4];
+              const width = item.width || (item.str.length * (item.height || 12) * 0.5);
+              xRanges.push({ start: x, end: x + width });
+            }
 
-            const itemY = item.transform ? item.transform[5] : 0;
-            const itemX = item.transform ? item.transform[4] : 0;
-            const itemHeight = item.height || 12;
+            if (xRanges.length < 10) return [];
 
-            // Check if this is a new line (Y position changed)
-            const isNewLine = lastY !== -1 && Math.abs(itemY - lastY) > 2;
+            // Create histogram of X coverage (buckets of 10px)
+            const bucketSize = 10;
+            const numBuckets = Math.ceil(pageWidth / bucketSize);
+            const histogram = new Array(numBuckets).fill(0);
 
-            if (isNewLine && currentLine.trim()) {
+            for (const range of xRanges) {
+              const startBucket = Math.max(0, Math.floor(range.start / bucketSize));
+              const endBucket = Math.min(numBuckets - 1, Math.floor(range.end / bucketSize));
+              for (let b = startBucket; b <= endBucket; b++) {
+                histogram[b]++;
+              }
+            }
+
+            // Find gaps (consecutive empty or near-empty buckets)
+            const minGapWidth = pageWidth * 0.05; // Minimum 5% of page width
+            const minGapBuckets = Math.ceil(minGapWidth / bucketSize);
+            const threshold = Math.max(2, xRanges.length * 0.02); // Buckets with < 2% of items considered empty
+
+            const gaps: Array<{ start: number; end: number; center: number }> = [];
+            let gapStart = -1;
+
+            // Only look for gaps in the middle 80% of the page (10%-90%)
+            const startBucket = Math.floor(numBuckets * 0.1);
+            const endBucket = Math.floor(numBuckets * 0.9);
+
+            for (let b = startBucket; b <= endBucket; b++) {
+              if (histogram[b] <= threshold) {
+                if (gapStart === -1) gapStart = b;
+              } else {
+                if (gapStart !== -1) {
+                  const gapEnd = b - 1;
+                  const gapWidth = (gapEnd - gapStart + 1) * bucketSize;
+                  if (gapWidth >= minGapWidth) {
+                    gaps.push({
+                      start: gapStart * bucketSize,
+                      end: (gapEnd + 1) * bucketSize,
+                      center: ((gapStart + gapEnd + 1) / 2) * bucketSize
+                    });
+                  }
+                  gapStart = -1;
+                }
+              }
+            }
+
+            // Close any open gap at the end
+            if (gapStart !== -1) {
+              const gapEnd = endBucket;
+              const gapWidth = (gapEnd - gapStart + 1) * bucketSize;
+              if (gapWidth >= minGapWidth) {
+                gaps.push({
+                  start: gapStart * bucketSize,
+                  end: (gapEnd + 1) * bucketSize,
+                  center: ((gapStart + gapEnd + 1) / 2) * bucketSize
+                });
+              }
+            }
+
+            // Return column boundaries (centers of gaps)
+            // Limit to max 3 columns (2 gaps)
+            return gaps.slice(0, 2).map(g => g.center);
+          };
+
+          const columnBoundaries = detectColumns(items, pageWidth);
+
+          // Split items into columns
+          const splitIntoColumns = (textItems: any[], boundaries: number[]): any[][] => {
+            if (boundaries.length === 0) return [textItems];
+
+            const columns: any[][] = [];
+            const sortedBoundaries = [0, ...boundaries, Infinity];
+
+            for (let i = 0; i < sortedBoundaries.length - 1; i++) {
+              const left = sortedBoundaries[i];
+              const right = sortedBoundaries[i + 1];
+              const columnItems = textItems.filter(item => {
+                if (!item.transform) return false;
+                const x = item.transform[4];
+                return x >= left && x < right;
+              });
+              if (columnItems.length > 0) {
+                columns.push(columnItems);
+              }
+            }
+
+            return columns.length > 0 ? columns : [textItems];
+          };
+
+          const columns = splitIntoColumns(items, columnBoundaries);
+
+          // Process each column separately
+          const processColumn = (columnItems: any[]): Array<{ text: string; fontSize: number; y: number; xStart: number; xEnd: number }> => {
+            // Sort items by Y (top to bottom), then by X (left to right)
+            const sortedItems = [...columnItems].sort((a, b) => {
+              const yA = a.transform ? a.transform[5] : 0;
+              const yB = b.transform ? b.transform[5] : 0;
+              const yDiff = yB - yA; // Higher Y = higher on page in PDF coordinates
+              if (Math.abs(yDiff) > 2) return yDiff;
+              const xA = a.transform ? a.transform[4] : 0;
+              const xB = b.transform ? b.transform[4] : 0;
+              return xA - xB;
+            });
+
+            // Group text items by line (same Y position)
+            const lines: Array<{ text: string; fontSize: number; y: number; xStart: number; xEnd: number }> = [];
+            let currentLine = '';
+            let currentFontSize = 0;
+            let lastY = -1;
+            let lastX = -1;
+            let lineXStart = 0;
+            let lineXEnd = 0;
+
+            for (let i = 0; i < sortedItems.length; i++) {
+              const item = sortedItems[i];
+              if (!item.str) continue;
+
+              const itemY = item.transform ? item.transform[5] : 0;
+              const itemX = item.transform ? item.transform[4] : 0;
+              const itemWidth = item.width || (item.str.length * (item.height || 12) * 0.5);
+              const itemHeight = item.height || 12;
+
+              // Check if this is a new line (Y position changed)
+              const isNewLine = lastY !== -1 && Math.abs(itemY - lastY) > 2;
+
+              if (isNewLine && currentLine.trim()) {
+                lines.push({
+                  text: currentLine.trim(),
+                  fontSize: currentFontSize,
+                  y: lastY,
+                  xStart: lineXStart,
+                  xEnd: lineXEnd
+                });
+                currentLine = '';
+                currentFontSize = 0;
+                lastX = -1;
+                lineXStart = itemX;
+                lineXEnd = itemX + itemWidth;
+              }
+
+              // Track line boundaries
+              if (currentLine === '') {
+                lineXStart = itemX;
+              }
+              lineXEnd = itemX + itemWidth;
+
+              // Add space if there's a gap between words on same line
+              if (currentLine && lastX !== -1) {
+                const gap = itemX - lastX;
+                if (gap > itemHeight * 0.3) {
+                  currentLine += ' ';
+                }
+              }
+
+              currentLine += item.str;
+              if (item.height) currentFontSize = Math.max(currentFontSize, item.height);
+              lastY = itemY;
+              lastX = itemX + itemWidth;
+            }
+
+            // Add last line
+            if (currentLine.trim()) {
               lines.push({
                 text: currentLine.trim(),
                 fontSize: currentFontSize,
-                y: lastY
+                y: lastY,
+                xStart: lineXStart,
+                xEnd: lineXEnd
               });
-              currentLine = '';
-              currentFontSize = 0;
-              lastX = -1;
             }
 
-            // Add space if there's a gap between words on same line
-            if (currentLine && lastX !== -1) {
-              const gap = itemX - lastX;
-              if (gap > itemHeight * 0.3) {
-                currentLine += ' ';
-              }
-            }
+            return lines;
+          };
 
-            currentLine += item.str;
-            if (item.height) currentFontSize = Math.max(currentFontSize, item.height);
-            lastY = itemY;
-            lastX = itemX + (item.width || item.str.length * itemHeight * 0.5);
+          // Process all columns and combine lines
+          const allLines: Array<{ text: string; fontSize: number; y: number; columnIndex: number; xStart: number; xEnd: number }> = [];
+          for (let colIndex = 0; colIndex < columns.length; colIndex++) {
+            const columnLines = processColumn(columns[colIndex]);
+            for (const line of columnLines) {
+              allLines.push({ ...line, columnIndex: colIndex });
+            }
           }
 
-          // Add last line
-          if (currentLine.trim()) {
-            lines.push({
-              text: currentLine.trim(),
-              fontSize: currentFontSize,
-              y: lastY
+          // Collect all page elements (paragraphs and images) with Y positions for proper ordering
+          interface PageElement {
+            type: 'paragraph' | 'image';
+            yPosition: number; // Y from top (higher = lower on page in output)
+            paragraph?: Paragraph;
+            image?: ExtractedImage;
+          }
+          const pageElements: PageElement[] = [];
+
+          // Add images to page elements
+          for (const img of pageImages) {
+            pageElements.push({
+              type: 'image',
+              yPosition: img.yNormalized,
+              image: img
             });
           }
 
-          // Now group lines into paragraphs based on vertical spacing
-          let paragraphLines: string[] = [];
-          let paragraphFontSize = 0;
-          let prevLineY = -1;
+          // Group lines into paragraphs, processing columns sequentially
+          // (all paragraphs from column 0, then column 1, etc.)
+          for (let colIndex = 0; colIndex < columns.length; colIndex++) {
+            const columnLines = allLines
+              .filter(l => l.columnIndex === colIndex)
+              .sort((a, b) => b.y - a.y); // Sort by Y descending (top to bottom)
 
-          for (let i = 0; i < lines.length; i++) {
-            const line = lines[i];
-            const nextLine = lines[i + 1];
+            let paragraphLines: string[] = [];
+            let paragraphFontSize = 0;
+            let paragraphXStart = 0;
+            let paragraphXEnd = 0;
+            let paragraphYStart = 0; // Track Y position for ordering
 
-            paragraphLines.push(line.text);
-            paragraphFontSize = Math.max(paragraphFontSize, line.fontSize);
+            for (let i = 0; i < columnLines.length; i++) {
+              const line = columnLines[i];
+              const nextLine = columnLines[i + 1];
 
-            // Check if paragraph ends (large gap to next line, or end of lines)
-            const lineHeight = line.fontSize || 12;
-            const gapToNext = nextLine ? Math.abs(line.y - nextLine.y) : 999;
-            const isParagraphEnd = !nextLine || gapToNext > lineHeight * 2;
-
-            if (isParagraphEnd && paragraphLines.length > 0) {
-              const paraText = paragraphLines.join(' ');
-              let headingLevel: 'Heading1' | 'Heading2' | 'Heading3' | undefined;
-
-              if (smartHeadings && paragraphFontSize > 0) {
-                const fontRatio = paragraphFontSize / avgFontSize;
-                if (fontRatio >= 1.8) headingLevel = 'Heading1';
-                else if (fontRatio >= 1.4) headingLevel = 'Heading2';
-                else if (fontRatio >= 1.2) headingLevel = 'Heading3';
+              // Track Y position of first line in paragraph
+              if (paragraphLines.length === 0) {
+                paragraphYStart = line.y;
               }
 
-              sections.push(
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: paraText,
-                      size: 22,
-                      bold: headingLevel !== undefined,
-                    }),
-                  ],
-                  heading: headingLevel,
-                })
-              );
+              paragraphLines.push(line.text);
+              paragraphFontSize = Math.max(paragraphFontSize, line.fontSize);
 
-              paragraphLines = [];
-              paragraphFontSize = 0;
+              // Track paragraph bounds for centering detection
+              if (paragraphLines.length === 1) {
+                paragraphXStart = line.xStart;
+                paragraphXEnd = line.xEnd;
+              } else {
+                paragraphXStart = Math.min(paragraphXStart, line.xStart);
+                paragraphXEnd = Math.max(paragraphXEnd, line.xEnd);
+              }
+
+              // Check if paragraph ends (large gap to next line, or end of lines)
+              const lineHeight = line.fontSize || 12;
+              const gapToNext = nextLine ? Math.abs(line.y - nextLine.y) : 999;
+              const isParagraphEnd = !nextLine || gapToNext > lineHeight * 2;
+
+              if (isParagraphEnd && paragraphLines.length > 0) {
+                const paraText = paragraphLines.join(' ');
+                let headingLevel: 'Heading1' | 'Heading2' | 'Heading3' | undefined;
+
+                // === TEXT ALIGNMENT DETECTION ===
+                const lineWidth = paragraphXEnd - paragraphXStart;
+                const leftMargin = paragraphXStart;
+                const rightMargin = pageWidth - paragraphXEnd;
+                const centerThreshold = pageWidth * 0.1; // 10% tolerance for centering
+                const rightAlignThreshold = pageWidth * 0.15; // 15% tolerance for right align
+
+                // Check if text is centered (both margins roughly equal)
+                const isCentered = Math.abs(leftMargin - rightMargin) < centerThreshold;
+                // Check if text is right-aligned (small right margin, large left margin)
+                const isRightAligned = rightMargin < rightAlignThreshold && leftMargin > pageWidth * 0.3;
+                // Check if text spans most of the page width (justified or left-aligned body text)
+                const isFullWidth = lineWidth > pageWidth * 0.7;
+
+                let alignment: AlignmentType | undefined;
+                if (isCentered && !isFullWidth) {
+                  alignment = AlignmentType.CENTER;
+                } else if (isRightAligned && !isFullWidth) {
+                  alignment = AlignmentType.RIGHT;
+                }
+                // Left alignment is default, no need to set explicitly
+
+                if (smartHeadings && paragraphFontSize > 0) {
+                  // Round font size to match pre-analyzed sizes
+                  const roundedFontSize = Math.round(paragraphFontSize * 2) / 2;
+
+                  // First try: use pre-analyzed heading sizes (most accurate)
+                  if (headingSizes && headingSizes.has(roundedFontSize)) {
+                    headingLevel = headingSizes.get(roundedFontSize);
+                  } else {
+                    // Fallback: use ratio-based detection
+                    const fontRatio = paragraphFontSize / avgFontSize;
+                    if (fontRatio >= 1.6) headingLevel = 'Heading1';
+                    else if (fontRatio >= 1.3) headingLevel = 'Heading2';
+                    else if (fontRatio >= 1.15) headingLevel = 'Heading3';
+                  }
+
+                  // Boost: centered short text with larger font is likely a heading
+                  const isShortText = paraText.length < 100 && paragraphLines.length <= 2;
+
+                  if (isCentered && isShortText && paragraphFontSize > avgFontSize && !headingLevel) {
+                    // Centered short text with larger font → likely Heading2
+                    headingLevel = 'Heading2';
+                  }
+                }
+
+                // === LIST DETECTION ===
+                // Check for bullet list patterns: •, -, *, ◦, ▪, ▸, ►, ●, ○
+                const bulletPattern = /^\s*([•\-\*◦▪▸►●○])\s+(.+)$/;
+                // Check for numbered list patterns: 1. 2. 3. or 1) 2) 3) or (1) (2) (3)
+                const numberedPattern = /^\s*(?:(\d+)[.\):]|\((\d+)\))\s+(.+)$/;
+
+                const bulletMatch = paraText.match(bulletPattern);
+                const numberedMatch = paraText.match(numberedPattern);
+
+                // Calculate normalized Y position for ordering
+                const paragraphYNormalized = 1 - (paragraphYStart / pageHeight);
+
+                let para: Paragraph;
+                if (bulletMatch && !headingLevel) {
+                  // Bulleted list item
+                  const listText = bulletMatch[2];
+                  para = new Paragraph({
+                    children: [
+                      new TextRun({
+                        text: listText,
+                        size: 22,
+                      }),
+                    ],
+                    bullet: { level: 0 },
+                    alignment: alignment,
+                  });
+                } else if (numberedMatch && !headingLevel) {
+                  // Numbered list item
+                  const listText = numberedMatch[3];
+                  para = new Paragraph({
+                    children: [
+                      new TextRun({
+                        text: listText,
+                        size: 22,
+                      }),
+                    ],
+                    numbering: { reference: 'default-numbering', level: 0 },
+                    alignment: alignment,
+                  });
+                } else {
+                  // Regular paragraph or heading
+                  para = new Paragraph({
+                    children: [
+                      new TextRun({
+                        text: paraText,
+                        size: 22,
+                        bold: headingLevel !== undefined,
+                      }),
+                    ],
+                    heading: headingLevel,
+                    alignment: alignment,
+                  });
+                }
+
+                pageElements.push({
+                  type: 'paragraph',
+                  yPosition: paragraphYNormalized,
+                  paragraph: para
+                });
+
+                paragraphLines = [];
+                paragraphFontSize = 0;
+                paragraphXStart = 0;
+                paragraphXEnd = 0;
+              }
             }
+          }
 
-            prevLineY = line.y;
+          // Sort all elements by Y position (top to bottom)
+          pageElements.sort((a, b) => a.yPosition - b.yPosition);
+
+          // Add elements to sections with proper image handling
+          for (const element of pageElements) {
+            if (element.type === 'paragraph' && element.paragraph) {
+              sections.push(element.paragraph);
+            } else if (element.type === 'image' && element.image) {
+              // Determine image alignment based on X position
+              const img = element.image;
+              const imgCenterX = img.x + img.width / 2;
+              const pageCenter = pageWidth / 2;
+
+              let imgAlignment: AlignmentType = AlignmentType.LEFT;
+              if (Math.abs(imgCenterX - pageCenter) < pageWidth * 0.15) {
+                imgAlignment = AlignmentType.CENTER;
+              } else if (imgCenterX > pageCenter + pageWidth * 0.2) {
+                imgAlignment = AlignmentType.RIGHT;
+              }
+
+              // Scale image to fit Word page width (max ~500px)
+              const maxImgWidth = 500;
+              const maxImgHeight = 600;
+              let scaledWidth = img.width;
+              let scaledHeight = img.height;
+
+              if (scaledWidth > maxImgWidth) {
+                const ratio = maxImgWidth / scaledWidth;
+                scaledWidth = maxImgWidth;
+                scaledHeight = Math.round(scaledHeight * ratio);
+              }
+              if (scaledHeight > maxImgHeight) {
+                const ratio = maxImgHeight / scaledHeight;
+                scaledHeight = maxImgHeight;
+                scaledWidth = Math.round(scaledWidth * ratio);
+              }
+
+              // Determine if image should float (for smaller images not centered)
+              const isSmallImage = scaledWidth < pageWidth * 0.4;
+              const shouldFloat = isSmallImage && imgAlignment !== AlignmentType.CENTER;
+
+              if (shouldFloat) {
+                // Floating image with text wrap
+                const horizontalPos = img.x < pageWidth / 2 ? 'left' : 'right';
+                sections.push(
+                  new Paragraph({
+                    children: [
+                      new ImageRun({
+                        data: img.data,
+                        transformation: {
+                          width: scaledWidth,
+                          height: scaledHeight,
+                        },
+                        type: 'png',
+                        floating: {
+                          horizontalPosition: {
+                            relative: 'column' as any,
+                            align: horizontalPos as any,
+                          },
+                          verticalPosition: {
+                            relative: 'paragraph' as any,
+                            offset: 0,
+                          },
+                          wrap: {
+                            type: 'square' as any,
+                            side: 'bothSides' as any,
+                          },
+                          margins: {
+                            top: 100000,
+                            bottom: 100000,
+                            left: horizontalPos === 'right' ? 200000 : 0,
+                            right: horizontalPos === 'left' ? 200000 : 0,
+                          },
+                        },
+                      }),
+                    ],
+                  })
+                );
+              } else {
+                // Inline image (centered or full-width)
+                sections.push(
+                  new Paragraph({
+                    children: [
+                      new ImageRun({
+                        data: img.data,
+                        transformation: {
+                          width: scaledWidth,
+                          height: scaledHeight,
+                        },
+                        type: 'png',
+                      }),
+                    ],
+                    alignment: imgAlignment,
+                  })
+                );
+              }
+            }
           }
         }
 
@@ -2313,8 +2919,28 @@ export class PDFService {
 
       onProgress?.(80, 'Creating Word document...');
 
-      // Create DOCX document
+      // Create DOCX document with numbering definition for lists
       const doc = new Document({
+        numbering: {
+          config: [
+            {
+              reference: 'default-numbering',
+              levels: [
+                {
+                  level: 0,
+                  format: 'decimal',
+                  text: '%1.',
+                  alignment: 'start' as any,
+                  style: {
+                    paragraph: {
+                      indent: { left: 720, hanging: 360 },
+                    },
+                  },
+                },
+              ],
+            },
+          ],
+        },
         sections: [
           {
             properties: {},
