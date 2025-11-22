@@ -76,27 +76,12 @@ const structuredData = {
   "image": "https://localpdf.online/logos/icon-512.png"
 };
 
-// HowTo schema for step-by-step instructions
-const howToSchema = {
-  "@context": "https://schema.org",
-  "@type": "HowTo",
-  "name": title.replace(/^(.+?)(\s*—.*)?$/i, 'How to Use $1'),
-  "description": metaDescription,
-  "image": "https://localpdf.online/logos/icon-512.png",
-  "step": steps.map((step, index) => ({
-    "@type": "HowToStep",
-    "position": index + 1,
-    "name": `Step ${index + 1}`,
-    "text": step
-  }))
-};
 ---
 
 <BaseLayout title={title} description={metaDescription} canonical={canonicalURL}>
 
   <!-- Schema.org structured data -->
   <script type="application/ld+json" slot="head" set:html={JSON.stringify(structuredData)} />
-  <script type="application/ld+json" slot="head" set:html={JSON.stringify(howToSchema)} />
 
   <script define:vars={{ appURL }}>
     // Prefetch app for faster navigation
