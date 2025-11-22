@@ -19,6 +19,9 @@ export const PDFToWord: React.FC = () => {
   const [progressMessage, setProgressMessage] = useState('');
   const [result, setResult] = useState<{ blob: Blob; originalSize: number; processedSize: number } | null>(null);
 
+  // Conversion options
+  const [smartHeadings, setSmartHeadings] = useState(true);
+
   React.useEffect(() => {
     if (sharedFile) {
       clearSharedFile();
@@ -57,7 +60,8 @@ export const PDFToWord: React.FC = () => {
         (prog, msg) => {
           setProgress(prog);
           setProgressMessage(msg);
-        }
+        },
+        { includeImages: false, smartHeadings }
       );
 
       if (conversionResult.success && conversionResult.blob) {
@@ -151,11 +155,36 @@ export const PDFToWord: React.FC = () => {
             </Button>
           </div>
 
+          {/* Conversion Options */}
+          <div className="mt-6 space-y-4">
+            <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+              {t('pdfToWord.options') || 'Conversion Options'}
+            </h3>
+
+            {/* Smart Headings */}
+            <label className="flex items-start gap-3 p-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 cursor-pointer hover:border-ocean-300 dark:hover:border-ocean-700 transition-all">
+              <input
+                type="checkbox"
+                checked={smartHeadings}
+                onChange={(e) => setSmartHeadings(e.target.checked)}
+                className="mt-1 w-4 h-4 text-ocean-600 rounded focus:ring-ocean-500"
+              />
+              <div>
+                <span className="font-medium text-gray-900 dark:text-white">
+                  {t('pdfToWord.smartHeadings') || 'Smart Headings'}
+                </span>
+                <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                  {t('pdfToWord.smartHeadingsDescription') || 'Detect headings by font size and apply Word heading styles'}
+                </p>
+              </div>
+            </label>
+          </div>
+
           {/* Convert Button */}
           <Button
             onClick={handleConvert}
             disabled={isProcessing}
-            className="mt-4 w-full"
+            className="mt-6 w-full"
           >
             {isProcessing ? t('common.processing') : t('pdfToWord.convert')}
           </Button>
@@ -172,6 +201,33 @@ export const PDFToWord: React.FC = () => {
       {/* Result */}
       {result && (
         <div className="space-y-6">
+          {/* Document Preview */}
+          <Card className="p-6">
+            <div className="flex items-center gap-6">
+              {/* Word Document Icon */}
+              <div className="flex-shrink-0 w-24 h-32 bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg flex flex-col items-center justify-center text-white shadow-lg">
+                <svg className="w-12 h-12 mb-2" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20M9.5,11.5L11.5,17H12.5L14.5,11.5H13.5L12,15.5L10.5,11.5H9.5Z" />
+                </svg>
+                <span className="text-xs font-medium">.DOCX</span>
+              </div>
+
+              {/* Document Info */}
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                  {file?.name.replace(/\.pdf$/i, '.docx') || 'converted.docx'}
+                </h3>
+                <div className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
+                  <p>{t('pdfToWord.readyToDownload') || 'Your Word document is ready to download'}</p>
+                  <p className="flex items-center gap-2">
+                    <span className="inline-block w-2 h-2 bg-green-500 rounded-full"></span>
+                    {t('pdfToWord.conversionComplete') || 'Conversion complete'}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </Card>
+
           {/* Stats */}
           <Card className="grid grid-cols-2 gap-4 p-4">
             <div>
@@ -185,16 +241,6 @@ export const PDFToWord: React.FC = () => {
               <p className="text-lg font-semibold text-gray-900 dark:text-white">
                 {formatFileSize(result.processedSize)}
               </p>
-            </div>
-          </Card>
-
-          {/* Preview of original PDF */}
-          <Card className="p-4">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-              {t('common.preview')} - Original PDF
-            </h3>
-            <div className="flex justify-center">
-              <PDFPreview file={file} width={600} height={800} />
             </div>
           </Card>
 

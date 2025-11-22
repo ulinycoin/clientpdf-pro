@@ -133,7 +133,8 @@
     "selectedFile": "Selected file",
     "originalSize": "Original size",
     "newSize": "New size",
-    "useInOtherTools": "Use in other tools"
+    "useInOtherTools": "Use in other tools",
+    "recommended": "Recommended"
   },
   "upload": {
     "selectFiles": "Select files",
@@ -621,6 +622,15 @@
   "wordToPdf": {
     "convert": "Convert to PDF",
     "convertAnother": "Convert another",
+    "conversionMode": "Conversion Mode",
+    "withFormatting": "With Formatting",
+    "textOnly": "Text Only",
+    "formattingDescription": "Preserves images, tables, headings, and text styles",
+    "textDescription": "Extracts text only. Smaller file, faster conversion",
+    "quality": "Output Quality",
+    "qualityStandard": "Standard (faster, smaller file)",
+    "qualityHigh": "High Quality (balanced)",
+    "qualityMax": "Maximum (best quality, larger file)",
     "errors": {
       "noFile": "Please select a Word document first",
       "invalidFormat": "Invalid file format. Please select a .docx file",
@@ -631,12 +641,17 @@
   "pdfToWord": {
     "convert": "Convert to Word",
     "convertAnother": "Convert another",
+    "options": "Conversion Options",
+    "smartHeadings": "Smart Headings",
+    "smartHeadingsDescription": "Detect headings by font size and apply Word heading styles",
     "errors": {
       "noFile": "Please select a PDF file first",
       "invalidPdf": "Invalid PDF file. Please select a valid PDF",
       "conversionFailed": "Failed to convert PDF to Word"
     },
-    "success": "PDF converted to Word successfully!"
+    "success": "PDF converted to Word successfully!",
+    "readyToDownload": "Your Word document is ready to download",
+    "conversionComplete": "Conversion complete"
   },
   "editText": {
     "rasterizationWarning": "Note: Edited pages will be converted to images. Text on those pages will not be selectable after editing.",

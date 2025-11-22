@@ -6,7 +6,7 @@ import * as pdfjsLib from 'pdfjs-dist';
 import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import { Buffer } from 'buffer';
 import mammoth from 'mammoth';
-import { Document, Packer, Paragraph, TextRun } from 'docx';
+import { Document, Packer, Paragraph, TextRun, ImageRun } from 'docx';
 import type {
   PDFProcessingResult,
   MergeOptions,
@@ -1737,11 +1737,22 @@ export class PDFService {
   /**
    * Convert Word document (.docx) to PDF
    * Uses mammoth to convert DOCX → HTML, then renders HTML as PDF
+   * Supports two modes: 'formatted' (with images/tables) and 'text' (text only)
    */
   async wordToPDF(
     file: File,
-    onProgress?: ProgressCallback
+    onProgress?: ProgressCallback,
+    options?: { mode?: 'formatted' | 'text'; quality?: 1 | 2 | 3 }
   ): Promise<PDFProcessingResult> {
+    const mode = options?.mode || 'text';
+    const quality = options?.quality || 2;
+
+    // Use formatted mode with html2canvas if mode is 'formatted'
+    if (mode === 'formatted') {
+      return this.wordToPDFFormatted(file, quality, onProgress);
+    }
+
+    // Text-only mode (original implementation)
     try {
       onProgress?.(10, 'Reading Word document...');
 
@@ -1852,6 +1863,188 @@ export class PDFService {
   }
 
   /**
+   * Convert Word document to PDF with formatting (images, tables, headings)
+   * Uses mammoth → HTML → html2canvas → jsPDF
+   */
+  private async wordToPDFFormatted(
+    file: File,
+    quality: 1 | 2 | 3,
+    onProgress?: ProgressCallback
+  ): Promise<PDFProcessingResult> {
+    try {
+      onProgress?.(5, 'Reading Word document...');
+
+      const arrayBuffer = await file.arrayBuffer();
+
+      onProgress?.(15, 'Converting to HTML with images...');
+
+      // Convert DOCX to HTML with image support
+      const mammothResult = await mammoth.convertToHtml(
+        { arrayBuffer },
+        {
+          convertImage: mammoth.images.imgElement((image) => {
+            return image.read("base64").then((imageBuffer) => {
+              return {
+                src: `data:${image.contentType};base64,${imageBuffer}`
+              };
+            });
+          })
+        }
+      );
+
+      const html = mammothResult.value;
+
+      onProgress?.(35, 'Rendering document...');
+
+      // Quality settings
+      const qualitySettings = {
+        1: { scale: 1, imageQuality: 0.7 },
+        2: { scale: 1.5, imageQuality: 0.85 },
+        3: { scale: 2, imageQuality: 0.95 }
+      };
+      const settings = qualitySettings[quality];
+
+      // A4 dimensions in mm
+      const pageWidth = 210;
+      const pageHeight = 297;
+
+      // Create a hidden container for rendering
+      const container = document.createElement('div');
+      container.style.cssText = `
+        position: absolute;
+        left: -9999px;
+        top: 0;
+        width: ${pageWidth * 3.78}px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12pt;
+        line-height: 1.6;
+        padding: 40px;
+        box-sizing: border-box;
+        background: white;
+        color: black;
+      `;
+
+      // Add CSS for better formatting
+      const styleSheet = `
+        <style>
+          * { box-sizing: border-box; }
+          h1 { font-size: 24pt; font-weight: bold; margin: 20px 0 10px 0; color: #000; }
+          h2 { font-size: 18pt; font-weight: bold; margin: 16px 0 8px 0; color: #000; }
+          h3 { font-size: 14pt; font-weight: bold; margin: 14px 0 6px 0; color: #000; }
+          h4 { font-size: 12pt; font-weight: bold; margin: 12px 0 6px 0; color: #000; }
+          p { margin: 8px 0; color: #000; }
+          img { max-width: 100%; height: auto; margin: 12px 0; display: block; }
+          table { border-collapse: collapse; width: 100%; margin: 16px 0; }
+          td, th { border: 1px solid #333; padding: 8px 12px; text-align: left; }
+          th { background-color: #f0f0f0; font-weight: bold; }
+          ul, ol { margin: 10px 0; padding-left: 30px; }
+          li { margin: 4px 0; }
+          strong, b { font-weight: bold; }
+          em, i { font-style: italic; }
+          a { color: #0066cc; text-decoration: underline; }
+          blockquote { margin: 10px 0; padding: 10px 20px; border-left: 4px solid #ccc; background: #f9f9f9; }
+        </style>
+      `;
+
+      container.innerHTML = styleSheet + html;
+      document.body.appendChild(container);
+
+      onProgress?.(55, 'Creating PDF...');
+
+      // Dynamic import of html2canvas
+      const html2canvas = (await import('html2canvas')).default;
+
+      const canvas = await html2canvas(container, {
+        scale: settings.scale,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+        logging: false
+      });
+
+      document.body.removeChild(container);
+
+      onProgress?.(75, 'Generating pages...');
+
+      // Dynamic import of jsPDF
+      const { jsPDF } = await import('jspdf');
+
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+
+      // Calculate dimensions
+      const marginX = 10; // mm
+      const marginY = 10; // mm
+      const contentWidth = pageWidth - (marginX * 2);
+      const contentHeight = pageHeight - (marginY * 2);
+
+      // Pixels per mm for the canvas
+      const pxPerMm = canvas.width / (pageWidth - (marginX * 2));
+      const pageHeightPx = contentHeight * pxPerMm;
+
+      // Calculate number of pages needed
+      const totalPages = Math.ceil(canvas.height / pageHeightPx);
+
+      for (let pageNum = 0; pageNum < totalPages; pageNum++) {
+        if (pageNum > 0) {
+          pdf.addPage();
+        }
+
+        // Calculate slice position
+        const sourceY = pageNum * pageHeightPx;
+        const sourceHeight = Math.min(pageHeightPx, canvas.height - sourceY);
+
+        // Create a temporary canvas for this page slice
+        const pageCanvas = document.createElement('canvas');
+        pageCanvas.width = canvas.width;
+        pageCanvas.height = sourceHeight;
+        const pageCtx = pageCanvas.getContext('2d');
+
+        if (pageCtx) {
+          // Draw the slice from the main canvas
+          pageCtx.drawImage(
+            canvas,
+            0, sourceY, canvas.width, sourceHeight,  // source
+            0, 0, canvas.width, sourceHeight          // destination
+          );
+
+          // Convert to image and add to PDF
+          const pageImgData = pageCanvas.toDataURL('image/jpeg', settings.imageQuality);
+          const sliceHeightMm = sourceHeight / pxPerMm;
+
+          pdf.addImage(pageImgData, 'JPEG', marginX, marginY, contentWidth, sliceHeightMm);
+        }
+
+        onProgress?.(75 + (pageNum / totalPages) * 20, `Generating page ${pageNum + 1}/${totalPages}...`);
+      }
+
+      onProgress?.(95, 'Finalizing...');
+
+      const pdfBlob = pdf.output('blob');
+
+      onProgress?.(100, 'Conversion complete!');
+
+      return {
+        success: true,
+        blob: pdfBlob,
+        originalSize: file.size,
+        processedSize: pdfBlob.size,
+        message: 'Word document converted to PDF with formatting'
+      };
+
+    } catch (error) {
+      console.error('Formatted Word to PDF conversion error:', error);
+      return {
+        success: false,
+        error: this.createPDFError(error, 'Word to PDF (formatted) conversion failed')
+      };
+    }
+  }
+
+  /**
    * Load Unicode-compatible font from CDN (supports Cyrillic, Extended Latin, etc.)
    */
   private async loadUnicodeFont(pdfDoc: PDFDocument): Promise<any> {
@@ -1896,14 +2089,19 @@ export class PDFService {
 
   /**
    * Convert PDF to Word document (.docx)
-   * Uses pdfjs to extract text, then docx library to create DOCX
+   * Uses pdfjs to extract text and images, then docx library to create DOCX
+   * Supports options: includeImages, smartHeadings
    */
   async pdfToWord(
     file: File,
-    onProgress?: ProgressCallback
+    onProgress?: ProgressCallback,
+    options?: { includeImages?: boolean; smartHeadings?: boolean }
   ): Promise<PDFProcessingResult> {
+    const includeImages = options?.includeImages ?? true;
+    const smartHeadings = options?.smartHeadings ?? true;
+
     try {
-      onProgress?.(10, 'Reading PDF file...');
+      onProgress?.(5, 'Reading PDF file...');
 
       // Load PDF
       const arrayBuffer = await file.arrayBuffer();
@@ -1911,81 +2109,193 @@ export class PDFService {
       const pdfDoc = await loadingTask.promise;
       const numPages = pdfDoc.numPages;
 
-      onProgress?.(25, 'Extracting text from PDF...');
+      onProgress?.(15, 'Extracting content from PDF...');
 
-      // Extract text from all pages and build document structure
-      const sections: Paragraph[] = [];
+      // Extract text and images from all pages
+      const sections: (Paragraph | any)[] = [];
+      const extractedImages: Array<{ data: Uint8Array; width: number; height: number; pageNum: number }> = [];
 
       for (let pageNum = 1; pageNum <= numPages; pageNum++) {
         const page = await pdfDoc.getPage(pageNum);
-        const textContent = await page.getTextContent();
 
-        // Add page header
-        sections.push(
-          new Paragraph({
-            children: [
-              new TextRun({
-                text: `Page ${pageNum}`,
-                bold: true,
-                size: 24,
-              }),
-            ],
-            spacing: {
-              after: 200,
-            },
-          })
-        );
+        if (includeImages) {
+          // Mode: Render page as image (preserves layout)
+          try {
+            const scale = 2; // Higher quality
+            const viewport = page.getViewport({ scale });
+            const canvas = document.createElement('canvas');
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            const ctx = canvas.getContext('2d');
 
-        // Combine text items into paragraphs
-        const items = textContent.items as any[];
-        let currentLine = '';
+            if (ctx) {
+              await page.render({
+                canvasContext: ctx,
+                viewport: viewport,
+              }).promise;
 
-        for (let i = 0; i < items.length; i++) {
-          const item = items[i];
-          if (item.str) {
+              // Convert canvas to PNG blob
+              const pngBlob = await new Promise<Blob | null>((resolve) => {
+                canvas.toBlob((blob) => resolve(blob), 'image/png', 0.92);
+              });
+
+              if (pngBlob) {
+                const buffer = await pngBlob.arrayBuffer();
+
+                // Calculate dimensions to fit A4 page (width ~595px at 72dpi)
+                const maxWidth = 550;
+                const maxHeight = 750;
+                let width = viewport.width;
+                let height = viewport.height;
+
+                if (width > maxWidth) {
+                  const ratio = maxWidth / width;
+                  width = maxWidth;
+                  height = Math.round(height * ratio);
+                }
+                if (height > maxHeight) {
+                  const ratio = maxHeight / height;
+                  height = maxHeight;
+                  width = Math.round(width * ratio);
+                }
+
+                sections.push(
+                  new Paragraph({
+                    children: [
+                      new ImageRun({
+                        data: new Uint8Array(buffer),
+                        transformation: {
+                          width: width,
+                          height: height,
+                        },
+                        type: 'png',
+                      }),
+                    ],
+                  })
+                );
+              }
+            }
+          } catch (pageImgError) {
+            console.warn('Image rendering error on page', pageNum, pageImgError);
+          }
+        } else {
+          // Mode: Extract text only
+          const textContent = await page.getTextContent();
+          const items = textContent.items as any[];
+
+          // Find font size statistics for smart headings
+          let avgFontSize = 12;
+          if (smartHeadings && items.length > 0) {
+            let fontSizeSum = 0;
+            let fontSizeCount = 0;
+            for (const item of items) {
+              if (item.height && item.str?.trim()) {
+                fontSizeSum += item.height;
+                fontSizeCount++;
+              }
+            }
+            avgFontSize = fontSizeCount > 0 ? fontSizeSum / fontSizeCount : 12;
+          }
+
+          // Group text items by line (same Y position)
+          const lines: Array<{ text: string; fontSize: number; y: number }> = [];
+          let currentLine = '';
+          let currentFontSize = 0;
+          let lastY = -1;
+          let lastX = -1;
+
+          for (let i = 0; i < items.length; i++) {
+            const item = items[i];
+            if (!item.str) continue;
+
+            const itemY = item.transform ? item.transform[5] : 0;
+            const itemX = item.transform ? item.transform[4] : 0;
+            const itemHeight = item.height || 12;
+
+            // Check if this is a new line (Y position changed)
+            const isNewLine = lastY !== -1 && Math.abs(itemY - lastY) > 2;
+
+            if (isNewLine && currentLine.trim()) {
+              lines.push({
+                text: currentLine.trim(),
+                fontSize: currentFontSize,
+                y: lastY
+              });
+              currentLine = '';
+              currentFontSize = 0;
+              lastX = -1;
+            }
+
+            // Add space if there's a gap between words on same line
+            if (currentLine && lastX !== -1) {
+              const gap = itemX - lastX;
+              if (gap > itemHeight * 0.3) {
+                currentLine += ' ';
+              }
+            }
+
             currentLine += item.str;
+            if (item.height) currentFontSize = Math.max(currentFontSize, item.height);
+            lastY = itemY;
+            lastX = itemX + (item.width || item.str.length * itemHeight * 0.5);
+          }
 
-            // Check if this is the end of a line
-            const nextItem = items[i + 1];
-            const isEndOfLine = !nextItem ||
-              (nextItem.transform && Math.abs(item.transform[5] - nextItem.transform[5]) > 5);
+          // Add last line
+          if (currentLine.trim()) {
+            lines.push({
+              text: currentLine.trim(),
+              fontSize: currentFontSize,
+              y: lastY
+            });
+          }
 
-            if (isEndOfLine && currentLine.trim()) {
+          // Now group lines into paragraphs based on vertical spacing
+          let paragraphLines: string[] = [];
+          let paragraphFontSize = 0;
+          let prevLineY = -1;
+
+          for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+            const nextLine = lines[i + 1];
+
+            paragraphLines.push(line.text);
+            paragraphFontSize = Math.max(paragraphFontSize, line.fontSize);
+
+            // Check if paragraph ends (large gap to next line, or end of lines)
+            const lineHeight = line.fontSize || 12;
+            const gapToNext = nextLine ? Math.abs(line.y - nextLine.y) : 999;
+            const isParagraphEnd = !nextLine || gapToNext > lineHeight * 2;
+
+            if (isParagraphEnd && paragraphLines.length > 0) {
+              const paraText = paragraphLines.join(' ');
+              let headingLevel: 'Heading1' | 'Heading2' | 'Heading3' | undefined;
+
+              if (smartHeadings && paragraphFontSize > 0) {
+                const fontRatio = paragraphFontSize / avgFontSize;
+                if (fontRatio >= 1.8) headingLevel = 'Heading1';
+                else if (fontRatio >= 1.4) headingLevel = 'Heading2';
+                else if (fontRatio >= 1.2) headingLevel = 'Heading3';
+              }
+
               sections.push(
                 new Paragraph({
                   children: [
                     new TextRun({
-                      text: currentLine.trim(),
+                      text: paraText,
                       size: 22,
+                      bold: headingLevel !== undefined,
                     }),
                   ],
-                  spacing: {
-                    after: 100,
-                  },
+                  heading: headingLevel,
                 })
               );
-              currentLine = '';
-            } else if (!isEndOfLine) {
-              currentLine += ' ';
-            }
-          }
-        }
 
-        // Add remaining text if any
-        if (currentLine.trim()) {
-          sections.push(
-            new Paragraph({
-              children: [
-                new TextRun({
-                  text: currentLine.trim(),
-                  size: 22,
-                }),
-              ],
-              spacing: {
-                after: 100,
-              },
-            })
-          );
+              paragraphLines = [];
+              paragraphFontSize = 0;
+            }
+
+            prevLineY = line.y;
+          }
         }
 
         // Add page break after each page except the last one
@@ -1998,7 +2308,7 @@ export class PDFService {
           );
         }
 
-        onProgress?.(25 + (pageNum / numPages) * 50, `Processing page ${pageNum}/${numPages}...`);
+        onProgress?.(15 + (pageNum / numPages) * 60, `Processing page ${pageNum}/${numPages}...`);
       }
 
       onProgress?.(80, 'Creating Word document...');
@@ -2682,10 +2992,16 @@ export const downloadAsZip = (files: Array<{ blob: Blob; filename: string }>, ar
   pdfService.downloadAsZip(files, archiveName, onProgress);
 export const formatFileSize = (bytes: number) => pdfService.formatFileSize(bytes);
 export const formatTime = (ms: number) => pdfService.formatTime(ms);
-export const wordToPDF = (file: File, onProgress?: ProgressCallback) =>
-  pdfService.wordToPDF(file, onProgress);
-export const pdfToWord = (file: File, onProgress?: ProgressCallback) =>
-  pdfService.pdfToWord(file, onProgress);
+export const wordToPDF = (
+  file: File,
+  onProgress?: ProgressCallback,
+  options?: { mode?: 'formatted' | 'text'; quality?: 1 | 2 | 3 }
+) => pdfService.wordToPDF(file, onProgress, options);
+export const pdfToWord = (
+  file: File,
+  onProgress?: ProgressCallback,
+  options?: { includeImages?: boolean; smartHeadings?: boolean }
+) => pdfService.pdfToWord(file, onProgress, options);
 export const addFormFieldsToPDF = (file: File, options: FormFieldOptions) =>
   pdfService.addFormFieldsToPDF(file, options);
 

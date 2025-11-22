@@ -42,44 +42,46 @@ const howToSchema = {
 <ToolPage
   toolId="pdf-to-word"
   title="Convert PDF to Word Online — Free PDF to DOCX Converter"
-  metaDescription="Convert PDF to Word (DOCX) instantly. 100% private client-side conversion. Extract text, edit documents. No uploads, unlimited conversions."
+  metaDescription="Convert PDF to editable Word (DOCX). Extract text and images from PDFs. 100% private client-side conversion. No uploads, unlimited conversions."
   keywords={keywords}
-  description="Convert PDF documents to Microsoft Word (.docx) format. Extract text and make PDFs editable — all in your browser with complete privacy."
+  description="Convert PDF documents to editable Microsoft Word (.docx) format. Extract text and images, detect headings automatically — all in your browser with complete privacy."
   benefits={[
-    "⚡ Instant — Convert documents in seconds",
-    "🔒 Private — PDFs never uploaded",
-    "🆓 Free — Unlimited conversions during beta"
+    "📝 Editable Text — Extract and edit content",
+    "🖼️ Image Extraction — Optional image support",
+    "🔒 Private — PDFs never uploaded"
   ]}
   relatedTools={[
     { id: 'word-to-pdf', icon: '📄', title: 'Word to PDF', description: 'Convert back to PDF' },
     { id: 'ocr-pdf', icon: '🔍', title: 'OCR PDF', description: 'Extract text from scanned PDFs' },
-    { id: 'edit-text-pdf', icon: '✏️', title: 'Edit Text', description: 'Edit directly in PDF' },
+    { id: 'extract-text-pdf', icon: '📋', title: 'Extract Text', description: 'Get plain text from PDF' },
     { id: 'compress-pdf', icon: '🗜️', title: 'Compress PDF', description: 'Reduce file size first' }
   ]}
   whyChoose={{
     title: "Why Choose Our PDF to Word Converter?",
     reasons: [
       "Complete Privacy: Your PDF files never leave your device. Cloud converters upload sensitive documents to servers. LocalPDF converts locally for maximum security.",
-      "Extract Editable Text: Converts PDF text to editable Word format. Perfect for editing contracts, reports, or documents you received as PDF.",
-      "Preserve Structure: Maintains paragraphs, page breaks, and document hierarchy. Text is organized logically for easy editing.",
+      "Text + Images: Extract both text content and embedded images from your PDF. Toggle image extraction on/off based on your needs.",
+      "Smart Heading Detection: Automatically detects headings based on font size and applies proper Word heading styles for better document structure.",
       "Unicode Support: Extracts text in any language — Cyrillic, Latin with diacritics, Greek, Chinese, Arabic. Full international character support.",
-      "Preview Before Converting: See your PDF before conversion. Verify it's the correct document and check page count.",
+      "Honest Limitations: Works best with text-based PDFs. Complex layouts, multi-column designs, and exact positioning may not be perfectly preserved — this is a technical limitation of PDF to Word conversion.",
       "Instant Processing: No upload delays or server queues. Conversion happens in your browser — typically under 10 seconds for multi-page documents."
     ]
   }}
   features={[
-    "Convert PDF to DOCX format",
-    "Extract text from all pages",
+    "Extract text from all PDF pages",
+    "Optional image extraction",
+    "Smart heading detection",
     "Preserve paragraph structure",
     "Support for all languages and Unicode",
-    "Page-by-page text extraction",
-    "Preview original PDF before converting"
+    "Page breaks between pages",
+    "Works offline after page load"
   ]}
   steps={[
     'Click "Open Tool" button above',
     "Upload your PDF document",
-    "Preview the PDF to verify",
-    "Click \"Convert to Word\" and wait (5-10 seconds)",
+    "Toggle image extraction on/off",
+    "Enable Smart Headings if needed",
+    "Click \"Convert to Word\" and wait",
     "Download the generated Word document (.docx)"
   ]}
 >

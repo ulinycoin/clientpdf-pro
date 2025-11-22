@@ -42,6 +42,8 @@
     "docx": "^9.5.1",
     "franc": "^6.2.0",
     "franc-min": "^6.2.0",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^3.0.4",
     "jszip": "^3.10.1",
     "lucide-react": "^0.553.0",
     "mammoth": "^1.11.0",

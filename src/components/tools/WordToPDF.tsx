@@ -10,6 +10,9 @@ import { HASH_TOOL_MAP } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 
+type ConversionMode = 'formatted' | 'text';
+type Quality = 1 | 2 | 3;
+
 export const WordToPDF: React.FC = () => {
   const { t } = useI18n();
   const { setSharedFile: saveSharedFile } = useSharedFile();
@@ -18,6 +21,10 @@ export const WordToPDF: React.FC = () => {
   const [progress, setProgress] = useState(0);
   const [progressMessage, setProgressMessage] = useState('');
   const [result, setResult] = useState<{ blob: Blob; originalSize: number; processedSize: number } | null>(null);
+
+  // Conversion settings
+  const [conversionMode, setConversionMode] = useState<ConversionMode>('formatted');
+  const [quality, setQuality] = useState<Quality>(2);
 
   const handleFileSelected = (selectedFiles: File[]) => {
     if (selectedFiles.length > 0) {
@@ -50,7 +57,8 @@ export const WordToPDF: React.FC = () => {
         (prog, msg) => {
           setProgress(prog);
           setProgressMessage(msg);
-        }
+        },
+        { mode: conversionMode, quality }
       );
 
       if (conversionResult.success && conversionResult.blob) {
@@ -148,11 +156,95 @@ export const WordToPDF: React.FC = () => {
             </Button>
           </div>
 
+          {/* Conversion Mode Selection */}
+          <div className="mt-6 space-y-4">
+            <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+              {t('wordToPdf.conversionMode') || 'Conversion Mode'}
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {/* Formatted Mode */}
+              <label
+                className={`flex items-start gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${
+                  conversionMode === 'formatted'
+                    ? 'border-ocean-500 bg-ocean-50 dark:bg-ocean-900/20'
+                    : 'border-gray-200 dark:border-gray-700 hover:border-ocean-300 dark:hover:border-ocean-700'
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="conversionMode"
+                  value="formatted"
+                  checked={conversionMode === 'formatted'}
+                  onChange={() => setConversionMode('formatted')}
+                  className="mt-1"
+                />
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium text-gray-900 dark:text-white">
+                      {t('wordToPdf.withFormatting') || 'With Formatting'}
+                    </span>
+                    <span className="text-xs bg-ocean-500 text-white px-2 py-0.5 rounded-full">
+                      {t('common.recommended') || 'Recommended'}
+                    </span>
+                  </div>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                    {t('wordToPdf.formattingDescription') || 'Preserves images, tables, headings, and text styles'}
+                  </p>
+                </div>
+              </label>
+
+              {/* Text Only Mode */}
+              <label
+                className={`flex items-start gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${
+                  conversionMode === 'text'
+                    ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                    : 'border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-700'
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="conversionMode"
+                  value="text"
+                  checked={conversionMode === 'text'}
+                  onChange={() => setConversionMode('text')}
+                  className="mt-1"
+                />
+                <div>
+                  <span className="font-medium text-gray-900 dark:text-white">
+                    {t('wordToPdf.textOnly') || 'Text Only'}
+                  </span>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                    {t('wordToPdf.textDescription') || 'Extracts text only. Smaller file, faster conversion'}
+                  </p>
+                </div>
+              </label>
+            </div>
+
+            {/* Quality selector for formatted mode */}
+            {conversionMode === 'formatted' && (
+              <div className="mt-4">
+                <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                  {t('wordToPdf.quality') || 'Output Quality'}
+                </label>
+                <select
+                  value={quality}
+                  onChange={(e) => setQuality(parseInt(e.target.value) as Quality)}
+                  className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-ocean-500"
+                >
+                  <option value={1}>{t('wordToPdf.qualityStandard') || 'Standard (faster, smaller file)'}</option>
+                  <option value={2}>{t('wordToPdf.qualityHigh') || 'High Quality (balanced)'}</option>
+                  <option value={3}>{t('wordToPdf.qualityMax') || 'Maximum (best quality, larger file)'}</option>
+                </select>
+              </div>
+            )}
+          </div>
+
           {/* Convert Button */}
           <Button
             onClick={handleConvert}
             disabled={isProcessing}
-            className="mt-4 w-full"
+            className="mt-6 w-full"
           >
             {isProcessing ? t('common.processing') : t('wordToPdf.convert')}
           </Button>
