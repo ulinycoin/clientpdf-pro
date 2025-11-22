@@ -1,3 +1,17 @@
+# Dependencies
+node_modules
+
+# Build output
+dist
+dist-ssr
+website/dist
+
+# Build caches
+.astro/
+website/.astro/
+.turbo/
+.cache/
+
 # Logs
 logs
 *.log
@@ -5,48 +19,51 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
-lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
+# Environment
+.env
+.env.local
+.env.*.local
 *.local
 
-# Editor directories and files
+# Editor
 .vscode/*
 !.vscode/extensions.json
 .idea
-.DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# OS
+.DS_Store
+
+# Vercel
 .vercel
 
-# API Credentials (Google PageSpeed, etc.)
+# Credentials
 .credentials/
 *.json.key
 *-credentials.json
 service-account*.json
 
-# Astro build cache
-.astro/
-website/.astro/
+# Test coverage
+coverage/
 
-# Reports and temporary documentation
+# Temporary files
 *_REPORT.md
 *_STATUS.md
-DEPLOYMENT*.md
-VERCEL*.md
-GITHUB_SETUP.md
-GIT_STATUS.md
-CHANGELOG.md
-*PROMO*.md
 build.log
 
-# Temporary shell scripts
-QUICK_PUSH.sh
-build-vercel.sh
-deploy-vercel.sh
-push-and-deploy.sh
+# Service/internal documentation
+.claude/
+context7.json
+MIGRATION_PLAN.md
+TECHNICAL_SPECIFICATION.md
+DEVELOPMENT_GUIDE.md
+article_introduction.md
+localpdf_urls.txt
+*_PLAN.md
+website/README.md
+website/DEPLOYMENT.md
