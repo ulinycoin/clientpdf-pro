@@ -3,7 +3,7 @@
   "short_name": "LocalPDF",
   "description": "Free online PDF tools: merge, split, compress, protect, and edit PDFs in your browser. No uploads, 100% private, instant processing.",
   "start_url": "/",
-  "display": "standalone",
+  "display": "browser",
   "background_color": "#FAFAFA",
   "theme_color": "#2563EB",
   "orientation": "any",
