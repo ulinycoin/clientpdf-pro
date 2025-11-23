@@ -1,0 +1,133 @@
+---
+title: "Smart Merge: AI-Powered PDF Sorting & Duplicate Detection"
+description: "Discover how Smart Merge uses AI to automatically sort your PDFs by date, detect duplicates, and organize documents - all processed locally for complete privacy."
+pubDate: 2025-01-20
+tags: ["merge", "ai", "smart-merge", "productivity", "automation"]
+category: "Advanced Features"
+draft: false
+featured: true
+keywords: ["smart merge pdf", "ai pdf sorting", "detect duplicate pdf", "sort pdf by date", "automatic pdf ordering", "pdf organization"]
+difficulty: "beginner"
+relatedTools: ["merge-pdf", "rotate-pdf", "split-pdf"]
+author: "LocalPDF Team"
+---
+
+Merging multiple PDF files is a common task, but arranging them in the right order can be tedious - especially when dealing with dozens of documents. That's why we built **Smart Merge**, an AI-powered feature that automatically analyzes your PDFs and suggests the optimal sorting order.
+
+## What is Smart Merge?
+
+Smart Merge is an intelligent assistant built into [LocalPDF's merge tool](/merge-pdf). When you upload multiple PDF files, it automatically:
+
+- **Extracts dates** from document content and filenames
+- **Detects patterns** in filenames (like "part1", "chapter2", "report_03")
+- **Identifies duplicates** by comparing content and file sizes
+- **Suggests sorting options** with confidence scores
+
+Best of all? Everything runs **100% locally in your browser**. Your documents never leave your device.
+
+## Key Features
+
+### 1. Automatic Date Detection
+
+Smart Merge scans your PDFs and extracts dates from:
+
+- **Document content** - Dates mentioned in the text (invoices, contracts, reports)
+- **Filenames** - Patterns like `2024-01-15_report.pdf` or `report_15.01.2024.pdf`
+- **PDF metadata** - Creation and modification dates
+
+It supports multiple date formats and languages including English, German, French, Spanish, and Russian.
+
+### 2. One-Click Sorting
+
+Once analysis is complete, you'll see sorting suggestions:
+
+| Option | Description | Best For |
+|--------|-------------|----------|
+| **Chronological** | Oldest documents first | Historical archives, project timelines |
+| **Newest First** | Most recent documents first | Monthly reports, correspondence |
+| **By Filename** | Sorted by numbers in filenames | Numbered chapters, sequential parts |
+| **By Size** | Largest files first | Prioritizing main documents |
+
+Each suggestion shows a **confidence score** based on how many documents have the required data.
+
+### 3. Duplicate Detection
+
+Uploading the same document twice? Smart Merge will warn you:
+
+- Compares text content using smart hashing
+- Considers file sizes and page counts
+- Shows which files are similar
+- One click to keep only the first copy
+
+This is especially useful when merging documents from different folders where duplicates might exist.
+
+## How to Use Smart Merge
+
+1. **Open the [Merge PDF tool](/merge-pdf)**
+2. **Upload 2 or more PDF files** - drag & drop or click to select
+3. **Wait for analysis** - Smart Merge automatically scans your documents (usually under 1 second)
+4. **Review suggestions** - Click any sorting option to instantly reorder your files
+5. **Check for duplicates** - Remove similar files if detected
+6. **Merge** - Click the merge button to combine your sorted PDFs
+
+You can also **disable Smart Merge** using the toggle switch if you prefer manual ordering.
+
+## Real-World Use Cases
+
+### Combining Monthly Reports
+
+You have 12 monthly reports named inconsistently (`Jan_Report.pdf`, `February-2024.pdf`, `march.pdf`). Smart Merge detects dates from the content and offers chronological sorting - no manual reordering needed.
+
+### Archiving Project Documents
+
+Merging various project documents accumulated over time? Smart Merge identifies duplicates (the same contract saved twice) and suggests date-based ordering.
+
+### Compiling Legal Documents
+
+Combining contracts, amendments, and exhibits? Smart Merge detects the dates within each document and ensures they're ordered correctly for legal compliance.
+
+### Organizing Scanned Documents
+
+Even scanned PDFs with OCR text can be analyzed. Smart Merge extracts dates from the recognized text to suggest proper ordering.
+
+## Privacy First
+
+Unlike cloud-based AI tools, Smart Merge runs entirely in your browser:
+
+- **No uploads** - Your PDFs never leave your device
+- **No API calls** - Analysis uses local JavaScript, not external services
+- **No data collection** - We don't see or store your documents
+- **Works offline** - Once the page loads, Smart Merge works without internet
+
+This makes it safe for sensitive documents like financial records, legal contracts, and personal information.
+
+## Technical Details
+
+For those curious about how it works:
+
+- **Text extraction** uses PDF.js (the same library Firefox uses)
+- **Date parsing** supports 10+ regex patterns for different formats
+- **Duplicate detection** uses SHA-256 hashing of text samples
+- **Analysis time** is typically 50-200ms per document
+
+The feature adds minimal overhead to the merge tool - only ~8KB gzipped.
+
+## Tips for Best Results
+
+1. **Use descriptive filenames** - Files named with dates (`2024-01-15_invoice.pdf`) get higher confidence scores
+2. **Ensure text is selectable** - For scanned PDFs, run OCR first using our [OCR tool](/ocr-pdf)
+3. **Check confidence scores** - Higher percentages mean more reliable sorting
+4. **Review before merging** - Smart Merge is a suggestion tool, not a replacement for human judgment
+
+## Conclusion
+
+Smart Merge transforms PDF merging from a manual chore into an intelligent, automated process. Whether you're organizing a few documents or hundreds, the AI-powered sorting and duplicate detection save time while maintaining complete privacy.
+
+Ready to try it? Open the [Merge PDF tool](/merge-pdf) and upload your files - Smart Merge activates automatically.
+
+---
+
+**Related guides:**
+- [How to Merge PDF Files](/blog/how-to-merge-pdf-files)
+- [Compress PDF Without Losing Quality](/blog/compress-pdf-without-losing-quality)
+- [PDF Security Best Practices](/blog/pdf-security-best-practices)

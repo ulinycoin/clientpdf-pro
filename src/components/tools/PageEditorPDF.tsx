@@ -24,6 +24,7 @@ import { useI18n } from '@/hooks/useI18n';
 import { useSharedFile } from '@/hooks/useSharedFile';
 import { usePDFThumbnails, type PageThumbnail } from '@/hooks/usePDFThumbnails';
 import pdfService from '@/services/pdfService';
+import { SmartOrganizePanel } from '@/components/smart/SmartOrganizePanel';
 import type { UploadedFile } from '@/types/pdf';
 import { toast } from 'sonner';
 import { RotateCw, Trash2, Plus, Download } from 'lucide-react';
@@ -273,6 +274,54 @@ export const PageEditorPDF: React.FC = () => {
     );
   };
 
+  // Smart Organize: Delete multiple pages by page number
+  const handleSmartDelete = (pageNumbers: number[]) => {
+    setPages((items) =>
+      items.map((item) =>
+        pageNumbers.includes(item.pageNumber) ? { ...item, isDeleted: true } : item
+      )
+    );
+    toast.success(`${pageNumbers.length} page(s) marked for deletion`);
+  };
+
+  // Smart Organize: Rotate multiple pages
+  const handleSmartRotate = (pageNumbers: number[], rotation: number) => {
+    setPages((items) =>
+      items.map((item) =>
+        pageNumbers.includes(item.pageNumber)
+          ? { ...item, rotation: (item.rotation + rotation) % 360 }
+          : item
+      )
+    );
+    toast.success(`${pageNumbers.length} page(s) rotated`);
+  };
+
+  // Smart Organize: Reorder pages
+  const handleSmartReorder = (newOrder: number[]) => {
+    setPages((items) => {
+      const itemMap = new Map(items.map(item => [item.pageNumber, item]));
+      const reordered = newOrder
+        .map(pageNum => itemMap.get(pageNum))
+        .filter((item): item is PageItem => item !== undefined);
+      // Add any pages not in newOrder at the end
+      const remaining = items.filter(item => !newOrder.includes(item.pageNumber));
+      return [...reordered, ...remaining];
+    });
+    toast.success('Pages reordered');
+  };
+
+  // Smart Organize: Highlight pages (scroll into view)
+  const handleHighlightPages = (pageNumbers: number[]) => {
+    // Scroll first highlighted page into view
+    if (pageNumbers.length > 0) {
+      const firstPage = pages.find(p => p.pageNumber === pageNumbers[0]);
+      if (firstPage) {
+        const element = document.getElementById(`page-${firstPage.pageNumber}`);
+        element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+  };
+
   // Process and download
   const handleProcess = async () => {
     if (!file?.file) return;
@@ -410,6 +459,17 @@ export const PageEditorPDF: React.FC = () => {
               </Button>
             </div>
           </Card>
+
+          {/* Smart Organize Panel */}
+          <div className="mb-4">
+            <SmartOrganizePanel
+              file={file?.file || null}
+              onDeletePages={handleSmartDelete}
+              onRotatePages={handleSmartRotate}
+              onReorderPages={handleSmartReorder}
+              onHighlightPages={handleHighlightPages}
+            />
+          </div>
 
           {/* Instructions */}
           <Card className="p-4 mb-4 bg-ocean-50 dark:bg-ocean-900/20">

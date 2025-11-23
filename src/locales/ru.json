@@ -166,6 +166,28 @@
       "split": "Извлечь страницы"
     }
   },
+  "smartMerge": {
+    "title": "Умное объединение",
+    "analyzing": "Анализ документов...",
+    "sortSuggestions": "Варианты сортировки",
+    "detectedDates": "Найденные даты",
+    "duplicatesFound": "Найдены возможные дубликаты",
+    "similarFiles": "похожих файлов",
+    "keepFirst": "Оставить первый",
+    "sortApplied": "Сортировка применена",
+    "duplicatesRemoved": "Дубликаты удалены"
+  },
+  "smartOrganize": {
+    "title": "Умная организация",
+    "analyzing": "Анализ страниц...",
+    "quickActions": "Быстрые действия",
+    "detectedChapters": "Найденные главы",
+    "removeBlank": "Удалить пустые страницы",
+    "removeDuplicates": "Удалить дубликаты",
+    "fixRotation": "Исправить поворот",
+    "moveTOC": "Переместить оглавление в начало",
+    "noIssues": "Проблем не найдено — документ в порядке!"
+  },
   "compress": {
     "filePreview": "Файл для сжатия",
     "originalSize": "Исходный размер",

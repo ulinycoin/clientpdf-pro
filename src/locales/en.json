@@ -176,6 +176,28 @@
       "split": "Extract pages"
     }
   },
+  "smartMerge": {
+    "title": "Smart Merge",
+    "analyzing": "Analyzing documents...",
+    "sortSuggestions": "Sort Suggestions",
+    "detectedDates": "Detected Dates",
+    "duplicatesFound": "Possible Duplicates Found",
+    "similarFiles": "similar files",
+    "keepFirst": "Keep First",
+    "sortApplied": "Sort applied",
+    "duplicatesRemoved": "Duplicates removed"
+  },
+  "smartOrganize": {
+    "title": "Smart Organize",
+    "analyzing": "Analyzing pages...",
+    "quickActions": "Quick Actions",
+    "detectedChapters": "Detected Chapters",
+    "removeBlank": "Remove Blank Pages",
+    "removeDuplicates": "Remove Duplicates",
+    "fixRotation": "Fix Rotation",
+    "moveTOC": "Move TOC to Front",
+    "noIssues": "No issues detected - document looks good!"
+  },
   "compress": {
     "filePreview": "File to compress",
     "originalSize": "Original size",

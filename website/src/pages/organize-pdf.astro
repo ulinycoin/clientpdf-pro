@@ -1,7 +1,7 @@
 ---
 import ToolPage from '../components/ToolPage.astro';
 
-const keywords = "organize pdf pages, reorder pdf pages, rotate pdf pages, delete pdf pages, rearrange pdf, pdf page organizer, pdf editor, free pdf organizer";
+const keywords = "organize pdf pages, reorder pdf pages, rotate pdf pages, delete pdf pages, rearrange pdf, pdf page organizer, pdf editor, free pdf organizer, smart organize pdf, ai pdf organizer, remove blank pages pdf, detect duplicate pages";
 
 const howToSchema = {
   "@context": "https://schema.org",
@@ -18,14 +18,14 @@ const howToSchema = {
     },
     {
       "@type": "HowToStep",
-      "name": "View Page Thumbnails",
-      "text": "The tool generates thumbnails of all pages, making it easy to see what you're working with.",
+      "name": "View Page Thumbnails and Smart Analysis",
+      "text": "The tool generates thumbnails and Smart Organize AI automatically analyzes your document for blank pages, duplicates, and chapter structure.",
       "image": "https://localpdf.online/screenshots/organize-thumbnails.png"
     },
     {
       "@type": "HowToStep",
-      "name": "Drag, Rotate, or Delete",
-      "text": "Drag pages to reorder, click rotate to turn pages 90°, or click delete to remove unwanted pages.",
+      "name": "Use Quick Actions or Manual Editing",
+      "text": "Use Smart Organize quick actions to remove blank pages, fix duplicates, or correct rotations instantly. Or drag pages to reorder, rotate, or delete manually.",
       "image": "https://localpdf.online/screenshots/organize-edit.png"
     },
     {
@@ -40,32 +40,40 @@ const howToSchema = {
 
 const faqs = [
   {
+    question: "What is Smart Organize and how does it help?",
+    answer: "Smart Organize is our AI-powered feature that automatically analyzes your PDF and detects issues like blank pages, duplicate pages, incorrectly rotated pages, and chapter structure. It offers one-click actions to fix these issues instantly — all processed locally for complete privacy."
+  },
+  {
+    question: "How does blank page detection work?",
+    answer: "Smart Organize scans each page for text and images. Pages with no meaningful content (only page numbers or completely empty) are flagged as blank. Pages with images are never marked as blank, even without text. You can remove all blank pages with one click."
+  },
+  {
+    question: "Can it detect duplicate pages?",
+    answer: "Yes! Smart Organize compares page content using intelligent hashing. If you accidentally scanned a page twice or have repeated content, it will detect and highlight duplicates so you can remove them."
+  },
+  {
     question: "Can I reorder pages in a password-protected PDF?",
     answer: "Yes! You'll need to provide the user password first. The reorganized output won't be password-protected unless you use our <a href='/protect-pdf'>Protect PDF tool</a> afterward."
   },
   {
     question: "What page operations can I perform?",
-    answer: "You can <strong>reorder pages</strong> by drag-and-drop, <strong>rotate pages</strong> in 90° increments, and <strong>delete unwanted pages</strong>. All operations are instant and work together."
+    answer: "You can <strong>reorder pages</strong> by drag-and-drop, <strong>rotate pages</strong> in 90° increments, and <strong>delete unwanted pages</strong>. Smart Organize also offers quick actions to remove blank pages, fix rotations, and remove duplicates automatically."
   },
   {
     question: "Does organizing affect PDF quality?",
     answer: "No quality loss! Organizing is a <strong>lossless operation</strong> - all content, images, fonts, and formatting are preserved exactly. No compression occurs."
   },
   {
+    question: "Can Smart Organize detect chapters?",
+    answer: "Yes! It recognizes chapter headings and section markers in multiple languages (English, German, French, Spanish, Russian). The detected structure is displayed so you can navigate quickly to specific sections."
+  },
+  {
     question: "Can I undo changes before downloading?",
     answer: "Yes! You can reorder pages multiple times, rotate them back, or restore deleted pages before downloading. Nothing is final until you click 'Download Organized PDF'."
   },
   {
-    question: "Will bookmarks and links be preserved?",
-    answer: "Internal links and bookmarks are preserved. However, bookmark page references may not update automatically when pages are reordered - you might need to manually update them afterward."
-  },
-  {
-    question: "How many pages can I organize?",
-    answer: "No limit! You can organize PDFs with hundreds of pages. The only constraint is your device's available memory. Most modern devices handle large documents easily."
-  },
-  {
     question: "Are my files uploaded to a server?",
-    answer: "<strong>Never!</strong> All page organization happens 100% locally in your browser using JavaScript. Your PDFs never leave your device - that's our core privacy guarantee."
+    answer: "<strong>Never!</strong> All page organization and AI analysis happens 100% locally in your browser using JavaScript. Your PDFs never leave your device - that's our core privacy guarantee."
   },
   {
     question: "Can I organize PDFs on mobile devices?",
@@ -81,6 +89,7 @@ const faqs = [
   keywords={keywords}
   description="Reorganize, rotate, and delete PDF pages with intuitive drag-and-drop controls. All processing happens securely in your browser — your files never leave your device."
   benefits={[
+    "🧠 Smart Organize — AI detects blank pages, duplicates & chapters",
     "⚡ Instant — Organize pages in seconds",
     "🔒 Private — No uploads to servers",
     "🆓 Free — Unlimited use during beta"
@@ -94,27 +103,29 @@ const faqs = [
   whyChoose={{
     title: "Why Choose Our PDF Page Organizer?",
     reasons: [
+      "Smart Organize AI: Automatically detects blank pages, duplicates, and chapter structure. Fix common issues with one-click quick actions — all processed locally in your browser.",
       "Complete Privacy: Your PDF never leaves your device. Unlike cloud-based organizers that upload documents to remote servers, LocalPDF processes everything locally for maximum security.",
       "Intuitive Drag-and-Drop: Reorder pages by simply dragging thumbnails. No complex interfaces or confusing options — just grab and move.",
       "Visual Page Thumbnails: See exactly what each page contains before making changes. No guessing which page is which.",
       "Combine Multiple Operations: Reorder, rotate, and delete pages all in one session. Make all your changes before downloading the final result.",
-      "No File Size Restrictions: Organize PDFs with hundreds of pages without hitting upload limits. Your browser's memory is the only constraint.",
-      "Instant Preview: See changes in real-time as you drag, rotate, or delete. What you see is what you get."
+      "No File Size Restrictions: Organize PDFs with hundreds of pages without hitting upload limits. Your browser's memory is the only constraint."
     ]
   }}
   features={[
+    "Smart Organize AI — automatic blank page & duplicate detection",
+    "One-click quick actions — remove blanks, fix duplicates, correct rotations",
+    "Chapter detection — navigate document structure in multiple languages",
     "Drag-and-drop page reordering",
     "Rotate pages in 90° increments (0°, 90°, 180°, 270°)",
-    "Delete unwanted pages",
-    "Restore deleted pages before downloading",
+    "Delete unwanted pages with restore option",
     "Visual page thumbnails for easy navigation",
     "Process multiple operations in one session"
   ]}
   steps={[
     'Click "Open Tool" button above',
     "Upload the PDF file you want to organize",
-    "Drag pages to reorder them in your desired sequence",
-    "Rotate or delete pages as needed",
+    "Review Smart Organize suggestions — blank pages, duplicates, chapters",
+    "Use quick actions or manually drag, rotate, delete pages",
     'Click "Download Organized PDF" to save'
   ]}
   faqs={faqs}

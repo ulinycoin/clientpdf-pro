@@ -199,5 +199,27 @@
       "watermark": "Agregar marca de agua",
       "merge": "Combinar con otros"
     }
+  },
+  "smartMerge": {
+    "title": "Fusión inteligente",
+    "analyzing": "Analizando documentos...",
+    "sortSuggestions": "Sugerencias de orden",
+    "detectedDates": "Fechas detectadas",
+    "duplicatesFound": "Posibles duplicados encontrados",
+    "similarFiles": "archivos similares",
+    "keepFirst": "Mantener primero",
+    "sortApplied": "Orden aplicado",
+    "duplicatesRemoved": "Duplicados eliminados"
+  },
+  "smartOrganize": {
+    "title": "Organización inteligente",
+    "analyzing": "Analizando páginas...",
+    "quickActions": "Acciones rápidas",
+    "detectedChapters": "Capítulos detectados",
+    "removeBlank": "Eliminar páginas en blanco",
+    "removeDuplicates": "Eliminar duplicados",
+    "fixRotation": "Corregir rotación",
+    "moveTOC": "Mover índice al inicio",
+    "noIssues": "No se detectaron problemas - ¡el documento está bien!"
   }
 }

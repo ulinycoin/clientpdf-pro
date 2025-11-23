@@ -1,14 +1,14 @@
 ---
 import ToolPage from '../components/ToolPage.astro';
 
-const keywords = "merge pdf, combine pdf, join pdf, pdf merger, combine pdf files, merge pdf files online, free pdf merger";
+const keywords = "merge pdf, combine pdf, join pdf, pdf merger, combine pdf files, merge pdf files online, free pdf merger, smart merge pdf, ai pdf merge, sort pdf by date, detect duplicate pdf";
 
 const howToSchema = {
   "@context": "https://schema.org",
   "@type": "HowTo",
   "image": "https://localpdf.online/logos/icon-512.png",
   "name": "How to Merge PDF Files with LocalPDF",
-  "description": "A step-by-step guide to combining multiple PDF files into a single document using the free and private LocalPDF merge tool.",
+  "description": "A step-by-step guide to combining multiple PDF files into a single document using the free and private LocalPDF merge tool with AI-powered Smart Merge.",
   "step": [
     {
       "@type": "HowToStep",
@@ -20,12 +20,18 @@ const howToSchema = {
       "@type": "HowToStep",
       "name": "Select Files",
       "text": "Select multiple PDF files from your device by clicking the 'Select Files' button or dragging and dropping them into the tool.",
-      "image": "https://localpdf.online/screenshots/merge-select.png" 
+      "image": "https://localpdf.online/screenshots/merge-select.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Use Smart Merge",
+      "text": "Smart Merge AI analyzes your documents and suggests optimal sorting. Click 'Chronological' to sort by date, 'By Filename' for numbered files, or review duplicate warnings.",
+      "image": "https://localpdf.online/screenshots/merge-smart.png"
     },
     {
       "@type": "HowToStep",
       "name": "Arrange Order",
-      "text": "Arrange the files in your desired order by dragging and dropping them. You can also preview the pages of each PDF.",
+      "text": "Fine-tune the order by dragging and dropping files. Preview pages from each PDF to ensure correct ordering.",
       "image": "https://localpdf.online/screenshots/merge-arrange.png"
     },
     {
@@ -39,6 +45,10 @@ const howToSchema = {
 };
 
 const faqs = [
+  {
+    question: "What is Smart Merge and how does it work?",
+    answer: "Smart Merge is our AI-powered feature that automatically analyzes your PDF documents and suggests optimal sorting options. It detects dates within documents, recognizes filename patterns (like part1, part2), identifies potential duplicates, and offers one-click sorting — all processed locally in your browser for complete privacy."
+  },
   {
     question: "Can I merge password-protected PDFs?",
     answer: "Yes, but you'll need to provide the user password for each protected PDF before merging. The merged output won't be password-protected unless you use our <a href='/protect-pdf'>Protect PDF tool</a> afterward."
@@ -57,7 +67,11 @@ const faqs = [
   },
   {
     question: "Can I change the order of PDFs before merging?",
-    answer: "Absolutely! Before clicking 'Merge', you can drag and drop files to rearrange them in any order. You can also preview pages from each PDF to ensure correct ordering."
+    answer: "Absolutely! Before clicking 'Merge', you can drag and drop files to rearrange them in any order. You can also use Smart Merge to automatically sort by date, filename, or file size. Preview pages from each PDF to ensure correct ordering."
+  },
+  {
+    question: "How does duplicate detection work?",
+    answer: "Smart Merge analyzes the text content of your PDFs and compares file sizes to identify potential duplicates or very similar documents. When found, you'll see a warning with an option to keep only the first file from each duplicate group."
   },
   {
     question: "What happens if PDFs have different page sizes?",
@@ -65,7 +79,7 @@ const faqs = [
   },
   {
     question: "Are my files uploaded to a server?",
-    answer: "<strong>Never!</strong> All merging happens 100% locally in your browser using JavaScript. Your PDFs never leave your device - that's our core privacy guarantee."
+    answer: "<strong>Never!</strong> All merging and AI analysis happens 100% locally in your browser using JavaScript. Your PDFs never leave your device - that's our core privacy guarantee."
   },
   {
     question: "Can I merge PDFs on mobile devices?",
@@ -81,6 +95,7 @@ const faqs = [
   keywords={keywords}
   description="Combine multiple PDF files into one document — instantly and securely. All processing happens in your browser, ensuring complete privacy. No uploads, no registration, no hidden fees."
   benefits={[
+    "🧠 Smart Merge — AI-powered sorting & duplicate detection",
     "⚡ Instant — Process in under 2 seconds",
     "🔒 Private — Files never leave your device",
     "🆓 Free — No limits during beta testing"
@@ -103,6 +118,9 @@ const faqs = [
     ]
   }}
   features={[
+    "🧠 Smart Merge: AI-powered automatic sorting by date, filename, or size",
+    "🔍 Duplicate Detection: Identify and remove similar files before merging",
+    "📅 Date Extraction: Automatically detect dates from document content",
     "Merge unlimited PDF files in any order",
     "Drag-and-drop reordering before merging",
     "Preview pages before combining",
@@ -113,7 +131,8 @@ const faqs = [
   steps={[
     'Click "Open Tool" button above',
     "Select multiple PDF files from your device",
-    "Arrange files in desired order (drag-and-drop)",
+    "Use Smart Merge suggestions to auto-sort by date or filename, or drag-and-drop manually",
+    "Review duplicate warnings and remove if needed",
     "Click \"Merge\" and download your combined PDF instantly"
   ]}
   faqs={faqs}

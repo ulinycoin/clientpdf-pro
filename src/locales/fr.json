@@ -199,5 +199,27 @@
       "watermark": "Ajouter un filigrane",
       "merge": "Combiner avec d'autres"
     }
+  },
+  "smartMerge": {
+    "title": "Fusion intelligente",
+    "analyzing": "Analyse des documents...",
+    "sortSuggestions": "Suggestions de tri",
+    "detectedDates": "Dates détectées",
+    "duplicatesFound": "Doublons possibles trouvés",
+    "similarFiles": "fichiers similaires",
+    "keepFirst": "Garder le premier",
+    "sortApplied": "Tri appliqué",
+    "duplicatesRemoved": "Doublons supprimés"
+  },
+  "smartOrganize": {
+    "title": "Organisation intelligente",
+    "analyzing": "Analyse des pages...",
+    "quickActions": "Actions rapides",
+    "detectedChapters": "Chapitres détectés",
+    "removeBlank": "Supprimer les pages vides",
+    "removeDuplicates": "Supprimer les doublons",
+    "fixRotation": "Corriger la rotation",
+    "moveTOC": "Déplacer la table des matières",
+    "noIssues": "Aucun problème détecté - le document est en ordre!"
   }
 }

@@ -200,5 +200,27 @@
       "watermark": "Wasserzeichen hinzufügen",
       "merge": "Mit anderen kombinieren"
     }
+  },
+  "smartMerge": {
+    "title": "Intelligentes Zusammenführen",
+    "analyzing": "Dokumente werden analysiert...",
+    "sortSuggestions": "Sortiervorschläge",
+    "detectedDates": "Erkannte Daten",
+    "duplicatesFound": "Mögliche Duplikate gefunden",
+    "similarFiles": "ähnliche Dateien",
+    "keepFirst": "Erste behalten",
+    "sortApplied": "Sortierung angewendet",
+    "duplicatesRemoved": "Duplikate entfernt"
+  },
+  "smartOrganize": {
+    "title": "Intelligente Organisation",
+    "analyzing": "Seiten werden analysiert...",
+    "quickActions": "Schnellaktionen",
+    "detectedChapters": "Erkannte Kapitel",
+    "removeBlank": "Leere Seiten entfernen",
+    "removeDuplicates": "Duplikate entfernen",
+    "fixRotation": "Drehung korrigieren",
+    "moveTOC": "Inhaltsverzeichnis nach vorne",
+    "noIssues": "Keine Probleme gefunden - Dokument ist in Ordnung!"
   }
 }

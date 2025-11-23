@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { useI18n } from '@/hooks/useI18n';
 import { useSharedFile } from '@/hooks/useSharedFile';
 import pdfService from '@/services/pdfService';
+import { SmartMergePanel } from '@/components/smart/SmartMergePanel';
 import type { UploadedFile } from '@/types/pdf';
 import type { Tool } from '@/types';
 import { HASH_TOOL_MAP } from '@/types';
@@ -173,6 +174,22 @@ export const MergePDF: React.FC = () => {
     setFiles(newFiles);
   };
 
+  // Smart Merge: Apply sort order from AI suggestions
+  const handleApplySmartSort = (newOrder: string[]) => {
+    const fileMap = new Map(files.map(f => [f.id, f]));
+    const sortedFiles = newOrder
+      .map(id => fileMap.get(id))
+      .filter((f): f is UploadedFile => f !== undefined);
+    setFiles(sortedFiles);
+    toast.success(t('smartMerge.sortApplied') || 'Sort applied');
+  };
+
+  // Smart Merge: Remove duplicate files
+  const handleRemoveDuplicates = (fileIds: string[]) => {
+    setFiles(prev => prev.filter(f => !fileIds.includes(f.id)));
+    toast.success(t('smartMerge.duplicatesRemoved') || `${fileIds.length} duplicate(s) removed`);
+  };
+
   return (
     <div className="merge-pdf space-y-6">
       {/* Header */}
@@ -198,6 +215,15 @@ export const MergePDF: React.FC = () => {
             />
           </CardContent>
         </Card>
+      )}
+
+      {/* Smart Merge Panel */}
+      {files.length >= 2 && !result && !isProcessing && (
+        <SmartMergePanel
+          files={files.map(f => ({ id: f.id, file: f.file, name: f.name }))}
+          onApplySort={handleApplySmartSort}
+          onRemoveDuplicates={handleRemoveDuplicates}
+        />
       )}
 
       {/* Files list with previews */}
