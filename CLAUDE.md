@@ -151,6 +151,97 @@ export type ToolGroup = 'all' | 'organize' | 'edit' | 'security' | 'convert';
 7. **Create SEO page** in `website/src/pages/new-tool.astro`
 8. **Verify bundle size** after build (initial load should stay < 100 KB gzip)
 
+## Adding AI/Smart Features to Tools
+
+AI features enhance tools with automatic analysis and suggestions. All AI runs **100% locally in browser** - no external API calls.
+
+### Architecture Pattern
+
+```
+src/services/smart{Feature}Service.ts  → Analysis logic (singleton)
+src/components/smart/Smart{Feature}Panel.tsx → UI component
+src/components/tools/{Tool}.tsx → Integration point
+```
+
+### Existing Smart Features
+
+| Feature | Tool | Service | Capabilities |
+|---------|------|---------|--------------|
+| **Smart Merge** | merge-pdf | `smartMergeService.ts` | Date extraction, duplicate detection, sort suggestions |
+| **Smart Organize** | organize-pdf | `smartOrganizeService.ts` | Blank page detection, duplicates, chapters, rotation issues |
+
+### Step-by-Step: Adding a Smart Feature
+
+1. **Create service** in `src/services/smart{Feature}Service.ts`:
+   ```typescript
+   // Singleton pattern
+   class Smart{Feature}Service {
+     private static instance: Smart{Feature}Service;
+     static getInstance(): Smart{Feature}Service { ... }
+
+     // Main analysis method
+     async analyze(input: InputType): Promise<AnalysisResult> { ... }
+   }
+   ```
+
+2. **Create UI panel** in `src/components/smart/Smart{Feature}Panel.tsx`:
+   ```typescript
+   interface Smart{Feature}PanelProps {
+     analysisResult: AnalysisResult | null;
+     isAnalyzing: boolean;
+     onAction: (action: ActionType) => void;
+     enabled: boolean;
+     onToggle: (enabled: boolean) => void;
+   }
+   ```
+
+3. **Integrate into tool component**:
+   - Import service and panel
+   - Add state: `analysisResult`, `isAnalyzing`, `smartEnabled`
+   - Call `service.analyze()` after file upload
+   - Render `<Smart{Feature}Panel />` in UI
+   - Handle quick actions (bulk operations)
+
+4. **Add translations** to all 5 locale files:
+   ```json
+   "smart{Feature}": {
+     "title": "Smart {Feature}",
+     "analyzing": "Analyzing...",
+     "quickActions": "Quick Actions",
+     ...
+   }
+   ```
+
+5. **Update SEO page** in `website/src/pages/{tool}.astro`:
+   - Add to `keywords`
+   - Add to `benefits[]`
+   - Add to `features[]`
+   - Update `steps[]`
+   - Add FAQs about the feature
+   - Update `howToSchema`
+
+6. **Create blog article** in `website/src/content/blog/smart-{feature}-....mdx`:
+   - Explain the feature
+   - List capabilities
+   - Include real-world use cases
+   - Emphasize privacy (local processing)
+
+### Technical Guidelines for AI Features
+
+- **Use PDF.js** (`pdfjs-dist`) for text extraction and page analysis
+- **Use SHA-256 hashing** for duplicate detection (via `crypto.subtle.digest`)
+- **Support multiple languages** in pattern detection (EN, DE, FR, ES, RU)
+- **Never flag image-only pages as blank** - always check for images first
+- **Provide toggle** to enable/disable the feature
+- **Show confidence scores** where applicable
+- **Keep analysis fast** - typically < 1 second for 100 pages
+
+### Privacy Requirements
+
+- **NO external API calls** - all analysis runs in browser
+- **NO data collection** - nothing sent to servers
+- **Works offline** - after initial page load
+
 ## Important Constraints
 
 1. **NEVER import tool components directly** - Always use `React.lazy()`
