@@ -13,7 +13,10 @@
     "build:vercel": "node build-vercel.mjs",
     "preview:web": "astro preview --root website",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "tauri": "tauri",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.8",
@@ -62,6 +65,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
+    "@tauri-apps/cli": "^2.9.4",
     "@types/node": "^24.8.1",
     "@types/react": "^19.1.16",
     "@types/react-dom": "^19.1.9",

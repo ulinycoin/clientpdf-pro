@@ -151,69 +151,126 @@ export class QuickOCR {
 
       console.log('✅ QuickOCR: Canvas extracted, size:', sampleCanvas.width + 'x' + sampleCanvas.height);
 
-      // For images, try Russian OCR first to avoid misdetection
+      // Pre-analysis: Check filename for language hints
+      const filenameHints = detectLanguageAdvanced(file.name);
+      console.log('📝 QuickOCR: Filename suggests:', filenameHints.language, '(confidence:', filenameHints.confidence + ')');
+
+      // Multi-language OCR strategy
       let extractedText = '';
-      let shouldTryRussian = false;
+      let bestLanguage = 'eng';
+      let bestConfidence = 0;
+      let bestText = '';
 
-      if (file.type.startsWith('image/')) {
-        console.log('🖼️ QuickOCR: Image file detected - trying Russian OCR first');
-        shouldTryRussian = true;
+      // Strategy: Try up to 2 languages based on confidence
+      // 1. If filename has high confidence → try that language + English
+      // 2. If filename has medium/low confidence → try English only (then use Franc)
+
+      const languagesToTry: string[] = [];
+
+      if (filenameHints.confidence === 'high' && filenameHints.language !== 'eng') {
+        // High confidence from filename - try both native language and English
+        languagesToTry.push(filenameHints.language, 'eng');
+        console.log(`🎯 QuickOCR: High confidence from filename - will try: ${filenameHints.language}, eng`);
       } else {
-        // For PDFs, try English first
-        const worker = await this.getWorker();
-        console.log('🔤 QuickOCR: Starting English OCR analysis');
-
-        const englishResult = await worker.recognize(sampleCanvas);
-
-        extractedText = englishResult.data.text?.slice(0, 500) || '';
-        console.log('📝 QuickOCR: Extracted text preview:', extractedText.substring(0, 100) + '...');
-
-        // If we detect Cyrillic characters, try again with Russian OCR
-        const cyrillicMatches = extractedText.match(/[а-яё]/gi);
-        const cyrillicRatio = extractedText.length > 0 ? (cyrillicMatches?.length || 0) / extractedText.length : 0;
-
-        console.log('🔍 QuickOCR: Cyrillic analysis - ratio:', Math.round(cyrillicRatio * 100) + '%');
-
-        shouldTryRussian = cyrillicRatio > 0.05 || (cyrillicMatches && cyrillicMatches.length >= 3);
+        // Low/medium confidence or English - start with English
+        languagesToTry.push('eng');
+        console.log('🎯 QuickOCR: Will try: eng (then analyze content)');
       }
 
-      if (shouldTryRussian) {
-        console.log('🇷🇺 QuickOCR: Trying Russian OCR with existing worker');
+      // Try each language
+      for (const lang of languagesToTry) {
+        console.log(`🔤 QuickOCR: Starting ${lang.toUpperCase()} OCR analysis`);
+
         try {
-          // Use the existing worker, just switch to Russian
-          await this.setLanguage('rus');
+          await this.setLanguage(lang);
           const worker = await this.getWorker();
 
-          const russianResult = await worker.recognize(sampleCanvas);
+          const result = await worker.recognize(sampleCanvas);
+          const text = result.data.text?.slice(0, 500) || '';
+          const confidence = result.data.confidence || 0;
 
-          const russianText = russianResult.data.text?.slice(0, 500) || '';
-          console.log('🇷🇺 QuickOCR: Russian OCR result preview:', russianText.substring(0, 100) + '...');
+          console.log(`📝 QuickOCR: ${lang.toUpperCase()} text preview:`, text.substring(0, 100) + '...');
+          console.log(`📊 QuickOCR: ${lang.toUpperCase()} confidence:`, confidence.toFixed(1) + '%');
 
-          // Use Russian-extracted text if it's better quality
-          if (russianText.length > extractedText.length * 0.8) {
-            console.log('✅ QuickOCR: Using Russian OCR result');
-            return detectLanguageAdvanced(file.name, russianText);
+          // Keep track of best result
+          if (confidence > bestConfidence) {
+            bestLanguage = lang;
+            bestConfidence = confidence;
+            bestText = text;
+            extractedText = text;
           }
+        } catch (error) {
+          console.warn(`❌ QuickOCR: ${lang.toUpperCase()} OCR failed:`, error);
+        }
+      }
 
-          // Switch back to English for future use
-          await this.setLanguage('eng');
-        } catch (russianError) {
-          console.warn('❌ QuickOCR: Russian OCR failed:', russianError);
-          // Try to switch back to English in case of error
+      console.log(`✅ QuickOCR: Best initial result: ${bestLanguage.toUpperCase()} (confidence: ${bestConfidence.toFixed(1)}%)`);
+
+      // Ensure we're back on English for future operations
+      await this.setLanguage('eng');
+
+      // If we only tried English and confidence is low, use Franc to suggest another language
+      if (languagesToTry.length === 1 && bestConfidence < 80) {
+        console.log('⚠️ QuickOCR: Low confidence from English OCR - analyzing content with Franc');
+
+        // Quick Franc analysis to suggest a better language
+        const quickFrancResult = detectLanguageAdvanced(file.name, extractedText);
+
+        console.log('🔍 QuickOCR: Franc suggests:', quickFrancResult.language, '(confidence:', quickFrancResult.confidence + ')');
+
+        // If Franc has high confidence and suggests non-English, try that language
+        if (quickFrancResult.confidence === 'high' &&
+            quickFrancResult.language !== 'eng' &&
+            quickFrancResult.language !== bestLanguage) {
+
+          console.log(`🌐 QuickOCR: Trying ${quickFrancResult.language.toUpperCase()} based on Franc suggestion`);
+
           try {
+            await this.setLanguage(quickFrancResult.language);
+            const worker = await this.getWorker();
+
+            const result = await worker.recognize(sampleCanvas);
+            const text = result.data.text?.slice(0, 500) || '';
+            const confidence = result.data.confidence || 0;
+
+            console.log(`📝 QuickOCR: ${quickFrancResult.language.toUpperCase()} text preview:`, text.substring(0, 100) + '...');
+            console.log(`📊 QuickOCR: ${quickFrancResult.language.toUpperCase()} confidence:`, confidence.toFixed(1) + '%');
+
+            // Use Franc-suggested language if it's significantly better
+            if (confidence > bestConfidence + 5) {
+              console.log(`✅ QuickOCR: Using ${quickFrancResult.language.toUpperCase()} result (better quality)`);
+              bestLanguage = quickFrancResult.language;
+              bestConfidence = confidence;
+              bestText = text;
+              extractedText = text;
+            }
+
+            // Switch back to English
             await this.setLanguage('eng');
-          } catch (e) {
-            // If this fails, worker might be corrupted, cleanup and recreate
-            await this.cleanup();
+
+          } catch (error) {
+            console.warn(`❌ QuickOCR: ${quickFrancResult.language.toUpperCase()} OCR failed:`, error);
+            await this.setLanguage('eng');
           }
         }
       }
 
-      // Use the extracted text for language detection
+      // Use the best extracted text for final language detection
       console.log('🎯 QuickOCR: Using text for final language detection');
+      console.log('🎯 QuickOCR: Best language from OCR:', bestLanguage, '(confidence:', bestConfidence.toFixed(1) + '%)');
+
       const finalResult = file.type.startsWith('image/') ?
         detectLanguageAdvanced('content_analysis.txt', extractedText) :
         detectLanguageAdvanced(file.name, extractedText);
+
+      // If OCR tried a non-English language and had good confidence, trust it over Franc
+      if (bestLanguage !== 'eng' && bestConfidence >= 75) {
+        console.log('✅ QuickOCR: Using OCR-detected language:', bestLanguage, '(high OCR confidence)');
+        finalResult.language = bestLanguage;
+        finalResult.confidence = 'high';
+        finalResult.detectionMethods.push('ocr_native_model');
+        finalResult.details = `Detected ${bestLanguage} via OCR with native language model (confidence: ${bestConfidence.toFixed(1)}%)`;
+      }
 
       console.log('🏁 QuickOCR: Final detection result:', finalResult);
       return finalResult;

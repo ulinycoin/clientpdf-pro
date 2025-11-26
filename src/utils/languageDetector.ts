@@ -13,8 +13,53 @@ export interface LanguageDetectionResult {
 // Mapping from franc's ISO 639-3 codes to our Tesseract codes if they differ
 const francToTesseractMap: { [key: string]: string } = {
   cmn: 'chi_sim', // Mandarin -> Chinese Simplified
+  yue: 'chi_tra', // Cantonese -> Chinese Traditional
+  nan: 'chi_tra', // Min Nan -> Chinese Traditional
   // Franc uses 'srp' for Serbian Latin, Tesseract uses 'srp' for Cyrillic.
   // We assume content will guide this correctly.
+
+  // Additional ISO 639-3 to Tesseract mappings
+  deu: 'deu', // German (already exists but explicit)
+  fra: 'fra', // French
+  spa: 'spa', // Spanish
+  por: 'por', // Portuguese
+  ita: 'ita', // Italian
+  nld: 'nld', // Dutch
+  pol: 'pol', // Polish
+  rus: 'rus', // Russian
+  ukr: 'ukr', // Ukrainian
+  bel: 'bel', // Belarusian
+  bul: 'bul', // Bulgarian
+  ces: 'ces', // Czech
+  slk: 'slk', // Slovak
+  slv: 'slv', // Slovenian
+  hrv: 'hrv', // Croatian
+  srp: 'srp', // Serbian
+  mkd: 'mkd', // Macedonian
+  ron: 'ron', // Romanian
+  hun: 'hun', // Hungarian
+  tur: 'tur', // Turkish
+  ell: 'ell', // Greek (modern)
+  sqi: 'sqi', // Albanian
+  cat: 'cat', // Catalan
+  glg: 'glg', // Galician
+  eus: 'eus', // Basque
+  swe: 'swe', // Swedish
+  nor: 'nor', // Norwegian
+  dan: 'dan', // Danish
+  fin: 'fin', // Finnish
+  isl: 'isl', // Icelandic
+  lav: 'lav', // Latvian
+  lit: 'lit', // Lithuanian
+  est: 'est', // Estonian
+  jpn: 'jpn', // Japanese
+  kor: 'kor', // Korean
+  ara: 'ara', // Arabic
+  heb: 'heb', // Hebrew
+  fas: 'fas', // Persian/Farsi
+  hin: 'hin', // Hindi
+  tha: 'tha', // Thai
+  vie: 'vie', // Vietnamese
 };
 
 // List of supported Tesseract codes from the UI
@@ -81,7 +126,7 @@ export const detectLanguageAdvanced = (filename: string, contentSample?: string)
     const scriptPatterns = [
       // Enhanced Russian detection
       {
-        pattern: /[а-яё]/gi,
+        pattern: /[а-яёА-ЯЁ]/g,
         lang: 'rus',
         script: 'Cyrillic',
         minMatches: 2
@@ -130,12 +175,19 @@ export const detectLanguageAdvanced = (filename: string, contentSample?: string)
         script: 'Polish diacritics',
         minMatches: 1
       },
-      // Baltic languages - specific character detection
+      // Baltic languages - specific character detection with better patterns
       {
         pattern: /[āčēģīķļņšūž]/gi,
         lang: 'lav',
         script: 'Latvian diacritics',
         minMatches: 1
+      },
+      // Latvian common words/patterns
+      {
+        pattern: /\b(un|ir|es|viņš|viņa|mēs|jūs|kas|vai|bet|par|no|uz|ar|pie|pēc)\b/gi,
+        lang: 'lav',
+        script: 'Latvian common words',
+        minMatches: 2
       },
       {
         pattern: /[ąčęėįšųūž]/gi,
@@ -143,11 +195,25 @@ export const detectLanguageAdvanced = (filename: string, contentSample?: string)
         script: 'Lithuanian diacritics',
         minMatches: 1
       },
+      // Lithuanian common words/patterns
+      {
+        pattern: /\b(ir|yra|kad|bet|su|iš|į|pas|nuo|apie|kaip|kas|kuris)\b/gi,
+        lang: 'lit',
+        script: 'Lithuanian common words',
+        minMatches: 2
+      },
       {
         pattern: /[äõöšüž]/gi,
         lang: 'est',
         script: 'Estonian characters',
         minMatches: 1
+      },
+      // Estonian common words/patterns
+      {
+        pattern: /\b(on|ja|ei|või|kui|mis|kes|see|seda|kuid|ning|siis)\b/gi,
+        lang: 'est',
+        script: 'Estonian common words',
+        minMatches: 2
       },
       {
         pattern: /[çğıöşü]/gi,
@@ -257,53 +323,87 @@ export const detectLanguageAdvanced = (filename: string, contentSample?: string)
       { keywords: ['vertrag', 'dokument', 'bericht', 'protokoll', 'antrag'], lang: 'deu' },
       { keywords: ['contrat', 'document', 'rapport', 'protocole', 'demande'], lang: 'fra' },
       { keywords: ['contrato', 'documento', 'informe', 'protocolo', 'solicitud'], lang: 'spa' },
+      // Baltic language document keywords
+      { keywords: ['lēmums', 'lemums', 'līgums', 'ligums', 'lēmumu', 'dokumenti', 'dokumentu', 'apliecība'], lang: 'lav' },
+      { keywords: ['sprendimas', 'sutartis', 'dokumentas', 'pažyma', 'pažymėjimas', 'liudijimas'], lang: 'lit' },
+      { keywords: ['otsus', 'leping', 'dokument', 'tõend', 'tunnistus'], lang: 'est' },
     ];
 
     for (const { keywords, lang } of docTypeKeywords) {
-      if (keywords.some(keyword => name.includes(keyword))) {
+      const matchedKeyword = keywords.find(keyword => name.includes(keyword));
+      if (matchedKeyword) {
         detectedLang = lang;
-        confidence = 'medium';
+        // Higher confidence for Baltic languages with diacritics
+        if (['lav', 'lit', 'est'].includes(lang) && matchedKeyword.match(/[āčēģīķļņšūžąčęėįšųūžäõöšüž]/)) {
+          confidence = 'high';
+          details = `Found ${lang} document keyword '${matchedKeyword}' with diacritics`;
+        } else {
+          confidence = 'medium';
+          details = `Found document type keyword '${matchedKeyword}' suggesting ${lang}`;
+        }
         methods.push('document_type_keywords');
-        details = `Found document type keyword suggesting ${lang}`;
         break;
       }
     }
   }
 
   // Method 5: Content analysis with Franc (high confidence)
-  if (contentSample && contentSample.trim().length > 10 && confidence !== 'high') {
-    console.log('📄 Content sample for Franc analysis:', contentSample.substring(0, 200) + '...');
-    const francResults = francAll(contentSample, { minLength: 3 });
-    console.log('🔍 Franc analysis - top 10 results:');
-    francResults.slice(0, 10).forEach(([code, score], index) => {
-      console.log(`  ${index + 1}. ${code} (score: ${score})`);
-    });
+  if (contentSample && contentSample.trim().length > 10) {
+    // Clean content sample for better analysis
+    const cleanedSample = contentSample
+      .replace(/[^\p{L}\p{N}\s.,!?;:()\-]/gu, ' ') // Keep letters, numbers, basic punctuation
+      .replace(/\s+/g, ' ') // Normalize whitespace
+      .trim();
 
-    if (francResults && francResults.length > 0 && francResults[0][0] !== 'und') {
-      // Try to find first supported language in top 10 results
-      let foundLanguage = false;
-      for (let i = 0; i < Math.min(10, francResults.length); i++) {
-        const [francCode, score] = francResults[i];
-        const tesseractCode = francToTesseractMap[francCode] || francCode;
+    console.log('📄 Content sample for Franc analysis:', cleanedSample.substring(0, 200) + '...');
 
-        if (supportedTesseractCodes.has(tesseractCode)) {
-          console.log(`✅ Found supported language at position ${i + 1}: ${francCode} → ${tesseractCode} (score: ${score})`);
-          detectedLang = tesseractCode;
-          confidence = 'high'; // We trust franc's content analysis
-          methods.push('content_analysis_franc');
-          details = `Detected ${tesseractCode} from content via Franc (rank: ${i + 1}, score: ${score.toFixed(3)})`;
-          foundLanguage = true;
-          break;
+    if (cleanedSample.length > 10) {
+      const francResults = francAll(cleanedSample, { minLength: 3 });
+      console.log('🔍 Franc analysis - top 10 results:');
+      francResults.slice(0, 10).forEach(([code, score], index) => {
+        console.log(`  ${index + 1}. ${code} (score: ${score})`);
+      });
+
+      if (francResults && francResults.length > 0 && francResults[0][0] !== 'und') {
+        // Try to find first supported language in top results
+        // Expand search to top 20 results for better coverage
+        let foundLanguage = false;
+        for (let i = 0; i < Math.min(20, francResults.length); i++) {
+          const [francCode, score] = francResults[i];
+          const tesseractCode = francToTesseractMap[francCode] || francCode;
+
+          if (supportedTesseractCodes.has(tesseractCode)) {
+            console.log(`✅ Found supported language at position ${i + 1}: ${francCode} → ${tesseractCode} (score: ${score})`);
+            detectedLang = tesseractCode;
+
+            // Confidence depends on position and existing confidence
+            if (i === 0 && score > 5) {
+              confidence = 'high'; // Top match with good score
+            } else if (i < 3 && confidence !== 'high') {
+              confidence = 'high'; // Top 3 is reliable
+            } else if (i < 10 && confidence === 'low') {
+              confidence = 'medium'; // Top 10 is decent
+            }
+
+            methods.push('content_analysis_franc');
+            details = confidence === 'high' ?
+              `Detected ${tesseractCode} from content with high confidence (rank: ${i + 1})` :
+              `Content suggests ${tesseractCode} (rank: ${i + 1}, verify recommended)`;
+            foundLanguage = true;
+            break;
+          }
         }
-      }
 
-      if (!foundLanguage) {
-        const [topCode, topScore] = francResults[0];
-        console.log(`⚠️ Franc top result '${topCode}' (score: ${topScore}) is not supported by Tesseract`);
-        console.log(`⚠️ None of the top 10 Franc results are supported by Tesseract`);
+        if (!foundLanguage) {
+          const [topCode, topScore] = francResults[0];
+          console.log(`⚠️ Franc top result '${topCode}' (score: ${topScore}) is not supported by Tesseract`);
+          console.log(`⚠️ None of the top 20 Franc results are supported by Tesseract`);
+        }
+      } else {
+        console.log('⚠️ Franc returned undefined or no results');
       }
     } else {
-      console.log('⚠️ Franc returned undefined or no results');
+      console.log('⚠️ Content sample too short after cleaning');
     }
   }
 
