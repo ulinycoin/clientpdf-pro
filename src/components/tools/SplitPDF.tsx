@@ -11,17 +11,20 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { useI18n } from '@/hooks/useI18n';
 import { useSharedFile } from '@/hooks/useSharedFile';
 import pdfService from '@/services/pdfService';
+import smartOrganizeService from '@/services/smartOrganizeService';
+import type { ChapterInfo } from '@/services/smartOrganizeService';
 import type { UploadedFile } from '@/types/pdf';
 import type { Tool } from '@/types';
 import { HASH_TOOL_MAP } from '@/types';
 import { toast } from 'sonner';
 
-type SplitMode = 'all' | 'range' | 'intervals' | 'custom';
+type SplitMode = 'all' | 'range' | 'intervals' | 'custom' | 'by-structure';
 
 interface SplitResult {
   blob: Blob;
   pageNumbers: number[];
   index: number;
+  chapterTitle?: string; // Optional chapter title for by-structure mode
 }
 
 export const SplitPDF: React.FC = () => {
@@ -45,6 +48,11 @@ export const SplitPDF: React.FC = () => {
 
   // Custom pages mode settings
   const [customPagesInput, setCustomPagesInput] = useState('');
+
+  // By-structure mode settings
+  const [detectedChapters, setDetectedChapters] = useState<ChapterInfo[]>([]);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [selectedChapters, setSelectedChapters] = useState<Set<number>>(new Set());
 
   // Selection for continuing to other tools
   const [selectedResults, setSelectedResults] = useState<Set<number>>(new Set());
@@ -108,6 +116,46 @@ export const SplitPDF: React.FC = () => {
   const handleRemoveFile = () => {
     setFile(null);
     setResults([]);
+    setDetectedChapters([]);
+    setSelectedChapters(new Set());
+  };
+
+  // Analyze document structure for chapter detection
+  const handleAnalyzeStructure = async () => {
+    if (!file) return;
+
+    setIsAnalyzing(true);
+    setProgress(0);
+    setProgressMessage('');
+
+    try {
+      const analysis = await smartOrganizeService.analyzeDocument(
+        file.file,
+        (prog, msg) => {
+          setProgress(prog);
+          setProgressMessage(msg);
+        }
+      );
+
+      if (analysis.chapters.length > 0) {
+        setDetectedChapters(analysis.chapters);
+        // Auto-select all chapters by default
+        setSelectedChapters(new Set(analysis.chapters.map((_, idx) => idx)));
+        toast.success(
+          `${analysis.chapters.length} ${analysis.chapters.length === 1 ? 'chapter' : 'chapters'} detected!`
+        );
+      } else {
+        toast.info('No chapters detected. Try another split mode.');
+        setDetectedChapters([]);
+      }
+    } catch (error) {
+      toast.error('Failed to analyze document structure');
+      console.error(error);
+    } finally {
+      setIsAnalyzing(false);
+      setProgress(0);
+      setProgressMessage('');
+    }
   };
 
   // Parse custom pages input (e.g., "1,3,5-7,10")
@@ -245,6 +293,53 @@ export const SplitPDF: React.FC = () => {
             index,
           }));
         }
+      } else if (splitMode === 'by-structure') {
+        // Split by detected chapters
+        if (selectedChapters.size === 0) {
+          toast.error('Please select at least one chapter to split');
+          setIsProcessing(false);
+          return;
+        }
+
+        const selectedChaptersList = Array.from(selectedChapters)
+          .sort((a, b) => a - b)
+          .map(idx => detectedChapters[idx]);
+
+        setProgress(10);
+        setProgressMessage('Splitting by chapters...');
+
+        // Process each selected chapter
+        for (let i = 0; i < selectedChaptersList.length; i++) {
+          const chapter = selectedChaptersList[i];
+          const endPage = chapter.endPage || (file.info?.pages || 0);
+
+          setProgress(10 + (i / selectedChaptersList.length) * 80);
+          setProgressMessage(`Processing: ${chapter.title}`);
+
+          // Extract pages for this chapter
+          const chapterPages = Array.from(
+            { length: endPage - chapter.startPage + 1 },
+            (_, idx) => chapter.startPage + idx
+          );
+
+          const result = await pdfService.splitPDF(
+            file.file,
+            'custom',
+            { pages: chapterPages },
+            () => {} // No progress callback for individual chapters
+          );
+
+          if (result.success && result.data && result.data[0]) {
+            splitResults.push({
+              blob: result.data[0],
+              pageNumbers: chapterPages,
+              index: i,
+              chapterTitle: chapter.title, // Store chapter title for filename
+            } as any);
+          }
+        }
+
+        setProgress(95);
       }
 
       setResults(splitResults);
@@ -258,11 +353,23 @@ export const SplitPDF: React.FC = () => {
   };
 
   const handleDownload = (result: SplitResult) => {
-    const pageRange = result.pageNumbers.length === 1
-      ? `page-${result.pageNumbers[0]}`
-      : `pages-${result.pageNumbers[0]}-${result.pageNumbers[result.pageNumbers.length - 1]}`;
+    let filename: string;
 
-    const filename = file?.name.replace('.pdf', `_${pageRange}.pdf`) || `split_${pageRange}.pdf`;
+    if (result.chapterTitle) {
+      // Use chapter title for by-structure mode
+      const sanitizedTitle = result.chapterTitle
+        .replace(/[^a-zA-Z0-9а-яА-ЯёЁ\s-]/g, '')
+        .replace(/\s+/g, '_')
+        .slice(0, 50); // Limit filename length
+      filename = file?.name.replace('.pdf', `_${sanitizedTitle}.pdf`) || `${sanitizedTitle}.pdf`;
+    } else {
+      // Use page numbers for other modes
+      const pageRange = result.pageNumbers.length === 1
+        ? `page-${result.pageNumbers[0]}`
+        : `pages-${result.pageNumbers[0]}-${result.pageNumbers[result.pageNumbers.length - 1]}`;
+      filename = file?.name.replace('.pdf', `_${pageRange}.pdf`) || `split_${pageRange}.pdf`;
+    }
+
     pdfService.downloadFile(result.blob, filename);
   };
 
@@ -514,7 +621,7 @@ export const SplitPDF: React.FC = () => {
             </h2>
 
             <Tabs value={splitMode} onValueChange={(value) => setSplitMode(value as SplitMode)} className="w-full">
-              <TabsList className="grid w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 h-auto bg-transparent mb-6">
+              <TabsList className="grid w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 h-auto bg-transparent mb-6">
                 {/* All pages mode */}
                 <TabsTrigger
                   value="all"
@@ -602,6 +709,29 @@ export const SplitPDF: React.FC = () => {
                       </h3>
                       <p className="text-sm text-gray-600 dark:text-gray-400">
                         {t('split.mode.custom.description')}
+                      </p>
+                    </div>
+                  </div>
+                </TabsTrigger>
+
+                {/* By-structure mode */}
+                <TabsTrigger
+                  value="by-structure"
+                  disabled={isProcessing}
+                  className="p-6 rounded-xl border-2 transition-all text-left data-[state=active]:border-ocean-500 data-[state=active]:bg-ocean-50 dark:data-[state=active]:bg-ocean-900/20 border-gray-200 dark:border-privacy-700 hover:border-ocean-300 dark:hover:border-ocean-700 disabled:opacity-50 disabled:cursor-not-allowed h-auto"
+                >
+                  <div className="flex items-start gap-3">
+                    <span className="text-4xl">✨</span>
+                    <div className="flex-1">
+                      <h3 className={`font-semibold mb-1 ${
+                        splitMode === 'by-structure'
+                          ? 'text-ocean-600 dark:text-ocean-400'
+                          : 'text-gray-900 dark:text-white'
+                      }`}>
+                        {t('split.mode.byStructure.name')}
+                      </h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        {t('split.mode.byStructure.description')}
                       </p>
                     </div>
                   </div>
@@ -703,10 +833,113 @@ export const SplitPDF: React.FC = () => {
               </div>
             )}
 
+            {splitMode === 'by-structure' && (
+              <div className="bg-gray-50 dark:bg-privacy-800 rounded-lg p-4 mb-6">
+                <h3 className="font-medium text-gray-900 dark:text-white mb-3">
+                  {t('split.structureSettings')}
+                </h3>
+
+                {detectedChapters.length === 0 ? (
+                  <div className="text-center py-6">
+                    <p className="text-gray-600 dark:text-gray-400 mb-4">
+                      {t('split.analyzeFirst')}
+                    </p>
+                    <Button
+                      onClick={handleAnalyzeStructure}
+                      disabled={isAnalyzing || isProcessing}
+                      variant="outline"
+                      size="lg"
+                    >
+                      {isAnalyzing ? t('split.analyzing') : t('split.analyzeButton')}
+                    </Button>
+                  </div>
+                ) : (
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        {t('split.chaptersDetected', { count: String(detectedChapters.length) })}
+                      </p>
+                      <Button
+                        onClick={() => {
+                          if (selectedChapters.size === detectedChapters.length) {
+                            setSelectedChapters(new Set());
+                          } else {
+                            setSelectedChapters(new Set(detectedChapters.map((_, idx) => idx)));
+                          }
+                        }}
+                        variant="ghost"
+                        className="text-sm h-auto p-2"
+                      >
+                        {selectedChapters.size === detectedChapters.length
+                          ? t('split.deselectAll')
+                          : t('split.selectAll')}
+                      </Button>
+                    </div>
+
+                    <div className="space-y-2 max-h-64 overflow-y-auto">
+                      {detectedChapters.map((chapter, idx) => (
+                        <div
+                          key={idx}
+                          onClick={() => {
+                            const newSelection = new Set(selectedChapters);
+                            if (newSelection.has(idx)) {
+                              newSelection.delete(idx);
+                            } else {
+                              newSelection.add(idx);
+                            }
+                            setSelectedChapters(newSelection);
+                          }}
+                          className={`flex items-center gap-3 p-3 rounded-lg border-2 cursor-pointer transition-all ${
+                            selectedChapters.has(idx)
+                              ? 'border-ocean-500 bg-ocean-50 dark:bg-ocean-900/20'
+                              : 'border-gray-200 dark:border-privacy-700 hover:border-ocean-300 dark:hover:border-ocean-700'
+                          }`}
+                        >
+                          <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all ${
+                            selectedChapters.has(idx)
+                              ? 'bg-ocean-500 border-ocean-500'
+                              : 'border-gray-300 dark:border-privacy-600'
+                          }`}>
+                            {selectedChapters.has(idx) && (
+                              <span className="text-white text-xs">✓</span>
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-gray-900 dark:text-white truncate">
+                              {chapter.title}
+                            </p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                              {t('split.pageRange', {
+                                start: String(chapter.startPage),
+                                end: String(chapter.endPage || maxPages)
+                              })}
+                              {' • '}
+                              {t('split.pageCount', {
+                                count: String((chapter.endPage || maxPages) - chapter.startPage + 1)
+                              })}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <Button
+                      onClick={handleAnalyzeStructure}
+                      disabled={isAnalyzing || isProcessing}
+                      variant="ghost"
+                      className="w-full mt-3 text-sm"
+                    >
+                      {t('split.reanalyze')}
+                    </Button>
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Split button */}
             <Button
               onClick={handleSplit}
-              disabled={isProcessing || !file}
+              disabled={isProcessing || !file || (splitMode === 'by-structure' && detectedChapters.length === 0)}
               className="w-full text-lg py-3"
               size="lg"
             >

@@ -221,5 +221,60 @@
     "fixRotation": "Corriger la rotation",
     "moveTOC": "Déplacer la table des matières",
     "noIssues": "Aucun problème détecté - le document est en ordre!"
+  },
+  "extractImages": {
+    "smartFilter": {
+      "quickFilters": "Filtres rapides",
+      "categories": {
+        "all": "Tous",
+        "photo": "Photos",
+        "chart": "Graphiques",
+        "logo": "Logos",
+        "icon": "Icônes",
+        "decoration": "Décorations",
+        "other": "Autres"
+      },
+      "presets": {
+        "photosOnly": "Photos uniquement",
+        "useful": "Images utiles",
+        "large": "Grandes images",
+        "charts": "Graphiques",
+        "excludeIcons": "Sans icônes"
+      }
+    }
+  },
+  "split": {
+    "mode": {
+      "all": {
+        "name": "Toutes les pages",
+        "description": "Diviser en pages individuelles"
+      },
+      "range": {
+        "name": "Plage de pages",
+        "description": "Extraire une plage de pages spécifique"
+      },
+      "intervals": {
+        "name": "Par intervalles",
+        "description": "Diviser toutes les N pages"
+      },
+      "custom": {
+        "name": "Pages personnalisées",
+        "description": "Sélectionner des pages spécifiques"
+      },
+      "byStructure": {
+        "name": "Par structure",
+        "description": "Division intelligente par chapitres"
+      }
+    },
+    "structureSettings": "Structure du document",
+    "analyzeFirst": "Analyser le document pour détecter les chapitres et sections",
+    "analyzeButton": "Analyser la structure",
+    "analyzing": "Analyse en cours...",
+    "chaptersDetected": "{count} chapitres détectés",
+    "reanalyze": "Réanalyser",
+    "selectAll": "Tout sélectionner",
+    "deselectAll": "Tout désélectionner",
+    "pageRange": "Pages {start}-{end}",
+    "pageCount": "{count} pages"
   }
 }

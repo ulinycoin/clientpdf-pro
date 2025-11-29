@@ -3,10 +3,13 @@ import { FileUpload } from '@/components/common/FileUpload';
 import { ProgressBar } from '@/components/common/ProgressBar';
 import { useI18n } from '@/hooks/useI18n';
 import pdfService from '@/services/pdfService';
+import smartImageFilterService from '@/services/smartImageFilterService';
+import type { CategorizedImage, SmartImageFilterAnalysis, ImageCategory } from '@/services/smartImageFilterService';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Badge } from '@/components/ui/badge';
 import type { PDFProcessingResult, ExtractedImage } from '@/types/pdf';
 
 export const ExtractImagesPDF: React.FC = () => {
@@ -16,16 +19,23 @@ export const ExtractImagesPDF: React.FC = () => {
     const [progress, setProgress] = useState(0);
     const [progressMessage, setProgressMessage] = useState('');
     const [extractedImages, setExtractedImages] = useState<ExtractedImage[]>([]);
+    const [categorizedImages, setCategorizedImages] = useState<CategorizedImage[]>([]);
+    const [filterAnalysis, setFilterAnalysis] = useState<SmartImageFilterAnalysis | null>(null);
     const [selectedImageIds, setSelectedImageIds] = useState<Set<string>>(new Set());
     const [result, setResult] = useState<PDFProcessingResult<any> | null>(null);
     const [mode, setMode] = useState<'extract' | 'remove'>('extract');
+    const [activeFilter, setActiveFilter] = useState<'all' | ImageCategory>('all');
+    const [smartFilterEnabled] = useState(true);
 
     const handleFileSelected = (selectedFiles: File[]) => {
         if (selectedFiles.length > 0) {
             setFile(selectedFiles[0]);
             setResult(null);
             setExtractedImages([]);
+            setCategorizedImages([]);
+            setFilterAnalysis(null);
             setSelectedImageIds(new Set());
+            setActiveFilter('all');
         }
     };
 
@@ -51,16 +61,35 @@ export const ExtractImagesPDF: React.FC = () => {
             if (extractResult.success && extractResult.data) {
                 setExtractedImages(extractResult.data);
 
-                if (mode === 'extract') {
-                    // For extract mode, select all by default
-                    setSelectedImageIds(new Set(extractResult.data.map(img => img.id)));
-                    setResult(extractResult);
-                    setProgress(100);
+                // Analyze and categorize images
+                if (smartFilterEnabled && extractResult.data.length > 0) {
+                    setProgress(60);
+                    setProgressMessage('Analyzing image types...');
+
+                    const analysis = smartImageFilterService.analyzeImages(extractResult.data);
+                    setFilterAnalysis(analysis);
+                    const allCategorized = analysis.categories.flatMap(cat => cat.images);
+                    setCategorizedImages(allCategorized);
+
+                    if (mode === 'extract') {
+                        // Auto-select useful images
+                        const usefulIds = analysis.usefulImages.map(img => img.id);
+                        setSelectedImageIds(new Set(usefulIds.length > 0 ? usefulIds : extractResult.data.map(img => img.id)));
+                        setResult(extractResult);
+                        setProgress(100);
+                    } else {
+                        setSelectedImageIds(new Set(extractResult.data.map(img => img.id)));
+                        setProgress(50);
+                    }
                 } else {
-                    // For remove mode, select all by default (to remove)
-                    setSelectedImageIds(new Set(extractResult.data.map(img => img.id)));
-                    // Don't process yet - wait for user to confirm selection
-                    setProgress(50);
+                    if (mode === 'extract') {
+                        setSelectedImageIds(new Set(extractResult.data.map(img => img.id)));
+                        setResult(extractResult);
+                        setProgress(100);
+                    } else {
+                        setSelectedImageIds(new Set(extractResult.data.map(img => img.id)));
+                        setProgress(50);
+                    }
                 }
             } else {
                 setResult(extractResult);
@@ -164,6 +193,25 @@ export const ExtractImagesPDF: React.FC = () => {
         }
     };
 
+    const handleQuickFilter = (filterId: string) => {
+        const presets = smartImageFilterService.getFilterPresets();
+        const preset = presets.find(p => p.id === filterId);
+        if (preset && categorizedImages.length > 0) {
+            const filtered = categorizedImages.filter(preset.filter);
+            setSelectedImageIds(new Set(filtered.map(img => img.id)));
+        }
+    };
+
+    const getFilteredImages = (): (ExtractedImage | CategorizedImage)[] => {
+        if (!smartFilterEnabled || categorizedImages.length === 0) {
+            return extractedImages;
+        }
+        if (activeFilter === 'all') {
+            return categorizedImages;
+        }
+        return categorizedImages.filter(img => img.category === activeFilter);
+    };
+
     const handleReset = () => {
         // Clean up blob URLs
         extractedImages.forEach(img => {
@@ -178,7 +226,10 @@ export const ExtractImagesPDF: React.FC = () => {
         setProgressMessage('');
         setIsProcessing(false);
         setExtractedImages([]);
+        setCategorizedImages([]);
+        setFilterAnalysis(null);
         setSelectedImageIds(new Set());
+        setActiveFilter('all');
     };
 
     // Cleanup on unmount
@@ -330,15 +381,73 @@ export const ExtractImagesPDF: React.FC = () => {
                         </div>
                     </div>
 
+                    {/* Smart Filter UI */}
+                    {smartFilterEnabled && filterAnalysis && mode === 'extract' && (
+                        <div className="space-y-4">
+                            <div className="border-b border-gray-200 dark:border-gray-700">
+                                <div className="flex items-center gap-2 overflow-x-auto pb-2">
+                                    <button
+                                        onClick={() => setActiveFilter('all')}
+                                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
+                                            activeFilter === 'all'
+                                                ? 'bg-ocean-500 text-white'
+                                                : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+                                        }`}
+                                    >
+                                        All ({extractedImages.length})
+                                    </button>
+                                    {filterAnalysis.categories.map(cat => (
+                                        <button
+                                            key={cat.category}
+                                            onClick={() => setActiveFilter(cat.category)}
+                                            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap flex items-center gap-2 ${
+                                                activeFilter === cat.category
+                                                    ? 'bg-ocean-500 text-white'
+                                                    : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+                                            }`}
+                                        >
+                                            <span>{cat.icon}</span>
+                                            <span>{cat.label} ({cat.count})</span>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="bg-ocean-50 dark:bg-ocean-900/20 border border-ocean-200 dark:border-ocean-800 rounded-lg p-4">
+                                <div className="flex items-center justify-between mb-3">
+                                    <h4 className="text-sm font-semibold text-ocean-700 dark:text-ocean-300">
+                                        Quick Filters
+                                    </h4>
+                                    <span className="text-xs text-ocean-600 dark:text-ocean-400">
+                                        {filterAnalysis.usefulImages.length} useful / {filterAnalysis.likelyJunk.length} junk detected
+                                    </span>
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                    {smartImageFilterService.getFilterPresets().map(preset => (
+                                        <Button
+                                            key={preset.id}
+                                            onClick={() => handleQuickFilter(preset.id)}
+                                            variant="outline"
+                                            size="sm"
+                                            className="text-xs h-auto py-2 px-3 border-ocean-300 dark:border-ocean-700 hover:bg-ocean-100 dark:hover:bg-ocean-900/40"
+                                            title={preset.description}
+                                        >
+                                            <span className="mr-1.5">{preset.icon}</span>
+                                            {preset.label}
+                                        </Button>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                        {extractedImages.map((image) => (
+                        {getFilteredImages().map((image) => (
                             <div
                                 key={image.id}
-                                className={`relative group rounded-lg border-2 transition-all cursor-pointer overflow-hidden ${
-                                    selectedImageIds.has(image.id)
+                                className={`relative group rounded-lg border-2 transition-all cursor-pointer overflow-hidden ${selectedImageIds.has(image.id)
                                         ? 'border-ocean-500 dark:border-ocean-400 ring-2 ring-ocean-500/20'
                                         : 'border-gray-200 dark:border-gray-700 hover:border-ocean-300 dark:hover:border-ocean-600'
-                                }`}
+                                    }`}
                                 onClick={() => handleToggleImage(image.id)}
                             >
                                 {/* Checkbox */}
@@ -349,6 +458,31 @@ export const ExtractImagesPDF: React.FC = () => {
                                         className="bg-white dark:bg-gray-800 shadow-lg"
                                     />
                                 </div>
+
+                                {/* Category Badge */}
+                                {smartFilterEnabled && 'category' in image && (
+                                    <div className="absolute top-2 right-2 z-10">
+                                        <Badge
+                                            variant="secondary"
+                                            className={`text-xs px-2 py-0.5 ${
+                                                image.category === 'photo'
+                                                    ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
+                                                    : image.category === 'chart'
+                                                    ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
+                                                    : image.category === 'icon' || image.category === 'decoration'
+                                                    ? 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400'
+                                                    : 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300'
+                                            }`}
+                                        >
+                                            {image.category === 'photo' && '📷'}
+                                            {image.category === 'chart' && '📊'}
+                                            {image.category === 'logo' && '🏢'}
+                                            {image.category === 'icon' && '🔘'}
+                                            {image.category === 'decoration' && '✨'}
+                                            {image.category === 'other' && '🖼️'}
+                                        </Badge>
+                                    </div>
+                                )}
 
                                 {/* Image Preview */}
                                 <div className="aspect-square bg-gray-100 dark:bg-gray-800 flex items-center justify-center p-2">

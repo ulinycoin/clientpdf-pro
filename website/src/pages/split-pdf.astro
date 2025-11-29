@@ -1,7 +1,7 @@
 ---
 import ToolPage from '../components/ToolPage.astro';
 
-const keywords = "split pdf, divide pdf, separate pdf pages, pdf splitter, extract pdf pages, free pdf splitter";
+const keywords = "split pdf, divide pdf, separate pdf pages, pdf splitter, extract pdf pages, free pdf splitter, split pdf by chapters, ai pdf split, smart pdf splitter";
 
 const howToSchema = {
   "@context": "https://schema.org",
@@ -19,7 +19,7 @@ const howToSchema = {
     {
       "@type": "HowToStep",
       "name": "Choose Splitting Mode",
-      "text": "Select your desired splitting mode: by individual pages, by custom ranges, or by fixed intervals.",
+      "text": "Select your desired splitting mode: by individual pages, by custom ranges, by fixed intervals, or use AI-powered 'By Structure' mode to auto-detect chapters.",
       "image": "https://localpdf.online/screenshots/split-mode.png"
     },
     {
@@ -42,13 +42,14 @@ const howToSchema = {
 <ToolPage
   toolId="split-pdf"
   title="Split PDF Online — Free & Secure"
-  metaDescription="Split PDF files by pages, ranges, or intervals. 100% private client-side processing. No uploads, no limits. Extract pages instantly."
+  metaDescription="Split PDF files by pages, ranges, intervals, or automatically by chapters. AI-powered smart splitting. 100% private client-side processing. No uploads, no limits."
   keywords={keywords}
   description="Divide PDF documents into separate files or extract specific pages. Choose from multiple splitting modes — all processing happens securely in your browser."
   benefits={[
     "⚡ Instant — Split PDFs in seconds",
     "🔒 Private — No uploads to servers",
-    "🆓 Free — Unlimited splits during beta"
+    "🆓 Free — Unlimited splits during beta",
+    "✨ Smart — AI-powered chapter detection"
   ]}
   relatedTools={[
     { id: 'merge-pdf', icon: '📑', title: 'Merge PDF', description: 'Combine PDFs back together' },
@@ -60,7 +61,8 @@ const howToSchema = {
     title: "Why Choose Our PDF Splitter?",
     reasons: [
       "Complete Privacy: Your PDF never leaves your device. Unlike cloud-based splitters that upload your documents to remote servers, LocalPDF processes everything locally for maximum security.",
-      "Multiple Splitting Modes: Split by individual pages, custom page ranges, fixed intervals, or extract specific pages. Flexible options for any workflow.",
+      "Multiple Splitting Modes: Split by individual pages, custom page ranges, fixed intervals, extract specific pages, or use AI-powered smart splitting by chapters and sections. Flexible options for any workflow.",
+      "AI-Powered Chapter Detection: Automatically detect chapters, sections, and logical breaks in your documents. Perfect for splitting textbooks, manuals, reports, and books without manually counting pages.",
       "No File Size Restrictions: Split PDFs of any size without hitting upload limits. Your browser's memory is the only constraint.",
       "Instant Results: No upload time, no processing queues. Split happens in your browser at native speed — usually under 2 seconds.",
       "Preserve Document Quality: Lossless splitting preserves original resolution, fonts, and formatting. Every page looks identical to the source.",
@@ -71,16 +73,19 @@ const howToSchema = {
     "Split by individual pages (1 page = 1 PDF)",
     "Split by custom ranges (e.g., pages 1-5, 10-15)",
     "Split by fixed intervals (every N pages)",
+    "✨ NEW: Split by structure — AI auto-detects chapters",
     "Extract specific pages to new document",
     "Preview pages before splitting",
+    "Auto-named files based on chapter titles",
     "Download all splits as a ZIP archive"
   ]}
   steps={[
     'Click "Open Tool" button above',
     "Upload the PDF file you want to split",
-    "Select splitting mode (pages/ranges/intervals)",
-    "Configure parameters and click \"Split\"",
-    "Download individual PDFs or ZIP archive"
+    "Select splitting mode (pages/ranges/intervals/by structure)",
+    "For 'By Structure' mode: click 'Analyze' to auto-detect chapters",
+    "Select which chapters to split and click \"Split\"",
+    "Download individual PDFs with smart filenames or ZIP archive"
   ]}
 >
   <Fragment slot="head">

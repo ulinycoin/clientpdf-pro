@@ -299,8 +299,18 @@
       "custom": {
         "name": "Custom Pages",
         "description": "Select specific pages"
+      },
+      "byStructure": {
+        "name": "By Structure",
+        "description": "Smart split by chapters"
       }
     },
+    "structureSettings": "Document Structure",
+    "analyzeFirst": "Analyze document to detect chapters and sections",
+    "analyzeButton": "Analyze Structure",
+    "analyzing": "Analyzing...",
+    "chaptersDetected": "{count} chapters detected",
+    "reanalyze": "Re-analyze",
     "rangeSettings": "Page Range Settings",
     "startPage": "Start page",
     "endPage": "End page",
@@ -716,6 +726,26 @@
     "selectAll": "Select All",
     "downloadSelected": "Download ({count})",
     "removeSelected": "Remove ({count})",
-    "noImagesSelected": "Please select at least one image to download."
+    "noImagesSelected": "Please select at least one image to download.",
+    "smartFilter": {
+      "quickFilters": "Quick Filters",
+      "usefulJunk": "{useful} useful / {junk} junk detected",
+      "categories": {
+        "all": "All",
+        "photo": "Photos",
+        "chart": "Charts & Graphs",
+        "logo": "Logos",
+        "icon": "Icons & Buttons",
+        "decoration": "Decorations",
+        "other": "Other"
+      },
+      "presets": {
+        "photosOnly": "Photos Only",
+        "useful": "Useful Images",
+        "large": "Large Images",
+        "charts": "Charts & Graphs",
+        "excludeIcons": "No Icons"
+      }
+    }
   }
 }

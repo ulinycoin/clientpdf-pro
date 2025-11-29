@@ -221,5 +221,60 @@
     "fixRotation": "Corregir rotación",
     "moveTOC": "Mover índice al inicio",
     "noIssues": "No se detectaron problemas - ¡el documento está bien!"
+  },
+  "extractImages": {
+    "smartFilter": {
+      "quickFilters": "Filtros rápidos",
+      "categories": {
+        "all": "Todos",
+        "photo": "Fotos",
+        "chart": "Gráficos",
+        "logo": "Logos",
+        "icon": "Iconos",
+        "decoration": "Decoraciones",
+        "other": "Otros"
+      },
+      "presets": {
+        "photosOnly": "Solo fotos",
+        "useful": "Imágenes útiles",
+        "large": "Imágenes grandes",
+        "charts": "Gráficos",
+        "excludeIcons": "Sin iconos"
+      }
+    }
+  },
+  "split": {
+    "mode": {
+      "all": {
+        "name": "Todas las páginas",
+        "description": "Dividir en páginas individuales"
+      },
+      "range": {
+        "name": "Rango de páginas",
+        "description": "Extraer rango de páginas específico"
+      },
+      "intervals": {
+        "name": "Por intervalos",
+        "description": "Dividir cada N páginas"
+      },
+      "custom": {
+        "name": "Páginas personalizadas",
+        "description": "Seleccionar páginas específicas"
+      },
+      "byStructure": {
+        "name": "Por estructura",
+        "description": "División inteligente por capítulos"
+      }
+    },
+    "structureSettings": "Estructura del documento",
+    "analyzeFirst": "Analizar el documento para detectar capítulos y secciones",
+    "analyzeButton": "Analizar estructura",
+    "analyzing": "Analizando...",
+    "chaptersDetected": "{count} capítulos detectados",
+    "reanalyze": "Volver a analizar",
+    "selectAll": "Seleccionar todo",
+    "deselectAll": "Deseleccionar todo",
+    "pageRange": "Páginas {start}-{end}",
+    "pageCount": "{count} páginas"
   }
 }

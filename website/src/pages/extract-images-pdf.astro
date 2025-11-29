@@ -1,7 +1,7 @@
 ---
 import ToolPage from '../components/ToolPage.astro';
 
-const keywords = "extract images from pdf, remove images from pdf, pdf image extractor, get images from pdf, save pdf images, download pdf pictures, delete pdf images, free pdf image extraction";
+const keywords = "extract images from pdf, remove images from pdf, pdf image extractor, get images from pdf, save pdf images, download pdf pictures, delete pdf images, free pdf image extraction, smart image filter, filter pdf images, ai image categorization";
 
 const howToSchema = {
   "@context": "https://schema.org",
@@ -25,7 +25,7 @@ const howToSchema = {
     {
       "@type": "HowToStep",
       "name": "Preview and Select Images",
-      "text": "View thumbnails of all images found in the PDF. Select which images you want to extract or remove.",
+      "text": "View thumbnails of all images found in the PDF. Use AI-powered Smart Filter to categorize images (Photos, Charts, Icons) and quick filters like 'Photos Only' to instantly select useful images. Select which images you want to extract or remove.",
       "image": "https://localpdf.online/screenshots/extract-preview.png"
     },
     {
@@ -70,6 +70,14 @@ const faqs = [
   {
     question: "Are my files uploaded to a server?",
     answer: "<strong>Never!</strong> All image extraction and removal happens 100% locally in your browser using JavaScript. Your PDF never leaves your device, ensuring complete privacy and security."
+  },
+  {
+    question: "How does the Smart Image Filter work?",
+    answer: "Our AI-powered filter analyzes each image's dimensions, resolution, aspect ratio, and file size to automatically categorize it as a Photo, Chart, Logo, Icon, or Decoration. For example, PDFs often contain hundreds of tiny icons (16×16px) that you don't need — Smart Filter lets you click 'Photos Only' to instantly select just the 5 actual photos and ignore the 150+ junk images."
+  },
+  {
+    question: "What are the Quick Filters?",
+    answer: "Quick Filters are one-click presets: <strong>Photos Only</strong> selects high-quality photos, <strong>Useful Images</strong> selects photos and charts (excluding icons/decorations), <strong>Large Images</strong> filters by size, <strong>Charts & Graphs</strong> selects diagrams, and <strong>No Icons</strong> excludes tiny UI elements. These save you from manually deselecting hundreds of unwanted images."
   }
 ];
 ---
@@ -77,11 +85,12 @@ const faqs = [
 <ToolPage
   toolId="extract-images-pdf"
   title="Extract or Remove Images from PDF Online — Free & Private"
-  metaDescription="Extract or remove images from PDF files instantly. Preview, select, and download or delete images. 100% private, browser-based processing."
+  metaDescription="Extract or remove images from PDF files with AI-powered smart filtering. Auto-categorize photos, icons, charts. Filter out junk images instantly. 100% private processing."
   keywords={keywords}
   description="Extract or remove images from PDF documents with full control. Preview all images, select which ones to save or delete — all in your browser with complete privacy."
   benefits={[
     "🖼️ Preview — See all images before extracting or removing",
+    "✨ Smart Filter — AI auto-categorizes photos, icons, charts",
     "✅ Selective — Choose which images to save or delete",
     "🔒 Private — Images never leave your device",
     "🆓 Free — No limits on file size or image count"
@@ -96,6 +105,7 @@ const faqs = [
     title: "Why Choose Our PDF Image Extraction & Removal Tool?",
     reasons: [
       "True Privacy: Your PDF and images never leave your computer. Cloud-based tools upload your files to servers where they may be stored or analyzed. LocalPDF keeps everything local and secure.",
+      "AI-Powered Smart Filter: Automatically categorize images into Photos, Charts, Logos, Icons, and Decorations. Filter by category or use quick presets like 'Photos Only' to instantly select the images you need and ignore hundreds of tiny icons and decorative elements.",
       "Selective Processing: Preview thumbnails and choose exactly which images to extract or remove. Save time and storage by processing only what you need.",
       "Original Quality: Images are extracted in their original format (JPEG or PNG) without re-compression or quality loss. What you see in the PDF is what you get.",
       "Dual Mode: Extract images to save them separately, or remove images to reduce PDF file size while keeping text and other content intact.",
@@ -105,7 +115,11 @@ const faqs = [
   }}
   features={[
     "Preview all images with thumbnails",
+    "✨ NEW: Smart categorization — Photos, Charts, Logos, Icons, Decorations",
+    "✨ NEW: Quick filters — 'Photos Only', 'Useful Images', 'No Icons'",
+    "✨ NEW: Auto-detect and show 'useful vs junk' statistics",
     "Extract images in original format (JPEG, PNG)",
+    "Filter images by category with one click",
     "Select specific images to extract or remove",
     "View image dimensions and file size",
     "Download as individual files or ZIP archive",
@@ -117,7 +131,8 @@ const faqs = [
     'Click "Open Tool" button above',
     "Upload the PDF containing images",
     "Choose 'Extract Images' or 'Remove Images' mode",
-    "Preview thumbnails of all detected images",
+    "AI analyzes and categorizes images automatically",
+    "Use category tabs or quick filters (e.g., 'Photos Only')",
     "Select which images to extract or remove",
     "Click 'Download' to save selected images"
   ]}

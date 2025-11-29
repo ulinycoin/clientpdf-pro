@@ -222,5 +222,60 @@
     "fixRotation": "Drehung korrigieren",
     "moveTOC": "Inhaltsverzeichnis nach vorne",
     "noIssues": "Keine Probleme gefunden - Dokument ist in Ordnung!"
+  },
+  "extractImages": {
+    "smartFilter": {
+      "quickFilters": "Schnellfilter",
+      "categories": {
+        "all": "Alle",
+        "photo": "Fotos",
+        "chart": "Diagramme",
+        "logo": "Logos",
+        "icon": "Symbole",
+        "decoration": "Dekorationen",
+        "other": "Andere"
+      },
+      "presets": {
+        "photosOnly": "Nur Fotos",
+        "useful": "Nützliche Bilder",
+        "large": "Große Bilder",
+        "charts": "Diagramme",
+        "excludeIcons": "Keine Symbole"
+      }
+    }
+  },
+  "split": {
+    "mode": {
+      "all": {
+        "name": "Alle Seiten",
+        "description": "In einzelne Seiten aufteilen"
+      },
+      "range": {
+        "name": "Seitenbereich",
+        "description": "Bestimmten Seitenbereich extrahieren"
+      },
+      "intervals": {
+        "name": "Nach Intervallen",
+        "description": "Alle N Seiten aufteilen"
+      },
+      "custom": {
+        "name": "Benutzerdefinierte Seiten",
+        "description": "Bestimmte Seiten auswählen"
+      },
+      "byStructure": {
+        "name": "Nach Struktur",
+        "description": "Intelligente Aufteilung nach Kapiteln"
+      }
+    },
+    "structureSettings": "Dokumentstruktur",
+    "analyzeFirst": "Dokument analysieren, um Kapitel und Abschnitte zu erkennen",
+    "analyzeButton": "Struktur analysieren",
+    "analyzing": "Analyse läuft...",
+    "chaptersDetected": "{count} Kapitel erkannt",
+    "reanalyze": "Erneut analysieren",
+    "selectAll": "Alle auswählen",
+    "deselectAll": "Auswahl aufheben",
+    "pageRange": "Seiten {start}-{end}",
+    "pageCount": "{count} Seiten"
   }
 }
