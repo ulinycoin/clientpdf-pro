@@ -222,6 +222,38 @@
     "moveTOC": "Mover índice al inicio",
     "noIssues": "No se detectaron problemas - ¡el documento está bien!"
   },
+  "smartImageFilter": {
+    "title": "Filtro inteligente de imágenes",
+    "analyzing": "Analizando imágenes...",
+    "totalImages": "Total",
+    "useful": "Útiles",
+    "junk": "Basura",
+    "quickFilters": "Filtros rápidos",
+    "categories": "Categorías",
+    "processingInfo": "Todo el análisis se ejecuta localmente en su navegador. Las imágenes se categorizan por tamaño, formato y características.",
+    "presets": {
+      "useful": {
+        "label": "Imágenes útiles",
+        "description": "Solo fotos y gráficos"
+      },
+      "photosOnly": {
+        "label": "Solo fotos",
+        "description": "Fotos de alta calidad"
+      },
+      "excludeIcons": {
+        "label": "Sin iconos",
+        "description": "Excluir iconos pequeños"
+      },
+      "large": {
+        "label": "Imágenes grandes",
+        "description": "Imágenes > 0,1 MP"
+      }
+    },
+    "junkWarning": {
+      "title": "Imágenes de bajo valor detectadas",
+      "description": "Encontradas {count} iconos/decoraciones pequeños. Considere usar el filtro 'Imágenes útiles'."
+    }
+  },
   "extractImages": {
     "smartFilter": {
       "quickFilters": "Filtros rápidos",

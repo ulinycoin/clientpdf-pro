@@ -198,6 +198,38 @@
     "moveTOC": "Move TOC to Front",
     "noIssues": "No issues detected - document looks good!"
   },
+  "smartImageFilter": {
+    "title": "Smart Image Filter",
+    "analyzing": "Analyzing images...",
+    "totalImages": "Total",
+    "useful": "Useful",
+    "junk": "Junk",
+    "quickFilters": "Quick Filters",
+    "categories": "Categories",
+    "processingInfo": "All analysis runs locally in your browser. Images are categorized by size, format, and characteristics.",
+    "presets": {
+      "useful": {
+        "label": "Useful Images",
+        "description": "Photos and charts only"
+      },
+      "photosOnly": {
+        "label": "Photos Only",
+        "description": "High-quality photos"
+      },
+      "excludeIcons": {
+        "label": "No Icons",
+        "description": "Exclude small icons"
+      },
+      "large": {
+        "label": "Large Images",
+        "description": "Images > 0.1 MP"
+      }
+    },
+    "junkWarning": {
+      "title": "Low-value images detected",
+      "description": "Found {count} small icons/decorations. Consider using 'Useful Images' filter."
+    }
+  },
   "compress": {
     "filePreview": "File to compress",
     "originalSize": "Original size",

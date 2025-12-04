@@ -1,7 +1,7 @@
 ---
 import ToolPage from '../components/ToolPage.astro';
 
-const keywords = "images to pdf, jpg to pdf, png to pdf, image to pdf converter, convert image to pdf, free pdf converter";
+const keywords = "images to pdf, jpg to pdf, png to pdf, image to pdf converter, convert image to pdf, free pdf converter, smart image filter, ai image categorization, duplicate image detection";
 
 const howToSchema = {
   "@context": "https://schema.org",
@@ -18,8 +18,14 @@ const howToSchema = {
     },
     {
       "@type": "HowToStep",
+      "name": "Use Smart Image Filter",
+      "text": "Smart Image Filter automatically categorizes your images into Photos, Charts, Logos, Icons, and Decorations. Use quick filters like 'Useful Images' or 'Photos Only' to remove junk. Click 'Remove Duplicates' if identical images are detected.",
+      "image": "https://localpdf.online/screenshots/images-to-pdf-smart-filter.png"
+    },
+    {
+      "@type": "HowToStep",
       "name": "Arrange and Configure",
-      "text": "Drag and drop the images to set their order in the PDF. Use the sidebar to choose page size, orientation, and margins.",
+      "text": "Drag and drop the images to set their order in the PDF. Click 'Auto Orientation' to detect optimal layout. Use the sidebar to choose page size, orientation, and margins.",
       "image": "https://localpdf.online/screenshots/images-to-pdf-config.png"
     },
     {
@@ -41,13 +47,16 @@ const howToSchema = {
 
 <ToolPage
   toolId="images-to-pdf"
-  title="Convert Images to PDF Online — Free Converter"
-  metaDescription="Convert JPG, PNG images to PDF instantly. 100% private client-side conversion. No uploads, no limits. Create PDFs in seconds."
+  title="Convert Images to PDF Online — Free AI-Powered Converter"
+  metaDescription="Convert JPG, PNG to PDF with AI-powered Smart Image Filter. Auto-detect photos, remove duplicates, filter junk images. 100% private, no uploads."
   keywords={keywords}
-  description="Convert images (JPG, PNG) to PDF documents. Combine multiple images into one PDF with custom page size and orientation — all in your browser."
+  description="Convert images (JPG, PNG) to PDF with AI-powered Smart Image Filter. Automatically categorize photos, detect duplicates, remove junk images, and optimize orientation — all in your browser."
   benefits={[
+    "🎨 AI-Powered — Smart Image Filter auto-categorizes photos, charts, logos, and icons",
+    "🗑️ Duplicate Detection — SHA-256 hashing finds identical images even if renamed",
+    "🔄 Auto-Orientation — Detects landscape/portrait and suggests optimal layout",
     "⚡ Instant — Convert images in seconds",
-    "🔒 Private — Images never uploaded",
+    "🔒 Private — All processing in browser, images never uploaded",
     "🆓 Free — Unlimited conversions during beta"
   ]}
   relatedTools={[
@@ -57,9 +66,13 @@ const howToSchema = {
     { id: 'organize-pdf', icon: '📋', title: 'Organize Pages', description: 'Reorder pages after' }
   ]}
   whyChoose={{
-    title: "Why Choose Our Image to PDF Converter?",
+    title: "Why Choose Our AI-Powered Image to PDF Converter?",
     reasons: [
-      "Complete Privacy: Your images never leave your device. Cloud converters upload photos to servers. LocalPDF converts locally for maximum security.",
+      "AI-Powered Smart Image Filter: Automatically categorize images into Photos, Charts, Logos, Icons, and Decorations. Quickly filter out junk images like small icons or banners before conversion. Perfect for cleaning up messy photo folders.",
+      "Duplicate Detection: Advanced SHA-256 hashing detects identical images even if they have different filenames. One-click removal keeps only unique images, reducing PDF size and eliminating redundancy.",
+      "Auto-Detect Orientation: Analyzes image dimensions and suggests optimal orientation (portrait/landscape). Saves time when converting batches with mixed orientations — no manual checking needed.",
+      "Quick Filter Presets: 'Useful Images' keeps only photos and charts. 'Photos Only' for high-quality photos. 'No Icons' excludes small decorations. 'Large Images' for images >0.1 MP. Apply filters with one click.",
+      "Complete Privacy: All AI processing runs locally in your browser. Your images never leave your device. Cloud converters upload photos to servers for analysis. LocalPDF converts locally for maximum security.",
       "Multiple Images, One PDF: Combine unlimited JPG and PNG images into a single PDF. Perfect for photo albums, scanned documents, or presentations.",
       "Customizable Layout: Choose page size (A4, Letter, Legal), orientation (portrait/landscape), and margins. Fit images to page or maintain aspect ratio.",
       "Instant Conversion: No upload delays. Conversion happens in your browser at native speed — typically under 3 seconds even for dozens of images.",
@@ -68,19 +81,71 @@ const howToSchema = {
     ]
   }}
   features={[
+    "🎨 AI Smart Image Filter — Auto-categorize photos, charts, logos, icons",
+    "🗑️ Duplicate Detection — SHA-256 hashing finds identical images",
+    "🔄 Auto-Detect Orientation — Suggests optimal portrait/landscape",
+    "⭐ Quick Filters — 'Useful Images', 'Photos Only', 'No Icons', 'Large Images'",
+    "📊 Image Analysis — Shows useful vs junk count, category breakdown",
     "Convert JPG and PNG to PDF",
     "Combine multiple images in one PDF",
     "Drag-and-drop image reordering",
     "Choose page size (A4, Letter, Legal, Custom)",
     "Select orientation (portrait/landscape)",
-    "Preview before converting"
+    "Multi-page preview with all pages visible"
   ]}
   steps={[
     'Click "Open Tool" button above',
-    "Upload image files (JPG, PNG)",
-    "Arrange images in desired order (drag-and-drop)",
-    "Choose page size and orientation",
-    "Click \"Convert\" and download your PDF"
+    "Upload image files (JPG, PNG) — up to 50 at once",
+    "Smart Image Filter auto-analyzes your images",
+    "Review categorization: Photos, Charts, Logos, Icons, Decorations",
+    "Use Quick Filters to remove junk images or duplicates",
+    "Click 'Auto Orientation' to detect optimal layout",
+    "Arrange remaining images in desired order (drag-and-drop)",
+    "Choose page size (A4, Letter, Fit to Image) and margins",
+    "Click \"Convert to PDF\" and preview all pages",
+    "Download your optimized PDF"
+  ]}
+  faqs={[
+    {
+      question: "What is Smart Image Filter and how does it work?",
+      answer: "Smart Image Filter is an AI-powered feature that automatically categorizes your images into Photos (high-quality photos), Charts (diagrams and graphs), Logos (brand marks), Icons (small UI elements), and Decorations (banners, backgrounds). It analyzes image size, dimensions, format (JPG/PNG), and file size to classify each image with confidence scores. All processing happens locally in your browser using advanced algorithms — no images are uploaded to servers."
+    },
+    {
+      question: "How does duplicate detection work?",
+      answer: "Duplicate detection uses SHA-256 cryptographic hashing to create unique fingerprints for each image. Even if you rename files or copy them to different folders, identical images will have the same hash. When duplicates are found, the tool groups them together and shows a 'Remove Duplicates' button. One click removes all but the first occurrence of each duplicate, keeping your PDF clean and reducing file size."
+    },
+    {
+      question: "What are Quick Filter presets?",
+      answer: "'Useful Images' keeps only Photos and Charts, removing icons and decorations. 'Photos Only' selects high-quality photos (usually JPG files >100KB). 'No Icons' excludes small icons and decorative elements. 'Large Images' keeps images larger than 0.1 megapixels. These presets help you quickly clean up image collections before converting to PDF."
+    },
+    {
+      question: "Does Auto-Orientation change my image files?",
+      answer: "No, Auto-Orientation only suggests the optimal page orientation (portrait or landscape) based on your image dimensions. It doesn't rotate or modify your images. The tool analyzes whether most images are wider (landscape) or taller (portrait) and sets the PDF page orientation accordingly. You can still manually change orientation after using Auto-Orientation."
+    },
+    {
+      question: "Why do some photos get classified as Charts?",
+      answer: "The classifier prioritizes JPG files with good file size (>100KB) as Photos. PNG files are more likely to be Charts because screenshots and diagrams are typically saved as PNG. If a photo is incorrectly classified, you can still include it in your PDF — the Smart Image Filter is optional and all images remain available. You can also manually select categories to show/hide images."
+    },
+    {
+      question: "Can I disable Smart Image Filter?",
+      answer: "Yes! There's a toggle switch in the Smart Image Filter panel. When disabled, the panel collapses to a compact view and no analysis runs. All your images will be included in the PDF conversion without any filtering or categorization. You can toggle it on/off at any time."
+    },
+    {
+      question: "How many images can I convert at once?",
+      answer: "You can upload up to 50 images at once. There's no file size limit per image. Since all processing happens in your browser, the actual limit depends on your device's available memory. For large batches (100+ images), consider splitting them into multiple PDFs to avoid browser memory issues."
+    },
+    {
+      question: "What image formats are supported?",
+      answer: "JPG/JPEG and PNG formats are supported. These cover 99% of digital photos and graphics. Other formats like GIF, WebP, or HEIC need to be converted to JPG/PNG first (you can use online converters or your OS's built-in image tools)."
+    },
+    {
+      question: "Is my privacy protected when using AI features?",
+      answer: "Absolutely! All AI processing (image categorization, duplicate detection, orientation analysis) runs entirely in your browser. No images are uploaded to servers. No data leaves your device. Unlike cloud-based converters that send images to servers for 'AI analysis', LocalPDF's Smart Image Filter works 100% offline after the initial page load."
+    },
+    {
+      question: "Can I see all pages of the PDF before downloading?",
+      answer: "Yes! After conversion, you'll see a multi-page preview showing all pages in a grid layout. The first 10 pages display automatically, with a 'Show All' button to load remaining pages if needed. This lets you verify the final PDF before downloading."
+    }
   ]}
 >
   <Fragment slot="head">

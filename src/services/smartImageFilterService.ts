@@ -140,16 +140,23 @@ class SmartImageFilterService {
       category = 'logo';
       confidence = 0.75;
     } else if (megapixels >= THRESHOLDS.PHOTO_MIN_MEGAPIXELS) {
-      if (
+      // Prioritize photos over charts for better detection
+      if (size >= THRESHOLDS.PHOTO_MIN_SIZE_BYTES && image.format === 'jpg') {
+        // JPG files with good size are likely photos
+        category = 'photo';
+        confidence = 0.85;
+      } else if (
         megapixels >= THRESHOLDS.CHART_MIN_MEGAPIXELS &&
         image.format === 'png' &&
-        minDimension >= THRESHOLDS.CHART_MIN_SIZE
+        minDimension >= THRESHOLDS.CHART_MIN_SIZE &&
+        size < THRESHOLDS.PHOTO_MIN_SIZE_BYTES // Charts are usually smaller
       ) {
         category = 'chart';
         confidence = 0.7;
-      } else if (size >= THRESHOLDS.PHOTO_MIN_SIZE_BYTES) {
+      } else if (size >= THRESHOLDS.PHOTO_MIN_SIZE_BYTES / 2) {
+        // Large enough to be a photo
         category = 'photo';
-        confidence = 0.8;
+        confidence = 0.75;
       } else {
         category = 'other';
         confidence = 0.6;
