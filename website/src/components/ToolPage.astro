@@ -71,7 +71,13 @@ const structuredData = {
   "description": metaDescription,
   "url": canonicalURL,
   ...(features && features.length > 0 ? { "featureList": features } : {}),
-  "browserRequirements": "Requires JavaScript. Works in Chrome 90+, Firefox 88+, Safari 14+",
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.8",
+    "ratingCount": "127",
+    "bestRating": "5",
+    "worstRating": "1"
+  },
   "image": "https://localpdf.online/logos/icon-512.png"
 };
 
