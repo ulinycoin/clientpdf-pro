@@ -67,3 +67,10 @@ localpdf_urls.txt
 *_PLAN.md
 website/README.md
 website/DEPLOYMENT.md
+*команды*.txt
+*_Old.*
+
+# Tauri (desktop app - optional, not used in production)
+src-tauri/
+*.rs.bk
+Cargo.lock
