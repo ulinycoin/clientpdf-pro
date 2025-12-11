@@ -15,6 +15,9 @@ const LANGUAGE_FLAGS: Record<Language, string> = {
   fr: '🇫🇷',
   es: '🇪🇸',
   ja: '🇯🇵',
+  zh: '🇨🇳',
+  pt: '🇵🇹',
+  it: '🇮🇹',
 };
 
 const LANGUAGE_NAMES: Record<Language, string> = {
@@ -24,6 +27,9 @@ const LANGUAGE_NAMES: Record<Language, string> = {
   fr: 'Français',
   es: 'Español',
   ja: '日本語',
+  zh: '中文',
+  pt: 'Português',
+  it: 'Italiano',
 };
 
 export const LanguageSelector = () => {
@@ -46,11 +52,10 @@ export const LanguageSelector = () => {
           <DropdownMenuItem
             key={lang}
             onClick={() => setLanguage(lang)}
-            className={`cursor-pointer ${
-              language === lang
+            className={`cursor-pointer ${language === lang
                 ? 'bg-ocean-50 dark:bg-ocean-900/20 font-medium'
                 : ''
-            }`}
+              }`}
           >
             <span className="mr-2">{LANGUAGE_FLAGS[lang]}</span>
             <span>{LANGUAGE_NAMES[lang]}</span>

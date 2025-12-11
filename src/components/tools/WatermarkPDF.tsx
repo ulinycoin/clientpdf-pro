@@ -489,7 +489,7 @@ export const WatermarkPDF: React.FC = () => {
                   value={settings.text}
                   onChange={(e) => setSettings({ ...settings, text: e.target.value })}
                   disabled={isProcessing}
-                  placeholder="Enter watermark text..."
+                  placeholder={t('watermark.watermarkPlaceholder')}
                   className="mt-2"
                 />
               </div>
@@ -527,13 +527,12 @@ export const WatermarkPDF: React.FC = () => {
                       onClick={() => setSettings({ ...settings, color: preset.value })}
                       disabled={isProcessing}
                       variant="outline"
-                      className={`px-3 py-2 h-auto ${
-                        settings.color.r === preset.value.r &&
-                        settings.color.g === preset.value.g &&
-                        settings.color.b === preset.value.b
+                      className={`px-3 py-2 h-auto ${settings.color.r === preset.value.r &&
+                          settings.color.g === preset.value.g &&
+                          settings.color.b === preset.value.b
                           ? 'border-ocean-500 bg-ocean-50 dark:bg-ocean-900/20'
                           : ''
-                      }`}
+                        }`}
                     >
                       <div
                         className="w-full h-6 rounded"

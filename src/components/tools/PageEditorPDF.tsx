@@ -42,6 +42,7 @@ const SortablePage: React.FC<{
   onDelete: (id: string) => void;
   onRestore: (id: string) => void;
 }> = ({ page, onRotate, onDelete, onRestore }) => {
+  const { t } = useI18n();
   const {
     attributes,
     listeners,
@@ -68,11 +69,10 @@ const SortablePage: React.FC<{
         <div
           {...attributes}
           {...listeners}
-          className={`cursor-move mb-2 text-center text-xs font-medium text-gray-500 dark:text-gray-400 ${
-            page.isDeleted ? 'cursor-not-allowed' : ''
-          }`}
+          className={`cursor-move mb-2 text-center text-xs font-medium text-gray-500 dark:text-gray-400 ${page.isDeleted ? 'cursor-not-allowed' : ''
+            }`}
         >
-          ☰ Page {page.pageNumber}
+          ☰ {t('pageEditor.pageNumber', { number: page.pageNumber })}
         </div>
 
         {/* Thumbnail */}
@@ -89,7 +89,7 @@ const SortablePage: React.FC<{
 
           {page.isDeleted && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded">
-              <span className="text-white text-sm font-bold">DELETED</span>
+              <span className="text-white text-sm font-bold">{t('pageEditor.deleted')}</span>
             </div>
           )}
         </div>
@@ -103,7 +103,7 @@ const SortablePage: React.FC<{
                 variant="outline"
                 onClick={() => onRotate(page.id)}
                 className="flex-1 text-xs"
-                title="Rotate 90°"
+                title={t('pageEditor.rotate90')}
               >
                 <RotateCw className="w-3 h-3" />
               </Button>
@@ -112,7 +112,7 @@ const SortablePage: React.FC<{
                 variant="outline"
                 onClick={() => onDelete(page.id)}
                 className="flex-1 text-xs text-error-600 hover:text-error-700"
-                title="Delete page"
+                title={t('pageEditor.deletePage')}
               >
                 <Trash2 className="w-3 h-3" />
               </Button>
@@ -123,9 +123,9 @@ const SortablePage: React.FC<{
               variant="outline"
               onClick={() => onRestore(page.id)}
               className="flex-1 text-xs text-success-600 hover:text-success-700"
-              title="Restore page"
+              title={t('pageEditor.restorePage')}
             >
-              Restore
+              {t('pageEditor.restore')}
             </Button>
           )}
         </div>
@@ -155,7 +155,7 @@ export const PageEditorPDF: React.FC = () => {
     thumbnailWidth: 150,
     thumbnailHeight: 200,
     onProgress: (current, total) => {
-      setProgressMessage(`Generating thumbnails... ${current}/${total}`);
+      setProgressMessage(`${t('common.generatingThumbnails')} ${current}/${total}`);
     },
   });
 
@@ -239,9 +239,9 @@ export const PageEditorPDF: React.FC = () => {
       setFile((prev) => (prev ? { ...prev, info, status: 'completed' } : null));
     } catch (error) {
       setFile((prev) =>
-        prev ? { ...prev, status: 'error', error: 'Failed to read PDF' } : null
+        prev ? { ...prev, status: 'error', error: t('pageEditor.failedRead') } : null
       );
-      toast.error('Failed to read PDF file');
+      toast.error(t('pageEditor.failedRead'));
     }
   };
 
@@ -330,7 +330,7 @@ export const PageEditorPDF: React.FC = () => {
     const activePages = pages.filter((p) => !p.isDeleted);
 
     if (activePages.length === 0) {
-      toast.error('Cannot create PDF with no pages');
+      toast.error(t('pageEditor.noPages'));
       return;
     }
 
@@ -366,13 +366,13 @@ export const PageEditorPDF: React.FC = () => {
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
 
-        toast.success('PDF organized successfully!');
+        toast.success(t('pageEditor.successOrganized'));
       } else {
-        toast.error(result.error?.message || 'Failed to organize PDF');
+        toast.error(result.error?.message || t('pageEditor.failedOrganize'));
       }
     } catch (error) {
       console.error('Error organizing PDF:', error);
-      toast.error('An error occurred while organizing the PDF');
+      toast.error(t('pageEditor.errorOrganize'));
     } finally {
       setIsProcessing(false);
       setProgress(0);
@@ -392,7 +392,7 @@ export const PageEditorPDF: React.FC = () => {
   const hasChanges =
     pages.some((p) => p.rotation !== 0 || p.isDeleted) ||
     pages.map((p) => p.pageNumber).join(',') !==
-      thumbnails.map((t) => t.pageNumber).join(',');
+    thumbnails.map((t) => t.pageNumber).join(',');
 
   return (
     <div className="page-editor-pdf space-y-6">
@@ -448,14 +448,14 @@ export const PageEditorPDF: React.FC = () => {
               <div className="text-sm text-gray-600 dark:text-gray-300">
                 <span className="font-medium">{file.name}</span>
                 <span className="mx-2">•</span>
-                <span>{pageCount} pages</span>
+                <span>{t('pageEditor.pageCount', { count: pageCount })}</span>
                 <span className="mx-2">•</span>
                 <span>
-                  {pages.filter((p) => !p.isDeleted).length} pages after edits
+                  {t('pageEditor.pagesAfter', { count: pages.filter((p) => !p.isDeleted).length })}
                 </span>
               </div>
               <Button variant="outline" onClick={handleReset}>
-                Upload New File
+                {t('pageEditor.uploadNew')}
               </Button>
             </div>
           </Card>
@@ -474,9 +474,9 @@ export const PageEditorPDF: React.FC = () => {
           {/* Instructions */}
           <Card className="p-4 mb-4 bg-ocean-50 dark:bg-ocean-900/20">
             <p className="text-sm text-ocean-700 dark:text-ocean-300">
-              <strong>Drag & drop</strong> to reorder pages •{' '}
-              <strong>Click rotate</strong> to rotate 90° •{' '}
-              <strong>Click delete</strong> to remove pages
+              <strong>{t('pageEditor.dragDrop')}</strong> {t('pageEditor.reorderPages')} •{' '}
+              <strong>{t('pageEditor.clickRotate')}</strong> {t('pageEditor.toRotate')} •{' '}
+              <strong>{t('pageEditor.clickDelete')}</strong> {t('pageEditor.toRemove')}
             </p>
           </Card>
 
@@ -518,10 +518,10 @@ export const PageEditorPDF: React.FC = () => {
             >
               <Download className="w-5 h-5 mr-2" />
               {isProcessing
-                ? 'Processing...'
+                ? t('pageEditor.processing')
                 : hasChanges
-                ? 'Download Organized PDF'
-                : 'No Changes Made'}
+                  ? t('pageEditor.downloadOrganized')
+                  : t('pageEditor.noChanges')}
             </Button>
           </div>
         </>

@@ -91,7 +91,7 @@ export const AddFormFieldsPDF: React.FC = () => {
   // Update field
   const handleUpdateField = useCallback((fieldId: string, updates: Partial<FormField>) => {
     setFormFields(prev => prev.map(field =>
-      field.id === fieldId ? { ...field, ...updates } : field
+      field.id === fieldId ? { ...field, ...updates } as FormField : field
     ));
   }, []);
 
@@ -116,7 +116,7 @@ export const AddFormFieldsPDF: React.FC = () => {
   // Handle save
   const handleSave = useCallback(async () => {
     if (!file?.file || formFields.length === 0) {
-      alert('Please add at least one form field before saving');
+      alert(t('addFormFields.alertNoFields'));
       return;
     }
 
@@ -214,9 +214,9 @@ export const AddFormFieldsPDF: React.FC = () => {
               ✓ {t('common.success')}
             </h3>
             <div className="text-sm text-green-700 dark:text-green-400 space-y-1">
-              <p>Form fields added: {formFields.length}</p>
-              <p>Original size: {(file.size / 1024).toFixed(2)} KB</p>
-              <p>New size: {(result.size / 1024).toFixed(2)} KB</p>
+              <p>{t('addFormFields.addedCount', { count: formFields.length })}</p>
+              <p>{t('addFormFields.originalSize', { size: (file.size / 1024).toFixed(2) })}</p>
+              <p>{t('addFormFields.newSize', { size: (result.size / 1024).toFixed(2) })}</p>
             </div>
           </div>
 
@@ -325,7 +325,7 @@ export const AddFormFieldsPDF: React.FC = () => {
         </h2>
         <div className="bg-gray-100 dark:bg-gray-700 rounded-lg px-3 py-1">
           <div className="text-xs font-medium text-gray-900 dark:text-white">
-            {formFields.length} field{formFields.length !== 1 ? 's' : ''}
+            {t('addFormFields.fields', { count: formFields.length })}
           </div>
         </div>
       </div>
@@ -374,11 +374,11 @@ export const AddFormFieldsPDF: React.FC = () => {
           {/* Status bar */}
           <div className="p-2 border-t bg-gray-50 dark:bg-gray-900 text-xs text-gray-600 dark:text-gray-400 flex justify-between flex-shrink-0">
             <div>
-              Fields: {formFields.length}
-              {selectedField && ` | Selected: ${selectedField.name} (${selectedField.type})`}
+              {t('addFormFields.fields', { count: formFields.length })}
+              {selectedField && ` | ${t('addFormFields.selected', { name: selectedField.name, type: selectedField.type })}`}
             </div>
             <div>
-              Zoom: {Math.round(scale * 100)}% | Page {currentPage + 1} of {totalPages}
+              {t('addFormFields.zoom', { scale: Math.round(scale * 100) })} | {t('addFormFields.pageOf', { current: currentPage + 1, total: totalPages })}
             </div>
           </div>
         </div>

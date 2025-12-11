@@ -221,20 +221,20 @@ export const EditTextPDF: React.FC = () => {
             context.lineWidth = 2;
 
             // Top-left
-            context.fillRect(sel.x - handleSize/2, sel.y - handleSize/2, handleSize, handleSize);
-            context.strokeRect(sel.x - handleSize/2, sel.y - handleSize/2, handleSize, handleSize);
+            context.fillRect(sel.x - handleSize / 2, sel.y - handleSize / 2, handleSize, handleSize);
+            context.strokeRect(sel.x - handleSize / 2, sel.y - handleSize / 2, handleSize, handleSize);
 
             // Top-right
-            context.fillRect(sel.x + sel.width - handleSize/2, sel.y - handleSize/2, handleSize, handleSize);
-            context.strokeRect(sel.x + sel.width - handleSize/2, sel.y - handleSize/2, handleSize, handleSize);
+            context.fillRect(sel.x + sel.width - handleSize / 2, sel.y - handleSize / 2, handleSize, handleSize);
+            context.strokeRect(sel.x + sel.width - handleSize / 2, sel.y - handleSize / 2, handleSize, handleSize);
 
             // Bottom-left
-            context.fillRect(sel.x - handleSize/2, sel.y + sel.height - handleSize/2, handleSize, handleSize);
-            context.strokeRect(sel.x - handleSize/2, sel.y + sel.height - handleSize/2, handleSize, handleSize);
+            context.fillRect(sel.x - handleSize / 2, sel.y + sel.height - handleSize / 2, handleSize, handleSize);
+            context.strokeRect(sel.x - handleSize / 2, sel.y + sel.height - handleSize / 2, handleSize, handleSize);
 
             // Bottom-right
-            context.fillRect(sel.x + sel.width - handleSize/2, sel.y + sel.height - handleSize/2, handleSize, handleSize);
-            context.strokeRect(sel.x + sel.width - handleSize/2, sel.y + sel.height - handleSize/2, handleSize, handleSize);
+            context.fillRect(sel.x + sel.width - handleSize / 2, sel.y + sel.height - handleSize / 2, handleSize, handleSize);
+            context.strokeRect(sel.x + sel.width - handleSize / 2, sel.y + sel.height - handleSize / 2, handleSize, handleSize);
           }
 
           // Draw mode indicator
@@ -339,7 +339,7 @@ export const EditTextPDF: React.FC = () => {
 
     // Check if inside selection (move)
     if (x >= selection.x && x <= selection.x + selection.width &&
-        y >= selection.y && y <= selection.y + selection.height) {
+      y >= selection.y && y <= selection.y + selection.height) {
       return 'move';
     }
 
@@ -733,8 +733,8 @@ export const EditTextPDF: React.FC = () => {
       // Check if error is due to encoding (non-Latin characters)
       if (error?.message?.includes('cannot encode') || error?.message?.includes('WinAnsi')) {
         alert('⚠️ Error: The selected font does not support non-Latin characters (Cyrillic, Asian, etc.).\n\n' +
-              'Current limitation: Only Latin characters (A-Z, a-z, 0-9) are supported.\n\n' +
-              'Please use only Latin text or try a different tool.');
+          'Current limitation: Only Latin characters (A-Z, a-z, 0-9) are supported.\n\n' +
+          'Please use only Latin text or try a different tool.');
       } else {
         alert(t('editText.replaceError') || 'Failed to replace text');
       }
@@ -820,7 +820,7 @@ export const EditTextPDF: React.FC = () => {
             {/* Page Selector with Text Position Controls */}
             <Card className="p-4">
               <Label className="mb-2">
-                Select Page to Edit
+                {t('editText.selectPageToEdit')}
               </Label>
               <div className="flex items-center gap-2 mb-3">
                 <Button
@@ -852,12 +852,12 @@ export const EditTextPDF: React.FC = () => {
               {/* Text Position Controls */}
               <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
                 <Label className="block text-xs mb-2">
-                  Text Position (for selected area)
+                  {t('editText.textPosition')}
                 </Label>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <Label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">
-                      X: {textOffsetX}px
+                      {t('editText.xLabel')} {textOffsetX}px
                     </Label>
                     <input
                       type="range"
@@ -870,14 +870,14 @@ export const EditTextPDF: React.FC = () => {
                   </div>
                   <div>
                     <Label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">
-                      Y: {textOffsetY}px
+                      {t('editText.yLabel')} {textOffsetY}px
                     </Label>
                     <input
                       type="range"
                       min={-50}
                       max={50}
                       value={textOffsetY}
-                      onChange={(e) => setTextOffsetY(parseInt(e.target.value))}
+                      onChange={(e) => setTextOffsetX(parseInt(e.target.value))}
                       className="w-full"
                     />
                   </div>
@@ -889,7 +889,7 @@ export const EditTextPDF: React.FC = () => {
             <Card className="p-4">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Page Preview
+                  {t('editText.pagePreview')}
                 </h3>
                 {/* Zoom Controls */}
                 <div className="flex items-center gap-2">
@@ -938,35 +938,34 @@ export const EditTextPDF: React.FC = () => {
                 return pageSelections.length > 0 || totalSelections > 0 ? (
                   <div className="mt-2 space-y-1">
                     <p className="text-sm text-green-600 dark:text-green-400">
-                      ✓ {pageSelections.length} selection{pageSelections.length !== 1 ? 's' : ''} on this page
-                      {totalSelections > pageSelections.length && ` (${totalSelections} total across all pages)`}
+                      ✓ {t('editText.selectionsOnPage').replace('{count}', pageSelections.length.toString()).replace('{page}', selectedPage.toString())}
                     </p>
-                  {activeSelectionId && (() => {
-                    const activeSel = selections.find(s => s.id === activeSelectionId);
-                    return activeSel ? (
-                      <>
-                        <p className="text-sm text-blue-600 dark:text-blue-400">
-                          Active: {activeSel.width.toFixed(0)}x{activeSel.height.toFixed(0)} px
-                          {activeSel.mode === 'cover' ? ' (Cover mode 🎨)' : ''}
-                          {activeSel.text && activeSel.mode === 'replace' && ` - "${activeSel.text.substring(0, 30)}${activeSel.text.length > 30 ? '...' : ''}"`}
-                        </p>
-                        {activeSel.fontSize && (
-                          <p className="text-sm text-purple-600 dark:text-purple-400">
-                            🔍 Auto-detected font size: {activeSel.fontSize}px
+                    {activeSelectionId && (() => {
+                      const activeSel = selections.find(s => s.id === activeSelectionId);
+                      return activeSel ? (
+                        <>
+                          <p className="text-sm text-blue-600 dark:text-blue-400">
+                            Active: {activeSel.width.toFixed(0)}x{activeSel.height.toFixed(0)} px
+                            {activeSel.mode === 'cover' ? ` (${t('editText.coverMode')})` : ''}
+                            {activeSel.text && activeSel.mode === 'replace' && ` - "${activeSel.text.substring(0, 30)}${activeSel.text.length > 30 ? '...' : ''}"`}
                           </p>
-                        )}
-                      </>
-                    ) : null;
-                  })()}
+                          {activeSel.fontSize && (
+                            <p className="text-sm text-purple-600 dark:text-purple-400">
+                              {t('editText.autoDetectedFontSize').replace('{size}', activeSel.fontSize.toString())}
+                            </p>
+                          )}
+                        </>
+                      ) : null;
+                    })()}
                     {showPreview && (
                       <p className="text-sm text-blue-600 dark:text-blue-400">
-                        👁️ Preview mode active - showing all changes in real-time
+                        {t('editText.previewModeActive')}
                       </p>
                     )}
                   </div>
                 ) : (
                   <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                    💡 Click and drag to select text area or image to cover on the PDF
+                    {t('editText.clickAndDrag')}
                   </p>
                 );
               })()}
@@ -978,36 +977,34 @@ export const EditTextPDF: React.FC = () => {
             {/* Mode Selection */}
             <Card className="p-6">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                Selection Mode
+                {t('editText.selectionMode')}
               </h3>
               <div className="grid grid-cols-2 gap-3">
                 <Button
                   onClick={() => setEditModeType('replace')}
                   variant="outline"
-                  className={`px-4 py-3 h-auto flex-col ${
-                    editMode_type === 'replace'
-                      ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300'
-                      : 'hover:border-blue-300'
-                  }`}
+                  className={`px-4 py-3 h-auto flex-col ${editMode_type === 'replace'
+                    ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300'
+                    : 'hover:border-blue-300'
+                    }`}
                 >
                   <div className="text-2xl mb-1">✏️</div>
-                  <div className="text-sm font-medium">Replace Text</div>
+                  <div className="text-sm font-medium">{t('editText.modeReplace')}</div>
                 </Button>
                 <Button
                   onClick={() => setEditModeType('cover')}
                   variant="outline"
-                  className={`px-4 py-3 h-auto flex-col ${
-                    editMode_type === 'cover'
-                      ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300'
-                      : 'hover:border-purple-300'
-                  }`}
+                  className={`px-4 py-3 h-auto flex-col ${editMode_type === 'cover'
+                    ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300'
+                    : 'hover:border-purple-300'
+                    }`}
                 >
                   <div className="text-2xl mb-1">🎨</div>
-                  <div className="text-sm font-medium">Cover Only</div>
+                  <div className="text-sm font-medium">{t('editText.modeCover')}</div>
                 </Button>
               </div>
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                {editMode_type === 'replace' ? 'Draw and add replacement text' : 'Draw to cover text/images without adding new text'}
+                {editMode_type === 'replace' ? t('editText.modeReplaceDesc') : t('editText.modeCoverDesc')}
               </p>
             </Card>
 
@@ -1018,7 +1015,7 @@ export const EditTextPDF: React.FC = () => {
                 <Card className="p-6">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                      Selections ({pageSelections.length} on page {selectedPage})
+                      {t('editText.selectionsOnPage').replace('{count}', pageSelections.length.toString()).replace('{page}', selectedPage.toString())}
                     </h3>
                     <div className="flex gap-2">
                       {pageSelections.length > 0 && (
@@ -1031,7 +1028,7 @@ export const EditTextPDF: React.FC = () => {
                           size="sm"
                           className="text-orange-500 hover:text-orange-600"
                         >
-                          Clear Page
+                          {t('editText.clearPage')}
                         </Button>
                       )}
                       <Button
@@ -1043,7 +1040,7 @@ export const EditTextPDF: React.FC = () => {
                         size="sm"
                         className="text-red-500 hover:text-red-600"
                       >
-                        Clear All
+                        {t('common.clearAll')}
                       </Button>
                     </div>
                   </div>
@@ -1058,16 +1055,15 @@ export const EditTextPDF: React.FC = () => {
                               setSelectedPage(sel.pageNumber);
                             }
                           }}
-                          className={`p-3 rounded-lg border-2 cursor-pointer transition-all ${
-                            sel.id === activeSelectionId
-                              ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                              : 'border-gray-200 dark:border-gray-700 hover:border-blue-300'
-                          }`}
+                          className={`p-3 rounded-lg border-2 cursor-pointer transition-all ${sel.id === activeSelectionId
+                            ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                            : 'border-gray-200 dark:border-gray-700 hover:border-blue-300'
+                            }`}
                         >
                           <div className="flex items-center justify-between">
                             <div className="flex-1">
                               <div className="text-sm font-medium text-gray-900 dark:text-white">
-                                {sel.mode === 'cover' ? '🎨 Cover' : '✏️ Replace'} #{idx + 1}
+                                {sel.mode === 'cover' ? `🎨 ${t('editText.cover')}` : `✏️ ${t('editText.replace')}`} #{idx + 1}
                               </div>
                               <div className="text-xs text-gray-500 dark:text-gray-400">
                                 {sel.width.toFixed(0)}x{sel.height.toFixed(0)} px
@@ -1095,7 +1091,7 @@ export const EditTextPDF: React.FC = () => {
                     </div>
                   ) : (
                     <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-4">
-                      No selections on this page. Total: {selections.length} across all pages.
+                      {t('editText.noSelections').replace('{total}', selections.length.toString())}
                     </p>
                   )}
                 </Card>
@@ -1110,7 +1106,7 @@ export const EditTextPDF: React.FC = () => {
               return (
                 <Card className="p-6">
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                    Edit Active Selection
+                    {t('editText.editActiveSelection')}
                   </h3>
 
                   <div className="space-y-4">
@@ -1118,7 +1114,7 @@ export const EditTextPDF: React.FC = () => {
                       <>
                         <div>
                           <Label className="mb-2">
-                            Replacement Text
+                            {t('editText.replacementText')}
                           </Label>
                           <textarea
                             value={activeSel.text}
@@ -1127,12 +1123,12 @@ export const EditTextPDF: React.FC = () => {
                                 s.id === activeSelectionId ? { ...s, text: e.target.value } : s
                               ));
                             }}
-                            placeholder="Enter replacement text (multiline supported)..."
+                            placeholder={t('editText.enterReplacementText')}
                             rows={3}
                             className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white resize-none"
                           />
                           <p className="text-xs text-amber-600 dark:text-amber-400 mt-1">
-                            ⚠️ Only Latin characters (A-Z, 0-9) are supported
+                            {t('editText.latinCharactersOnly')}
                           </p>
                         </div>
                       </>
@@ -1142,7 +1138,7 @@ export const EditTextPDF: React.FC = () => {
                     <div className="grid grid-cols-2 gap-3">
                       <div>
                         <Label className="block text-xs mb-1">
-                          Background
+                          {t('editText.backgroundColor')}
                         </Label>
                         <input
                           type="color"
@@ -1154,7 +1150,7 @@ export const EditTextPDF: React.FC = () => {
                       {activeSel.mode === 'replace' && (
                         <div>
                           <Label className="block text-xs mb-1">
-                            Text Color
+                            {t('editText.textColor')}
                           </Label>
                           <input
                             type="color"
@@ -1173,7 +1169,7 @@ export const EditTextPDF: React.FC = () => {
                         <div className="grid grid-cols-2 gap-3">
                           <div>
                             <Label className="block text-xs mb-1">
-                              Size: {fontSize}px
+                              {t('editText.fontSize')}: {fontSize}px
                             </Label>
                             <input
                               type="range"
@@ -1186,7 +1182,7 @@ export const EditTextPDF: React.FC = () => {
                           </div>
                           <div>
                             <Label className="block text-xs mb-1">
-                              Font
+                              {t('editText.font')}
                             </Label>
                             <Select value={fontFamily} onValueChange={setFontFamily}>
                               <SelectTrigger className="w-full h-8 text-sm">
@@ -1229,7 +1225,7 @@ export const EditTextPDF: React.FC = () => {
                         {/* Text Alignment */}
                         <div>
                           <Label className="block text-xs mb-2">
-                            Text Alignment
+                            {t('editText.textAlignment')}
                           </Label>
                           <div className="flex gap-2">
                             <Button
@@ -1285,7 +1281,7 @@ export const EditTextPDF: React.FC = () => {
                         className="w-4 h-4"
                       />
                       <Label htmlFor="showPreview" className="text-sm font-medium cursor-pointer">
-                        Show live preview
+                        {t('editText.showLivePreview')}
                       </Label>
                     </div>
                   </div>
@@ -1301,10 +1297,10 @@ export const EditTextPDF: React.FC = () => {
                   disabled={isProcessing}
                   className="w-full bg-green-500 hover:bg-green-600"
                 >
-                  <span>Apply {selections.length} Change{selections.length > 1 ? 's' : ''}</span>
+                  <span>{t('editText.applyChanges').replace('{count}', selections.length.toString())}</span>
                 </Button>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
-                  All selections will be applied to the PDF
+                  {t('editText.applyAllHint')}
                 </p>
               </Card>
             )}
@@ -1346,7 +1342,7 @@ export const EditTextPDF: React.FC = () => {
                 {t('common.success')}
               </h3>
               <p className="text-gray-600 dark:text-gray-400 mb-6">
-                Text replaced successfully!
+                {t('editText.successMessage')}
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -1367,7 +1363,7 @@ export const EditTextPDF: React.FC = () => {
               {/* Use in other tools */}
               <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-                  {t('common.useInOtherTools')}
+                  {t('editText.useInOtherTools')}
                 </p>
                 <div className="flex flex-wrap gap-2 justify-center">
                   {(['merge-pdf', 'compress-pdf', 'protect-pdf', 'watermark-pdf'] as Tool[]).map(

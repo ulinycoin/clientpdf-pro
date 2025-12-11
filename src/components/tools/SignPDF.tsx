@@ -253,17 +253,17 @@ export const SignPDF: React.FC = () => {
 
   const handleAddSignature = async () => {
     if (!file) {
-      alert('Please upload a PDF file');
+      alert(t('sign.noFile'));
       return;
     }
 
     if (settings.type === 'text' && !settings.text?.trim()) {
-      alert('Please enter signature text');
+      alert(t('sign.enterText'));
       return;
     }
 
     if ((settings.type === 'draw' || settings.type === 'upload') && !signatureImage) {
-      alert('Please draw or upload a signature');
+      alert(t('sign.provideSignature'));
       return;
     }
 
@@ -273,7 +273,7 @@ export const SignPDF: React.FC = () => {
     setResultSaved(false);
 
     try {
-      setProgressMessage('Loading PDF...');
+      setProgressMessage(t('sign.loadingHighQuality'));
       setProgress(10);
 
       // Load PDF
@@ -281,7 +281,7 @@ export const SignPDF: React.FC = () => {
       const pdfDoc = await PDFDocument.load(arrayBuffer);
 
       setProgress(30);
-      setProgressMessage('Adding signature...');
+      setProgressMessage(t('sign.addingSignature'));
 
       // Prepare signature image
       let signatureImageBytes: Uint8Array | null = null;
@@ -365,18 +365,18 @@ export const SignPDF: React.FC = () => {
         // Update progress
         const pageProgress = 30 + ((i + 1) / pagesToSign.length) * 60;
         setProgress(Math.round(pageProgress));
-        setProgressMessage(`Signing page ${i + 1} of ${pagesToSign.length}...`);
+        setProgressMessage(t('sign.signingPage', { current: i + 1, total: pagesToSign.length }));
       }
 
       setProgress(90);
-      setProgressMessage('Saving signed PDF...');
+      setProgressMessage(t('sign.saving'));
 
       // Save PDF
       const pdfBytes = await pdfDoc.save();
       const blob = new Blob([pdfBytes], { type: 'application/pdf' });
 
       setProgress(100);
-      setProgressMessage('Signature added successfully!');
+      setProgressMessage(t('sign.successTitle'));
 
       setResult({
         blob,
@@ -491,17 +491,17 @@ export const SignPDF: React.FC = () => {
 
             {/* Signature Type */}
             <div>
-              <Label className="mb-2">Signature Type</Label>
+              <Label className="mb-2">{t('sign.signatureType')}</Label>
               <Tabs value={settings.type} onValueChange={(value) => setSettings({ ...settings, type: value as SignatureType })}>
                 <TabsList className="grid w-full grid-cols-3">
                   <TabsTrigger value="draw" disabled={isProcessing}>
-                    ✍️ Draw
+                    ✍️ {t('sign.modeDraw')}
                   </TabsTrigger>
                   <TabsTrigger value="upload" disabled={isProcessing}>
-                    📤 Upload
+                    📤 {t('sign.modeUpload')}
                   </TabsTrigger>
                   <TabsTrigger value="text" disabled={isProcessing}>
-                    📝 Text
+                    📝 {t('sign.modeText')}
                   </TabsTrigger>
                 </TabsList>
               </Tabs>
@@ -510,7 +510,7 @@ export const SignPDF: React.FC = () => {
             {/* Signature Input */}
             {settings.type === 'draw' && (
               <div>
-                <Label className="mb-2">Draw Signature</Label>
+                <Label className="mb-2">{t('sign.drawSignature')}</Label>
                 <div className="border-2 border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
                   <canvas
                     ref={canvasRef}
@@ -529,14 +529,14 @@ export const SignPDF: React.FC = () => {
                   className="mt-2 text-sm"
                   disabled={isProcessing}
                 >
-                  Clear signature
+                  {t('sign.clearSignature')}
                 </Button>
               </div>
             )}
 
             {settings.type === 'upload' && (
               <div>
-                <Label className="mb-2">Upload Signature Image</Label>
+                <Label className="mb-2">{t('sign.uploadImage')}</Label>
                 <Input
                   type="file"
                   accept="image/png,image/jpeg"
@@ -553,17 +553,17 @@ export const SignPDF: React.FC = () => {
 
             {settings.type === 'text' && (
               <div>
-                <Label className="mb-2">Signature Text</Label>
+                <Label className="mb-2">{t('sign.signatureText')}</Label>
                 <Input
                   type="text"
                   value={settings.text || ''}
                   onChange={(e) => setSettings({ ...settings, text: e.target.value })}
                   disabled={isProcessing}
-                  placeholder="Your Name"
+                  placeholder={t('sign.yourName')}
                 />
                 <div className="mt-2">
                   <Label className="text-xs mb-1">
-                    Text Size: {settings.textSize}pt
+                    {t('sign.textSize')}: {settings.textSize}pt
                   </Label>
                   <input
                     type="range"
@@ -581,7 +581,7 @@ export const SignPDF: React.FC = () => {
 
             {/* Position */}
             <div>
-              <Label className="mb-2">Position</Label>
+              <Label className="mb-2">{t('sign.position')}</Label>
               <Select
                 value={settings.position}
                 onValueChange={(value) => setSettings({ ...settings, position: value as SignaturePosition })}
@@ -591,17 +591,17 @@ export const SignPDF: React.FC = () => {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="bottom-right">Bottom Right</SelectItem>
-                  <SelectItem value="bottom-left">Bottom Left</SelectItem>
-                  <SelectItem value="top-right">Top Right</SelectItem>
-                  <SelectItem value="top-left">Top Left</SelectItem>
+                  <SelectItem value="bottom-right">{t('sign.positions.bottomRight')}</SelectItem>
+                  <SelectItem value="bottom-left">{t('sign.positions.bottomLeft')}</SelectItem>
+                  <SelectItem value="top-right">{t('sign.positions.topRight')}</SelectItem>
+                  <SelectItem value="top-left">{t('sign.positions.topLeft')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             {/* Page Selection */}
             <div>
-              <Label className="mb-2">Apply to Pages</Label>
+              <Label className="mb-2">{t('sign.applyToPages')}</Label>
               <Select
                 value={String(settings.pageNumber)}
                 onValueChange={(value) => setSettings({ ...settings, pageNumber: value === 'all' ? 'all' : parseInt(value) })}
@@ -611,9 +611,9 @@ export const SignPDF: React.FC = () => {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Pages</SelectItem>
+                  <SelectItem value="all">{t('sign.allPages')}</SelectItem>
                   {file.info && Array.from({ length: file.info.pages }, (_, i) => (
-                    <SelectItem key={i + 1} value={String(i + 1)}>Page {i + 1}</SelectItem>
+                    <SelectItem key={i + 1} value={String(i + 1)}>{t('sign.pageNumber', { number: i + 1 })}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -622,7 +622,7 @@ export const SignPDF: React.FC = () => {
             {/* Size */}
             <div>
               <Label className="mb-2">
-                Signature Size: {settings.width} × {settings.height}
+                {t('sign.signatureSize')}: {settings.width} × {settings.height}
               </Label>
               <input
                 type="range"
@@ -645,14 +645,14 @@ export const SignPDF: React.FC = () => {
               disabled={isProcessing || (!signatureImage && settings.type !== 'text') || (settings.type === 'text' && !settings.text?.trim())}
               className="w-full"
             >
-              {isProcessing ? 'Adding signature...' : '✍️ Add Signature'}
+              {isProcessing ? t('sign.addingSignature') : `✍️ ${t('sign.addSignature')}`}
             </Button>
           </Card>
 
           {/* Preview Panel */}
           <Card className="p-6">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-              Preview
+              {t('common.preview')}
             </h3>
             <div className="relative bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden" style={{ minHeight: '400px' }}>
               {previewUrl ? (
@@ -722,7 +722,7 @@ export const SignPDF: React.FC = () => {
                 </>
               ) : (
                 <div className="flex items-center justify-center h-full min-h-[400px]">
-                  <p className="text-gray-500 dark:text-gray-400">Loading preview...</p>
+                  <p className="text-gray-500 dark:text-gray-400">{t('sign.generatingPreview')}</p>
                 </div>
               )}
             </div>
@@ -745,10 +745,10 @@ export const SignPDF: React.FC = () => {
           <div className="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-gray-700">
             <div>
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                ✓ Signature Added Successfully
+                ✓ {t('sign.successTitle')}
               </h3>
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                Signed {result.metadata.pagesSigned} of {result.metadata.pageCount} pages
+                {t('sign.pagesSigned')} {result.metadata.pagesSigned} / {result.metadata.pageCount}
               </p>
             </div>
             <Button
@@ -763,13 +763,13 @@ export const SignPDF: React.FC = () => {
           {/* Stats */}
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
-              <p className="text-sm text-gray-500 dark:text-gray-400">Pages Signed</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">{t('sign.pagesSigned')}</p>
               <p className="text-2xl font-bold text-gray-900 dark:text-white">
                 {result.metadata.pagesSigned}
               </p>
             </div>
             <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
-              <p className="text-sm text-gray-500 dark:text-gray-400">File Size</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">{t('sign.fileSize')}</p>
               <p className="text-2xl font-bold text-gray-900 dark:text-white">
                 {(result.metadata.finalSize / 1024 / 1024).toFixed(2)} MB
               </p>
@@ -787,10 +787,10 @@ export const SignPDF: React.FC = () => {
           {/* Quick Actions */}
           <Card className="p-6 mt-6">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-              What's next?
+              {t('sign.quickActions.title')}
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-              Continue working with your signed PDF:
+              {t('sign.quickActions.description')}
             </p>
 
             {/* Action buttons grid */}
@@ -807,7 +807,7 @@ export const SignPDF: React.FC = () => {
                     {t('tools.protect-pdf.name')}
                   </p>
                   <p className="text-xs text-gray-500 dark:text-gray-400">
-                    Add password
+                    {t('common.recommended')}
                   </p>
                 </div>
               </Button>
@@ -824,7 +824,7 @@ export const SignPDF: React.FC = () => {
                     {t('tools.compress-pdf.name')}
                   </p>
                   <p className="text-xs text-gray-500 dark:text-gray-400">
-                    Reduce size
+                    {t('tools.compress-pdf.description')}
                   </p>
                 </div>
               </Button>
@@ -841,7 +841,7 @@ export const SignPDF: React.FC = () => {
                     {t('tools.watermark-pdf.name')}
                   </p>
                   <p className="text-xs text-gray-500 dark:text-gray-400">
-                    Add watermark
+                    {t('tools.watermark-pdf.description')}
                   </p>
                 </div>
               </Button>
@@ -858,7 +858,7 @@ export const SignPDF: React.FC = () => {
                     {t('tools.merge-pdf.name')}
                   </p>
                   <p className="text-xs text-gray-500 dark:text-gray-400">
-                    Combine PDFs
+                    {t('tools.merge-pdf.description')}
                   </p>
                 </div>
               </Button>

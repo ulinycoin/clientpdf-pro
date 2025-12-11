@@ -86,7 +86,7 @@ export const AddTextPDF: React.FC = () => {
   // Handle canvas click
   const handleCanvasClick = useCallback((x: number, y: number) => {
     if (toolMode === 'add') {
-      addTextElement(x, y, 'Click to edit');
+      addTextElement(x, y, t('addText.clickToEdit'));
     }
   }, [toolMode, addTextElement]);
 
@@ -109,7 +109,7 @@ export const AddTextPDF: React.FC = () => {
       setResult(resultBlob);
     } catch (error) {
       console.error('Error saving PDF:', error);
-      alert('Error: ' + (error instanceof Error ? error.message : 'Unknown error'));
+      alert(t('common.error') + ': ' + (error instanceof Error ? error.message : 'Unknown error'));
     }
   }, [file, savePDF]);
 
@@ -117,7 +117,7 @@ export const AddTextPDF: React.FC = () => {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.target instanceof HTMLInputElement ||
-          event.target instanceof HTMLTextAreaElement) {
+        event.target instanceof HTMLTextAreaElement) {
         return;
       }
 
@@ -183,7 +183,7 @@ export const AddTextPDF: React.FC = () => {
     const url = URL.createObjectURL(result);
     const link = document.createElement('a');
     link.href = url;
-    link.download = file?.name.replace('.pdf', '_with_text.pdf') || 'document_with_text.pdf';
+    link.download = file?.name.replace('.pdf', '_with_text.pdf') || t('addText.defaultFileName');
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -200,7 +200,7 @@ export const AddTextPDF: React.FC = () => {
   const handleQuickAction = (toolId: Tool) => {
     // Save the processed PDF to shared state for the next tool
     if (result) {
-      setSharedFile(result, file?.name.replace('.pdf', '_with_text.pdf') || 'document_with_text.pdf', 'add-text-pdf');
+      setSharedFile(result, file?.name.replace('.pdf', '_with_text.pdf') || t('addText.defaultFileName'), 'add-text-pdf');
     }
     // Navigate to the selected tool
     window.location.hash = HASH_TOOL_MAP[toolId];
@@ -245,13 +245,13 @@ export const AddTextPDF: React.FC = () => {
             <div className="text-center space-y-4">
               <div className="text-6xl">✅</div>
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                Add Text to PDF
+                {t('tools.add-text-pdf.name')}
               </h2>
 
               <div className="text-gray-600 dark:text-gray-400 space-y-1">
-                <p>Text elements added: <span className="font-semibold">{textElements.length}</span></p>
-                <p>Original size: <span className="font-semibold">{(file.size / 1024).toFixed(2)} KB</span></p>
-                <p>New size: <span className="font-semibold">{(result.size / 1024).toFixed(2)} KB</span></p>
+                <p>{t('addText.addedCount', { count: textElements.length })}</p>
+                <p>{t('addText.originalSize')}: <span className="font-semibold">{(file.size / 1024).toFixed(2)} KB</span></p>
+                <p>{t('addText.newSize')}: <span className="font-semibold">{(result.size / 1024).toFixed(2)} KB</span></p>
               </div>
 
               {/* Primary actions */}
@@ -261,14 +261,14 @@ export const AddTextPDF: React.FC = () => {
                   size="lg"
                   className="px-8 !bg-green-600 hover:!bg-green-700 !text-white"
                 >
-                  Download
+                  {t('common.download')}
                 </Button>
                 <Button
                   onClick={handleReset}
                   variant="outline"
                   size="lg"
                 >
-                  Process Another
+                  {t('common.processAnother')}
                 </Button>
               </div>
             </div>
@@ -279,10 +279,10 @@ export const AddTextPDF: React.FC = () => {
         <Card>
           <CardContent className="p-6">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-              What's next?
+              {t('common.whatsNext')}
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-              Continue working with your PDF using these tools:
+              {t('common.continueWorking')}
             </p>
 
             {/* Action buttons grid */}
@@ -424,11 +424,11 @@ export const AddTextPDF: React.FC = () => {
           {/* Status bar */}
           <div className="p-2 border-t bg-gray-50 dark:bg-gray-900 text-xs text-gray-600 dark:text-gray-400 flex justify-between flex-shrink-0">
             <div>
-              Mode: {toolMode === 'add' ? '✏️ Add Text' : '👆 Select'}
-              {selectedElement && ` | Selected: "${selectedElement.text.slice(0, 20)}${selectedElement.text.length > 20 ? '...' : ''}"`}
+              {toolMode === 'add' ? t('addText.modeAdd') : t('addText.modeSelect')}
+              {selectedElement && ` | ${t('addText.selected', { text: selectedElement.text.slice(0, 20) + (selectedElement.text.length > 20 ? '...' : '') })}`}
             </div>
             <div>
-              Zoom: {Math.round(scale * 100)}% | Page {currentPage} of {totalPages}
+              {t('addText.zoom', { scale: Math.round(scale * 100) })} | {t('addText.pageOf', { current: currentPage, total: totalPages })}
             </div>
           </div>
         </div>
@@ -439,8 +439,8 @@ export const AddTextPDF: React.FC = () => {
         <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 text-center shadow-2xl">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-ocean-500 mx-auto mb-6"></div>
-            <p className="text-gray-900 dark:text-white font-bold text-lg mb-2">Processing PDF</p>
-            <p className="text-gray-600 dark:text-gray-400 text-sm">Adding text elements to your PDF...</p>
+            <p className="text-gray-900 dark:text-white font-bold text-lg mb-2">{t('addText.processing')}</p>
+            <p className="text-gray-600 dark:text-gray-400 text-sm">{t('addText.addingText')}</p>
           </div>
         </div>
       )}

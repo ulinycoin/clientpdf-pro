@@ -315,7 +315,7 @@ export const OCRPDF: React.FC = () => {
   <meta charset="utf-8">
   <meta name="ocr-system" content="tesseract.js">
   <meta name="ocr-capabilities" content="ocr_page ocr_carea ocr_par ocr_line ocrx_word">
-  <title>OCR Result</title>
+  <title>${t('ocr.resultsTitle')}</title>
   <style>
     /* Basic styles for hOCR visualization */
     body {
@@ -659,242 +659,241 @@ export const OCRPDF: React.FC = () => {
       {file && !result && (
         <Card>
           <CardContent className="p-6 space-y-4">
-          {/* File info */}
-          <div className="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-gray-700">
-            <div className="flex items-center gap-3">
-              <span className="text-3xl">📄</span>
-              <div>
-                <h3 className="font-medium text-gray-900 dark:text-white">{file.name}</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  {(file.size / 1024 / 1024).toFixed(2)} MB • {totalPages} {t(totalPages === 1 ? 'ocr.page' : 'ocr.pages')}
-                </p>
-              </div>
-            </div>
-            <Button
-              onClick={handleRemoveFile}
-              variant="secondary"
-              size="sm"
-              disabled={isProcessing}
-            >
-              {t('ocr.remove')}
-            </Button>
-          </div>
-
-          {/* Preview */}
-          {previewUrl && (
-            <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-4 flex justify-center">
-              <img
-                src={previewUrl}
-                alt={t('ocr.preview')}
-                className="max-h-64 rounded shadow-md"
-              />
-            </div>
-          )}
-
-          {/* Page Selection (for PDF) */}
-          {file.type === 'application/pdf' && totalPages > 1 && (
-            <div>
-              <Label className="block text-sm font-medium mb-2">
-                {t('ocr.pageSelection')}
-              </Label>
-              <RadioGroup
-                value={pageMode}
-                onValueChange={(value) => setPageMode(value as PageSelectionMode)}
-                disabled={isProcessing}
-                className="space-y-2"
-              >
-                <div className="flex items-center gap-2">
-                  <RadioGroupItem value="first" id="first" />
-                  <Label htmlFor="first" className="text-sm font-normal cursor-pointer">
-                    {t('ocr.firstPageOnly')}
-                  </Label>
-                </div>
-                <div className="flex items-center gap-2">
-                  <RadioGroupItem value="all" id="all" />
-                  <Label htmlFor="all" className="text-sm font-normal cursor-pointer">
-                    {t('ocr.allPages')} ({totalPages} {t('ocr.pages')})
-                  </Label>
-                </div>
-                <div className="flex items-center gap-2">
-                  <RadioGroupItem value="range" id="range" />
-                  <Label htmlFor="range" className="text-sm font-normal cursor-pointer">
-                    {t('ocr.pageRange')}
-                  </Label>
-                </div>
-              </RadioGroup>
-              {pageMode === 'range' && (
-                <div className="ml-6 flex items-center gap-3 mt-2">
-                  <input
-                    type="number"
-                    min={1}
-                    max={totalPages}
-                    value={pageRange.start}
-                    onChange={(e) => setPageRange({ ...pageRange, start: parseInt(e.target.value) || 1 })}
-                    disabled={isProcessing}
-                    className="w-20 px-2 py-1 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm"
-                  />
-                  <span className="text-sm text-gray-500">—</span>
-                  <input
-                    type="number"
-                    min={1}
-                    max={totalPages}
-                    value={pageRange.end}
-                    onChange={(e) => setPageRange({ ...pageRange, end: parseInt(e.target.value) || totalPages })}
-                    disabled={isProcessing}
-                    className="w-20 px-2 py-1 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm"
-                  />
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Language Selection with Detection Info */}
-          <div>
-            <Label className="block text-sm font-medium mb-2">
-              {t('ocr.recognitionLanguage')}
-            </Label>
-
-            {/* Language Detection Info */}
-            {languageDetection && !isAnalyzing && (
-              <div className={`mb-3 p-3 rounded-lg border ${
-                languageDetection.confidence === 'high' ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800' :
-                languageDetection.confidence === 'medium' ? 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800' :
-                'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800'
-              }`}>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-xs font-medium">
-                    {languageDetection.confidence === 'high' ? `✅ ${t('ocr.languageDetection.highConfidence')}` :
-                     languageDetection.confidence === 'medium' ? `⚠️ ${t('ocr.languageDetection.mediumConfidence')}` :
-                     `❌ ${t('ocr.languageDetection.lowConfidence')}`}
-                  </span>
-                  <span className="text-xs text-gray-600 dark:text-gray-400">
-                    ({SUPPORTED_LANGUAGES.find(l => l.code === selectedLanguage)?.name || selectedLanguage})
-                  </span>
-                </div>
-                <p className="text-xs text-gray-600 dark:text-gray-400">
-                  {languageDetection.details}
-                </p>
-                {languageDetection.confidence !== 'high' && (
-                  <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
-                    💡 {t('ocr.languageDetection.verifyLanguage')}
+            {/* File info */}
+            <div className="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-gray-700">
+              <div className="flex items-center gap-3">
+                <span className="text-3xl">📄</span>
+                <div>
+                  <h3 className="font-medium text-gray-900 dark:text-white">{file.name}</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    {(file.size / 1024 / 1024).toFixed(2)} MB • {totalPages} {t(totalPages === 1 ? 'ocr.page' : 'ocr.pages')}
                   </p>
+                </div>
+              </div>
+              <Button
+                onClick={handleRemoveFile}
+                variant="secondary"
+                size="sm"
+                disabled={isProcessing}
+              >
+                {t('ocr.remove')}
+              </Button>
+            </div>
+
+            {/* Preview */}
+            {previewUrl && (
+              <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-4 flex justify-center">
+                <img
+                  src={previewUrl}
+                  alt={t('ocr.preview')}
+                  className="max-h-64 rounded shadow-md"
+                />
+              </div>
+            )}
+
+            {/* Page Selection (for PDF) */}
+            {file.type === 'application/pdf' && totalPages > 1 && (
+              <div>
+                <Label className="block text-sm font-medium mb-2">
+                  {t('ocr.pageSelection')}
+                </Label>
+                <RadioGroup
+                  value={pageMode}
+                  onValueChange={(value) => setPageMode(value as PageSelectionMode)}
+                  disabled={isProcessing}
+                  className="space-y-2"
+                >
+                  <div className="flex items-center gap-2">
+                    <RadioGroupItem value="first" id="first" />
+                    <Label htmlFor="first" className="text-sm font-normal cursor-pointer">
+                      {t('ocr.firstPageOnly')}
+                    </Label>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <RadioGroupItem value="all" id="all" />
+                    <Label htmlFor="all" className="text-sm font-normal cursor-pointer">
+                      {t('ocr.allPages')} ({totalPages} {t('ocr.pages')})
+                    </Label>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <RadioGroupItem value="range" id="range" />
+                    <Label htmlFor="range" className="text-sm font-normal cursor-pointer">
+                      {t('ocr.pageRange')}
+                    </Label>
+                  </div>
+                </RadioGroup>
+                {pageMode === 'range' && (
+                  <div className="ml-6 flex items-center gap-3 mt-2">
+                    <input
+                      type="number"
+                      min={1}
+                      max={totalPages}
+                      value={pageRange.start}
+                      onChange={(e) => setPageRange({ ...pageRange, start: parseInt(e.target.value) || 1 })}
+                      disabled={isProcessing}
+                      className="w-20 px-2 py-1 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm"
+                    />
+                    <span className="text-sm text-gray-500">—</span>
+                    <input
+                      type="number"
+                      min={1}
+                      max={totalPages}
+                      value={pageRange.end}
+                      onChange={(e) => setPageRange({ ...pageRange, end: parseInt(e.target.value) || totalPages })}
+                      disabled={isProcessing}
+                      className="w-20 px-2 py-1 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm"
+                    />
+                  </div>
                 )}
               </div>
             )}
 
-            {/* Analyzing state */}
-            {isAnalyzing && (
-              <div className="mb-3 p-3 rounded-lg border bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-                  <span className="text-xs font-medium text-blue-700 dark:text-blue-300">
-                    {t('ocr.analyzingContent')}
-                  </span>
-                </div>
-              </div>
-            )}
+            {/* Language Selection with Detection Info */}
+            <div>
+              <Label className="block text-sm font-medium mb-2">
+                {t('ocr.recognitionLanguage')}
+              </Label>
 
-            {/* Auto-detect toggle */}
-            <label className="flex items-center gap-2 mb-3">
-              <input
-                type="checkbox"
-                checked={autoDetectLanguage}
-                onChange={(e) => setAutoDetectLanguage(e.target.checked)}
+              {/* Language Detection Info */}
+              {languageDetection && !isAnalyzing && (
+                <div className={`mb-3 p-3 rounded-lg border ${languageDetection.confidence === 'high' ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800' :
+                    languageDetection.confidence === 'medium' ? 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800' :
+                      'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800'
+                  }`}>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-xs font-medium">
+                      {languageDetection.confidence === 'high' ? `✅ ${t('ocr.languageDetection.highConfidence')}` :
+                        languageDetection.confidence === 'medium' ? `⚠️ ${t('ocr.languageDetection.mediumConfidence')}` :
+                          `❌ ${t('ocr.languageDetection.lowConfidence')}`}
+                    </span>
+                    <span className="text-xs text-gray-600 dark:text-gray-400">
+                      ({SUPPORTED_LANGUAGES.find(l => l.code === selectedLanguage)?.name || selectedLanguage})
+                    </span>
+                  </div>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">
+                    {languageDetection.details}
+                  </p>
+                  {languageDetection.confidence !== 'high' && (
+                    <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                      💡 {t('ocr.languageDetection.verifyLanguage')}
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {/* Analyzing state */}
+              {isAnalyzing && (
+                <div className="mb-3 p-3 rounded-lg border bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                    <span className="text-xs font-medium text-blue-700 dark:text-blue-300">
+                      {t('ocr.analyzingContent')}
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              {/* Auto-detect toggle */}
+              <label className="flex items-center gap-2 mb-3">
+                <input
+                  type="checkbox"
+                  checked={autoDetectLanguage}
+                  onChange={(e) => setAutoDetectLanguage(e.target.checked)}
+                  disabled={isProcessing}
+                  className="rounded text-ocean-500 focus:ring-ocean-500"
+                />
+                <span className="text-sm text-gray-700 dark:text-gray-300">
+                  {t('ocr.autoDetect')}
+                </span>
+              </label>
+
+              <Select
+                value={selectedLanguage}
+                onValueChange={setSelectedLanguage}
+                disabled={isProcessing || (autoDetectLanguage && isAnalyzing)}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {SUPPORTED_LANGUAGES.map(lang => (
+                    <SelectItem key={lang.code} value={lang.code}>
+                      {lang.name} ({lang.nativeName})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                {autoDetectLanguage ? t('ocr.autoDetectHint') : t('ocr.languageHint')}
+              </p>
+            </div>
+
+            {/* Output Format Selection */}
+            <div>
+              <Label className="block text-sm font-medium mb-2">
+                {t('ocr.outputFormat.title')}
+              </Label>
+              <RadioGroup
+                value={outputFormat}
+                onValueChange={(value) => setOutputFormat(value as OutputFormat)}
                 disabled={isProcessing}
-                className="rounded text-ocean-500 focus:ring-ocean-500"
-              />
-              <span className="text-sm text-gray-700 dark:text-gray-300">
-                {t('ocr.autoDetect')}
-              </span>
-            </label>
+                className="space-y-3"
+              >
+                <div className="flex items-start gap-2">
+                  <RadioGroupItem value="text" id="text" className="mt-1" />
+                  <div className="flex-1">
+                    <Label htmlFor="text" className="text-sm font-medium cursor-pointer">
+                      📝 {t('ocr.outputFormat.text')}
+                    </Label>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                      {t('ocr.outputFormat.textDesc')}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <RadioGroupItem value="searchable-pdf" id="searchable-pdf" className="mt-1" />
+                  <div className="flex-1">
+                    <Label htmlFor="searchable-pdf" className="text-sm font-medium cursor-pointer">
+                      🔍 {t('ocr.outputFormat.searchablePdf')}
+                    </Label>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                      {t('ocr.outputFormat.searchablePdfDesc')}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <RadioGroupItem value="hocr" id="hocr" className="mt-1" />
+                  <div className="flex-1">
+                    <Label htmlFor="hocr" className="text-sm font-medium cursor-pointer">
+                      🌐 {t('ocr.outputFormat.hocr')}
+                    </Label>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                      {t('ocr.outputFormat.hocrDesc')}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <RadioGroupItem value="tsv" id="tsv" className="mt-1" />
+                  <div className="flex-1">
+                    <Label htmlFor="tsv" className="text-sm font-medium cursor-pointer">
+                      📊 {t('ocr.outputFormat.tsv')}
+                    </Label>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                      {t('ocr.outputFormat.tsvDesc')}
+                    </p>
+                  </div>
+                </div>
+              </RadioGroup>
+            </div>
 
-            <Select
-              value={selectedLanguage}
-              onValueChange={setSelectedLanguage}
-              disabled={isProcessing || (autoDetectLanguage && isAnalyzing)}
+            {/* Process Button */}
+            <Button
+              onClick={handleOCR}
+              disabled={isProcessing || isAnalyzing}
+              className="w-full"
             >
-              <SelectTrigger className="w-full">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {SUPPORTED_LANGUAGES.map(lang => (
-                  <SelectItem key={lang.code} value={lang.code}>
-                    {lang.name} ({lang.nativeName})
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              {autoDetectLanguage ? t('ocr.autoDetectHint') : t('ocr.languageHint')}
-            </p>
-          </div>
-
-          {/* Output Format Selection */}
-          <div>
-            <Label className="block text-sm font-medium mb-2">
-              {t('ocr.outputFormat.title')}
-            </Label>
-            <RadioGroup
-              value={outputFormat}
-              onValueChange={(value) => setOutputFormat(value as OutputFormat)}
-              disabled={isProcessing}
-              className="space-y-3"
-            >
-              <div className="flex items-start gap-2">
-                <RadioGroupItem value="text" id="text" className="mt-1" />
-                <div className="flex-1">
-                  <Label htmlFor="text" className="text-sm font-medium cursor-pointer">
-                    📝 {t('ocr.outputFormat.text')}
-                  </Label>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                    {t('ocr.outputFormat.textDesc')}
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start gap-2">
-                <RadioGroupItem value="searchable-pdf" id="searchable-pdf" className="mt-1" />
-                <div className="flex-1">
-                  <Label htmlFor="searchable-pdf" className="text-sm font-medium cursor-pointer">
-                    🔍 {t('ocr.outputFormat.searchablePdf')}
-                  </Label>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                    {t('ocr.outputFormat.searchablePdfDesc')}
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start gap-2">
-                <RadioGroupItem value="hocr" id="hocr" className="mt-1" />
-                <div className="flex-1">
-                  <Label htmlFor="hocr" className="text-sm font-medium cursor-pointer">
-                    🌐 {t('ocr.outputFormat.hocr')}
-                  </Label>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                    {t('ocr.outputFormat.hocrDesc')}
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start gap-2">
-                <RadioGroupItem value="tsv" id="tsv" className="mt-1" />
-                <div className="flex-1">
-                  <Label htmlFor="tsv" className="text-sm font-medium cursor-pointer">
-                    📊 {t('ocr.outputFormat.tsv')}
-                  </Label>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                    {t('ocr.outputFormat.tsvDesc')}
-                  </p>
-                </div>
-              </div>
-            </RadioGroup>
-          </div>
-
-          {/* Process Button */}
-          <Button
-            onClick={handleOCR}
-            disabled={isProcessing || isAnalyzing}
-            className="w-full"
-          >
-            {isProcessing ? t('ocr.processing') : isAnalyzing ? t('ocr.analyzing') : t('ocr.startOCR')}
-          </Button>
+              {isProcessing ? t('ocr.processing') : isAnalyzing ? t('ocr.analyzing') : t('ocr.startOCR')}
+            </Button>
           </CardContent>
         </Card>
       )}
@@ -912,160 +911,160 @@ export const OCRPDF: React.FC = () => {
       {result && (
         <Card>
           <CardContent className="p-6 space-y-4">
-          <div className="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-gray-700">
-            <div>
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                {outputFormat === 'searchable-pdf' ? t('ocr.results.searchablePdfReady') :
-                 outputFormat === 'hocr' ? t('ocr.results.hocrReady') :
-                 outputFormat === 'tsv' ? t('ocr.results.tsvReady') :
-                 t('ocr.results.textReady')}
-              </h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                {outputFormat === 'searchable-pdf' ?
-                  t('ocr.results.pagesWillProcess', {
-                    count: result.pagesProcessed,
-                    pages: t(result.pagesProcessed === 1 ? 'ocr.page' : 'ocr.pages')
-                  }) :
-                  t('ocr.results.confidenceAndPages', {
-                    confidence: result.confidence.toFixed(1),
-                    count: result.pagesProcessed,
-                    pages: t(result.pagesProcessed === 1 ? 'ocr.page' : 'ocr.pages')
-                  })
-                }
-              </p>
-            </div>
-            <Button
-              onClick={handleReset}
-              variant="secondary"
-              size="sm"
-            >
-              {t('ocr.newFile')}
-            </Button>
-          </div>
-
-          {/* Text Output with Edit Mode (only for text format) */}
-          {outputFormat === 'text' && (
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <Label className="block text-sm font-medium">
-                  {t('ocr.extractedText')}
-                </Label>
-                <Button
-                  onClick={() => setIsEditMode(!isEditMode)}
-                  variant="outline"
-                  size="sm"
-                >
-                  {isEditMode ? `👁️ ${t('ocr.view')}` : `✏️ ${t('ocr.edit')}`}
-                </Button>
+            <div className="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-gray-700">
+              <div>
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                  {outputFormat === 'searchable-pdf' ? t('ocr.results.searchablePdfReady') :
+                    outputFormat === 'hocr' ? t('ocr.results.hocrReady') :
+                      outputFormat === 'tsv' ? t('ocr.results.tsvReady') :
+                        t('ocr.results.textReady')}
+                </h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  {outputFormat === 'searchable-pdf' ?
+                    t('ocr.results.pagesWillProcess', {
+                      count: result.pagesProcessed,
+                      pages: t(result.pagesProcessed === 1 ? 'ocr.page' : 'ocr.pages')
+                    }) :
+                    t('ocr.results.confidenceAndPages', {
+                      confidence: result.confidence.toFixed(1),
+                      count: result.pagesProcessed,
+                      pages: t(result.pagesProcessed === 1 ? 'ocr.page' : 'ocr.pages')
+                    })
+                  }
+                </p>
               </div>
-
-              {isEditMode ? (
-                <div className="space-y-2">
-                  <Textarea
-                    value={editedText}
-                    onChange={(e) => setEditedText(e.target.value)}
-                    className="w-full h-64 text-sm resize-y"
-                    style={{ fontFamily: 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif' }}
-                    placeholder={t('ocr.editPlaceholder')}
-                  />
-                  {editedText !== result.text && (
-                    <div className="flex items-center gap-2 text-sm text-orange-600 dark:text-orange-400">
-                      <span className="animate-pulse">●</span>
-                      <span>{t('ocr.textModified')}</span>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <div className="w-full h-64 px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 overflow-auto">
-                  <pre className="text-gray-900 dark:text-white text-sm whitespace-pre-wrap break-words" style={{ fontFamily: 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif' }}>
-                    {editedText || result.text}
-                  </pre>
-                </div>
-              )}
-
-              {/* Stats */}
-              <div className="flex items-center gap-4 mt-2 text-xs text-gray-500 dark:text-gray-400">
-                <span>📝 {editedText.split(/\s+/).filter(w => w.length > 0).length} {t('ocr.words')}</span>
-                <span>📄 {editedText.split('\n').length} {t('ocr.lines')}</span>
-                <span>🔤 {editedText.length} {t('ocr.characters')}</span>
-              </div>
-            </div>
-          )}
-
-          {/* Searchable PDF info */}
-          {outputFormat === 'searchable-pdf' && (
-            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-              <div className="flex items-start gap-3">
-                <span className="text-2xl">📄</span>
-                <div className="flex-1">
-                  <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-1">
-                    {t('ocr.infoPanel.searchablePdfTitle')}
-                  </h4>
-                  <p className="text-sm text-blue-800 dark:text-blue-200">
-                    {t('ocr.infoPanel.searchablePdfDesc')}
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* hOCR info */}
-          {outputFormat === 'hocr' && (
-            <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg p-4">
-              <div className="flex items-start gap-3">
-                <span className="text-2xl">🌐</span>
-                <div className="flex-1">
-                  <h4 className="font-medium text-purple-900 dark:text-purple-100 mb-1">
-                    {t('ocr.infoPanel.hocrTitle')}
-                  </h4>
-                  <p className="text-sm text-purple-800 dark:text-purple-200">
-                    {t('ocr.infoPanel.hocrDesc')}
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* TSV info */}
-          {outputFormat === 'tsv' && (
-            <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
-              <div className="flex items-start gap-3">
-                <span className="text-2xl">📊</span>
-                <div className="flex-1">
-                  <h4 className="font-medium text-green-900 dark:text-green-100 mb-1">
-                    {t('ocr.infoPanel.tsvTitle')}
-                  </h4>
-                  <p className="text-sm text-green-800 dark:text-green-200">
-                    {t('ocr.infoPanel.tsvDesc')}
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Action Buttons */}
-          <div className={outputFormat === 'text' ? 'grid grid-cols-2 gap-3' : ''}>
-            {outputFormat === 'text' && (
               <Button
-                onClick={handleCopyText}
+                onClick={handleReset}
                 variant="secondary"
+                size="sm"
               >
-                {t('ocr.copyText')}
+                {t('ocr.newFile')}
               </Button>
+            </div>
+
+            {/* Text Output with Edit Mode (only for text format) */}
+            {outputFormat === 'text' && (
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <Label className="block text-sm font-medium">
+                    {t('ocr.extractedText')}
+                  </Label>
+                  <Button
+                    onClick={() => setIsEditMode(!isEditMode)}
+                    variant="outline"
+                    size="sm"
+                  >
+                    {isEditMode ? `👁️ ${t('ocr.view')}` : `✏️ ${t('ocr.edit')}`}
+                  </Button>
+                </div>
+
+                {isEditMode ? (
+                  <div className="space-y-2">
+                    <Textarea
+                      value={editedText}
+                      onChange={(e) => setEditedText(e.target.value)}
+                      className="w-full h-64 text-sm resize-y"
+                      style={{ fontFamily: 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif' }}
+                      placeholder={t('ocr.editPlaceholder')}
+                    />
+                    {editedText !== result.text && (
+                      <div className="flex items-center gap-2 text-sm text-orange-600 dark:text-orange-400">
+                        <span className="animate-pulse">●</span>
+                        <span>{t('ocr.textModified')}</span>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="w-full h-64 px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 overflow-auto">
+                    <pre className="text-gray-900 dark:text-white text-sm whitespace-pre-wrap break-words" style={{ fontFamily: 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif' }}>
+                      {editedText || result.text}
+                    </pre>
+                  </div>
+                )}
+
+                {/* Stats */}
+                <div className="flex items-center gap-4 mt-2 text-xs text-gray-500 dark:text-gray-400">
+                  <span>📝 {editedText.split(/\s+/).filter(w => w.length > 0).length} {t('ocr.words')}</span>
+                  <span>📄 {editedText.split('\n').length} {t('ocr.lines')}</span>
+                  <span>🔤 {editedText.length} {t('ocr.characters')}</span>
+                </div>
+              </div>
             )}
-            <Button
-              onClick={handleDownload}
-              size="lg"
-              className="px-8 !bg-green-600 hover:!bg-green-700 !text-white"
-            >
-              {
-                outputFormat === 'searchable-pdf' ? t('ocr.download.createSearchablePdf') :
-                outputFormat === 'hocr' ? t('ocr.download.downloadHocr') :
-                outputFormat === 'tsv' ? t('ocr.download.downloadTsv') :
-                t('ocr.download.downloadTxt')
-              }
-            </Button>
-          </div>
+
+            {/* Searchable PDF info */}
+            {outputFormat === 'searchable-pdf' && (
+              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                <div className="flex items-start gap-3">
+                  <span className="text-2xl">📄</span>
+                  <div className="flex-1">
+                    <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-1">
+                      {t('ocr.infoPanel.searchablePdfTitle')}
+                    </h4>
+                    <p className="text-sm text-blue-800 dark:text-blue-200">
+                      {t('ocr.infoPanel.searchablePdfDesc')}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* hOCR info */}
+            {outputFormat === 'hocr' && (
+              <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg p-4">
+                <div className="flex items-start gap-3">
+                  <span className="text-2xl">🌐</span>
+                  <div className="flex-1">
+                    <h4 className="font-medium text-purple-900 dark:text-purple-100 mb-1">
+                      {t('ocr.infoPanel.hocrTitle')}
+                    </h4>
+                    <p className="text-sm text-purple-800 dark:text-purple-200">
+                      {t('ocr.infoPanel.hocrDesc')}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* TSV info */}
+            {outputFormat === 'tsv' && (
+              <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
+                <div className="flex items-start gap-3">
+                  <span className="text-2xl">📊</span>
+                  <div className="flex-1">
+                    <h4 className="font-medium text-green-900 dark:text-green-100 mb-1">
+                      {t('ocr.infoPanel.tsvTitle')}
+                    </h4>
+                    <p className="text-sm text-green-800 dark:text-green-200">
+                      {t('ocr.infoPanel.tsvDesc')}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Action Buttons */}
+            <div className={outputFormat === 'text' ? 'grid grid-cols-2 gap-3' : ''}>
+              {outputFormat === 'text' && (
+                <Button
+                  onClick={handleCopyText}
+                  variant="secondary"
+                >
+                  {t('ocr.copyText')}
+                </Button>
+              )}
+              <Button
+                onClick={handleDownload}
+                size="lg"
+                className="px-8 !bg-green-600 hover:!bg-green-700 !text-white"
+              >
+                {
+                  outputFormat === 'searchable-pdf' ? t('ocr.download.createSearchablePdf') :
+                    outputFormat === 'hocr' ? t('ocr.download.downloadHocr') :
+                      outputFormat === 'tsv' ? t('ocr.download.downloadTsv') :
+                        t('ocr.download.downloadTxt')
+                }
+              </Button>
+            </div>
           </CardContent>
         </Card>
       )}

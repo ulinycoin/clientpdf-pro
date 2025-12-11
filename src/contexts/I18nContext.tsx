@@ -6,6 +6,12 @@ import type { Language } from '@/types';
 import enTranslations from '@/locales/en.json';
 import ruTranslations from '@/locales/ru.json';
 import jaTranslations from '@/locales/ja.json';
+import deTranslations from '@/locales/de.json';
+import frTranslations from '@/locales/fr.json';
+import esTranslations from '@/locales/es.json';
+import zhTranslations from '@/locales/zh.json';
+import ptTranslations from '@/locales/pt.json';
+import itTranslations from '@/locales/it.json';
 
 type Translations = typeof enTranslations;
 
@@ -13,10 +19,12 @@ const translations: Record<Language, Translations> = {
   en: enTranslations,
   ru: ruTranslations,
   ja: jaTranslations,
-  // Fallback to English for other languages (will be added later)
-  de: enTranslations,
-  fr: enTranslations,
-  es: enTranslations,
+  de: deTranslations,
+  fr: frTranslations,
+  es: esTranslations,
+  zh: zhTranslations,
+  pt: ptTranslations,
+  it: itTranslations,
 };
 
 export interface I18nReturn {

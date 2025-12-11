@@ -1,9 +1,9 @@
 // Core types for LocalPDF SPA
 
 // Language types
-export type Language = 'en' | 'ru' | 'de' | 'fr' | 'es' | 'ja';
+export type Language = 'en' | 'ru' | 'de' | 'fr' | 'es' | 'ja' | 'zh' | 'pt' | 'it';
 
-export const SUPPORTED_LANGUAGES: Language[] = ['en', 'ru', 'de', 'fr', 'es', 'ja'];
+export const SUPPORTED_LANGUAGES: Language[] = ['en', 'ru', 'de', 'fr', 'es', 'ja', 'zh', 'pt', 'it'];
 
 // Theme types
 export type Theme = 'light' | 'dark';
