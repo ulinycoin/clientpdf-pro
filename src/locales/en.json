@@ -4,8 +4,8 @@
     "subtitle": "Privacy-first PDF tools in your browser"
   },
   "welcome": {
-    "title": "Welcome to LocalPDF",
-    "subtitle": "Choose a tool to get started",
+    "title": "Secure and Fast PDF Processing",
+    "subtitle": "Your files are processed locally and never leave your device.",
     "firstTimeBanner": "Welcome! All processing happens in your browser - your files never leave your device.",
     "selectTool": "Select a tool from the sidebar or choose one below"
   },
@@ -14,6 +14,13 @@
     "collapse": "Collapse sidebar",
     "expand": "Expand sidebar",
     "backToMain": "← Back to main site"
+  },
+  "toolGroups": {
+    "all": "All Tools",
+    "organize": "Organize",
+    "edit": "Edit",
+    "security": "Security",
+    "convert": "Convert"
   },
   "tools": {
     "merge-pdf": {
@@ -91,6 +98,10 @@
     "flatten-pdf": {
       "name": "Flatten PDF",
       "description": "Make PDF forms and annotations non-editable"
+    },
+    "extract-images-pdf": {
+      "name": "Extract/Remove Images",
+      "description": "Extract all images from PDF or remove them"
     },
     "edit-pdf": {
       "name": "Edit PDF",
@@ -456,6 +467,7 @@
     "autoDetect": "Auto-detect language",
     "autoDetectHint": "Language will be detected automatically from document content",
     "detectingLanguage": "Detecting language...",
+    "analyzingContent": "Analyzing document content...",
     "pageSelection": "Pages to process",
     "firstPageOnly": "First page only",
     "allPages": "All pages",
@@ -466,6 +478,7 @@
     "processingPage": "Processing page {current} of {total}...",
     "startOCR": "Start OCR",
     "processing": "Processing OCR...",
+    "analyzing": "Analyzing...",
     "initializing": "Initializing OCR engine...",
     "loadingModel": "Loading language model...",
     "processingImage": "Processing image...",
@@ -478,6 +491,57 @@
     "copyText": "Copy text",
     "downloadTXT": "Download TXT",
     "textCopied": "Text copied to clipboard!",
+    "remove": "Remove",
+    "newFile": "New file",
+    "preview": "Preview",
+    "view": "View",
+    "edit": "Edit",
+    "editPlaceholder": "Edit your extracted text here...",
+    "textModified": "Text has been modified",
+    "words": "words",
+    "lines": "lines",
+    "characters": "characters",
+    "languageDetection": {
+      "highConfidence": "High Confidence",
+      "mediumConfidence": "Medium Confidence",
+      "lowConfidence": "Low Confidence",
+      "verifyLanguage": "Verify language selection for better OCR accuracy"
+    },
+    "outputFormat": {
+      "title": "Output Format",
+      "text": "Plain Text (.txt)",
+      "textDesc": "Extract text only, editable and copyable",
+      "searchablePdf": "Searchable PDF (preserves original)",
+      "searchablePdfDesc": "Keeps original images with invisible OCR text layer - looks identical to original but fully searchable",
+      "hocr": "hOCR (.html)",
+      "hocrDesc": "HTML with precise word positioning and confidence scores - useful for automated processing",
+      "tsv": "TSV (.tsv)",
+      "tsvDesc": "Tab-separated values with bounding boxes - easy to parse for data analysis"
+    },
+    "results": {
+      "textReady": "Recognized Text",
+      "searchablePdfReady": "Ready to Create Searchable PDF",
+      "hocrReady": "hOCR Data Ready",
+      "tsvReady": "TSV Data Ready",
+      "pagesWillProcess": "{count} {pages} will be processed with OCR",
+      "confidenceAndPages": "Confidence: {confidence}% • {count} {pages} processed"
+    },
+    "infoPanel": {
+      "searchablePdfTitle": "Searchable PDF with Invisible Text Layer",
+      "searchablePdfDesc": "The original document images will be preserved exactly as they appear. OCR text will be added as an invisible layer, making the PDF fully searchable and allowing text selection while maintaining the original visual appearance.",
+      "hocrTitle": "hOCR Format (HTML-based OCR)",
+      "hocrDesc": "HTML document with precise bounding boxes and confidence scores for each word. Ideal for automated processing, NLP pipelines, and custom text extraction workflows. Contains structured data about text positioning, hierarchy, and recognition quality.",
+      "tsvTitle": "TSV Format (Tab-Separated Values)",
+      "tsvDesc": "Spreadsheet-compatible format with bounding box coordinates and confidence scores. Easy to import into Excel, Google Sheets, or data analysis tools like Python/Pandas. Each row contains level, page number, block, paragraph, line, word, position, and text."
+    },
+    "download": {
+      "createSearchablePdf": "Create Searchable PDF",
+      "downloadHocr": "Download hOCR (.html)",
+      "downloadTsv": "Download TSV (.tsv)",
+      "downloadTxt": "Download TXT",
+      "searchablePdfReady": "Ready to create searchable PDF!",
+      "searchablePdfDownloaded": "Searchable PDF downloaded!"
+    },
     "infoTitle": "About OCR",
     "info1": "Supports PDF documents and images (JPG, PNG)",
     "info2": "Recognition in 5 languages: EN, RU, DE, FR, ES",
@@ -485,7 +549,12 @@
     "info4": "All processing happens in your browser - files stay private",
     "errors": {
       "noFile": "Please select a file first",
-      "processingFailed": "OCR processing failed. Please try again."
+      "processingFailed": "OCR processing failed. Please try again.",
+      "unsupportedFileType": "OCR only supports PDF and image files (JPG, PNG). Your file type (.{ext}) is not supported.",
+      "hocrEmpty": "hOCR data is empty. Please try running OCR again.",
+      "tsvEmpty": "TSV data is empty. Please try running OCR again.",
+      "searchablePdfFailed": "Failed to create searchable PDF: {error}",
+      "downloadFailed": "Failed to generate file. Please try again."
     }
   },
   "watermark": {

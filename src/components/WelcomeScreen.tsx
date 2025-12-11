@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import type { Tool, URLContext } from '@/types';
 import { useSharedFile } from '@/hooks/useSharedFile';
+import { useI18n } from '@/hooks/useI18n';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -16,6 +17,7 @@ interface UploadedFile {
 }
 
 export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ context }) => {
+  const { t } = useI18n();
   const { setSharedFile, setSharedFiles } = useSharedFile();
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [isDragging, setIsDragging] = useState(false);
@@ -98,10 +100,10 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ context }) => {
       <div className="container-responsive max-w-4xl py-12">
         <div className="text-center mb-12 animate-fade-in">
           <h1 className="text-5xl md:text-6xl font-bold mb-4 text-foreground">
-            Secure and Fast PDF Processing
+            {t('welcome.title')}
           </h1>
           <p className="text-xl text-muted-foreground">
-            Your files are processed locally and never leave your device.
+            {t('welcome.subtitle')}
           </p>
         </div>
 
@@ -110,7 +112,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ context }) => {
           <Card className="mb-8 bg-secondary border-primary/20 animate-slide-down">
             <CardContent className="p-6">
               <p className="text-center text-secondary-foreground">
-                Welcome! All processing happens in your browser - your files never leave your device.
+                {t('welcome.firstTimeBanner')}
               </p>
             </CardContent>
           </Card>
@@ -149,13 +151,13 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ context }) => {
 
                 <div>
                   <p className="text-xl font-semibold text-foreground mb-2">
-                    {isDragging ? 'Drop your files here' : 'Upload your files'}
+                    {isDragging ? t('upload.dropHere') : t('upload.selectFiles')}
                   </p>
                   <p className="text-sm text-muted-foreground mb-1">
-                    Drag & drop or click to select
+                    {t('upload.dragOrClick')}
                   </p>
                   <p className="text-xs text-muted-foreground/80">
-                    Supports: PDF, Images (JPG, PNG), Word documents
+                    {t('upload.acceptedTypes')}: PDF, Images (JPG, PNG), Word
                   </p>
                 </div>
               </div>
@@ -164,7 +166,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ context }) => {
             {/* Back to main site button */}
             <div className="mt-6 text-center">
               <Button variant="outline" asChild>
-                <a href="/">← Back to main site</a>
+                <a href="/">{t('sidebar.backToMain')}</a>
               </Button>
             </div>
           </div>
@@ -173,13 +175,13 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ context }) => {
           <div className="animate-fade-in">
             <Card>
               <CardHeader className="flex-row items-center justify-between">
-                <CardTitle>Your Files ({uploadedFiles.length})</CardTitle>
+                <CardTitle>{t('upload.selectFiles')} ({uploadedFiles.length})</CardTitle>
                 <Button
                   onClick={clearFiles}
                   variant="ghost"
                   size="sm"
                 >
-                  Clear All
+                  {t('common.clearAll')}
                 </Button>
               </CardHeader>
               <CardContent>

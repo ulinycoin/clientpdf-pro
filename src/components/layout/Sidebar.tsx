@@ -2,6 +2,7 @@ import React from 'react';
 import type { Tool, ToolGroup } from '@/types';
 import { TOOL_GROUPS } from '@/types';
 import { Button } from '@/components/ui/button';
+import { useI18n } from '@/hooks/useI18n';
 
 interface SidebarProps {
   currentTool: Tool | null;
@@ -10,30 +11,6 @@ interface SidebarProps {
   onToggleCollapse: () => void;
   selectedGroup: ToolGroup;
 }
-
-// Tool names
-const TOOL_NAMES: Record<Tool, string> = {
-  'merge-pdf': 'Merge PDF',
-  'split-pdf': 'Split PDF',
-  'compress-pdf': 'Compress PDF',
-  'protect-pdf': 'Protect PDF',
-  'ocr-pdf': 'OCR PDF',
-  'organize-pdf': 'Organize Pages',
-  'watermark-pdf': 'Watermark PDF',
-  'add-text-pdf': 'Add Text to PDF',
-  'edit-text-pdf': 'Edit Text in PDF',
-  'add-form-fields-pdf': 'Add Form Fields',
-  'rotate-pdf': 'Rotate PDF',
-  'delete-pages-pdf': 'Delete Pages',
-  'extract-pages-pdf': 'Extract Pages',
-  'images-to-pdf': 'Images to PDF',
-  'pdf-to-images': 'PDF to Images',
-  'pdf-to-word': 'PDF to Word',
-  'word-to-pdf': 'Word to PDF',
-  'sign-pdf': 'Sign PDF',
-  'flatten-pdf': 'Flatten PDF',
-  'extract-images-pdf': 'Extract/Remove Images'
-};
 
 // Tool definitions with icons
 const TOOLS: Array<{ id: Tool; icon: string; tier: number }> = [
@@ -70,6 +47,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   collapsed,
   selectedGroup,
 }) => {
+  const { t } = useI18n();
+
   // Filter tools based on selected group
   const filteredTools = TOOLS.filter((tool) =>
     TOOL_GROUPS[selectedGroup].includes(tool.id)
@@ -85,7 +64,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {!collapsed && (
         <div className="px-4 py-3 border-b border-gray-200 dark:border-privacy-700">
           <h2 className="text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide">
-            Tools
+            {t('sidebar.tools')}
           </h2>
         </div>
       )}
@@ -105,14 +84,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     ? 'bg-ocean-50 dark:bg-ocean-900/20 text-ocean-600 dark:text-ocean-400 font-medium shadow-sm border-ocean-200 dark:border-ocean-700'
                     : 'text-gray-700 dark:text-gray-300 hover:bg-ocean-50 dark:hover:bg-ocean-900/10 hover:text-ocean-600 dark:hover:text-ocean-400 hover:shadow-sm hover:scale-[1.02] border-gray-200 dark:border-gray-700'
                     }`}
-                  title={collapsed ? TOOL_NAMES[tool.id] : undefined}
+                  title={collapsed ? t(`tools.${tool.id}.name`) : undefined}
                 >
                   <span className="text-xl flex-shrink-0 transition-transform duration-200 group-hover:scale-110">
                     {tool.icon}
                   </span>
                   {!collapsed && (
                     <span className="text-sm truncate transition-colors duration-200">
-                      {TOOL_NAMES[tool.id]}
+                      {t(`tools.${tool.id}.name`)}
                     </span>
                   )}
                   {isActive && !collapsed && (

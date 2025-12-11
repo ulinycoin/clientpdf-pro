@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { FileUpload } from '@/components/common/FileUpload';
 import { ProgressBar } from '@/components/common/ProgressBar';
 import { useSharedFile } from '@/hooks/useSharedFile';
+import { useI18n } from '@/hooks/useI18n';
 import * as Tesseract from 'tesseract.js';
 import * as pdfjsLib from 'pdfjs-dist';
 import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
@@ -98,6 +99,7 @@ const SUPPORTED_LANGUAGES = [
 ];
 
 export const OCRPDF: React.FC = () => {
+  const { t } = useI18n();
   const { sharedFile, clearSharedFile } = useSharedFile();
   const [file, setFile] = useState<File | null>(null);
   const [totalPages, setTotalPages] = useState<number>(1);
@@ -131,7 +133,7 @@ export const OCRPDF: React.FC = () => {
       if (fileExt && supportedExtensions.includes(fileExt)) {
         handleFilesSelected([loadedFile]);
       } else {
-        alert(`OCR only supports PDF and image files (JPG, PNG). Your file type (.${fileExt}) is not supported.`);
+        alert(t('ocr.errors.unsupportedFileType', { ext: fileExt }));
       }
 
       clearSharedFile();
@@ -161,7 +163,7 @@ export const OCRPDF: React.FC = () => {
         (file.type === 'application/pdf' && filenameDetection.confidence !== 'high');
 
       if (shouldAnalyzeContent && autoDetectLanguage) {
-        setProgressMessage('Analyzing document content...');
+        setProgressMessage(t('ocr.analyzingContent'));
         const contentDetection = await QuickOCR.quickAnalyzeForLanguage(file);
 
         // For images, prefer content detection over filename
@@ -263,14 +265,14 @@ export const OCRPDF: React.FC = () => {
 
   const handleOCR = async () => {
     if (!file) {
-      alert('Please select a file first');
+      alert(t('ocr.errors.noFile'));
       return;
     }
 
     setIsProcessing(true);
     setProgress(0);
     setResult(null);
-    setProgressMessage('Initializing OCR engine...');
+    setProgressMessage(t('ocr.initializing'));
 
     try {
       // Determine pages to process
@@ -297,7 +299,7 @@ export const OCRPDF: React.FC = () => {
       // For other formats, we need to extract data
       if (outputFormat !== 'searchable-pdf') {
         // Get reusable worker from manager
-        setProgressMessage('Loading language model...');
+        setProgressMessage(t('ocr.loadingModel'));
         const worker = await OCRWorkerManager.getWorker(selectedLanguage);
 
         let combinedText = '';
@@ -364,7 +366,7 @@ export const OCRPDF: React.FC = () => {
           const pageNum = pagesToProcess[i];
           const pageProgress = (i / pagesToProcess.length) * 100;
 
-          setProgressMessage(`Processing page ${pageNum} of ${pagesToProcess.length}...`);
+          setProgressMessage(t('ocr.processingPage', { current: pageNum, total: pagesToProcess.length }));
           setProgress(Math.round(pageProgress));
 
           let imageToProcess: string | HTMLCanvasElement;
@@ -449,25 +451,25 @@ export const OCRPDF: React.FC = () => {
         setIsEditMode(false); // Start in view mode
 
         setProgress(100);
-        setProgressMessage('OCR completed!');
+        setProgressMessage(t('ocr.completed'));
 
         // Don't cleanup worker - let manager handle it for reuse
       } else {
         // For searchable PDF, just set a placeholder result
         // Actual OCR will happen during download
         setResult({
-          text: '(Searchable PDF will be created during download)',
+          text: '',
           confidence: 0,
           language: selectedLanguage,
           pagesProcessed: pagesToProcess.length,
         });
         setProgress(100);
-        setProgressMessage('Ready to create searchable PDF!');
+        setProgressMessage(t('ocr.download.searchablePdfReady'));
       }
 
     } catch (error) {
       console.error('OCR error:', error);
-      alert('OCR processing failed. Please try again.');
+      alert(t('ocr.errors.processingFailed'));
     } finally {
       setIsProcessing(false);
     }
@@ -477,7 +479,7 @@ export const OCRPDF: React.FC = () => {
     const textToCopy = editedText || result?.text;
     if (textToCopy) {
       navigator.clipboard.writeText(textToCopy);
-      alert('Text copied to clipboard!');
+      alert(t('ocr.textCopied'));
     }
   };
 
@@ -495,7 +497,7 @@ export const OCRPDF: React.FC = () => {
         console.log('📝 Last 200 chars:', hocrContent.substring(hocrContent.length - 200));
 
         if (hocrContent.length === 0) {
-          alert('hOCR data is empty. Please try running OCR again.');
+          alert(t('ocr.errors.hocrEmpty'));
           return;
         }
 
@@ -515,7 +517,7 @@ export const OCRPDF: React.FC = () => {
         console.log('💾 Downloading TSV, length:', tsvContent.length, 'characters');
 
         if (tsvContent.length === 0) {
-          alert('TSV data is empty. Please try running OCR again.');
+          alert(t('ocr.errors.tsvEmpty'));
           return;
         }
 
@@ -604,12 +606,12 @@ export const OCRPDF: React.FC = () => {
           document.body.removeChild(a);
           URL.revokeObjectURL(url);
 
-          setProgressMessage('Searchable PDF downloaded!');
+          setProgressMessage(t('ocr.download.searchablePdfDownloaded'));
           setTimeout(() => setProgressMessage(''), 2000);
 
         } catch (pdfError) {
           console.error('Searchable PDF generation error:', pdfError);
-          alert(`Failed to create searchable PDF: ${pdfError instanceof Error ? pdfError.message : 'Unknown error'}`);
+          alert(t('ocr.errors.searchablePdfFailed', { error: pdfError instanceof Error ? pdfError.message : 'Unknown error' }));
           setProgressMessage('');
         } finally {
           setIsProcessing(false);
@@ -617,7 +619,7 @@ export const OCRPDF: React.FC = () => {
       }
     } catch (error) {
       console.error('Download failed:', error);
-      alert('Failed to generate file. Please try again.');
+      alert(t('ocr.errors.downloadFailed'));
       setProgressMessage('');
       setIsProcessing(false);
     }
@@ -632,10 +634,10 @@ export const OCRPDF: React.FC = () => {
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          OCR PDF
+          {t('tools.ocr-pdf.name')}
         </h1>
         <p className="text-gray-600 dark:text-gray-400">
-          Extract text from scanned PDFs
+          {t('tools.ocr-pdf.description')}
         </p>
       </div>
 
@@ -664,7 +666,7 @@ export const OCRPDF: React.FC = () => {
               <div>
                 <h3 className="font-medium text-gray-900 dark:text-white">{file.name}</h3>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                  {(file.size / 1024 / 1024).toFixed(2)} MB • {totalPages} {totalPages === 1 ? 'page' : 'pages'}
+                  {(file.size / 1024 / 1024).toFixed(2)} MB • {totalPages} {t(totalPages === 1 ? 'ocr.page' : 'ocr.pages')}
                 </p>
               </div>
             </div>
@@ -674,7 +676,7 @@ export const OCRPDF: React.FC = () => {
               size="sm"
               disabled={isProcessing}
             >
-              Remove
+              {t('ocr.remove')}
             </Button>
           </div>
 
@@ -683,7 +685,7 @@ export const OCRPDF: React.FC = () => {
             <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-4 flex justify-center">
               <img
                 src={previewUrl}
-                alt="Preview"
+                alt={t('ocr.preview')}
                 className="max-h-64 rounded shadow-md"
               />
             </div>
@@ -693,7 +695,7 @@ export const OCRPDF: React.FC = () => {
           {file.type === 'application/pdf' && totalPages > 1 && (
             <div>
               <Label className="block text-sm font-medium mb-2">
-                Pages to process
+                {t('ocr.pageSelection')}
               </Label>
               <RadioGroup
                 value={pageMode}
@@ -704,19 +706,19 @@ export const OCRPDF: React.FC = () => {
                 <div className="flex items-center gap-2">
                   <RadioGroupItem value="first" id="first" />
                   <Label htmlFor="first" className="text-sm font-normal cursor-pointer">
-                    First page only
+                    {t('ocr.firstPageOnly')}
                   </Label>
                 </div>
                 <div className="flex items-center gap-2">
                   <RadioGroupItem value="all" id="all" />
                   <Label htmlFor="all" className="text-sm font-normal cursor-pointer">
-                    All pages ({totalPages} pages)
+                    {t('ocr.allPages')} ({totalPages} {t('ocr.pages')})
                   </Label>
                 </div>
                 <div className="flex items-center gap-2">
                   <RadioGroupItem value="range" id="range" />
                   <Label htmlFor="range" className="text-sm font-normal cursor-pointer">
-                    Page range
+                    {t('ocr.pageRange')}
                   </Label>
                 </div>
               </RadioGroup>
@@ -749,7 +751,7 @@ export const OCRPDF: React.FC = () => {
           {/* Language Selection with Detection Info */}
           <div>
             <Label className="block text-sm font-medium mb-2">
-              Recognition language
+              {t('ocr.recognitionLanguage')}
             </Label>
 
             {/* Language Detection Info */}
@@ -761,9 +763,9 @@ export const OCRPDF: React.FC = () => {
               }`}>
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-xs font-medium">
-                    {languageDetection.confidence === 'high' ? '✅ High Confidence' :
-                     languageDetection.confidence === 'medium' ? '⚠️ Medium Confidence' :
-                     '❌ Low Confidence'}
+                    {languageDetection.confidence === 'high' ? `✅ ${t('ocr.languageDetection.highConfidence')}` :
+                     languageDetection.confidence === 'medium' ? `⚠️ ${t('ocr.languageDetection.mediumConfidence')}` :
+                     `❌ ${t('ocr.languageDetection.lowConfidence')}`}
                   </span>
                   <span className="text-xs text-gray-600 dark:text-gray-400">
                     ({SUPPORTED_LANGUAGES.find(l => l.code === selectedLanguage)?.name || selectedLanguage})
@@ -774,7 +776,7 @@ export const OCRPDF: React.FC = () => {
                 </p>
                 {languageDetection.confidence !== 'high' && (
                   <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
-                    💡 Verify language selection for better OCR accuracy
+                    💡 {t('ocr.languageDetection.verifyLanguage')}
                   </p>
                 )}
               </div>
@@ -786,7 +788,7 @@ export const OCRPDF: React.FC = () => {
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
                   <span className="text-xs font-medium text-blue-700 dark:text-blue-300">
-                    Analyzing document content...
+                    {t('ocr.analyzingContent')}
                   </span>
                 </div>
               </div>
@@ -802,7 +804,7 @@ export const OCRPDF: React.FC = () => {
                 className="rounded text-ocean-500 focus:ring-ocean-500"
               />
               <span className="text-sm text-gray-700 dark:text-gray-300">
-                Auto-detect language
+                {t('ocr.autoDetect')}
               </span>
             </label>
 
@@ -823,14 +825,14 @@ export const OCRPDF: React.FC = () => {
               </SelectContent>
             </Select>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              {autoDetectLanguage ? 'Language will be detected automatically from document content' : 'Select the language of text in your document'}
+              {autoDetectLanguage ? t('ocr.autoDetectHint') : t('ocr.languageHint')}
             </p>
           </div>
 
           {/* Output Format Selection */}
           <div>
             <Label className="block text-sm font-medium mb-2">
-              Output Format
+              {t('ocr.outputFormat.title')}
             </Label>
             <RadioGroup
               value={outputFormat}
@@ -842,10 +844,10 @@ export const OCRPDF: React.FC = () => {
                 <RadioGroupItem value="text" id="text" className="mt-1" />
                 <div className="flex-1">
                   <Label htmlFor="text" className="text-sm font-medium cursor-pointer">
-                    📝 Plain Text (.txt)
+                    📝 {t('ocr.outputFormat.text')}
                   </Label>
                   <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                    Extract text only, editable and copyable
+                    {t('ocr.outputFormat.textDesc')}
                   </p>
                 </div>
               </div>
@@ -853,10 +855,10 @@ export const OCRPDF: React.FC = () => {
                 <RadioGroupItem value="searchable-pdf" id="searchable-pdf" className="mt-1" />
                 <div className="flex-1">
                   <Label htmlFor="searchable-pdf" className="text-sm font-medium cursor-pointer">
-                    🔍 Searchable PDF (preserves original)
+                    🔍 {t('ocr.outputFormat.searchablePdf')}
                   </Label>
                   <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                    Keeps original images with invisible OCR text layer - looks identical to original but fully searchable
+                    {t('ocr.outputFormat.searchablePdfDesc')}
                   </p>
                 </div>
               </div>
@@ -864,10 +866,10 @@ export const OCRPDF: React.FC = () => {
                 <RadioGroupItem value="hocr" id="hocr" className="mt-1" />
                 <div className="flex-1">
                   <Label htmlFor="hocr" className="text-sm font-medium cursor-pointer">
-                    🌐 hOCR (.html)
+                    🌐 {t('ocr.outputFormat.hocr')}
                   </Label>
                   <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                    HTML with precise word positioning and confidence scores - useful for automated processing
+                    {t('ocr.outputFormat.hocrDesc')}
                   </p>
                 </div>
               </div>
@@ -875,10 +877,10 @@ export const OCRPDF: React.FC = () => {
                 <RadioGroupItem value="tsv" id="tsv" className="mt-1" />
                 <div className="flex-1">
                   <Label htmlFor="tsv" className="text-sm font-medium cursor-pointer">
-                    📊 TSV (.tsv)
+                    📊 {t('ocr.outputFormat.tsv')}
                   </Label>
                   <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                    Tab-separated values with bounding boxes - easy to parse for data analysis
+                    {t('ocr.outputFormat.tsvDesc')}
                   </p>
                 </div>
               </div>
@@ -891,7 +893,7 @@ export const OCRPDF: React.FC = () => {
             disabled={isProcessing || isAnalyzing}
             className="w-full"
           >
-            {isProcessing ? 'Processing OCR...' : isAnalyzing ? 'Analyzing...' : 'Start OCR'}
+            {isProcessing ? t('ocr.processing') : isAnalyzing ? t('ocr.analyzing') : t('ocr.startOCR')}
           </Button>
           </CardContent>
         </Card>
@@ -913,22 +915,23 @@ export const OCRPDF: React.FC = () => {
           <div className="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-gray-700">
             <div>
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                {outputFormat === 'searchable-pdf' ? 'Ready to Create Searchable PDF' :
-                 outputFormat === 'hocr' ? 'hOCR Data Ready' :
-                 outputFormat === 'tsv' ? 'TSV Data Ready' :
-                 'Recognized Text'}
+                {outputFormat === 'searchable-pdf' ? t('ocr.results.searchablePdfReady') :
+                 outputFormat === 'hocr' ? t('ocr.results.hocrReady') :
+                 outputFormat === 'tsv' ? t('ocr.results.tsvReady') :
+                 t('ocr.results.textReady')}
               </h3>
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                {outputFormat === 'searchable-pdf' ? (
-                  <>
-                    {result.pagesProcessed} {result.pagesProcessed === 1 ? 'page' : 'pages'} will be processed with OCR
-                  </>
-                ) : (
-                  <>
-                    Confidence: {result.confidence.toFixed(1)}% •
-                    {result.pagesProcessed} {result.pagesProcessed === 1 ? 'page' : 'pages'} processed
-                  </>
-                )}
+                {outputFormat === 'searchable-pdf' ?
+                  t('ocr.results.pagesWillProcess', {
+                    count: result.pagesProcessed,
+                    pages: t(result.pagesProcessed === 1 ? 'ocr.page' : 'ocr.pages')
+                  }) :
+                  t('ocr.results.confidenceAndPages', {
+                    confidence: result.confidence.toFixed(1),
+                    count: result.pagesProcessed,
+                    pages: t(result.pagesProcessed === 1 ? 'ocr.page' : 'ocr.pages')
+                  })
+                }
               </p>
             </div>
             <Button
@@ -936,7 +939,7 @@ export const OCRPDF: React.FC = () => {
               variant="secondary"
               size="sm"
             >
-              New file
+              {t('ocr.newFile')}
             </Button>
           </div>
 
@@ -945,14 +948,14 @@ export const OCRPDF: React.FC = () => {
             <div>
               <div className="flex items-center justify-between mb-2">
                 <Label className="block text-sm font-medium">
-                  Extracted text
+                  {t('ocr.extractedText')}
                 </Label>
                 <Button
                   onClick={() => setIsEditMode(!isEditMode)}
                   variant="outline"
                   size="sm"
                 >
-                  {isEditMode ? '👁️ View' : '✏️ Edit'}
+                  {isEditMode ? `👁️ ${t('ocr.view')}` : `✏️ ${t('ocr.edit')}`}
                 </Button>
               </div>
 
@@ -963,12 +966,12 @@ export const OCRPDF: React.FC = () => {
                     onChange={(e) => setEditedText(e.target.value)}
                     className="w-full h-64 text-sm resize-y"
                     style={{ fontFamily: 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif' }}
-                    placeholder="Edit your extracted text here..."
+                    placeholder={t('ocr.editPlaceholder')}
                   />
                   {editedText !== result.text && (
                     <div className="flex items-center gap-2 text-sm text-orange-600 dark:text-orange-400">
                       <span className="animate-pulse">●</span>
-                      <span>Text has been modified</span>
+                      <span>{t('ocr.textModified')}</span>
                     </div>
                   )}
                 </div>
@@ -982,9 +985,9 @@ export const OCRPDF: React.FC = () => {
 
               {/* Stats */}
               <div className="flex items-center gap-4 mt-2 text-xs text-gray-500 dark:text-gray-400">
-                <span>📝 {editedText.split(/\s+/).filter(w => w.length > 0).length} words</span>
-                <span>📄 {editedText.split('\n').length} lines</span>
-                <span>🔤 {editedText.length} characters</span>
+                <span>📝 {editedText.split(/\s+/).filter(w => w.length > 0).length} {t('ocr.words')}</span>
+                <span>📄 {editedText.split('\n').length} {t('ocr.lines')}</span>
+                <span>🔤 {editedText.length} {t('ocr.characters')}</span>
               </div>
             </div>
           )}
@@ -996,12 +999,10 @@ export const OCRPDF: React.FC = () => {
                 <span className="text-2xl">📄</span>
                 <div className="flex-1">
                   <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-1">
-                    Searchable PDF with Invisible Text Layer
+                    {t('ocr.infoPanel.searchablePdfTitle')}
                   </h4>
                   <p className="text-sm text-blue-800 dark:text-blue-200">
-                    The original document images will be preserved exactly as they appear.
-                    OCR text will be added as an invisible layer, making the PDF fully searchable
-                    and allowing text selection while maintaining the original visual appearance.
+                    {t('ocr.infoPanel.searchablePdfDesc')}
                   </p>
                 </div>
               </div>
@@ -1015,12 +1016,10 @@ export const OCRPDF: React.FC = () => {
                 <span className="text-2xl">🌐</span>
                 <div className="flex-1">
                   <h4 className="font-medium text-purple-900 dark:text-purple-100 mb-1">
-                    hOCR Format (HTML-based OCR)
+                    {t('ocr.infoPanel.hocrTitle')}
                   </h4>
                   <p className="text-sm text-purple-800 dark:text-purple-200">
-                    HTML document with precise bounding boxes and confidence scores for each word.
-                    Ideal for automated processing, NLP pipelines, and custom text extraction workflows.
-                    Contains structured data about text positioning, hierarchy, and recognition quality.
+                    {t('ocr.infoPanel.hocrDesc')}
                   </p>
                 </div>
               </div>
@@ -1034,12 +1033,10 @@ export const OCRPDF: React.FC = () => {
                 <span className="text-2xl">📊</span>
                 <div className="flex-1">
                   <h4 className="font-medium text-green-900 dark:text-green-100 mb-1">
-                    TSV Format (Tab-Separated Values)
+                    {t('ocr.infoPanel.tsvTitle')}
                   </h4>
                   <p className="text-sm text-green-800 dark:text-green-200">
-                    Spreadsheet-compatible format with bounding box coordinates and confidence scores.
-                    Easy to import into Excel, Google Sheets, or data analysis tools like Python/Pandas.
-                    Each row contains level, page number, block, paragraph, line, word, position, and text.
+                    {t('ocr.infoPanel.tsvDesc')}
                   </p>
                 </div>
               </div>
@@ -1053,7 +1050,7 @@ export const OCRPDF: React.FC = () => {
                 onClick={handleCopyText}
                 variant="secondary"
               >
-                Copy text
+                {t('ocr.copyText')}
               </Button>
             )}
             <Button
@@ -1062,10 +1059,10 @@ export const OCRPDF: React.FC = () => {
               className="px-8 !bg-green-600 hover:!bg-green-700 !text-white"
             >
               {
-                outputFormat === 'searchable-pdf' ? 'Create Searchable PDF' :
-                outputFormat === 'hocr' ? 'Download hOCR (.html)' :
-                outputFormat === 'tsv' ? 'Download TSV (.tsv)' :
-                'Download TXT'
+                outputFormat === 'searchable-pdf' ? t('ocr.download.createSearchablePdf') :
+                outputFormat === 'hocr' ? t('ocr.download.downloadHocr') :
+                outputFormat === 'tsv' ? t('ocr.download.downloadTsv') :
+                t('ocr.download.downloadTxt')
               }
             </Button>
           </div>

@@ -164,6 +164,7 @@ Navigates to /#merge (React app loads tool)
 
 - **Production:** https://localpdf.online
 - **Repository:** https://github.com/ulinycoin/clientpdf-pro
+- **Development Roadmap:** [ROADMAP.md](./ROADMAP.md)
 - **AI Development Guide:** [CLAUDE.md](./CLAUDE.md)
 - **Issues & Feedback:** https://github.com/ulinycoin/clientpdf-pro/issues
 

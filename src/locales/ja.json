@@ -1,0 +1,852 @@
+{
+  "app": {
+    "title": "LocalPDF",
+    "subtitle": "ブラウザで動作するプライバシー優先のPDFツール"
+  },
+  "welcome": {
+    "title": "安全で高速なPDF処理",
+    "subtitle": "ファイルはローカルで処理され、デバイスから離れることはありません。",
+    "firstTimeBanner": "ようこそ！すべての処理はブラウザ内で行われます - ファイルがデバイスから離れることはありません。",
+    "selectTool": "サイドバーからツールを選択するか、以下から選択してください"
+  },
+  "sidebar": {
+    "tools": "ツール",
+    "collapse": "サイドバーを折りたたむ",
+    "expand": "サイドバーを展開",
+    "backToMain": "← メインサイトに戻る"
+  },
+  "toolGroups": {
+    "all": "すべてのツール",
+    "organize": "整理",
+    "edit": "編集",
+    "security": "セキュリティ",
+    "convert": "変換"
+  },
+  "tools": {
+    "merge-pdf": {
+      "name": "PDF結合",
+      "description": "複数のPDFを1つに結合"
+    },
+    "split-pdf": {
+      "name": "PDF分割",
+      "description": "PDFからページを抽出"
+    },
+    "compress-pdf": {
+      "name": "PDF圧縮",
+      "description": "PDFファイルサイズを削減"
+    },
+    "protect-pdf": {
+      "name": "PDF保護",
+      "description": "パスワード保護を追加"
+    },
+    "ocr-pdf": {
+      "name": "PDF OCR",
+      "description": "スキャンしたPDFからテキストを抽出"
+    },
+    "organize-pdf": {
+      "name": "ページ整理",
+      "description": "PDFページの並べ替え、回転、削除"
+    },
+    "watermark-pdf": {
+      "name": "PDF透かし",
+      "description": "PDFに透かしを追加"
+    },
+    "add-text-pdf": {
+      "name": "PDFにテキスト追加",
+      "description": "PDFページにカスタムテキストを追加"
+    },
+    "edit-text-pdf": {
+      "name": "PDFテキスト編集",
+      "description": "PDF内のテキストを検索して置換"
+    },
+    "add-form-fields-pdf": {
+      "name": "フォームフィールド追加",
+      "description": "テキストフィールド、チェックボックスなどで入力可能なPDFフォームを作成"
+    },
+    "rotate-pdf": {
+      "name": "PDF回転",
+      "description": "PDFページを回転"
+    },
+    "delete-pages-pdf": {
+      "name": "ページ削除",
+      "description": "不要なページを削除"
+    },
+    "extract-pages-pdf": {
+      "name": "ページ抽出",
+      "description": "特定のページを抽出"
+    },
+    "images-to-pdf": {
+      "name": "画像からPDF",
+      "description": "画像をPDFに変換"
+    },
+    "pdf-to-images": {
+      "name": "PDFから画像",
+      "description": "PDFを画像に変換"
+    },
+    "pdf-to-word": {
+      "name": "PDFからWord",
+      "description": "PDFをDOCXに変換"
+    },
+    "word-to-pdf": {
+      "name": "WordからPDF",
+      "description": "DOCXをPDFに変換"
+    },
+    "sign-pdf": {
+      "name": "PDF署名",
+      "description": "デジタル署名を追加"
+    },
+    "flatten-pdf": {
+      "name": "PDF平坦化",
+      "description": "PDFフォームと注釈を編集不可にする"
+    },
+    "extract-images-pdf": {
+      "name": "画像の抽出/削除",
+      "description": "PDFからすべての画像を抽出または削除"
+    },
+    "edit-pdf": {
+      "name": "PDF編集",
+      "description": "PDFコンテンツを編集"
+    }
+  },
+  "common": {
+    "upload": "ファイルをアップロード",
+    "uploadFile": "ファイルをアップロード",
+    "uploadDescription": "ドラッグ＆ドロップまたはクリックしてアップロード",
+    "download": "ダウンロード",
+    "processing": "処理中...",
+    "searching": "検索中...",
+    "error": "エラー",
+    "success": "成功",
+    "cancel": "キャンセル",
+    "close": "閉じる",
+    "back": "戻る",
+    "next": "次へ",
+    "done": "完了",
+    "remove": "削除",
+    "newFile": "新しいファイル",
+    "filePreview": "ファイルプレビュー",
+    "totalPages": "総ページ数",
+    "page": "ページ",
+    "pages": "ページ",
+    "fileSize": "ファイルサイズ",
+    "changeFile": "ファイルを変更",
+    "autoLoaded": "前のツールからファイルが読み込まれました",
+    "autoLoadedDescription": "PDFが自動的に読み込まれました",
+    "reset": "リセット",
+    "processAnother": "別のファイルを処理",
+    "relatedTools": "関連ツール",
+    "clickToEdit": "クリックして編集",
+    "convertAnother": "別のファイルを変換",
+    "quickActions": "クイックアクション",
+    "preview": "プレビュー",
+    "clearAll": "すべてクリア",
+    "processingTime": "処理時間",
+    "selectedFile": "選択されたファイル",
+    "originalSize": "元のサイズ",
+    "newSize": "新しいサイズ",
+    "useInOtherTools": "他のツールで使用",
+    "recommended": "推奨"
+  },
+  "upload": {
+    "selectFiles": "ファイルを選択",
+    "dragOrClick": "ファイルをここにドラッグするか、クリックして選択",
+    "dropHere": "ファイルをここにドロップ",
+    "multipleFilesAllowed": "複数ファイル可",
+    "singleFileAllowed": "1ファイルのみ",
+    "pasteHint": "または Ctrl+V を押してファイルを貼り付け",
+    "maxFiles": "最大ファイル数",
+    "maxSize": "ファイルあたりの最大サイズ",
+    "acceptedTypes": "受け入れられるタイプ",
+    "errors": {
+      "tooManyFiles": "ファイルが多すぎます。最大: {max}",
+      "invalidFileType": "無効なファイルタイプです。PDFファイルのみを選択してください。",
+      "fileTooLarge": "ファイルが大きすぎます。最大サイズ: {max} MB"
+    }
+  },
+  "merge": {
+    "fileList": "結合するファイル",
+    "reorderHint": "ドラッグして並べ替え",
+    "mergeButton": "PDFを結合",
+    "mergeAnother": "別のファイルを結合",
+    "minFilesHint": "結合するには少なくとも2つのPDFファイルを追加してください",
+    "errors": {
+      "minFiles": "結合するには少なくとも2つのPDFファイルを選択してください"
+    },
+    "success": {
+      "title": "PDFが正常に結合されました！",
+      "pages": "総ページ数",
+      "size": "ファイルサイズ",
+      "time": "処理時間"
+    },
+    "quickActions": {
+      "title": "次のステップは？",
+      "description": "結合したPDFを以下のツールで引き続き処理:",
+      "compress": "ファイルサイズを削減",
+      "protect": "パスワードを追加",
+      "watermark": "透かしを追加",
+      "split": "ページを抽出"
+    }
+  },
+  "smartMerge": {
+    "title": "スマート結合",
+    "analyzing": "ドキュメントを分析中...",
+    "sortSuggestions": "並べ替えの提案",
+    "detectedDates": "検出された日付",
+    "duplicatesFound": "重複の可能性があるファイルが見つかりました",
+    "similarFiles": "類似ファイル",
+    "keepFirst": "最初のものを保持",
+    "sortApplied": "並べ替えが適用されました",
+    "duplicatesRemoved": "重複が削除されました"
+  },
+  "smartOrganize": {
+    "title": "スマート整理",
+    "analyzing": "ページを分析中...",
+    "quickActions": "クイックアクション",
+    "detectedChapters": "検出された章",
+    "removeBlank": "空白ページを削除",
+    "removeDuplicates": "重複を削除",
+    "fixRotation": "回転を修正",
+    "moveTOC": "目次を前に移動",
+    "noIssues": "問題は検出されませんでした - ドキュメントは良好です！"
+  },
+  "smartImageFilter": {
+    "title": "スマート画像フィルター",
+    "analyzing": "画像を分析中...",
+    "totalImages": "合計",
+    "useful": "有用",
+    "junk": "不要",
+    "quickFilters": "クイックフィルター",
+    "categories": "カテゴリー",
+    "processingInfo": "すべての分析はブラウザ内でローカルに実行されます。画像はサイズ、形式、特性によって分類されます。",
+    "presets": {
+      "useful": {
+        "label": "有用な画像",
+        "description": "写真とグラフのみ"
+      },
+      "photosOnly": {
+        "label": "写真のみ",
+        "description": "高品質な写真"
+      },
+      "excludeIcons": {
+        "label": "アイコンなし",
+        "description": "小さなアイコンを除外"
+      },
+      "large": {
+        "label": "大きな画像",
+        "description": "0.1 MP以上の画像"
+      }
+    },
+    "junkWarning": {
+      "title": "低価値の画像が検出されました",
+      "description": "{count}個の小さなアイコン/装飾が見つかりました。「有用な画像」フィルターの使用を検討してください。"
+    }
+  },
+  "compress": {
+    "filePreview": "圧縮するファイル",
+    "originalSize": "元のサイズ",
+    "pages": "ページ",
+    "changeFile": "ファイルを変更",
+    "selectQuality": "圧縮レベルを選択",
+    "selected": "選択済み",
+    "compressButton": "PDFを圧縮",
+    "compressAnother": "別のファイルを圧縮",
+    "quality": {
+      "low": {
+        "name": "最大",
+        "description": "最小のファイルサイズ、低品質"
+      },
+      "medium": {
+        "name": "バランス",
+        "description": "サイズと品質のバランスが良い"
+      },
+      "high": {
+        "name": "最小",
+        "description": "最高品質、大きなファイルサイズ"
+      }
+    },
+    "success": {
+      "title": "PDFが正常に圧縮されました！",
+      "originalSize": "元のサイズ",
+      "compressedSize": "圧縮後のサイズ",
+      "saved": "節約されたスペース",
+      "time": "処理時間"
+    },
+    "quickActions": {
+      "title": "次のステップは？",
+      "description": "圧縮したPDFを引き続き処理:",
+      "protect": "パスワードを追加",
+      "merge": "他のファイルと結合",
+      "split": "ページを抽出",
+      "watermark": "透かしを追加"
+    },
+    "autoLoaded": {
+      "title": "前のツールからファイルが読み込まれました",
+      "description": "結合されたPDFが自動的に読み込まれました"
+    }
+  },
+  "flatten": {
+    "filePreview": "平坦化するファイル",
+    "originalSize": "元のサイズ",
+    "pages": "ページ",
+    "changeFile": "ファイルを変更",
+    "flattenButton": "PDFを平坦化",
+    "flattenAnother": "別のファイルを平坦化",
+    "success": {
+      "title": "PDFが正常に平坦化されました！",
+      "originalSize": "元のサイズ",
+      "processedSize": "処理後のサイズ",
+      "time": "処理時間"
+    },
+    "quickActions": {
+      "title": "次のステップは？",
+      "description": "平坦化したPDFを引き続き処理:",
+      "protect": "パスワードを追加",
+      "merge": "他のファイルと結合",
+      "compress": "ファイルサイズを削減"
+    },
+    "autoLoaded": {
+      "title": "前のツールからファイルが読み込まれました",
+      "description": "PDFが自動的に読み込まれました"
+    }
+  },
+  "split": {
+    "filePreview": "分割するファイル",
+    "totalPages": "総ページ数",
+    "fileSize": "ファイルサイズ",
+    "changeFile": "ファイルを変更",
+    "selectMode": "分割モードを選択",
+    "splitButton": "PDFを分割",
+    "splitAnother": "別のファイルを分割",
+    "downloadAll": "すべてのファイルをダウンロード",
+    "downloadAsZip": "ZIPとしてダウンロード",
+    "outputFiles": "出力ファイル",
+    "selectAll": "すべて選択",
+    "deselectAll": "すべて選択解除",
+    "selectedCount": "{count}ページが選択されました",
+    "selectPagesHint": "続行するには少なくとも1ページを選択してください",
+    "mergingSelected": "選択したページを結合中...",
+    "mergeFailed": "選択したページの結合に失敗しました",
+    "mode": {
+      "all": {
+        "name": "すべてのページ",
+        "description": "個別のページに分割"
+      },
+      "range": {
+        "name": "ページ範囲",
+        "description": "特定のページ範囲を抽出"
+      },
+      "intervals": {
+        "name": "間隔で",
+        "description": "N ページごとに分割"
+      },
+      "custom": {
+        "name": "カスタムページ",
+        "description": "特定のページを選択"
+      },
+      "byStructure": {
+        "name": "構造で",
+        "description": "章ごとにスマート分割"
+      }
+    },
+    "structureSettings": "ドキュメント構造",
+    "analyzeFirst": "ドキュメントを分析して章とセクションを検出",
+    "analyzeButton": "構造を分析",
+    "analyzing": "分析中...",
+    "chaptersDetected": "{count}個の章が検出されました",
+    "reanalyze": "再分析",
+    "rangeSettings": "ページ範囲設定",
+    "startPage": "開始ページ",
+    "endPage": "終了ページ",
+    "rangeHint": "総ページ数: {total}",
+    "intervalSettings": "間隔設定",
+    "pagesPerFile": "ファイルあたりのページ数",
+    "intervalHint": "{total}ページから{files}個のファイルを作成します",
+    "customSettings": "カスタムページ選択",
+    "pageNumbers": "ページ番号",
+    "customHint": "ページ番号をカンマで区切って入力するか、範囲を使用してください（例: 1,3,5-7,10）",
+    "success": {
+      "title": "PDFが正常に分割されました！",
+      "filesCreated": "{count}個のファイルが作成されました"
+    },
+    "pageNumber": "ページ {page}",
+    "pageRange": "ページ {start}-{end}",
+    "pageCount": "{count}ページ",
+    "pageCountSingle": "1ページ",
+    "autoLoaded": {
+      "title": "前のツールからファイルが読み込まれました",
+      "description": "PDFが自動的に読み込まれました"
+    },
+    "quickActions": {
+      "title": "次のステップは？",
+      "description": "上のページを選択して、以下のツールで引き続き処理:",
+      "descriptionWithSelection": "選択した{count}ページを以下のツールで引き続き処理:",
+      "compress": "ファイルサイズを削減",
+      "merge": "他のファイルと結合",
+      "protect": "パスワードを追加",
+      "watermark": "透かしを追加"
+    }
+  },
+  "protect": {
+    "filePreview": "保護するファイル",
+    "protectButton": "PDFを保護",
+    "protectAnother": "別のファイルを保護",
+    "userPassword": "PDFを開くパスワード",
+    "userPasswordPlaceholder": "パスワードを入力",
+    "ownerPassword": "所有者パスワード（オプション）",
+    "ownerPasswordPlaceholder": "所有者パスワードを入力",
+    "useOwnerPassword": "別の所有者パスワードを使用",
+    "permissionsOnly": "制限のみ（開くパスワードなし）",
+    "permissionsOnlyHint": "PDFはパスワードなしで開けますが、使用が制限されます",
+    "passwordWarning": {
+      "title": "警告: パスワードは回復できません",
+      "message": "パスワードを紛失すると、回復する方法はありません。安全な場所に保管してください！"
+    },
+    "securityLevel": "セキュリティレベル",
+    "advancedSettings": "詳細設定",
+    "encryptionLevel": "暗号化レベル",
+    "recommended": "（推奨）",
+    "permissionsTitle": "権限",
+    "presets": {
+      "basic": {
+        "name": "基本",
+        "description": "印刷とコピーを許可"
+      },
+      "business": {
+        "name": "ビジネス",
+        "description": "印刷のみを許可"
+      },
+      "confidential": {
+        "name": "機密",
+        "description": "印刷もコピーも不可"
+      }
+    },
+    "permissions": {
+      "printing": "印刷",
+      "printingNone": "許可しない",
+      "printingLow": "低解像度",
+      "printingHigh": "高解像度",
+      "copying": "テキストのコピーを許可",
+      "modifying": "コンテンツの変更を許可",
+      "annotating": "注釈を許可",
+      "fillingForms": "フォームへの入力を許可",
+      "contentAccessibility": "スクリーンリーダーを許可"
+    },
+    "passwordStrength": {
+      "tooShort": "パスワードが短すぎます（最低8文字）",
+      "useUpperAndLower": "大文字と小文字を使用",
+      "useNumbers": "数字を追加",
+      "useSpecialChars": "特殊文字を追加"
+    },
+    "errors": {
+      "passwordRequired": "パスワードが必要です",
+      "protectionFailed": "PDFの保護に失敗しました"
+    },
+    "success": {
+      "title": "PDFが正常に保護されました！",
+      "encryption": "暗号化",
+      "password": "パスワード",
+      "passwordSet": "保護済み"
+    },
+    "quickActions": {
+      "title": "次のステップは？",
+      "description": "保護したPDFを引き続き処理:",
+      "compress": "ファイルサイズを削減",
+      "split": "ページを抽出",
+      "watermark": "透かしを追加",
+      "merge": "他のファイルと結合"
+    },
+    "autoLoaded": {
+      "title": "前のツールからファイルが読み込まれました",
+      "description": "PDFが自動的に読み込まれました"
+    }
+  },
+  "ocr": {
+    "filePreview": "処理するファイル",
+    "recognitionLanguage": "認識言語",
+    "languageHint": "ドキュメント内のテキストの言語を選択",
+    "autoDetect": "言語を自動検出",
+    "autoDetectHint": "ドキュメントコンテンツから言語が自動的に検出されます",
+    "detectingLanguage": "言語を検出中...",
+    "analyzingContent": "ドキュメントコンテンツを分析中...",
+    "pageSelection": "処理するページ",
+    "firstPageOnly": "最初のページのみ",
+    "allPages": "すべてのページ",
+    "pageRange": "ページ範囲",
+    "page": "ページ",
+    "pages": "ページ",
+    "processed": "処理済み",
+    "processingPage": "ページ {current} / {total} を処理中...",
+    "startOCR": "OCRを開始",
+    "processing": "OCRを処理中...",
+    "analyzing": "分析中...",
+    "initializing": "OCRエンジンを初期化中...",
+    "loadingModel": "言語モデルを読み込み中...",
+    "processingImage": "画像を処理中...",
+    "processingPDF": "PDFを処理中...",
+    "recognizing": "テキストを認識中",
+    "completed": "OCRが完了しました！",
+    "results": "認識されたテキスト",
+    "confidence": "信頼度",
+    "extractedText": "抽出されたテキスト",
+    "copyText": "テキストをコピー",
+    "downloadTXT": "TXTをダウンロード",
+    "textCopied": "テキストがクリップボードにコピーされました！",
+    "remove": "削除",
+    "newFile": "新しいファイル",
+    "preview": "プレビュー",
+    "view": "表示",
+    "edit": "編集",
+    "editPlaceholder": "抽出されたテキストをここで編集...",
+    "textModified": "テキストが変更されました",
+    "words": "単語",
+    "lines": "行",
+    "characters": "文字",
+    "languageDetection": {
+      "highConfidence": "高い信頼度",
+      "mediumConfidence": "中程度の信頼度",
+      "lowConfidence": "低い信頼度",
+      "verifyLanguage": "より良いOCR精度のために言語選択を確認してください"
+    },
+    "outputFormat": {
+      "title": "出力フォーマット",
+      "text": "プレーンテキスト (.txt)",
+      "textDesc": "テキストのみを抽出、編集およびコピー可能",
+      "searchablePdf": "検索可能なPDF（元画像を保持）",
+      "searchablePdfDesc": "非表示のOCRテキストレイヤーを使用して元の画像を保持 - 元と同一に見えますが、完全に検索可能",
+      "hocr": "hOCR (.html)",
+      "hocrDesc": "正確な単語位置と信頼度スコアを持つHTML - 自動処理に便利",
+      "tsv": "TSV (.tsv)",
+      "tsvDesc": "バウンディングボックス付きのタブ区切り値 - データ分析のための解析が簡単"
+    },
+    "results": {
+      "textReady": "認識されたテキスト",
+      "searchablePdfReady": "検索可能なPDFを作成する準備ができました",
+      "hocrReady": "hOCRデータの準備完了",
+      "tsvReady": "TSVデータの準備完了",
+      "pagesWillProcess": "{count} {pages}がOCRで処理されます",
+      "confidenceAndPages": "信頼度: {confidence}% • {count} {pages}処理済み"
+    },
+    "infoPanel": {
+      "searchablePdfTitle": "非表示テキストレイヤー付き検索可能なPDF",
+      "searchablePdfDesc": "元のドキュメント画像は、表示されているとおりに正確に保存されます。OCRテキストは非表示のレイヤーとして追加され、元の視覚的外観を維持しながら、PDFを完全に検索可能にし、テキスト選択を可能にします。",
+      "hocrTitle": "hOCRフォーマット（HTMLベースのOCR）",
+      "hocrDesc": "各単語の正確なバウンディングボックスと信頼度スコアを持つHTMLドキュメント。自動処理、NLPパイプライン、カスタムテキスト抽出ワークフローに最適。テキストの位置、階層、認識品質に関する構造化データが含まれています。",
+      "tsvTitle": "TSVフォーマット（タブ区切り値）",
+      "tsvDesc": "バウンディングボックス座標と信頼度スコアを持つスプレッドシート互換フォーマット。Excel、Googleスプレッドシート、またはPython/Pandasなどのデータ分析ツールに簡単にインポートできます。各行には、レベル、ページ番号、ブロック、段落、行、単語、位置、テキストが含まれています。"
+    },
+    "download": {
+      "createSearchablePdf": "検索可能なPDFを作成",
+      "downloadHocr": "hOCRをダウンロード (.html)",
+      "downloadTsv": "TSVをダウンロード (.tsv)",
+      "downloadTxt": "TXTをダウンロード",
+      "searchablePdfReady": "検索可能なPDFを作成する準備ができました！",
+      "searchablePdfDownloaded": "検索可能なPDFがダウンロードされました！"
+    },
+    "infoTitle": "OCRについて",
+    "info1": "PDFドキュメントと画像（JPG、PNG）をサポート",
+    "info2": "5つの言語での認識: EN、RU、DE、FR、ES",
+    "info3": "ページ範囲選択を備えた複数ページPDFサポート",
+    "info4": "すべての処理はブラウザ内で行われます - ファイルはプライベートのまま",
+    "errors": {
+      "noFile": "まずファイルを選択してください",
+      "processingFailed": "OCR処理に失敗しました。もう一度お試しください。",
+      "unsupportedFileType": "OCRはPDFと画像ファイル（JPG、PNG）のみをサポートしています。ファイルタイプ（.{ext}）はサポートされていません。",
+      "hocrEmpty": "hOCRデータが空です。OCRを再度実行してください。",
+      "tsvEmpty": "TSVデータが空です。OCRを再度実行してください。",
+      "searchablePdfFailed": "検索可能なPDFの作成に失敗しました: {error}",
+      "downloadFailed": "ファイルの生成に失敗しました。もう一度お試しください。"
+    }
+  },
+  "watermark": {
+    "filePreview": "透かしを入れるファイル",
+    "text": "透かしテキスト",
+    "watermarkText": "透かしテキスト",
+    "watermarkPlaceholder": "透かしテキストを入力",
+    "position": "位置",
+    "positions": {
+      "diagonal": "斜め",
+      "center": "中央",
+      "topLeft": "左上",
+      "topRight": "右上",
+      "bottomLeft": "左下",
+      "bottomRight": "右下"
+    },
+    "color": "色",
+    "colors": {
+      "black": "黒",
+      "gray": "グレー",
+      "red": "赤",
+      "blue": "青"
+    },
+    "opacity": "不透明度",
+    "fontSize": "フォントサイズ",
+    "rotation": "回転",
+    "preview": "プレビュー",
+    "settings": "透かし設定",
+    "apply": "透かしを適用",
+    "applyButton": "透かしを適用",
+    "applyAnother": "別のファイルに適用",
+    "loading": "PDFを読み込み中...",
+    "loadingPreview": "プレビューを読み込み中...",
+    "processing": "透かしを追加中...",
+    "processingPage": "ページ {current} / {total} を処理中...",
+    "saving": "PDFを保存中...",
+    "completed": "透かしが適用されました！",
+    "errors": {
+      "noText": "透かしテキストを入力してください",
+      "textRequired": "透かしテキストを入力してください",
+      "failed": "透かしの適用に失敗しました",
+      "cyrillicNotSupported": "キリル文字はサポートされていません。ラテン文字を使用してください。"
+    },
+    "success": {
+      "title": "透かしが正常に適用されました！",
+      "watermarkApplied": "透かしが適用されました",
+      "pages": "透かしが入ったページ",
+      "size": "ファイルサイズ",
+      "time": "処理時間"
+    },
+    "quickActions": {
+      "title": "次のステップは？",
+      "description": "透かしを入れたPDFを引き続き処理:",
+      "compress": "ファイルサイズを削減",
+      "protect": "パスワードを追加",
+      "split": "ページを抽出",
+      "merge": "他のファイルと結合"
+    },
+    "autoLoaded": {
+      "title": "前のツールからファイルが読み込まれました",
+      "description": "PDFが自動的に読み込まれました"
+    },
+    "infoTitle": "透かしについて",
+    "info1": "キリル文字とラテン文字の完全サポートでテキスト透かしをサポート",
+    "info2": "6つの位置オプション: 斜め、中央、4つの角",
+    "info3": "すべての処理はブラウザ内で行われます - ファイルはプライベートのまま"
+  },
+  "rotate": {
+    "settings": "回転設定",
+    "selectAngle": "回転角度を選択",
+    "clockwise": "時計回り",
+    "upsideDown": "上下逆",
+    "counterClockwise": "反時計回り",
+    "selectPages": "回転するページを選択",
+    "allPages": "すべてのページ",
+    "rotateAllPages": "ドキュメント内のすべてのページを回転",
+    "specificPages": "特定のページ",
+    "choosePages": "回転するページを選択",
+    "pageNumbers": "ページ番号",
+    "pageNumbersHint": "例: 1,3,5-7,10（総ページ数: {total}）",
+    "rotateButton": "PDFを回転",
+    "rotateAnother": "別のファイルを回転",
+    "invalidPages": "有効なページ番号を入力してください",
+    "failed": "PDFの回転に失敗しました",
+    "success": "PDFが正常に回転されました！",
+    "successDescription": "PDFページが指定どおりに回転されました",
+    "quickActions": {
+      "title": "次のステップは？",
+      "description": "回転したPDFを引き続き処理:",
+      "compress": "ファイルサイズを削減",
+      "protect": "パスワードを追加",
+      "watermark": "透かしを追加",
+      "split": "ページを抽出"
+    }
+  },
+  "deletePages": {
+    "selectPages": "削除するページを選択",
+    "pagesToDelete": "削除するページ",
+    "hint": "例: 1,3,5-7,10（総ページ数: {total}）",
+    "warning": "警告: これは元に戻せません",
+    "warningDescription": "ページはPDFから完全に削除されます",
+    "deleteButton": "ページを削除",
+    "deleteAnother": "別のファイルから削除",
+    "invalidPages": "有効なページ番号を入力してください",
+    "cannotDeleteAll": "PDFからすべてのページを削除できません",
+    "failed": "ページの削除に失敗しました",
+    "success": "ページが正常に削除されました！",
+    "successDescription": "選択したページがPDFから削除されました",
+    "quickActions": {
+      "title": "次のステップは？",
+      "description": "PDFを引き続き処理:",
+      "compress": "ファイルサイズを削減",
+      "protect": "パスワードを追加",
+      "watermark": "透かしを追加",
+      "merge": "他のファイルと結合"
+    }
+  },
+  "extractPages": {
+    "selectPages": "抽出するページを選択",
+    "pagesToExtract": "抽出するページ",
+    "hint": "例: 1,3,5-7,10（総ページ数: {total}）",
+    "info": "抽出は新しいPDFを作成します",
+    "infoDescription": "元のPDFは変更されず、選択したページのみが新しいファイルにコピーされます",
+    "extractButton": "ページを抽出",
+    "extractAnother": "別のファイルから抽出",
+    "invalidPages": "有効なページ番号を入力してください",
+    "failed": "ページの抽出に失敗しました",
+    "success": "ページが正常に抽出されました！",
+    "successDescription": "選択したページが新しいPDFに抽出されました",
+    "quickActions": {
+      "title": "次のステップは？",
+      "description": "抽出したページを引き続き処理:",
+      "compress": "ファイルサイズを削減",
+      "protect": "パスワードを追加",
+      "watermark": "透かしを追加",
+      "merge": "他のファイルと結合"
+    }
+  },
+  "imagesToPdf": {
+    "imagesList": "画像",
+    "settings": "PDF設定",
+    "pageSize": "ページサイズ",
+    "pageSizes": {
+      "fit": "画像に合わせる",
+      "a4": "A4",
+      "letter": "レター"
+    },
+    "orientation": "向き",
+    "orientations": {
+      "portrait": "縦",
+      "landscape": "横"
+    },
+    "margin": "余白",
+    "convert": "PDFに変換",
+    "convertAnother": "別のファイルを変換",
+    "errors": {
+      "noImages": "少なくとも1つの画像を選択してください"
+    },
+    "success": {
+      "title": "画像が正常に変換されました！",
+      "pages": "作成されたページ"
+    },
+    "successMessage": "{count}ページのPDFが正常に作成されました",
+    "quickActions": {
+      "title": "次のステップは？",
+      "description": "PDFを引き続き処理:",
+      "compress": "ファイルサイズを削減",
+      "protect": "パスワードを追加",
+      "watermark": "透かしを追加",
+      "merge": "他のファイルと結合"
+    }
+  },
+  "pdfToImages": {
+    "title": "PDFから画像",
+    "description": "PDFページを高品質な画像に変換",
+    "format": "出力形式",
+    "quality": "品質",
+    "pages": "変換するページ",
+    "allPages": "すべてのページ",
+    "pageRange": "ページ範囲",
+    "specificPages": "特定のページ",
+    "backgroundColor": "背景色",
+    "convert": "画像に変換",
+    "success": "変換に成功しました！",
+    "imagesCreated": "作成された画像",
+    "totalSize": "合計サイズ",
+    "preview": "プレビュー",
+    "page": "ページ",
+    "download": "画像をダウンロード",
+    "downloadZip": "ZIPとしてダウンロード",
+    "downloadAll": "すべてダウンロード",
+    "downloadIndividual": "個別に画像をダウンロード:",
+    "errors": {
+      "conversionFailed": "PDFから画像への変換に失敗しました",
+      "zipFailed": "ZIPアーカイブの作成に失敗しました"
+    }
+  },
+  "wordToPdf": {
+    "convert": "PDFに変換",
+    "convertAnother": "別のファイルを変換",
+    "conversionMode": "変換モード",
+    "withFormatting": "書式あり",
+    "textOnly": "テキストのみ",
+    "formattingDescription": "画像、表、見出し、テキストスタイルを保持",
+    "textDescription": "テキストのみを抽出。ファイルサイズが小さく、変換が高速",
+    "quality": "出力品質",
+    "qualityStandard": "標準（高速、小さいファイル）",
+    "qualityHigh": "高品質（バランス）",
+    "qualityMax": "最大（最高品質、大きいファイル）",
+    "errors": {
+      "noFile": "まずWordドキュメントを選択してください",
+      "invalidFormat": "無効なファイル形式です。.docxファイルを選択してください",
+      "conversionFailed": "WordからPDFへの変換に失敗しました"
+    },
+    "success": "Wordドキュメントが正常に変換されました！"
+  },
+  "pdfToWord": {
+    "convert": "Wordに変換",
+    "convertAnother": "別のファイルを変換",
+    "options": "変換オプション",
+    "smartHeadings": "スマート見出し",
+    "smartHeadingsDescription": "フォントサイズで見出しを検出し、Wordの見出しスタイルを適用",
+    "errors": {
+      "noFile": "まずPDFファイルを選択してください",
+      "invalidPdf": "無効なPDFファイルです。有効なPDFを選択してください",
+      "conversionFailed": "PDFからWordへの変換に失敗しました"
+    },
+    "success": "PDFからWordへの変換に成功しました！",
+    "readyToDownload": "Wordドキュメントのダウンロード準備ができました",
+    "conversionComplete": "変換が完了しました"
+  },
+  "editText": {
+    "rasterizationWarning": "注意: 編集されたページは画像に変換されます。これらのページのテキストは編集後に選択できなくなります。",
+    "selectPage": "ページを選択",
+    "searchText": "テキストを検索",
+    "textToFind": "検索するテキスト",
+    "enterTextToFind": "検索するテキストを入力",
+    "findText": "テキストを検索",
+    "occurrencesFound": "{count}個見つかりました",
+    "selectAll": "すべて選択",
+    "deselectAll": "すべて選択解除",
+    "replacementSettings": "置換設定",
+    "newText": "新しいテキスト",
+    "enterNewText": "新しいテキストを入力",
+    "backgroundColor": "背景色",
+    "textColor": "テキスト色",
+    "fontSize": "フォントサイズ",
+    "replaceText": "テキストを置換",
+    "noOccurrencesSelected": "置換する少なくとも1つを選択してください",
+    "searchError": "テキストの検索中にエラーが発生しました。もう一度お試しください。",
+    "replaceError": "テキストの置換中にエラーが発生しました。もう一度お試しください。",
+    "successMessage": "テキストが正常に置換されました！",
+    "useInOtherTools": "他のツールで使用"
+  },
+  "extractImages": {
+    "title": "画像の抽出/削除",
+    "description": "PDFからすべての画像を抽出するか、削除してファイルサイズを削減します。",
+    "modeExtract": "画像を抽出",
+    "modeRemove": "画像を削除",
+    "extractDescription": "PDF内で見つかったすべての画像を抽出します。ダウンロードする画像をプレビューして選択できます。",
+    "removeDescription": "PDFから画像を削除してファイルサイズを削減します。削除する画像をプレビューして選択できます。",
+    "extractBtn": "画像を抽出",
+    "removeBtn": "画像をプレビュー",
+    "successExtract": "画像が正常に抽出されました！",
+    "successRemove": "画像が正常に削除されました！",
+    "previewTitle": "抽出された画像",
+    "previewTitleRemove": "削除する画像を選択",
+    "previewDescription": "{count}個の画像が見つかりました。ダウンロードする画像を選択してください。",
+    "previewDescriptionRemove": "{count}個の画像が見つかりました。PDFから削除する画像を選択してください。",
+    "selectAll": "すべて選択",
+    "downloadSelected": "ダウンロード（{count}）",
+    "removeSelected": "削除（{count}）",
+    "noImagesSelected": "ダウンロードする少なくとも1つの画像を選択してください。",
+    "smartFilter": {
+      "quickFilters": "クイックフィルター",
+      "usefulJunk": "{useful}個が有用 / {junk}個が不要と検出されました",
+      "categories": {
+        "all": "すべて",
+        "photo": "写真",
+        "chart": "グラフ",
+        "logo": "ロゴ",
+        "icon": "アイコンとボタン",
+        "decoration": "装飾",
+        "other": "その他"
+      },
+      "presets": {
+        "photosOnly": "写真のみ",
+        "useful": "有用な画像",
+        "large": "大きな画像",
+        "charts": "グラフ",
+        "excludeIcons": "アイコンなし"
+      }
+    }
+  }
+}

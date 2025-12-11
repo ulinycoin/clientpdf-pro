@@ -1,8 +1,10 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
 import { useHashRouter } from '@/hooks/useHashRouter';
+import { I18nProvider } from '@/contexts/I18nContext';
 import { WelcomeScreen } from '@/components/WelcomeScreen';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { ToolGroupNav } from '@/components/layout/ToolGroupNav';
+import { LanguageSelector } from '@/components/LanguageSelector';
 import { Button } from '@/components/ui/button';
 import { Toaster } from '@/components/ui/sonner';
 import type { Theme, ToolGroup } from '@/types';
@@ -93,7 +95,8 @@ function App() {
   };
 
   return (
-    <div className="app min-h-screen bg-gray-50 dark:bg-privacy-900 transition-colors duration-200">
+    <I18nProvider>
+      <div className="app min-h-screen bg-gray-50 dark:bg-privacy-900 transition-colors duration-200">
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-privacy-900 border-b border-gray-200 dark:border-privacy-700">
         <div className="flex items-center justify-between h-16 pr-4">
@@ -134,6 +137,9 @@ function App() {
               <span className="text-lg">☕</span>
               <span>Buy me a coffee</span>
             </a>
+
+            {/* Language Selector */}
+            <LanguageSelector />
 
             {/* Theme toggle */}
             <Button
@@ -238,6 +244,7 @@ function App() {
       </main>
       <Toaster />
     </div>
+    </I18nProvider>
   );
 }
 

@@ -1,33 +1,27 @@
 import React from 'react';
 import type { ToolGroup } from '@/types';
 import { Button } from '@/components/ui/button';
+import { useI18n } from '@/hooks/useI18n';
 
 interface ToolGroupNavProps {
   selectedGroup: ToolGroup;
   onGroupSelect: (group: ToolGroup) => void;
 }
 
-// Group definitions with icons (labels will come from i18n)
-const GROUPS: Array<{ id: ToolGroup; icon: string }> = [
-  { id: 'all', icon: '📚' },
-  { id: 'organize', icon: '📋' },
-  { id: 'edit', icon: '✏️' },
-  { id: 'security', icon: '🔒' },
-  { id: 'convert', icon: '🔄' },
+// Group definitions with icons
+const GROUPS: Array<{ id: ToolGroup; icon: string; labelKey: string }> = [
+  { id: 'all', icon: '📚', labelKey: 'toolGroups.all' },
+  { id: 'organize', icon: '📋', labelKey: 'toolGroups.organize' },
+  { id: 'edit', icon: '✏️', labelKey: 'toolGroups.edit' },
+  { id: 'security', icon: '🔒', labelKey: 'toolGroups.security' },
+  { id: 'convert', icon: '🔄', labelKey: 'toolGroups.convert' },
 ];
 
 export const ToolGroupNav: React.FC<ToolGroupNavProps> = ({
   selectedGroup,
   onGroupSelect,
 }) => {
-  // Group labels mapping
-  const groupLabels: Record<ToolGroup, string> = {
-    'all': 'All Tools',
-    'organize': 'Organize',
-    'edit': 'Edit',
-    'security': 'Security',
-    'convert': 'Convert',
-  };
+  const { t } = useI18n();
 
   return (
     <div className="fixed left-0 top-16 right-0 h-14 bg-white dark:bg-privacy-900 border-b border-gray-200 dark:border-privacy-700 z-40">
@@ -47,7 +41,7 @@ export const ToolGroupNav: React.FC<ToolGroupNavProps> = ({
               }`}
             >
               <span className="text-lg">{group.icon}</span>
-              <span className="text-sm font-medium">{groupLabels[group.id]}</span>
+              <span className="text-sm font-medium">{t(group.labelKey)}</span>
             </Button>
           );
         })}
