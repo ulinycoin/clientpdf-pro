@@ -8,6 +8,8 @@ interface FileUploadProps {
   maxFiles?: number;
   maxSizeMB?: number;
   disabled?: boolean;
+  title?: string;
+  description?: string;
 }
 
 export const FileUpload: React.FC<FileUploadProps> = ({
@@ -17,6 +19,8 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   maxFiles,
   maxSizeMB = 100,
   disabled = false,
+  title,
+  description,
 }) => {
   const { t } = useI18n();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -185,13 +189,13 @@ export const FileUpload: React.FC<FileUploadProps> = ({
             <p className="text-lg font-medium text-gray-900 dark:text-white mb-1">
               {isDragging
                 ? t('upload.dropHere')
-                : t('upload.dragOrClick')
+                : (title || t('upload.dragOrClick'))
               }
             </p>
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
-              {multiple
+              {description || (multiple
                 ? t('upload.multipleFilesAllowed')
-                : t('upload.singleFileAllowed')
+                : t('upload.singleFileAllowed'))
               }
             </p>
             <p className="text-xs text-gray-400 dark:text-gray-500 flex items-center justify-center gap-2">

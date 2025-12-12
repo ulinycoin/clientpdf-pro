@@ -89,6 +89,10 @@ export interface TextOccurrence {
   pageNumber: number;
   mode: 'replace' | 'cover'; // 'replace' = replace with text, 'cover' = just paint over
   textAlign?: 'left' | 'center' | 'right';
+  originalX?: number;
+  originalY?: number;
+  originalWidth?: number;
+  originalHeight?: number;
 }
 
 export interface ExtractedImage {

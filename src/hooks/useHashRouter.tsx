@@ -1,6 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
+import ReactGA from 'react-ga4';
 import { TOOL_HASH_MAP, HASH_TOOL_MAP } from '@/types';
 import type { Tool, URLContext, Language } from '@/types';
+
+// Initialize GA4
+const GA_MEASUREMENT_ID = 'G-MS36WTHPCZ';
 
 export interface HashRouterReturn {
   currentTool: Tool | null;
@@ -11,6 +15,15 @@ export interface HashRouterReturn {
 export const useHashRouter = (): HashRouterReturn => {
   const [currentTool, setCurrentToolState] = useState<Tool | null>(null);
   const [context, setContext] = useState<URLContext | null>(null);
+  const [gaInitialized, setGaInitialized] = useState(false);
+
+  // Initialize GA
+  useEffect(() => {
+    if (!gaInitialized) {
+      ReactGA.initialize(GA_MEASUREMENT_ID);
+      setGaInitialized(true);
+    }
+  }, [gaInitialized]);
 
   // Parse hash and URL parameters on mount and hash change
   useEffect(() => {
@@ -20,6 +33,20 @@ export const useHashRouter = (): HashRouterReturn => {
 
       // Parse tool from hash
       const tool = TOOL_HASH_MAP[toolHash] || null;
+
+      // Track tool selection if it changed and is valid
+      if (tool && tool !== currentTool) {
+        ReactGA.event({
+          category: 'Tool',
+          action: 'use_tool',
+          label: tool,
+          value: 1
+        });
+
+        // Also send a pageview for SPA behavior
+        ReactGA.send({ hitType: "pageview", page: window.location.hash });
+      }
+
       setCurrentToolState(tool);
 
       // Parse URL parameters for context
@@ -70,7 +97,7 @@ export const useHashRouter = (): HashRouterReturn => {
     return () => {
       window.removeEventListener('hashchange', parseHashWithParams);
     };
-  }, []); // Only run once on mount
+  }, [currentTool]); // Add currentTool as dependency
 
   // Update hash when tool changes (programmatic navigation)
   const setCurrentTool = useCallback((tool: Tool | null) => {
@@ -82,10 +109,18 @@ export const useHashRouter = (): HashRouterReturn => {
       const [, queryString] = currentHash.split('?');
 
       if (queryString) {
-        window.location.hash = `${hash}?${queryString}`;
+        window.location.hash = `${hash}?${queryString} `;
       } else {
         window.location.hash = hash;
       }
+
+      // Track programmatically
+      ReactGA.event({
+        category: 'Tool',
+        action: 'use_tool',
+        label: tool,
+        value: 1
+      });
 
       // Track tool selection in localStorage
       localStorage.setItem('last_tool', tool);
