@@ -104,6 +104,70 @@
       "description": "Editar contenido PDF"
     }
   },
+  "compress": {
+    "filePreview": "Archivo a comprimir",
+    "originalSize": "Tamaño original",
+    "pages": "Páginas",
+    "changeFile": "Cambiar archivo",
+    "selectQuality": "Nivel de compresión",
+    "selected": "Seleccionado",
+    "compressButton": "Comprimir PDF",
+    "compressAnother": "Comprimir otro",
+    "quality": {
+      "low": {
+        "name": "Máxima",
+        "description": "Menor tamaño, menor calidad"
+      },
+      "medium": {
+        "name": "Equilibrada",
+        "description": "Balance tamaño/calidad"
+      },
+      "high": {
+        "name": "Mínima",
+        "description": "Mejor calidad, mayor tamaño"
+      }
+    },
+    "success": {
+      "title": "¡PDF comprimido con éxito!",
+      "originalSize": "Tamaño original",
+      "compressedSize": "Tamaño comprimido",
+      "saved": "Espacio ahorrado",
+      "time": "Tiempo de procesamiento"
+    },
+    "quickActions": {
+      "title": "¿Qué sigue?",
+      "description": "Continuar:",
+      "protect": "Proteger",
+      "merge": "Combinar",
+      "split": "Dividir",
+      "watermark": "Marca de agua"
+    },
+    "autoLoaded": {
+      "title": "Cargado automáticamente",
+      "description": "Su PDF se ha cargado automáticamente"
+    }
+  },
+  "smartCompression": {
+    "title": "Análisis Inteligente",
+    "analyzing": "Analizando contenido...",
+    "highPotential": "Alto potencial de compresión",
+    "optimized": "Archivo ya optimizado",
+    "images": "Imágenes",
+    "structure": "Estructura",
+    "heavy": "Muchas imágenes",
+    "light": "Principalmente texto",
+    "recommendation": "Modo recomendado",
+    "apply": "Aplicar",
+    "applied": "Modo recomendado aplicado",
+    "insights": {
+      "mostlyText": "Contenido mayormente de texto",
+      "imageCount": "Contiene ~{count} imágenes",
+      "largeImages": "Archivo grande debido a imágenes",
+      "highDensity": "Alta densidad de contenido",
+      "efficient": "Estructura ya eficiente",
+      "standard": "Análisis de PDF estándar"
+    }
+  },
   "common": {
     "upload": "Subir archivos",
     "download": "Descargar",
@@ -409,10 +473,14 @@
       "contentAccessibility": "Permitir lectores de pantalla"
     },
     "passwordStrength": {
-      "tooShort": "Contraseña demasiado corta (min 8 car.)",
-      "useUpperAndLower": "Usar mayúsculas y minúsculas",
-      "useNumbers": "Añadir números",
-      "useSpecialChars": "Añadir caracteres especiales"
+      "strength": "Fortaleza",
+      "weak": "DÉBIL",
+      "medium": "MEDIO",
+      "strong": "FUERTE",
+      "tooShort": "Contraseña muy corta (min 8 caracteres)",
+      "useUpperAndLower": "Usa mayúsculas y minúsculas",
+      "useNumbers": "Añade números",
+      "useSpecialChars": "Añade caracteres especiales"
     },
     "errors": {
       "passwordRequired": "Contraseña requerida",
@@ -420,9 +488,18 @@
     },
     "success": {
       "title": "¡PDF protegido con éxito!",
-      "encryption": "Cifrado",
+      "encryption": "Nivel de cifrado",
       "password": "Contraseña",
-      "passwordSet": "Protegido"
+      "passwordSet": "Establecida"
+    },
+    "activePermissions": "Permisos Activos",
+    "badge": {
+      "printingAllowed": "Impresión Permitida",
+      "noPrinting": "Impresión Prohibida",
+      "copyingAllowed": "Copia Permitida",
+      "noCopying": "Copia Prohibida",
+      "editingAllowed": "Edición Permitida",
+      "noEditing": "Edición Prohibida"
     },
     "quickActions": {
       "title": "¿Qué sigue?",

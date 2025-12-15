@@ -394,10 +394,14 @@
             "contentAccessibility": "Permitir leitores de tela"
         },
         "passwordStrength": {
+            "strength": "Força",
+            "weak": "FRACA",
+            "medium": "MÉDIA",
+            "strong": "FORTE",
             "tooShort": "Senha muito curta (min 8 caracteres)",
-            "useUpperAndLower": "Usar maiúsculas e minúsculas",
-            "useNumbers": "Adicionar números",
-            "useSpecialChars": "Adicionar caracteres especiais"
+            "useUpperAndLower": "Use maiúsculas e minúsculas",
+            "useNumbers": "Adicione números",
+            "useSpecialChars": "Adicione caracteres especiais"
         },
         "errors": {
             "passwordRequired": "Senha é necessária",
@@ -407,7 +411,16 @@
             "title": "PDF protegido com sucesso!",
             "encryption": "Criptografia",
             "password": "Senha",
-            "passwordSet": "Protegido"
+            "passwordSet": "Definida"
+        },
+        "activePermissions": "Permissões Ativas",
+        "badge": {
+            "printingAllowed": "Impressão Permitida",
+            "noPrinting": "Impressão Proibida",
+            "copyingAllowed": "Cópia Permitida",
+            "noCopying": "Cópia Proibida",
+            "editingAllowed": "Edição Permitida",
+            "noEditing": "Edição Proibida"
         },
         "quickActions": {
             "title": "O que vem a seguir?",

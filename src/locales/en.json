@@ -212,6 +212,27 @@
     "moveTOC": "Move TOC to Front",
     "noIssues": "No issues detected - document looks good!"
   },
+  "smartCompression": {
+    "title": "Smart Analysis",
+    "analyzing": "Analyzing PDF content...",
+    "highPotential": "High compression potential detected",
+    "optimized": "File is already well optimized",
+    "images": "Images",
+    "structure": "Structure",
+    "heavy": "Image heavy",
+    "light": "Mostly text",
+    "recommendation": "Recommended Mode",
+    "apply": "Apply",
+    "applied": "Recommended mode applied",
+    "insights": {
+      "mostlyText": "Mostly text content",
+      "imageCount": "Contains ~{count} images",
+      "largeImages": "Large file size due to images",
+      "highDensity": "High density content",
+      "efficient": "Already efficient structure",
+      "standard": "Standard PDF analysis"
+    }
+  },
   "smartImageFilter": {
     "title": "Smart Image Filter",
     "analyzing": "Analyzing images...",
@@ -436,6 +457,10 @@
       "contentAccessibility": "Allow screen readers"
     },
     "passwordStrength": {
+      "strength": "Strength",
+      "weak": "WEAK",
+      "medium": "MEDIUM",
+      "strong": "STRONG",
       "tooShort": "Password too short (min 8 chars)",
       "useUpperAndLower": "Use uppercase and lowercase",
       "useNumbers": "Add numbers",
@@ -446,10 +471,19 @@
       "protectionFailed": "Failed to protect PDF"
     },
     "success": {
-      "title": "PDF protected successfully!",
-      "encryption": "Encryption",
+      "title": "PDF Protected Successfully!",
+      "encryption": "Encryption Level",
       "password": "Password",
-      "passwordSet": "Protected"
+      "passwordSet": "Password Set"
+    },
+    "activePermissions": "Active Permissions",
+    "badge": {
+      "printingAllowed": "Printing Allowed",
+      "noPrinting": "No Printing",
+      "copyingAllowed": "Copying Allowed",
+      "noCopying": "No Copying",
+      "editingAllowed": "Editing Allowed",
+      "noEditing": "No Editing"
     },
     "quickActions": {
       "title": "What's next?",

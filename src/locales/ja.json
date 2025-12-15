@@ -436,7 +436,11 @@
       "contentAccessibility": "スクリーンリーダーを許可"
     },
     "passwordStrength": {
-      "tooShort": "パスワードが短すぎます（最低8文字）",
+      "strength": "強度",
+      "weak": "弱い",
+      "medium": "普通",
+      "strong": "強い",
+      "tooShort": "パスワードが短すぎます（8文字以上）",
       "useUpperAndLower": "大文字と小文字を使用",
       "useNumbers": "数字を追加",
       "useSpecialChars": "特殊文字を追加"
@@ -446,10 +450,19 @@
       "protectionFailed": "PDFの保護に失敗しました"
     },
     "success": {
-      "title": "PDFが正常に保護されました！",
-      "encryption": "暗号化",
+      "title": "PDFの保護に成功しました",
+      "encryption": "暗号化レベル",
       "password": "パスワード",
-      "passwordSet": "保護済み"
+      "passwordSet": "設定済み"
+    },
+    "activePermissions": "現在有効な権限",
+    "badge": {
+      "printingAllowed": "印刷許可",
+      "noPrinting": "印刷禁止",
+      "copyingAllowed": "コピー許可",
+      "noCopying": "コピー禁止",
+      "editingAllowed": "編集許可",
+      "noEditing": "編集禁止"
     },
     "quickActions": {
       "title": "次のステップは？",

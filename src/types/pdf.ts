@@ -1,5 +1,12 @@
 // PDF Processing Types for SPA
 
+export interface CompressionAnalysis {
+  isImageHeavy: boolean;
+  recommendedQuality: 'low' | 'medium' | 'high';
+  savingPotential: 'high' | 'medium' | 'low';
+  insights: Array<{ key: string; params?: any }>;
+}
+
 export interface PDFFileInfo {
   pages: number;
   originalSize: number;
@@ -26,7 +33,7 @@ export interface PDFProcessingResult<T = Blob> {
 export interface ProcessingError {
   code: string;
   message: string;
-  details?: string;
+  details?: any;
 }
 
 export interface MergeOptions {

@@ -104,6 +104,70 @@
       "description": "PDF-Inhalt bearbeiten"
     }
   },
+  "compress": {
+    "filePreview": "Datei komprimieren",
+    "originalSize": "Originalgröße",
+    "pages": "Seiten",
+    "changeFile": "Datei ändern",
+    "selectQuality": "Kompressionsstufe",
+    "selected": "Ausgewählt",
+    "compressButton": "PDF komprimieren",
+    "compressAnother": "Weitere komprimieren",
+    "quality": {
+      "low": {
+        "name": "Maximum",
+        "description": "Kleinste Größe, geringere Qualität"
+      },
+      "medium": {
+        "name": "Ausgewogen",
+        "description": "Gute Balance Größe/Qualität"
+      },
+      "high": {
+        "name": "Minimum",
+        "description": "Beste Qualität, größere Datei"
+      }
+    },
+    "success": {
+      "title": "PDF erfolgreich komprimiert!",
+      "originalSize": "Originalgröße",
+      "compressedSize": "Komprimierte Größe",
+      "saved": "Platz gespart",
+      "time": "Verarbeitungszeit"
+    },
+    "quickActions": {
+      "title": "Was als Nächstes?",
+      "description": "Weiterarbeiten:",
+      "protect": "Schützen",
+      "merge": "Zusammenführen",
+      "split": "Teilen",
+      "watermark": "Wasserzeichen"
+    },
+    "autoLoaded": {
+      "title": "Automatisch geladen",
+      "description": "Ihre PDF wurde automatisch geladen"
+    }
+  },
+  "smartCompression": {
+    "title": "Smarte Analyse",
+    "analyzing": "Analysiere Inhalt...",
+    "highPotential": "Hohes Kompressionspotenzial",
+    "optimized": "Datei bereits optimiert",
+    "images": "Bilder",
+    "structure": "Struktur",
+    "heavy": "Viele Bilder",
+    "light": "Vorwiegend Text",
+    "recommendation": "Empfohlener Modus",
+    "apply": "Empfehlung anwenden",
+    "applied": "Empfehlung angewendet",
+    "insights": {
+      "mostlyText": "Hauptsächlich Textinhalt",
+      "imageCount": "Enthält ~{count} Bilder",
+      "largeImages": "Große Dateigröße wegen Bildern",
+      "highDensity": "Hohe Inhaltsdichte",
+      "efficient": "Bereits effiziente Struktur",
+      "standard": "Standard-PDF-Analyse"
+    }
+  },
   "common": {
     "upload": "Dateien hochladen",
     "download": "Herunterladen",
@@ -410,6 +474,10 @@
       "contentAccessibility": "Screenreader erlauben"
     },
     "passwordStrength": {
+      "strength": "Stärke",
+      "weak": "SCHWACH",
+      "medium": "MITTEL",
+      "strong": "STARK",
       "tooShort": "Passwort zu kurz (min 8 Zeichen)",
       "useUpperAndLower": "Groß- und Kleinschreibung verwenden",
       "useNumbers": "Zahlen hinzufügen",
@@ -424,6 +492,15 @@
       "encryption": "Verschlüsselung",
       "password": "Passwort",
       "passwordSet": "Geschützt"
+    },
+    "activePermissions": "Aktive Berechtigungen",
+    "badge": {
+      "printingAllowed": "Drucken Erlaubt",
+      "noPrinting": "Drucken Verboten",
+      "copyingAllowed": "Kopieren Erlaubt",
+      "noCopying": "Kopieren Verboten",
+      "editingAllowed": "Bearbeiten Erlaubt",
+      "noEditing": "Bearbeiten Verboten"
     },
     "quickActions": {
       "title": "Was als Nächstes?",

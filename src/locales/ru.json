@@ -207,6 +207,26 @@
     "moveTOC": "Переместить оглавление в начало",
     "noIssues": "Проблем не найдено — документ в порядке!"
   },
+  "smartCompression": {
+    "title": "Умный анализ",
+    "analyzing": "Анализ содержимого...",
+    "highPotential": "Высокий потенциал сжатия",
+    "optimized": "Файл уже оптимизирован",
+    "images": "Изображения",
+    "structure": "Структура",
+    "heavy": "Много изображений",
+    "light": "В основном текст",
+    "recommendation": "Рекомендуемый режим",
+    "apply": "Применить",
+    "applied": "Рекомендация применена",
+    "insights": {
+      "mostlyText": "В основном текстовый контент",
+      "imageCount": "Содержит ~{count} изображений",
+      "largeImages": "Большой размер из-за изображений",
+      "highDensity": "Высокая плотность контента",
+      "efficient": "Структура уже эффективна"
+    }
+  },
   "smartImageFilter": {
     "title": "Умный фильтр изображений",
     "analyzing": "Анализ изображений...",
@@ -431,6 +451,10 @@
       "contentAccessibility": "Разрешить программы чтения с экрана"
     },
     "passwordStrength": {
+      "strength": "Надежность",
+      "weak": "СЛАБЫЙ",
+      "medium": "СРЕДНИЙ",
+      "strong": "НАДЕЖНЫЙ",
       "tooShort": "Пароль слишком короткий (мин. 8 символов)",
       "useUpperAndLower": "Используйте заглавные и строчные буквы",
       "useNumbers": "Добавьте цифры",
@@ -441,10 +465,19 @@
       "protectionFailed": "Не удалось защитить PDF"
     },
     "success": {
-      "title": "PDF успешно защищён!",
+      "title": "Файл успешно защищен!",
       "encryption": "Шифрование",
       "password": "Пароль",
-      "passwordSet": "Защищён"
+      "passwordSet": "Установлен"
+    },
+    "activePermissions": "Активные разрешения",
+    "badge": {
+      "printingAllowed": "Печать разрешена",
+      "noPrinting": "Печать запрещена",
+      "copyingAllowed": "Копирование разрешено",
+      "noCopying": "Копирование запрещено",
+      "editingAllowed": "Изменение разрешено",
+      "noEditing": "Изменение запрещено"
     },
     "quickActions": {
       "title": "Что дальше?",

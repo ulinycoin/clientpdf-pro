@@ -394,6 +394,10 @@
             "contentAccessibility": "Consenti screen reader"
         },
         "passwordStrength": {
+            "strength": "Sicurezza",
+            "weak": "DEBOLE",
+            "medium": "MEDIO",
+            "strong": "FORTE",
             "tooShort": "Password troppo corta (min 8 caratteri)",
             "useUpperAndLower": "Usa maiuscole e minuscole",
             "useNumbers": "Aggiungi numeri",
@@ -407,7 +411,16 @@
             "title": "PDF protetto con successo!",
             "encryption": "Crittografia",
             "password": "Password",
-            "passwordSet": "Protetto"
+            "passwordSet": "Impostata"
+        },
+        "activePermissions": "Permessi Attivi",
+        "badge": {
+            "printingAllowed": "Stampa Consentita",
+            "noPrinting": "Stampa Vietata",
+            "copyingAllowed": "Copia Consentita",
+            "noCopying": "Copia Vietata",
+            "editingAllowed": "Modifica Consentita",
+            "noEditing": "Modifica Vietata"
         },
         "quickActions": {
             "title": "Cosa c'è dopo?",

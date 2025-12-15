@@ -436,6 +436,10 @@
             "contentAccessibility": "允许屏幕阅读器"
         },
         "passwordStrength": {
+            "strength": "强度",
+            "weak": "弱",
+            "medium": "中",
+            "strong": "强",
             "tooShort": "密码太短（最少 8 个字符）",
             "useUpperAndLower": "使用大小写字母",
             "useNumbers": "添加数字",
@@ -446,10 +450,19 @@
             "protectionFailed": "保护 PDF 失败"
         },
         "success": {
-            "title": "PDF 保护成功！",
-            "encryption": "加密",
+            "title": "PDF 已成功保护！",
+            "encryption": "加密级别",
             "password": "密码",
-            "passwordSet": "已保护"
+            "passwordSet": "已设置"
+        },
+        "activePermissions": "当前权限",
+        "badge": {
+            "printingAllowed": "允许打印",
+            "noPrinting": "禁止打印",
+            "copyingAllowed": "允许复制",
+            "noCopying": "禁止复制",
+            "editingAllowed": "允许编辑",
+            "noEditing": "禁止编辑"
         },
         "quickActions": {
             "title": "接下来做什么？",

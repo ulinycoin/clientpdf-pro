@@ -104,6 +104,70 @@
       "description": "Modifier le contenu PDF"
     }
   },
+  "compress": {
+    "filePreview": "Fichier à compresser",
+    "originalSize": "Taille originale",
+    "pages": "Pages",
+    "changeFile": "Changer de fichier",
+    "selectQuality": "Niveau de compression",
+    "selected": "Sélectionné",
+    "compressButton": "Compresser PDF",
+    "compressAnother": "Compresser un autre",
+    "quality": {
+      "low": {
+        "name": "Maximum",
+        "description": "Taille minimale, qualité inférieure"
+      },
+      "medium": {
+        "name": "Équilibré",
+        "description": "Bon équilibre taille/qualité"
+      },
+      "high": {
+        "name": "Minimum",
+        "description": "Meilleure qualité, taille plus grande"
+      }
+    },
+    "success": {
+      "title": "PDF compressé avec succès !",
+      "originalSize": "Taille originale",
+      "compressedSize": "Taille compressée",
+      "saved": "Espace économisé",
+      "time": "Temps de traitement"
+    },
+    "quickActions": {
+      "title": "Et après ?",
+      "description": "Continuez avec votre PDF :",
+      "protect": "Protéger",
+      "merge": "Fusionner",
+      "split": "Diviser",
+      "watermark": "Filigrane"
+    },
+    "autoLoaded": {
+      "title": "Fichier chargé automatiquement",
+      "description": "Votre PDF a été chargé depuis l'outil précédent"
+    }
+  },
+  "smartCompression": {
+    "title": "Analyse Intelligente",
+    "analyzing": "Analyse du contenu...",
+    "highPotential": "Fort potentiel de compression",
+    "optimized": "Fichier déjà optimisé",
+    "images": "Images",
+    "structure": "Structure",
+    "heavy": "Beaucoup d'images",
+    "light": "Texte principalement",
+    "recommendation": "Mode recommandé",
+    "apply": "Appliquer",
+    "applied": "Mode recommandé appliqué",
+    "insights": {
+      "mostlyText": "Contenu principalement textuel",
+      "imageCount": "Contient ~{count} images",
+      "largeImages": "Fichier volumineux dû aux images",
+      "highDensity": "Haute densité de contenu",
+      "efficient": "Structure déjà efficace",
+      "standard": "Analyse PDF standard"
+    }
+  },
   "common": {
     "upload": "Télécharger des fichiers",
     "uploadFile": "Télécharger le fichier",
@@ -420,6 +484,10 @@
       "contentAccessibility": "Autoriser les lecteurs d'écran"
     },
     "passwordStrength": {
+      "strength": "Force",
+      "weak": "FAIBLE",
+      "medium": "MOYEN",
+      "strong": "FORT",
       "tooShort": "Mot de passe trop court (min 8 chars)",
       "useUpperAndLower": "Utiliser majuscules et minuscules",
       "useNumbers": "Ajouter des chiffres",
@@ -434,6 +502,15 @@
       "encryption": "Cryptage",
       "password": "Mot de passe",
       "passwordSet": "Protégé"
+    },
+    "activePermissions": "Permissions Actives",
+    "badge": {
+      "printingAllowed": "Impression Autorisée",
+      "noPrinting": "Impression Interdite",
+      "copyingAllowed": "Copie Autorisée",
+      "noCopying": "Copie Interdite",
+      "editingAllowed": "Modification Autorisée",
+      "noEditing": "Modification Interdite"
     },
     "quickActions": {
       "title": "Et après ?",
