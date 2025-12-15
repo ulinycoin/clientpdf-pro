@@ -157,7 +157,7 @@
     "acceptedTypes": "Допустимые типы",
     "errors": {
       "tooManyFiles": "Слишком много файлов. Максимум: {max}",
-      "invalidFileType": "Неверный тип файла. Пожалуйста, выберите только PDF файлы.",
+      "invalidFileType": "Неверный тип файла. Пожалуйста, выберите PDF или изображения (JPG, PNG).",
       "fileTooLarge": "Файл слишком большой. Максимальный размер: {max} МБ"
     }
   },
@@ -317,6 +317,7 @@
     "splitAnother": "Разделить другой",
     "downloadAll": "Скачать все файлы",
     "downloadAsZip": "Скачать как ZIP",
+    "previewTitle": "Предпросмотр страницы",
     "outputFiles": "Выходные файлы",
     "selectAll": "Выбрать все",
     "deselectAll": "Отменить выбор",

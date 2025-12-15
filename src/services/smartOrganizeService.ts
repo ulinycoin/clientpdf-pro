@@ -78,16 +78,62 @@ export interface SmartAction {
   icon: string;
 }
 
-// Chapter detection patterns
+// Chapter detection patterns - Expanded for 9 languages
 const CHAPTER_PATTERNS = [
+  // English
   /^chapter\s+(\d+|[ivxlcdm]+)/i,
-  /^глава\s+(\d+|[ivxlcdm]+)/i,
-  /^kapitel\s+(\d+|[ivxlcdm]+)/i,
-  /^chapitre\s+(\d+|[ivxlcdm]+)/i,
-  /^capítulo\s+(\d+|[ivxlcdm]+)/i,
-  /^section\s+(\d+)/i,
   /^part\s+(\d+|[ivxlcdm]+|one|two|three)/i,
-  /^(\d+)\.\s+[A-ZА-ЯЁ]/,
+  /^section\s+(\d+)/i,
+  /^introduction/i,
+  /^preface/i,
+  /^conclusion/i,
+  /^appendix/i,
+  /^index/i,
+
+  // Russian
+  /^глава\s+(\d+|[ivxlcdm]+)/i,
+  /^часть\s+(\d+|[ivxlcdm]+)/i,
+  /^раздел\s+(\d+)/i,
+  /^введение/i,
+  /^предисловие/i,
+  /^заключение/i,
+  /^приложение/i,
+
+  // German
+  /^kapitel\s+(\d+|[ivxlcdm]+)/i,
+  /^teil\s+(\d+|[ivxlcdm]+)/i,
+  /^einführung/i,
+  /^einleitung/i,
+  /^anhang/i,
+
+  // French
+  /^chapitre\s+(\d+|[ivxlcdm]+)/i,
+  /^partie\s+(\d+|[ivxlcdm]+)/i,
+  /^introduction/i,
+  /^annexe/i,
+
+  // Spanish/Portuguese
+  /^capítulo\s+(\d+|[ivxlcdm]+)/i,
+  /^parte\s+(\d+|[ivxlcdm]+)/i,
+  /^sección\s+(\d+)/i,
+  /^introducción/i,
+  /^introdução/i,
+  /^anexo/i,
+
+  // Italian
+  /^capitolo\s+(\d+|[ivxlcdm]+)/i,
+  /^parte\s+(\d+|[ivxlcdm]+)/i,
+  /^introduzione/i,
+  /^appendice/i,
+
+  // CJK (Chinese, Japanese)
+  /^(第)?\s*(\d+|[零一二三四五六七八九十百]+)\s*(章|节|部|篇)/, // Chapter/Section X
+  /^绪论/, // Introduction (ZH)
+  /^はじめに/, // Introduction (JA)
+  /^前言/, // Preface
+
+  // Generic Numbering
+  /^(\d+)\.\s+/,
   /^[IVXLCDM]+\.\s+/,
 ];
 
@@ -99,6 +145,9 @@ const TOC_PATTERNS = [
   /inhaltsverzeichnis/i,
   /sommaire/i,
   /índice/i,
+  /indice/i,
+  /目录/, // ZH
+  /目次/, // JA
 ];
 
 const COVER_PATTERNS = [
@@ -201,7 +250,14 @@ class SmartOrganizeService {
       y: item.transform[5],
       fontSize: Math.abs(item.transform[0]) || 12,
       width: item.width || 0,
+      fontName: item.fontName,
     }));
+
+    // Calculate median font size for heuristic analysis
+    const fontSizes = textWithPositions.map(t => t.fontSize).sort((a, b) => a - b);
+    const medianFontSize = fontSizes.length > 0
+      ? fontSizes[Math.floor(fontSizes.length / 2)]
+      : 12;
 
     // Check for images first (needed for blank detection)
     const hasImages = await this.detectImages(page);
@@ -223,7 +279,9 @@ class SmartOrganizeService {
     // Detect chapter start
     const { isChapterStart, chapterTitle } = this.detectChapterStart(
       fullText,
-      textWithPositions
+      textWithPositions,
+      viewport,
+      medianFontSize
     );
 
     // Detect TOC
@@ -340,41 +398,91 @@ class SmartOrganizeService {
    */
   private detectChapterStart(
     fullText: string,
-    textItems: Array<{ text: string; fontSize: number; y: number }>
+    textItems: Array<{ text: string; fontSize: number; y: number }>,
+    viewport: { height: number },
+    medianFontSize: number
   ): { isChapterStart: boolean; chapterTitle: string | null } {
-    // Get first few lines
+    // 1. Visual Detection (Language Agnostic)
+    // Find significantly large text at the top of the page
+    const visualHeader = this.detectVisualHeader(textItems, viewport, medianFontSize);
+    if (visualHeader) {
+      return { isChapterStart: true, chapterTitle: visualHeader };
+    }
+
+    // 2. Pattern Matching (9 Languages)
+    // Get first few lines to check for keywords
     const firstLines = fullText.split(/\n|\r/).slice(0, 5).join(' ').trim();
 
     // Check against chapter patterns
     for (const pattern of CHAPTER_PATTERNS) {
       if (pattern.test(firstLines)) {
         // Extract chapter title (first significant text)
-        const titleMatch = firstLines.match(/^.{0,100}/);
-        return {
-          isChapterStart: true,
-          chapterTitle: titleMatch ? titleMatch[0].trim() : null,
-        };
-      }
-    }
-
-    // Check for large text at top (likely a heading)
-    const topItems = textItems
-      .filter(item => item.y > (textItems[0]?.y || 0) * 0.7)
-      .sort((a, b) => b.fontSize - a.fontSize);
-
-    if (topItems.length > 0 && topItems[0].fontSize > 16) {
-      const largeText = topItems[0].text.trim();
-      // Check if it looks like a chapter heading
-      if (largeText.length > 3 && largeText.length < 100) {
-        for (const pattern of CHAPTER_PATTERNS) {
-          if (pattern.test(largeText)) {
-            return { isChapterStart: true, chapterTitle: largeText };
+        // Some regexes capture the number, we want the whole line
+        const match = firstLines.match(/^.{0,100}/);
+        if (match) {
+          // Clean up string
+          let title = match[0].trim();
+          // Remove trailing numbers if it's just a TOC line entry (heuristic)
+          if (!/\.{3,}\s*\d+$/.test(title)) {
+            return {
+              isChapterStart: true,
+              chapterTitle: title,
+            };
           }
         }
       }
     }
 
     return { isChapterStart: false, chapterTitle: null };
+  }
+
+  /**
+   * Detect header based on visual properties (font size, position)
+   */
+  private detectVisualHeader(
+    textItems: Array<{ text: string; fontSize: number; y: number }>,
+    viewport: { height: number },
+    medianFontSize: number
+  ): string | null {
+    // Define "Top of page" as the upper 40%
+    // PDF coordinates: origin (0,0) is usually bottom-left
+    const topThreshold = viewport.height * 0.6;
+
+    // Filter items at the top
+    const topItems = textItems.filter(item => item.y > topThreshold);
+
+    if (topItems.length === 0) return null;
+
+    // Find the item with the largest font size
+    let maxFontSize = 0;
+    let maxFontItem = null;
+
+    for (const item of topItems) {
+      // Filter out noise / small numbers
+      if (item.text.trim().length < 2) continue;
+
+      if (item.fontSize > maxFontSize) {
+        maxFontSize = item.fontSize;
+        maxFontItem = item;
+      }
+    }
+
+    // Heuristic: Header must be significantly larger than median (e.g. > 1.3x)
+    // Or it must be absolutely large (e.g. > 20px)
+    if (maxFontItem && (maxFontSize >= medianFontSize * 1.3 || maxFontSize > 18)) {
+      const title = maxFontItem.text.trim();
+      // Avoid empty or trivially short titles
+      if (title.length > 2 && title.length < 100) {
+        // Check if it's ALL CAPS (common for headers)
+        const isAllCaps = title === title.toUpperCase() && /[A-Z]/.test(title);
+
+        if (isAllCaps || maxFontSize >= medianFontSize * 1.5) {
+          return title;
+        }
+      }
+    }
+
+    return null;
   }
 
   /**
@@ -386,7 +494,7 @@ class SmartOrganizeService {
   ): boolean {
     const lowerText = fullText.toLowerCase();
 
-    // Check for TOC title
+    // Check for TOC title in various languages
     for (const pattern of TOC_PATTERNS) {
       if (pattern.test(lowerText)) {
         return true;

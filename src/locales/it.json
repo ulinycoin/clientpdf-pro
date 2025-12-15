@@ -322,50 +322,9 @@
         "splitAnother": "Dividi un altro",
         "downloadAll": "Scarica tutti i file",
         "downloadAsZip": "Scarica come ZIP",
+        "previewTitle": "Anteprima pagina",
         "outputFiles": "File di output",
         "selectAll": "Seleziona tutto",
-        "deselectAll": "Deseleziona tutto",
-        "selectedCount": "{count} pagine selezionate",
-        "selectPagesHint": "Seleziona almeno una pagina per continuare",
-        "mergingSelected": "Unione pagine selezionate...",
-        "mergeFailed": "Impossibile unire le pagine selezionate",
-        "mode": {
-            "all": {
-                "name": "Tutte le Pagine",
-                "description": "Dividi in pagine singole"
-            },
-            "range": {
-                "name": "Intervallo Pagine",
-                "description": "Estrai intervallo di pagine specifico"
-            },
-            "intervals": {
-                "name": "Per Intervalli",
-                "description": "Dividi ogni N pagine"
-            },
-            "custom": {
-                "name": "Pagine Personalizzate",
-                "description": "Seleziona pagine specifiche"
-            },
-            "byStructure": {
-                "name": "Per Struttura",
-                "description": "Divisione intelligente per capitoli"
-            }
-        },
-        "structureSettings": "Struttura Documento",
-        "analyzeFirst": "Analizza documento per rilevare capitoli e sezioni",
-        "analyzeButton": "Analizza Struttura",
-        "analyzing": "Analisi...",
-        "chaptersDetected": "{count} capitoli rilevati",
-        "reanalyze": "Rianalizza",
-        "rangeSettings": "Impostazioni Intervallo Pagine",
-        "startPage": "Pagina iniziale",
-        "endPage": "Pagina finale",
-        "rangeHint": "Pagine totali: {total}",
-        "intervalSettings": "Impostazioni Intervallo",
-        "pagesPerFile": "Pagine per file",
-        "intervalHint": "Creerà {files} file da {total} pagine",
-        "customSettings": "Selezione Pagine Personalizzata",
-        "pageNumbers": "Numeri di pagina",
         "customHint": "Inserisci numeri di pagina separati da virgole o usa intervalli (es. 1,3,5-7,10)",
         "success": {
             "title": "PDF diviso con successo!",

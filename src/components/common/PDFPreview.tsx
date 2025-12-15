@@ -13,6 +13,7 @@ interface PDFPreviewProps {
   pageNumber?: number; // Which page to show (default: 1)
   onLoad?: () => void;
   onError?: (error: Error) => void;
+  className?: string;
 }
 
 export const PDFPreview: React.FC<PDFPreviewProps> = ({
@@ -23,6 +24,7 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({
   pageNumber = 1,
   onLoad,
   onError,
+  className = '',
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -105,7 +107,7 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({
 
   return (
     <div
-      className="pdf-preview relative flex items-center justify-center bg-white rounded-lg overflow-hidden shadow-sm"
+      className={`pdf-preview relative flex items-center justify-center bg-white rounded-lg overflow-hidden shadow-sm ${className}`}
       style={{ width, height }}
     >
       {isLoading && (

@@ -1,12 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { FileUpload } from '@/components/common/FileUpload';
+import { ToolLayout } from '@/components/common/ToolLayout';
 import { ProgressBar } from '@/components/common/ProgressBar';
 import { PDFPreview } from '@/components/common/PDFPreview';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { useI18n } from '@/hooks/useI18n';
 import { useSharedFile } from '@/hooks/useSharedFile';
@@ -54,6 +61,9 @@ export const SplitPDF: React.FC = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [selectedChapters, setSelectedChapters] = useState<Set<number>>(new Set());
 
+  // Preview Zoom state
+  const [previewResult, setPreviewResult] = useState<SplitResult | null>(null);
+
   // Selection for continuing to other tools
   const [selectedResults, setSelectedResults] = useState<Set<number>>(new Set());
 
@@ -98,9 +108,14 @@ export const SplitPDF: React.FC = () => {
       name: selectedFile.name,
       size: selectedFile.size,
       status: 'pending',
+      // Reset state for new file
     };
 
     setFile(uploadedFile);
+    setResults([]);
+    setDetectedChapters([]);
+    setSelectedChapters(new Set());
+    setSelectedResults(new Set());
 
     try {
       const info = await pdfService.getPDFInfo(selectedFile);
@@ -326,7 +341,7 @@ export const SplitPDF: React.FC = () => {
             file.file,
             'custom',
             { pages: chapterPages },
-            () => {} // No progress callback for individual chapters
+            () => { } // No progress callback for individual chapters
           );
 
           if (result.success && result.data && result.data[0]) {
@@ -507,7 +522,7 @@ export const SplitPDF: React.FC = () => {
     } catch (error) {
       console.error('Failed to merge pages:', error);
       toast.error(t('split.mergeFailed'));
-    } finally{
+    } finally {
       setIsProcessing(false);
       setProgress(0);
       setProgressMessage('');
@@ -516,240 +531,49 @@ export const SplitPDF: React.FC = () => {
 
   const maxPages = file?.info?.pages || 1;
 
+  // Pagination settings
+  const ITEMS_PER_PAGE = 12;
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = Math.ceil(results.length / ITEMS_PER_PAGE);
+
+  const currentResults = results.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+
+  // Reset pagination when results change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [results.length]);
+
   return (
-    <div className="split-pdf space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          {t('tools.split-pdf.name')}
-        </h1>
-        <p className="text-gray-600 dark:text-gray-400">
-          {t('tools.split-pdf.description')}
-        </p>
-      </div>
-
-      {/* Upload section */}
-      {!file && results.length === 0 && (
-        <Card>
-          <CardContent className="p-6">
-            <FileUpload
-              accept=".pdf"
-              multiple={false}
-              onFilesSelected={handleFileSelected}
-              maxSizeMB={100}
-              disabled={isProcessing}
-            />
-          </CardContent>
-        </Card>
-      )}
-
-      {/* File preview and split options */}
-      {file && results.length === 0 && (
-        <div className="space-y-6">
-          {/* Auto-loaded indicator */}
-          {loadedFromShared && (
-            <div className="bg-ocean-50 dark:bg-ocean-900/20 border border-ocean-200 dark:border-ocean-800 rounded-lg p-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl">✨</span>
-                  <div>
-                    <p className="font-medium text-ocean-700 dark:text-ocean-300">
-                      {t('split.autoLoaded.title')}
-                    </p>
-                    <p className="text-sm text-ocean-600 dark:text-ocean-400">
-                      {t('split.autoLoaded.description')}
-                    </p>
-                  </div>
-                </div>
-                <Button
-                  onClick={() => {
-                    clearSharedFile();
-                    setFile(null);
-                    setLoadedFromShared(false);
-                  }}
-                  variant="ghost"
-                  className="text-ocean-600 dark:text-ocean-400 hover:text-ocean-800 dark:hover:text-ocean-200 font-semibold text-sm h-auto p-2"
-                >
-                  ✕ {t('common.close')}
-                </Button>
-              </div>
-            </div>
-          )}
-
-          {/* File preview */}
-          <Card>
-            <CardContent className="p-6">
-              <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
-                {t('split.filePreview')}
-              </h2>
-              <div className="flex items-start gap-6">
-                <div className="flex-shrink-0">
-                  <PDFPreview file={file.file} width={160} height={220} />
-                </div>
-                <div className="flex-1">
-                  <h3 className="font-semibold text-lg text-gray-900 dark:text-white mb-2">
-                    {file.name}
-                  </h3>
-                  <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                    <p>
-                      <span className="font-medium">{t('split.totalPages')}:</span>{' '}
-                      {file.info?.pages || 0}
-                    </p>
-                    <p>
-                      <span className="font-medium">{t('split.fileSize')}:</span>{' '}
-                      {pdfService.formatFileSize(file.size)}
-                    </p>
-                  </div>
-                  <Button
-                    onClick={handleRemoveFile}
-                    disabled={isProcessing}
-                    variant="ghost"
-                    className="mt-4 text-error-500 hover:text-error-600 h-auto p-0"
-                  >
-                    {t('split.changeFile')}
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Split mode selector */}
-          <Card>
-            <CardContent className="p-6">
-            <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
-              {t('split.selectMode')}
-            </h2>
-
-            <Tabs value={splitMode} onValueChange={(value) => setSplitMode(value as SplitMode)} className="w-full">
-              <TabsList className="grid w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 h-auto bg-transparent mb-6">
-                {/* All pages mode */}
-                <TabsTrigger
-                  value="all"
-                  disabled={isProcessing}
-                  className="p-6 rounded-xl border-2 transition-all text-left data-[state=active]:border-ocean-500 data-[state=active]:bg-ocean-50 dark:data-[state=active]:bg-ocean-900/20 border-gray-200 dark:border-privacy-700 hover:border-ocean-300 dark:hover:border-ocean-700 disabled:opacity-50 disabled:cursor-not-allowed h-auto"
-                >
-                  <div className="flex items-start gap-3">
-                    <span className="text-4xl">📄</span>
-                    <div className="flex-1">
-                      <h3 className={`font-semibold mb-1 ${
-                        splitMode === 'all'
-                          ? 'text-ocean-600 dark:text-ocean-400'
-                          : 'text-gray-900 dark:text-white'
-                      }`}>
-                        {t('split.mode.all.name')}
-                      </h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
-                        {t('split.mode.all.description')}
-                      </p>
-                    </div>
-                  </div>
-                </TabsTrigger>
-
-                {/* Range mode */}
-                <TabsTrigger
-                  value="range"
-                  disabled={isProcessing}
-                  className="p-6 rounded-xl border-2 transition-all text-left data-[state=active]:border-ocean-500 data-[state=active]:bg-ocean-50 dark:data-[state=active]:bg-ocean-900/20 border-gray-200 dark:border-privacy-700 hover:border-ocean-300 dark:hover:border-ocean-700 disabled:opacity-50 disabled:cursor-not-allowed h-auto"
-                >
-                  <div className="flex items-start gap-3">
-                    <span className="text-4xl">📑</span>
-                    <div className="flex-1">
-                      <h3 className={`font-semibold mb-1 ${
-                        splitMode === 'range'
-                          ? 'text-ocean-600 dark:text-ocean-400'
-                          : 'text-gray-900 dark:text-white'
-                      }`}>
-                        {t('split.mode.range.name')}
-                      </h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
-                        {t('split.mode.range.description')}
-                      </p>
-                    </div>
-                  </div>
-                </TabsTrigger>
-
-                {/* Intervals mode */}
-                <TabsTrigger
-                  value="intervals"
-                  disabled={isProcessing}
-                  className="p-6 rounded-xl border-2 transition-all text-left data-[state=active]:border-ocean-500 data-[state=active]:bg-ocean-50 dark:data-[state=active]:bg-ocean-900/20 border-gray-200 dark:border-privacy-700 hover:border-ocean-300 dark:hover:border-ocean-700 disabled:opacity-50 disabled:cursor-not-allowed h-auto"
-                >
-                  <div className="flex items-start gap-3">
-                    <span className="text-4xl">📚</span>
-                    <div className="flex-1">
-                      <h3 className={`font-semibold mb-1 ${
-                        splitMode === 'intervals'
-                          ? 'text-ocean-600 dark:text-ocean-400'
-                          : 'text-gray-900 dark:text-white'
-                      }`}>
-                        {t('split.mode.intervals.name')}
-                      </h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
-                        {t('split.mode.intervals.description')}
-                      </p>
-                    </div>
-                  </div>
-                </TabsTrigger>
-
-                {/* Custom pages mode */}
-                <TabsTrigger
-                  value="custom"
-                  disabled={isProcessing}
-                  className="p-6 rounded-xl border-2 transition-all text-left data-[state=active]:border-ocean-500 data-[state=active]:bg-ocean-50 dark:data-[state=active]:bg-ocean-900/20 border-gray-200 dark:border-privacy-700 hover:border-ocean-300 dark:hover:border-ocean-700 disabled:opacity-50 disabled:cursor-not-allowed h-auto"
-                >
-                  <div className="flex items-start gap-3">
-                    <span className="text-4xl">🎯</span>
-                    <div className="flex-1">
-                      <h3 className={`font-semibold mb-1 ${
-                        splitMode === 'custom'
-                          ? 'text-ocean-600 dark:text-ocean-400'
-                          : 'text-gray-900 dark:text-white'
-                      }`}>
-                        {t('split.mode.custom.name')}
-                      </h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
-                        {t('split.mode.custom.description')}
-                      </p>
-                    </div>
-                  </div>
-                </TabsTrigger>
-
-                {/* By-structure mode */}
-                <TabsTrigger
-                  value="by-structure"
-                  disabled={isProcessing}
-                  className="p-6 rounded-xl border-2 transition-all text-left data-[state=active]:border-ocean-500 data-[state=active]:bg-ocean-50 dark:data-[state=active]:bg-ocean-900/20 border-gray-200 dark:border-privacy-700 hover:border-ocean-300 dark:hover:border-ocean-700 disabled:opacity-50 disabled:cursor-not-allowed h-auto"
-                >
-                  <div className="flex items-start gap-3">
-                    <span className="text-4xl">✨</span>
-                    <div className="flex-1">
-                      <h3 className={`font-semibold mb-1 ${
-                        splitMode === 'by-structure'
-                          ? 'text-ocean-600 dark:text-ocean-400'
-                          : 'text-gray-900 dark:text-white'
-                      }`}>
-                        {t('split.mode.byStructure.name')}
-                      </h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
-                        {t('split.mode.byStructure.description')}
-                      </p>
-                    </div>
-                  </div>
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
-
-            {/* Mode-specific settings */}
+    <ToolLayout
+      title={t('tools.split-pdf.name')}
+      description={t('tools.split-pdf.description')}
+      hasFiles={!!file}
+      isProcessing={isProcessing}
+      onUpload={(files) => handleFileSelected(files)}
+      uploadContent={
+        <FileUpload
+          accept=".pdf"
+          multiple={false}
+          onFilesSelected={handleFileSelected}
+          maxSizeMB={100}
+          disabled={isProcessing}
+        />
+      }
+      settings={
+        file && results.length === 0 ? (
+          <div className="space-y-6 animate-slide-up">
+            {/* Range Mode Settings */}
             {splitMode === 'range' && (
-              <div className="bg-gray-50 dark:bg-privacy-800 rounded-lg p-4 mb-6">
-                <h3 className="font-medium text-gray-900 dark:text-white mb-3">
-                  {t('split.rangeSettings')}
+              <div className="space-y-4">
+                <h3 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                  <span className="text-xl">📑</span> {t('split.rangeSettings')}
                 </h3>
-                <div className="flex items-center gap-4">
-                  <div className="flex-1">
-                    <Label className="block text-sm text-gray-600 dark:text-gray-400 mb-1">
-                      {t('split.startPage')}
-                    </Label>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>{t('split.startPage')}</Label>
                     <Input
                       type="number"
                       min={1}
@@ -757,13 +581,10 @@ export const SplitPDF: React.FC = () => {
                       value={rangeStart}
                       onChange={(e) => setRangeStart(Math.max(1, Math.min(maxPages, parseInt(e.target.value) || 1)))}
                       disabled={isProcessing}
-                      className="w-full"
                     />
                   </div>
-                  <div className="flex-1">
-                    <Label className="block text-sm text-gray-600 dark:text-gray-400 mb-1">
-                      {t('split.endPage')}
-                    </Label>
+                  <div className="space-y-2">
+                    <Label>{t('split.endPage')}</Label>
                     <Input
                       type="number"
                       min={1}
@@ -771,25 +592,23 @@ export const SplitPDF: React.FC = () => {
                       value={rangeEnd}
                       onChange={(e) => setRangeEnd(Math.max(1, Math.min(maxPages, parseInt(e.target.value) || 1)))}
                       disabled={isProcessing}
-                      className="w-full"
                     />
                   </div>
                 </div>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                <p className="text-xs text-gray-500 dark:text-gray-400">
                   {t('split.rangeHint', { total: String(maxPages) })}
                 </p>
               </div>
             )}
 
+            {/* Intervals Mode Settings */}
             {splitMode === 'intervals' && (
-              <div className="bg-gray-50 dark:bg-privacy-800 rounded-lg p-4 mb-6">
-                <h3 className="font-medium text-gray-900 dark:text-white mb-3">
-                  {t('split.intervalSettings')}
+              <div className="space-y-4">
+                <h3 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                  <span className="text-xl">📚</span> {t('split.intervalSettings')}
                 </h3>
-                <div className="max-w-xs">
-                  <Label className="block text-sm text-gray-600 dark:text-gray-400 mb-1">
-                    {t('split.pagesPerFile')}
-                  </Label>
+                <div className="space-y-2">
+                  <Label>{t('split.pagesPerFile')}</Label>
                   <Input
                     type="number"
                     min={1}
@@ -797,383 +616,449 @@ export const SplitPDF: React.FC = () => {
                     value={intervalSize}
                     onChange={(e) => setIntervalSize(Math.max(1, Math.min(maxPages, parseInt(e.target.value) || 1)))}
                     disabled={isProcessing}
-                    className="w-full"
                   />
                 </div>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                <p className="text-xs text-gray-500 dark:text-gray-400">
                   {t('split.intervalHint', {
-                    total: String(maxPages),
-                    files: String(Math.ceil(maxPages / intervalSize))
+                    files: Math.ceil(maxPages / intervalSize),
+                    total: maxPages
                   })}
                 </p>
               </div>
             )}
 
+            {/* Custom Mode Settings */}
             {splitMode === 'custom' && (
-              <div className="bg-gray-50 dark:bg-privacy-800 rounded-lg p-4 mb-6">
-                <h3 className="font-medium text-gray-900 dark:text-white mb-3">
-                  {t('split.customSettings')}
+              <div className="space-y-4">
+                <h3 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                  <span className="text-xl">🎯</span> {t('split.customSettings')}
                 </h3>
-                <div>
-                  <Label className="block text-sm text-gray-600 dark:text-gray-400 mb-1">
-                    {t('split.pageNumbers')}
-                  </Label>
+                <div className="space-y-2">
+                  <Label>{t('split.pageNumbers')}</Label>
                   <Input
                     type="text"
+                    placeholder="e.g., 1,3,5-7,10"
                     value={customPagesInput}
                     onChange={(e) => setCustomPagesInput(e.target.value)}
-                    placeholder="1,3,5-7,10"
                     disabled={isProcessing}
-                    className="w-full"
                   />
                 </div>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                <p className="text-xs text-gray-500 dark:text-gray-400">
                   {t('split.customHint')}
                 </p>
               </div>
             )}
 
+            {/* By Structure Mode Settings */}
             {splitMode === 'by-structure' && (
-              <div className="bg-gray-50 dark:bg-privacy-800 rounded-lg p-4 mb-6">
-                <h3 className="font-medium text-gray-900 dark:text-white mb-3">
-                  {t('split.structureSettings')}
+              <div className="space-y-4">
+                <h3 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                  <span className="text-xl">✨</span> {t('split.structureSettings')}
                 </h3>
 
                 {detectedChapters.length === 0 ? (
-                  <div className="text-center py-6">
-                    <p className="text-gray-600 dark:text-gray-400 mb-4">
+                  <div className="text-center p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-dashed border-gray-300 dark:border-gray-700">
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
                       {t('split.analyzeFirst')}
                     </p>
                     <Button
                       onClick={handleAnalyzeStructure}
-                      disabled={isAnalyzing || isProcessing}
+                      disabled={isAnalyzing}
                       variant="outline"
-                      size="lg"
+                      className="w-full"
                     >
                       {isAnalyzing ? t('split.analyzing') : t('split.analyzeButton')}
                     </Button>
                   </div>
                 ) : (
-                  <div>
-                    <div className="flex items-center justify-between mb-3">
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
-                        {t('split.chaptersDetected', { count: String(detectedChapters.length) })}
-                      </p>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium">
+                        {t('split.chaptersDetected', { count: detectedChapters.length })}
+                      </span>
                       <Button
-                        onClick={() => {
-                          if (selectedChapters.size === detectedChapters.length) {
-                            setSelectedChapters(new Set());
-                          } else {
-                            setSelectedChapters(new Set(detectedChapters.map((_, idx) => idx)));
-                          }
-                        }}
                         variant="ghost"
-                        className="text-sm h-auto p-2"
+                        size="sm"
+                        onClick={handleAnalyzeStructure}
+                        className="h-auto p-0 text-ocean-600"
                       >
-                        {selectedChapters.size === detectedChapters.length
-                          ? t('split.deselectAll')
-                          : t('split.selectAll')}
+                        {t('split.reanalyze')}
                       </Button>
                     </div>
-
-                    <div className="space-y-2 max-h-64 overflow-y-auto">
-                      {detectedChapters.map((chapter, idx) => (
+                    <div className="max-h-[300px] overflow-y-auto space-y-2 pr-2">
+                      {detectedChapters.map((chapter, index) => (
                         <div
-                          key={idx}
+                          key={index}
+                          className={`p-3 rounded-lg border cursor-pointer transition-colors ${selectedChapters.has(index)
+                            ? 'bg-ocean-50 border-ocean-200 dark:bg-ocean-900/20 dark:border-ocean-800'
+                            : 'bg-white border-gray-200 dark:bg-gray-800 dark:border-gray-700 hover:border-gray-300'
+                            }`}
                           onClick={() => {
-                            const newSelection = new Set(selectedChapters);
-                            if (newSelection.has(idx)) {
-                              newSelection.delete(idx);
+                            const newSelected = new Set(selectedChapters);
+                            if (newSelected.has(index)) {
+                              newSelected.delete(index);
                             } else {
-                              newSelection.add(idx);
+                              newSelected.add(index);
                             }
-                            setSelectedChapters(newSelection);
+                            setSelectedChapters(newSelected);
                           }}
-                          className={`flex items-center gap-3 p-3 rounded-lg border-2 cursor-pointer transition-all ${
-                            selectedChapters.has(idx)
-                              ? 'border-ocean-500 bg-ocean-50 dark:bg-ocean-900/20'
-                              : 'border-gray-200 dark:border-privacy-700 hover:border-ocean-300 dark:hover:border-ocean-700'
-                          }`}
                         >
-                          <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all ${
-                            selectedChapters.has(idx)
+                          <div className="flex items-start gap-2">
+                            <div className={`mt-1 w-4 h-4 rounded border flex items-center justify-center ${selectedChapters.has(index)
                               ? 'bg-ocean-500 border-ocean-500'
-                              : 'border-gray-300 dark:border-privacy-600'
-                          }`}>
-                            {selectedChapters.has(idx) && (
-                              <span className="text-white text-xs">✓</span>
-                            )}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="font-medium text-gray-900 dark:text-white truncate">
-                              {chapter.title}
-                            </p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">
-                              {t('split.pageRange', {
-                                start: String(chapter.startPage),
-                                end: String(chapter.endPage || maxPages)
-                              })}
-                              {' • '}
-                              {t('split.pageCount', {
-                                count: String((chapter.endPage || maxPages) - chapter.startPage + 1)
-                              })}
-                            </p>
+                              : 'border-gray-400'
+                              }`}>
+                              {selectedChapters.has(index) && (
+                                <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                </svg>
+                              )}
+                            </div>
+                            <div>
+                              <p className="font-medium text-sm text-gray-900 dark:text-white">
+                                {chapter.title}
+                              </p>
+                              <p className="text-xs text-gray-500">
+                                {t('split.pageRange', { start: chapter.startPage, end: chapter.endPage || maxPages })}
+                              </p>
+                            </div>
                           </div>
                         </div>
                       ))}
                     </div>
-
-                    <Button
-                      onClick={handleAnalyzeStructure}
-                      disabled={isAnalyzing || isProcessing}
-                      variant="ghost"
-                      className="w-full mt-3 text-sm"
-                    >
-                      {t('split.reanalyze')}
-                    </Button>
                   </div>
                 )}
               </div>
             )}
+          </div>
+        ) : null
+      }
+      actions={
+        file ? (
+          <div className="space-y-3">
+            {results.length === 0 ? (
+              <Button
+                onClick={handleSplit}
+                disabled={isProcessing || (splitMode === 'by-structure' && selectedChapters.size === 0)}
+                className="w-full text-lg py-6 shadow-lg shadow-ocean-500/20 bg-ocean-500 hover:bg-ocean-600 text-white"
+                size="lg"
+              >
+                {isProcessing ? t('common.processing') : t('split.splitButton')}
+              </Button>
+            ) : (
+              <>
+                <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg mb-4">
+                  <div className="flex items-center gap-2 text-green-700 dark:text-green-400 font-medium mb-1">
+                    <span className="text-xl">✓</span>
+                    {t('split.success.title')}
+                  </div>
+                  <p className="text-sm text-green-600 dark:text-green-500">
+                    {t('split.success.filesCreated', { count: results.length })}
+                  </p>
+                </div>
 
-            {/* Split button */}
-            <Button
-              onClick={handleSplit}
-              disabled={isProcessing || !file || (splitMode === 'by-structure' && detectedChapters.length === 0)}
-              className="w-full text-lg py-3"
-              size="lg"
-            >
-              {isProcessing ? t('common.processing') : t('split.splitButton')}
-            </Button>
-            </CardContent>
-          </Card>
-        </div>
-      )}
+                <Button
+                  onClick={handleDownloadAll}
+                  className="w-full"
+                  variant="default"
+                >
+                  {t('split.downloadAll')}
+                </Button>
 
-      {/* Progress */}
-      {(isProcessing || isCreatingArchive) && (
-        <Card>
-          <CardContent className="p-6">
-            <ProgressBar progress={progress} message={progressMessage} />
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Results */}
-      {results.length > 0 && (
-        <div className="space-y-6">
-          {/* Success card */}
-          <Card>
-            <CardContent className="p-8">
-              <div className="text-center space-y-4">
-                <div className="text-6xl">✅</div>
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {t('split.success.title')}
-                </h2>
-                <p className="text-gray-600 dark:text-gray-400">
-                  {t('split.success.filesCreated', { count: String(results.length) })}
-                </p>
-
-                {/* Download buttons */}
-                <div className="flex flex-col sm:flex-row gap-3 justify-center mt-6 pt-4">
+                {results.length > 1 && (
                   <Button
                     onClick={handleDownloadAsZip}
                     disabled={isCreatingArchive}
-                    size="lg"
-                    className="px-8 !bg-green-600 hover:!bg-green-700 !text-white"
-                  >
-                    {isCreatingArchive ? 'Creating...' : t('split.downloadAsZip')}
-                  </Button>
-                  <Button
-                    onClick={handleDownloadAll}
-                    disabled={isCreatingArchive}
-                    size="lg"
-                    className="px-8 !bg-green-600 hover:!bg-green-700 !text-white"
-                  >
-                    {t('split.downloadAll')}
-                  </Button>
-                  <Button
-                    onClick={handleReset}
-                    disabled={isCreatingArchive}
+                    className="w-full"
                     variant="outline"
-                    size="lg"
                   >
-                    {t('split.splitAnother')}
+                    {isCreatingArchive ? t('common.processing') : t('split.downloadAsZip')}
                   </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+                )}
 
-          {/* Individual files */}
-          <Card>
-            <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                {t('split.outputFiles')}
-              </h3>
-              <Button
-                onClick={toggleSelectAll}
-                variant="ghost"
-                className="text-sm text-ocean-600 dark:text-ocean-400 hover:text-ocean-700 dark:hover:text-ocean-300 font-medium h-auto p-2"
-              >
-                {selectedResults.size === results.length
-                  ? t('split.deselectAll')
-                  : t('split.selectAll')}
+                <Button
+                  onClick={handleReset}
+                  className="w-full"
+                  variant="ghost"
+                >
+                  {t('split.splitAnother')}
+                </Button>
+              </>
+            )}
+          </div>
+        ) : null
+      }
+    >
+      {/* Auto-Loaded Banner */}
+      {loadedFromShared && file && (
+        <div className="mb-6 bg-ocean-50 dark:bg-ocean-900/20 border border-ocean-200 dark:border-ocean-800 rounded-lg p-4 flex items-center justify-between animate-fade-in">
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">✨</span>
+            <div>
+              <p className="font-medium text-ocean-700 dark:text-ocean-300">
+                {t('split.autoLoaded.title')}
+              </p>
+              <p className="text-sm text-ocean-600 dark:text-ocean-400">
+                {t('split.autoLoaded.description')}
+              </p>
+            </div>
+          </div>
+          <Button
+            onClick={() => {
+              clearSharedFile();
+              setFile(null);
+              setLoadedFromShared(false);
+            }}
+            variant="ghost"
+            size="sm"
+          >
+            ✕
+          </Button>
+        </div>
+      )}
+
+      {/* Main Content Area */}
+      {file && results.length === 0 ? (
+        <div className="space-y-8 animate-slide-up">
+          {/* File Preview */}
+          <div className="flex justify-center">
+            <div className="relative group">
+              <div className="absolute -inset-1 bg-gradient-to-r from-ocean-400 to-purple-400 rounded-xl blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
+              <Card className="relative p-6 min-w-[300px] flex flex-col items-center">
+                <PDFPreview file={file.file} width={240} height={320} className="shadow-lg mb-6" />
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white text-center max-w-[280px] truncate">
+                  {file.name}
+                </h3>
+                <p className="text-gray-500 dark:text-gray-400 mt-1">
+                  {t('split.totalPages')}: {file.info?.pages || 0} • {pdfService.formatFileSize(file.size)}
+                </p>
+
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleRemoveFile}
+                  className="mt-4 text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
+                >
+                  {t('split.changeFile')}
+                </Button>
+              </Card>
+            </div>
+          </div>
+
+          {/* Mode Selector Tabs */}
+          <div>
+            <Label className="text-lg font-semibold mb-4 block text-center">
+              {t('split.selectMode')}
+            </Label>
+            <Tabs value={splitMode} onValueChange={(v) => setSplitMode(v as SplitMode)} className="w-full">
+              <TabsList className="flex flex-wrap justify-center gap-2 h-auto bg-transparent p-0">
+                {[
+                  { id: 'all', icon: '📄', label: t('split.mode.all.name') },
+                  { id: 'range', icon: '📑', label: t('split.mode.range.name') },
+                  { id: 'intervals', icon: '📚', label: t('split.mode.intervals.name') },
+                  { id: 'custom', icon: '🎯', label: t('split.mode.custom.name') },
+                  { id: 'by-structure', icon: '✨', label: t('split.mode.byStructure.name') },
+                ].map((mode) => (
+                  <TabsTrigger
+                    key={mode.id}
+                    value={mode.id}
+                    disabled={isProcessing}
+                    className={`
+                               flex items-center gap-2 px-6 py-3 rounded-full border transition-all
+                               data-[state=active]:bg-ocean-600 data-[state=active]:text-white data-[state=active]:border-ocean-600 data-[state=active]:shadow-lg
+                               bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300
+                               hover:border-ocean-300 dark:hover:border-ocean-700
+                            `}
+                  >
+                    <span className="text-xl">{mode.icon}</span>
+                    <span className="font-medium">{mode.label}</span>
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+
+              {/* Description of current mode */}
+              <div className="text-center mt-4 text-gray-500 dark:text-gray-400 min-h-[24px]">
+                {splitMode === 'all' && t('split.mode.all.description')}
+                {splitMode === 'range' && t('split.mode.range.description')}
+                {splitMode === 'intervals' && t('split.mode.intervals.description')}
+                {splitMode === 'custom' && t('split.mode.custom.description')}
+                {splitMode === 'by-structure' && t('split.mode.byStructure.description')}
+              </div>
+            </Tabs>
+          </div>
+        </div>
+      ) : results.length > 0 ? (
+        /* Results View */
+        <div className="space-y-6 animate-slide-up">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+              {t('split.outputFiles')} ({results.length})
+            </h3>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" onClick={toggleSelectAll}>
+                {selectedResults.size === results.length ? t('split.deselectAll') : t('split.selectAll')}
               </Button>
             </div>
-            {selectedResults.size > 0 && (
-              <div className="mb-4 px-4 py-2 bg-ocean-50 dark:bg-ocean-900/20 border border-ocean-200 dark:border-ocean-800 rounded-lg">
-                <p className="text-sm text-ocean-700 dark:text-ocean-300">
-                  {t('split.selectedCount', { count: String(selectedResults.size) })}
-                </p>
-              </div>
-            )}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {results.map((result) => (
-                <div
-                  key={result.index}
-                  onClick={() => toggleResultSelection(result.index)}
-                  className={`border-2 rounded-lg p-4 transition-all cursor-pointer ${
-                    selectedResults.has(result.index)
-                      ? 'border-ocean-500 bg-ocean-50 dark:bg-ocean-900/20'
-                      : 'border-gray-200 dark:border-privacy-700 hover:border-ocean-300 dark:hover:border-ocean-700'
-                  }`}
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${
-                        selectedResults.has(result.index)
-                          ? 'bg-ocean-500 border-ocean-500'
-                          : 'border-gray-300 dark:border-privacy-600'
-                      }`}>
-                        {selectedResults.has(result.index) && (
-                          <span className="text-white text-xs">✓</span>
-                        )}
-                      </div>
-                      <span className="text-2xl">📄</span>
-                    </div>
-                    <span className="text-xs text-gray-500 dark:text-gray-400">
-                      {pdfService.formatFileSize(result.blob.size)}
-                    </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {currentResults.map((result, index) => (
+              <Card
+                key={result.index}
+                className={`
+                         group relative p-4 transition-all hover:shadow-md cursor-pointer border-2
+                         ${selectedResults.has(result.index) ? 'border-ocean-500 bg-ocean-50/50 dark:bg-ocean-900/10' : 'border-transparent hover:border-gray-200 dark:hover:border-gray-700'}
+                      `}
+                onClick={() => toggleResultSelection(result.index)}
+              >
+                <div className="absolute top-3 left-3 z-10">
+                  <div className={`
+                            w-5 h-5 rounded border flex items-center justify-center transition-colors
+                            ${selectedResults.has(result.index) ? 'bg-ocean-500 border-ocean-500' : 'bg-white/80 border-gray-400'}
+                         `}>
+                    {selectedResults.has(result.index) && (
+                      <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                      </svg>
+                    )}
                   </div>
-                  <h4 className="font-medium text-gray-900 dark:text-white mb-1">
-                    {result.pageNumbers.length === 1
-                      ? t('split.pageNumber', { page: String(result.pageNumbers[0]) })
-                      : t('split.pageRange', {
-                          start: String(result.pageNumbers[0]),
-                          end: String(result.pageNumbers[result.pageNumbers.length - 1])
-                        })
-                    }
-                  </h4>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-                    {result.pageNumbers.length === 1
-                      ? t('split.pageCountSingle')
-                      : t('split.pageCount', { count: String(result.pageNumbers.length) })
+                </div>
+                <div className="absolute top-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                  <Button
+                    size="icon"
+                    variant="secondary"
+                    className="h-8 w-8 rounded-full shadow-sm bg-white/90 hover:bg-white"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setPreviewResult(result);
+                    }}
+                  >
+                    <span className="text-lg">🔍</span>
+                  </Button>
+                </div>
+
+                <div className="flex flex-col items-center">
+                  <div className="mb-3 p-2 bg-gray-100 dark:bg-gray-800 rounded">
+                    <PDFPreview blob={result.blob} width={120} height={160} />
+                  </div>
+                  <p className="font-medium text-center text-sm truncate w-full mb-1">
+                    {result.chapterTitle ||
+                      (result.pageNumbers.length === 1
+                        ? `${t('split.pageNumber', { page: result.pageNumbers[0] })}`
+                        : `${t('split.pageRange', { start: result.pageNumbers[0], end: result.pageNumbers[result.pageNumbers.length - 1] })}`
+                      )
                     }
                   </p>
+                  <p className="text-xs text-gray-500 mb-3">
+                    {result.pageNumbers.length} {result.pageNumbers.length === 1 ? t('split.pageCountSingle') : t('split.pages')}
+                  </p>
                   <Button
+                    size="sm"
+                    variant="secondary"
+                    className="w-full"
                     onClick={(e) => {
                       e.stopPropagation();
                       handleDownload(result);
                     }}
-                    className="w-full text-sm"
-                    size="sm"
                   >
                     {t('common.download')}
                   </Button>
                 </div>
-              ))}
-            </div>
-            </CardContent>
-          </Card>
+              </Card>
+            ))}
+          </div>
 
-          {/* Quick Actions */}
-          <Card>
-            <CardContent className="p-6">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-              {t('split.quickActions.title')}
-            </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-              {selectedResults.size > 0
-                ? t('split.quickActions.descriptionWithSelection', { count: String(selectedResults.size) })
-                : t('split.quickActions.description')}
-            </p>
-
-            {/* Action buttons grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-              {/* Compress */}
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="flex justify-center items-center gap-4 mt-6">
               <Button
-                onClick={() => handleQuickAction('compress-pdf')}
                 variant="outline"
-                className="flex items-center gap-3 p-4 h-auto rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
+                size="sm"
+                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
               >
-                <span className="text-3xl">🗜️</span>
-                <div className="text-left">
-                  <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
-                    {t('tools.compress-pdf.name')}
-                  </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    {t('split.quickActions.compress')}
-                  </p>
-                </div>
+                ← {t('common.previous')}
               </Button>
-
-              {/* Merge */}
+              <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">
+                {currentPage} / {totalPages}
+              </span>
               <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                disabled={currentPage === totalPages}
+              >
+                {t('common.next')} →
+              </Button>
+            </div>
+          )}
+
+          {/* Quick Actions for Selected Files */}
+          {selectedResults.size > 0 && (
+            <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-white dark:bg-gray-800 rounded-full shadow-xl border border-gray-200 dark:border-gray-700 p-2 flex items-center gap-2 animate-slide-up z-50">
+              <div className="px-3 font-medium text-sm">
+                {t('split.selectedCount', { count: selectedResults.size })}
+              </div>
+              <div className="h-6 w-px bg-gray-200 dark:bg-gray-700 mx-1"></div>
+
+              <Button
+                size="sm"
+                variant="ghost"
                 onClick={() => handleQuickAction('merge-pdf')}
-                variant="outline"
-                className="flex items-center gap-3 p-4 h-auto rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
+                className="rounded-full"
               >
-                <span className="text-3xl">📎</span>
-                <div className="text-left">
-                  <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
-                    {t('tools.merge-pdf.name')}
-                  </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    {t('split.quickActions.merge')}
-                  </p>
-                </div>
+                🔗 {t('split.quickActions.merge')}
               </Button>
-
-              {/* Protect */}
               <Button
-                onClick={() => handleQuickAction('protect-pdf')}
-                variant="outline"
-                className="flex items-center gap-3 p-4 h-auto rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
+                size="sm"
+                variant="ghost"
+                onClick={() => handleQuickAction('compress-pdf')}
+                className="rounded-full"
               >
-                <span className="text-3xl">🔒</span>
-                <div className="text-left">
-                  <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
-                    {t('tools.protect-pdf.name')}
-                  </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    {t('split.quickActions.protect')}
-                  </p>
-                </div>
-              </Button>
-
-              {/* Watermark */}
-              <Button
-                onClick={() => handleQuickAction('watermark-pdf')}
-                variant="outline"
-                className="flex items-center gap-3 p-4 h-auto rounded-lg border-2 border-gray-200 dark:border-privacy-700 hover:border-ocean-500 dark:hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 transition-all group"
-              >
-                <span className="text-3xl">💧</span>
-                <div className="text-left">
-                  <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
-                    {t('tools.watermark-pdf.name')}
-                  </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    {t('split.quickActions.watermark')}
-                  </p>
-                </div>
+                📉 {t('split.quickActions.compress')}
               </Button>
             </div>
-            </CardContent>
-          </Card>
+          )}
         </div>
-      )}
-    </div>
+      ) : null}
+
+      {/* Zoom Preview Modal */}
+      <Dialog open={!!previewResult} onOpenChange={(open) => !open && setPreviewResult(null)}>
+        <DialogContent className="max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {previewResult?.chapterTitle || t('split.previewTitle')}
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="flex flex-col items-center p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
+            {previewResult && (
+              <PDFPreview
+                blob={previewResult.blob}
+                width={600}
+                height={800}
+                className="shadow-xl"
+              />
+            )}
+
+            <div className="flex gap-4 mt-6 w-full max-w-sm">
+              <Button
+                className="flex-1"
+                onClick={() => previewResult && handleDownload(previewResult)}
+              >
+                {t('common.download')}
+              </Button>
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => setPreviewResult(null)}
+              >
+                {t('common.close')}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </ToolLayout>
   );
 };

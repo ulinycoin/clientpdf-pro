@@ -297,6 +297,23 @@
     }
   },
   "split": {
+    "filePreview": "Fichier à diviser",
+    "totalPages": "Total des pages",
+    "fileSize": "Taille du fichier",
+    "changeFile": "Changer de fichier",
+    "selectMode": "Choisir le mode de division",
+    "splitButton": "Diviser le PDF",
+    "splitAnother": "Diviser un autre",
+    "downloadAll": "Tout télécharger",
+    "downloadAsZip": "Télécharger en ZIP",
+    "previewTitle": "Aperçu de la page",
+    "outputFiles": "Fichiers de sortie",
+    "selectAll": "Tout sélectionner",
+    "deselectAll": "Tout désélectionner",
+    "selectedCount": "{count} pages sélectionnées",
+    "selectPagesHint": "Veuillez sélectionner au moins une page",
+    "mergingSelected": "Fusion des pages sélectionnées...",
+    "mergeFailed": "Échec de la fusion",
     "mode": {
       "all": {
         "name": "Toutes les pages",
@@ -325,10 +342,37 @@
     "analyzing": "Analyse en cours...",
     "chaptersDetected": "{count} chapitres détectés",
     "reanalyze": "Réanalyser",
-    "selectAll": "Tout sélectionner",
-    "deselectAll": "Tout désélectionner",
+    "rangeSettings": "Paramètres de plage",
+    "startPage": "Page de début",
+    "endPage": "Page de fin",
+    "rangeHint": "Total des pages : {total}",
+    "intervalSettings": "Paramètres d'intervalle",
+    "pagesPerFile": "Pages par fichier",
+    "intervalHint": "Crée {files} fichiers à partir de {total} pages",
+    "customSettings": "Sélection personnalisée",
+    "pageNumbers": "Numéros de page",
+    "customHint": "Numéros séparés par des virgules ou plages (ex: 1,3,5-7,10)",
+    "success": {
+      "title": "PDF divisé avec succès !",
+      "filesCreated": "{count} fichiers créés"
+    },
+    "pageNumber": "Page {page}",
     "pageRange": "Pages {start}-{end}",
-    "pageCount": "{count} pages"
+    "pageCount": "{count} pages",
+    "pageCountSingle": "1 page",
+    "autoLoaded": {
+      "title": "Fichier chargé depuis l'outil précédent",
+      "description": "Votre PDF a été chargé automatiquement"
+    },
+    "quickActions": {
+      "title": "Et après ?",
+      "description": "Sélectionnez des pages et continuez :",
+      "descriptionWithSelection": "Continuez avec {count} pages sélectionnées :",
+      "compress": "Compresser",
+      "merge": "Fusionner",
+      "protect": "Protéger",
+      "watermark": "Filigrane"
+    }
   },
   "protect": {
     "filePreview": "Fichier à protéger",

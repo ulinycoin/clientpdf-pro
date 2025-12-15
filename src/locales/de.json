@@ -287,6 +287,23 @@
     }
   },
   "split": {
+    "filePreview": "Zu teilende Datei",
+    "totalPages": "Gesamtseiten",
+    "fileSize": "Dateigröße",
+    "changeFile": "Datei ändern",
+    "selectMode": "Teilungsmodus wählen",
+    "splitButton": "PDF teilen",
+    "splitAnother": "Weitere teilen",
+    "downloadAll": "Alle herunterladen",
+    "downloadAsZip": "Als ZIP herunterladen",
+    "previewTitle": "Vorschauseite",
+    "outputFiles": "Ausgabedateien",
+    "selectAll": "Alle auswählen",
+    "deselectAll": "Auswahl aufheben",
+    "selectedCount": "{count} Seiten ausgewählt",
+    "selectPagesHint": "Bitte wählen Sie mindestens eine Seite",
+    "mergingSelected": "Führe ausgewählte Seiten zusammen...",
+    "mergeFailed": "Zusammenführen fehlgeschlagen",
     "mode": {
       "all": {
         "name": "Alle Seiten",
@@ -315,10 +332,37 @@
     "analyzing": "Analyse läuft...",
     "chaptersDetected": "{count} Kapitel erkannt",
     "reanalyze": "Erneut analysieren",
-    "selectAll": "Alle auswählen",
-    "deselectAll": "Auswahl aufheben",
+    "rangeSettings": "Seitenbereich-Einstellungen",
+    "startPage": "Startseite",
+    "endPage": "Endseite",
+    "rangeHint": "Gesamtseiten: {total}",
+    "intervalSettings": "Intervall-Einstellungen",
+    "pagesPerFile": "Seiten pro Datei",
+    "intervalHint": "Erstellt {files} Dateien aus {total} Seiten",
+    "customSettings": "Benutzerdefinierte Auswahl",
+    "pageNumbers": "Seitennummern",
+    "customHint": "Seitennummern durch Kommas getrennt oder Bereiche (z.B. 1,3,5-7,10)",
+    "success": {
+      "title": "PDF erfolgreich geteilt!",
+      "filesCreated": "{count} Dateien erstellt"
+    },
+    "pageNumber": "Seite {page}",
     "pageRange": "Seiten {start}-{end}",
-    "pageCount": "{count} Seiten"
+    "pageCount": "{count} Seiten",
+    "pageCountSingle": "1 Seite",
+    "autoLoaded": {
+      "title": "Datei vom vorherigen Tool geladen",
+      "description": "Ihre PDF wurde automatisch geladen"
+    },
+    "quickActions": {
+      "title": "Was als Nächstes?",
+      "description": "Wählen Sie Seiten aus und arbeiten Sie weiter:",
+      "descriptionWithSelection": "Arbeiten Sie mit {count} ausgewählten Seiten weiter:",
+      "compress": "Komprimieren",
+      "merge": "Zusammenführen",
+      "protect": "Schützen",
+      "watermark": "Wasserzeichen"
+    }
   },
   "protect": {
     "filePreview": "Datei zu schützen",

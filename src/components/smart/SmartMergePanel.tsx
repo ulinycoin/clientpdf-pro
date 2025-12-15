@@ -78,15 +78,13 @@ export const SmartMergePanel: React.FC<SmartMergePanelProps> = ({
   const ToggleSwitch = () => (
     <button
       onClick={() => setIsEnabled(!isEnabled)}
-      className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
-        isEnabled ? 'bg-ocean-500' : 'bg-gray-300 dark:bg-gray-600'
-      }`}
+      className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${isEnabled ? 'bg-ocean-500' : 'bg-gray-300 dark:bg-gray-600'
+        }`}
       aria-label={isEnabled ? 'Disable Smart Merge' : 'Enable Smart Merge'}
     >
       <span
-        className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${
-          isEnabled ? 'translate-x-5' : 'translate-x-1'
-        }`}
+        className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${isEnabled ? 'translate-x-5' : 'translate-x-1'
+          }`}
       />
     </button>
   );
@@ -180,11 +178,10 @@ export const SmartMergePanel: React.FC<SmartMergePanelProps> = ({
             {warnings.map((warning, idx) => (
               <div
                 key={idx}
-                className={`flex items-start gap-2 p-2 rounded-lg text-sm ${
-                  warning.severity === 'warning'
+                className={`flex items-start gap-2 p-2 rounded-lg text-sm ${warning.severity === 'warning'
                     ? 'bg-amber-100/80 dark:bg-amber-900/30 text-amber-800 dark:text-amber-200'
                     : 'bg-blue-100/80 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200'
-                }`}
+                  }`}
               >
                 <span>{warning.severity === 'warning' ? '⚠️' : 'ℹ️'}</span>
                 <span>{warning.message}</span>
@@ -207,7 +204,7 @@ export const SmartMergePanel: React.FC<SmartMergePanelProps> = ({
             </button>
 
             {expandedSection === 'suggestions' && (
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3">
                 {suggestions.map((suggestion, idx) => (
                   <Button
                     key={idx}

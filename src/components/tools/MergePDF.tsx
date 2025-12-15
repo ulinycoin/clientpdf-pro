@@ -1,5 +1,4 @@
 import React, { useState, useCallback } from 'react';
-import { FileUpload } from '@/components/common/FileUpload';
 import { ProgressBar } from '@/components/common/ProgressBar';
 import { PDFPreview } from '@/components/common/PDFPreview';
 import { Button } from '@/components/ui/button';
@@ -13,6 +12,8 @@ import type { UploadedFile } from '@/types/pdf';
 import type { Tool } from '@/types';
 import { HASH_TOOL_MAP } from '@/types';
 import { toast } from 'sonner';
+import { ToolLayout } from '@/components/common/ToolLayout';
+import { Files, Scissors, Minimize2, Shield, Stamp } from 'lucide-react';
 
 export const MergePDF: React.FC = () => {
   const { t } = useI18n();
@@ -160,20 +161,6 @@ export const MergePDF: React.FC = () => {
     setDraggedIndex(null);
   };
 
-  const handleMoveUp = (index: number) => {
-    if (index === 0) return;
-    const newFiles = [...files];
-    [newFiles[index - 1], newFiles[index]] = [newFiles[index], newFiles[index - 1]];
-    setFiles(newFiles);
-  };
-
-  const handleMoveDown = (index: number) => {
-    if (index === files.length - 1) return;
-    const newFiles = [...files];
-    [newFiles[index], newFiles[index + 1]] = [newFiles[index + 1], newFiles[index]];
-    setFiles(newFiles);
-  };
-
   // Smart Merge: Apply sort order from AI suggestions
   const handleApplySmartSort = (newOrder: string[]) => {
     const fileMap = new Map(files.map(f => [f.id, f]));
@@ -190,326 +177,175 @@ export const MergePDF: React.FC = () => {
     toast.success(t('smartMerge.duplicatesRemoved') || `${fileIds.length} duplicate(s) removed`);
   };
 
-  return (
-    <div className="merge-pdf space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          {t('tools.merge-pdf.name')}
-        </h1>
-        <p className="text-gray-600 dark:text-gray-400">
-          {t('tools.merge-pdf.description')}
-        </p>
-      </div>
-
-      {/* Upload section */}
-      {!result && (
-        <Card>
-          <CardContent className="p-6">
-            <FileUpload
-              accept=".pdf"
-              multiple={true}
-              onFilesSelected={handleFilesSelected}
-              maxSizeMB={100}
-              disabled={isProcessing}
-            />
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Smart Merge Panel */}
-      {files.length >= 2 && !result && !isProcessing && (
-        <SmartMergePanel
-          files={files.map(f => ({ id: f.id, file: f.file, name: f.name }))}
-          onApplySort={handleApplySmartSort}
-          onRemoveDuplicates={handleRemoveDuplicates}
-        />
-      )}
-
-      {/* Files list with previews */}
-      {files.length > 0 && !result && (
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-              {t('merge.fileList')} ({files.length})
-            </h2>
-            <p className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
-              <span>💡</span>
-              <span>{t('merge.reorderHint')}</span>
-            </p>
+  // Success view
+  if (result) {
+    return (
+      <ToolLayout
+        title={t('tools.merge-pdf.name')}
+        description={t('tools.merge-pdf.description')}
+        hasFiles={true}
+        onUpload={handleFilesSelected}
+        actions={
+          <div className="flex flex-col gap-3 w-full">
+            <Button onClick={handleDownload} size="lg" className="w-full bg-green-600 hover:bg-green-700 text-white shadow-lg shadow-green-500/20">
+              {t('common.download')}
+            </Button>
+            <Button onClick={handleReset} variant="outline" className="w-full">
+              {t('merge.mergeAnother')}
+            </Button>
           </div>
-
-          {/* Grid layout for previews */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {files.map((file, index) => (
-              <div
-                key={file.id}
-                draggable={!isProcessing}
-                onDragStart={() => handleDragStart(index)}
-                onDragOver={(e) => handleDragOver(e, index)}
-                onDragEnd={handleDragEnd}
-                className={`relative group ${!isProcessing ? 'cursor-move' : ''} ${
-                  draggedIndex === index ? 'opacity-50' : ''
-                }`}
-              >
-                {/* Preview card */}
-                <Card className="p-3 hover:shadow-medium transition-all duration-200 relative">
-                  {/* PDF Preview */}
-                  <div className="mb-3">
-                    <PDFPreview
-                      file={file.file}
-                      width={140}
-                      height={180}
-                    />
-                  </div>
-
-                  {/* Drag indicator */}
-                  {!isProcessing && (
-                    <div className="absolute top-2 left-2 text-gray-400 dark:text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <span className="text-lg">⋮⋮</span>
-                    </div>
-                  )}
-
-                  {/* File info */}
-                  <div className="space-y-1">
-                    {/* File number badge */}
-                    <div className="flex items-center justify-between mb-2">
-                      <Badge variant="secondary" className="w-6 h-6 p-0 flex items-center justify-center bg-ocean-100 dark:bg-ocean-900/30 text-ocean-600 dark:text-ocean-400">
-                        {index + 1}
-                      </Badge>
-                      {file.info && (
-                        <span className="text-xs text-gray-500 dark:text-gray-400">
-                          {file.info.pages} {file.info.pages === 1 ? 'page' : 'pages'}
-                        </span>
-                      )}
-                    </div>
-
-                    {/* File name */}
-                    <p className="text-sm font-medium text-gray-900 dark:text-white truncate" title={file.name}>
-                      {file.name}
-                    </p>
-
-                    {/* File size */}
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      {pdfService.formatFileSize(file.size)}
-                    </p>
-
-                    {/* Error state */}
-                    {file.status === 'error' && (
-                      <p className="text-xs text-error-500 mt-1">
-                        {file.error}
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Control buttons - visible on hover */}
-                  <div className="absolute top-1 right-1 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    {/* Move up */}
-                    {index > 0 && (
-                      <Button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleMoveUp(index);
-                        }}
-                        disabled={isProcessing}
-                        className="w-7 h-7 p-0 bg-ocean-500 text-white hover:bg-ocean-600 shadow-md"
-                        aria-label="Move up"
-                        title="Move up"
-                        size="sm"
-                      >
-                        <span className="text-sm">↑</span>
-                      </Button>
-                    )}
-
-                    {/* Move down */}
-                    {index < files.length - 1 && (
-                      <Button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleMoveDown(index);
-                        }}
-                        disabled={isProcessing}
-                        className="w-7 h-7 p-0 bg-ocean-500 text-white hover:bg-ocean-600 shadow-md"
-                        aria-label="Move down"
-                        title="Move down"
-                        size="sm"
-                      >
-                        <span className="text-sm">↓</span>
-                      </Button>
-                    )}
-
-                    {/* Remove */}
-                    <Button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleRemoveFile(file.id);
-                      }}
-                      disabled={isProcessing}
-                      className="w-7 h-7 p-0 bg-error-500 text-white hover:bg-error-600 shadow-md"
-                      aria-label="Remove file"
-                      title="Remove file"
-                      size="sm"
-                    >
-                      <span className="text-sm">×</span>
-                    </Button>
-                  </div>
-                </Card>
-              </div>
-            ))}
-          </div>
-
-            {/* Merge button */}
-            <div className="mt-6">
-              <Button
-                onClick={handleMerge}
-                disabled={isProcessing || files.length < 2}
-                className="w-full text-lg py-3"
-                size="lg"
-              >
-                {isProcessing ? t('common.processing') : t('merge.mergeButton')}
-              </Button>
-              {files.length < 2 && (
-                <p className="text-sm text-gray-500 dark:text-gray-400 text-center mt-2">
-                  {t('merge.minFilesHint')}
-                </p>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Progress */}
-      {isProcessing && (
-        <Card>
-          <CardContent className="p-6">
-            <ProgressBar progress={progress} message={progressMessage} />
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Result */}
-      {result && (
+        }
+      >
         <div className="space-y-6">
-          {/* Success card */}
-          <Card>
-            <CardContent className="p-8">
-              <div className="text-center space-y-4">
-                <div className="text-6xl">✅</div>
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {t('merge.success.title')}
-                </h2>
-                <div className="text-gray-600 dark:text-gray-400 space-y-1">
-                  <p>
-                    {t('merge.success.pages')}: <span className="font-semibold">{result.metadata?.pageCount}</span>
-                  </p>
-                  <p>
-                    {t('merge.success.size')}:{' '}
-                    <span className="font-semibold">{pdfService.formatFileSize(result.metadata?.processedSize || 0)}</span>
-                  </p>
-                  <p>
-                    {t('merge.success.time')}:{' '}
-                    <span className="font-semibold">{pdfService.formatTime(result.metadata?.processingTime || 0)}</span>
-                  </p>
-                </div>
-
-                {/* Primary actions */}
-                <div className="flex gap-3 justify-center mt-6 pt-4">
-                  <Button onClick={handleDownload} size="lg" className="px-8 !bg-green-600 hover:!bg-green-700 !text-white">
-                    {t('common.download')}
-                  </Button>
-                  <Button onClick={handleReset} variant="outline" size="lg">
-                    {t('merge.mergeAnother')}
-                  </Button>
-                </div>
+          <Card className="bg-green-50/50 dark:bg-green-900/10 border-green-200 dark:border-green-800 backdrop-blur-sm">
+            <CardContent className="p-8 text-center space-y-4">
+              <div className="text-6xl mb-4 animate-scale-in">✅</div>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                {t('merge.success.title')}
+              </h2>
+              <div className="text-gray-600 dark:text-gray-400 space-y-1">
+                <p>{t('merge.success.pages')}: <span className="font-semibold">{result.metadata?.pageCount}</span></p>
+                <p>{t('merge.success.size')}: <span className="font-semibold">{pdfService.formatFileSize(result.metadata?.processedSize || 0)}</span></p>
               </div>
             </CardContent>
           </Card>
 
           {/* Quick Actions */}
-          <Card>
-            <CardContent className="p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                {t('merge.quickActions.title')}
-              </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                {t('merge.quickActions.description')}
-              </p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <Button onClick={() => handleQuickAction('compress-pdf')} variant="outline" className="h-auto py-4 flex flex-col gap-2 hover:border-ocean-400 hover:bg-ocean-50 dark:hover:bg-ocean-900/10">
+              <Minimize2 className="h-6 w-6 text-ocean-500" />
+              <span>{t('tools.compress-pdf.name')}</span>
+            </Button>
+            <Button onClick={() => handleQuickAction('protect-pdf')} variant="outline" className="h-auto py-4 flex flex-col gap-2 hover:border-ocean-400 hover:bg-ocean-50 dark:hover:bg-ocean-900/10">
+              <Shield className="h-6 w-6 text-ocean-500" />
+              <span>{t('tools.protect-pdf.name')}</span>
+            </Button>
+            <Button onClick={() => handleQuickAction('watermark-pdf')} variant="outline" className="h-auto py-4 flex flex-col gap-2 hover:border-ocean-400 hover:bg-ocean-50 dark:hover:bg-ocean-900/10">
+              <Stamp className="h-6 w-6 text-ocean-500" />
+              <span>{t('tools.watermark-pdf.name')}</span>
+            </Button>
+            <Button onClick={() => handleQuickAction('split-pdf')} variant="outline" className="h-auto py-4 flex flex-col gap-2 hover:border-ocean-400 hover:bg-ocean-50 dark:hover:bg-ocean-900/10">
+              <Scissors className="h-6 w-6 text-ocean-500" />
+              <span>{t('tools.split-pdf.name')}</span>
+            </Button>
+          </div>
+        </div>
+      </ToolLayout>
+    );
+  }
 
-              {/* Action buttons grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                {/* Compress */}
-                <Button
-                  onClick={() => handleQuickAction('compress-pdf')}
-                  variant="outline"
-                  className="h-auto justify-start p-4 border-2 hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
-                >
-                  <span className="text-3xl">🗜️</span>
-                  <div className="text-left ml-3">
-                    <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
-                      {t('tools.compress-pdf.name')}
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      {t('merge.quickActions.compress')}
-                    </p>
-                  </div>
-                </Button>
-
-                {/* Protect */}
-                <Button
-                  onClick={() => handleQuickAction('protect-pdf')}
-                  variant="outline"
-                  className="h-auto justify-start p-4 border-2 hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
-                >
-                  <span className="text-3xl">🔒</span>
-                  <div className="text-left ml-3">
-                    <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
-                      {t('tools.protect-pdf.name')}
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      {t('merge.quickActions.protect')}
-                    </p>
-                  </div>
-                </Button>
-
-                {/* Watermark */}
-                <Button
-                  onClick={() => handleQuickAction('watermark-pdf')}
-                  variant="outline"
-                  className="h-auto justify-start p-4 border-2 hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
-                >
-                  <span className="text-3xl">💧</span>
-                  <div className="text-left ml-3">
-                    <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
-                      {t('tools.watermark-pdf.name')}
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      {t('merge.quickActions.watermark')}
-                    </p>
-                  </div>
-                </Button>
-
-                {/* Split */}
-                <Button
-                  onClick={() => handleQuickAction('split-pdf')}
-                  variant="outline"
-                  className="h-auto justify-start p-4 border-2 hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
-                >
-                  <span className="text-3xl">✂️</span>
-                  <div className="text-left ml-3">
-                    <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
-                      {t('tools.split-pdf.name')}
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      {t('merge.quickActions.split')}
-                    </p>
-                  </div>
-                </Button>
+  return (
+    <ToolLayout
+      title={t('tools.merge-pdf.name')}
+      description={t('tools.merge-pdf.description')}
+      hasFiles={files.length > 0}
+      isProcessing={isProcessing}
+      onUpload={(newFiles) => handleFilesSelected(newFiles, false)}
+      settings={
+        files.length >= 2 ? (
+          <div className="space-y-6 animate-slide-up">
+            <SmartMergePanel
+              files={files.map(f => ({ id: f.id, file: f.file, name: f.name }))}
+              onApplySort={handleApplySmartSort}
+              onRemoveDuplicates={handleRemoveDuplicates}
+            />
+          </div>
+        ) : null
+      }
+      actions={
+        <div className="space-y-4">
+          <Button
+            onClick={handleMerge}
+            disabled={isProcessing || files.length < 2}
+            className="w-full text-lg py-6 shadow-lg shadow-ocean-500/20 bg-ocean-500 hover:bg-ocean-600 text-white"
+            size="lg"
+          >
+            {t('merge.mergeButton')}
+          </Button>
+          {files.length > 0 && files.length < 2 && (
+            <p className="text-sm text-center text-gray-500 animate-pulse">
+              {t('merge.minFilesHint')}
+            </p>
+          )}
+        </div>
+      }
+    >
+      {/* Files List */}
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
+        {files.map((file, index) => (
+          <div
+            key={file.id}
+            draggable={!isProcessing}
+            onDragStart={() => handleDragStart(index)}
+            onDragOver={(e) => handleDragOver(e, index)}
+            onDragEnd={handleDragEnd}
+            className={`relative group ${!isProcessing ? 'cursor-move' : ''} ${draggedIndex === index ? 'opacity-50' : ''
+              }`}
+          >
+            <Card className="p-4 hover:shadow-medium transition-all duration-200 relative group h-full border-transparent hover:border-ocean-200 dark:hover:border-ocean-800 bg-white dark:bg-privacy-800">
+              <div className="mb-4 flex justify-center bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
+                <PDFPreview file={file.file} width={180} height={240} />
               </div>
-            </CardContent>
-          </Card>
+
+              {/* Drag Handle & Info */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <Badge variant="secondary" className="w-8 h-8 p-0 flex items-center justify-center bg-white dark:bg-gray-700 shadow-sm text-sm">
+                    {index + 1}
+                  </Badge>
+                  {file.info && (
+                    <span className="text-sm text-gray-500 font-medium">{file.info.pages} pages</span>
+                  )}
+                </div>
+                <p className="text-sm font-medium truncate text-gray-900 dark:text-gray-100" title={file.name}>
+                  {file.name}
+                </p>
+              </div>
+
+              {/* Hover Actions */}
+              {!isProcessing && (
+                <div className="absolute top-2 right-2 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity bg-white/90 dark:bg-black/50 rounded-lg p-1 backdrop-blur-sm shadow-sm">
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="h-6 w-6 text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleRemoveFile(file.id);
+                    }}
+                  >
+                    <span className="sr-only">Remove</span>
+                    <Scissors className="h-3 w-3" />
+                  </Button>
+                </div>
+              )}
+            </Card>
+          </div>
+        ))}
+
+        {/* Add More Button */}
+        <div className="h-full min-h-[200px]">
+          <label className="cursor-pointer h-full border-2 border-dashed border-gray-200 dark:border-privacy-700 hover:border-ocean-400 dark:hover:border-ocean-500 rounded-xl flex flex-col items-center justify-center p-4 transition-all hover:bg-ocean-50/50 dark:hover:bg-ocean-900/10 group">
+            <input
+              type="file"
+              multiple
+              accept=".pdf"
+              className="hidden"
+              onChange={(e) => e.target.files && handleFilesSelected(Array.from(e.target.files), false)}
+            />
+            <div className="w-12 h-12 rounded-full bg-ocean-100 dark:bg-ocean-900/50 flex items-center justify-center mb-2 text-ocean-600 dark:text-ocean-400 text-2xl group-hover:scale-110 transition-transform">
+              <Files className="h-6 w-6" />
+            </div>
+            <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Add File</span>
+          </label>
+        </div>
+      </div>
+
+      {isProcessing && (
+        <div className="mt-8">
+          <ProgressBar progress={progress} message={progressMessage} />
         </div>
       )}
-    </div>
+    </ToolLayout>
   );
 };

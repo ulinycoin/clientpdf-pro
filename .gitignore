@@ -74,3 +74,6 @@ website/DEPLOYMENT.md
 src-tauri/
 *.rs.bk
 Cargo.lock
+
+# Ideas & Roadmap
+IDEAS.md

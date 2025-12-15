@@ -162,7 +162,7 @@
     "acceptedTypes": "Accepted types",
     "errors": {
       "tooManyFiles": "Too many files. Maximum: {max}",
-      "invalidFileType": "Invalid file type. Please select PDF files only.",
+      "invalidFileType": "Invalid file type. Please select PDF or images (JPG, PNG).",
       "fileTooLarge": "File too large. Maximum size: {max} MB"
     }
   },
@@ -322,6 +322,7 @@
     "splitAnother": "Split another",
     "downloadAll": "Download all files",
     "downloadAsZip": "Download as ZIP",
+    "previewTitle": "Preview Page",
     "outputFiles": "Output files",
     "selectAll": "Select all",
     "deselectAll": "Deselect all",

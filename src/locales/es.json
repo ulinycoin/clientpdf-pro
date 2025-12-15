@@ -286,6 +286,23 @@
     }
   },
   "split": {
+    "filePreview": "Archivo a dividir",
+    "totalPages": "Páginas totales",
+    "fileSize": "Tamaño del archivo",
+    "changeFile": "Cambiar archivo",
+    "selectMode": "Elegir modo de división",
+    "splitButton": "Dividir PDF",
+    "splitAnother": "Dividir otro",
+    "downloadAll": "Descargar todo",
+    "downloadAsZip": "Descargar como ZIP",
+    "previewTitle": "Vista previa de la página",
+    "outputFiles": "Archivos de salida",
+    "selectAll": "Seleccionar todo",
+    "deselectAll": "Deseleccionar todo",
+    "selectedCount": "{count} páginas seleccionadas",
+    "selectPagesHint": "Seleccione al menos una página",
+    "mergingSelected": "Fusionando páginas seleccionadas...",
+    "mergeFailed": "Fallo al fusionar",
     "mode": {
       "all": {
         "name": "Todas las páginas",
@@ -293,7 +310,7 @@
       },
       "range": {
         "name": "Rango de páginas",
-        "description": "Extraer rango de páginas específico"
+        "description": "Extraer rango específico de páginas"
       },
       "intervals": {
         "name": "Por intervalos",
@@ -314,10 +331,37 @@
     "analyzing": "Analizando...",
     "chaptersDetected": "{count} capítulos detectados",
     "reanalyze": "Volver a analizar",
-    "selectAll": "Seleccionar todo",
-    "deselectAll": "Deseleccionar todo",
+    "rangeSettings": "Configuración de rango",
+    "startPage": "Página inicial",
+    "endPage": "Página final",
+    "rangeHint": "Páginas totales: {total}",
+    "intervalSettings": "Configuración de intervalo",
+    "pagesPerFile": "Páginas por archivo",
+    "intervalHint": "Crea {files} archivos de {total} páginas",
+    "customSettings": "Selección personalizada",
+    "pageNumbers": "Números de página",
+    "customHint": "Números separados por comas o rangos (ej: 1,3,5-7,10)",
+    "success": {
+      "title": "¡PDF dividido con éxito!",
+      "filesCreated": "{count} archivos creados"
+    },
+    "pageNumber": "Página {page}",
     "pageRange": "Páginas {start}-{end}",
-    "pageCount": "{count} páginas"
+    "pageCount": "{count} páginas",
+    "pageCountSingle": "1 página",
+    "autoLoaded": {
+      "title": "Archivo cargado desde herramienta anterior",
+      "description": "Su PDF se ha cargado automáticamente"
+    },
+    "quickActions": {
+      "title": "¿Qué sigue?",
+      "description": "Seleccione páginas y continúe:",
+      "descriptionWithSelection": "Continúe con {count} páginas seleccionadas:",
+      "compress": "Comprimir",
+      "merge": "Combinar",
+      "protect": "Proteger",
+      "watermark": "Marca de agua"
+    }
   },
   "protect": {
     "filePreview": "Archivo a proteger",
