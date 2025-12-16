@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { useI18n } from '@/hooks/useI18n';
+import { UploadCloud, FileText, Lightbulb, AlertCircle } from 'lucide-react';
 
 interface FileUploadProps {
   accept?: string;
@@ -155,17 +156,22 @@ export const FileUpload: React.FC<FileUploadProps> = ({
         onClick={handleClick}
         tabIndex={0}
         className={`
-          relative border-2 border-dashed rounded-xl p-8 text-center cursor-pointer
-          transition-all duration-200 outline-none
-          ${isDragging
-            ? 'border-ocean-500 bg-ocean-50 dark:bg-ocean-900/20'
-            : 'border-gray-300 dark:border-privacy-600 hover:border-ocean-400 dark:hover:border-ocean-600'
+            relative w-full max-w-5xl mx-auto min-h-[60vh] flex flex-col items-center justify-center
+            text-center cursor-pointer
+            transition-all duration-700 ease-out outline-none
+            rounded-[3rem]
+            backdrop-blur-3xl
+            ${isDragging
+            ? 'bg-[#e5e5e5]/80 dark:bg-[#2a2a2a]/80 shadow-[0_20px_80px_rgba(0,0,0,0.2)] scale-[1.01] -translate-y-2'
+            : 'border border-white/20 dark:border-white/5 bg-gradient-to-br from-[#f5f5f7]/40 via-[#e5e5e5]/20 to-[#d1d1d6]/40 dark:from-[#2c2c2e]/60 dark:via-[#1c1c1e]/40 dark:to-[#000000]/60 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.5)] hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.25)] dark:hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.7)] hover:-translate-y-3'
           }
-          ${disabled
-            ? 'opacity-50 cursor-not-allowed'
-            : ''
-          }
-        `}
+            ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
+          `}
+        style={{
+          backgroundImage: isDragging
+            ? undefined
+            : 'linear-gradient(120deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.05) 30%, rgba(255,255,255,0) 100%)', // Metallic sheen
+        }}
       >
         <input
           ref={fileInputRef}
@@ -180,28 +186,30 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 
         <div className="flex flex-col items-center gap-4">
           {/* Upload icon */}
-          <div className="text-6xl">
-            {isDragging ? '📥' : '📄'}
+          <div className={`mb-10 p-8 rounded-[2rem] bg-gradient-to-br from-white/40 to-white/10 dark:from-white/10 dark:to-white/5 backdrop-blur-md border border-white/20 text-gray-700 dark:text-gray-200 transition-transform duration-500 ${isDragging ? 'scale-110' : 'group-hover:scale-105'} shadow-xl`}>
+            {isDragging ? (
+              <UploadCloud className="w-24 h-24 text-gray-800 dark:text-white animate-bounce drop-shadow-lg" />
+            ) : (
+              <FileText className="w-24 h-24 text-gray-600 dark:text-gray-300 drop-shadow-md" />
+            )}
           </div>
 
-          {/* Upload text */}
-          <div>
-            <p className="text-lg font-medium text-gray-900 dark:text-white mb-1">
-              {isDragging
-                ? t('upload.dropHere')
-                : (title || t('upload.dragOrClick'))
-              }
+          {/* Text Content */}
+          <div className="space-y-3 px-6">
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+              {isDragging ? t('upload.dropHere') : (title || t('upload.dragOrClick'))}
+            </h3>
+
+            <p className="text-base text-gray-600 dark:text-gray-300">
+              {description || ((multiple && maxFiles !== 1) ? t('upload.multipleFilesAllowed') : t('upload.singleFileAllowed'))}
             </p>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
-              {description || (multiple
-                ? t('upload.multipleFilesAllowed')
-                : t('upload.singleFileAllowed'))
-              }
-            </p>
-            <p className="text-xs text-gray-400 dark:text-gray-500 flex items-center justify-center gap-2">
-              <span>💡</span>
-              <span>{t('upload.pasteHint')}</span>
-            </p>
+
+            <div className="pt-4 flex items-center justify-center gap-2">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-100 dark:bg-white/10 text-xs font-medium text-gray-600 dark:text-gray-200">
+                <Lightbulb className="w-3.5 h-3.5" />
+                {t('upload.pasteHint')}
+              </span>
+            </div>
           </div>
 
           {/* File requirements */}
@@ -217,9 +225,10 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 
       {/* Error message */}
       {error && (
-        <div className="mt-3 p-3 bg-error-50 dark:bg-error-900/20 border border-error-200 dark:border-error-800 rounded-lg">
-          <p className="text-sm text-error-700 dark:text-error-400">
-            ⚠️ {error}
+        <div className="mt-4 p-4 bg-red-50/90 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl flex items-center gap-3 text-red-700 dark:text-red-300 animate-slide-up">
+          <AlertCircle className="w-5 h-5 flex-shrink-0" />
+          <p className="text-sm font-medium">
+            {error}
           </p>
         </div>
       )}

@@ -52,8 +52,8 @@
             "description": "向 PDF 添加水印"
         },
         "add-text-pdf": {
-            "name": "向 PDF 添加文本",
-            "description": "向 PDF 页面添加自定义文本"
+            "name": "添加文本到 PDF",
+            "description": "添加自定义文本到 PDF 页面"
         },
         "edit-text-pdf": {
             "name": "编辑 PDF 文本",
@@ -110,8 +110,9 @@
     },
     "common": {
         "upload": "上传文件",
-        "uploadFile": "上传文件",
         "uploadDescription": "拖放或点击上传",
+        "selectFile": "选择文件",
+        "uploadFile": "上传文件",
         "download": "下载",
         "processing": "处理中...",
         "searching": "搜索中...",

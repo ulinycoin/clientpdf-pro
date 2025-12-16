@@ -784,7 +784,7 @@ export const EditTextPDF: React.FC = () => {
               onFilesSelected={handleFileSelected}
               accept=".pdf"
               maxFiles={1}
-              title={t('common.uploadFile')}
+              title={t('common.selectFile')}
               description={t('common.uploadDescription')}
             />
           </CardContent>

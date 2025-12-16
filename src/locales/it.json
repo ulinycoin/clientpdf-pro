@@ -56,7 +56,7 @@
             "description": "Aggiungi testo personalizzato alle pagine PDF"
         },
         "edit-text-pdf": {
-            "name": "Modifica Testo PDF",
+            "name": "Modifica testo in PDF",
             "description": "Trova e sostituisci testo nel PDF"
         },
         "add-form-fields-pdf": {
@@ -110,8 +110,9 @@
     },
     "common": {
         "upload": "Carica file",
-        "uploadFile": "Carica file",
         "uploadDescription": "Trascina e rilascia o clicca per caricare",
+        "selectFile": "Seleziona file",
+        "uploadFile": "Carica file",
         "download": "Scarica",
         "processing": "Elaborazione...",
         "searching": "Ricerca...",

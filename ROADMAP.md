@@ -2,7 +2,7 @@
 
 This document outlines planned features, enhancements, and improvements for LocalPDF.
 
-**Current Version:** 3.0.0
+**Current Version:** 3.2.0
 **Last Updated:** December 2025
 
 ---

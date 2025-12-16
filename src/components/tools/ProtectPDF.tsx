@@ -592,6 +592,9 @@ export const ProtectPDF: React.FC = () => {
       hasFiles={!!file}
       onUpload={handleFileSelect}
       isProcessing={isProcessing}
+      maxFiles={1}
+      uploadTitle={t('common.selectFile')}
+      uploadDescription={t('upload.singleFileAllowed')}
     >
       {renderContent()}
     </ToolLayout>

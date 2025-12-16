@@ -456,6 +456,9 @@ export const OCRPDF: React.FC = () => {
           accept=".pdf,.jpg,.jpeg,.png"
           maxFiles={1}
           maxSizeMB={50}
+          multiple={false}
+          title={t('common.selectFile')}
+          description={t('upload.singleFileAllowed')}
         />
       }
       settings={

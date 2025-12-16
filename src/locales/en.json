@@ -110,6 +110,7 @@
   },
   "common": {
     "upload": "Upload files",
+    "selectFile": "Select file",
     "uploadFile": "Upload file",
     "uploadDescription": "Drag and drop or click to upload",
     "download": "Download",

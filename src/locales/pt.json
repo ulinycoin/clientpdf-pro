@@ -56,7 +56,7 @@
             "description": "Adicionar texto personalizado às páginas do PDF"
         },
         "edit-text-pdf": {
-            "name": "Editar Texto em PDF",
+            "name": "Editar texto em PDF",
             "description": "Localizar e substituir texto em PDF"
         },
         "add-form-fields-pdf": {
@@ -109,9 +109,10 @@
         }
     },
     "common": {
-        "upload": "Enviar arquivos",
-        "uploadFile": "Enviar arquivo",
+        "upload": "Carregar arquivos",
         "uploadDescription": "Arraste e solte ou clique para enviar",
+        "selectFile": "Selecionar arquivo",
+        "uploadFile": "Carregar arquivo",
         "download": "Baixar",
         "processing": "Processando...",
         "searching": "Pesquisando...",

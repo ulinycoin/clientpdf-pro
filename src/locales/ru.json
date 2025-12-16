@@ -114,6 +114,8 @@
   },
   "common": {
     "upload": "Загрузить файлы",
+    "uploadDescription": "Перетащите или нажмите для загрузки",
+    "selectFile": "Выбрать файл",
     "download": "Скачать",
     "processing": "Обработка...",
     "error": "Ошибка",

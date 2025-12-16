@@ -55,6 +55,10 @@
       "name": "Agregar texto al PDF",
       "description": "Agregar texto personalizado a las páginas PDF"
     },
+    "edit-text-pdf": {
+      "name": "Editar texto en PDF",
+      "description": "Buscar y reemplazar texto en PDF"
+    },
     "add-form-fields-pdf": {
       "name": "Añadir campos de formulario",
       "description": "Crear formularios PDF rellenables con campos de texto, casillas de verificación y más"
@@ -170,6 +174,9 @@
   },
   "common": {
     "upload": "Subir archivos",
+    "uploadDescription": "Arrastre y suelte o haga clic para subir",
+    "selectFile": "Seleccionar archivo",
+    "uploadFile": "Subir archivo",
     "download": "Descargar",
     "processing": "Procesando...",
     "error": "Error",

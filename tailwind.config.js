@@ -27,28 +27,28 @@ export default {
           900: '#14532d',
         },
         ocean: {
-          50: '#eff6ff',
-          100: '#dbeafe',
-          200: '#bfdbfe',
-          300: '#93c5fd',
-          400: '#60a5fa',
-          500: '#45B7D1', // Main ocean color
-          600: '#2563eb',
-          700: '#1d4ed8',
-          800: '#1e40af',
-          900: '#1e3a8a',
+          50: '#F5F5F7', // Apple System Gray 6 (Light)
+          100: '#E5E5E5', // Apple System Gray 5
+          200: '#D1D1D6', // Apple System Gray 4
+          300: '#C7C7CC', // Apple System Gray 3
+          400: '#AEAEB2', // Apple System Gray 2
+          500: '#8E8E93', // Apple System Gray (Mid)
+          600: '#636366', // Apple System Gray
+          700: '#48484A', // Space Gray Light
+          800: '#3A3A3C', // Space Gray Dark
+          900: '#2C2C2E', // MacBook Midnight
         },
         privacy: {
-          50: '#f8fafc',
-          100: '#f1f5f9',
-          200: '#e2e8f0',
-          300: '#cbd5e1',
-          400: '#94a3b8',
-          500: '#64748b',
-          600: '#475569',
-          700: '#334155',
-          800: '#1e293b',
-          900: '#0f172a',
+          50: '#FAFAFA', // Zinc 50
+          100: '#F4F4F5', // Zinc 100
+          200: '#E4E4E7', // Zinc 200
+          300: '#D4D4D8', // Zinc 300
+          400: '#A1A1AA', // Zinc 400
+          500: '#71717A', // Zinc 500
+          600: '#52525B', // Zinc 600
+          700: '#3F3F46', // Zinc 700
+          800: '#27272A', // Zinc 800
+          900: '#18181B', // Zinc 900 (True Neutral Dark)
         },
         // Legacy colors (for backward compatibility)
         primary: {
@@ -199,7 +199,7 @@ export default {
   plugins: [
     require('@tailwindcss/typography'),
     // Glass morphism effects plugin
-    function({ addUtilities }) {
+    function ({ addUtilities }) {
       const newUtilities = {
         '.glass': {
           background: 'rgba(255, 255, 255, 0.25)',
@@ -212,10 +212,22 @@ export default {
           border: '1px solid rgba(255, 255, 255, 0.18)',
         },
         '.glass-premium': {
-          background: 'rgba(255, 255, 255, 0.7)',
-          backdropFilter: 'blur(12px)',
+          background: 'rgba(255, 255, 255, 0.45)',
+          backdropFilter: 'blur(20px) saturate(180%)',
+          border: '1px solid rgba(255, 255, 255, 0.4)',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.05), inset 0 0 0 1px rgba(255, 255, 255, 0.2)',
+        },
+        '.glass-premium-dark': {
+          background: 'rgba(28, 28, 30, 0.65)', // Apple Dark Gray
+          backdropFilter: 'blur(20px) saturate(180%)',
+          border: '1px solid rgba(255, 255, 255, 0.08)',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.05)',
+        },
+        '.glass-panel': {
+          background: 'rgba(255, 255, 255, 0.4)',
+          backdropFilter: 'blur(24px)',
           border: '1px solid rgba(255, 255, 255, 0.2)',
-          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02)',
         },
         '.gradient-border': {
           background: 'linear-gradient(45deg, #3b82f6, #8b5cf6, #f59e0b)',
@@ -244,7 +256,7 @@ export default {
           backgroundClip: 'text',
         },
         '.text-gradient-ocean': {
-          background: 'linear-gradient(135deg, #45B7D1 0%, #4ECDC4 50%, #8b5cf6 100%)',
+          background: 'linear-gradient(135deg, #8E8E93 0%, #48484A 50%, #1C1C1E 100%)',
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
           backgroundClip: 'text',

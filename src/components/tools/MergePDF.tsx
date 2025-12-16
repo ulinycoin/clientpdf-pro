@@ -241,6 +241,8 @@ export const MergePDF: React.FC = () => {
       hasFiles={files.length > 0}
       isProcessing={isProcessing}
       onUpload={(newFiles) => handleFilesSelected(newFiles, false)}
+      uploadTitle={t('upload.selectFiles')}
+      uploadDescription={t('upload.multipleFilesAllowed')}
       settings={
         files.length >= 2 ? (
           <div className="space-y-6 animate-slide-up">

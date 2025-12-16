@@ -78,10 +78,12 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({
         canvas.height = scaledViewport.height;
 
         // Render page
-        await page.render({
+        const renderContext = {
           canvasContext: context,
           viewport: scaledViewport,
-        }).promise;
+          canvas: canvas, // Add canvas property to satisfy type definition
+        };
+        await page.render(renderContext).promise;
 
         if (isMounted) {
           setIsLoading(false);

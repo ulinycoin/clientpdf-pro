@@ -78,8 +78,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   return (
     <aside
-      className={`fixed left-0 top-0 h-screen border-r border-gray-200/40 dark:border-privacy-700/40 transition-all duration-300 ease-in-out z-20 overflow-y-auto ${collapsed ? 'w-16' : 'w-64'} 
-      backdrop-blur-xl bg-white/60 dark:bg-privacy-900/60 supports-[backdrop-filter]:bg-white/40 dark:supports-[backdrop-filter]:bg-privacy-900/40 shadow-lg`}
+      className={`fixed left-0 top-0 h-screen border-r border-white/20 dark:border-white/10 transition-all duration-300 ease-in-out z-20 overflow-y-auto ${collapsed ? 'w-20' : 'w-72'} 
+      backdrop-blur-3xl bg-[#fbfbfd]/60 dark:bg-[#1c1c1e]/60 shadow-[0_0_30px_rgba(0,0,0,0.03)] dark:shadow-[0_0_30px_rgba(0,0,0,0.2)]`}
       style={{ paddingTop: '7.5rem' }}
     >
       {/* Section title */}
@@ -103,14 +103,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <Button
                   variant="ghost"
                   onClick={() => onToolSelect(tool.id)}
-                  className={`group w-full justify-start gap-3 px-3 py-2.5 h-auto transition-all duration-200 border ${isActive
-                    ? 'bg-ocean-50/80 dark:bg-ocean-900/40 text-ocean-600 dark:text-ocean-400 font-medium shadow-sm border-ocean-200/50 dark:border-ocean-700/50'
-                    : 'border-transparent text-gray-700 dark:text-gray-300 hover:bg-ocean-50/50 dark:hover:bg-ocean-900/20 hover:text-ocean-600 dark:hover:text-ocean-400 hover:scale-[1.02]'
+                  className={`group w-full justify-start gap-4 px-4 py-3 h-auto transition-all duration-200 rounded-lg mx-0 relative overflow-hidden ${isActive
+                    ? 'bg-black/5 dark:bg-white/10 text-gray-900 dark:text-white font-medium shadow-sm'
+                    : 'border-transparent text-gray-500 dark:text-gray-400 hover:bg-black/5 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-gray-200'
                     }`}
                   title={collapsed ? t(`tools.${tool.id}.name`) : undefined}
+                  aria-label={t(`tools.${tool.id}.name`)}
+                  aria-current={isActive ? 'page' : undefined}
                 >
-                  <span className={`flex-shrink-0 transition-transform duration-200 group-hover:scale-110 ${isActive ? 'text-ocean-600 dark:text-ocean-400' : 'text-gray-500 dark:text-gray-400 group-hover:text-ocean-600 dark:group-hover:text-ocean-400'}`}>
-                    <Icon size={20} strokeWidth={isActive ? 2.5 : 2} />
+                  <span className={`flex-shrink-0 transition-transform duration-200 group-hover:scale-105 ${isActive ? 'text-gray-900 dark:text-white' : 'text-gray-400 dark:text-gray-500 group-hover:text-gray-700 dark:group-hover:text-gray-300'}`}>
+                    <Icon size={20} strokeWidth={isActive ? 2 : 1.5} />
                   </span>
                   {!collapsed && (
                     <span className="text-sm truncate transition-colors duration-200">
@@ -118,7 +120,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     </span>
                   )}
                   {isActive && !collapsed && (
-                    <span className="ml-auto w-1.5 h-1.5 rounded-full bg-ocean-500 shadow-[0_0_8px_rgba(69,183,209,0.6)]"></span>
+                    <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-r-full bg-gray-400 dark:bg-gray-500"></span>
                   )}
                 </Button>
               </li>

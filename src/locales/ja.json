@@ -52,11 +52,11 @@
       "description": "PDFに透かしを追加"
     },
     "add-text-pdf": {
-      "name": "PDFにテキスト追加",
+      "name": "PDFにテキストを追加",
       "description": "PDFページにカスタムテキストを追加"
     },
     "edit-text-pdf": {
-      "name": "PDFテキスト編集",
+      "name": "PDFのテキストを編集",
       "description": "PDF内のテキストを検索して置換"
     },
     "add-form-fields-pdf": {
@@ -110,8 +110,9 @@
   },
   "common": {
     "upload": "ファイルをアップロード",
-    "uploadFile": "ファイルをアップロード",
     "uploadDescription": "ドラッグ＆ドロップまたはクリックしてアップロード",
+    "selectFile": "ファイルを選択",
+    "uploadFile": "ファイルをアップロード",
     "download": "ダウンロード",
     "processing": "処理中...",
     "searching": "検索中...",

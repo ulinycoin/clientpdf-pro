@@ -560,6 +560,8 @@ export const SplitPDF: React.FC = () => {
           onFilesSelected={handleFileSelected}
           maxSizeMB={100}
           disabled={isProcessing}
+          title={t('common.selectFile')}
+          description={t('upload.singleFileAllowed')}
         />
       }
       settings={

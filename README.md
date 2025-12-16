@@ -1,15 +1,15 @@
-# LocalPDF v3.0
+# LocalPDF v3.2
 
 **Privacy-first PDF toolkit** - Hash-based Single Page Application with AI-powered Smart Features
 
 🚀 **Optimized for performance** - 91% smaller bundle with code splitting and lazy loading
 🤖 **AI-powered analysis** - Smart features run 100% locally in your browser
 
-[![Version](https://img.shields.io/badge/version-3.0.0-blue.svg)](https://github.com/ulinycoin/clientpdf-pro)
+[![Version](https://img.shields.io/badge/version-3.2.0-blue.svg)](https://github.com/ulinycoin/clientpdf-pro)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
 [![Deploy](https://img.shields.io/badge/deploy-auto-brightgreen.svg)](https://localpdf.online)
 
-> **Note:** This is version 3.0 - a complete rewrite with modern architecture. For v2 legacy code, see archived repository.
+> **Note:** This is version 3.2 - featuring Premium Design & Enhanced Accessibility.
 >
 > **Auto-deploy:** Pushes to `main` branch automatically deploy to production via Vercel.
 

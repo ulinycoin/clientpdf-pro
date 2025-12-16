@@ -11,7 +11,6 @@ import { useI18n } from '@/hooks/useI18n';
 import smartMergeService, {
   type SmartMergeAnalysis,
   type SmartSortSuggestion,
-  type DocumentAnalysis,
 } from '@/services/smartMergeService';
 
 interface SmartMergePanelProps {
@@ -179,8 +178,8 @@ export const SmartMergePanel: React.FC<SmartMergePanelProps> = ({
               <div
                 key={idx}
                 className={`flex items-start gap-2 p-2 rounded-lg text-sm ${warning.severity === 'warning'
-                    ? 'bg-amber-100/80 dark:bg-amber-900/30 text-amber-800 dark:text-amber-200'
-                    : 'bg-blue-100/80 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200'
+                  ? 'bg-amber-100/80 dark:bg-amber-900/30 text-amber-800 dark:text-amber-200'
+                  : 'bg-blue-100/80 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200'
                   }`}
               >
                 <span>{warning.severity === 'warning' ? '⚠️' : 'ℹ️'}</span>

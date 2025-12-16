@@ -19,7 +19,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { FileUpload } from '@/components/common/FileUpload';
 import { ProgressBar } from '@/components/common/ProgressBar';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { useI18n } from '@/hooks/useI18n';
 import { useSharedFile } from '@/hooks/useSharedFile';
 import { usePDFThumbnails, type PageThumbnail } from '@/hooks/usePDFThumbnails';
@@ -27,7 +27,7 @@ import pdfService from '@/services/pdfService';
 import { SmartOrganizePanel } from '@/components/smart/SmartOrganizePanel';
 import type { UploadedFile } from '@/types/pdf';
 import { toast } from 'sonner';
-import { RotateCw, Trash2, Plus, Download } from 'lucide-react';
+import { RotateCw, Trash2, Download } from 'lucide-react';
 
 interface PageItem extends PageThumbnail {
   id: string;
@@ -142,7 +142,6 @@ export const PageEditorPDF: React.FC = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [progressMessage, setProgressMessage] = useState('');
-  const [loadedFromShared, setLoadedFromShared] = useState(false);
 
   // Generate thumbnails
   const {
@@ -188,7 +187,6 @@ export const PageEditorPDF: React.FC = () => {
       };
 
       setFile(uploadedFile);
-      setLoadedFromShared(true);
 
       pdfService.getPDFInfo(sharedFileObj).then((info) => {
         setFile((prev) => (prev ? { ...prev, info, status: 'completed' } : null));
@@ -386,7 +384,6 @@ export const PageEditorPDF: React.FC = () => {
     setPages([]);
     setProgress(0);
     setProgressMessage('');
-    setLoadedFromShared(false);
   };
 
   const hasChanges =
@@ -396,7 +393,7 @@ export const PageEditorPDF: React.FC = () => {
 
   return (
     <div className="page-editor-pdf space-y-6">
-      <div>
+      <div className="pl-2">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
           {t('tools.organize-pdf.name') || 'Organize PDF Pages'}
         </h1>
@@ -408,23 +405,20 @@ export const PageEditorPDF: React.FC = () => {
 
       {/* File Upload */}
       {!file && (
-        <Card>
-          <CardContent className="p-6">
-            <FileUpload
-              onFilesSelected={handleFileUpload}
-              accept=".pdf"
-              maxFiles={1}
-              label={t('common.selectFile') || 'Select PDF file'}
-            />
-          </CardContent>
-        </Card>
+        <FileUpload
+          onFilesSelected={handleFileUpload}
+          accept=".pdf"
+          maxFiles={1}
+          multiple={false}
+          title={t('common.selectFile') || 'Select PDF file'}
+        />
       )}
 
       {/* Loading thumbnails */}
       {file && thumbnailsLoading && (
         <Card className="p-8">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-ocean-500 mx-auto mb-4"></div>
+            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-gray-500 dark:border-white mx-auto mb-4"></div>
             <p className="text-gray-600 dark:text-gray-300">
               {progressMessage || 'Generating thumbnails...'}
             </p>
@@ -434,8 +428,8 @@ export const PageEditorPDF: React.FC = () => {
 
       {/* Error */}
       {thumbnailsError && (
-        <Card className="p-8 bg-error-50 dark:bg-error-900/20">
-          <p className="text-error-600 dark:text-error-400">{thumbnailsError}</p>
+        <Card className="p-8 bg-black/5 dark:bg-white/5 border-red-500/20">
+          <p className="text-red-600 dark:text-red-400">{thumbnailsError}</p>
         </Card>
       )}
 
@@ -472,8 +466,8 @@ export const PageEditorPDF: React.FC = () => {
           </div>
 
           {/* Instructions */}
-          <Card className="p-4 mb-4 bg-ocean-50 dark:bg-ocean-900/20">
-            <p className="text-sm text-ocean-700 dark:text-ocean-300">
+          <Card className="p-4 mb-4 bg-black/5 dark:bg-white/5 border-transparent">
+            <p className="text-sm text-gray-700 dark:text-gray-300">
               <strong>{t('pageEditor.dragDrop')}</strong> {t('pageEditor.reorderPages')} •{' '}
               <strong>{t('pageEditor.clickRotate')}</strong> {t('pageEditor.toRotate')} •{' '}
               <strong>{t('pageEditor.clickDelete')}</strong> {t('pageEditor.toRemove')}
