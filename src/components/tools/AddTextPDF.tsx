@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { FileUpload } from '@/components/common/FileUpload';
+import { ToolLayout } from '@/components/common/ToolLayout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useI18n } from '@/hooks/useI18n';
@@ -11,6 +11,7 @@ import { FormatPanel } from './AddTextPDF/FormatPanel';
 import type { UploadedFile } from '@/types/pdf';
 import type { Tool } from '@/types';
 import { HASH_TOOL_MAP } from '@/types';
+import { CheckCircle2 } from 'lucide-react';
 
 export const AddTextPDF: React.FC = () => {
   const { t } = useI18n();
@@ -197,216 +198,72 @@ export const AddTextPDF: React.FC = () => {
     reset();
   };
 
-  const handleQuickAction = (toolId: Tool) => {
-    // Save the processed PDF to shared state for the next tool
+  const handleQuickAction = async (toolId: Tool) => {
     if (result) {
       setSharedFile(result, file?.name.replace('.pdf', '_with_text.pdf') || t('addText.defaultFileName'), 'add-text-pdf');
     }
-    // Navigate to the selected tool
+    // Small delay to ensure state is updated before navigation
+    await new Promise(resolve => setTimeout(resolve, 100));
     window.location.hash = HASH_TOOL_MAP[toolId];
   };
 
-  // If no file, show upload zone
-  if (!file) {
-    return (
-      <div className="add-text-pdf space-y-6">
-        {/* Header */}
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-            {t('tools.add-text-pdf.name')}
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            {t('tools.add-text-pdf.description')}
-          </p>
-        </div>
+  const renderContent = () => {
+    if (!file) return null;
 
-        {/* Upload section */}
-        <Card>
-          <CardContent className="p-6">
-            <FileUpload
-              onFilesSelected={handleFilesSelected}
-              accept=".pdf"
-              multiple={false}
-              maxSizeMB={100}
-            />
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  // If result, show success and download
-  if (result) {
-    return (
-      <div className="space-y-6">
-        {/* Success card */}
-        <Card>
-          <CardContent className="p-8">
+    if (result) {
+      return (
+        <div className="space-y-6">
+          <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-2 border-green-200 dark:border-green-800 rounded-2xl p-8">
             <div className="text-center space-y-4">
-              <div className="text-6xl">✅</div>
+              <div className="w-20 h-20 bg-green-100 dark:bg-green-900/50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <CheckCircle2 className="w-10 h-10 text-green-600 dark:text-green-400" />
+              </div>
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                {t('tools.add-text-pdf.name')}
+                {t('common.success')}
               </h2>
-
               <div className="text-gray-600 dark:text-gray-400 space-y-1">
                 <p>{t('addText.addedCount', { count: textElements.length })}</p>
-                <p>{t('addText.originalSize')}: <span className="font-semibold">{(file.size / 1024).toFixed(2)} KB</span></p>
                 <p>{t('addText.newSize')}: <span className="font-semibold">{(result.size / 1024).toFixed(2)} KB</span></p>
               </div>
-
-              {/* Primary actions */}
-              <div className="flex gap-3 justify-center mt-6 pt-4">
-                <Button
-                  onClick={handleDownload}
-                  size="lg"
-                  className="px-8 !bg-green-600 hover:!bg-green-700 !text-white"
-                >
-                  {t('common.download')}
-                </Button>
-                <Button
-                  onClick={handleReset}
-                  variant="outline"
-                  size="lg"
-                >
-                  {t('common.processAnother')}
-                </Button>
-              </div>
             </div>
-          </CardContent>
-        </Card>
-
-        {/* Quick Actions */}
-        <Card>
-          <CardContent className="p-6">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-              {t('common.whatsNext')}
-            </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-              {t('common.continueWorking')}
-            </p>
-
-            {/* Action buttons grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-              {/* Compress */}
-              <Button
-                onClick={() => handleQuickAction('compress-pdf')}
-                variant="outline"
-                className="h-auto justify-start p-4 border-2 hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
-              >
-                <span className="text-3xl">🗜️</span>
-                <div className="text-left ml-3">
-                  <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
-                    {t('tools.compress-pdf.name')}
-                  </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    Reduce file size
-                  </p>
-                </div>
-              </Button>
-
-              {/* Protect */}
-              <Button
-                onClick={() => handleQuickAction('protect-pdf')}
-                variant="outline"
-                className="h-auto justify-start p-4 border-2 hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
-              >
-                <span className="text-3xl">🔒</span>
-                <div className="text-left ml-3">
-                  <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
-                    {t('tools.protect-pdf.name')}
-                  </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    Add password
-                  </p>
-                </div>
-              </Button>
-
-              {/* Watermark */}
-              <Button
-                onClick={() => handleQuickAction('watermark-pdf')}
-                variant="outline"
-                className="h-auto justify-start p-4 border-2 hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
-              >
-                <span className="text-3xl">💧</span>
-                <div className="text-left ml-3">
-                  <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
-                    {t('tools.watermark-pdf.name')}
-                  </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    Add watermark
-                  </p>
-                </div>
-              </Button>
-
-              {/* Split */}
-              <Button
-                onClick={() => handleQuickAction('split-pdf')}
-                variant="outline"
-                className="h-auto justify-start p-4 border-2 hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
-              >
-                <span className="text-3xl">✂️</span>
-                <div className="text-left ml-3">
-                  <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
-                    {t('tools.split-pdf.name')}
-                  </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    Extract pages
-                  </p>
-                </div>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  // Main editor interface
-  return (
-    <div className="card flex flex-col" style={{ height: 'calc(100vh - 120px)', minHeight: '800px' }}>
-      {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-          Add Text to PDF
-        </h2>
-        <div className="bg-gray-100 dark:bg-gray-700 rounded-lg px-3 py-1">
-          <div className="text-xs font-medium text-gray-900 dark:text-white">
-            {textElements.length} text element{textElements.length !== 1 ? 's' : ''}
+          </div>
+          <div className="flex gap-3 justify-center">
+            <Button onClick={handleDownload} size="lg" className="bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-xl transition-all">
+              {t('common.download')}
+            </Button>
+            <Button variant="outline" onClick={handleReset} size="lg">
+              {t('common.processAnother')}
+            </Button>
           </div>
         </div>
-      </div>
+      );
+    }
 
-      {/* Toolbar */}
-      <div className="flex-shrink-0">
-        <Toolbar
-          currentPage={currentPage}
-          totalPages={totalPages}
-          scale={scale}
-          canUndo={canUndo}
-          canRedo={canRedo}
-          toolMode={toolMode}
-          onPageChange={goToPage}
-          onScaleChange={setScale}
-          onUndo={undo}
-          onRedo={redo}
-          onToolModeChange={setToolMode}
-          onSave={handleSave}
-        />
-      </div>
-
-      {/* Main content */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* Format panel */}
+    return (
+      <div className="flex flex-col h-full space-y-4">
+        {/* Toolbar - Pagination / Zoom / Undo / Redo */}
         <div className="flex-shrink-0">
-          <FormatPanel
-            selectedElement={selectedElement}
-            onElementUpdate={updateTextElement}
+          <Toolbar
+            currentPage={currentPage}
+            totalPages={totalPages}
+            scale={scale}
+            canUndo={canUndo}
+            canRedo={canRedo}
+            toolMode={toolMode}
+            onPageChange={goToPage}
+            onScaleChange={setScale}
+            onUndo={undo}
+            onRedo={redo}
+            onToolModeChange={setToolMode}
+            onSave={handleSave}
+            // Hide save button in toolbar as it's in actions now
+            hideSave={true}
           />
         </div>
 
         {/* Canvas area */}
-        <div className="flex-1 flex flex-col">
-          <div className="flex-1 overflow-hidden">
+        <div className="flex-1 overflow-hidden bg-gray-100 dark:bg-gray-800 rounded-xl relative border border-gray-200 dark:border-gray-700">
+          <div className="absolute inset-0 overflow-auto flex items-center justify-center p-4">
             <Canvas
               pdfFile={file?.file || null}
               currentPage={currentPage}
@@ -420,30 +277,52 @@ export const AddTextPDF: React.FC = () => {
               onTotalPagesChange={setTotalPages}
             />
           </div>
+        </div>
 
-          {/* Status bar */}
-          <div className="p-2 border-t bg-gray-50 dark:bg-gray-900 text-xs text-gray-600 dark:text-gray-400 flex justify-between flex-shrink-0">
-            <div>
-              {toolMode === 'add' ? t('addText.modeAdd') : t('addText.modeSelect')}
-              {selectedElement && ` | ${t('addText.selected', { text: selectedElement.text.slice(0, 20) + (selectedElement.text.length > 20 ? '...' : '') })}`}
-            </div>
-            <div>
-              {t('addText.zoom', { scale: Math.round(scale * 100) })} | {t('addText.pageOf', { current: currentPage, total: totalPages })}
-            </div>
-          </div>
+        {/* Status Bar */}
+        <div className="text-xs text-center text-gray-500">
+          {toolMode === 'add' ? t('addText.modeAdd') : t('addText.modeSelect')}
+          {selectedElement && ` | ${t('addText.selected', { text: selectedElement.text.slice(0, 20) + (selectedElement.text.length > 20 ? '...' : '') })}`}
         </div>
       </div>
+    );
+  };
 
-      {/* Processing overlay */}
-      {isProcessing && (
-        <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 text-center shadow-2xl">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-ocean-500 mx-auto mb-6"></div>
-            <p className="text-gray-900 dark:text-white font-bold text-lg mb-2">{t('addText.processing')}</p>
-            <p className="text-gray-600 dark:text-gray-400 text-sm">{t('addText.addingText')}</p>
-          </div>
-        </div>
-      )}
-    </div>
+  const renderSettings = () => {
+    return (
+      <FormatPanel
+        selectedElement={selectedElement}
+        onElementUpdate={updateTextElement}
+      />
+    );
+  };
+
+  const renderActions = () => {
+    return (
+      <Button
+        onClick={handleSave}
+        disabled={isProcessing || !file}
+        className="w-full py-6 text-lg rounded-xl font-bold shadow-lg hover:shadow-xl transition-all"
+      >
+        {isProcessing ? t('common.processing') : t('common.save')}
+      </Button>
+    );
+  };
+
+  return (
+    <ToolLayout
+      title={t('tools.add-text-pdf.name')}
+      description={t('tools.add-text-pdf.description')}
+      hasFiles={!!file}
+      onUpload={handleFilesSelected}
+      isProcessing={isProcessing}
+      maxFiles={1}
+      uploadTitle={t('common.selectFile')}
+      uploadDescription={t('upload.singleFileAllowed')}
+      settings={!result ? renderSettings() : null}
+      actions={!result ? renderActions() : null}
+    >
+      {renderContent()}
+    </ToolLayout>
   );
 };

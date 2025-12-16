@@ -205,7 +205,8 @@
     "processingTime": "Verarbeitungszeit",
     "generatingThumbnails": "Erstelle Vorschaubilder...",
     "whatsNext": "Was als Nächstes?",
-    "continueWorking": "Arbeiten Sie weiter mit diesen Tools:"
+    "continueWorking": "Arbeiten Sie weiter mit diesen Tools:",
+    "selectAll": "Alle auswählen"
   },
   "upload": {
     "selectFiles": "Dateien auswählen",
@@ -863,7 +864,22 @@
     "pageNumber": "Seite {number}",
     "rotate90": "Drehen 90°",
     "deletePage": "Seite löschen",
-    "restorePage": "Seite wiederherstellen"
+    "restorePage": "Seite wiederherstellen",
+    "odd": "Ungerade",
+    "even": "Gerade",
+    "extract": "Extrahieren",
+    "delete": "Löschen",
+    "extracting": "Seiten werden extrahiert...",
+    "pagesDeleted": "Seiten gelöscht",
+    "extractSuccess": "Seiten erfolgreich extrahiert",
+    "extractError": "Fehler beim Extrahieren der Seiten",
+    "tips": {
+      "title": "Tipps",
+      "drag": "Zieh die Seiten, um sie neu anzuordnen",
+      "select": "Verwende Kontrollkästchen oder klicke, um mehrere auszuwählen",
+      "rotateDelete": "Fahre mit der Maus über eine Seite zum Drehen oder Löschen",
+      "extract": "Verwende die Symbolleiste, um ausgewählte Seiten zu extrahieren"
+    }
   },
   "addText": {
     "clickToEdit": "Zum Bearbeiten klicken",

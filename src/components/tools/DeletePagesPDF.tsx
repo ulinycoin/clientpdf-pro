@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FileUpload } from '@/components/common/FileUpload';
+import { ToolLayout } from '@/components/common/ToolLayout';
 import { ProgressBar } from '@/components/common/ProgressBar';
 import { PDFPreview } from '@/components/common/PDFPreview';
 import { useI18n } from '@/hooks/useI18n';
@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Trash2, AlertTriangle, FileStack, CheckCircle2 } from 'lucide-react';
 
 export const DeletePagesPDF: React.FC = () => {
   const { t } = useI18n();
@@ -191,269 +192,189 @@ export const DeletePagesPDF: React.FC = () => {
 
   const maxPages = file?.info?.pages || 1;
 
-  return (
-    <div className="delete-pages-pdf space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          {t('tools.delete-pages-pdf.name')}
-        </h1>
-        <p className="text-gray-600 dark:text-gray-400">
-          {t('tools.delete-pages-pdf.description')}
-        </p>
-      </div>
+  const renderContent = () => {
+    if (!file) return null;
 
-      {/* Upload section */}
-      {!file && !result && (
-        <Card>
-          <CardContent className="p-6">
-            <FileUpload
-              accept=".pdf"
-              multiple={false}
-              onFilesSelected={handleFileSelected}
-              maxSizeMB={100}
-              disabled={isProcessing}
-            />
-          </CardContent>
-        </Card>
-      )}
-
-      {/* File preview and delete options */}
-      {file && !result && (
+    if (result) {
+      return (
         <div className="space-y-6">
-          {/* Auto-loaded indicator */}
-          {loadedFromShared && (
-            <div className="bg-ocean-50 dark:bg-ocean-900/20 border border-ocean-200 dark:border-ocean-800 rounded-lg p-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl">✨</span>
-                  <div>
-                    <p className="font-medium text-ocean-700 dark:text-ocean-300">
-                      {t('common.autoLoaded')}
-                    </p>
-                    <p className="text-sm text-ocean-600 dark:text-ocean-400">
-                      {t('common.autoLoadedDescription')}
-                    </p>
-                  </div>
-                </div>
-                <Button
-                  onClick={handleRemoveFile}
-                  variant="ghost"
-                  className="text-ocean-600 dark:text-ocean-400 hover:text-ocean-800 dark:hover:text-ocean-200 font-semibold text-sm"
-                >
-                  ✕ {t('common.close')}
-                </Button>
+          <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-2 border-green-200 dark:border-green-800 rounded-2xl p-8">
+            <div className="text-center space-y-4">
+              <div className="w-20 h-20 bg-green-100 dark:bg-green-900/50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <CheckCircle2 className="w-10 h-10 text-green-600 dark:text-green-400" />
               </div>
-            </div>
-          )}
-
-          {/* File preview */}
-          <Card>
-            <CardContent className="p-6">
-              <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
-                {t('common.filePreview')}
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                {t('deletePages.success')}
               </h2>
-              <div className="flex items-start gap-6">
-                <div className="flex-shrink-0">
-                  <PDFPreview file={file.file} width={160} height={220} />
+              <p className="text-gray-600 dark:text-gray-400">
+                {t('deletePages.successDescription')}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex gap-3 justify-center">
+            <Button onClick={handleDownload} size="lg" className="bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-xl transition-all">
+              {t('common.download')}
+            </Button>
+            <Button onClick={handleReset} variant="outline" size="lg">
+              {t('deletePages.deleteAnother')}
+            </Button>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="space-y-6">
+        {/* Auto-loaded indicator */}
+        {loadedFromShared && (
+          <div className="bg-ocean-50 dark:bg-ocean-900/20 border border-ocean-200 dark:border-ocean-800 rounded-lg p-4 animate-in fade-in slide-in-from-top-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">✨</span>
+                <div>
+                  <p className="font-medium text-ocean-700 dark:text-ocean-300">
+                    {t('common.autoLoaded')}
+                  </p>
+                  <p className="text-sm text-ocean-600 dark:text-ocean-400">
+                    {t('common.autoLoadedDescription')}
+                  </p>
                 </div>
-                <div className="flex-1">
-                  <h3 className="font-semibold text-lg text-gray-900 dark:text-white mb-2">
+              </div>
+              <Button
+                variant="ghost"
+                onClick={handleRemoveFile}
+                className="text-ocean-600 dark:text-ocean-400 hover:text-ocean-800 dark:hover:text-ocean-200 font-semibold text-sm"
+              >
+                ✕ {t('common.close')}
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* File Preview Card */}
+        <Card className="overflow-hidden border-ocean-100 dark:border-gray-700">
+          <CardContent className="p-6">
+            <div className="flex items-start gap-6">
+              <div className="flex-shrink-0 relative group">
+                <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg" />
+                <PDFPreview file={file.file} width={160} height={220} />
+              </div>
+              <div className="flex-1 space-y-4">
+                <div>
+                  <h3 className="font-semibold text-lg text-gray-900 dark:text-white mb-1">
                     {file.name}
                   </h3>
-                  <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                    <p>
-                      <span className="font-medium">{t('common.totalPages')}:</span>{' '}
-                      {file.info?.pages || 0}
-                    </p>
-                    <p>
-                      <span className="font-medium">{t('common.fileSize')}:</span>{' '}
-                      {pdfService.formatFileSize(file.size)}
-                    </p>
+                  <div className="flex flex-wrap gap-3 text-sm text-gray-500 dark:text-gray-400">
+                    <span className="flex items-center gap-1">
+                      <FileStack className="w-4 h-4" />
+                      {file.info?.pages || 0} {t('common.pages')}
+                    </span>
+                    <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600 self-center" />
+                    <span>{pdfService.formatFileSize(file.size)}</span>
                   </div>
+                </div>
+
+                <div className="flex items-center gap-2">
                   <Button
+                    variant="ghost"
+                    size="sm"
                     onClick={handleRemoveFile}
                     disabled={isProcessing}
-                    variant="ghost"
-                    className="mt-4 text-sm text-error-500 hover:text-error-600 disabled:opacity-50"
+                    className="text-error-500 hover:text-error-600 hover:bg-error-50 dark:hover:bg-error-900/20"
                   >
                     {t('common.changeFile')}
                   </Button>
                 </div>
               </div>
-            </CardContent>
-          </Card>
-
-          {/* Delete settings */}
-          <Card>
-            <CardContent className="p-6">
-              <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
-                {t('deletePages.selectPages')}
-              </h2>
-
-              <div className="bg-gray-50 dark:bg-privacy-800 rounded-lg p-4 mb-4">
-                <Label className="block text-sm text-gray-600 dark:text-gray-400 mb-1">
-                  {t('deletePages.pagesToDelete')}
-                </Label>
-                <Input
-                  type="text"
-                  value={pagesToDelete}
-                  onChange={(e) => setPagesToDelete(e.target.value)}
-                  placeholder="1,3,5-7,10"
-                  disabled={isProcessing}
-                  className="w-full"
-                />
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                  {t('deletePages.hint', { total: String(maxPages) })}
-                </p>
-              </div>
-
-              {/* Warning */}
-              <div className="bg-warning-50 dark:bg-warning-900/20 border border-warning-200 dark:border-warning-800 rounded-lg p-4 mb-6">
-                <div className="flex items-start gap-3">
-                  <span className="text-2xl">⚠️</span>
-                  <div>
-                    <p className="font-medium text-warning-700 dark:text-warning-300">
-                      {t('deletePages.warning')}
-                    </p>
-                    <p className="text-sm text-warning-600 dark:text-warning-400 mt-1">
-                      {t('deletePages.warningDescription')}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Delete button */}
-              <Button
-                onClick={handleDelete}
-                disabled={isProcessing || !file || !pagesToDelete}
-                className="btn btn-primary w-full text-lg py-3"
-              >
-                {isProcessing ? t('common.processing') : t('deletePages.deleteButton')}
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      )}
-
-      {/* Progress */}
-      {isProcessing && (
-        <Card>
-          <CardContent className="p-6">
-            <ProgressBar progress={progress} message={progressMessage} />
+            </div>
           </CardContent>
         </Card>
-      )}
 
-      {/* Result */}
-      {result && (
-        <div className="space-y-6">
-          <Card>
-            <CardContent className="p-8">
-              <div className="text-center space-y-4">
-                <div className="text-6xl">✅</div>
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {t('deletePages.success')}
-                </h2>
-                <p className="text-gray-600 dark:text-gray-400">
-                  {t('deletePages.successDescription')}
-                </p>
+        {isProcessing && (
+          <div className="mt-8">
+            <ProgressBar progress={progress} message={progressMessage} />
+          </div>
+        )}
+      </div>
+    );
+  };
 
-                <div className="flex gap-3 justify-center mt-6 pt-4">
-                  <Button onClick={handleDownload} size="lg" className="px-8 !bg-green-600 hover:!bg-green-700 !text-white">
-                    {t('common.download')}
-                  </Button>
-                  <Button onClick={handleReset} variant="outline" size="lg">
-                    {t('deletePages.deleteAnother')}
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+  const renderSettings = () => {
+    return (
+      <div className="space-y-6">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+          <Trash2 className="w-5 h-5 text-red-500" />
+          {t('deletePages.selectPages')}
+        </h3>
 
-          {/* Quick Actions */}
-          <Card>
-            <CardContent className="p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                {t('deletePages.quickActions.title')}
-              </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                {t('deletePages.quickActions.description')}
+        {/* Pages Input */}
+        <div className="space-y-4">
+          <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4">
+            <Label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">
+              {t('deletePages.pagesToDelete')}
+            </Label>
+            <Input
+              type="text"
+              value={pagesToDelete}
+              onChange={(e) => setPagesToDelete(e.target.value)}
+              placeholder="e.g. 1, 3, 5-7"
+              disabled={isProcessing}
+              className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700"
+            />
+            <p className="text-xs text-gray-500 mt-2">
+              {t('deletePages.hint', { total: String(maxPages) })}
+            </p>
+          </div>
+
+          {/* Warning */}
+          <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl p-4 flex gap-3">
+            <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-500 flex-shrink-0" />
+            <div className="text-sm">
+              <p className="font-semibold text-amber-800 dark:text-amber-400 mb-1">
+                {t('deletePages.warning')}
               </p>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                {/* Compress */}
-                <Button
-                  onClick={() => handleQuickAction('compress-pdf')}
-                  variant="outline"
-                  className="h-auto justify-start p-4 border-2 hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
-                >
-                  <span className="text-3xl">🗜️</span>
-                  <div className="text-left ml-3">
-                    <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
-                      {t('tools.compress-pdf.name')}
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      {t('deletePages.quickActions.compress')}
-                    </p>
-                  </div>
-                </Button>
-
-                {/* Protect */}
-                <Button
-                  onClick={() => handleQuickAction('protect-pdf')}
-                  variant="outline"
-                  className="h-auto justify-start p-4 border-2 hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
-                >
-                  <span className="text-3xl">🔒</span>
-                  <div className="text-left ml-3">
-                    <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
-                      {t('tools.protect-pdf.name')}
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      {t('deletePages.quickActions.protect')}
-                    </p>
-                  </div>
-                </Button>
-
-                {/* Watermark */}
-                <Button
-                  onClick={() => handleQuickAction('watermark-pdf')}
-                  variant="outline"
-                  className="h-auto justify-start p-4 border-2 hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
-                >
-                  <span className="text-3xl">💧</span>
-                  <div className="text-left ml-3">
-                    <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
-                      {t('tools.watermark-pdf.name')}
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      {t('deletePages.quickActions.watermark')}
-                    </p>
-                  </div>
-                </Button>
-
-                {/* Merge */}
-                <Button
-                  onClick={() => handleQuickAction('merge-pdf')}
-                  variant="outline"
-                  className="h-auto justify-start p-4 border-2 hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
-                >
-                  <span className="text-3xl">📎</span>
-                  <div className="text-left ml-3">
-                    <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
-                      {t('tools.merge-pdf.name')}
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      {t('deletePages.quickActions.merge')}
-                    </p>
-                  </div>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+              <p className="text-amber-700 dark:text-amber-300 text-xs">
+                {t('deletePages.warningDescription')}
+              </p>
+            </div>
+          </div>
         </div>
-      )}
-    </div>
+      </div>
+    );
+  };
+
+  const renderActions = () => {
+    return (
+      <Button
+        onClick={handleDelete}
+        disabled={isProcessing || !file || !pagesToDelete}
+        className="w-full py-6 text-lg rounded-xl font-bold shadow-lg hover:shadow-xl transition-all !bg-red-600 hover:!bg-red-700 text-white"
+      >
+        {isProcessing ? t('common.processing') : (
+          <span className="flex items-center gap-2">
+            <Trash2 className="w-5 h-5" />
+            {t('deletePages.deleteButton')}
+          </span>
+        )}
+      </Button>
+    );
+  };
+
+  return (
+    <ToolLayout
+      title={t('tools.delete-pages-pdf.name')}
+      description={t('tools.delete-pages-pdf.description')}
+      hasFiles={!!file}
+      onUpload={handleFileSelected}
+      isProcessing={isProcessing}
+      maxFiles={1}
+      uploadTitle={t('common.selectFile')}
+      uploadDescription={t('upload.singleFileAllowed')}
+      settings={!result ? renderSettings() : null}
+      actions={!result ? renderActions() : null}
+    >
+      {renderContent()}
+    </ToolLayout>
   );
 };

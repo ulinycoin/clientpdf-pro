@@ -11,7 +11,6 @@ import { useI18n } from '@/hooks/useI18n';
 import smartOrganizeService, {
   type SmartOrganizeAnalysis,
   type SmartAction,
-  type ChapterInfo,
 } from '@/services/smartOrganizeService';
 
 interface SmartOrganizePanelProps {
@@ -105,15 +104,13 @@ export const SmartOrganizePanel: React.FC<SmartOrganizePanelProps> = ({
   const ToggleSwitch = () => (
     <button
       onClick={() => setIsEnabled(!isEnabled)}
-      className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
-        isEnabled ? 'bg-ocean-500' : 'bg-gray-300 dark:bg-gray-600'
-      }`}
+      className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${isEnabled ? 'bg-ocean-500' : 'bg-gray-300 dark:bg-gray-600'
+        }`}
       aria-label={isEnabled ? 'Disable Smart Organize' : 'Enable Smart Organize'}
     >
       <span
-        className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${
-          isEnabled ? 'translate-x-5' : 'translate-x-1'
-        }`}
+        className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${isEnabled ? 'translate-x-5' : 'translate-x-1'
+          }`}
       />
     </button>
   );
@@ -255,7 +252,7 @@ export const SmartOrganizePanel: React.FC<SmartOrganizePanelProps> = ({
             </button>
 
             {expandedSection === 'actions' && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 gap-2">
                 {actions.map((action, idx) => (
                   <Button
                     key={idx}
@@ -298,7 +295,7 @@ export const SmartOrganizePanel: React.FC<SmartOrganizePanelProps> = ({
             </button>
 
             {expandedSection === 'chapters' && (
-              <div className="space-y-1">
+              <div className="space-y-1 max-h-60 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-700">
                 {analysis.chapters.map((chapter, idx) => (
                   <div
                     key={idx}
@@ -307,11 +304,11 @@ export const SmartOrganizePanel: React.FC<SmartOrganizePanelProps> = ({
                   >
                     <div className="flex items-center gap-2">
                       <span className="text-sm text-gray-400">📖</span>
-                      <span className="text-sm text-gray-700 dark:text-gray-200 truncate max-w-[200px]">
+                      <span className="text-sm text-gray-700 dark:text-gray-200 truncate max-w-[150px]">
                         {chapter.title}
                       </span>
                     </div>
-                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                    <span className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">
                       p. {chapter.startPage}
                       {chapter.endPage && ` - ${chapter.endPage}`}
                     </span>

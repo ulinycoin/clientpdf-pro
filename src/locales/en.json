@@ -149,7 +149,8 @@
     "recommended": "Recommended",
     "generatingThumbnails": "Generating thumbnails...",
     "whatsNext": "What's next?",
-    "continueWorking": "Continue working with your PDF using these tools:"
+    "continueWorking": "Continue working with your PDF using these tools:",
+    "selectAll": "Select All"
   },
   "upload": {
     "selectFiles": "Select files",
@@ -883,7 +884,24 @@
     "pageNumber": "Page {number}",
     "rotate90": "Rotate 90°",
     "deletePage": "Delete page",
-    "restorePage": "Restore page"
+    "restorePage": "Restore page",
+    "odd": "Odd",
+    "even": "Even",
+    "extract": "Extract",
+    "delete": "Delete",
+    "extracting": "Extracting pages...",
+    "pagesDeleted": "pages deleted",
+    "extractSuccess": "Pages extracted successfully",
+    "extractError": "Failed to extract pages",
+    "tips": {
+      "title": "Tips",
+      "drag": "Drag pages to reorder them",
+      "select": "Use checkboxes or click to select multiple",
+      "rotateDelete": "Hover over a page to rotate or delete",
+      "extract": "Use the toolbar to extract selected pages"
+    },
+    "addPDF": "Add PDF",
+    "appendPages": "Append pages"
   },
   "addText": {
     "clickToEdit": "Click to edit",

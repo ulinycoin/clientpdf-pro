@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FileUpload } from '@/components/common/FileUpload';
+import { ToolLayout } from '@/components/common/ToolLayout';
 import { ProgressBar } from '@/components/common/ProgressBar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -15,6 +15,7 @@ import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import type { UploadedFile, PDFFileInfo } from '@/types/pdf';
 import type { Tool } from '@/types';
 import { HASH_TOOL_MAP } from '@/types';
+import { FileCheck, type LucideIcon, Type, Move, Palette, Sliders, RotateCw } from 'lucide-react';
 
 // Configure PDF.js worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
@@ -336,11 +337,6 @@ export const WatermarkPDF: React.FC = () => {
     setProgressMessage('');
   };
 
-  const handleRemoveFile = () => {
-    setFile(null);
-    setPreviewUrl(null);
-  };
-
   const handleQuickAction = async (toolId: Tool) => {
     // Save the watermarked PDF to shared state for the next tool
     if (result?.blob) {
@@ -427,369 +423,260 @@ export const WatermarkPDF: React.FC = () => {
     }
   };
 
-  return (
-    <div className="watermark-pdf space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          {t('tools.watermark-pdf.name')}
-        </h1>
-        <p className="text-gray-600 dark:text-gray-400">
-          {t('tools.watermark-pdf.description')}
-        </p>
-      </div>
+  const renderContent = () => {
+    if (!file) return null;
 
-      {/* File Upload */}
-      {!file && (
-        <Card>
-          <CardContent className="p-6">
-            <FileUpload
-              onFilesSelected={handleFilesSelected}
-              accept=".pdf"
-              maxFiles={1}
-              maxSizeMB={50}
-            />
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Settings & Preview */}
-      {file && !result && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Settings Panel */}
-          <Card>
-            <CardContent className="p-6 space-y-4">
-              {/* File info */}
-              <div className="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-gray-700">
-                <div className="flex items-center gap-3">
-                  <span className="text-3xl">📄</span>
-                  <div>
-                    <h3 className="font-medium text-gray-900 dark:text-white">{file.name}</h3>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      {(file.size / 1024 / 1024).toFixed(2)} MB
-                      {file.info && ` • ${file.info.pages} ${t('compress.pages')}`}
-                    </p>
+    if (result) {
+      return (
+        <div className="space-y-6">
+          <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-2 border-green-200 dark:border-green-800 rounded-2xl p-8">
+            <div className="text-center space-y-4">
+              <div className="w-20 h-20 bg-green-100 dark:bg-green-900/50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <FileCheck className="w-10 h-10 text-green-600 dark:text-green-400" />
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                {t('watermark.success.title')}
+              </h2>
+              <div className="grid grid-cols-2 gap-4 max-w-md mx-auto mt-6 text-sm">
+                <div className="bg-white/50 dark:bg-gray-800/50 rounded-lg p-3">
+                  <div className="text-gray-600 dark:text-gray-400">{t('watermark.success.size')}</div>
+                  <div className="font-bold text-gray-900 dark:text-white">
+                    {(result.metadata.finalSize / 1024 / 1024).toFixed(2)} MB
                   </div>
                 </div>
-                <Button
-                  onClick={handleRemoveFile}
-                  variant="outline"
-                  size="sm"
-                  disabled={isProcessing}
-                >
-                  {t('common.remove')}
-                </Button>
-              </div>
-
-              {/* Watermark Text */}
-              <div>
-                <Label>{t('watermark.text')}</Label>
-                <Input
-                  type="text"
-                  value={settings.text}
-                  onChange={(e) => setSettings({ ...settings, text: e.target.value })}
-                  disabled={isProcessing}
-                  placeholder={t('watermark.watermarkPlaceholder')}
-                  className="mt-2"
-                />
-              </div>
-
-              {/* Position */}
-              <div>
-                <Label>{t('watermark.position')}</Label>
-                <Select
-                  value={settings.position}
-                  onValueChange={(value) => setSettings({ ...settings, position: value as Position })}
-                  disabled={isProcessing}
-                >
-                  <SelectTrigger className="mt-2">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="diagonal">{t('watermark.positions.diagonal')}</SelectItem>
-                    <SelectItem value="center">{t('watermark.positions.center')}</SelectItem>
-                    <SelectItem value="top-left">{t('watermark.positions.topLeft')}</SelectItem>
-                    <SelectItem value="top-right">{t('watermark.positions.topRight')}</SelectItem>
-                    <SelectItem value="bottom-left">{t('watermark.positions.bottomLeft')}</SelectItem>
-                    <SelectItem value="bottom-right">{t('watermark.positions.bottomRight')}</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Color */}
-              <div>
-                <Label>{t('watermark.color')}</Label>
-                <div className="grid grid-cols-4 gap-2 mt-2">
-                  {colorPresets.map((preset, index) => (
-                    <Button
-                      key={index}
-                      type="button"
-                      onClick={() => setSettings({ ...settings, color: preset.value })}
-                      disabled={isProcessing}
-                      variant="outline"
-                      className={`px-3 py-2 h-auto ${settings.color.r === preset.value.r &&
-                          settings.color.g === preset.value.g &&
-                          settings.color.b === preset.value.b
-                          ? 'border-ocean-500 bg-ocean-50 dark:bg-ocean-900/20'
-                          : ''
-                        }`}
-                    >
-                      <div
-                        className="w-full h-6 rounded"
-                        style={{
-                          backgroundColor: `rgb(${preset.value.r}, ${preset.value.g}, ${preset.value.b})`,
-                        }}
-                      />
-                      <span className="text-xs text-gray-600 dark:text-gray-400 mt-1 block">
-                        {preset.name}
-                      </span>
-                    </Button>
-                  ))}
+                <div className="bg-white/50 dark:bg-gray-800/50 rounded-lg p-3">
+                  <div className="text-gray-600 dark:text-gray-400">{t('watermark.success.watermarkApplied')}</div>
+                  <div className="font-bold text-gray-900 dark:text-white truncate" title={result.metadata.watermarkText}>
+                    {result.metadata.watermarkText}
+                  </div>
                 </div>
               </div>
+            </div>
+          </div>
+          <div className="flex gap-3 justify-center">
+            <Button onClick={handleDownload} size="lg" className="bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-xl transition-all">
+              {t('common.download')}
+            </Button>
+            <Button variant="outline" onClick={handleReset} size="lg">
+              {t('common.newFile')}
+            </Button>
+          </div>
+        </div>
+      );
+    }
 
-              {/* Opacity */}
-              <div>
-                <Label>
-                  {t('watermark.opacity')}: {settings.opacity}%
-                </Label>
-                <input
-                  type="range"
-                  min="10"
-                  max="100"
-                  step="5"
-                  value={settings.opacity}
-                  onChange={(e) => setSettings({ ...settings, opacity: parseInt(e.target.value) })}
-                  disabled={isProcessing}
-                  className="w-full mt-2"
+    return (
+      <>
+        {/* Preview Panel (Main Area) */}
+        <div className="relative bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden shadow-inner border border-gray-200 dark:border-gray-700" style={{ minHeight: '600px' }}>
+          {previewUrl ? (
+            <div className="w-full h-full flex items-center justify-center p-8 bg-dots-light dark:bg-dots-dark">
+              <div className="relative shadow-2xl rounded-sm overflow-hidden" style={{ maxHeight: '550px' }}>
+                <img
+                  src={previewUrl}
+                  alt="PDF Preview"
+                  className="max-h-[550px] w-auto object-contain"
                 />
-              </div>
-
-              {/* Font Size */}
-              <div>
-                <Label>
-                  {t('watermark.fontSize')}: {settings.fontSize}pt
-                </Label>
-                <input
-                  type="range"
-                  min="24"
-                  max="96"
-                  step="4"
-                  value={settings.fontSize}
-                  onChange={(e) => setSettings({ ...settings, fontSize: parseInt(e.target.value) })}
-                  disabled={isProcessing}
-                  className="w-full mt-2"
-                />
-              </div>
-
-              {/* Rotation (manual override) */}
-              <div>
-                <Label>
-                  {t('watermark.rotation')}: {settings.rotation}°
-                </Label>
-                <input
-                  type="range"
-                  min="-90"
-                  max="90"
-                  step="5"
-                  value={settings.rotation}
-                  onChange={(e) => setSettings({ ...settings, rotation: parseInt(e.target.value) })}
-                  disabled={isProcessing}
-                  className="w-full mt-2"
-                />
-              </div>
-
-              {/* Apply Button */}
-              <Button
-                onClick={handleAddWatermark}
-                disabled={isProcessing || !settings.text.trim()}
-                className="w-full"
-              >
-                {isProcessing ? t('watermark.processing') : t('watermark.apply')}
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Preview Panel */}
-          <Card>
-            <CardContent className="p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                {t('watermark.preview')}
-              </h3>
-              <div className="relative bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden" style={{ minHeight: '400px' }}>
-                {previewUrl ? (
-                  <>
-                    <img
-                      src={previewUrl}
-                      alt="PDF Preview"
-                      className="w-full h-auto"
-                    />
-                    {settings.text && (
-                      <div
-                        className="absolute"
-                        style={getPreviewStyle()}
-                      >
-                        {settings.text}
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <div className="flex items-center justify-center h-full min-h-[400px]">
-                    <p className="text-gray-500 dark:text-gray-400">{t('watermark.loadingPreview')}</p>
+                {settings.text && (
+                  <div
+                    className="absolute"
+                    style={getPreviewStyle()}
+                  >
+                    {settings.text}
                   </div>
                 )}
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          ) : (
+            <div className="flex items-center justify-center h-full min-h-[400px]">
+              <div className="flex flex-col items-center gap-3">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ocean-500"></div>
+                <p className="text-gray-500 dark:text-gray-400">{t('watermark.loadingPreview')}</p>
+              </div>
+            </div>
+          )}
         </div>
-      )}
 
-      {/* Progress */}
-      {isProcessing && (
-        <Card>
-          <CardContent className="p-6">
-            <ProgressBar
-              progress={progress}
-              message={progressMessage}
-              variant="default"
+        {isProcessing && (
+          <div className="mt-8">
+            <ProgressBar progress={progress} message={progressMessage} />
+          </div>
+        )}
+      </>
+    );
+  };
+
+  const renderSettings = () => {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+            <Sliders className="w-5 h-5 text-ocean-500" />
+            {t('watermark.settings')}
+          </h3>
+        </div>
+
+        {/* Text Input */}
+        <div className="space-y-3">
+          <Label className="text-sm font-medium flex items-center gap-2">
+            <Type className="w-4 h-4 text-gray-500" />
+            {t('watermark.text')}
+          </Label>
+          <Input
+            type="text"
+            value={settings.text}
+            onChange={(e) => setSettings({ ...settings, text: e.target.value })}
+            disabled={isProcessing}
+            placeholder={t('watermark.watermarkPlaceholder')}
+            className="rounded-xl border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-ocean-500"
+          />
+        </div>
+
+        {/* Position */}
+        <div className="space-y-3">
+          <Label className="text-sm font-medium flex items-center gap-2">
+            <Move className="w-4 h-4 text-gray-500" />
+            {t('watermark.position')}
+          </Label>
+          <Select
+            value={settings.position}
+            onValueChange={(value) => setSettings({ ...settings, position: value as Position })}
+            disabled={isProcessing}
+          >
+            <SelectTrigger className="w-full rounded-xl border-gray-200 dark:border-gray-700">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="diagonal">{t('watermark.positions.diagonal')}</SelectItem>
+              <SelectItem value="center">{t('watermark.positions.center')}</SelectItem>
+              <SelectItem value="top-left">{t('watermark.positions.topLeft')}</SelectItem>
+              <SelectItem value="top-right">{t('watermark.positions.topRight')}</SelectItem>
+              <SelectItem value="bottom-left">{t('watermark.positions.bottomLeft')}</SelectItem>
+              <SelectItem value="bottom-right">{t('watermark.positions.bottomRight')}</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Color Presets */}
+        <div className="space-y-3">
+          <Label className="text-sm font-medium flex items-center gap-2">
+            <Palette className="w-4 h-4 text-gray-500" />
+            {t('watermark.color')}
+          </Label>
+          <div className="grid grid-cols-4 gap-2">
+            {colorPresets.map((preset, index) => (
+              <button
+                key={index}
+                type="button"
+                onClick={() => setSettings({ ...settings, color: preset.value })}
+                disabled={isProcessing}
+                className={`
+                  relative h-10 w-full rounded-lg transition-all duration-200 border-2
+                  ${settings.color.r === preset.value.r &&
+                    settings.color.g === preset.value.g &&
+                    settings.color.b === preset.value.b
+                    ? 'border-ocean-500 scale-105 shadow-md'
+                    : 'border-transparent hover:border-gray-200 dark:hover:border-gray-700'
+                  }
+                `}
+                style={{
+                  backgroundColor: `rgb(${preset.value.r}, ${preset.value.g}, ${preset.value.b})`,
+                }}
+                title={preset.name}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Sliders Area */}
+        <div className="space-y-6 pt-4 border-t border-gray-100 dark:border-gray-800">
+          {/* Opacity */}
+          <div className="space-y-3">
+            <div className="flex justify-between items-center">
+              <Label className="text-sm font-medium">{t('watermark.opacity')}</Label>
+              <span className="text-xs text-gray-500 font-mono">{settings.opacity}%</span>
+            </div>
+            <input
+              type="range"
+              min="10"
+              max="100"
+              step="5"
+              value={settings.opacity}
+              onChange={(e) => setSettings({ ...settings, opacity: parseInt(e.target.value) })}
+              disabled={isProcessing}
+              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 accent-ocean-500"
             />
-          </CardContent>
-        </Card>
-      )}
+          </div>
 
-      {/* Result */}
-      {result && (
-        <Card>
-          <CardContent className="p-6 space-y-4">
-            <div className="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-gray-700">
-              <div>
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                  {t('watermark.success.title')}
-                </h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  {t('watermark.success.watermarkApplied')}: "{result.metadata.watermarkText}"
-                </p>
-              </div>
-              <Button
-                onClick={handleReset}
-                variant="outline"
-                size="sm"
-              >
-                {t('common.newFile')}
-              </Button>
+          {/* Font Size */}
+          <div className="space-y-3">
+            <div className="flex justify-between items-center">
+              <Label className="text-sm font-medium">{t('watermark.fontSize')}</Label>
+              <span className="text-xs text-gray-500 font-mono">{settings.fontSize}pt</span>
             </div>
+            <input
+              type="range"
+              min="24"
+              max="96"
+              step="4"
+              value={settings.fontSize}
+              onChange={(e) => setSettings({ ...settings, fontSize: parseInt(e.target.value) })}
+              disabled={isProcessing}
+              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 accent-ocean-500"
+            />
+          </div>
 
-            {/* Stats */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
-                <p className="text-sm text-gray-500 dark:text-gray-400">{t('watermark.success.pages')}</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {result.metadata.pageCount}
-                </p>
-              </div>
-              <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
-                <p className="text-sm text-gray-500 dark:text-gray-400">{t('watermark.success.size')}</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {(result.metadata.finalSize / 1024 / 1024).toFixed(2)} MB
-                </p>
-              </div>
+          {/* Rotation */}
+          <div className="space-y-3">
+            <div className="flex justify-between items-center">
+              <Label className="text-sm font-medium flex items-center gap-2">
+                <RotateCw className="w-3 h-3 text-gray-500" />
+                {t('watermark.rotation')}
+              </Label>
+              <span className="text-xs text-gray-500 font-mono">{settings.rotation}°</span>
             </div>
+            <input
+              type="range"
+              min="-90"
+              max="90"
+              step="5"
+              value={settings.rotation}
+              onChange={(e) => setSettings({ ...settings, rotation: parseInt(e.target.value) })}
+              disabled={isProcessing}
+              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 accent-ocean-500"
+            />
+          </div>
+        </div>
+      </div>
+    );
+  };
 
-            {/* Download Button */}
-            <Button
-              onClick={handleDownload}
-              size="lg"
-              className="px-8 !bg-green-600 hover:!bg-green-700 !text-white w-full"
-            >
-              {t('common.download')}
-            </Button>
+  const renderActions = () => {
+    return (
+      <Button
+        onClick={handleAddWatermark}
+        disabled={isProcessing || !settings.text.trim()}
+        className="w-full py-6 text-lg rounded-xl font-bold shadow-lg hover:shadow-xl transition-all"
+      >
+        {t('watermark.apply')}
+      </Button>
+    );
+  };
 
-            {/* Quick Actions */}
-            <Card>
-              <CardContent className="p-6">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                  {t('watermark.quickActions.title')}
-                </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                  {t('watermark.quickActions.description')}
-                </p>
-
-                {/* Action buttons grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                  {/* Compress */}
-                  <Button
-                    onClick={() => handleQuickAction('compress-pdf')}
-                    variant="outline"
-                    className="h-auto justify-start p-4 border-2 hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
-                  >
-                    <span className="text-3xl">🗜️</span>
-                    <div className="text-left ml-3">
-                      <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
-                        {t('tools.compress-pdf.name')}
-                      </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
-                        {t('watermark.quickActions.compress')}
-                      </p>
-                    </div>
-                  </Button>
-
-                  {/* Protect */}
-                  <Button
-                    onClick={() => handleQuickAction('protect-pdf')}
-                    variant="outline"
-                    className="h-auto justify-start p-4 border-2 hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
-                  >
-                    <span className="text-3xl">🔒</span>
-                    <div className="text-left ml-3">
-                      <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
-                        {t('tools.protect-pdf.name')}
-                      </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
-                        {t('watermark.quickActions.protect')}
-                      </p>
-                    </div>
-                  </Button>
-
-                  {/* Split */}
-                  <Button
-                    onClick={() => handleQuickAction('split-pdf')}
-                    variant="outline"
-                    className="h-auto justify-start p-4 border-2 hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
-                  >
-                    <span className="text-3xl">✂️</span>
-                    <div className="text-left ml-3">
-                      <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
-                        {t('tools.split-pdf.name')}
-                      </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
-                        {t('watermark.quickActions.split')}
-                      </p>
-                    </div>
-                  </Button>
-
-                  {/* Merge */}
-                  <Button
-                    onClick={() => handleQuickAction('merge-pdf')}
-                    variant="outline"
-                    className="h-auto justify-start p-4 border-2 hover:border-ocean-500 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 group"
-                  >
-                    <span className="text-3xl">📑</span>
-                    <div className="text-left ml-3">
-                      <p className="font-medium text-gray-900 dark:text-white group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
-                        {t('tools.merge-pdf.name')}
-                      </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
-                        {t('watermark.quickActions.merge')}
-                      </p>
-                    </div>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </CardContent>
-        </Card>
-      )}
-
-    </div>
+  return (
+    <ToolLayout
+      title={t('tools.watermark-pdf.name')}
+      description={t('tools.watermark-pdf.description')}
+      hasFiles={!!file}
+      onUpload={handleFilesSelected}
+      isProcessing={isProcessing}
+      maxFiles={1}
+      uploadTitle={t('common.selectFile')}
+      uploadDescription={t('upload.singleFileAllowed')}
+      settings={!result ? renderSettings() : null}
+      actions={!result ? renderActions() : null}
+    >
+      {renderContent()}
+    </ToolLayout>
   );
 };

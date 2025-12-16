@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { FileUpload } from '@/components/common/FileUpload';
+import { ToolLayout } from '@/components/common/ToolLayout';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { useI18n } from '@/hooks/useI18n';
 import { useSharedFile } from '@/hooks/useSharedFile';
 import { Canvas } from './AddFormFieldsPDF/Canvas';
@@ -10,8 +12,7 @@ import type { UploadedFile } from '@/types/pdf';
 import type { Tool } from '@/types';
 import { HASH_TOOL_MAP } from '@/types';
 import type { FormField } from '@/types/formFields';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { CheckCircle2, Copy } from 'lucide-react';
 
 export const AddFormFieldsPDF: React.FC = () => {
   const { t } = useI18n();
@@ -28,6 +29,7 @@ export const AddFormFieldsPDF: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [scale, setScale] = useState(1);
+  const [duplicateMode, setDuplicateMode] = useState(false); // New state to track if we just duplicated
 
   // Auto-load shared file
   useEffect(() => {
@@ -103,6 +105,24 @@ export const AddFormFieldsPDF: React.FC = () => {
     }
   }, [selectedFieldId]);
 
+  // Handle Duplication (Clone selected field)
+  const handleDuplicateField = useCallback(() => {
+    if (!selectedFieldId) return;
+    const fieldToClone = formFields.find(f => f.id === selectedFieldId);
+    if (!fieldToClone) return;
+
+    const newField: FormField = {
+      ...fieldToClone,
+      id: `field_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      name: `${fieldToClone.name}_copy`,
+      x: fieldToClone.x + 20, // Offset slightly
+      y: fieldToClone.y + 20,
+    };
+
+    setFormFields(prev => [...prev, newField]);
+    setSelectedFieldId(newField.id);
+  }, [selectedFieldId, formFields]);
+
   // Move field
   const handleMoveField = useCallback((fieldId: string, x: number, y: number) => {
     handleUpdateField(fieldId, { x, y });
@@ -164,199 +184,66 @@ export const AddFormFieldsPDF: React.FC = () => {
     setSelectedFieldId(null);
   };
 
-  const handleQuickAction = (toolId: Tool) => {
+  const handleQuickAction = async (toolId: Tool) => {
     if (result) {
       setSharedFile(result, file?.name.replace('.pdf', '_with_form.pdf') || 'document_with_form.pdf', 'add-form-fields-pdf');
     }
+    // Small delay to ensure state is updated before navigation
+    await new Promise(resolve => setTimeout(resolve, 100));
     window.location.hash = HASH_TOOL_MAP[toolId];
   };
 
-  // If no file, show upload zone
-  if (!file) {
-    return (
-      <div className="add-form-fields-pdf space-y-6">
-        {/* Header */}
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-            {t('tools.add-form-fields-pdf.name')}
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            {t('tools.add-form-fields-pdf.description')}
-          </p>
-        </div>
+  const renderContent = () => {
+    if (!file) return null;
 
-        {/* Upload section */}
-        <Card>
-          <CardContent className="p-6">
-            <FileUpload
-              onFilesSelected={handleFilesSelected}
-              accept=".pdf"
-              multiple={false}
-              maxSizeMB={100}
-            />
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  // If result, show success and download
-  if (result) {
-    return (
-      <Card className="p-8">
-        <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">
-          {t('tools.add-form-fields-pdf.name')}
-        </h2>
-
-        <div className="mt-6 space-y-4">
-          <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-            <h3 className="text-lg font-semibold text-green-800 dark:text-green-300 mb-2">
-              ✓ {t('common.success')}
-            </h3>
-            <div className="text-sm text-green-700 dark:text-green-400 space-y-1">
-              <p>{t('addFormFields.addedCount', { count: formFields.length })}</p>
-              <p>{t('addFormFields.originalSize', { size: (file.size / 1024).toFixed(2) })}</p>
-              <p>{t('addFormFields.newSize', { size: (result.size / 1024).toFixed(2) })}</p>
+    if (result) {
+      return (
+        <div className="space-y-6">
+          <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-2 border-green-200 dark:border-green-800 rounded-2xl p-8">
+            <div className="text-center space-y-4">
+              <div className="w-20 h-20 bg-green-100 dark:bg-green-900/50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <CheckCircle2 className="w-10 h-10 text-green-600 dark:text-green-400" />
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                {t('common.success')}
+              </h2>
+              <div className="text-gray-600 dark:text-gray-400 space-y-1">
+                <p>{t('addFormFields.addedCount', { count: formFields.length })}</p>
+                <p>{t('addFormFields.newSize', { size: (result.size / 1024).toFixed(2) })}</p>
+              </div>
             </div>
           </div>
-
-          <div className="flex gap-4">
-            <Button
-              onClick={handleDownload}
-              className="flex-1"
-            >
+          <div className="flex gap-3 justify-center">
+            <Button onClick={handleDownload} size="lg" className="bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-xl transition-all">
               {t('common.download')}
             </Button>
-            <Button
-              onClick={handleReset}
-              variant="outline"
-            >
+            <Button variant="outline" onClick={handleReset} size="lg">
               {t('common.processAnother')}
             </Button>
           </div>
         </div>
+      );
+    }
 
-        {/* Quick Actions */}
-        <Card className="p-6 mt-6">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-            {t('common.whatsNext')}
-          </h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-            Continue working with your PDF using these tools:
-          </p>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            <Button
-              onClick={() => handleQuickAction('compress-pdf')}
-              variant="outline"
-              className="flex items-center gap-3 p-4 h-auto justify-start"
-            >
-              <span className="text-3xl">🗜️</span>
-              <div className="text-left">
-                <p className="font-medium text-gray-900 dark:text-white">
-                  {t('tools.compress-pdf.name')}
-                </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Reduce file size
-                </p>
-              </div>
-            </Button>
-
-            <Button
-              onClick={() => handleQuickAction('protect-pdf')}
-              variant="outline"
-              className="flex items-center gap-3 p-4 h-auto justify-start"
-            >
-              <span className="text-3xl">🔒</span>
-              <div className="text-left">
-                <p className="font-medium text-gray-900 dark:text-white">
-                  {t('tools.protect-pdf.name')}
-                </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Add password
-                </p>
-              </div>
-            </Button>
-
-            <Button
-              onClick={() => handleQuickAction('flatten-pdf')}
-              variant="outline"
-              className="flex items-center gap-3 p-4 h-auto justify-start"
-            >
-              <span className="text-3xl">📋</span>
-              <div className="text-left">
-                <p className="font-medium text-gray-900 dark:text-white">
-                  {t('tools.flatten-pdf.name')}
-                </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Flatten form
-                </p>
-              </div>
-            </Button>
-
-            <Button
-              onClick={() => handleQuickAction('split-pdf')}
-              variant="outline"
-              className="flex items-center gap-3 p-4 h-auto justify-start"
-            >
-              <span className="text-3xl">✂️</span>
-              <div className="text-left">
-                <p className="font-medium text-gray-900 dark:text-white">
-                  {t('tools.split-pdf.name')}
-                </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Extract pages
-                </p>
-              </div>
-            </Button>
-          </div>
-        </Card>
-      </Card>
-    );
-  }
-
-  // Main editor interface
-  return (
-    <Card className="flex flex-col" style={{ height: 'calc(100vh - 120px)', minHeight: '800px' }}>
-      {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-          {t('tools.add-form-fields-pdf.name')}
-        </h2>
-        <div className="bg-gray-100 dark:bg-gray-700 rounded-lg px-3 py-1">
-          <div className="text-xs font-medium text-gray-900 dark:text-white">
-            {t('addFormFields.fields', { count: formFields.length })}
-          </div>
-        </div>
-      </div>
-
-      {/* Toolbar */}
-      <div className="flex-shrink-0">
-        <Toolbar
-          currentPage={currentPage}
-          totalPages={totalPages}
-          scale={scale}
-          onPageChange={setCurrentPage}
-          onScaleChange={setScale}
-          onSave={handleSave}
-          onAddField={handleAddField}
-        />
-      </div>
-
-      {/* Main content */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* Field panel */}
+    return (
+      <div className="flex flex-col h-full space-y-4">
+        {/* Toolbar */}
         <div className="flex-shrink-0">
-          <FieldPanel
-            selectedField={selectedField}
-            onFieldUpdate={handleUpdateField}
-            onFieldDelete={handleDeleteField}
+          <Toolbar
+            currentPage={currentPage}
+            totalPages={totalPages}
+            scale={scale}
+            onPageChange={setCurrentPage}
+            onScaleChange={setScale}
+            onSave={handleSave}
+            onAddField={handleAddField}
+            hideSave={true} // Hide save here as it's in actions
           />
         </div>
 
-        {/* Canvas area */}
-        <div className="flex-1 flex flex-col">
-          <div className="flex-1 overflow-hidden">
+        {/* Canvas Area */}
+        <div className="flex-1 overflow-hidden bg-gray-100 dark:bg-gray-800 rounded-xl relative border border-gray-200 dark:border-gray-700">
+          <div className="absolute inset-0 overflow-auto flex items-center justify-center p-4">
             <Canvas
               pdfFile={file?.file || null}
               currentPage={currentPage}
@@ -370,36 +257,68 @@ export const AddFormFieldsPDF: React.FC = () => {
               onTotalPagesChange={setTotalPages}
             />
           </div>
+        </div>
 
-          {/* Status bar */}
-          <div className="p-2 border-t bg-gray-50 dark:bg-gray-900 text-xs text-gray-600 dark:text-gray-400 flex justify-between flex-shrink-0">
-            <div>
-              {t('addFormFields.fields', { count: formFields.length })}
-              {selectedField && ` | ${t('addFormFields.selected', { name: selectedField.name, type: selectedField.type })}`}
-            </div>
-            <div>
-              {t('addFormFields.zoom', { scale: Math.round(scale * 100) })} | {t('addFormFields.pageOf', { current: currentPage + 1, total: totalPages })}
-            </div>
-          </div>
+        {/* Status Bar */}
+        <div className="text-xs text-center text-gray-500">
+          {t('addFormFields.fields', { count: formFields.length })}
+          {selectedField && ` | ${selectedField.name} (${selectedField.type})`}
         </div>
       </div>
+    );
+  };
 
-      {/* Processing overlay */}
-      {isProcessing && (
-        <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <Card className="p-8 text-center shadow-2xl">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-ocean-500 mx-auto mb-6"></div>
-            <p className="text-gray-900 dark:text-white font-bold text-lg mb-2">{progress.message}</p>
-            <div className="w-64 bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-2">
-              <div
-                className="bg-ocean-500 h-2 rounded-full transition-all"
-                style={{ width: `${progress.percent}%` }}
-              />
-            </div>
-            <p className="text-gray-600 dark:text-gray-400 text-sm">{Math.round(progress.percent)}%</p>
-          </Card>
+  const renderSettings = () => {
+    if (!selectedField) {
+      return (
+        <div className="text-center text-gray-500 py-8">
+          <p>{t('addFormFields.selectFieldToEdit')}</p>
+          <Button variant="outline" size="sm" className="mt-4" onClick={() => handleAddField('text')}>
+            + Add New Field
+          </Button>
         </div>
-      )}
-    </Card>
+      );
+    }
+    return (
+      <div className="space-y-4">
+        <FieldPanel
+          selectedField={selectedField}
+          onFieldUpdate={handleUpdateField}
+          onFieldDelete={handleDeleteField}
+        />
+        <Button variant="outline" className="w-full" onClick={handleDuplicateField}>
+          <Copy className="w-4 h-4 mr-2" /> Duplicate Field
+        </Button>
+      </div>
+    );
+  };
+
+  const renderActions = () => {
+    return (
+      <Button
+        onClick={handleSave}
+        disabled={isProcessing || !file || formFields.length === 0}
+        className="w-full py-6 text-lg rounded-xl font-bold shadow-lg hover:shadow-xl transition-all"
+      >
+        {isProcessing ? t('common.processing') : t('common.save')}
+      </Button>
+    );
+  };
+
+  return (
+    <ToolLayout
+      title={t('tools.add-form-fields-pdf.name')}
+      description={t('tools.add-form-fields-pdf.description')}
+      hasFiles={!!file}
+      onUpload={handleFilesSelected}
+      isProcessing={isProcessing}
+      maxFiles={1}
+      uploadTitle={t('common.selectFile')}
+      uploadDescription={t('upload.singleFileAllowed')}
+      settings={!result ? renderSettings() : null}
+      actions={!result ? renderActions() : null}
+    >
+      {renderContent()}
+    </ToolLayout>
   );
 };

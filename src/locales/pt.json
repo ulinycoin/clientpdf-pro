@@ -149,7 +149,8 @@
         "recommended": "Recomendado",
         "generatingThumbnails": "Gerando miniaturas...",
         "whatsNext": "O que vem a seguir?",
-        "continueWorking": "Continue trabalhando com seu PDF usando estas ferramentas:"
+        "continueWorking": "Continue trabalhando com seu PDF usando estas ferramentas:",
+        "selectAll": "Selecionar tudo"
     },
     "upload": {
         "selectFiles": "Selecionar arquivos",
@@ -820,7 +821,22 @@
         "pageNumber": "Página {number}",
         "rotate90": "Girar 90°",
         "deletePage": "Excluir página",
-        "restorePage": "Restaurar página"
+        "restorePage": "Restaurar página",
+        "odd": "Ímpares",
+        "even": "Pares",
+        "extract": "Extrair",
+        "delete": "Excluir",
+        "extracting": "Extraindo páginas...",
+        "pagesDeleted": "páginas excluídas",
+        "extractSuccess": "Páginas extraídas com sucesso",
+        "extractError": "Falha ao extrair páginas",
+        "tips": {
+            "title": "Dicas",
+            "drag": "Arraste as páginas para reordená-las",
+            "select": "Use as caixas de seleção ou clique para selecionar várias",
+            "rotateDelete": "Passe o mouse sobre uma página para girar ou excluir",
+            "extract": "Use a barra de ferramentas para extrair as páginas selecionadas"
+        }
     },
     "addText": {
         "clickToEdit": "Clique para editar",

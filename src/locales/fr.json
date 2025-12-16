@@ -213,7 +213,8 @@
     "recommended": "Recommandé",
     "generatingThumbnails": "Génération des vignettes...",
     "whatsNext": "Et après ?",
-    "continueWorking": "Continuez avec ces outils :"
+    "continueWorking": "Continuez avec ces outils :",
+    "selectAll": "Tout sélectionner"
   },
   "upload": {
     "selectFiles": "Sélectionner des fichiers",
@@ -871,7 +872,22 @@
     "pageNumber": "Page {number}",
     "rotate90": "Tourner 90°",
     "deletePage": "Supprimer page",
-    "restorePage": "Restaurer page"
+    "restorePage": "Restaurer page",
+    "odd": "Impaires",
+    "even": "Paires",
+    "extract": "Extraire",
+    "delete": "Supprimer",
+    "extracting": "Extraction des pages...",
+    "pagesDeleted": "pages supprimées",
+    "extractSuccess": "Pages extraites avec succès",
+    "extractError": "Échec de l'extraction des pages",
+    "tips": {
+      "title": "Conseils",
+      "drag": "Faites glisser les pages pour les réorganiser",
+      "select": "Utilisez les cases à cocher ou cliquez pour en sélectionner plusieurs",
+      "rotateDelete": "Survolez une page pour la faire pivoter ou la supprimer",
+      "extract": "Utilisez la barre d'outils pour extraire les pages sélectionnées"
+    }
   },
   "addText": {
     "clickToEdit": "Cliquer pour éditer",

@@ -149,7 +149,8 @@
         "recommended": "推荐",
         "generatingThumbnails": "生成缩略图...",
         "whatsNext": "接下来做什么？",
-        "continueWorking": "使用这些工具继续处理您的 PDF："
+        "continueWorking": "使用这些工具继续处理您的 PDF：",
+        "selectAll": "全选"
     },
     "upload": {
         "selectFiles": "选择文件",
@@ -862,7 +863,22 @@
         "pageNumber": "第 {number} 页",
         "rotate90": "旋转 90°",
         "deletePage": "删除页面",
-        "restorePage": "恢复页面"
+        "restorePage": "恢复页面",
+        "odd": "奇数",
+        "even": "偶数",
+        "extract": "提取",
+        "delete": "删除",
+        "extracting": "正在提取页面...",
+        "pagesDeleted": "页面已删除",
+        "extractSuccess": "页面提取成功",
+        "extractError": "无法提取页面",
+        "tips": {
+            "title": "提示",
+            "drag": "拖动页面以重新排序",
+            "select": "使用复选框或点击以选择多个",
+            "rotateDelete": "将鼠标悬停在页面上以旋转或删除",
+            "extract": "使用工具栏提取选定的页面"
+        }
     },
     "addText": {
         "clickToEdit": "点击编辑",

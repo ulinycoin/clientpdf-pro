@@ -73,6 +73,81 @@ export class PDFService {
   }
 
   /**
+   * Render a specific page as an image
+   */
+  async renderPageAsImage(
+    file: File,
+    pageNumber: number,
+    scale: number = 2.0
+  ): Promise<string> {
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+      const pdf = await loadingTask.promise;
+
+      if (pageNumber < 1 || pageNumber > pdf.numPages) {
+        throw new Error(`Page ${pageNumber} out of bounds (1-${pdf.numPages})`);
+      }
+
+      const page = await pdf.getPage(pageNumber);
+      const viewport = page.getViewport({ scale });
+
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
+      if (!context) throw new Error('Failed to create canvas context');
+
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+
+      await page.render({
+        canvasContext: context,
+        viewport,
+      }).promise;
+
+      return canvas.toDataURL('image/png');
+    } catch (error) {
+      throw this.createPDFError(error, 'Failed to render page');
+    }
+  }
+
+  /**
+   * Get previews for all pages in a file
+   */
+  async getPreviews(file: File, scale: number = 0.5): Promise<string[]> {
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+      const pdf = await loadingTask.promise;
+
+      const previews: string[] = [];
+
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const viewport = page.getViewport({ scale });
+
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        if (!context) continue;
+
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+
+        await page.render({
+          canvasContext: context,
+          viewport
+        }).promise;
+
+        previews.push(canvas.toDataURL('image/jpeg', 0.8)); // JPEG is smaller/faster for thumbnails
+      }
+
+      return previews;
+    } catch (error) {
+      console.error('Failed to generate previews', error);
+      return [];
+    }
+  }
+
+  /**
    * Get PDF metadata
    */
   async getPDFInfo(file: File): Promise<PDFFileInfo> {
@@ -3599,21 +3674,36 @@ export class PDFService {
   /**
    * Organize PDF pages - reorder, rotate, and delete pages
    */
+  /**
+   * Organize PDF pages - reorder, rotate, delete, and insert pages from other files
+   */
   async organizePDF(
     file: File,
     pageOperations: Array<{
       originalPageNumber: number;
-      newPosition: number;
       rotation: number;
+      sourceFile?: File; // Optional: if provided, page comes from this file
     }>,
     onProgress?: ProgressCallback
   ): Promise<PDFProcessingResult<Blob>> {
     try {
-      onProgress?.(10, 'Loading PDF...');
+      onProgress?.(10, 'Loading resources...');
 
-      // Load source PDF
-      const arrayBuffer = await file.arrayBuffer();
-      const sourcePdf = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+      // Map to store loaded source documents to avoid reloading
+      const sourceDocs = new Map<File, any>();
+
+      // Helper to get or load a document
+      const getSourceDoc = async (f: File) => {
+        if (!sourceDocs.has(f)) {
+          const arrayBuffer = await f.arrayBuffer();
+          const doc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+          sourceDocs.set(f, doc);
+        }
+        return sourceDocs.get(f);
+      };
+
+      // Load main source PDF first
+      await getSourceDoc(file);
 
       onProgress?.(20, 'Creating new document...');
 
@@ -3634,11 +3724,15 @@ export class PDFService {
           `Processing page ${i + 1}/${totalOperations}...`
         );
 
+        // Determine source file and document
+        const sourceFile = operation.sourceFile || file;
+        const sourcePdf = await getSourceDoc(sourceFile);
+
         // Get source page (pdf-lib uses 0-based indexing)
         const sourcePageIndex = operation.originalPageNumber - 1;
 
         if (sourcePageIndex < 0 || sourcePageIndex >= sourcePdf.getPageCount()) {
-          console.warn(`Invalid page number: ${operation.originalPageNumber}`);
+          console.warn(`Invalid page number: ${operation.originalPageNumber} for file ${sourceFile.name}`);
           continue;
         }
 
@@ -3658,7 +3752,6 @@ export class PDFService {
       onProgress?.(85, 'Finalizing document...');
 
       // Save the new PDF
-      // Save the new PDF
       const pdfBytes = await newPdf.save();
       const blob = new Blob([pdfBytes as any], { type: 'application/pdf' });
 
@@ -3669,7 +3762,7 @@ export class PDFService {
         data: blob,
         metadata: {
           pageCount: newPdf.getPageCount(),
-          originalSize: file.size,
+          originalSize: file.size, // Note: this might not be accurate if we added many files, but it's a baseline
           processedSize: blob.size,
           processingTime: 0,
         },

@@ -149,7 +149,8 @@
     "recommended": "推奨",
     "generatingThumbnails": "サムネイルを生成中...",
     "whatsNext": "次のステップは？",
-    "continueWorking": "これらのツールでPDFを引き続き処理:"
+    "continueWorking": "これらのツールでPDFを引き続き処理:",
+    "selectAll": "すべて選択"
   },
   "upload": {
     "selectFiles": "ファイルを選択",
@@ -870,7 +871,22 @@
     "pageNumber": "ページ {number}",
     "rotate90": "90度回転",
     "deletePage": "ページを削除",
-    "restorePage": "ページを復元"
+    "restorePage": "ページを復元",
+    "odd": "奇数",
+    "even": "偶数",
+    "extract": "抽出",
+    "delete": "削除",
+    "extracting": "ページを抽出中...",
+    "pagesDeleted": "ページを削除しました",
+    "extractSuccess": "ページの抽出に成功しました",
+    "extractError": "ページの抽出に失敗しました",
+    "tips": {
+      "title": "ヒント",
+      "drag": "ページをドラッグして並べ替え",
+      "select": "チェックボックスを使用するか、クリックして複数選択",
+      "rotateDelete": "ページにカーソルを合わせて回転または削除",
+      "extract": "ツールバーを使用して選択したページを抽出"
+    }
   },
   "addText": {
     "clickToEdit": "クリックして編集",

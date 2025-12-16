@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FileUpload } from '@/components/common/FileUpload';
+import { ToolLayout } from '@/components/common/ToolLayout';
 import { ProgressBar } from '@/components/common/ProgressBar';
 import { useI18n } from '@/hooks/useI18n';
 import pdfService from '@/services/pdfService';
@@ -8,14 +8,14 @@ import type {
   ImageConversionResult,
   ImageFormat,
   ImageQuality,
-  QUALITY_SETTINGS,
-  FORMAT_DESCRIPTIONS,
-  ConvertedImage
+  QUALITY_SETTINGS
 } from '@/types/image.types';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { CheckCircle2, FileText, Download, X } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 
 interface FileWithResult {
   file: File;
@@ -31,13 +31,21 @@ export const PDFToImages: React.FC = () => {
   const [files, setFiles] = useState<FileWithResult[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  // Conversion options (shared across all files)
+  // Conversion options
   const [format, setFormat] = useState<ImageFormat>('png');
   const [quality, setQuality] = useState<ImageQuality>('medium');
   const [pageSelection, setPageSelection] = useState<'all' | 'range' | 'specific'>('all');
   const [pageRange, setPageRange] = useState({ start: 1, end: 1 });
   const [specificPages, setSpecificPages] = useState('');
   const [backgroundColor, setBackgroundColor] = useState('#ffffff');
+
+  // Dynamic quality settings
+  const [qualitySettings, setQualitySettings] = useState<any>(null);
+  React.useEffect(() => {
+    import('@/types/image.types').then(module => {
+      setQualitySettings(module.QUALITY_SETTINGS);
+    });
+  }, []);
 
   const handleFileSelected = (selectedFiles: File[]) => {
     const newFiles: FileWithResult[] = selectedFiles.map(file => ({
@@ -57,10 +65,8 @@ export const PDFToImages: React.FC = () => {
 
   const handleConvert = async () => {
     if (files.length === 0) return;
-
     setIsProcessing(true);
 
-    // Prepare conversion options
     const options: ImageConversionOptions = {
       format,
       quality,
@@ -68,130 +74,79 @@ export const PDFToImages: React.FC = () => {
       backgroundColor: format === 'jpeg' ? backgroundColor : undefined
     };
 
-    // Add page-specific options
-    if (pageSelection === 'range') {
-      options.pageRange = pageRange;
-    } else if (pageSelection === 'specific') {
-      const pageNumbers = specificPages
-        .split(',')
-        .map(p => parseInt(p.trim()))
-        .filter(p => !isNaN(p) && p > 0);
+    if (pageSelection === 'range') options.pageRange = pageRange;
+    else if (pageSelection === 'specific') {
+      const pageNumbers = specificPages.split(',').map(p => parseInt(p.trim())).filter(p => !isNaN(p) && p > 0);
       options.pageNumbers = pageNumbers;
     }
 
-    // Process each file sequentially
     for (let i = 0; i < files.length; i++) {
       const fileItem = files[i];
+      if (fileItem.result) continue; // Skip if already done
 
-      // Skip if already processed
-      if (fileItem.result) continue;
-
-      // Mark file as processing
-      setFiles(prev => prev.map((f, idx) =>
-        idx === i ? { ...f, isProcessing: true } : f
-      ));
+      setFiles(prev => prev.map((f, idx) => idx === i ? { ...f, isProcessing: true } : f));
 
       try {
-        // Convert PDF to images
+        // Mock delay for UI if needed, but pdfToImages is async
         const conversionResult = await pdfService.pdfToImages(
           fileItem.file,
           options,
           (progressUpdate) => {
-            setFiles(prev => prev.map((f, idx) =>
-              idx === i ? {
-                ...f,
-                progress: progressUpdate.percentage,
-                progressMessage: progressUpdate.message || ''
-              } : f
-            ));
+            setFiles(prev => prev.map((f, idx) => idx === i ? {
+              ...f,
+              progress: progressUpdate.percentage,
+              progressMessage: progressUpdate.message || ''
+            } : f));
           }
         );
 
-        // Create preview URLs for successful conversions
         const previews = conversionResult.success && conversionResult.images.length > 0
           ? conversionResult.images.slice(0, 5).map(img => img.dataUrl)
           : [];
 
-        // Update file with result
-        setFiles(prev => prev.map((f, idx) =>
-          idx === i ? {
-            ...f,
-            result: conversionResult,
-            previews,
-            isProcessing: false,
-            progress: 100
-          } : f
-        ));
+        setFiles(prev => prev.map((f, idx) => idx === i ? {
+          ...f,
+          result: conversionResult,
+          previews,
+          isProcessing: false,
+          progress: 100
+        } : f));
 
       } catch (error) {
-        console.error('PDF to Image conversion failed:', error);
-
+        console.error(error);
         const errorResult: ImageConversionResult = {
-          success: false,
-          images: [],
-          totalPages: 0,
-          originalSize: fileItem.file.size,
-          convertedSize: 0,
+          success: false, images: [], totalPages: 0, originalSize: fileItem.file.size, convertedSize: 0,
           error: error instanceof Error ? error.message : t('pdfToImages.errors.conversionFailed')
         };
-
-        setFiles(prev => prev.map((f, idx) =>
-          idx === i ? {
-            ...f,
-            result: errorResult,
-            isProcessing: false
-          } : f
-        ));
+        setFiles(prev => prev.map((f, idx) => idx === i ? {
+          ...f,
+          result: errorResult,
+          isProcessing: false
+        } : f));
       }
     }
-
     setIsProcessing(false);
-  };
-
-  const handleDownloadSingle = (fileIndex: number, imageIndex: number) => {
-    const fileItem = files[fileIndex];
-    if (fileItem?.result?.success && fileItem.result.images[imageIndex]) {
-      pdfService.downloadImage(fileItem.result.images[imageIndex]);
-    }
-  };
-
-  const handleDownloadAll = (fileIndex: number) => {
-    const fileItem = files[fileIndex];
-    if (fileItem?.result?.success && fileItem.result.images.length > 0) {
-      pdfService.downloadAllImages(fileItem.result.images);
-    }
   };
 
   const handleDownloadZip = async (fileIndex: number) => {
     const fileItem = files[fileIndex];
-    if (fileItem?.result?.success && fileItem.result.images.length > 0) {
+    if (fileItem?.result?.success) {
       try {
-        const baseName = fileItem.file.name.replace(/\.pdf$/i, '');
-        const zipFilename = `${baseName}_images.zip`;
+        const zipFilename = `${fileItem.file.name.replace(/\.pdf$/i, '')}_images.zip`;
         await pdfService.downloadImagesAsZip(fileItem.result.images, zipFilename);
-      } catch (error) {
-        console.error('Failed to download ZIP:', error);
-        alert(t('pdfToImages.errors.zipFailed') || 'Failed to create ZIP archive');
-      }
+      } catch (e) { alert('Failed to create ZIP'); }
     }
   };
 
   const handleDownloadAllAsZip = async () => {
-    const allImages: ConvertedImage[] = [];
-    files.forEach(fileItem => {
-      if (fileItem.result?.success && fileItem.result.images.length > 0) {
-        allImages.push(...fileItem.result.images);
-      }
+    const allImages: any[] = [];
+    files.forEach(f => {
+      if (f.result?.success) allImages.push(...f.result.images);
     });
-
-    if (allImages.length > 0) {
+    if (allImages.length) {
       try {
-        const zipFilename = `all_pdfs_to_images.zip`;
-        await pdfService.downloadImagesAsZip(allImages, zipFilename);
-      } catch (error) {
-        console.error('Failed to download ZIP:', error);
-        alert(t('pdfToImages.errors.zipFailed') || 'Failed to create ZIP archive');
-      }
+        await pdfService.downloadImagesAsZip(allImages, 'all_converted_images.zip');
+      } catch (e) { alert('Failed to create ZIP'); }
     }
   };
 
@@ -200,7 +155,7 @@ export const PDFToImages: React.FC = () => {
     setIsProcessing(false);
   };
 
-  const formatFileSize = (bytes: number): string => {
+  const formatFileSize = (bytes: number) => {
     if (bytes === 0) return '0 B';
     const k = 1024;
     const sizes = ['B', 'KB', 'MB', 'GB'];
@@ -208,260 +163,170 @@ export const PDFToImages: React.FC = () => {
     return `${(bytes / Math.pow(k, i)).toFixed(1)} ${sizes[i]}`;
   };
 
-  // Dynamically import quality settings
-  const [qualitySettings, setQualitySettings] = useState<typeof QUALITY_SETTINGS | null>(null);
-  React.useEffect(() => {
-    import('@/types/image.types').then(module => {
-      setQualitySettings(module.QUALITY_SETTINGS);
-    });
-  }, []);
+  const renderContent = () => {
+    if (files.length === 0) return null;
 
-  return (
-    <div className="pdf-to-images space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          {t('pdfToImages.title')}
-        </h1>
-        <p className="text-gray-600 dark:text-gray-400">
-          {t('pdfToImages.description')}
-        </p>
-      </div>
-
-      {/* File Upload - UPDATED 2025-01-26 - Multi-file support: max 20 files */}
-      <Card>
-        <CardContent className="p-6">
-          <FileUpload
-            onFilesSelected={handleFileSelected}
-            accept=".pdf,application/pdf"
-            multiple={true}
-            maxFiles={20}
-            maxSizeMB={100}
-          />
-        </CardContent>
-      </Card>
-
-      {/* Files List */}
-      {files.length > 0 && (
-        <Card>
-          <CardContent className="p-6 space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                {files.length} {files.length === 1 ? 'file' : 'files'} selected
-              </h3>
-              {!isProcessing && (
-                <Button onClick={handleReset} variant="outline" size="sm">
-                  Clear all
-                </Button>
-              )}
-            </div>
-
-            <div className="space-y-3">
-              {files.map((fileItem, index) => (
-                <div key={index} className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="flex-shrink-0 w-10 h-10 bg-red-100 dark:bg-red-900/30 rounded-lg flex items-center justify-center">
-                      <span className="text-xl">📄</span>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-gray-900 dark:text-white truncate">{fileItem.file.name}</p>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">{formatFileSize(fileItem.file.size)}</p>
-                    </div>
-                    {!fileItem.result && !isProcessing && (
-                      <Button onClick={() => handleRemoveFile(index)} variant="ghost" size="sm">
-                        ×
-                      </Button>
-                    )}
+    return (
+      <div className="space-y-4">
+        {files.map((fileItem, index) => (
+          <div key={index} className="p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm relative overflow-hidden">
+            <div className="flex items-start gap-4">
+              <div className="h-12 w-12 bg-red-100 dark:bg-red-900/30 text-red-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                <FileText className="w-6 h-6" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="font-semibold text-gray-900 dark:text-white truncate pr-2">{fileItem.file.name}</p>
+                    <p className="text-xs text-gray-500">{formatFileSize(fileItem.file.size)}</p>
                   </div>
-
-                  {fileItem.isProcessing && (
-                    <ProgressBar progress={fileItem.progress} message={fileItem.progressMessage} />
+                  {!fileItem.result && !fileItem.isProcessing && (
+                    <Button onClick={() => handleRemoveFile(index)} variant="ghost" size="icon" className="h-6 w-6 -mt-1 -mr-1">
+                      <X className="w-4 h-4" />
+                    </Button>
                   )}
+                </div>
 
-                  {fileItem.result && fileItem.result.success && (
-                    <div className="mt-3 space-y-2">
-                      <p className="text-sm text-green-600 dark:text-green-400">
-                        ✓ Converted {fileItem.result.images.length} pages
-                      </p>
-                      <div className="flex gap-2">
-                        <Button onClick={() => handleDownloadZip(index)} size="sm">
-                          Download ZIP
-                        </Button>
-                        <Button onClick={() => handleDownloadAll(index)} variant="outline" size="sm">
-                          Download All
+                {fileItem.isProcessing && (
+                  <div className="mt-2">
+                    <ProgressBar progress={fileItem.progress} message={fileItem.progressMessage} />
+                  </div>
+                )}
+
+                {fileItem.result && (
+                  <div className="mt-3">
+                    {fileItem.result.success ? (
+                      <div className="space-y-3">
+                        <Badge variant="outline" className="text-green-600 border-green-200 bg-green-50">
+                          <CheckCircle2 className="w-3 h-3 mr-1" /> {fileItem.result.totalPages} pages converted
+                        </Badge>
+                        <div className="flex gap-2 overflow-x-auto pb-2">
+                          {fileItem.previews.map((src, i) => (
+                            <img key={i} src={src} className="h-16 w-auto rounded border shadow-sm" alt="preview" />
+                          ))}
+                        </div>
+                        <Button onClick={() => handleDownloadZip(index)} size="sm" variant="outline" className="w-full sm:w-auto">
+                          <Download className="w-4 h-4 mr-2" /> Download ZIP
                         </Button>
                       </div>
-                    </div>
-                  )}
-
-                  {fileItem.result && !fileItem.result.success && (
-                    <p className="text-sm text-red-600 dark:text-red-400 mt-2">
-                      ✗ {fileItem.result.error}
-                    </p>
-                  )}
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Conversion Options */}
-      {files.length > 0 && !isProcessing && files.some(f => !f.result) && (
-        <Card className="space-y-6 p-6">
-
-          {/* Format Selection */}
-          <div>
-            <Label className="block text-sm font-medium mb-2">
-              {t('pdfToImages.format')}
-            </Label>
-            <Select value={format} onValueChange={(value) => setFormat(value as ImageFormat)}>
-              <SelectTrigger className="w-full">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="png">PNG</SelectItem>
-                <SelectItem value="jpeg">JPEG</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Quality Selection */}
-          <div>
-            <Label className="block text-sm font-medium mb-2">
-              {t('pdfToImages.quality')}
-            </Label>
-            <Select value={quality} onValueChange={(value) => setQuality(value as ImageQuality)}>
-              <SelectTrigger className="w-full">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {qualitySettings && Object.entries(qualitySettings).map(([key, settings]) => (
-                  <SelectItem key={key} value={key}>
-                    {key.charAt(0).toUpperCase() + key.slice(1)} ({settings.resolution} DPI)
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Page Selection */}
-          <div className="space-y-3">
-            <Label className="block text-sm font-medium">
-              {t('pdfToImages.pages')}
-            </Label>
-
-            <div className="space-y-2">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="pageSelection"
-                  value="all"
-                  checked={pageSelection === 'all'}
-                  onChange={(e) => setPageSelection(e.target.value as any)}
-                  className="text-ocean-600 focus:ring-ocean-500"
-                />
-                <span className="text-gray-900 dark:text-white">{t('pdfToImages.allPages')}</span>
-              </label>
-
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="pageSelection"
-                  value="range"
-                  checked={pageSelection === 'range'}
-                  onChange={(e) => setPageSelection(e.target.value as any)}
-                  className="text-ocean-600 focus:ring-ocean-500"
-                />
-                <span className="text-gray-900 dark:text-white">{t('pdfToImages.pageRange')}</span>
-              </label>
-
-              {pageSelection === 'range' && (
-                <div className="ml-6 flex items-center gap-3">
-                  <input
-                    type="number"
-                    min={1}
-                    value={pageRange.start}
-                    onChange={(e) => setPageRange(prev => ({ ...prev, start: parseInt(e.target.value) || 1 }))}
-                    className="w-20 px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white"
-                    placeholder="From"
-                  />
-                  <span className="text-gray-600 dark:text-gray-400">-</span>
-                  <input
-                    type="number"
-                    min={pageRange.start}
-                    value={pageRange.end}
-                    onChange={(e) => setPageRange(prev => ({ ...prev, end: parseInt(e.target.value) || 1 }))}
-                    className="w-20 px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white"
-                    placeholder="To"
-                  />
-                </div>
-              )}
-
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="pageSelection"
-                  value="specific"
-                  checked={pageSelection === 'specific'}
-                  onChange={(e) => setPageSelection(e.target.value as any)}
-                  className="text-ocean-600 focus:ring-ocean-500"
-                />
-                <span className="text-gray-900 dark:text-white">{t('pdfToImages.specificPages')}</span>
-              </label>
-
-              {pageSelection === 'specific' && (
-                <input
-                  type="text"
-                  value={specificPages}
-                  onChange={(e) => setSpecificPages(e.target.value)}
-                  placeholder="e.g., 1,3,5-10"
-                  className="ml-6 w-full px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white"
-                />
-              )}
-            </div>
-          </div>
-
-          {/* Background Color for JPEG */}
-          {format === 'jpeg' && (
-            <div>
-              <Label className="block text-sm font-medium mb-2">
-                {t('pdfToImages.backgroundColor')}
-              </Label>
-              <div className="flex items-center gap-3">
-                <input
-                  type="color"
-                  value={backgroundColor}
-                  onChange={(e) => setBackgroundColor(e.target.value)}
-                  className="w-16 h-10 border border-gray-300 dark:border-gray-600 rounded cursor-pointer"
-                />
-                <span className="text-sm text-gray-600 dark:text-gray-400">{backgroundColor}</span>
+                    ) : (
+                      <p className="text-sm text-red-500">{fileItem.result.error}</p>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
-          )}
+          </div>
+        ))}
 
-          {/* Action Buttons */}
-          <div className="flex gap-3">
-            <Button
-              onClick={handleConvert}
-              disabled={isProcessing}
-              className="flex-1 px-6 py-3"
-            >
-              {isProcessing ? 'Converting...' : `Convert ${files.filter(f => !f.result).length} file(s)`}
+        {files.some(f => f.result?.success) && (
+          <div className="pt-4 border-t">
+            <Button onClick={handleDownloadAllAsZip} className="w-full bg-green-600 hover:bg-green-700">
+              <Download className="w-4 h-4 mr-2" /> Download Everything (ZIP)
             </Button>
           </div>
-        </Card>
-      )}
+        )}
+      </div>
+    );
+  };
 
-      {/* Download All Button */}
-      {files.length > 0 && files.some(f => f.result?.success) && !isProcessing && (
-        <Card className="p-6">
-          <Button onClick={handleDownloadAllAsZip} className="w-full">
-            Download All Files as ZIP
-          </Button>
-        </Card>
+  const renderSettings = () => (
+    <div className="space-y-6">
+      {/* Format */}
+      <div className="space-y-2">
+        <Label>{t('pdfToImages.format')}</Label>
+        <Select value={format} onValueChange={(v: any) => setFormat(v)}>
+          <SelectTrigger><SelectValue /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="png">PNG</SelectItem>
+            <SelectItem value="jpeg">JPEG</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Quality */}
+      <div className="space-y-2">
+        <Label>{t('pdfToImages.quality')}</Label>
+        <Select value={quality} onValueChange={(v: any) => setQuality(v)}>
+          <SelectTrigger><SelectValue /></SelectTrigger>
+          <SelectContent>
+            {qualitySettings && Object.entries(qualitySettings).map(([key, settings]: any) => (
+              <SelectItem key={key} value={key}>
+                {key.charAt(0).toUpperCase() + key.slice(1)} ({settings.resolution} DPI)
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Page Selection */}
+      <div className="space-y-3 border-t pt-4">
+        <Label>{t('pdfToImages.pages')}</Label>
+        <div className="space-y-2">
+          {['all', 'range', 'specific'].map((mode) => (
+            <div key={mode} className="flex items-center space-x-2">
+              <input
+                type="radio"
+                id={`page-${mode}`}
+                checked={pageSelection === mode}
+                onChange={() => setPageSelection(mode as any)}
+                className="text-ocean-600 focus:ring-ocean-500"
+              />
+              <Label htmlFor={`page-${mode}`} className="cursor-pointer">{t(`pdfToImages.${mode === 'range' ? 'pageRange' : mode === 'specific' ? 'specificPages' : 'allPages'}`)}</Label>
+            </div>
+          ))}
+        </div>
+
+        {pageSelection === 'range' && (
+          <div className="flex gap-2">
+            <Input type="number" min={1} value={pageRange.start} onChange={(e) => setPageRange(p => ({ ...p, start: parseInt(e.target.value) || 1 }))} placeholder="From" />
+            <span className="self-center">-</span>
+            <Input type="number" min={1} value={pageRange.end} onChange={(e) => setPageRange(p => ({ ...p, end: parseInt(e.target.value) || 1 }))} placeholder="To" />
+          </div>
+        )}
+        {pageSelection === 'specific' && (
+          <Input placeholder="e.g. 1, 3, 5-10" value={specificPages} onChange={(e) => setSpecificPages(e.target.value)} />
+        )}
+      </div>
+
+      {/* JPEG Background */}
+      {format === 'jpeg' && (
+        <div className="space-y-2 border-t pt-4">
+          <Label>{t('pdfToImages.backgroundColor')}</Label>
+          <div className="flex items-center gap-2">
+            <Input type="color" value={backgroundColor} onChange={(e) => setBackgroundColor(e.target.value)} className="w-10 h-10 p-1" />
+            <span className="text-sm text-gray-500">{backgroundColor}</span>
+          </div>
+        </div>
       )}
     </div>
   );
-};
 
+  const renderActions = () => (
+    <Button
+      onClick={handleConvert}
+      disabled={isProcessing || !files.some(f => !f.result)}
+      className="w-full py-6 text-lg font-bold"
+    >
+      {isProcessing ? t('common.processing') : t('common.convert')}
+    </Button>
+  );
+
+  return (
+    <ToolLayout
+      title={t('tools.pdf-to-images.name')}
+      description={t('tools.pdf-to-images.description')}
+      hasFiles={files.length > 0}
+      onUpload={handleFileSelected}
+      isProcessing={isProcessing}
+      maxFiles={20}
+      uploadTitle={t('common.selectFile')}
+      uploadDescription={t('upload.multipleFilesAllowed')}
+      accept=".pdf"
+      settings={files.length > 0 ? renderSettings() : null}
+      actions={files.length > 0 ? renderActions() : null}
+    >
+      {renderContent()}
+    </ToolLayout>
+  );
+};
