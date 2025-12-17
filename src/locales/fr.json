@@ -216,7 +216,14 @@
     "generatingThumbnails": "Génération des vignettes...",
     "whatsNext": "Et après ?",
     "continueWorking": "Continuez avec ces outils :",
-    "selectAll": "Tout sélectionner"
+    "selectAll": "Tout sélectionner",
+    "convert": "Convertir",
+    "hide": "Masquer",
+    "loading": "Chargement...",
+    "previous": "Précédent",
+    "save": "Enregistrer",
+    "show": "Afficher",
+    "zoom": "Zoom"
   },
   "upload": {
     "selectFiles": "Sélectionner des fichiers",
@@ -239,6 +246,7 @@
   },
   "flatten": {
     "filePreview": "Fichier à aplatir",
+    "description": "Rendre formulaires et annotations non modifiables",
     "originalSize": "Taille originale",
     "pages": "Pages",
     "changeFile": "Changer de fichier",
@@ -351,6 +359,9 @@
     }
   },
   "extractImages": {
+    "title": "Extraire/Supprimer images",
+    "mode": "Mode d'extraction",
+    "extractDescription": "Extraire toutes les images du PDF",
     "smartFilter": {
       "quickFilters": "Filtres rapides",
       "categories": {
@@ -373,6 +384,7 @@
   },
   "split": {
     "filePreview": "Fichier à diviser",
+    "pages": "Pages",
     "totalPages": "Total des pages",
     "fileSize": "Taille du fichier",
     "changeFile": "Changer de fichier",
@@ -627,6 +639,7 @@
   },
   "watermark": {
     "filePreview": "Fichier pour filigrane",
+    "settings": "Paramètres du filigrane",
     "text": "Texte du filigrane",
     "watermarkText": "Texte du filigrane",
     "watermarkPlaceholder": "Entrer texte",
@@ -637,7 +650,8 @@
       "topLeft": "Haut Gauche",
       "topRight": "Haut Droite",
       "bottomLeft": "Bas Gauche",
-      "bottomRight": "Bas Droite"
+      "bottomRight": "Bas Droite",
+      "custom": "Manuel (Drag & Drop)"
     },
     "color": "Couleur",
     "colors": {
@@ -886,6 +900,8 @@
     "pagesDeleted": "pages supprimées",
     "extractSuccess": "Pages extraites avec succès",
     "extractError": "Échec de l'extraction des pages",
+    "addPDF": "Ajouter PDF",
+    "appendPages": "Ajouter des pages",
     "tips": {
       "title": "Conseils",
       "drag": "Faites glisser les pages pour les réorganiser",
@@ -917,7 +933,8 @@
     "fields": "Champs : {count}",
     "selected": "Sélection : {name} ({type})",
     "zoom": "Zoom : {scale}%",
-    "pageOf": "Page {current} sur {total}"
+    "pageOf": "Page {current} sur {total}",
+    "selectFieldToEdit": "Sélectionnez un champ à modifier"
   },
   "editText": {
     "rasterizationWarning": "Note : Les pages éditées seront converties en images.",
@@ -968,6 +985,7 @@
     "searchError": "Erreur recherche",
     "replaceError": "Erreur remplacement",
     "successMessage": "Texte remplacé !",
-    "useInOtherTools": "Utiliser ailleurs"
+    "useInOtherTools": "Utiliser ailleurs",
+    "settings": "Paramètres texte"
   }
 }

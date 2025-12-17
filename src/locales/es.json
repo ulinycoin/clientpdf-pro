@@ -207,7 +207,14 @@
     "processingTime": "Tiempo de procesamiento",
     "generatingThumbnails": "Generando miniaturas...",
     "whatsNext": "¿Qué sigue?",
-    "continueWorking": "Continúe con estas herramientas:"
+    "continueWorking": "Continúe con estas herramientas:",
+    "convert": "Convertir",
+    "hide": "Ocultar",
+    "loading": "Cargando...",
+    "previous": "Anterior",
+    "save": "Guardar",
+    "show": "Mostrar",
+    "zoom": "Zoom"
   },
   "upload": {
     "selectFiles": "Seleccionar archivos",
@@ -230,6 +237,7 @@
   },
   "flatten": {
     "filePreview": "Archivo para aplanar",
+    "description": "Hacer que formularios y anotaciones no sean editables",
     "originalSize": "Tamaño original",
     "pages": "Páginas",
     "changeFile": "Cambiar archivo",
@@ -342,6 +350,9 @@
     }
   },
   "extractImages": {
+    "title": "Extraer/Eliminar imágenes",
+    "mode": "Modo de extracción",
+    "extractDescription": "Extraer todas las imágenes del PDF",
     "smartFilter": {
       "quickFilters": "Filtros rápidos",
       "categories": {
@@ -364,6 +375,7 @@
   },
   "split": {
     "filePreview": "Archivo a dividir",
+    "pages": "Páginas",
     "totalPages": "Páginas totales",
     "fileSize": "Tamaño del archivo",
     "changeFile": "Cambiar archivo",
@@ -618,6 +630,7 @@
   },
   "watermark": {
     "filePreview": "Archivo para marca de agua",
+    "settings": "Configuración de marca de agua",
     "text": "Texto de marca de agua",
     "watermarkText": "Texto de marca de agua",
     "watermarkPlaceholder": "Introducir texto",
@@ -628,7 +641,8 @@
       "topLeft": "Arriba Izquierda",
       "topRight": "Arriba Derecha",
       "bottomLeft": "Abajo Izquierda",
-      "bottomRight": "Abajo Derecha"
+      "bottomRight": "Abajo Derecha",
+      "custom": "Manual (Drag & Drop)"
     },
     "color": "Color",
     "colors": {
@@ -877,6 +891,8 @@
     "pagesDeleted": "páginas eliminadas",
     "extractSuccess": "Páginas extraídas con éxito",
     "extractError": "Error al extraer páginas",
+    "addPDF": "Añadir PDF",
+    "appendPages": "Añadir páginas",
     "tips": {
       "title": "Consejos",
       "drag": "Arrastra las páginas para reordenarlas",
@@ -908,7 +924,8 @@
     "fields": "Campos: {count}",
     "selected": "Selección: {name} ({type})",
     "zoom": "Zoom: {scale}%",
-    "pageOf": "Página {current} de {total}"
+    "pageOf": "Página {current} de {total}",
+    "selectFieldToEdit": "Seleccione un campo para editar"
   },
   "editText": {
     "rasterizationWarning": "Nota: Las páginas editadas se convertirán en imágenes.",
@@ -959,6 +976,7 @@
     "searchError": "Error búsqueda",
     "replaceError": "Error reemplazo",
     "successMessage": "¡Texto reemplazado!",
-    "useInOtherTools": "Usar en otras herramientas"
+    "useInOtherTools": "Usar en otras herramientas",
+    "settings": "Configuración de texto"
   }
 }

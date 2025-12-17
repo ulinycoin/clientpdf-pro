@@ -152,7 +152,14 @@
     "generatingThumbnails": "サムネイルを生成中...",
     "whatsNext": "次のステップは？",
     "continueWorking": "これらのツールでPDFを引き続き処理:",
-    "selectAll": "すべて選択"
+    "selectAll": "すべて選択",
+    "convert": "変換",
+    "hide": "非表示",
+    "loading": "読み込み中...",
+    "previous": "前へ",
+    "save": "保存",
+    "show": "表示",
+    "zoom": "ズーム"
   },
   "upload": {
     "selectFiles": "ファイルを選択",
@@ -218,6 +225,27 @@
     "fixRotation": "回転を修正",
     "moveTOC": "目次を前に移動",
     "noIssues": "問題は検出されませんでした - ドキュメントは良好です！"
+  },
+  "smartCompression": {
+    "title": "スマート分析",
+    "analyzing": "PDFコンテンツを分析中...",
+    "highPotential": "高い圧縮率が期待できます",
+    "optimized": "ファイルは既に最適化されています",
+    "images": "画像",
+    "structure": "構造",
+    "heavy": "重い（画像が多い）",
+    "light": "軽い（テキストが主）",
+    "recommendation": "推奨モード",
+    "apply": "適用",
+    "applied": "推奨モードを適用しました",
+    "insights": {
+      "mostlyText": "主にテキストコンテンツ",
+      "imageCount": "約{count}枚の画像",
+      "largeImages": "画像によりファイルサイズが大きい",
+      "highDensity": "高密度コンテンツ",
+      "efficient": "既に効率的な構造",
+      "standard": "標準PDF分析"
+    }
   },
   "smartImageFilter": {
     "title": "スマート画像フィルター",
@@ -296,6 +324,7 @@
   },
   "flatten": {
     "filePreview": "平坦化するファイル",
+    "description": "フォームと注釈を編集不可にする",
     "originalSize": "元のサイズ",
     "pages": "ページ",
     "changeFile": "ファイルを変更",
@@ -321,6 +350,7 @@
   },
   "split": {
     "filePreview": "分割するファイル",
+    "pages": "ページ",
     "totalPages": "総ページ数",
     "fileSize": "ファイルサイズ",
     "changeFile": "ファイルを変更",
@@ -583,6 +613,7 @@
   },
   "watermark": {
     "filePreview": "透かしを入れるファイル",
+    "settings": "透かし設定",
     "text": "透かしテキスト",
     "watermarkText": "透かしテキスト",
     "watermarkPlaceholder": "透かしテキストを入力",
@@ -593,7 +624,8 @@
       "topLeft": "左上",
       "topRight": "右上",
       "bottomLeft": "左下",
-      "bottomRight": "右下"
+      "bottomRight": "右下",
+      "custom": "手動 (ドラッグ&ドロップ)"
     },
     "color": "色",
     "colors": {
@@ -606,7 +638,6 @@
     "fontSize": "フォントサイズ",
     "rotation": "回転",
     "preview": "プレビュー",
-    "settings": "透かし設定",
     "apply": "透かしを適用",
     "applyButton": "透かしを適用",
     "applyAnother": "別のファイルに適用",
@@ -885,6 +916,8 @@
     "pagesDeleted": "ページを削除しました",
     "extractSuccess": "ページの抽出に成功しました",
     "extractError": "ページの抽出に失敗しました",
+    "addPDF": "PDFを追加",
+    "appendPages": "ページを追加",
     "tips": {
       "title": "ヒント",
       "drag": "ページをドラッグして並べ替え",
@@ -916,7 +949,8 @@
     "fields": "フィールド: {count}",
     "selected": "選択中: {name} ({type})",
     "zoom": "ズーム: {scale}%",
-    "pageOf": "ページ {current} / {total}"
+    "pageOf": "ページ {current} / {total}",
+    "selectFieldToEdit": "編集するフィールドを選択"
   },
   "editText": {
     "rasterizationWarning": "注意: 編集されたページは画像に変換されます。これらのページのテキストは編集後に選択できなくなります。",
@@ -962,10 +996,12 @@
     "searchError": "テキストの検索中にエラーが発生しました。もう一度お試しください。",
     "replaceError": "テキストの置換中にエラーが発生しました。もう一度お試しください。",
     "successMessage": "テキストが正常に置換されました！",
-    "useInOtherTools": "他のツールで使用"
+    "useInOtherTools": "他のツールで使用",
+    "settings": "テキスト設定"
   },
   "extractImages": {
     "title": "画像の抽出/削除",
+    "mode": "抽出モード",
     "description": "PDFからすべての画像を抽出するか、削除してファイルサイズを削減します。",
     "modeExtract": "画像を抽出",
     "modeRemove": "画像を削除",

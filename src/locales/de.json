@@ -208,7 +208,14 @@
     "generatingThumbnails": "Erstelle Vorschaubilder...",
     "whatsNext": "Was als Nächstes?",
     "continueWorking": "Arbeiten Sie weiter mit diesen Tools:",
-    "selectAll": "Alle auswählen"
+    "selectAll": "Alle auswählen",
+    "convert": "Konvertieren",
+    "hide": "Verbergen",
+    "loading": "Laden...",
+    "previous": "Zurück",
+    "save": "Speichern",
+    "show": "Anzeigen",
+    "zoom": "Zoom"
   },
   "upload": {
     "selectFiles": "Dateien auswählen",
@@ -231,6 +238,7 @@
   },
   "flatten": {
     "filePreview": "Datei zum Glätten",
+    "description": "PDF-Formulare und Anmerkungen unbedienbar machen",
     "originalSize": "Originalgröße",
     "pages": "Seiten",
     "changeFile": "Datei ändern",
@@ -343,6 +351,9 @@
     }
   },
   "extractImages": {
+    "title": "Bilder extrahieren/entfernen",
+    "mode": "Extraktionsmodus",
+    "extractDescription": "Alle Bilder aus PDF extrahieren",
     "smartFilter": {
       "quickFilters": "Schnellfilter",
       "categories": {
@@ -365,6 +376,7 @@
   },
   "split": {
     "filePreview": "Zu teilende Datei",
+    "pages": "Seiten",
     "totalPages": "Gesamtseiten",
     "fileSize": "Dateigröße",
     "changeFile": "Datei ändern",
@@ -619,6 +631,7 @@
   },
   "watermark": {
     "filePreview": "Datei für Wasserzeichen",
+    "settings": "Wasserzeichen-Einstellungen",
     "text": "Wasserzeichen Text",
     "watermarkText": "Wasserzeichen Text",
     "watermarkPlaceholder": "Text eingeben",
@@ -629,7 +642,8 @@
       "topLeft": "Oben Links",
       "topRight": "Oben Rechts",
       "bottomLeft": "Unten Links",
-      "bottomRight": "Unten Rechts"
+      "bottomRight": "Unten Rechts",
+      "custom": "Manuell (Drag & Drop)"
     },
     "color": "Farbe",
     "colors": {
@@ -878,6 +892,8 @@
     "pagesDeleted": "Seiten gelöscht",
     "extractSuccess": "Seiten erfolgreich extrahiert",
     "extractError": "Fehler beim Extrahieren der Seiten",
+    "addPDF": "PDF hinzufügen",
+    "appendPages": "Seiten anhängen",
     "tips": {
       "title": "Tipps",
       "drag": "Zieh die Seiten, um sie neu anzuordnen",
@@ -909,7 +925,8 @@
     "fields": "Felder: {count}",
     "selected": "Ausgewählt: {name} ({type})",
     "zoom": "Zoom: {scale}%",
-    "pageOf": "Seite {current} von {total}"
+    "pageOf": "Seite {current} von {total}",
+    "selectFieldToEdit": "Feld zum Bearbeiten wählen"
   },
   "editText": {
     "rasterizationWarning": "Hinweis: Bearbeitete Seiten werden zu Bildern.",
@@ -960,6 +977,7 @@
     "searchError": "Fehler bei Suche",
     "replaceError": "Fehler beim Ersetzen",
     "successMessage": "Text ersetzt!",
-    "useInOtherTools": "In anderen Tools nutzen"
+    "useInOtherTools": "In anderen Tools nutzen",
+    "settings": "Texteinstellungen"
   }
 }

@@ -152,7 +152,14 @@
     "generatingThumbnails": "Generating thumbnails...",
     "whatsNext": "What's next?",
     "continueWorking": "Continue working with your PDF using these tools:",
-    "selectAll": "Select All"
+    "selectAll": "Select All",
+    "convert": "Convert",
+    "hide": "Hide",
+    "loading": "Loading...",
+    "previous": "Previous",
+    "save": "Save",
+    "show": "Show",
+    "zoom": "Zoom"
   },
   "upload": {
     "selectFiles": "Select files",
@@ -317,6 +324,7 @@
   },
   "flatten": {
     "filePreview": "File to flatten",
+    "description": "Make PDF forms and annotations non-editable",
     "originalSize": "Original size",
     "pages": "Pages",
     "changeFile": "Change file",
@@ -342,6 +350,7 @@
   },
   "split": {
     "filePreview": "File to split",
+    "pages": "Pages",
     "totalPages": "Total pages",
     "fileSize": "File size",
     "changeFile": "Change file",
@@ -605,6 +614,7 @@
   },
   "watermark": {
     "filePreview": "File to watermark",
+    "settings": "Watermark settings",
     "text": "Watermark text",
     "watermarkText": "Watermark text",
     "watermarkPlaceholder": "Enter watermark text",
@@ -615,7 +625,8 @@
       "topLeft": "Top Left",
       "topRight": "Top Right",
       "bottomLeft": "Bottom Left",
-      "bottomRight": "Bottom Right"
+      "bottomRight": "Bottom Right",
+      "custom": "Manual (Drag & Drop)"
     },
     "color": "Color",
     "colors": {
@@ -931,7 +942,8 @@
     "fields": "Fields: {count}",
     "selected": "Selected: {name} ({type})",
     "zoom": "Zoom: {scale}%",
-    "pageOf": "Page {current} of {total}"
+    "pageOf": "Page {current} of {total}",
+    "selectFieldToEdit": "Select a field to edit"
   },
   "editText": {
     "rasterizationWarning": "Note: Edited pages will be converted to images. Text on those pages will not be selectable after editing.",
@@ -982,10 +994,12 @@
     "searchError": "Error occurred while searching for text. Please try again.",
     "replaceError": "Error occurred while replacing text. Please try again.",
     "successMessage": "Text replaced successfully!",
-    "useInOtherTools": "Use in other tools"
+    "useInOtherTools": "Use in other tools",
+    "settings": "Text Settings"
   },
   "extractImages": {
     "title": "Extract/Remove Images",
+    "mode": "Extraction Mode",
     "description": "Extract all images from a PDF or remove them to reduce file size.",
     "modeExtract": "Extract Images",
     "modeRemove": "Remove Images",

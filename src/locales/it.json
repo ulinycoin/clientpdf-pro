@@ -152,7 +152,14 @@
         "generatingThumbnails": "Generazione miniature...",
         "whatsNext": "Cosa c'è dopo?",
         "continueWorking": "Continua a lavorare con il tuo PDF usando questi strumenti:",
-        "selectAll": "Seleziona tutto"
+        "selectAll": "Seleziona tutto",
+        "convert": "Converti",
+        "hide": "Nascondi",
+        "loading": "Caricamento...",
+        "previous": "Precedente",
+        "save": "Salva",
+        "show": "Mostra",
+        "zoom": "Zoom"
     },
     "upload": {
         "selectFiles": "Seleziona file",
@@ -218,6 +225,27 @@
         "fixRotation": "Correggi Rotazione",
         "moveTOC": "Sposta Indice all'Inizio",
         "noIssues": "Nessun problema rilevato - il documento sembra a posto!"
+    },
+    "smartCompression": {
+        "title": "Analisi Intelligente",
+        "analyzing": "Analisi contenuto PDF...",
+        "highPotential": "Rilevato alto potenziale di compressione",
+        "optimized": "Il file è già ben ottimizzato",
+        "images": "Immagini",
+        "structure": "Struttura",
+        "heavy": "Pesante (molte immagini)",
+        "light": "Leggero (principalmente testo)",
+        "recommendation": "Modalità Consigliata",
+        "apply": "Applica",
+        "applied": "Modalità consigliata applicata",
+        "insights": {
+            "mostlyText": "Contenuto principalmente testuale",
+            "imageCount": "Contiene ~{count} immagini",
+            "largeImages": "Dimensione file elevata a causa delle immagini",
+            "highDensity": "Contenuto ad alta densità",
+            "efficient": "Struttura già efficiente",
+            "standard": "Analisi PDF standard"
+        }
     },
     "smartImageFilter": {
         "title": "Filtro Immagine Intelligente",
@@ -296,6 +324,7 @@
     },
     "flatten": {
         "filePreview": "File da appiattire",
+        "description": "Rendi moduli e annotazioni non modificabili",
         "originalSize": "Dimensione originale",
         "pages": "Pagine",
         "changeFile": "Cambia file",
@@ -321,6 +350,7 @@
     },
     "split": {
         "filePreview": "File da dividere",
+        "pages": "Pagine",
         "totalPages": "Pagine totali",
         "fileSize": "Dimensione file",
         "changeFile": "Cambia file",
@@ -328,11 +358,53 @@
         "splitButton": "Dividi PDF",
         "splitAnother": "Dividi un altro",
         "downloadAll": "Scarica tutti i file",
-        "downloadAsZip": "Scarica come ZIP",
-        "previewTitle": "Anteprima pagina",
+        "downloadAsZip": "Scarica ZIP",
+        "previewTitle": "Anteprima pagine",
         "outputFiles": "File di output",
-        "selectAll": "Seleziona tutto",
-        "customHint": "Inserisci numeri di pagina separati da virgole o usa intervalli (es. 1,3,5-7,10)",
+        "selectAll": "Seleziona Tutto",
+        "deselectAll": "Deseleziona Tutto",
+        "selectedCount": "{count} pagine selezionate",
+        "selectPagesHint": "Seleziona almeno una pagina per continuare",
+        "mergingSelected": "Unione pagine selezionate...",
+        "mergeFailed": "Impossibile unire le pagine selezionate",
+        "mode": {
+            "all": {
+                "name": "Tutte le pagine",
+                "description": "Dividi in pagine singole"
+            },
+            "range": {
+                "name": "Intervallo pagine",
+                "description": "Estrai intervallo di pagine"
+            },
+            "intervals": {
+                "name": "Ad intervalli",
+                "description": "Dividi ogni N pagine"
+            },
+            "custom": {
+                "name": "Pagine personalizzate",
+                "description": "Seleziona pagine specifiche"
+            },
+            "byStructure": {
+                "name": "Per Struttura",
+                "description": "Divisione intelligente per capitoli"
+            }
+        },
+        "structureSettings": "Struttura Documento",
+        "analyzeFirst": "Analizza il documento per rilevare capitoli e sezioni",
+        "analyzeButton": "Analizza Struttura",
+        "analyzing": "Analisi in corso...",
+        "chaptersDetected": "{count} capitoli rilevati",
+        "reanalyze": "Rianalizza",
+        "rangeSettings": "Impostazioni Intervallo Pagine",
+        "startPage": "Pagina Iniziale",
+        "endPage": "Pagina Finale",
+        "rangeHint": "Totale pagine: {total}",
+        "intervalSettings": "Impostazioni Intervallo",
+        "pagesPerFile": "Pagine per file",
+        "intervalHint": "{files} file saranno creati da {total} pagine",
+        "customSettings": "Selezione Pagine Personalizzata",
+        "pageNumbers": "Numeri di pagina",
+        "customHint": "Inserisci numeri di pagina separati da virgola o intervalli (es. 1,3,5-7,10)",
         "success": {
             "title": "PDF diviso con successo!",
             "filesCreated": "{count} file creati"
@@ -346,9 +418,9 @@
             "description": "Il tuo PDF è stato caricato automaticamente"
         },
         "quickActions": {
-            "title": "Cosa c'è dopo?",
-            "description": "Seleziona le pagine sopra e continua a lavorare con esse usando questi strumenti:",
-            "descriptionWithSelection": "Continua a lavorare con {count} pagine selezionate usando questi strumenti:",
+            "title": "Cosa fare dopo?",
+            "description": "Seleziona le pagine sopra e continua a lavorarci con questi strumenti:",
+            "descriptionWithSelection": "Continua a lavorare con {count} pagine selezionate:",
             "compress": "Riduci dimensione file",
             "merge": "Unisci con altri",
             "protect": "Aggiungi password",
@@ -542,6 +614,7 @@
     },
     "watermark": {
         "filePreview": "File a cui aggiungere filigrana",
+        "settings": "Impostazioni filigrana",
         "text": "Testo filigrana",
         "watermarkText": "Testo filigrana",
         "watermarkPlaceholder": "Inserisci testo filigrana",
@@ -552,7 +625,8 @@
             "topLeft": "In alto a sinistra",
             "topRight": "In alto a destra",
             "bottomLeft": "In basso a sinistra",
-            "bottomRight": "In basso a destra"
+            "bottomRight": "In basso a destra",
+            "custom": "Manuale (Drag & Drop)"
         },
         "color": "Colore",
         "colors": {
@@ -835,6 +909,8 @@
         "pagesDeleted": "pagine eliminate",
         "extractSuccess": "Pagine estratte con successo",
         "extractError": "Impossibile estrarre le pagine",
+        "addPDF": "Aggiungi PDF",
+        "appendPages": "Aggiungi pagine",
         "tips": {
             "title": "Suggerimenti",
             "drag": "Trascina le pagine per riordinarle",
@@ -866,7 +942,8 @@
         "fields": "Campi: {count}",
         "selected": "Selezionato: {name} ({type})",
         "zoom": "Zoom: {scale}%",
-        "pageOf": "Pagina {current} di {total}"
+        "pageOf": "Pagina {current} di {total}",
+        "selectFieldToEdit": "Seleziona campo da modificare"
     },
     "editText": {
         "rasterizationWarning": "Nota: Le pagine modificate verranno convertite in immagini. Il testo su quelle pagine non sarà selezionabile dopo la modifica.",
@@ -917,10 +994,12 @@
         "searchError": "Errore durante la ricerca del testo. Riprova.",
         "replaceError": "Errore durante la sostituzione del testo. Riprova.",
         "successMessage": "Testo sostituito con successo!",
-        "useInOtherTools": "Usa in altri strumenti"
+        "useInOtherTools": "Usa in altri strumenti",
+        "settings": "Impostazioni testo"
     },
     "extractImages": {
         "title": "Estrai/Rimuovi Immagini",
+        "mode": "Modalità Estrazione",
         "description": "Estrai tutte le immagini da un PDF o rimuovile per ridurre le dimensioni del file.",
         "modeExtract": "Estrai Immagini",
         "modeRemove": "Rimuovi Immagini",

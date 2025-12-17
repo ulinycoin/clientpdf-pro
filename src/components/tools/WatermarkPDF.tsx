@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ToolLayout } from '@/components/common/ToolLayout';
 import { ProgressBar } from '@/components/common/ProgressBar';
 import { Button } from '@/components/ui/button';
@@ -18,7 +18,7 @@ import { FileCheck, Type, Move, Palette, Sliders, RotateCw } from 'lucide-react'
 // Configure PDF.js worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
-type Position = 'center' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'diagonal';
+type Position = 'center' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'diagonal' | 'custom';
 
 interface WatermarkSettings {
   text: string;
@@ -48,6 +48,107 @@ export const WatermarkPDF: React.FC = () => {
     rotation: -45,
     color: { r: 128, g: 128, b: 128 },
   });
+
+  const [previewScale, setPreviewScale] = useState(1);
+  const imageRef = useRef<HTMLImageElement>(null);
+
+  // Calculate scaling factor when image loads or resizes
+  useEffect(() => {
+    const updateScale = () => {
+      if (imageRef.current && file?.info?.dimensions) {
+        // file.info.dimensions are from viewport scale 1.5 (see handleFilesSelected)
+        // Original PDF width in points = dimensions.width / 1.5
+        const pdfOriginalWidth = file.info.dimensions.width / 1.5;
+        const displayedWidth = imageRef.current.clientWidth;
+
+        if (pdfOriginalWidth > 0) {
+          setPreviewScale(displayedWidth / pdfOriginalWidth);
+        }
+      }
+    };
+
+    // Initial calculation
+    const img = imageRef.current;
+    if (img) {
+      if (img.complete) updateScale();
+      else img.onload = updateScale;
+    }
+
+    // Resize observer for responsiveness
+    const observer = new ResizeObserver(updateScale);
+    if (img) observer.observe(img);
+
+    return () => observer.disconnect();
+  }, [file, previewUrl]);
+
+  const [customPosition, setCustomPosition] = useState({ x: 50, y: 50 }); // Percentage 0-100
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStartRef = useRef<{ x: number; y: number } | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Handle drag start
+  const handleDragStart = (e: React.MouseEvent | React.TouchEvent) => {
+    if ((e.target as HTMLElement).closest('.watermark-element')) {
+      setIsDragging(true);
+      const clientX = 'touches' in e ? e.touches[0].clientX : (e as React.MouseEvent).clientX;
+      const clientY = 'touches' in e ? e.touches[0].clientY : (e as React.MouseEvent).clientY;
+      dragStartRef.current = { x: clientX, y: clientY };
+
+      // If not already custom, calculate current position as percentage and set it
+      if (settings.position !== 'custom') {
+        // This is a simplification; ideally we convert...
+        setSettings(prev => ({ ...prev, position: 'custom' }));
+      }
+    }
+  };
+
+  // Handle drag move
+  const handleDragMove = (e: React.MouseEvent | React.TouchEvent) => {
+    if (!isDragging || !dragStartRef.current || !containerRef.current) return;
+
+    e.preventDefault(); // Prevent scrolling on touch
+
+    const clientX = 'touches' in e ? e.touches[0].clientX : (e as React.MouseEvent).clientX;
+    const clientY = 'touches' in e ? e.touches[0].clientY : (e as React.MouseEvent).clientY;
+
+    const deltaX = clientX - dragStartRef.current.x;
+    const deltaY = clientY - dragStartRef.current.y;
+
+    const rect = containerRef.current.getBoundingClientRect();
+    const deltaXPercent = (deltaX / rect.width) * 100;
+    const deltaYPercent = (deltaY / rect.height) * 100;
+
+    setCustomPosition(prev => ({
+      x: Math.max(0, Math.min(100, prev.x + deltaXPercent)),
+      y: Math.max(0, Math.min(100, prev.y + deltaYPercent))
+    }));
+
+    dragStartRef.current = { x: clientX, y: clientY };
+  };
+
+  // Handle drag end
+  const handleDragEnd = () => {
+    setIsDragging(false);
+    dragStartRef.current = null;
+  };
+
+  // Sync custom position when switching logic
+  useEffect(() => {
+    if (settings.position !== 'custom') {
+      // Map standard positions to initial % for smoother transition if user starts dragging
+      const map: Record<string, { x: number, y: number }> = {
+        'center': { x: 50, y: 50 },
+        'top-left': { x: 10, y: 10 },
+        'top-right': { x: 90, y: 10 },
+        'bottom-left': { x: 10, y: 90 },
+        'bottom-right': { x: 90, y: 90 },
+        'diagonal': { x: 50, y: 50 },
+      };
+      if (map[settings.position]) {
+        setCustomPosition(map[settings.position]);
+      }
+    }
+  }, [settings.position]);
 
   // Cleanup preview URL
   useEffect(() => {
@@ -173,6 +274,15 @@ export const WatermarkPDF: React.FC = () => {
         return {
           x: pageWidth / 2 - textWidth / 2,
           y: pageHeight / 2 - textHeight / 2,
+        };
+      case 'custom':
+        return {
+          // Convert percentage (0-100) to points. 
+          // Note: customPosition.y is % from top, but PDF coordinates are from bottom-left (usually).
+          // However, pdf-lib drawText y lies from bottom.
+          // Let's assume customPosition.x/y are % from top-left of the page.
+          x: (customPosition.x / 100) * pageWidth - (textWidth / 2),
+          y: pageHeight - ((customPosition.y / 100) * pageHeight) - (textHeight / 2),
         };
       default:
         return {
@@ -328,12 +438,14 @@ export const WatermarkPDF: React.FC = () => {
   };
 
   const handleReset = () => {
+    clearSharedFile(); // Explicitly clear to prevent auto-reload
     setFile(null);
     setResult(null);
     setResultSaved(false);
     setPreviewUrl(null);
     setProgress(0);
     setProgressMessage('');
+    setCustomPosition({ x: 50, y: 50 });
   };
 
 
@@ -351,12 +463,24 @@ export const WatermarkPDF: React.FC = () => {
     const baseStyle = {
       color: `rgb(${settings.color.r}, ${settings.color.g}, ${settings.color.b})`,
       opacity: settings.opacity / 100,
-      fontSize: `${Math.max(12, settings.fontSize / 4)}px`,
+      fontSize: `${settings.fontSize * previewScale}px`, // Adjusted font size
       fontWeight: 'bold' as const,
       userSelect: 'none' as const,
-      pointerEvents: 'none' as const,
+      // Change pointer events to auto to allow dragging
+      pointerEvents: 'auto' as const,
       whiteSpace: 'nowrap' as const,
+      cursor: isDragging ? 'grabbing' : 'grab',
+      touchAction: 'none' as const, // Important for touch dragging
     };
+
+    if (settings.position === 'custom') {
+      return {
+        ...baseStyle,
+        left: `${customPosition.x}%`,
+        top: `${customPosition.y}%`,
+        transform: `translate(-50%, -50%) rotate(${settings.rotation}deg)`,
+      };
+    }
 
     switch (settings.position) {
       case 'center':
@@ -458,17 +582,28 @@ export const WatermarkPDF: React.FC = () => {
         {/* Preview Panel (Main Area) */}
         <div className="relative bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden shadow-inner border border-gray-200 dark:border-gray-700" style={{ minHeight: '600px' }}>
           {previewUrl ? (
-            <div className="w-full h-full flex items-center justify-center p-8 bg-dots-light dark:bg-dots-dark">
+            <div
+              ref={containerRef}
+              className="w-full h-full flex items-center justify-center p-8 bg-dots-light dark:bg-dots-dark"
+              onMouseMove={handleDragMove}
+              onMouseUp={handleDragEnd}
+              onMouseLeave={handleDragEnd}
+              onTouchMove={handleDragMove}
+              onTouchEnd={handleDragEnd}
+            >
               <div className="relative shadow-2xl rounded-sm overflow-hidden" style={{ maxHeight: '550px' }}>
                 <img
+                  ref={imageRef}
                   src={previewUrl}
                   alt="PDF Preview"
                   className="max-h-[550px] w-auto object-contain"
                 />
                 {settings.text && (
                   <div
-                    className="absolute"
+                    className="absolute watermark-element hover:ring-2 hover:ring-ocean-500/50 rounded px-2 transition-shadow"
                     style={getPreviewStyle()}
+                    onMouseDown={handleDragStart}
+                    onTouchStart={handleDragStart}
                   >
                     {settings.text}
                   </div>
@@ -541,6 +676,7 @@ export const WatermarkPDF: React.FC = () => {
               <SelectItem value="top-right">{t('watermark.positions.topRight')}</SelectItem>
               <SelectItem value="bottom-left">{t('watermark.positions.bottomLeft')}</SelectItem>
               <SelectItem value="bottom-right">{t('watermark.positions.bottomRight')}</SelectItem>
+              <SelectItem value="custom">{t('watermark.positions.custom') || 'Manual'}</SelectItem>
             </SelectContent>
           </Select>
         </div>

@@ -152,7 +152,14 @@
         "generatingThumbnails": "生成缩略图...",
         "whatsNext": "接下来做什么？",
         "continueWorking": "使用这些工具继续处理您的 PDF：",
-        "selectAll": "全选"
+        "selectAll": "全选",
+        "convert": "转换",
+        "hide": "隐藏",
+        "loading": "加载中...",
+        "previous": "上一个",
+        "save": "保存",
+        "show": "显示",
+        "zoom": "缩放"
     },
     "upload": {
         "selectFiles": "选择文件",
@@ -218,6 +225,27 @@
         "fixRotation": "修复旋转",
         "moveTOC": "将目录移至前面",
         "noIssues": "未检测到问题 - 文档看起来不错！"
+    },
+    "smartCompression": {
+        "title": "智能分析",
+        "analyzing": "正在分析 PDF 内容...",
+        "highPotential": "检测到高压缩潜力",
+        "optimized": "文件已充分优化",
+        "images": "图片",
+        "structure": "结构",
+        "heavy": "较大（图片较多）",
+        "light": "较小（主要是文本）",
+        "recommendation": "推荐模式",
+        "apply": "应用",
+        "applied": "推荐模式已应用",
+        "insights": {
+            "mostlyText": "主要是文本内容",
+            "imageCount": "包含 ~{count} 张图片",
+            "largeImages": "由于图片导致文件较大",
+            "highDensity": "高密度内容",
+            "efficient": "结构已很高效",
+            "standard": "标准 PDF 分析"
+        }
     },
     "smartImageFilter": {
         "title": "智能图片筛选",
@@ -296,6 +324,7 @@
     },
     "flatten": {
         "filePreview": "要扁平化的文件",
+        "description": "使表单和注释不可编辑",
         "originalSize": "原始大小",
         "pages": "页数",
         "changeFile": "更改文件",
@@ -321,6 +350,7 @@
     },
     "split": {
         "filePreview": "要拆分的文件",
+        "pages": "页数",
         "totalPages": "总页数",
         "fileSize": "文件大小",
         "changeFile": "更改文件",
@@ -584,6 +614,7 @@
     },
     "watermark": {
         "filePreview": "要添加水印的文件",
+        "settings": "水印设置",
         "text": "水印文本",
         "watermarkText": "水印文本",
         "watermarkPlaceholder": "输入水印文本",
@@ -594,7 +625,8 @@
             "topLeft": "左上",
             "topRight": "右上",
             "bottomLeft": "左下",
-            "bottomRight": "右下"
+            "bottomRight": "右下",
+            "custom": "手动 (拖拽)"
         },
         "color": "颜色",
         "colors": {
@@ -877,6 +909,8 @@
         "pagesDeleted": "页面已删除",
         "extractSuccess": "页面提取成功",
         "extractError": "无法提取页面",
+        "addPDF": "添加 PDF",
+        "appendPages": "追加页面",
         "tips": {
             "title": "提示",
             "drag": "拖动页面以重新排序",
@@ -908,7 +942,8 @@
         "fields": "字段：{count}",
         "selected": "已选择：{name} ({type})",
         "zoom": "缩放：{scale}%",
-        "pageOf": "第 {current} 页，共 {total} 页"
+        "pageOf": "第 {current} 页，共 {total} 页",
+        "selectFieldToEdit": "选择要编辑的字段"
     },
     "editText": {
         "rasterizationWarning": "注意：编辑的页面将转换为图片。编辑后这些页面上的文本将不可选择。",
@@ -959,10 +994,12 @@
         "searchError": "搜索文本时发生错误。请重试。",
         "replaceError": "替换文本时发生错误。请重试。",
         "successMessage": "文本替换成功！",
-        "useInOtherTools": "在其他工具中使用"
+        "useInOtherTools": "在其他工具中使用",
+        "settings": "文本设置"
     },
     "extractImages": {
         "title": "提取/删除图片",
+        "mode": "提取模式",
         "description": "从 PDF 中提取所有图片或删除它们以减小文件大小。",
         "modeExtract": "提取图片",
         "modeRemove": "删除图片",
