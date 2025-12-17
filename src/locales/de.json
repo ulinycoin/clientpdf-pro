@@ -4,8 +4,10 @@
     "subtitle": "Datenschutzorientierte PDF-Tools in Ihrem Browser"
   },
   "welcome": {
-    "title": "Willkommen bei LocalPDF",
-    "subtitle": "Wählen Sie ein Tool, um zu beginnen",
+    "securePrefix": "Einfach & Sicher",
+    "titleSuffix": "",
+    "title": "PDF Einfach Gemacht",
+    "subtitle": "Alle Tools, die Sie brauchen, an einem Ort. Einfach Datei ziehen und ablegen, um die Magie zu starten.",
     "firstTimeBanner": "Willkommen! Die gesamte Verarbeitung erfolgt in Ihrem Browser - Ihre Dateien verlassen nie Ihr Gerät.",
     "selectTool": "Wählen Sie ein Tool aus der Seitenleiste oder wählen Sie eines unten"
   },
@@ -222,7 +224,10 @@
       "tooManyFiles": "Zu viele Dateien. Maximum: {max}",
       "invalidFileType": "Ungültiger Dateityp. Bitte wählen Sie nur PDF-Dateien.",
       "fileTooLarge": "Datei zu groß. Maximale Größe: {max} MB"
-    }
+    },
+    "readyToProcess": "Bereit zum Starten",
+    "filesReadySingle": "{count} Datei bereit",
+    "filesReadyPlural": "{count} Dateien bereit"
   },
   "flatten": {
     "filePreview": "Datei zum Glätten",

@@ -4,8 +4,10 @@
     "subtitle": "Herramientas PDF centradas en la privacidad en su navegador"
   },
   "welcome": {
-    "title": "Bienvenido a LocalPDF",
-    "subtitle": "Elija una herramienta para comenzar",
+    "securePrefix": "Simple y seguro",
+    "titleSuffix": "",
+    "title": "PDF Simplificado",
+    "subtitle": "Todas las herramientas que necesitas en un solo lugar. Arrastra y suelta un archivo para empezar la magia.",
     "firstTimeBanner": "¡Bienvenido! Todo el procesamiento ocurre en su navegador - sus archivos nunca salen de su dispositivo.",
     "selectTool": "Seleccione una herramienta de la barra lateral o elija una a continuación"
   },
@@ -221,7 +223,10 @@
       "tooManyFiles": "Demasiados archivos. Máximo: {max}",
       "invalidFileType": "Tipo de archivo no válido. Por favor, seleccione solo archivos PDF.",
       "fileTooLarge": "Archivo demasiado grande. Tamaño máximo: {max} MB"
-    }
+    },
+    "readyToProcess": "Listo para empezar",
+    "filesReadySingle": "{count} archivo listo",
+    "filesReadyPlural": "{count} archivos listos"
   },
   "flatten": {
     "filePreview": "Archivo para aplanar",

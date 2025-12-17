@@ -4,8 +4,10 @@
     "subtitle": "Privacy-first PDF tools in your browser"
   },
   "welcome": {
-    "title": "Secure and Fast PDF Processing",
-    "subtitle": "Your files are processed locally and never leave your device.",
+    "securePrefix": "Simple & Secure",
+    "titleSuffix": "",
+    "title": "PDF Made Simple",
+    "subtitle": "All the tools you need in one place. Just drag and drop a file to start the magic.",
     "firstTimeBanner": "Welcome! All processing happens in your browser - your files never leave your device.",
     "selectTool": "Select a tool from the sidebar or choose one below"
   },
@@ -166,7 +168,10 @@
       "tooManyFiles": "Too many files. Maximum: {max}",
       "invalidFileType": "Invalid file type. Please select PDF or images (JPG, PNG).",
       "fileTooLarge": "File too large. Maximum size: {max} MB"
-    }
+    },
+    "readyToProcess": "Ready to Start",
+    "filesReadySingle": "{count} file ready",
+    "filesReadyPlural": "{count} files ready"
   },
   "merge": {
     "fileList": "Files to merge",

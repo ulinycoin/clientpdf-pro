@@ -4,8 +4,10 @@
         "subtitle": "Strumenti PDF orientati alla privacy nel tuo browser"
     },
     "welcome": {
-        "title": "Elaborazione PDF Sicura e Veloce",
-        "subtitle": "I tuoi file vengono elaborati localmente e non lasciano mai il tuo dispositivo.",
+        "securePrefix": "Semplice & Sicuro",
+        "titleSuffix": "",
+        "title": "PDF Reso Semplice",
+        "subtitle": "Tutti gli strumenti di cui hai bisogno in un unico posto. Trascina e rilascia un file per iniziare la magia.",
         "firstTimeBanner": "Benvenuto! Tutta l'elaborazione avviene nel tuo browser - i tuoi file non lasciano mai il tuo dispositivo.",
         "selectTool": "Seleziona uno strumento dalla barra laterale o scegline uno qui sotto"
     },
@@ -166,7 +168,10 @@
             "tooManyFiles": "Troppi file. Massimo: {max}",
             "invalidFileType": "Tipo di file non valido. Seleziona solo file PDF.",
             "fileTooLarge": "File troppo grande. Dimensione massima: {max} MB"
-        }
+        },
+        "readyToProcess": "Pronto per iniziare",
+        "filesReadySingle": "{count} file pronto",
+        "filesReadyPlural": "{count} file pronti"
     },
     "merge": {
         "fileList": "File da unire",

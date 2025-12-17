@@ -4,8 +4,10 @@
         "subtitle": "Ferramentas PDF com privacidade no seu navegador"
     },
     "welcome": {
-        "title": "Processamento Seguro e Rápido de PDF",
-        "subtitle": "Seus arquivos são processados localmente e nunca saem do seu dispositivo.",
+        "securePrefix": "Simples e Seguro",
+        "titleSuffix": "",
+        "title": "PDF Simplificado",
+        "subtitle": "Todas as ferramentas que você precisa em um só lugar. Basta arrastar e soltar um arquivo para começar a mágica.",
         "firstTimeBanner": "Bem-vindo! Todo o processamento acontece no seu navegador - seus arquivos nunca saem do seu dispositivo.",
         "selectTool": "Selecione uma ferramenta na barra lateral ou escolha uma abaixo"
     },
@@ -166,7 +168,10 @@
             "tooManyFiles": "Muitos arquivos. Máximo: {max}",
             "invalidFileType": "Tipo de arquivo inválido. Por favor, selecione apenas arquivos PDF.",
             "fileTooLarge": "Arquivo muito grande. Tamanho máximo: {max} MB"
-        }
+        },
+        "readyToProcess": "Pronto para começar",
+        "filesReadySingle": "{count} arquivo pronto",
+        "filesReadyPlural": "{count} arquivos prontos"
     },
     "merge": {
         "fileList": "Arquivos para juntar",

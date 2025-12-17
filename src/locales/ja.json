@@ -4,8 +4,10 @@
     "subtitle": "ブラウザで動作するプライバシー優先のPDFツール"
   },
   "welcome": {
-    "title": "安全で高速なPDF処理",
-    "subtitle": "ファイルはローカルで処理され、デバイスから離れることはありません。",
+    "securePrefix": "シンプルで安全",
+    "titleSuffix": "",
+    "title": "PDFをシンプルに",
+    "subtitle": "必要なツールがすべてここに。ファイルをドラッグ＆ドロップして、魔法を始めましょう。",
     "firstTimeBanner": "ようこそ！すべての処理はブラウザ内で行われます - ファイルがデバイスから離れることはありません。",
     "selectTool": "サイドバーからツールを選択するか、以下から選択してください"
   },
@@ -166,7 +168,10 @@
       "tooManyFiles": "ファイルが多すぎます。最大: {max}",
       "invalidFileType": "無効なファイルタイプです。PDFファイルのみを選択してください。",
       "fileTooLarge": "ファイルが大きすぎます。最大サイズ: {max} MB"
-    }
+    },
+    "readyToProcess": "準備完了",
+    "filesReadySingle": "{count} ファイル準備完了",
+    "filesReadyPlural": "{count} ファイル準備完了"
   },
   "merge": {
     "fileList": "結合するファイル",

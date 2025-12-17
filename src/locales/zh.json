@@ -4,8 +4,10 @@
         "subtitle": "您的浏览器中的隐私优先 PDF 工具"
     },
     "welcome": {
-        "title": "安全快速的 PDF 处理",
-        "subtitle": "您的文件在本地处理，从未离开您的设备。",
+        "securePrefix": "简单且安全",
+        "titleSuffix": "",
+        "title": "PDF 变得简单",
+        "subtitle": "您所需的所有工具尽在一处。只需拖放文件即可开启魔法。",
         "firstTimeBanner": "欢迎！所有处理都在您的浏览器中进行 - 您的文件从未离开您的设备。",
         "selectTool": "从侧边栏选择工具或在下方选择"
     },
@@ -166,7 +168,10 @@
             "tooManyFiles": "文件太多。最大值：{max}",
             "invalidFileType": "无效的文件类型。请仅选择 PDF 文件。",
             "fileTooLarge": "文件太大。最大大小：{max} MB"
-        }
+        },
+        "readyToProcess": "准备开始",
+        "filesReadySingle": "{count} 个文件已就绪",
+        "filesReadyPlural": "{count} 个文件已就绪"
     },
     "merge": {
         "fileList": "要合并的文件",
