@@ -6,8 +6,6 @@ import { useI18n } from '@/hooks/useI18n';
 import { useSharedFile } from '@/hooks/useSharedFile';
 import pdfService from '@/services/pdfService';
 import type { UploadedFile } from '@/types/pdf';
-import type { Tool } from '@/types';
-import { HASH_TOOL_MAP } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -82,7 +80,7 @@ export const DeletePagesPDF: React.FC = () => {
     try {
       const info = await pdfService.getPDFInfo(selectedFile);
       setFile((prev) => (prev ? { ...prev, info, status: 'completed' } : null));
-    } catch (error) {
+    } catch {
       setFile((prev) =>
         prev ? { ...prev, status: 'error', error: 'Failed to read PDF' } : null
       );
@@ -179,16 +177,7 @@ export const DeletePagesPDF: React.FC = () => {
     setPagesToDelete('');
   };
 
-  const handleQuickAction = async (toolId: Tool) => {
-    if (!result || !file) return;
 
-    const filename = file.name.replace('.pdf', '_pages-deleted.pdf');
-    setSharedFile(result, filename, 'delete-pages-pdf');
-
-    // Small delay to ensure state is updated before navigation
-    await new Promise(resolve => setTimeout(resolve, 100));
-    window.location.hash = HASH_TOOL_MAP[toolId];
-  };
 
   const maxPages = file?.info?.pages || 1;
 

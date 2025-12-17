@@ -8,7 +8,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useI18n } from '@/hooks/useI18n';
-import type { SmartImageFilterAnalysis, ImageCategoryGroup, CategorizedImage } from '@/services/smartImageFilterService';
+import type { SmartImageFilterAnalysis } from '@/services/smartImageFilterService';
 
 interface SmartImageFilterPanelProps {
   analysisResult: SmartImageFilterAnalysis | null;
@@ -36,15 +36,13 @@ export const SmartImageFilterPanel: React.FC<SmartImageFilterPanelProps> = ({
   const ToggleSwitch = () => (
     <button
       onClick={() => onToggle(!enabled)}
-      className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
-        enabled ? 'bg-ocean-500' : 'bg-gray-300 dark:bg-gray-600'
-      }`}
+      className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${enabled ? 'bg-ocean-500' : 'bg-gray-300 dark:bg-gray-600'
+        }`}
       aria-label={enabled ? 'Disable Smart Image Filter' : 'Enable Smart Image Filter'}
     >
       <span
-        className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${
-          enabled ? 'translate-x-5' : 'translate-x-1'
-        }`}
+        className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${enabled ? 'translate-x-5' : 'translate-x-1'
+          }`}
       />
     </button>
   );
@@ -234,17 +232,16 @@ export const SmartImageFilterPanel: React.FC<SmartImageFilterPanelProps> = ({
                   <button
                     key={cat.category}
                     onClick={() => onSelectCategory(cat.category, !isSelected)}
-                    className={`w-full flex items-center justify-between p-2.5 rounded-lg border-2 transition-all ${
-                      isSelected
+                    className={`w-full flex items-center justify-between p-2.5 rounded-lg border-2 transition-all ${isSelected
                         ? 'border-ocean-500 bg-ocean-50 dark:bg-ocean-900/30'
                         : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
-                    }`}
+                      }`}
                   >
                     <div className="flex items-center gap-2">
                       <input
                         type="checkbox"
                         checked={isSelected}
-                        onChange={() => {}}
+                        onChange={() => { }}
                         className="w-4 h-4 text-ocean-600 border-gray-300 rounded focus:ring-ocean-500"
                       />
                       <span className="text-base">{cat.icon}</span>

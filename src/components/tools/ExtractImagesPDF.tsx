@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { ToolLayout } from '@/components/common/ToolLayout';
-import { ProgressBar } from '@/components/common/ProgressBar';
+
 import { useI18n } from '@/hooks/useI18n';
 import pdfService from '@/services/pdfService';
 import smartImageFilterService from '@/services/smartImageFilterService';
@@ -9,20 +9,19 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
-import type { PDFProcessingResult, ExtractedImage, UploadedFile } from '@/types/pdf';
+import type { ExtractedImage, PDFProcessingResult } from '@/types/pdf';
 import { Label } from '@/components/ui/label';
 
 export const ExtractImagesPDF: React.FC = () => {
     const { t } = useI18n();
     const [file, setFile] = useState<File | null>(null);
     const [isProcessing, setIsProcessing] = useState(false);
-    const [progress, setProgress] = useState(0);
-    const [progressMessage, setProgressMessage] = useState('');
+
     const [extractedImages, setExtractedImages] = useState<ExtractedImage[]>([]);
     const [categorizedImages, setCategorizedImages] = useState<CategorizedImage[]>([]);
     const [filterAnalysis, setFilterAnalysis] = useState<SmartImageFilterAnalysis | null>(null);
     const [selectedImageIds, setSelectedImageIds] = useState<Set<string>>(new Set());
-    const [result, setResult] = useState<PDFProcessingResult<any> | null>(null);
+    const [result, setResult] = useState<PDFProcessingResult<Blob | ExtractedImage[]> | null>(null);
     const [mode, setMode] = useState<'extract' | 'remove'>('extract');
     const [activeFilter, setActiveFilter] = useState<'all' | ImageCategory>('all');
     const [smartFilterEnabled] = useState(true);
@@ -44,49 +43,40 @@ export const ExtractImagesPDF: React.FC = () => {
 
         setIsProcessing(true);
         setResult(null);
-        setProgress(0);
         setExtractedImages([]);
         setSelectedImageIds(new Set());
 
         try {
             const extractResult = await pdfService.extractImages(
                 file,
-                (p: number, msg: string) => {
-                    setProgress(p * 0.5);
-                    setProgressMessage(msg);
-                }
+                () => { }
             );
 
             if (extractResult.success && extractResult.data) {
                 setExtractedImages(extractResult.data);
 
                 if (smartFilterEnabled && extractResult.data.length > 0) {
-                    setProgress(60);
-                    setProgressMessage('Analyzing image types...');
+                    const analysis = await smartImageFilterService.analyzeImages(extractResult.data);
+                    if (smartFilterEnabled && extractResult.data.length > 0) {
+                        setFilterAnalysis(analysis);
+                        const allCategorized = analysis.categories.flatMap(cat => cat.images);
+                        setCategorizedImages(allCategorized);
 
-                    const analysis = smartImageFilterService.analyzeImages(extractResult.data);
-                    setFilterAnalysis(analysis);
-                    const allCategorized = analysis.categories.flatMap(cat => cat.images);
-                    setCategorizedImages(allCategorized);
-
-                    if (mode === 'extract') {
-                        const usefulIds = analysis.usefulImages.map(img => img.id);
-                        setSelectedImageIds(new Set(usefulIds.length > 0 ? usefulIds : extractResult.data.map(img => img.id)));
-                        setResult(extractResult);
-                        setProgress(100);
+                        if (mode === 'extract') {
+                            const usefulIds = analysis.usefulImages.map(img => img.id);
+                            setSelectedImageIds(new Set(usefulIds.length > 0 ? usefulIds : extractResult.data.map(img => img.id)));
+                            setResult(extractResult);
+                        } else {
+                            setSelectedImageIds(new Set(extractResult.data.map(img => img.id)));
+                        }
                     } else {
                         setSelectedImageIds(new Set(extractResult.data.map(img => img.id)));
-                        setProgress(50);
+                        if (mode === 'extract') setResult(extractResult);
                     }
                 } else {
-                    setSelectedImageIds(new Set(extractResult.data.map(img => img.id)));
-                    setProgress(mode === 'extract' ? 100 : 50);
-                    if (mode === 'extract') setResult(extractResult);
+                    setResult(extractResult);
                 }
-            } else {
-                setResult(extractResult);
             }
-
         } catch (error) {
             console.error('Operation failed:', error);
             setResult({
@@ -110,8 +100,6 @@ export const ExtractImagesPDF: React.FC = () => {
         if (!file || selectedImageIds.size === 0) return;
 
         setIsProcessing(true);
-        setProgress(50);
-        setProgressMessage('Removing selected images...');
 
         try {
             const imageIdsArray = Array.from(selectedImageIds);
@@ -119,10 +107,7 @@ export const ExtractImagesPDF: React.FC = () => {
                 file,
                 imageIdsArray,
                 extractedImages,
-                (p: number, msg: string) => {
-                    setProgress(50 + p * 0.5);
-                    setProgressMessage(msg);
-                }
+                () => { }
             );
 
             setResult(processResult);
@@ -167,9 +152,9 @@ export const ExtractImagesPDF: React.FC = () => {
                 const filesToZip = selectedImages.map(img => ({ blob: img.blob, filename: img.filename }));
                 await pdfService.downloadAsZip(filesToZip, `${baseName}_images.zip`);
             }
-        } else if (mode === 'remove' && result?.success && result.data) {
+        } else if (mode === 'remove' && result?.success && result.data && !(result.data instanceof Array)) {
             const baseName = file?.name.replace(/\.pdf$/i, '') || 'document';
-            pdfService.downloadFile(result.data, `${baseName}_no_images.pdf`);
+            pdfService.downloadFile(result.data as Blob, `${baseName}_no_images.pdf`);
         }
     };
 
@@ -252,18 +237,17 @@ export const ExtractImagesPDF: React.FC = () => {
                         </div>
                     </div>
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 max-h-[60vh] overflow-y-auto p-1">
-                        {getFilteredImages().map((image: any) => (
+                        {getFilteredImages().map((image) => (
                             <div
                                 key={image.id}
                                 className={`relative group rounded-lg border-2 cursor-pointer overflow-hidden ${selectedImageIds.has(image.id) ? 'border-ocean-500' : 'border-gray-200'}`}
                                 onClick={() => handleToggleImage(image.id)}
                             >
                                 <div className="absolute top-2 left-2 z-10"><Checkbox checked={selectedImageIds.has(image.id)} /></div>
-                                {image.category && <div className="absolute top-2 right-2 z-10"><Badge variant="secondary">{image.category}</Badge></div>}
+                                {(image as Partial<CategorizedImage>).category && <div className="absolute top-2 right-2 z-10"><Badge variant="secondary">{(image as CategorizedImage).category}</Badge></div>}
                                 <div className="aspect-square bg-gray-100 flex items-center justify-center p-2">
                                     {image.previewUrl && <img src={image.previewUrl} alt={image.filename} className="max-w-full max-h-full object-contain" />}
                                 </div>
-                                <div className="p-2 bg-white text-xs truncate">{image.filename}</div>
                             </div>
                         ))}
                     </div>
@@ -297,7 +281,7 @@ export const ExtractImagesPDF: React.FC = () => {
             maxFiles={1}
             uploadTitle={t('common.selectFile')}
             uploadDescription={t('upload.singleFileAllowed')}
-            accept=".pdf"
+            acceptedTypes=".pdf"
             settings={file ? renderSettings() : null}
             actions={
                 file && !result?.success ? (

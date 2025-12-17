@@ -150,10 +150,7 @@ const TOC_PATTERNS = [
   /目次/, // JA
 ];
 
-const COVER_PATTERNS = [
-  /^\s*$/,  // Very little text
-  /^title|^cover/i,
-];
+
 
 class SmartOrganizeService {
   private static instance: SmartOrganizeService;
@@ -239,7 +236,12 @@ class SmartOrganizeService {
 
     // Get text content
     const textContent = await page.getTextContent();
-    const textItems = textContent.items as any[];
+    const textItems = textContent.items as Array<{
+      str: string;
+      transform: number[];
+      width?: number;
+      fontName?: string;
+    }>;
     const fullText = textItems.map(item => item.str).join(' ').trim();
     const textLength = fullText.length;
 
@@ -285,7 +287,7 @@ class SmartOrganizeService {
     );
 
     // Detect TOC
-    const isTOC = this.detectTOC(fullText, textWithPositions);
+    const isTOC = this.detectTOC(fullText);
 
     // Detect cover page (first page with minimal text, often just title)
     const isCover = pageNum === 1 && textLength < 500 && !isTOC;
@@ -295,7 +297,7 @@ class SmartOrganizeService {
     const textDensity = Math.min(textLength / (pageArea / 100), 1);
 
     // Generate content hash for duplicate detection
-    const contentHash = await this.hashContent(fullText, pageNum);
+    const contentHash = await this.hashContent(fullText);
 
     return {
       pageNumber: pageNum,
@@ -421,7 +423,7 @@ class SmartOrganizeService {
         const match = firstLines.match(/^.{0,100}/);
         if (match) {
           // Clean up string
-          let title = match[0].trim();
+          const title = match[0].trim();
           // Remove trailing numbers if it's just a TOC line entry (heuristic)
           if (!/\.{3,}\s*\d+$/.test(title)) {
             return {
@@ -485,12 +487,8 @@ class SmartOrganizeService {
     return null;
   }
 
-  /**
-   * Detect Table of Contents page
-   */
   private detectTOC(
-    fullText: string,
-    textItems: Array<{ text: string }>
+    fullText: string
   ): boolean {
     const lowerText = fullText.toLowerCase();
 
@@ -526,6 +524,7 @@ class SmartOrganizeService {
       const imageOps = [
         pdfjsLib.OPS.paintImageXObject,
         pdfjsLib.OPS.paintImageXObjectRepeat,
+        // @ts-expect-error - paintJpegXObject might be missing in some type definitions
         pdfjsLib.OPS.paintJpegXObject,
       ];
 
@@ -538,7 +537,7 @@ class SmartOrganizeService {
   /**
    * Generate content hash for duplicate detection
    */
-  private async hashContent(text: string, pageNum: number): Promise<string> {
+  private async hashContent(text: string): Promise<string> {
     // Normalize text
     const normalized = text.toLowerCase().replace(/\s+/g, ' ').trim().slice(0, 1000);
 

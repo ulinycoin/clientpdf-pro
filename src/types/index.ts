@@ -138,7 +138,7 @@ export interface UserPreferences {
 // Analytics event types
 export interface AnalyticsEvent {
   name: string;
-  data: Record<string, any>;
+  data: Record<string, unknown>;
   timestamp: number;
 }
 

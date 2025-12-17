@@ -1,18 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { ToolLayout } from '@/components/common/ToolLayout';
-import { ProgressBar } from '@/components/common/ProgressBar';
-import { PDFMultiPagePreview } from '@/components/common/PDFMultiPagePreview';
 import { SmartImageFilterPanel } from '@/components/smart/SmartImageFilterPanel';
 import { useI18n } from '@/hooks/useI18n';
-import { useSharedFile } from '@/hooks/useSharedFile';
+
 import pdfService from '@/services/pdfService';
 import smartImageFilterService, { type SmartImageFilterAnalysis } from '@/services/smartImageFilterService';
-import type { Tool } from '@/types';
 import type { ExtractedImage } from '@/types/pdf';
-import { HASH_TOOL_MAP } from '@/types';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
+
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle2, RotateCw, Trash2, Eye } from 'lucide-react';
 
@@ -32,7 +28,7 @@ type Orientation = 'portrait' | 'landscape';
 
 export const ImagesToPDF: React.FC = () => {
   const { t } = useI18n();
-  const { setSharedFile: saveSharedFile } = useSharedFile();
+  // const { setSharedFile: saveSharedFile } = useSharedFile();
   const [images, setImages] = useState<ImageFile[]>([]);
   const [pageSize, setPageSize] = useState<PageSize>('fit');
   const [orientation, setOrientation] = useState<Orientation>('portrait');
@@ -40,6 +36,7 @@ export const ImagesToPDF: React.FC = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [progressMessage, setProgressMessage] = useState('');
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [result, setResult] = useState<{ blob: Blob; metadata: any } | null>(null);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
@@ -263,14 +260,7 @@ export const ImagesToPDF: React.FC = () => {
     setAnalysisResult(null);
   };
 
-  const handleQuickAction = (toolId: Tool) => {
-    if (result?.blob) {
-      saveSharedFile(result.blob, 'images-to-pdf.pdf', 'images-to-pdf');
-    }
-    setTimeout(() => {
-      window.location.hash = HASH_TOOL_MAP[toolId];
-    }, 100);
-  };
+
 
   const formatFileSize = (bytes: number) => {
     if (bytes === 0) return '0 B';
@@ -473,10 +463,12 @@ export const ImagesToPDF: React.FC = () => {
       hasFiles={images.length > 0}
       onUpload={handleFilesSelected}
       isProcessing={isProcessing}
+      progress={progress}
+      progressMessage={progressMessage}
       maxFiles={50}
       uploadTitle={t('common.selectFile')}
       uploadDescription={t('upload.multipleFilesAllowed')}
-      accept="image/jpeg,image/jpg,image/png"
+      acceptedTypes="image/jpeg,image/jpg,image/png"
       settings={!result ? renderSettings() : null}
       actions={!result ? renderActions() : null}
     >

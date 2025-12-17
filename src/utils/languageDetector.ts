@@ -351,7 +351,7 @@ export const detectLanguageAdvanced = (filename: string, contentSample?: string)
   if (contentSample && contentSample.trim().length > 10) {
     // Clean content sample for better analysis
     const cleanedSample = contentSample
-      .replace(/[^\p{L}\p{N}\s.,!?;:()\-]/gu, ' ') // Keep letters, numbers, basic punctuation
+      .replace(/[^\p{L}\p{N}\s.,!?;:()-]/gu, ' ') // Keep letters, numbers, basic punctuation
       .replace(/\s+/g, ' ') // Normalize whitespace
       .trim();
 

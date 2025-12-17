@@ -80,7 +80,7 @@ const DATE_PATTERNS = [
   // ISO format
   { regex: /(\d{4})-(\d{2})-(\d{2})/, format: 'ISO' },
   // European: DD.MM.YYYY, DD/MM/YYYY
-  { regex: /(\d{1,2})[.\/](\d{1,2})[.\/](\d{4})/, format: 'EU' },
+  { regex: /(\d{1,2})[./](\d{1,2})[./](\d{4})/, format: 'EU' },
   // US: MM/DD/YYYY
   { regex: /(\d{1,2})\/(\d{1,2})\/(\d{4})/, format: 'US' },
   // Written: January 15, 2024 / 15 January 2024
@@ -91,7 +91,7 @@ const DATE_PATTERNS = [
   // German: 15. Januar 2024
   { regex: /(\d{1,2})\.?\s+(Januar|Februar|März|April|Mai|Juni|Juli|August|September|Oktober|November|Dezember)\s+(\d{4})/i, format: 'DE' },
   // Short year: DD.MM.YY
-  { regex: /(\d{1,2})[.\/](\d{1,2})[.\/](\d{2})(?!\d)/, format: 'SHORT_YEAR' },
+  { regex: /(\d{1,2})[./](\d{1,2})[./](\d{2})(?!\d)/, format: 'SHORT_YEAR' },
 ];
 
 const MONTH_NAMES: Record<string, number> = {
@@ -187,7 +187,7 @@ class SmartMergeService {
 
     // Get metadata
     const metadata = await pdf.getMetadata();
-    const info = metadata?.info as any || {};
+    const info = metadata?.info as Record<string, string> || {};
 
     // Extract text from first few pages (limit for performance)
     const maxPagesToScan = Math.min(pdf.numPages, 5);
@@ -197,7 +197,7 @@ class SmartMergeService {
       const page = await pdf.getPage(pageNum);
       const textContent = await page.getTextContent();
       const pageText = textContent.items
-        .map((item: any) => item.str)
+        .map((item) => ('str' in item ? item.str : ''))
         .join(' ');
       fullText += pageText + '\n';
     }
@@ -289,7 +289,7 @@ class SmartMergeService {
               });
             }
           }
-        } catch (e) {
+        } catch {
           // Skip invalid dates
         }
       }
@@ -694,9 +694,9 @@ class SmartMergeService {
    * Apply a sort suggestion to reorder files
    */
   applySortSuggestion(
-    files: Array<{ id: string; [key: string]: any }>,
+    files: Array<{ id: string;[key: string]: unknown }>,
     suggestion: SmartSortSuggestion
-  ): Array<{ id: string; [key: string]: any }> {
+  ): Array<{ id: string;[key: string]: unknown }> {
     const fileMap = new Map(files.map(f => [f.id, f]));
     return suggestion.order
       .map(id => fileMap.get(id))

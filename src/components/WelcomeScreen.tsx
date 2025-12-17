@@ -16,7 +16,7 @@ interface UploadedFile {
   preview?: string;
 }
 
-export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ }) => {
+export const WelcomeScreen: React.FC<WelcomeScreenProps> = () => {
   const { t } = useI18n();
   const { setSharedFile, setSharedFiles } = useSharedFile();
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);

@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { ToolLayout } from '@/components/common/ToolLayout';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import { useI18n } from '@/hooks/useI18n';
 import { useSharedFile } from '@/hooks/useSharedFile';
 import { Canvas } from './AddFormFieldsPDF/Canvas';
@@ -9,8 +8,6 @@ import { Toolbar } from './AddFormFieldsPDF/Toolbar';
 import { FieldPanel } from './AddFormFieldsPDF/FieldPanel';
 import { addFormFieldsToPDF } from '@/services/pdfService';
 import type { UploadedFile } from '@/types/pdf';
-import type { Tool } from '@/types';
-import { HASH_TOOL_MAP } from '@/types';
 import type { FormField } from '@/types/formFields';
 import { CheckCircle2, Copy } from 'lucide-react';
 
@@ -21,7 +18,7 @@ export const AddFormFieldsPDF: React.FC = () => {
   const [result, setResult] = useState<Blob | null>(null);
   const [resultSaved, setResultSaved] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [progress, setProgress] = useState({ percent: 0, message: '' });
+  const [, setProgress] = useState({ percent: 0, message: '' });
 
   // Form fields state
   const [formFields, setFormFields] = useState<FormField[]>([]);
@@ -29,7 +26,6 @@ export const AddFormFieldsPDF: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [scale, setScale] = useState(1);
-  const [duplicateMode, setDuplicateMode] = useState(false); // New state to track if we just duplicated
 
   // Auto-load shared file
   useEffect(() => {
@@ -39,6 +35,7 @@ export const AddFormFieldsPDF: React.FC = () => {
       clearSharedFile();
     }
   }, [sharedFile, file, clearSharedFile]);
+
 
   // Auto-save result to sharedFile when processing is complete
   useEffect(() => {
@@ -88,7 +85,7 @@ export const AddFormFieldsPDF: React.FC = () => {
 
     setFormFields(prev => [...prev, newField]);
     setSelectedFieldId(newField.id);
-  }, [currentPage, formFields.length]);
+  }, [currentPage, formFields.length]); // formFields.length is a primitive, so it's safe. formFields itself would cause re-renders.
 
   // Update field
   const handleUpdateField = useCallback((fieldId: string, updates: Partial<FormField>) => {
@@ -157,11 +154,11 @@ export const AddFormFieldsPDF: React.FC = () => {
       }
     } catch (error) {
       console.error('Error saving PDF:', error);
-      alert('Error: ' + (error instanceof Error ? error.message : 'Unknown error'));
+      alert(t('common.error') + ': ' + (error instanceof Error ? error.message : 'Unknown error'));
     } finally {
       setIsProcessing(false);
     }
-  }, [file, formFields]);
+  }, [file, formFields, t, setProgress]);
 
   const handleDownload = () => {
     if (!result) return;
@@ -184,14 +181,7 @@ export const AddFormFieldsPDF: React.FC = () => {
     setSelectedFieldId(null);
   };
 
-  const handleQuickAction = async (toolId: Tool) => {
-    if (result) {
-      setSharedFile(result, file?.name.replace('.pdf', '_with_form.pdf') || 'document_with_form.pdf', 'add-form-fields-pdf');
-    }
-    // Small delay to ensure state is updated before navigation
-    await new Promise(resolve => setTimeout(resolve, 100));
-    window.location.hash = HASH_TOOL_MAP[toolId];
-  };
+
 
   const renderContent = () => {
     if (!file) return null;

@@ -4,7 +4,7 @@ export interface CompressionAnalysis {
   isImageHeavy: boolean;
   recommendedQuality: 'low' | 'medium' | 'high';
   savingPotential: 'high' | 'medium' | 'low';
-  insights: Array<{ key: string; params?: any }>;
+  insights: Array<{ key: string; params?: Record<string, unknown> }>;
 }
 
 export interface PDFFileInfo {
@@ -33,7 +33,7 @@ export interface PDFProcessingResult<T = Blob> {
 export interface ProcessingError {
   code: string;
   message: string;
-  details?: any;
+  details?: unknown;
 }
 
 export interface MergeOptions {
@@ -43,6 +43,17 @@ export interface MergeOptions {
     author?: string;
     subject?: string;
   };
+}
+
+// Defining PDFTextItem manually to avoid dependency on specific pdfjs-dist internal paths
+export interface PDFTextItem {
+  str: string;
+  dir?: string;
+  width?: number;
+  height?: number;
+  transform?: number[]; // [scaleX, skewY, skewX, scaleY, translateX, translateY]
+  fontName?: string;
+  hasEOL?: boolean;
 }
 
 export type ProgressCallback = (progress: number, message: string) => void;

@@ -7,7 +7,7 @@
  */
 
 import { PDFDocument, PDFPage, rgb, StandardFonts } from 'pdf-lib';
-import * as Tesseract from 'tesseract.js';
+
 import * as pdfjsLib from 'pdfjs-dist';
 import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import { OCRWorkerManager } from './ocrWorkerManager';
@@ -37,7 +37,7 @@ interface PageOCRData {
 /**
  * Parse hOCR output to extract word positions and text
  */
-function parseHOCR(hocr: string, pageWidth: number, pageHeight: number): WordBox[] {
+function parseHOCR(hocr: string): WordBox[] {
   const words: WordBox[] = [];
   const parser = new DOMParser();
   const doc = parser.parseFromString(hocr, 'text/html');
@@ -127,7 +127,7 @@ async function addInvisibleTextLayer(
     // Convert OCR coordinates (top-left origin) to PDF coordinates (bottom-left origin)
     const x = word.bbox.x0 * scaleX;
     const y = pdfHeight - (word.bbox.y1 * scaleY); // Flip Y axis
-    const width = (word.bbox.x1 - word.bbox.x0) * scaleX;
+
     const height = (word.bbox.y1 - word.bbox.y0) * scaleY;
 
     // Calculate font size to fit the bounding box
@@ -166,80 +166,75 @@ export async function createSearchablePDF(
   // Create new PDF document
   const pdfDoc = await PDFDocument.create();
 
-  try {
-    const pageDataArray: PageOCRData[] = [];
+  const pageDataArray: PageOCRData[] = [];
 
-    // Step 1: OCR all pages
-    for (let i = 0; i < pagesToProcess.length; i++) {
-      const pageNum = pagesToProcess[i];
-      const pageProgress = (i / pagesToProcess.length) * 50; // First 50% for OCR
 
-      onProgress?.(pageProgress, `OCR processing page ${pageNum}...`);
+  // Step 1: OCR all pages
+  for (let i = 0; i < pagesToProcess.length; i++) {
+    const pageNum = pagesToProcess[i];
+    const pageProgress = (i / pagesToProcess.length) * 50; // First 50% for OCR
 
-      // Extract image from PDF
-      const { canvas, width, height } = await extractImageFromPDF(file, pageNum, 2.0);
+    onProgress?.(pageProgress, `OCR processing page ${pageNum}...`);
 
-      // Perform OCR with hOCR output
-      const { data } = await worker.recognize(canvas, {}, { hocr: true });
+    // Extract image from PDF
+    const { canvas, width, height } = await extractImageFromPDF(file, pageNum, 2.0);
 
-      // Parse hOCR to get word positions
-      const words = parseHOCR(data.hocr, width, height);
+    // Perform OCR with hOCR output
+    const { data } = await worker.recognize(canvas, {}, { hocr: true });
 
-      pageDataArray.push({
-        pageNumber: pageNum,
-        words,
-        pageWidth: width,
-        pageHeight: height,
-        imageData: canvasToDataURL(canvas)
-      });
-    }
+    // Parse hOCR to get word positions
+    const words = parseHOCR(data.hocr);
 
-    // Step 2: Create PDF with images and invisible text
-    for (let i = 0; i < pageDataArray.length; i++) {
-      const pageData = pageDataArray[i];
-      const pageProgress = 50 + (i / pageDataArray.length) * 40; // Next 40% for PDF creation
-
-      onProgress?.(pageProgress, `Creating searchable page ${pageData.pageNumber}...`);
-
-      // Embed the page image
-      const imageBytes = await fetch(pageData.imageData).then(res => res.arrayBuffer());
-      const image = await pdfDoc.embedJpg(imageBytes);
-
-      // Create page with same dimensions as image
-      const page = pdfDoc.addPage([pageData.pageWidth, pageData.pageHeight]);
-
-      // Draw the image to fill the entire page
-      page.drawImage(image, {
-        x: 0,
-        y: 0,
-        width: pageData.pageWidth,
-        height: pageData.pageHeight,
-      });
-
-      // Add invisible text layer
-      await addInvisibleTextLayer(
-        page,
-        pageData.words,
-        pageData.pageWidth,
-        pageData.pageHeight
-      );
-    }
-
-    onProgress?.(90, 'Finalizing PDF...');
-
-    // Don't terminate worker - let manager handle it for reuse
-
-    // Save PDF
-    const pdfBytes = await pdfDoc.save();
-
-    onProgress?.(100, 'Searchable PDF created!');
-
-    return new Blob([pdfBytes], { type: 'application/pdf' });
-
-  } catch (error) {
-    // Don't terminate on error either - manager will handle cleanup if needed
-    throw error;
+    pageDataArray.push({
+      pageNumber: pageNum,
+      words,
+      pageWidth: width,
+      pageHeight: height,
+      imageData: canvasToDataURL(canvas)
+    });
   }
+
+  // Step 2: Create PDF with images and invisible text
+  for (let i = 0; i < pageDataArray.length; i++) {
+    const pageData = pageDataArray[i];
+    const pageProgress = 50 + (i / pageDataArray.length) * 40; // Next 40% for PDF creation
+
+    onProgress?.(pageProgress, `Creating searchable page ${pageData.pageNumber}...`);
+
+    // Embed the page image
+    const imageBytes = await fetch(pageData.imageData).then(res => res.arrayBuffer());
+    const image = await pdfDoc.embedJpg(imageBytes);
+
+    // Create page with same dimensions as image
+    const page = pdfDoc.addPage([pageData.pageWidth, pageData.pageHeight]);
+
+    // Draw the image to fill the entire page
+    page.drawImage(image, {
+      x: 0,
+      y: 0,
+      width: pageData.pageWidth,
+      height: pageData.pageHeight,
+    });
+
+    // Add invisible text layer
+    await addInvisibleTextLayer(
+      page,
+      pageData.words,
+      pageData.pageWidth,
+      pageData.pageHeight
+    );
+  }
+
+  onProgress?.(90, 'Finalizing PDF...');
+
+  // Don't terminate worker - let manager handle it for reuse
+
+  // Save PDF
+  const pdfBytes = await pdfDoc.save();
+
+  onProgress?.(100, 'Searchable PDF created!');
+
+  return new Blob([pdfBytes], { type: 'application/pdf' });
 }
 
 /**
@@ -255,69 +250,63 @@ export async function createSearchablePDFFromImage(
   // Get reusable worker from manager
   const worker = await OCRWorkerManager.getWorker(language);
 
-  try {
-    // Load image
-    const imageUrl = URL.createObjectURL(file);
-    const img = new Image();
-    await new Promise((resolve, reject) => {
-      img.onload = resolve;
-      img.onerror = reject;
-      img.src = imageUrl;
-    });
+  // Load image
+  const imageUrl = URL.createObjectURL(file);
+  const img = new Image();
+  await new Promise((resolve, reject) => {
+    img.onload = resolve;
+    img.onerror = reject;
+    img.src = imageUrl;
+  });
 
-    onProgress?.(20, 'Performing OCR...');
+  onProgress?.(20, 'Performing OCR...');
 
-    // Create canvas from image
-    const canvas = document.createElement('canvas');
-    canvas.width = img.width;
-    canvas.height = img.height;
-    const ctx = canvas.getContext('2d')!;
-    ctx.drawImage(img, 0, 0);
+  // Create canvas from image
+  const canvas = document.createElement('canvas');
+  canvas.width = img.width;
+  canvas.height = img.height;
+  const ctx = canvas.getContext('2d')!;
+  ctx.drawImage(img, 0, 0);
 
-    // Perform OCR with hOCR output
-    const { data } = await worker.recognize(canvas, {}, { hocr: true });
+  // Perform OCR with hOCR output
+  const { data } = await worker.recognize(canvas, {}, { hocr: true });
 
-    onProgress?.(60, 'Creating searchable PDF...');
+  onProgress?.(60, 'Creating searchable PDF...');
 
-    // Parse hOCR
-    const words = parseHOCR(data.hocr, img.width, img.height);
+  // Parse hOCR
+  const words = parseHOCR(data.hocr);
 
-    // Create PDF
-    const pdfDoc = await PDFDocument.create();
-    const page = pdfDoc.addPage([img.width, img.height]);
+  // Create PDF
+  const pdfDoc = await PDFDocument.create();
+  const page = pdfDoc.addPage([img.width, img.height]);
 
-    // Embed image
-    const imageData = canvas.toDataURL('image/jpeg', 0.95);
-    const imageBytes = await fetch(imageData).then(res => res.arrayBuffer());
-    const image = await pdfDoc.embedJpg(imageBytes);
+  // Embed image
+  const imageData = canvas.toDataURL('image/jpeg', 0.95);
+  const imageBytes = await fetch(imageData).then(res => res.arrayBuffer());
+  const image = await pdfDoc.embedJpg(imageBytes);
 
-    // Draw image
-    page.drawImage(image, {
-      x: 0,
-      y: 0,
-      width: img.width,
-      height: img.height,
-    });
+  // Draw image
+  page.drawImage(image, {
+    x: 0,
+    y: 0,
+    width: img.width,
+    height: img.height,
+  });
 
-    onProgress?.(80, 'Adding text layer...');
+  onProgress?.(80, 'Adding text layer...');
 
-    // Add invisible text layer
-    await addInvisibleTextLayer(page, words, img.width, img.height);
+  // Add invisible text layer
+  await addInvisibleTextLayer(page, words, img.width, img.height);
 
-    onProgress?.(90, 'Finalizing PDF...');
+  onProgress?.(90, 'Finalizing PDF...');
 
-    // Cleanup URL but not worker
-    URL.revokeObjectURL(imageUrl);
+  // Cleanup URL but not worker
+  URL.revokeObjectURL(imageUrl);
 
-    // Save PDF
-    const pdfBytes = await pdfDoc.save();
+  // Save PDF
+  const pdfBytes = await pdfDoc.save();
 
-    onProgress?.(100, 'Searchable PDF created!');
+  onProgress?.(100, 'Searchable PDF created!');
 
-    return new Blob([pdfBytes], { type: 'application/pdf' });
-
-  } catch (error) {
-    // Don't terminate worker - manager handles it
-    throw error;
-  }
+  return new Blob([pdfBytes], { type: 'application/pdf' });
 }

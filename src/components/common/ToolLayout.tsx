@@ -33,6 +33,12 @@ interface ToolLayoutProps {
     maxFiles?: number;
     /** Accepted file types (e.g., ".pdf,.jpg") */
     acceptedTypes?: string;
+    /** Custom sidebar width class (default: "lg:w-80 xl:w-96") */
+    sidebarWidth?: string;
+    /** Progress percentage (0-100) */
+    progress?: number;
+    /** Progress message to display */
+    progressMessage?: string;
 }
 
 export const ToolLayout: React.FC<ToolLayoutProps> = ({
@@ -49,6 +55,9 @@ export const ToolLayout: React.FC<ToolLayoutProps> = ({
     uploadDescription,
     maxFiles,
     acceptedTypes,
+    sidebarWidth,
+    progress,
+    progressMessage,
 }) => {
     const { t } = useI18n();
 
@@ -92,7 +101,7 @@ export const ToolLayout: React.FC<ToolLayoutProps> = ({
 
                 {/* Sidebar / Settings Area (Desktop: Right side, Mobile: Bottom) */}
                 {hasFiles && (settings || actions) && (
-                    <div className="lg:w-80 xl:w-96 flex-shrink-0 space-y-6">
+                    <div className={`${sidebarWidth || 'lg:w-80 xl:w-96'} flex-shrink-0 space-y-6`}>
                         {/* Settings Card */}
                         {settings && (
                             <Card className="sticky top-24 glass-premium dark:glass-premium-dark overflow-hidden transition-all duration-300 hover:shadow-glow/20">
@@ -109,9 +118,16 @@ export const ToolLayout: React.FC<ToolLayoutProps> = ({
                                     {isProcessing ? (
                                         <div className="flex flex-col items-center justify-center py-2 space-y-3">
                                             <Loader2 className="w-8 h-8 animate-spin text-ocean-500" />
-                                            <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
-                                                {t('common.processing')}...
-                                            </p>
+                                            <div className="text-center space-y-1">
+                                                <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                                                    {progressMessage || `${t('common.processing')}...`}
+                                                </p>
+                                                {typeof progress === 'number' && progress > 0 && (
+                                                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                                                        {Math.round(progress)}%
+                                                    </p>
+                                                )}
+                                            </div>
                                         </div>
                                     ) : (
                                         actions

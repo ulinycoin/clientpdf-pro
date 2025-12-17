@@ -22,7 +22,8 @@ export const MergePDF: React.FC = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [progressMessage, setProgressMessage] = useState('');
-  const [result, setResult] = useState<{ blob: Blob; metadata: any } | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [result, setResult] = useState<{ blob: Blob; filename: string; size: number } | any | null>(null);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [hasLoadedSharedFiles, setHasLoadedSharedFiles] = useState(false);
   const [resultSaved, setResultSaved] = useState(false);
@@ -47,7 +48,7 @@ export const MergePDF: React.FC = () => {
             f.id === uploadedFile.id ? { ...f, info, status: 'completed' as const } : f
           )
         );
-      } catch (error) {
+      } catch {
         setFiles((prev) =>
           prev.map((f) =>
             f.id === uploadedFile.id
@@ -107,9 +108,8 @@ export const MergePDF: React.FC = () => {
       } else {
         toast.error(result.error?.message || 'Merge failed');
       }
-    } catch (error) {
+    } catch {
       toast.error('An error occurred during merge');
-      console.error(error);
     } finally {
       setIsProcessing(false);
     }

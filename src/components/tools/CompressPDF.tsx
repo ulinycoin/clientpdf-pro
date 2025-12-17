@@ -5,7 +5,7 @@ import { PDFPreview } from '@/components/common/PDFPreview';
 import { useI18n } from '@/hooks/useI18n';
 import { useSharedFile } from '@/hooks/useSharedFile';
 import pdfService from '@/services/pdfService';
-import type { UploadedFile } from '@/types/pdf';
+import type { UploadedFile, PDFProcessingResult } from '@/types/pdf'; // Added PDFProcessingResult type
 import type { Tool } from '@/types';
 import { HASH_TOOL_MAP } from '@/types';
 import { Button } from '@/components/ui/button';
@@ -26,7 +26,7 @@ export const CompressPDF: React.FC = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [progressMessage, setProgressMessage] = useState('');
-  const [result, setResult] = useState<{ blob: Blob; metadata: any } | null>(null);
+  const [result, setResult] = useState<{ blob: Blob; metadata: PDFProcessingResult['metadata'] } | null>(null);
   const [loadedFromShared, setLoadedFromShared] = useState(false);
   const [resultSaved, setResultSaved] = useState(false);
   const [analysis, setAnalysis] = useState<CompressionAnalysis | null>(null);
@@ -109,7 +109,7 @@ export const CompressPDF: React.FC = () => {
       setAnalysis(res);
       setQuality(res.recommendedQuality);
       setIsAnalyzing(false);
-    } catch (error) {
+    } catch {
       setFile((prev) =>
         prev ? { ...prev, status: 'error', error: 'Failed to read PDF' } : null
       );

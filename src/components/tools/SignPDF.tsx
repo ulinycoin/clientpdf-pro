@@ -1,20 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ToolLayout } from '@/components/common/ToolLayout';
-import { ProgressBar } from '@/components/common/ProgressBar';
 import { useI18n } from '@/hooks/useI18n';
 import { useSharedFile } from '@/hooks/useSharedFile';
 import { PDFDocument, rgb } from 'pdf-lib';
 import * as pdfjsLib from 'pdfjs-dist';
+import { pdfService } from '@/services/pdfService';
 import type { UploadedFile, PDFFileInfo } from '@/types/pdf';
-import type { Tool } from '@/types';
-import { HASH_TOOL_MAP } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { CheckCircle2, PenTool } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+import { CheckCircle2 } from 'lucide-react';
 
 type SignatureType = 'draw' | 'upload' | 'text';
 type SignaturePosition = 'bottom-left' | 'bottom-right' | 'top-left' | 'top-right' | 'custom';
@@ -36,9 +33,8 @@ export const SignPDF: React.FC = () => {
   const { sharedFile, setSharedFile, clearSharedFile } = useSharedFile();
   const [file, setFile] = useState<UploadedFile | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [progressMessage, setProgressMessage] = useState('');
-  const [result, setResult] = useState<{ blob: Blob; metadata: any } | null>(null);
+
+  const [result, setResult] = useState<{ blob: Blob; metadata: Record<string, unknown> } | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [resultSaved, setResultSaved] = useState(false);
   const [signatureImage, setSignatureImage] = useState<string | null>(null);
@@ -130,6 +126,7 @@ export const SignPDF: React.FC = () => {
         const context = canvas.getContext('2d')!;
         canvas.height = viewport.height;
         canvas.width = viewport.width;
+        // @ts-expect-error - type mismatch in pdfjs-dist definition
         await page.render({ canvasContext: context, viewport }).promise;
         setPreviewUrl(canvas.toDataURL());
       }
@@ -207,15 +204,13 @@ export const SignPDF: React.FC = () => {
     if ((settings.type === 'draw' || settings.type === 'upload') && !signatureImage) { alert(t('sign.provideSignature')); return; }
 
     setIsProcessing(true);
-    setProgress(10);
-    setProgressMessage(t('sign.loadingHighQuality'));
+    setIsProcessing(true);
 
     try {
       const arrayBuffer = await file.file.arrayBuffer();
       const pdfDoc = await PDFDocument.load(arrayBuffer);
 
-      setProgress(30);
-      setProgressMessage(t('sign.addingSignature'));
+
 
       let signatureImageBytes: Uint8Array | null = null;
       if (settings.type !== 'text' && signatureImage) {
@@ -241,11 +236,11 @@ export const SignPDF: React.FC = () => {
           const signatureImg = await pdfDoc.embedPng(signatureImageBytes);
           page.drawImage(signatureImg, { x: pos.x, y: pos.y, width: settings.width, height: settings.height });
         }
-        setProgress(30 + Math.round(((i + 1) / pagesToSign.length) * 60));
+
       }
 
       const pdfBytes = await pdfDoc.save();
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const blob = new Blob([pdfBytes as BlobPart], { type: 'application/pdf' });
 
       setResult({
         blob,
@@ -280,7 +275,7 @@ export const SignPDF: React.FC = () => {
     if (!signatureImage && (!settings.text || settings.type !== 'text')) return null;
     if (!file?.info?.dimensions) return null; // Need original dims
 
-    const dims = file.info.dimensions;
+    // const dims = file.info.dimensions;
     // We need to scale the overlay position to the current display size of the image
     // But for simplicity in this preview, let's assume valid CSS positioning using % or simply corners.
     // Since 'custom' isn't interactive here yet, corner logic is enough.
@@ -298,7 +293,7 @@ export const SignPDF: React.FC = () => {
     else if (settings.position === 'bottom-left') { style.bottom = '5%'; style.left = '5%'; }
     else if (settings.position === 'top-right') { style.top = '5%'; style.right = '5%'; }
     else if (settings.position === 'top-left') { style.top = '5%'; style.left = '5%'; }
-    else { style.top = '50%'; style.left = '50%'; transform: 'translate(-50%, -50%)'; }
+    else { style.top = '50%'; style.left = '50%'; style.transform = 'translate(-50%, -50%)'; }
 
     return (
       <div style={style} className="p-1">
@@ -373,7 +368,7 @@ export const SignPDF: React.FC = () => {
 
       <div className="space-y-3 pt-4 border-t">
         <Label>{t('sign.position')}</Label>
-        <Select value={settings.position} onValueChange={(v: any) => setSettings({ ...settings, position: v })}>
+        <Select value={settings.position} onValueChange={(v: SignaturePosition) => setSettings({ ...settings, position: v })}>
           <SelectTrigger><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="bottom-right">{t('sign.positions.bottomRight')}</SelectItem>
@@ -447,7 +442,7 @@ export const SignPDF: React.FC = () => {
       maxFiles={1}
       uploadTitle={t('common.selectFile')}
       uploadDescription={t('upload.singleFileAllowed')}
-      accept=".pdf"
+      acceptedTypes=".pdf"
       settings={!result ? renderSettings() : null}
       actions={!result ? renderActions() : null}
       sidebarWidth="w-80" // Slightly wider for signature canvas

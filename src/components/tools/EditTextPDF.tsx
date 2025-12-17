@@ -1,19 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ToolLayout } from '@/components/common/ToolLayout';
-import { ProgressBar } from '@/components/common/ProgressBar';
+
 import { useI18n } from '@/hooks/useI18n';
 import { useSharedFile } from '@/hooks/useSharedFile';
 import pdfService from '@/services/pdfService';
 import * as pdfjsLib from 'pdfjs-dist';
 import type { UploadedFile, TextOccurrence } from '@/types/pdf';
-import type { Tool } from '@/types';
-import { HASH_TOOL_MAP } from '@/types';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { CheckCircle2, Type, PaintBucket, Move, AlignLeft, AlignCenter, AlignRight, Bold, Italic } from 'lucide-react';
+import { CheckCircle2, Type, AlignLeft, AlignCenter, AlignRight, Bold, Italic } from 'lucide-react';
 
 // Configure PDF.js worker
 // Worker configured in pdfService.ts (globally)
@@ -22,11 +20,11 @@ export const EditTextPDF: React.FC = () => {
   const { t } = useI18n();
   const { sharedFile, clearSharedFile, setSharedFile } = useSharedFile();
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const renderTaskRef = useRef<any>(null);
+  const renderTaskRef = useRef<pdfjsLib.RenderTask | null>(null);
 
   // File state
   const [file, setFile] = useState<UploadedFile | null>(null);
-  const [pdfDocument, setPdfDocument] = useState<any>(null);
+  const [pdfDocument, setPdfDocument] = useState<pdfjsLib.PDFDocumentProxy | null>(null);
   const [totalPages, setTotalPages] = useState(0);
   const [selectedPage, setSelectedPage] = useState(1);
 
@@ -41,24 +39,23 @@ export const EditTextPDF: React.FC = () => {
 
   // Processing state
   const [isProcessing, setIsProcessing] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [progressMessage, setProgressMessage] = useState('');
   const [result, setResult] = useState<Blob | null>(null);
   const [resultSaved, setResultSaved] = useState(false);
 
+  // UI state
   // UI state
   const [backgroundColor, setBackgroundColor] = useState('#ffffff');
   const [textColor, setTextColor] = useState('#000000');
   const [fontSize, setFontSize] = useState(12);
   const [fontFamily, setFontFamily] = useState('Arial');
-  const [textOffsetX, setTextOffsetX] = useState(0);
-  const [textOffsetY, setTextOffsetY] = useState(0);
+  const [textOffsetX] = useState(0);
+  const [textOffsetY] = useState(0);
   const [showPreview, setShowPreview] = useState(false);
   const [isBold, setIsBold] = useState(false);
   const [isItalic, setIsItalic] = useState(false);
   const [textAlign, setTextAlign] = useState<'left' | 'center' | 'right'>('left');
   const [editMode_type, setEditModeType] = useState<'replace' | 'cover'>('replace');
-  const [canvasScale, setCanvasScale] = useState(1.5);
+  const [canvasScale] = useState(1.5);
 
   // Helper function to build font string
   const getFontString = React.useCallback((size: number, family: string) => {
@@ -113,7 +110,7 @@ export const EditTextPDF: React.FC = () => {
   };
 
   const renderPagePreview = React.useCallback(async (
-    pdf: any,
+    pdf: pdfjsLib.PDFDocumentProxy,
     pageNumber: number,
     tempSelection?: TextOccurrence | null,
     currentMode: 'replace' | 'cover' | 'move' | null = null
@@ -123,7 +120,7 @@ export const EditTextPDF: React.FC = () => {
     if (renderTaskRef.current) {
       try {
         renderTaskRef.current.cancel();
-      } catch (e) { /* ignore */ }
+      } catch { /* ignore */ }
       renderTaskRef.current = null;
     }
 
@@ -137,10 +134,12 @@ export const EditTextPDF: React.FC = () => {
       canvas.width = viewport.width;
       canvas.height = viewport.height;
 
-      renderTaskRef.current = page.render({
+      const renderContext = {
         canvasContext: context,
         viewport: viewport,
-      });
+      };
+      // @ts-expect-error - RenderParameters type definition mismatch in pdfjs-dist
+      renderTaskRef.current = page.render(renderContext);
 
       await renderTaskRef.current.promise;
       renderTaskRef.current = null;
@@ -214,11 +213,11 @@ export const EditTextPDF: React.FC = () => {
           }
         }
       }
-    } catch (error: any) {
-      if (error?.name === 'RenderingCancelledException') return;
+    } catch (error: unknown) {
+      if ((error as { name?: string })?.name === 'RenderingCancelledException') return;
       console.error('Error rendering preview:', error);
     }
-  }, [selections, activeSelectionId, showPreview, backgroundColor, textColor, fontSize, fontFamily, textOffsetX, textOffsetY, textAlign, canvasScale, getFontString, editMode_type]);
+  }, [selections, activeSelectionId, showPreview, backgroundColor, textColor, fontSize, fontFamily, textOffsetX, textOffsetY, textAlign, canvasScale, getFontString, editMode]);
 
   const loadPDF = React.useCallback(async (pdfFile: File) => {
     try {
@@ -234,6 +233,27 @@ export const EditTextPDF: React.FC = () => {
     }
   }, [renderPagePreview]);
 
+  const handleFilesSelected = React.useCallback(async (selectedFiles: File[]) => {
+    const selectedFile = selectedFiles[0];
+    if (!selectedFile) return;
+
+    const uploadedFile: UploadedFile = {
+      id: `${Date.now()}`,
+      file: selectedFile,
+      name: selectedFile.name,
+      size: selectedFile.size,
+      status: 'completed',
+    };
+    setFile(uploadedFile);
+    setResult(null);
+    setResultSaved(false);
+    setSelections([]);
+    setActiveSelectionId(null);
+    await loadPDF(selectedFile);
+  }, [loadPDF]);
+
+
+
   // Auto-load shared file
   useEffect(() => {
     if (sharedFile && !file && !result) {
@@ -243,11 +263,11 @@ export const EditTextPDF: React.FC = () => {
     }
     return () => {
       if (renderTaskRef.current) {
-        try { renderTaskRef.current.cancel(); } catch (e) { };
+        try { renderTaskRef.current.cancel(); } catch { /* ignore */ };
         renderTaskRef.current = null;
       }
     };
-  }, [sharedFile, file, result, clearSharedFile, loadPDF]);
+  }, [sharedFile, file, result, clearSharedFile, loadPDF, handleFilesSelected]);
 
   // Auto-update preview
   useEffect(() => {
@@ -265,24 +285,7 @@ export const EditTextPDF: React.FC = () => {
     }
   }, [result, isProcessing, resultSaved, file?.name, setSharedFile]);
 
-  const handleFilesSelected = async (selectedFiles: File[]) => {
-    const selectedFile = selectedFiles[0];
-    if (!selectedFile) return;
 
-    const uploadedFile: UploadedFile = {
-      id: `${Date.now()}`,
-      file: selectedFile,
-      name: selectedFile.name,
-      size: selectedFile.size,
-      status: 'completed',
-    };
-    setFile(uploadedFile);
-    setResult(null);
-    setResultSaved(false);
-    setSelections([]);
-    setActiveSelectionId(null);
-    await loadPDF(selectedFile);
-  };
 
   const getClickTarget = (x: number, y: number, selection: TextOccurrence): 'move' | 'resize-nw' | 'resize-ne' | 'resize-sw' | 'resize-se' | null => {
     if (!selection) return null;
@@ -347,7 +350,7 @@ export const EditTextPDF: React.FC = () => {
       if (!activeSelection) return;
       const dx = x - editStart.x;
       const dy = y - editStart.y;
-      let updatedSelection = { ...activeSelection };
+      const updatedSelection = { ...activeSelection };
 
       switch (editMode) {
         case 'move':
@@ -509,21 +512,21 @@ export const EditTextPDF: React.FC = () => {
   const handleReplaceText = async () => {
     if (!file || selections.length === 0) return;
     setIsProcessing(true);
-    setProgress(0);
     try {
       const result = await pdfService.editTextInPDFVector(
         file.file,
-        { selections, backgroundColor, textColor, fontSize, fontFamily: fontFamily as any, isBold, isItalic, textOffsetX, textOffsetY, canvasScale },
-        (progress, message) => { setProgress(progress); setProgressMessage(message); }
+        { selections, backgroundColor, textColor, fontSize, fontFamily: fontFamily as import('@/types/pdf').VectorEditTextOptions['fontFamily'], isBold, isItalic, textOffsetX, textOffsetY, canvasScale },
+        () => { }
       );
       if (result.success && result.data) {
         setResult(result.data);
       } else {
         throw result.error || new Error('Failed to edit PDF');
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error replacing text:', error);
-      if (error?.message?.includes('cannot encode') || error?.message?.includes('WinAnsi')) {
+      const errorMsg = (error as Error)?.message || '';
+      if (errorMsg.includes('cannot encode') || errorMsg.includes('WinAnsi')) {
         alert('⚠️ Error: Selected font does not support non-Latin characters.');
       } else {
         alert(t('editText.replaceError') || 'Failed to replace text');
@@ -574,13 +577,13 @@ export const EditTextPDF: React.FC = () => {
             <Button variant="ghost" size="sm" onClick={() => {
               const newPage = Math.max(1, selectedPage - 1);
               setSelectedPage(newPage);
-              renderPagePreview(pdfDocument, newPage);
+              if (pdfDocument) renderPagePreview(pdfDocument, newPage);
             }} disabled={selectedPage <= 1}>Previous</Button>
             <span className="text-sm">Page {selectedPage} / {totalPages}</span>
             <Button variant="ghost" size="sm" onClick={() => {
               const newPage = Math.min(totalPages, selectedPage + 1);
               setSelectedPage(newPage);
-              renderPagePreview(pdfDocument, newPage);
+              if (pdfDocument) renderPagePreview(pdfDocument, newPage);
             }} disabled={selectedPage >= totalPages}>Next</Button>
           </div>
           <div className="flex items-center gap-2">
@@ -615,7 +618,7 @@ export const EditTextPDF: React.FC = () => {
         {/* Mode Selection */}
         <div className="space-y-3">
           <Label>Edit Mode</Label>
-          <Select value={editMode_type} onValueChange={(v: any) => setEditModeType(v)}>
+          <Select value={editMode_type} onValueChange={(v: 'replace' | 'cover') => setEditModeType(v)}>
             <SelectTrigger><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="replace">Replace Text</SelectItem>

@@ -10,8 +10,6 @@ import { useI18n } from '@/hooks/useI18n';
 import { useSharedFile } from '@/hooks/useSharedFile';
 import pdfService from '@/services/pdfService';
 import type { UploadedFile } from '@/types/pdf';
-import type { Tool } from '@/types';
-import { HASH_TOOL_MAP } from '@/types';
 import { RotateCw, Repeat, FileStack, CheckCircle2 } from 'lucide-react';
 
 type RotationAngle = 90 | 180 | 270;
@@ -89,7 +87,7 @@ export const RotatePDF: React.FC = () => {
     try {
       const info = await pdfService.getPDFInfo(selectedFile);
       setFile((prev) => (prev ? { ...prev, info, status: 'completed' } : null));
-    } catch (error) {
+    } catch {
       setFile((prev) =>
         prev ? { ...prev, status: 'error', error: 'Failed to read PDF' } : null
       );
@@ -187,16 +185,7 @@ export const RotatePDF: React.FC = () => {
     setSpecificPages('');
   };
 
-  const handleQuickAction = async (toolId: Tool) => {
-    if (!result || !file) return;
 
-    const filename = file.name.replace('.pdf', '_rotated.pdf');
-    setSharedFile(result, filename, 'rotate-pdf');
-
-    // Small delay to ensure state is updated before navigation
-    await new Promise(resolve => setTimeout(resolve, 100));
-    window.location.hash = HASH_TOOL_MAP[toolId];
-  };
 
   const maxPages = file?.info?.pages || 1;
 

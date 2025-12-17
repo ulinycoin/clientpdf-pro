@@ -90,7 +90,7 @@ export const OCRPDF: React.FC = () => {
 
       clearSharedFile();
     }
-  }, [sharedFile, file, clearSharedFile]);
+  }, [sharedFile, file, clearSharedFile, t]);
 
   // Cleanup preview URL
   useEffect(() => {
@@ -168,6 +168,7 @@ export const OCRPDF: React.FC = () => {
           await page.render({
             canvasContext: context,
             viewport: viewport,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } as any).promise;
 
           const url = canvas.toDataURL();
@@ -210,6 +211,7 @@ export const OCRPDF: React.FC = () => {
     await page.render({
       canvasContext: context,
       viewport: viewport,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any).promise;
 
     return canvas;
@@ -488,7 +490,7 @@ export const OCRPDF: React.FC = () => {
           {totalPages > 1 && (
             <div className="space-y-3 pt-4 border-t border-gray-100 dark:border-gray-800">
               <Label className="text-base font-semibold">Pages</Label>
-              <RadioGroup value={pageMode} onValueChange={(v) => setPageMode(v as any)}>
+              <RadioGroup value={pageMode} onValueChange={(v) => setPageMode(v as PageSelectionMode)}>
                 <div className="flex items-center space-x-2"><RadioGroupItem value="all" id="r-all" /><Label htmlFor="r-all">All ({totalPages})</Label></div>
                 <div className="flex items-center space-x-2"><RadioGroupItem value="first" id="r-first" /><Label htmlFor="r-first">First Page</Label></div>
                 <div className="flex items-center space-x-2"><RadioGroupItem value="range" id="r-range" /><Label htmlFor="r-range">Range</Label></div>
@@ -506,7 +508,7 @@ export const OCRPDF: React.FC = () => {
           {/* Output Format */}
           <div className="space-y-3 pt-4 border-t border-gray-100 dark:border-gray-800">
             <Label className="text-base font-semibold">Output Format</Label>
-            <Select value={outputFormat} onValueChange={(v) => setOutputFormat(v as any)}>
+            <Select value={outputFormat} onValueChange={(v) => setOutputFormat(v as OutputFormat)}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="text">Text (Editable)</SelectItem>

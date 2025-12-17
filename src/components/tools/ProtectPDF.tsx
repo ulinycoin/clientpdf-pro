@@ -8,8 +8,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ToolLayout } from '@/components/common/ToolLayout';
-import { Shield, Eye, EyeOff, Lock, FileCheck, AlertTriangle, FileText } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+import { Shield, Eye, EyeOff, FileCheck, FileText } from 'lucide-react';
+
 
 export const ProtectPDF: React.FC = () => {
   const { t } = useI18n();
@@ -37,7 +37,7 @@ export const ProtectPDF: React.FC = () => {
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState<PasswordStrength | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [result, setResult] = useState<{ blob: Blob; filename: string; metadata: any } | null>(null);
+  const [result, setResult] = useState<{ blob: Blob; filename: string; metadata: Record<string, unknown> } | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -63,13 +63,13 @@ export const ProtectPDF: React.FC = () => {
     const s = defaults[preset];
     setPermissions(p => ({
       ...p,
-      printing: s.printing as any,
+      printing: s.printing as 'none' | 'lowResolution' | 'highResolution',
       modifying: s.modifying,
       copying: s.copying,
       annotating: s.annotating,
       fillingForms: s.fillingForms,
     }));
-    setEncryptionLevel(s.level as any);
+    setEncryptionLevel(s.level as 'aes128' | 'aes256');
   };
 
   const checkPasswordStrength = (password: string): PasswordStrength => {
@@ -93,7 +93,7 @@ export const ProtectPDF: React.FC = () => {
     if (files.length > 0) {
       const selectedFile = files[0];
       let info = undefined;
-      try { info = await getPDFInfo(selectedFile); } catch (e) { }
+      try { info = await getPDFInfo(selectedFile); } catch { /* ignore */ }
 
       setFile({
         id: Date.now().toString(),
@@ -127,7 +127,7 @@ export const ProtectPDF: React.FC = () => {
       };
 
       const protectedPdf = await protectPDF(file.file, settings, () => { });
-      const blob = new Blob([protectedPdf as any], { type: 'application/pdf' });
+      const blob = new Blob([protectedPdf as BlobPart], { type: 'application/pdf' });
 
       setResult({
         blob,
@@ -137,8 +137,8 @@ export const ProtectPDF: React.FC = () => {
           hasPassword: !permissionsOnly
         },
       });
-    } catch (err: any) {
-      setError(err?.message || 'Protection failed');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Protection failed');
     } finally {
       setIsProcessing(false);
     }
@@ -249,7 +249,7 @@ export const ProtectPDF: React.FC = () => {
         <div className="space-y-3 animate-in fade-in slide-in-from-top-1">
           <Label className="text-xs uppercase text-gray-500 font-bold">Permissions</Label>
           <div className="space-y-2">
-            <div className="flex items-center justify-between"><Label>Printing</Label><select value={permissions.printing} onChange={e => setPermissions({ ...permissions, printing: e.target.value as any })} className="text-sm border rounded"><option value="none">None</option><option value="lowResolution">Low</option><option value="highResolution">High</option></select></div>
+            <div className="flex items-center justify-between"><Label>Printing</Label><select value={permissions.printing} onChange={e => setPermissions({ ...permissions, printing: e.target.value as 'none' | 'lowResolution' | 'highResolution' })} className="text-sm border rounded"><option value="none">None</option><option value="lowResolution">Low</option><option value="highResolution">High</option></select></div>
             <div className="flex items-center justify-between"><Label>Copying</Label><Checkbox checked={permissions.copying} onCheckedChange={c => setPermissions({ ...permissions, copying: !!c })} /></div>
             <div className="flex items-center justify-between"><Label>Modifying</Label><Checkbox checked={permissions.modifying} onCheckedChange={c => setPermissions({ ...permissions, modifying: !!c })} /></div>
           </div>
@@ -307,7 +307,7 @@ export const ProtectPDF: React.FC = () => {
       maxFiles={1}
       uploadTitle={t('common.selectFile')}
       uploadDescription={t('upload.singleFileAllowed')}
-      accept=".pdf"
+      acceptedTypes=".pdf"
       settings={!result ? renderSettings() : null}
       actions={!result ? renderActions() : null}
     >

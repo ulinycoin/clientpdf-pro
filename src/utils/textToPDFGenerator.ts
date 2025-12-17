@@ -1,4 +1,4 @@
-import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
+import { PDFDocument, StandardFonts, rgb, PDFFont } from 'pdf-lib';
 import fontkit from '@pdf-lib/fontkit';
 
 export interface TextToPDFOptions {
@@ -10,14 +10,14 @@ export interface TextToPDFOptions {
 }
 
 interface FontLoadResult {
-  font: any;
+  font: unknown;
   fontName: string;
   supportsCyrillic: boolean;
   needsTransliteration: boolean;
 }
 
 export class TextToPDFGenerator {
-  private fontCache = new Map<string, FontLoadResult>();
+
 
   async generatePDF(
     text: string,
@@ -61,7 +61,7 @@ export class TextToPDFGenerator {
       const textWidth = pageDimensions.width - 2 * margins;
 
       // Split text into lines
-      const lines = this.wrapTextToLines(renderText, textWidth, fontSize, fontResult.font);
+      const lines = this.wrapTextToLines(renderText, textWidth, fontSize);
       console.log(`📄 Text split into ${lines.length} lines`);
 
       // Calculate lines per page
@@ -83,10 +83,10 @@ export class TextToPDFGenerator {
               x: margins,
               y: yPosition,
               size: fontSize,
-              font: fontResult.font,
+              font: fontResult.font as PDFFont,
               color: rgb(0, 0, 0),
             });
-          } catch (error) {
+          } catch {
             console.warn(`⚠️ Failed to render line, trying transliteration`);
             const fallbackLine = this.transliterateCyrillic(line);
             try {
@@ -94,10 +94,10 @@ export class TextToPDFGenerator {
                 x: margins,
                 y: yPosition,
                 size: fontSize,
-                font: fontResult.font,
+                font: fontResult.font as PDFFont,
                 color: rgb(0, 0, 0),
               });
-            } catch (e) {
+            } catch {
               console.error(`❌ Even fallback failed`);
             }
           }
@@ -109,7 +109,7 @@ export class TextToPDFGenerator {
       }
 
       const pdfBytes = await pdfDoc.save();
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const blob = new Blob([pdfBytes as BlobPart], { type: 'application/pdf' });
       console.log(`✅ PDF generated: ${blob.size} bytes, ${pdfDoc.getPageCount()} pages`);
 
       return blob;
@@ -133,7 +133,7 @@ export class TextToPDFGenerator {
           supportsCyrillic: true,
           needsTransliteration: false
         };
-      } catch (error) {
+      } catch {
         console.warn(`⚠️ Failed to load Cyrillic font, using transliteration`);
         const fallbackFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
         return {
@@ -154,7 +154,7 @@ export class TextToPDFGenerator {
     }
   }
 
-  private async loadCyrillicFont(pdfDoc: PDFDocument): Promise<any> {
+  private async loadCyrillicFont(pdfDoc: PDFDocument): Promise<PDFFont> {
     const fontUrls = [
       'https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxK.woff',
       'https://cdn.jsdelivr.net/npm/dejavu-fonts-ttf@2.37.3/ttf/DejaVuSans.ttf'
@@ -185,7 +185,7 @@ export class TextToPDFGenerator {
         console.log(`✅ Font loaded successfully`);
         return font;
 
-      } catch (error) {
+      } catch {
         console.warn(`❌ Failed to load font from ${fontUrl}`);
         continue;
       }
@@ -231,7 +231,7 @@ export class TextToPDFGenerator {
     return size;
   }
 
-  private wrapTextToLines(text: string, maxWidth: number, fontSize: number, font: any): string[] {
+  private wrapTextToLines(text: string, maxWidth: number, fontSize: number): string[] {
     const lines: string[] = [];
     const paragraphs = text.split('\n');
 

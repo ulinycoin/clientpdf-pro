@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { ToolLayout } from '@/components/common/ToolLayout';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import { useI18n } from '@/hooks/useI18n';
 import { useSharedFile } from '@/hooks/useSharedFile';
 import { useAddTextTool } from '@/hooks/useAddTextTool';
@@ -9,8 +8,6 @@ import { Canvas } from './AddTextPDF/Canvas';
 import { Toolbar } from './AddTextPDF/Toolbar';
 import { FormatPanel } from './AddTextPDF/FormatPanel';
 import type { UploadedFile } from '@/types/pdf';
-import type { Tool } from '@/types';
-import { HASH_TOOL_MAP } from '@/types';
 import { CheckCircle2 } from 'lucide-react';
 
 export const AddTextPDF: React.FC = () => {
@@ -198,14 +195,7 @@ export const AddTextPDF: React.FC = () => {
     reset();
   };
 
-  const handleQuickAction = async (toolId: Tool) => {
-    if (result) {
-      setSharedFile(result, file?.name.replace('.pdf', '_with_text.pdf') || t('addText.defaultFileName'), 'add-text-pdf');
-    }
-    // Small delay to ensure state is updated before navigation
-    await new Promise(resolve => setTimeout(resolve, 100));
-    window.location.hash = HASH_TOOL_MAP[toolId];
-  };
+
 
   const renderContent = () => {
     if (!file) return null;
@@ -256,8 +246,7 @@ export const AddTextPDF: React.FC = () => {
             onRedo={redo}
             onToolModeChange={setToolMode}
             onSave={handleSave}
-            // Hide save button in toolbar as it's in actions now
-            hideSave={true}
+          // Hide save button in toolbar as it's in actions now
           />
         </div>
 

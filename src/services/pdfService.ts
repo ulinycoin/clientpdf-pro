@@ -14,7 +14,8 @@ import type {
   PDFFileInfo,
   ProcessingError,
   ProtectionSettings,
-  ProtectionProgress
+  ProtectionProgress,
+  PDFTextItem
 } from '@/types/pdf';
 import type {
   ImageConversionOptions,
@@ -36,7 +37,9 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
 // Polyfill Buffer for JSZip in browser environment
 if (typeof window !== 'undefined') {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (window as any).Buffer = Buffer;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (globalThis as any).Buffer = Buffer;
 }
 
@@ -67,7 +70,7 @@ export class PDFService {
       const arrayBuffer = await file.arrayBuffer();
       const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
       return pdfDoc.getPageCount() > 0;
-    } catch (error) {
+    } catch {
       return false;
     }
   }
@@ -99,6 +102,7 @@ export class PDFService {
       canvas.width = viewport.width;
       canvas.height = viewport.height;
 
+      // @ts-expect-error - page.render expects specific context type
       await page.render({
         canvasContext: context,
         viewport,
@@ -132,6 +136,7 @@ export class PDFService {
         canvas.width = viewport.width;
         canvas.height = viewport.height;
 
+        // @ts-expect-error - page.render expects specific context type
         await page.render({
           canvasContext: context,
           viewport
@@ -247,7 +252,7 @@ export class PDFService {
 
       // Save merged PDF
       const pdfBytes = await mergedPdf.save();
-      const blob = new Blob([pdfBytes as any], { type: 'application/pdf' });
+      const blob = new Blob([pdfBytes as unknown as BlobPart], { type: 'application/pdf' });
 
       onProgress?.(100, 'Merge completed!');
 
@@ -393,7 +398,7 @@ export class PDFService {
           newPdf.addPage(copiedPage);
 
           const pdfBytes = await newPdf.save();
-          results.push(new Blob([pdfBytes as any], { type: 'application/pdf' }));
+          results.push(new Blob([pdfBytes as unknown as BlobPart], { type: 'application/pdf' }));
 
           onProgress?.(
             20 + ((i + 1) / totalPages) * 70,
@@ -419,7 +424,7 @@ export class PDFService {
         onProgress?.(80, 'Saving extracted pages...');
 
         const pdfBytes = await newPdf.save();
-        results.push(new Blob([pdfBytes as any], { type: 'application/pdf' }));
+        results.push(new Blob([pdfBytes as unknown as BlobPart], { type: 'application/pdf' }));
       } else if (mode === 'intervals' && options.interval) {
         // Split by intervals
         const interval = options.interval;
@@ -441,7 +446,7 @@ export class PDFService {
           copiedPages.forEach((page) => newPdf.addPage(page));
 
           const pdfBytes = await newPdf.save();
-          results.push(new Blob([pdfBytes as any], { type: 'application/pdf' }));
+          results.push(new Blob([pdfBytes as unknown as BlobPart], { type: 'application/pdf' }));
 
           onProgress?.(
             20 + ((i + 1) / numChunks) * 70,
@@ -462,7 +467,7 @@ export class PDFService {
             newPdf.addPage(copiedPage);
 
             const pdfBytes = await newPdf.save();
-            results.push(new Blob([pdfBytes as any], { type: 'application/pdf' }));
+            results.push(new Blob([pdfBytes as unknown as BlobPart], { type: 'application/pdf' }));
           }
 
           onProgress?.(
@@ -547,7 +552,7 @@ export class PDFService {
 
       onProgress?.(90, 'Finalizing compression...');
 
-      const blob = new Blob([pdfBytes as any], { type: 'application/pdf' });
+      const blob = new Blob([pdfBytes as unknown as BlobPart], { type: 'application/pdf' });
       const compressionRatio = ((1 - blob.size / file.size) * 100).toFixed(1);
 
       onProgress?.(100, 'Compression completed!');
@@ -584,7 +589,7 @@ export class PDFService {
       const fileSize = file.size;
 
       let imageCount = 0;
-      let totalImageArea = 0;
+      // let totalImageArea = 0;
 
       // Sample first 5 pages to guess content type (for performance)
       const pagesToSample = Math.min(pageCount, 5);
@@ -611,8 +616,8 @@ export class PDFService {
                     const width = dict.get(PDFName.of('Width'));
                     const height = dict.get(PDFName.of('Height'));
                     // Approximate area if dimensions found
-                    if (typeof (width as any)?.numberValue === 'function' && typeof (height as any)?.numberValue === 'function') {
-                      totalImageArea += (width as any).numberValue() * (height as any).numberValue();
+                    if (width && height) {
+                      // Just counting images, logic simplified
                     }
                   }
                 }
@@ -628,7 +633,7 @@ export class PDFService {
 
       const isImageHeavy = estimatedTotalImages > pageCount || (fileSize > 5 * 1024 * 1024 && estimatedTotalImages > 0);
 
-      let insights: Array<{ key: string; params?: any }> = [];
+      const insights: Array<{ key: string; params?: Record<string, string | number> }> = [];
       let recommendedQuality: 'low' | 'medium' | 'high' = 'medium';
       let savingPotential: 'high' | 'medium' | 'low' = 'medium';
 
@@ -907,7 +912,7 @@ export class PDFService {
       const form = pdfDoc.getForm();
       try {
         form.flatten();
-      } catch (error) {
+      } catch {
         console.warn('Could not flatten form fields, maybe no form exists.');
       }
 
@@ -925,10 +930,12 @@ export class PDFService {
           // Use a safe check or comment out if not supported.
           // Assuming this was intended to be form flattening which is done differently in pdf-lib usually (form.flatten()).
           // Leaving as is but casting to avoid error strictly for this task.
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           if (typeof (page as any).flatten === 'function') {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (page as any).flatten();
           }
-        } catch (error) {
+        } catch {
           console.warn(`Could not flatten annotations on page ${i + 1}.`);
         }
         const progress = 50 + (i / pages.length) * 30;
@@ -1066,6 +1073,7 @@ export class PDFService {
                 const xObject = pdfDoc.context.lookup(ref);
 
                 if (xObject instanceof PDFDict || (xObject && 'dict' in xObject && xObject.dict instanceof PDFDict)) {
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   const dict = xObject instanceof PDFDict ? xObject : (xObject as any).dict;
                   const subtype = dict.get(PDFName.of('Subtype'));
 
@@ -1075,7 +1083,6 @@ export class PDFService {
                     const width = dict.get(PDFName.of('Width'));
                     const height = dict.get(PDFName.of('Height'));
                     const colorSpace = dict.get(PDFName.of('ColorSpace'));
-                    const bitsPerComponent = dict.get(PDFName.of('BitsPerComponent')) || 8;
 
                     if (!width || !height) {
                       continue;
@@ -1084,42 +1091,33 @@ export class PDFService {
                     // Extract numeric values - width/height can be PDFNumber objects
                     let w = 0;
                     let h = 0;
-                    let _bpc = 8; _bpc; // Suppress unused
 
                     // Try different ways to extract the number
                     if (typeof width === 'number') {
                       w = width;
-                    } else if (width && typeof (width as any).asNumber === 'function') {
-                      w = (width as any).asNumber();
-                    } else if (width && typeof (width as any).numberValue === 'function') {
-                      w = (width as any).numberValue();
-                    } else if (width && (width as any).value !== undefined) {
-                      w = Number((width as any).value);
-                    } else if (width && (width as any).num !== undefined) {
-                      w = Number((width as any).num);
+                    } else if (width && typeof (width as unknown as Record<string, unknown>).asNumber === 'function') {
+                      w = (width as unknown as { asNumber: () => number }).asNumber();
+                    } else if (width && typeof (width as unknown as Record<string, unknown>).numberValue === 'function') {
+                      w = (width as unknown as { numberValue: () => number }).numberValue();
+                    } else if (width && (width as unknown as { value: unknown }).value !== undefined) {
+                      w = Number((width as unknown as { value: unknown }).value);
+                    } else if (width && (width as unknown as { num: unknown }).num !== undefined) {
+                      w = Number((width as unknown as { num: unknown }).num);
                     }
 
                     if (typeof height === 'number') {
                       h = height;
-                    } else if (height && typeof (height as any).asNumber === 'function') {
-                      h = (height as any).asNumber();
-                    } else if (height && typeof (height as any).numberValue === 'function') {
-                      h = (height as any).numberValue();
-                    } else if (height && (height as any).value !== undefined) {
-                      h = Number((height as any).value);
-                    } else if (height && (height as any).num !== undefined) {
-                      h = Number((height as any).num);
+                    } else if (height && typeof (height as unknown as Record<string, unknown>).asNumber === 'function') {
+                      h = (height as unknown as { asNumber: () => number }).asNumber();
+                    } else if (height && typeof (height as unknown as Record<string, unknown>).numberValue === 'function') {
+                      h = (height as unknown as { numberValue: () => number }).numberValue();
+                    } else if (height && (height as unknown as { value: unknown }).value !== undefined) {
+                      h = Number((height as unknown as { value: unknown }).value);
+                    } else if (height && (height as unknown as { num: unknown }).num !== undefined) {
+                      h = Number((height as unknown as { num: unknown }).num);
                     }
 
-                    if (typeof bitsPerComponent === 'number') {
-                      _bpc = bitsPerComponent;
-                    } else if (bitsPerComponent && typeof (bitsPerComponent as any).asNumber === 'function') {
-                      _bpc = (bitsPerComponent as any).asNumber();
-                    } else if (bitsPerComponent && typeof (bitsPerComponent as any).numberValue === 'function') {
-                      _bpc = (bitsPerComponent as any).numberValue();
-                    } else if (bitsPerComponent && (bitsPerComponent as any).value !== undefined) {
-                      _bpc = Number((bitsPerComponent as any).value);
-                    }
+
 
                     // Validate dimensions
                     if (!w || !h || w <= 0 || h <= 0 || !Number.isFinite(w) || !Number.isFinite(h)) {
@@ -1134,15 +1132,18 @@ export class PDFService {
                     // Get raw image data
                     let imageData: Uint8Array | null = null;
 
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     if ('stream' in xObject && (xObject as any).stream) {
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
                       imageData = (xObject as any).stream.contents;
                     } else if ('contents' in xObject) {
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
                       imageData = (xObject as any).contents;
                     }
 
                     if (imageData && imageData.length > 0) {
                       // Try to determine format
-                      const filter = (dict as Map<any, any>).get(PDFName.of('Filter'));
+                      const filter = dict.get(PDFName.of('Filter'));
                       let mimeType = 'image/png';
                       let ext = 'png';
 
@@ -1238,7 +1239,7 @@ export class PDFService {
                               });
                             }
                           }
-                        } catch (err) {
+                        } catch {
                           // Silently skip - these are likely malformed or unsupported images
                           continue;
                         }
@@ -1246,8 +1247,8 @@ export class PDFService {
                     }
                   }
                 }
-              } catch (err) {
-                // Skip problematic images
+              } catch {
+                // Ignore annotation errors
                 continue;
               }
             }
@@ -1320,7 +1321,7 @@ export class PDFService {
         }
       });
 
-      let removedCount = 0;
+
       const imageCountByPage = new Map<number, number>();
 
       for (let pageIndex = 0; pageIndex < totalPages; pageIndex++) {
@@ -1372,7 +1373,6 @@ export class PDFService {
 
             for (const key of keysToRemove) {
               xObjects.delete(key);
-              removedCount++;
             }
           }
         }
@@ -1430,7 +1430,7 @@ export class PDFService {
 
       onProgress?.(10, 'Processing pages...');
 
-      let removedCount = 0;
+
 
       for (let i = 0; i < totalPages; i++) {
         const page = pages[i];
@@ -1467,7 +1467,6 @@ export class PDFService {
 
             for (const key of keysToRemove) {
               xObjects.delete(key);
-              removedCount++;
             }
           }
         }
@@ -1602,7 +1601,7 @@ export class PDFService {
         const x = margin + (availableWidth - scaledWidth) / 2;
         const y = margin + (availableHeight - scaledHeight) / 2;
 
-        page.drawImage(image, {
+        page.drawImage(image as import('pdf-lib').PDFImage, {
           x,
           y,
           width: scaledWidth,
@@ -1786,7 +1785,7 @@ export class PDFService {
         canvasContext: context,
         viewport: scaledViewport,
       };
-      // @ts-ignore
+      // @ts-expect-error - page.render expects specific context type
       await page.render(renderContext).promise;
     }
 
@@ -1850,7 +1849,7 @@ export class PDFService {
       case 'specific':
         return options.pageNumbers?.filter(n => n >= 1 && n <= totalPages) || [];
 
-      case 'range':
+      case 'range': {
         if (!options.pageRange) return [];
         const { start, end } = options.pageRange;
         const validStart = Math.max(1, Math.min(start, totalPages));
@@ -1859,6 +1858,7 @@ export class PDFService {
           { length: validEnd - validStart + 1 },
           (_, i) => validStart + i
         );
+      }
 
       default:
         return [];
@@ -1951,7 +1951,6 @@ export class PDFService {
       const result = await mammoth.convertToHtml({ arrayBuffer });
       const html = result.value;
 
-      // Strip HTML tags for simple text extraction
       const textContent = html.replace(/<[^>]*>/g, '\n').trim();
 
       onProgress?.(40, 'Loading font...');
@@ -1962,6 +1961,8 @@ export class PDFService {
 
       // Check if text contains non-ASCII characters (Cyrillic, extended Latin, etc.)
       // WinAnsi only supports basic Latin (0x20-0x7E) plus some Western European chars
+
+      // eslint-disable-next-line no-control-regex
       const needsUnicodeFont = /[^\x00-\xFF]/.test(textContent) || /[\u0080-\u024F\u0400-\u04FF]/.test(textContent);
       console.log(`🔤 Text needs Unicode font: ${needsUnicodeFont}`);
 
@@ -1972,7 +1973,7 @@ export class PDFService {
         try {
           font = await this.loadUnicodeFont(pdfDoc);
           console.log('✅ Unicode font loaded successfully');
-        } catch (error) {
+        } catch {
           console.warn('⚠️ Failed to load Unicode font, using Helvetica');
           font = await pdfDoc.embedFont(StandardFonts.Helvetica);
         }
@@ -2027,7 +2028,7 @@ export class PDFService {
 
       // Save PDF
       const pdfBytes = await pdfDoc.save();
-      const blob = new Blob([pdfBytes as any], { type: 'application/pdf' });
+      const blob = new Blob([pdfBytes as unknown as BlobPart], { type: 'application/pdf' });
 
       onProgress?.(100, 'Conversion complete!');
 
@@ -2239,7 +2240,7 @@ export class PDFService {
   /**
    * Load Unicode-compatible font from CDN (supports Cyrillic, Extended Latin, etc.)
    */
-  private async loadUnicodeFont(pdfDoc: PDFDocument): Promise<any> {
+  private async loadUnicodeFont(pdfDoc: PDFDocument): Promise<import('pdf-lib').PDFFont> {
     const fontUrls = [
       'https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxK.woff',
       'https://cdn.jsdelivr.net/npm/dejavu-fonts-ttf@2.37.3/ttf/DejaVuSans.ttf'
@@ -2313,13 +2314,14 @@ export class PDFService {
       }
       const fontSizeMap = new Map<number, FontSizeStats>();
       let totalTextItems = 0;
-      let documentAvgFontSize = 0; documentAvgFontSize; // Suppress unused documentAvgFontSize; // Suppress unused
+      let bodyTextSize: number | undefined;
+      const headingSizes: Map<number, 'Heading1' | 'Heading2' | 'Heading3'> = new Map();
 
       if (smartHeadings && !includeImages) {
         for (let pageNum = 1; pageNum <= numPages; pageNum++) {
           const page = await pdfDoc.getPage(pageNum);
           const textContent = await page.getTextContent();
-          const items = textContent.items as any[];
+          const items = textContent.items as PDFTextItem[];
 
           for (const item of items) {
             if (item.height && item.str?.trim()) {
@@ -2343,23 +2345,21 @@ export class PDFService {
 
         // Determine body text size (most common size by character count)
         let maxChars = 0;
-        let bodyTextSize = 12;
+        bodyTextSize = 12; // Initialize bodyTextSize here
         for (const [size, stats] of fontSizeMap) {
           if (stats.totalChars > maxChars) {
             maxChars = stats.totalChars;
             bodyTextSize = size;
           }
         }
-        documentAvgFontSize = bodyTextSize;
 
         // Identify heading sizes: larger than body text and relatively rare
         // Sort sizes descending
         const sortedSizes = Array.from(fontSizeMap.values())
-          .filter(s => s.size > bodyTextSize)
+          .filter(s => s.size > (bodyTextSize || 0)) // Use bodyTextSize, default to 0 if undefined
           .sort((a, b) => b.size - a.size);
 
         // Assign heading levels to the top 3 largest sizes that are rare (< 10% of items)
-        const headingSizes: Map<number, 'Heading1' | 'Heading2' | 'Heading3'> = new Map();
         let headingLevel = 1;
         for (const sizeStats of sortedSizes) {
           if (headingLevel > 3) break;
@@ -2372,15 +2372,14 @@ export class PDFService {
         }
 
         // Store for use in page processing
-        (this as any)._headingSizes = headingSizes;
-        (this as any)._bodyTextSize = bodyTextSize;
+        // headingSizes and bodyTextSize are available in closure
       }
 
       onProgress?.(15, 'Extracting content from PDF...');
 
       // Extract text and images from all pages
-      const sections: (Paragraph | any)[] = [];
-      // const _extractedImages: any[] = []; // This variable was unused and removed.
+      // Extract text and images from all pages
+      const sections: Paragraph[] = [];
       // The type definition for extractedImages was also incorrect in the original snippet.
       // The correct type for extractedImages is defined within the scope of the loop.
 
@@ -2402,7 +2401,7 @@ export class PDFService {
                 canvasContext: ctx,
                 viewport: viewport,
               };
-              // @ts-ignore
+              // @ts-expect-error - page.render expects specific context type
               await page.render(renderContext).promise;
               // Convert canvas to PNG blob
               const pngBlob = await new Promise<Blob | null>((resolve) => {
@@ -2454,12 +2453,11 @@ export class PDFService {
           const viewport = page.getViewport({ scale: 1.0 });
           const pageWidth = viewport.width;
           const pageHeight = viewport.height;
-          const items = textContent.items as any[];
+          const items = textContent.items as PDFTextItem[];
 
           // Use pre-analyzed heading sizes from document analysis
-          const headingSizes = (this as any)._headingSizes as Map<number, 'Heading1' | 'Heading2' | 'Heading3'> | undefined;
-          const bodyTextSize = (this as any)._bodyTextSize as number | undefined;
-          const avgFontSize = bodyTextSize || 12;
+          // headingSizes and bodyTextSize are available in closure
+          const avgFontSize = (typeof bodyTextSize !== 'undefined') ? bodyTextSize : 12;
 
           // === EXTRACT EMBEDDED IMAGES ===
           interface ExtractedImage {
@@ -2475,7 +2473,8 @@ export class PDFService {
           if (extractImages) {
             try {
               const operatorList = await page.getOperatorList();
-              const objs = page.objs as any;
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const objs = (page as any).objs;
 
               // Track current transformation matrix
               let currentMatrix = [1, 0, 0, 1, 0, 0];
@@ -2511,6 +2510,7 @@ export class PDFService {
                 // OPS.paintImageXObject = 85, OPS.paintJpegXObject = 82, OPS.paintInlineImageXObject = 84
                 if (fn === 85 || fn === 82 || fn === 84) {
                   try {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     let imgData: any = null;
 
                     if (fn === 84) {
@@ -2524,9 +2524,11 @@ export class PDFService {
                       if (objs._objs && objs._objs.has(imgName)) {
                         imgData = objs._objs.get(imgName).data;
                       } else if (typeof objs.get === 'function') {
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         imgData = await new Promise<any>((resolve) => {
                           const timeout = setTimeout(() => resolve(null), 1000);
                           try {
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
                             objs.get(imgName, (data: any) => {
                               clearTimeout(timeout);
                               resolve(data);
@@ -2629,7 +2631,7 @@ export class PDFService {
 
           // === COLUMN DETECTION ===
           // Detect columns by finding vertical gaps in text distribution
-          const detectColumns = (textItems: any[], pageWidth: number): number[] => {
+          const detectColumns = (textItems: PDFTextItem[], pageWidth: number): number[] => {
             if (textItems.length < 10) return []; // Not enough items to detect columns
 
             // Collect all X positions with their widths
@@ -2658,7 +2660,6 @@ export class PDFService {
 
             // Find gaps (consecutive empty or near-empty buckets)
             const minGapWidth = pageWidth * 0.05; // Minimum 5% of page width
-            // const minGapBuckets = Math.ceil(minGapWidth / bucketSize); // This variable is not used
             const threshold = Math.max(2, xRanges.length * 0.02); // Buckets with < 2% of items considered empty
 
             const gaps: Array<{ start: number; end: number; center: number }> = [];
@@ -2708,10 +2709,10 @@ export class PDFService {
           const columnBoundaries = detectColumns(items, pageWidth);
 
           // Split items into columns
-          const splitIntoColumns = (textItems: any[], boundaries: number[]): any[][] => {
+          const splitIntoColumns = (textItems: PDFTextItem[], boundaries: number[]): PDFTextItem[][] => {
             if (boundaries.length === 0) return [textItems];
 
-            const columns: any[][] = [];
+            const columns: PDFTextItem[][] = [];
             const sortedBoundaries = [0, ...boundaries, Infinity];
 
             for (let i = 0; i < sortedBoundaries.length - 1; i++) {
@@ -2733,7 +2734,7 @@ export class PDFService {
           const columns = splitIntoColumns(items, columnBoundaries);
 
           // Process each column separately
-          const processColumn = (columnItems: any[]): Array<{ text: string; fontSize: number; y: number; xStart: number; xEnd: number }> => {
+          const processColumn = (columnItems: PDFTextItem[]): Array<{ text: string; fontSize: number; y: number; xStart: number; xEnd: number }> => {
             // Sort items by Y (top to bottom), then by X (left to right)
             const sortedItems = [...columnItems].sort((a, b) => {
               const yA = a.transform ? a.transform[5] : 0;
@@ -2899,6 +2900,7 @@ export class PDFService {
                 // Check if text spans most of the page width (justified or left-aligned body text)
                 const isFullWidth = lineWidth > pageWidth * 0.7;
 
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 let alignment: any;
                 if (isCentered && !isFullWidth) {
                   alignment = AlignmentType.CENTER;
@@ -2933,9 +2935,9 @@ export class PDFService {
 
                 // === LIST DETECTION ===
                 // Check for bullet list patterns: •, -, *, ◦, ▪, ▸, ►, ●, ○
-                const bulletPattern = /^\s*([•\-\*◦▪▸►●○])\s+(.+)$/;
+                const bulletPattern = /^\s*([•\-*◦▪▸►●○])\s+(.+)$/;
                 // Check for numbered list patterns: 1. 2. 3. or 1) 2) 3) or (1) (2) (3)
-                const numberedPattern = /^\s*(?:(\d+)[.\):]|\((\d+)\))\s+(.+)$/;
+                const numberedPattern = /^\s*(?:(\d+)[.):]|\((\d+)\))\s+(.+)$/;
 
                 const bulletMatch = paraText.match(bulletPattern);
                 const numberedMatch = paraText.match(numberedPattern);
@@ -3012,7 +3014,8 @@ export class PDFService {
               const imgCenterX = img.x + img.width / 2;
               const pageCenter = pageWidth / 2;
 
-              let imgAlignment: any = AlignmentType.LEFT;
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              let imgAlignment = AlignmentType.LEFT as any;
               if (Math.abs(imgCenterX - pageCenter) < pageWidth * 0.15) {
                 imgAlignment = AlignmentType.CENTER;
               } else if (imgCenterX > pageCenter + pageWidth * 0.2) {
@@ -3055,16 +3058,18 @@ export class PDFService {
                         type: 'png',
                         floating: {
                           horizontalPosition: {
-                            relative: 'column' as any,
+                            relative: 'column',
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
                             align: horizontalPos as any,
                           },
                           verticalPosition: {
-                            relative: 'paragraph' as any,
+                            relative: 'paragraph',
                             offset: 0,
                           },
                           wrap: {
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
                             type: 'square' as any,
-                            side: 'bothSides' as any,
+                            side: 'bothSides',
                           },
                           margins: {
                             top: 100000,
@@ -3125,7 +3130,7 @@ export class PDFService {
                   level: 0,
                   format: 'decimal',
                   text: '%1.',
-                  alignment: 'start' as any,
+                  alignment: 'start',
                   style: {
                     paragraph: {
                       indent: { left: 720, hanging: 360 },
@@ -3225,7 +3230,7 @@ export class PDFService {
   /**
    * Create a standardized PDF error
    */
-  private createPDFError(error: any, context: string = 'PDF processing'): ProcessingError {
+  private createPDFError(error: unknown, context: string = 'PDF processing'): ProcessingError {
     let message = 'An error occurred during PDF processing';
 
     if (error instanceof Error) {
@@ -3431,7 +3436,7 @@ export class PDFService {
 
       // Save the PDF
       const pdfBytes = await pdfDoc.save();
-      const blob = new Blob([pdfBytes as any], { type: 'application/pdf' });
+      const blob = new Blob([pdfBytes as unknown as BlobPart], { type: 'application/pdf' });
 
       onProgress?.(100, 'Complete');
 
@@ -3634,7 +3639,7 @@ export class PDFService {
 
       onProgress?.(90, 'Saving PDF...');
       const pdfBytes = await pdfDoc.save();
-      const resultBlob = new Blob([pdfBytes as any], { type: 'application/pdf' });
+      const resultBlob = new Blob([pdfBytes as unknown as BlobPart], { type: 'application/pdf' });
       onProgress?.(100, 'Edits applied successfully!');
 
       return {
@@ -3690,7 +3695,7 @@ export class PDFService {
       onProgress?.(10, 'Loading resources...');
 
       // Map to store loaded source documents to avoid reloading
-      const sourceDocs = new Map<File, any>();
+      const sourceDocs = new Map<File, PDFDocument>();
 
       // Helper to get or load a document
       const getSourceDoc = async (f: File) => {
@@ -3699,7 +3704,7 @@ export class PDFService {
           const doc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
           sourceDocs.set(f, doc);
         }
-        return sourceDocs.get(f);
+        return sourceDocs.get(f)!;
       };
 
       // Load main source PDF first
@@ -3753,7 +3758,7 @@ export class PDFService {
 
       // Save the new PDF
       const pdfBytes = await newPdf.save();
-      const blob = new Blob([pdfBytes as any], { type: 'application/pdf' });
+      const blob = new Blob([pdfBytes as unknown as BlobPart], { type: 'application/pdf' });
 
       onProgress?.(100, 'Complete!');
 

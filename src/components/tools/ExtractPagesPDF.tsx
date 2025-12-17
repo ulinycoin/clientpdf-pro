@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { ToolLayout } from '@/components/common/ToolLayout';
-import { ProgressBar } from '@/components/common/ProgressBar';
 import { PDFPreview } from '@/components/common/PDFPreview';
 import { useI18n } from '@/hooks/useI18n';
 import { useSharedFile } from '@/hooks/useSharedFile';
@@ -11,7 +10,6 @@ import { HASH_TOOL_MAP } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent } from '@/components/ui/card';
 import { CheckCircle2, Minimize2, Shield, Stamp, Layers } from 'lucide-react';
 
 export const ExtractPagesPDF: React.FC = () => {
@@ -19,8 +17,6 @@ export const ExtractPagesPDF: React.FC = () => {
   const { sharedFile, clearSharedFile, setSharedFile } = useSharedFile();
   const [file, setFile] = useState<UploadedFile | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [progressMessage, setProgressMessage] = useState('');
   const [result, setResult] = useState<Blob | null>(null);
   const [loadedFromShared, setLoadedFromShared] = useState(false);
   const [resultSaved, setResultSaved] = useState(false);
@@ -70,7 +66,8 @@ export const ExtractPagesPDF: React.FC = () => {
     try {
       const info = await pdfService.getPDFInfo(selectedFile);
       setFile((prev) => (prev ? { ...prev, info, status: 'completed' } : null));
-    } catch (error) {
+    } catch {
+      // Ignore error as we just won't show preview
       setFile((prev) => prev ? { ...prev, status: 'error', error: 'Failed to read PDF' } : null);
     }
   };
@@ -101,14 +98,10 @@ export const ExtractPagesPDF: React.FC = () => {
       return;
     }
     setIsProcessing(true);
-    setProgress(0);
     setResult(null);
     setResultSaved(false);
     try {
-      const extractResult = await pdfService.extractPDF(file.file, pageNumbers, (prog, msg) => {
-        setProgress(prog);
-        setProgressMessage(msg);
-      });
+      const extractResult = await pdfService.extractPDF(file.file, pageNumbers, () => { });
       if (extractResult.success && extractResult.data) {
         setResult(extractResult.data);
       } else {
@@ -132,8 +125,6 @@ export const ExtractPagesPDF: React.FC = () => {
     setFile(null);
     setResult(null);
     setResultSaved(false);
-    setProgress(0);
-    setProgressMessage('');
     setLoadedFromShared(false);
     setPagesToExtract('');
   };
@@ -224,7 +215,7 @@ export const ExtractPagesPDF: React.FC = () => {
       maxFiles={1}
       uploadTitle={t('common.selectFile')}
       uploadDescription={t('upload.singleFileAllowed')}
-      accept=".pdf"
+      acceptedTypes=".pdf"
       settings={!result && file ? renderSettings() : null}
       actions={!result && file ? (
         <Button onClick={handleExtract} disabled={isProcessing || !pagesToExtract} className="w-full py-6 text-lg font-bold">

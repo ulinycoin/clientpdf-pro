@@ -5,14 +5,14 @@ import { useSharedFile } from '@/hooks/useSharedFile';
 import pdfService from '@/services/pdfService';
 import type { UploadedFile } from '@/types/pdf';
 import { Button } from '@/components/ui/button';
-import { CheckCircle2, FileText, Layers } from 'lucide-react';
+import { CheckCircle2, Layers } from 'lucide-react';
 
 export const FlattenPDF: React.FC = () => {
   const { t } = useI18n();
-  const { sharedFile, clearSharedFile, setSharedFile: saveSharedFile } = useSharedFile();
+  const { sharedFile, clearSharedFile } = useSharedFile();
   const [file, setFile] = useState<UploadedFile | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [result, setResult] = useState<{ blob: Blob; metadata: any } | null>(null);
+  const [result, setResult] = useState<{ blob: Blob; metadata: Record<string, unknown> } | null>(null);
 
   useEffect(() => {
     if (sharedFile && !file) {
@@ -47,7 +47,7 @@ export const FlattenPDF: React.FC = () => {
       } else {
         alert(res.error?.message || 'Flattening failed');
       }
-    } catch (e) {
+    } catch {
       alert('Flattening failed');
     } finally {
       setIsProcessing(false);

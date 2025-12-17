@@ -6,7 +6,7 @@ import pdfService from '@/services/pdfService';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { CheckCircle2, FileText, FileType2 } from 'lucide-react';
-import { Switch } from '@/components/ui/switch'; // Assuming sha-dcn like switch
+
 
 export const PDFToWord: React.FC = () => {
   const { t } = useI18n();
@@ -59,7 +59,7 @@ export const PDFToWord: React.FC = () => {
       } else {
         alert(conversionResult.error?.message || t('pdfToWord.errors.conversionFailed'));
       }
-    } catch (error) {
+    } catch {
       alert(t('pdfToWord.errors.conversionFailed'));
     } finally {
       setIsProcessing(false);

@@ -1,7 +1,61 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useCallback, useRef } from 'react';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import fontkit from '@pdf-lib/fontkit';
 import type { TextElement, UseAddTextToolReturn } from '@/types/addText';
+
+// Helper function to prepare text for PDF (preserve Unicode)
+const prepareTextForPDF = (text: string) => {
+  return text
+    .replace(/[""]/g, '"')
+    .replace(/['']/g, "'")
+    .replace(/[–—]/g, '-')
+    .replace(/[…]/g, '...');
+};
+
+// Helper function to draw multiline text with Unicode font
+const drawMultilineText = (page: any, text: string, x: number, y: number, options: any) => {
+  const lines = text.split('\n');
+  const lineHeight = options.size * 1.2;
+
+  lines.forEach((line, index) => {
+    const lineY = y - (index * lineHeight);
+    if (line.trim()) {
+      try {
+        page.drawText(line, {
+          ...options,
+          x,
+          y: lineY,
+        });
+      } catch (error) {
+        console.warn(`Failed to draw line "${line}":`, error);
+
+        try {
+          const cleanedLine = prepareTextForPDF(line);
+          page.drawText(cleanedLine, {
+            ...options,
+            x,
+            y: lineY,
+          });
+        } catch (secondError) {
+          console.error(`Even cleaned text failed for "${line}":`, secondError);
+
+          // eslint-disable-next-line no-control-regex
+          const fallbackLine = line.replace(/[^\x00-\x7F]/g, '?');
+          try {
+            page.drawText(fallbackLine, {
+              ...options,
+              x,
+              y: lineY,
+            });
+          } catch (finalError) {
+            console.error('Complete failure to draw text:', finalError);
+          }
+        }
+      }
+    }
+  });
+};
 
 export const useAddTextTool = (): UseAddTextToolReturn => {
   // State
@@ -128,58 +182,7 @@ export const useAddTextTool = (): UseAddTextToolReturn => {
     } : { r: 0, g: 0, b: 0 };
   };
 
-  // Helper function to prepare text for PDF (preserve Unicode)
-  const prepareTextForPDF = (text: string) => {
-    return text
-      .replace(/[""]/g, '"')
-      .replace(/['']/g, "'")
-      .replace(/[–—]/g, '-')
-      .replace(/[…]/g, '...');
-  };
 
-  // Helper function to draw multiline text with Unicode font
-  const drawMultilineText = (page: any, text: string, x: number, y: number, options: any) => {
-    const lines = text.split('\n');
-    const lineHeight = options.size * 1.2;
-
-    lines.forEach((line, index) => {
-      if (line.trim()) {
-        const lineY = y - (index * lineHeight);
-
-        try {
-          page.drawText(line, {
-            ...options,
-            x,
-            y: lineY,
-          });
-        } catch (error) {
-          console.warn(`Failed to draw line "${line}":`, error);
-
-          try {
-            const cleanedLine = prepareTextForPDF(line);
-            page.drawText(cleanedLine, {
-              ...options,
-              x,
-              y: lineY,
-            });
-          } catch (secondError) {
-            console.error(`Even cleaned text failed for "${line}":`, secondError);
-
-            const fallbackLine = line.replace(/[^\x00-\x7F]/g, '?');
-            try {
-              page.drawText(fallbackLine, {
-                ...options,
-                x,
-                y: lineY,
-              });
-            } catch (finalError) {
-              console.error('Complete failure to draw text:', finalError);
-            }
-          }
-        }
-      }
-    });
-  };
 
   // Function to get fonts with Unicode support
   const getCyrillicFonts = async (pdfDoc: any) => {

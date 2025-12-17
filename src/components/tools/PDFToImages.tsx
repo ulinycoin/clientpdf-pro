@@ -7,8 +7,7 @@ import type {
   ImageConversionOptions,
   ImageConversionResult,
   ImageFormat,
-  ImageQuality,
-  QUALITY_SETTINGS
+  ImageQuality
 } from '@/types/image.types';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -40,6 +39,7 @@ export const PDFToImages: React.FC = () => {
   const [backgroundColor, setBackgroundColor] = useState('#ffffff');
 
   // Dynamic quality settings
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [qualitySettings, setQualitySettings] = useState<any>(null);
   React.useEffect(() => {
     import('@/types/image.types').then(module => {
@@ -112,11 +112,11 @@ export const PDFToImages: React.FC = () => {
           progress: 100
         } : f));
 
-      } catch (error) {
-        console.error(error);
+      } catch {
+        // Ignore error
         const errorResult: ImageConversionResult = {
           success: false, images: [], totalPages: 0, originalSize: fileItem.file.size, convertedSize: 0,
-          error: error instanceof Error ? error.message : t('pdfToImages.errors.conversionFailed')
+          error: t('pdfToImages.errors.conversionFailed')
         };
         setFiles(prev => prev.map((f, idx) => idx === i ? {
           ...f,
@@ -134,11 +134,12 @@ export const PDFToImages: React.FC = () => {
       try {
         const zipFilename = `${fileItem.file.name.replace(/\.pdf$/i, '')}_images.zip`;
         await pdfService.downloadImagesAsZip(fileItem.result.images, zipFilename);
-      } catch (e) { alert('Failed to create ZIP'); }
+      } catch { alert('Failed to create ZIP'); }
     }
   };
 
   const handleDownloadAllAsZip = async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const allImages: any[] = [];
     files.forEach(f => {
       if (f.result?.success) allImages.push(...f.result.images);
@@ -146,14 +147,11 @@ export const PDFToImages: React.FC = () => {
     if (allImages.length) {
       try {
         await pdfService.downloadImagesAsZip(allImages, 'all_converted_images.zip');
-      } catch (e) { alert('Failed to create ZIP'); }
+      } catch { alert('Failed to create ZIP'); }
     }
   };
 
-  const handleReset = () => {
-    setFiles([]);
-    setIsProcessing(false);
-  };
+
 
   const formatFileSize = (bytes: number) => {
     if (bytes === 0) return '0 B';
@@ -235,7 +233,7 @@ export const PDFToImages: React.FC = () => {
       {/* Format */}
       <div className="space-y-2">
         <Label>{t('pdfToImages.format')}</Label>
-        <Select value={format} onValueChange={(v: any) => setFormat(v)}>
+        <Select value={format} onValueChange={(v) => setFormat(v as ImageFormat)}>
           <SelectTrigger><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="png">PNG</SelectItem>
@@ -247,12 +245,13 @@ export const PDFToImages: React.FC = () => {
       {/* Quality */}
       <div className="space-y-2">
         <Label>{t('pdfToImages.quality')}</Label>
-        <Select value={quality} onValueChange={(v: any) => setQuality(v)}>
+        <Select value={quality} onValueChange={(v) => setQuality(v as ImageQuality)}>
           <SelectTrigger><SelectValue /></SelectTrigger>
           <SelectContent>
-            {qualitySettings && Object.entries(qualitySettings).map(([key, settings]: any) => (
+            {qualitySettings && Object.entries(qualitySettings).map(([key, settings]) => (
               <SelectItem key={key} value={key}>
-                {key.charAt(0).toUpperCase() + key.slice(1)} ({settings.resolution} DPI)
+                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                {key.charAt(0).toUpperCase() + key.slice(1)} ({(settings as any).resolution} DPI)
               </SelectItem>
             ))}
           </SelectContent>
@@ -269,7 +268,7 @@ export const PDFToImages: React.FC = () => {
                 type="radio"
                 id={`page-${mode}`}
                 checked={pageSelection === mode}
-                onChange={() => setPageSelection(mode as any)}
+                onChange={() => setPageSelection(mode as 'all' | 'range' | 'specific')}
                 className="text-ocean-600 focus:ring-ocean-500"
               />
               <Label htmlFor={`page-${mode}`} className="cursor-pointer">{t(`pdfToImages.${mode === 'range' ? 'pageRange' : mode === 'specific' ? 'specificPages' : 'allPages'}`)}</Label>
@@ -322,7 +321,7 @@ export const PDFToImages: React.FC = () => {
       maxFiles={20}
       uploadTitle={t('common.selectFile')}
       uploadDescription={t('upload.multipleFilesAllowed')}
-      accept=".pdf"
+      acceptedTypes=".pdf"
       settings={files.length > 0 ? renderSettings() : null}
       actions={files.length > 0 ? renderActions() : null}
     >

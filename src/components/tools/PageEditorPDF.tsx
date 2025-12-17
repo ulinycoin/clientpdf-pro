@@ -41,7 +41,7 @@ import {
   X,
   CheckSquare,
   Square,
-  MousePointer2,
+
   Plus
 } from 'lucide-react';
 
@@ -208,9 +208,9 @@ export const PageEditorPDF: React.FC = () => {
   const [selectedPages, setSelectedPages] = useState<Set<string>>(new Set());
 
   const [isProcessing, setIsProcessing] = useState(false);
-  const [progress, setProgress] = useState(0);
+  const [, setProgress] = useState(0);
   const [progressMessage, setProgressMessage] = useState('');
-  const [result, setResult] = useState<{ blob: Blob; metadata: any } | null>(null);
+  const [result, setResult] = useState<{ blob: Blob; metadata: Record<string, unknown> } | null>(null);
   const [resultSaved, setResultSaved] = useState(false);
 
   const fileInputRef = React.useRef<HTMLInputElement>(null);
@@ -223,7 +223,6 @@ export const PageEditorPDF: React.FC = () => {
   const {
     thumbnails,
     isLoading: thumbnailsLoading,
-    pageCount,
   } = usePDFThumbnails({
     file: file?.file,
     thumbnailWidth: 300,
@@ -253,6 +252,7 @@ export const PageEditorPDF: React.FC = () => {
         }));
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [thumbnails]);
 
   // Load zoomed image
@@ -277,7 +277,7 @@ export const PageEditorPDF: React.FC = () => {
     };
 
     loadZoomedImage();
-  }, [zoomedPageNumber, file]);
+  }, [zoomedPageNumber, file, t]);
 
   // Auto-load file from shared state
   useEffect(() => {
@@ -289,6 +289,7 @@ export const PageEditorPDF: React.FC = () => {
       handleFileUpload([sharedFileObj]);
       clearSharedFile();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sharedFile, file, result, clearSharedFile]);
 
   // Auto-save result
@@ -344,7 +345,7 @@ export const PageEditorPDF: React.FC = () => {
     try {
       const info = await pdfService.getPDFInfo(pdfFile);
       setFile((prev) => (prev ? { ...prev, info, status: 'completed' } : null));
-    } catch (error) {
+    } catch {
       setFile((prev) =>
         prev ? { ...prev, status: 'error', error: t('pageEditor.failedRead') } : null
       );
@@ -519,16 +520,19 @@ export const PageEditorPDF: React.FC = () => {
     setProgressMessage('Processing new file...');
 
     try {
-      const pageCount = await pdfService.getPageCount(newFile);
+      const info = await pdfService.getPDFInfo(newFile);
+      const pageCount = info.pages;
       // Use lower scale for thumbnails (0.5 is good for visualization)
       const newThumbnails = await pdfService.getPreviews(newFile, 0.5);
 
       const newPages: PageItem[] = newThumbnails.map((thumbnail, index) => ({
         id: crypto.randomUUID(),
         pageNumber: index + 1, // 1-based index from new file
-        thumbnail,
+        dataUrl: thumbnail,
         rotation: 0,
         isDeleted: false,
+        width: 0, // Placeholder as getPreviews doesn't return dimensions
+        height: 0, // Placeholder
         sourceFile: newFile
       }));
 
@@ -642,7 +646,7 @@ export const PageEditorPDF: React.FC = () => {
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-gray-500">{t('common.pages')}</span>
-              <span className="font-medium">{result.metadata?.pageCount || pages.filter(p => !p.isDeleted).length}</span>
+              <span className="font-medium">{(result.metadata?.pageCount as number) || pages.filter(p => !p.isDeleted).length}</span>
             </div>
           </div>
           <div className="flex justify-center gap-4">

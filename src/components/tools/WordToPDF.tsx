@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { ToolLayout } from '@/components/common/ToolLayout';
 import { PDFPreview } from '@/components/common/PDFPreview';
 import { useI18n } from '@/hooks/useI18n';
-import { useSharedFile } from '@/hooks/useSharedFile';
 import pdfService from '@/services/pdfService';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -14,7 +13,7 @@ type Quality = 1 | 2 | 3;
 
 export const WordToPDF: React.FC = () => {
   const { t } = useI18n();
-  const { setSharedFile: saveSharedFile } = useSharedFile();
+  // const { setSharedFile: saveSharedFile } = useSharedFile(); // Unused
   const [file, setFile] = useState<File | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [result, setResult] = useState<{ blob: Blob; originalSize: number; processedSize: number } | null>(null);
@@ -47,16 +46,16 @@ export const WordToPDF: React.FC = () => {
         { mode: conversionMode, quality }
       );
 
-      if (conversionResult.success && conversionResult.blob) {
+      if (conversionResult.success && conversionResult.data) {
         setResult({
-          blob: conversionResult.blob,
-          originalSize: conversionResult.originalSize || 0,
-          processedSize: conversionResult.processedSize || 0,
+          blob: conversionResult.data,
+          originalSize: conversionResult.metadata?.originalSize || 0,
+          processedSize: conversionResult.metadata?.processedSize || 0,
         });
       } else {
         alert(conversionResult.error?.message || t('wordToPdf.errors.conversionFailed'));
       }
-    } catch (error) {
+    } catch {
       alert(t('wordToPdf.errors.conversionFailed'));
     } finally {
       setIsProcessing(false);
@@ -187,7 +186,7 @@ export const WordToPDF: React.FC = () => {
       maxFiles={1}
       uploadTitle={t('common.selectFile')}
       uploadDescription={t('upload.singleFileAllowed')}
-      accept=".docx"
+      acceptedTypes=".docx"
       settings={!result && file ? renderSettings() : null}
       actions={!result && file ? renderActions() : null}
     >

@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { FileUpload } from '@/components/common/FileUpload';
 import { ToolLayout } from '@/components/common/ToolLayout';
-import { ProgressBar } from '@/components/common/ProgressBar';
 import { PDFPreview } from '@/components/common/PDFPreview';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
+// Kept as it might be used or remove if confirmed unused globally
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useI18n } from '@/hooks/useI18n';
 import { useSharedFile } from '@/hooks/useSharedFile';
 import pdfService from '@/services/pdfService';
@@ -40,11 +39,12 @@ export const SplitPDF: React.FC = () => {
   const [file, setFile] = useState<UploadedFile | null>(null);
   const [splitMode, setSplitMode] = useState<SplitMode>('all');
   const [isProcessing, setIsProcessing] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [progressMessage, setProgressMessage] = useState('');
+
   const [results, setResults] = useState<SplitResult[]>([]);
   const [loadedFromShared, setLoadedFromShared] = useState(false);
   const [isCreatingArchive, setIsCreatingArchive] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [progressMessage, setProgressMessage] = useState('');
 
   // Range mode settings
   const [rangeStart, setRangeStart] = useState(1);
@@ -121,7 +121,7 @@ export const SplitPDF: React.FC = () => {
       const info = await pdfService.getPDFInfo(selectedFile);
       setFile((prev) => (prev ? { ...prev, info, status: 'completed' } : null));
       setRangeEnd(info.pages);
-    } catch (error) {
+    } catch {
       setFile((prev) =>
         prev ? { ...prev, status: 'error', error: 'Failed to read PDF' } : null
       );
@@ -350,7 +350,7 @@ export const SplitPDF: React.FC = () => {
               pageNumbers: chapterPages,
               index: i,
               chapterTitle: chapter.title, // Store chapter title for filename
-            } as any);
+            });
           }
         }
 
@@ -552,6 +552,8 @@ export const SplitPDF: React.FC = () => {
       description={t('tools.split-pdf.description')}
       hasFiles={!!file}
       isProcessing={isProcessing}
+      progress={progress}
+      progressMessage={progressMessage}
       onUpload={(files) => handleFileSelected(files)}
       uploadContent={
         <FileUpload
@@ -904,7 +906,7 @@ export const SplitPDF: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {currentResults.map((result, index) => (
+            {currentResults.map((result) => (
               <Card
                 key={result.index}
                 className={`

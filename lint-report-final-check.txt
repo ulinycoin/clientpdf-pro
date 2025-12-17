@@ -1,0 +1,117 @@
+
+> app-spa@3.2.0 lint
+> eslint .
+
+
+/Users/aleksejskokoulins/Desktop/clientpdf-pro/src/components/tools/AddFormFieldsPDF.tsx
+  88:6  warning  React Hook useCallback has a missing dependency: 'formFields'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/aleksejskokoulins/Desktop/clientpdf-pro/src/components/tools/AddFormFieldsPDF/Canvas.tsx
+  57:6  warning  React Hook useEffect has missing dependencies: 'currentPage', 'onPageChange', and 'onTotalPagesChange'. Either include them or remove the dependency array. If 'onTotalPagesChange' changes too often, find the parent component that defines it and wrap that definition in useCallback  react-hooks/exhaustive-deps
+  89:6  warning  React Hook useEffect has a missing dependency: 'rendering'. Either include it or remove the dependency array                                                                                                                                                                              react-hooks/exhaustive-deps
+
+/Users/aleksejskokoulins/Desktop/clientpdf-pro/src/components/tools/AddTextPDF.tsx
+   11:15  error    'Tool' is defined but never used                                                                                        @typescript-eslint/no-unused-vars
+   12:10  error    'HASH_TOOL_MAP' is defined but never used                                                                               @typescript-eslint/no-unused-vars
+   54:6   warning  React Hook useEffect has a missing dependency: 'handleFilesSelected'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+   91:6   warning  React Hook useCallback has a missing dependency: 't'. Either include it or remove the dependency array                  react-hooks/exhaustive-deps
+  114:6   warning  React Hook useCallback has a missing dependency: 't'. Either include it or remove the dependency array                  react-hooks/exhaustive-deps
+
+/Users/aleksejskokoulins/Desktop/clientpdf-pro/src/components/tools/AddTextPDF/Canvas.tsx
+   82:6  warning  React Hook useCallback has a missing dependency: 'renderPage'. Either include it or remove the dependency array          react-hooks/exhaustive-deps
+  187:6  warning  React Hook useCallback has a missing dependency: 'renderTextElements'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/aleksejskokoulins/Desktop/clientpdf-pro/src/components/tools/EditTextPDF.tsx
+  123:16  error    'e' is defined but never used                                                                                                  @typescript-eslint/no-unused-vars
+  220:6   warning  React Hook React.useCallback has an unnecessary dependency: 'editMode_type'. Either exclude it or remove the dependency array  react-hooks/exhaustive-deps
+  245:56  error    'e' is defined but never used                                                                                                  @typescript-eslint/no-unused-vars
+  245:59  error    Empty block statement                                                                                                          no-empty
+  249:6   warning  React Hook useEffect has a missing dependency: 'handleFilesSelected'. Either include it or remove the dependency array         react-hooks/exhaustive-deps
+
+/Users/aleksejskokoulins/Desktop/clientpdf-pro/src/components/tools/ExtractPagesPDF.tsx
+  69:14  error  'error' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/aleksejskokoulins/Desktop/clientpdf-pro/src/components/tools/ImagesToPDF.tsx
+    3:10  error  'ProgressBar' is defined but never used                 @typescript-eslint/no-unused-vars
+    4:10  error  'PDFMultiPagePreview' is defined but never used         @typescript-eslint/no-unused-vars
+   14:10  error  'Card' is defined but never used                        @typescript-eslint/no-unused-vars
+   14:16  error  'CardContent' is defined but never used                 @typescript-eslint/no-unused-vars
+   41:10  error  'progress' is assigned a value but never used           @typescript-eslint/no-unused-vars
+   42:10  error  'progressMessage' is assigned a value but never used    @typescript-eslint/no-unused-vars
+   43:64  error  Unexpected any. Specify a different type                @typescript-eslint/no-explicit-any
+  266:9   error  'handleQuickAction' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/aleksejskokoulins/Desktop/clientpdf-pro/src/components/tools/MergePDF.tsx
+  25:64  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  50:16  error  'error' is defined but never used         @typescript-eslint/no-unused-vars
+
+/Users/aleksejskokoulins/Desktop/clientpdf-pro/src/components/tools/OCRPDF.tsx
+   93:6   warning  React Hook useEffect has missing dependencies: 'handleFilesSelected' and 't'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+  171:16  error    Unexpected any. Specify a different type                                                                                          @typescript-eslint/no-explicit-any
+  213:10  error    Unexpected any. Specify a different type                                                                                          @typescript-eslint/no-explicit-any
+  491:83  error    Unexpected any. Specify a different type                                                                                          @typescript-eslint/no-explicit-any
+  509:85  error    Unexpected any. Specify a different type                                                                                          @typescript-eslint/no-explicit-any
+
+/Users/aleksejskokoulins/Desktop/clientpdf-pro/src/components/tools/PDFToImages.tsx
+   11:3   error  'QUALITY_SETTINGS' is defined but never used      @typescript-eslint/no-unused-vars
+   43:58  error  Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+  137:16  error  'e' is defined but never used                     @typescript-eslint/no-unused-vars
+  142:22  error  Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+  149:16  error  'e' is defined but never used                     @typescript-eslint/no-unused-vars
+  153:9   error  'handleReset' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  238:51  error  Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+  250:52  error  Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+  253:87  error  Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+  272:58  error  Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+
+/Users/aleksejskokoulins/Desktop/clientpdf-pro/src/components/tools/PageEditorPDF.tsx
+  211:10  error  'progress' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/aleksejskokoulins/Desktop/clientpdf-pro/src/components/ui/badge.tsx
+  40:17  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/Users/aleksejskokoulins/Desktop/clientpdf-pro/src/components/ui/button.tsx
+  57:18  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/Users/aleksejskokoulins/Desktop/clientpdf-pro/src/contexts/I18nContext.tsx
+   37:30  error  Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+  136:14  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/Users/aleksejskokoulins/Desktop/clientpdf-pro/src/hooks/useAddTextTool.ts
+  141:36  error    Unexpected any. Specify a different type                                                                                @typescript-eslint/no-explicit-any
+  141:86  error    Unexpected any. Specify a different type                                                                                @typescript-eslint/no-explicit-any
+  168:47  error    Unexpected control character(s) in regular expression: \x00                                                             no-control-regex
+  185:43  error    Unexpected any. Specify a different type                                                                                @typescript-eslint/no-explicit-any
+  192:33  error    Unexpected any. Specify a different type                                                                                @typescript-eslint/no-explicit-any
+  272:51  error    Unexpected any. Specify a different type                                                                                @typescript-eslint/no-explicit-any
+  292:6   warning  React Hook useCallback has a missing dependency: 'drawMultilineText'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/aleksejskokoulins/Desktop/clientpdf-pro/src/main.tsx
+  10:27  error  Unexpected any. Specify a different type                                                                                 @typescript-eslint/no-explicit-any
+  11:18  error  Unexpected any. Specify a different type                                                                                 @typescript-eslint/no-explicit-any
+  15:24  error  The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type  @typescript-eslint/no-unsafe-function-type
+  19:27  error  Unexpected any. Specify a different type                                                                                 @typescript-eslint/no-explicit-any
+  20:18  error  Unexpected any. Specify a different type                                                                                 @typescript-eslint/no-explicit-any
+  24:27  error  Unexpected any. Specify a different type                                                                                 @typescript-eslint/no-explicit-any
+  25:18  error  Unexpected any. Specify a different type                                                                                 @typescript-eslint/no-explicit-any
+  26:22  error  Unexpected any. Specify a different type                                                                                 @typescript-eslint/no-explicit-any
+  33:21  error  Unexpected any. Specify a different type                                                                                 @typescript-eslint/no-explicit-any
+  34:18  error  Unexpected any. Specify a different type                                                                                 @typescript-eslint/no-explicit-any
+  38:58  error  Unexpected any. Specify a different type                                                                                 @typescript-eslint/no-explicit-any
+  39:58  error  Unexpected any. Specify a different type                                                                                 @typescript-eslint/no-explicit-any
+  40:59  error  Unexpected any. Specify a different type                                                                                 @typescript-eslint/no-explicit-any
+  40:90  error  Unexpected any. Specify a different type                                                                                 @typescript-eslint/no-explicit-any
+  46:31  error  The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type  @typescript-eslint/no-unsafe-function-type
+  46:54  error  Unexpected any. Specify a different type                                                                                 @typescript-eslint/no-explicit-any
+  47:30  error  Unexpected any. Specify a different type                                                                                 @typescript-eslint/no-explicit-any
+
+/Users/aleksejskokoulins/Desktop/clientpdf-pro/src/services/pdfService.ts
+  2527:53  error    Unexpected any. Specify a different type                                                               @typescript-eslint/no-explicit-any
+  2530:29  warning  Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-explicit-any')
+  2903:32  error    Unexpected any. Specify a different type                                                               @typescript-eslint/no-explicit-any
+
+✖ 73 problems (60 errors, 13 warnings)
+  0 errors and 1 warning potentially fixable with the `--fix` option.
+

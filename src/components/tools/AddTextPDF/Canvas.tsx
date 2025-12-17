@@ -41,10 +41,10 @@ export const Canvas: React.FC<CanvasProps> = ({
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const renderTaskRef = useRef<any>(null);
+  const renderTaskRef = useRef<pdfjsLib.RenderTask | null>(null);
   const isRenderingRef = useRef(false);
 
-  const [pdfDocument, setPdfDocument] = useState<any>(null);
+  const [pdfDocument, setPdfDocument] = useState<pdfjsLib.PDFDocumentProxy | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [canvasState, setCanvasState] = useState<CanvasState>({
     scale: 1,
@@ -125,14 +125,15 @@ export const Canvas: React.FC<CanvasProps> = ({
   }, []);
 
   // Render PDF page
-  const renderPage = useCallback(async (pdf: any, pageNumber: number) => {
+  const renderPage = useCallback(async (pdf: pdfjsLib.PDFDocumentProxy, pageNumber: number) => {
+
     if (!pdf || !canvasRef.current) return;
 
     // Cancel any existing render task
     if (renderTaskRef.current) {
       try {
         await renderTaskRef.current.cancel();
-      } catch (e: unknown) {
+      } catch {
         // Task might already be completed or cancelled
       }
       renderTaskRef.current = null;
@@ -169,6 +170,7 @@ export const Canvas: React.FC<CanvasProps> = ({
         viewport: viewport
       };
 
+      // @ts-expect-error - pdfjs types mismatch in v5
       renderTaskRef.current = page.render(renderContext);
       await renderTaskRef.current.promise;
       renderTaskRef.current = null;
@@ -327,7 +329,7 @@ export const Canvas: React.FC<CanvasProps> = ({
       if (renderTaskRef.current) {
         try {
           renderTaskRef.current.cancel();
-        } catch (e: unknown) {
+        } catch {
           // Task might already be completed
         }
         renderTaskRef.current = null;

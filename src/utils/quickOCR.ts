@@ -25,7 +25,7 @@ export class QuickOCR {
       this.initializationPromise = (async () => {
         try {
           this.worker = await Tesseract.createWorker('eng', 1, {
-            logger: () => {} // Disable logging for quick analysis
+            logger: () => { } // Disable logging for quick analysis
           });
           this.loadedLanguages.add('eng');
           return this.worker;
@@ -50,7 +50,9 @@ export class QuickOCR {
     console.log(`📥 QuickOCR: Loading language '${language}' into existing worker...`);
 
     // Load the additional language
+    // @ts-expect-error - loadLanguage exists on Worker in Tesseract v5
     await worker.loadLanguage(language);
+    // @ts-expect-error - initialize exists on Worker in Tesseract v5
     await worker.initialize(language);
 
     this.loadedLanguages.add(language);
@@ -87,9 +89,10 @@ export class QuickOCR {
       canvas.height = sampleHeight;
       canvas.width = sampleWidth;
 
+      // @ts-expect-error - RenderParameters type definition might be outdated/strict requiring canvas
       await page.render({
         canvasContext: context,
-        viewport: viewport
+        viewport: viewport,
       }).promise;
 
       return canvas;
@@ -159,7 +162,7 @@ export class QuickOCR {
       let extractedText = '';
       let bestLanguage = 'eng';
       let bestConfidence = 0;
-      let bestText = '';
+
 
       // Strategy: Try up to 2 languages based on confidence
       // 1. If filename has high confidence → try that language + English
@@ -196,7 +199,6 @@ export class QuickOCR {
           if (confidence > bestConfidence) {
             bestLanguage = lang;
             bestConfidence = confidence;
-            bestText = text;
             extractedText = text;
           }
         } catch (error) {
@@ -220,8 +222,8 @@ export class QuickOCR {
 
         // If Franc has high confidence and suggests non-English, try that language
         if (quickFrancResult.confidence === 'high' &&
-            quickFrancResult.language !== 'eng' &&
-            quickFrancResult.language !== bestLanguage) {
+          quickFrancResult.language !== 'eng' &&
+          quickFrancResult.language !== bestLanguage) {
 
           console.log(`🌐 QuickOCR: Trying ${quickFrancResult.language.toUpperCase()} based on Franc suggestion`);
 
@@ -241,7 +243,6 @@ export class QuickOCR {
               console.log(`✅ QuickOCR: Using ${quickFrancResult.language.toUpperCase()} result (better quality)`);
               bestLanguage = quickFrancResult.language;
               bestConfidence = confidence;
-              bestText = text;
               extractedText = text;
             }
 

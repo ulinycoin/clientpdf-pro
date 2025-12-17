@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ToolLayout } from '@/components/common/ToolLayout';
 import { ProgressBar } from '@/components/common/ProgressBar';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -13,9 +13,7 @@ import fontkit from '@pdf-lib/fontkit';
 import * as pdfjsLib from 'pdfjs-dist';
 import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import type { UploadedFile, PDFFileInfo } from '@/types/pdf';
-import type { Tool } from '@/types';
-import { HASH_TOOL_MAP } from '@/types';
-import { FileCheck, type LucideIcon, Type, Move, Palette, Sliders, RotateCw } from 'lucide-react';
+import { FileCheck, Type, Move, Palette, Sliders, RotateCw } from 'lucide-react';
 
 // Configure PDF.js worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
@@ -38,7 +36,7 @@ export const WatermarkPDF: React.FC = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [progressMessage, setProgressMessage] = useState('');
-  const [result, setResult] = useState<{ blob: Blob; metadata: any } | null>(null);
+  const [result, setResult] = useState<{ blob: Blob; metadata: Record<string, unknown> } | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [resultSaved, setResultSaved] = useState(false);
 
@@ -124,6 +122,7 @@ export const WatermarkPDF: React.FC = () => {
         canvas.height = viewport.height;
         canvas.width = viewport.width;
 
+        // @ts-expect-error - RenderParameters type definition mismatch in pdfjs-dist
         await page.render({
           canvasContext: context,
           viewport: viewport,
@@ -184,7 +183,7 @@ export const WatermarkPDF: React.FC = () => {
   };
 
   // Load font with Cyrillic support
-  const loadCyrillicFont = async (pdfDoc: any) => {
+  const loadCyrillicFont = async (pdfDoc: PDFDocument) => {
     try {
       // Check if text contains Cyrillic characters
       const hasCyrillic = /[а-яА-ЯёЁ]/.test(settings.text);
@@ -292,7 +291,7 @@ export const WatermarkPDF: React.FC = () => {
 
       // Save PDF
       const pdfBytes = await pdfDoc.save();
-      const blob = new Blob([pdfBytes as any], { type: 'application/pdf' });
+      const blob = new Blob([pdfBytes as BlobPart], { type: 'application/pdf' });
 
       setProgress(100);
       setProgressMessage(t('watermark.completed'));
@@ -337,18 +336,7 @@ export const WatermarkPDF: React.FC = () => {
     setProgressMessage('');
   };
 
-  const handleQuickAction = async (toolId: Tool) => {
-    // Save the watermarked PDF to shared state for the next tool
-    if (result?.blob) {
-      setSharedFile(result.blob, `${file?.name.replace('.pdf', '')}_watermarked.pdf`, 'watermark-pdf');
-    }
 
-    // Small delay to ensure state is updated before navigation
-    await new Promise(resolve => setTimeout(resolve, 100));
-
-    // Navigate to the selected tool
-    window.location.hash = HASH_TOOL_MAP[toolId];
-  };
 
   // Color presets
   const colorPresets = [
@@ -441,13 +429,13 @@ export const WatermarkPDF: React.FC = () => {
                 <div className="bg-white/50 dark:bg-gray-800/50 rounded-lg p-3">
                   <div className="text-gray-600 dark:text-gray-400">{t('watermark.success.size')}</div>
                   <div className="font-bold text-gray-900 dark:text-white">
-                    {(result.metadata.finalSize / 1024 / 1024).toFixed(2)} MB
+                    {((result.metadata.finalSize as number) / 1024 / 1024).toFixed(2)} MB
                   </div>
                 </div>
                 <div className="bg-white/50 dark:bg-gray-800/50 rounded-lg p-3">
                   <div className="text-gray-600 dark:text-gray-400">{t('watermark.success.watermarkApplied')}</div>
-                  <div className="font-bold text-gray-900 dark:text-white truncate" title={result.metadata.watermarkText}>
-                    {result.metadata.watermarkText}
+                  <div className="font-bold text-gray-900 dark:text-white truncate" title={result.metadata.watermarkText as string}>
+                    {result.metadata.watermarkText as string}
                   </div>
                 </div>
               </div>

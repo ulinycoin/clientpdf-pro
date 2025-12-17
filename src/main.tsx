@@ -1,5 +1,7 @@
 // Critical Node.js polyfills for browser - MUST be first!
 // Required for pdf-lib and other Node-based libraries to work in browser
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-function-type */
 (function setupPolyfills() {
   'use strict';
 
@@ -31,7 +33,7 @@
   const deferredPolyfills = () => {
     // Only set up require polyfill when actually needed
     if (!(window as any).require) {
-      (window as any).require = function(moduleName: string) {
+      (window as any).require = function (moduleName: string) {
         switch (moduleName) {
           case 'stream':
             return {

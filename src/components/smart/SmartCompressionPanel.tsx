@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Sparkles, ArrowRight, BarChart3, Image as ImageIcon, FileText } from 'lucide-react';
+import { Sparkles, ArrowRight, BarChart3, Image as ImageIcon } from 'lucide-react';
 import { useI18n } from '@/hooks/useI18n';
 import type { CompressionAnalysis } from '@/types/pdf';
 
