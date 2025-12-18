@@ -197,9 +197,7 @@ function App() {
                   <DeletePagesPDF />
                 ) : currentTool === 'extract-pages-pdf' ? (
                   <ExtractPagesPDF />
-                ) : currentTool === 'add-text-pdf' ? (
-                  <ContentEditorPDF />
-                ) : currentTool === 'edit-text-pdf' ? (
+                ) : currentTool === 'edit-pdf' ? (
                   <ContentEditorPDF />
                 ) : currentTool === 'add-form-fields-pdf' ? (
                   <AddFormFieldsPDF />

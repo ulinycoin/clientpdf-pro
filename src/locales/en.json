@@ -815,9 +815,11 @@
     "errors": {
       "noFile": "Please select a Word document first",
       "invalidFormat": "Invalid file format. Please select a .docx file",
-      "conversionFailed": "Failed to convert Word to PDF"
+      "conversionFailed": "Word to PDF conversion failed"
     },
-    "success": "Word document converted successfully!"
+    "success": "Word document successfully converted!",
+    "editabilityWarning": "⚠️ 'Formatted' mode creates PDF from images. Text in this file will not be editable via standard search, but you can add new text or cover areas manually.",
+    "editResult": "Edit PDF"
   },
   "pdfToWord": {
     "convert": "Convert to Word",

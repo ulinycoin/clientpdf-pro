@@ -52,7 +52,7 @@ export interface UseContentEditorReturn {
     canRedo: boolean;
 
     // Actions
-    addTextElement: (x: number, y: number, text?: string) => string;
+    addTextElement: (x: number, y: number, text?: string, initialProps?: Partial<TextElement>) => string;
     updateTextElement: (id: string, updates: Partial<TextElement>) => void;
     deleteTextElement: (id: string) => void;
     selectElement: (id: string | null) => void;
@@ -77,6 +77,9 @@ export interface UseContentEditorReturn {
         width: number;
         height: number;
         fontSize: number;
+        fontFamily: string;
+        bold: boolean;
+        italic: boolean;
     } | null>;
 
     // File operations

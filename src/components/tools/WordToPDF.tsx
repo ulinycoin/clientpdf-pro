@@ -6,14 +6,17 @@ import pdfService from '@/services/pdfService';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { CheckCircle2, FileText } from 'lucide-react';
+import { CheckCircle2, FileText, Edit2 } from 'lucide-react';
+import { useSharedFile } from '@/hooks/useSharedFile';
+import { useHashRouter } from '@/hooks/useHashRouter';
 
 type ConversionMode = 'formatted' | 'text';
 type Quality = 1 | 2 | 3;
 
 export const WordToPDF: React.FC = () => {
   const { t } = useI18n();
-  // const { setSharedFile: saveSharedFile } = useSharedFile(); // Unused
+  const { setSharedFile } = useSharedFile();
+  const { setCurrentTool } = useHashRouter();
   const [file, setFile] = useState<File | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [result, setResult] = useState<{ blob: Blob; originalSize: number; processedSize: number } | null>(null);
@@ -69,6 +72,14 @@ export const WordToPDF: React.FC = () => {
     }
   };
 
+  const handleEdit = () => {
+    if (result?.blob) {
+      const fileName = file?.name.replace(/\.\w+$/, '.pdf') || 'converted.pdf';
+      setSharedFile(result.blob, fileName, 'word-to-pdf');
+      setCurrentTool('edit-pdf');
+    }
+  };
+
   const handleReset = () => {
     setFile(null);
     setResult(null);
@@ -111,6 +122,10 @@ export const WordToPDF: React.FC = () => {
             <Button onClick={handleDownload} size="lg" className="bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-xl transition-all">
               {t('common.download')}
             </Button>
+            <Button onClick={handleEdit} variant="outline" size="lg" className="border-green-600 text-green-600 hover:bg-green-50">
+              <Edit2 className="w-4 h-4 mr-2" />
+              {t('wordToPdf.editResult')}
+            </Button>
             <Button variant="outline" onClick={handleReset} size="lg">
               {t('common.convertAnother')}
             </Button>
@@ -142,6 +157,11 @@ export const WordToPDF: React.FC = () => {
             <div className="font-semibold">{t('wordToPdf.withFormatting') || 'Formatted'}</div>
             <div className="text-xs text-gray-500 mt-1">Preserves layout & images</div>
           </div>
+          {conversionMode === 'formatted' && (
+            <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3 text-xs text-amber-700 dark:text-amber-400">
+              {t('wordToPdf.editabilityWarning')}
+            </div>
+          )}
           <div onClick={() => setConversionMode('text')} className={`cursor-pointer border-2 rounded-lg p-3 transition-all ${conversionMode === 'text' ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' : 'border-gray-200 dark:border-gray-700 hover:border-gray-300'}`}>
             <div className="font-semibold">{t('wordToPdf.textOnly') || 'Text Only'}</div>
             <div className="text-xs text-gray-500 mt-1">Fast, extract text only</div>

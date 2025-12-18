@@ -8,6 +8,8 @@ import type { TextElement, UseContentEditorReturn } from '@/types/contentEditor'
 // Helper function to prepare text for PDF (preserve Unicode)
 const prepareTextForPDF = (text: string) => {
     return text
+        // Strip non-printable control characters (like 0x0018) that crash pdf-lib encoding
+        .replace(/[\x00-\x1F\x7F-\x9F]/g, '') // eslint-disable-line no-control-regex
         .replace(/[""]/g, '"')
         .replace(/['']/g, "'")
         .replace(/[–—]/g, '-')
@@ -15,7 +17,7 @@ const prepareTextForPDF = (text: string) => {
 };
 
 // Helper function to draw multiline text with Unicode font
-const drawMultilineText = (page: any, text: string, centerX: number, centerY: number, options: any) => {
+const drawMultilineText = (page: any, text: string, anchorX: number, centerY: number, options: any) => {
     const lines = text.split('\n');
     const size = options.size;
     const font = options.font;
@@ -23,55 +25,38 @@ const drawMultilineText = (page: any, text: string, centerX: number, centerY: nu
     const totalHeight = lines.length * lineHeight;
     const textAlign = options.textAlign || 'center';
     const xScale = options.scaleX || 1.0;
-    const originalWidth = options.originalWidth; // Width of the original text block in PDF points
 
-    // PDF coordinates start from bottom-left. 
     // centerY is the logical center of the block.
-    // We adjust by size * 1.1 instead of size to fix the "slightly too high" alignment issue.
     let currentY = centerY + (totalHeight / 2) - (size * 1.1);
 
     lines.forEach((line) => {
-        if (line.trim()) {
-            // Calculate individual line width to handle alignment
-            // Note: font.widthOfTextAtSize returns width WITHOUT horizontal scaling
-            const rawWidth = font.widthOfTextAtSize(line, size);
-            const actualWidth = rawWidth * xScale;
-
-            let lineX = centerX;
-            if (textAlign === 'center') {
-                lineX = centerX - (actualWidth / 2);
-            } else if (textAlign === 'left' && originalWidth !== undefined) {
-                // Align to the left edge of the original bounding box
-                lineX = centerX - (originalWidth / 2);
-            } else if (textAlign === 'right' && originalWidth !== undefined) {
-                // Align to the right edge of the original bounding box
-                lineX = centerX + (originalWidth / 2) - actualWidth;
-            } else {
-                // Fallback to center if no originalWidth provided
-                lineX = centerX - (actualWidth / 2);
+        const safeLine = prepareTextForPDF(line);
+        if (safeLine.trim()) {
+            const activeFont = font;
+            if (!activeFont || typeof activeFont.widthOfTextAtSize !== 'function') {
+                console.warn('Invalid font passed to drawMultilineText');
+                return;
             }
 
             try {
-                page.drawText(line, {
+                const rawWidth = activeFont.widthOfTextAtSize(safeLine, size);
+                const actualWidth = rawWidth * xScale;
+
+                let lineX = anchorX;
+                if (textAlign === 'center') {
+                    lineX = anchorX - (actualWidth / 2);
+                } else if (textAlign === 'right') {
+                    lineX = anchorX - actualWidth;
+                }
+
+                page.drawText(safeLine, {
                     ...options,
                     x: lineX,
                     y: currentY,
-                    xScale: xScale
+                    font: activeFont,
                 });
-            } catch (error) {
-                console.warn(`Failed to draw line: "${line}". Error:`, error);
-                try {
-                    const cleanedLine = prepareTextForPDF(line);
-                    const cleanedWidth = font.widthOfTextAtSize(cleanedLine, size) * xScale;
-                    page.drawText(cleanedLine, {
-                        ...options,
-                        x: centerX - (cleanedWidth / 2),
-                        y: currentY,
-                        xScale: xScale
-                    });
-                } catch (e) {
-                    console.error(`Fatal failure for line: "${line}"`, e);
-                }
+            } catch (err) {
+                console.error('Error drawing line:', err, safeLine);
             }
         }
         currentY -= lineHeight;
@@ -102,7 +87,7 @@ export const useContentEditor = (): UseContentEditorReturn => {
     }, [history, historyIndex]);
 
     // Add text element
-    const addTextElement = useCallback((x: number, y: number, text: string = 'New Text') => {
+    const addTextElement = useCallback((x: number, y: number, text: string = 'New Text', initialProps?: Partial<TextElement>) => {
         const newElement: TextElement = {
             id: `text-${Date.now()}-${++elementIdCounter.current}`,
             text,
@@ -119,7 +104,8 @@ export const useContentEditor = (): UseContentEditorReturn => {
             pageNumber: currentPage,
             backgroundColor: 'transparent',
             textAlign: 'left',
-            horizontalScaling: 1.0
+            horizontalScaling: 1.0,
+            ...initialProps
         };
 
         const newElements = [...textElements, newElement];
@@ -194,10 +180,11 @@ export const useContentEditor = (): UseContentEditorReturn => {
     }, [history, historyIndex]);
 
     // Smart Detection Logic with Line Grouping
+    // Smart Detection Logic with Line Grouping
     const detectTextAt = useCallback(async (pdfDocument: pdfjsLib.PDFDocumentProxy, pageNumber: number, xPercent: number, yPercent: number) => {
         try {
             const page = await pdfDocument.getPage(pageNumber);
-            const textContent = await page.getTextContent();
+            const textContent = await (page as any).getTextContent({ includeStyles: true });
             const viewport = page.getViewport({ scale: 1.0 });
 
             const targetX = (xPercent / 100) * viewport.width;
@@ -241,7 +228,7 @@ export const useContentEditor = (): UseContentEditorReturn => {
 
             if (lineItems.length === 0) return null;
 
-            // 3. Merge into a single line
+            // 3. Merge into a single line and extract styles
             const firstItem = lineItems[0] as any;
             const lastItem = lineItems[lineItems.length - 1] as any;
 
@@ -250,6 +237,30 @@ export const useContentEditor = (): UseContentEditorReturn => {
             const lastW = (lastItem as any).width || (lastItem.str.length * targetItem.fontSize * 0.5);
 
             const totalWidth = (lastX + lastW) - firstX;
+
+            // Extract font styles
+            const itemStyle = textContent.styles[targetItem.item.fontName];
+            let fontFamily = 'Roboto';
+            let bold = false;
+            let italic = false;
+
+            if (itemStyle) {
+                const fontName = itemStyle.fontFamily.toLowerCase();
+                bold = fontName.includes('bold') || fontName.includes('heavy') || fontName.includes('black');
+                italic = fontName.includes('italic') || fontName.includes('oblique') || fontName.includes('slanted');
+
+                if (fontName.includes('times') || fontName.includes('serif')) {
+                    fontFamily = 'Times New Roman';
+                } else if (fontName.includes('courier') || fontName.includes('mono')) {
+                    fontFamily = 'Courier New';
+                } else if (fontName.includes('helvetica') || fontName.includes('arial') || fontName.includes('sans')) {
+                    fontFamily = 'Arial';
+                } else if (fontName.includes('roboto')) {
+                    fontFamily = 'Roboto';
+                } else if (fontName.includes('calibri') || fontName.includes('segoe') || fontName.includes('gothic') || fontName.includes('verdana')) {
+                    fontFamily = 'Helvetica'; // Best generic match for clean sans-serif
+                }
+            }
 
             // Intelligent Merging: check gaps between fragments
             let mergedText = "";
@@ -273,10 +284,13 @@ export const useContentEditor = (): UseContentEditorReturn => {
             return {
                 text: mergedText,
                 x: ((firstX + totalWidth / 2) / viewport.width) * 100,
-                y: (targetItem.centerY / viewport.height) * 100,
+                y: ((targetItem.centerY + targetItem.fontSize * 0.1) / viewport.height) * 100,
                 width: (totalWidth / viewport.width) * 100,
-                height: (targetItem.fontSize / viewport.height) * 100,
-                fontSize: targetItem.fontSize
+                height: (targetItem.fontSize * 1.5 / viewport.height) * 100,
+                fontSize: targetItem.fontSize,
+                fontFamily,
+                bold,
+                italic
             };
         } catch (error) {
             console.error('Error detecting text line:', error);
@@ -317,12 +331,27 @@ export const useContentEditor = (): UseContentEditorReturn => {
                 let response = await fetch(`/fonts/${name}.ttf`);
                 if (!response.ok) {
                     const cdnUrl = getFontUrl(name);
-                    if (cdnUrl) response = await fetch(cdnUrl);
+                    if (cdnUrl) {
+                        try {
+                            response = await fetch(cdnUrl);
+                        } catch (e) {
+                            console.warn(`Failed to fetch font ${name} from CDN:`, e);
+                        }
+                    }
                 }
 
                 if (response.ok) {
+                    const contentType = response.headers.get('content-type') || '';
+                    if (contentType.includes('text/html')) {
+                        console.warn(`Font fetch for ${name} returned HTML (status: ${response.status}). Skipping.`);
+                        continue;
+                    }
                     const fontBytes = await response.arrayBuffer();
-                    fonts[name] = await pdfDoc.embedFont(fontBytes);
+                    try {
+                        fonts[name] = await pdfDoc.embedFont(fontBytes);
+                    } catch (fontErr) {
+                        console.error(`Error embedding font ${name}:`, fontErr);
+                    }
                 }
             }
         } catch (error) {
@@ -334,8 +363,16 @@ export const useContentEditor = (): UseContentEditorReturn => {
         const standardHelveticaOblique = await pdfDoc.embedFont(StandardFonts.HelveticaOblique);
         const standardHelveticaBoldOblique = await pdfDoc.embedFont(StandardFonts.HelveticaBoldOblique);
 
+        const standardCourier = await pdfDoc.embedFont(StandardFonts.Courier);
+        const standardCourierBold = await pdfDoc.embedFont(StandardFonts.CourierBold);
+        const standardTimes = await pdfDoc.embedFont(StandardFonts.TimesRoman);
+        const standardTimesBold = await pdfDoc.embedFont(StandardFonts.TimesRomanBold);
+
         const getBestFontForElement = (el: TextElement) => {
-            const isCustomFont = el.fontFamily === 'Roboto' || el.fontFamily === 'Arial';
+            // Standard PDF fonts (WinAnsi) don't support Cyrillic/Unicode.
+            // If text contains non-Latin characters, we MUST use an embedded font like Roboto.
+            const hasUnicode = /[^\x00-\x7F]/.test(el.text); // eslint-disable-line no-control-regex
+            const isCustomFont = el.fontFamily === 'Roboto' || el.fontFamily === 'Arial' || hasUnicode;
 
             if (isCustomFont) {
                 let selectedFont = null;
@@ -347,14 +384,19 @@ export const useContentEditor = (): UseContentEditorReturn => {
                 if (!selectedFont) selectedFont = fonts['Roboto-Regular'];
                 if (selectedFont) return selectedFont;
 
+                // If even Roboto failed to load, we have to use standard fonts (will fail for Unicode, but better than nothing)
                 if (el.bold && el.italic) return standardHelveticaBoldOblique;
                 if (el.bold) return standardHelveticaBold;
                 if (el.italic) return standardHelveticaOblique;
                 return standardHelvetica;
             }
 
-            if (el.fontFamily === 'Courier New') return StandardFonts.Courier;
-            if (el.fontFamily === 'Times New Roman') return StandardFonts.TimesRoman;
+            if (el.fontFamily === 'Courier New' || el.fontFamily === 'Courier') {
+                return el.bold ? standardCourierBold : standardCourier;
+            }
+            if (el.fontFamily === 'Times New Roman' || el.fontFamily === 'Times') {
+                return el.bold ? standardTimesBold : standardTimes;
+            }
             return standardHelvetica;
         };
 
@@ -418,8 +460,7 @@ export const useContentEditor = (): UseContentEditorReturn => {
                         rotate: degrees(element.rotation),
                         // Support for alignment and scaling
                         textAlign: element.textAlign || 'center',
-                        scaleX: element.horizontalScaling || 1.0,
-                        originalWidth: element.originalRect ? (element.originalRect.w / 100) * width : undefined
+                        scaleX: element.horizontalScaling || 1.0
                     });
                 });
             });

@@ -51,14 +51,13 @@ export const ContentEditorPDF: React.FC = () => {
         detectTextAt,
         savePDF,
         reset,
+        finishMovement,
     } = useContentEditor();
 
     // Set initial mode based on tool
     useEffect(() => {
-        if (currentTool === 'edit-text-pdf') {
+        if (currentTool === 'edit-pdf') {
             setToolMode('edit');
-        } else if (currentTool === 'add-text-pdf') {
-            setToolMode('add');
         }
     }, [currentTool, setToolMode]);
 
@@ -96,12 +95,29 @@ export const ContentEditorPDF: React.FC = () => {
             } else if ((e.key === 'Delete' || e.key === 'Backspace') && selectedElementId) {
                 e.preventDefault();
                 deleteTextElement(selectedElementId);
+            } else if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key) && selectedElementId) {
+                const element = textElements.find(el => el.id === selectedElementId);
+                if (element && !element.originalRect) {
+                    e.preventDefault();
+                    const step = e.shiftKey ? 1.0 : 0.1;
+                    let { x, y } = element;
+
+                    if (e.key === 'ArrowUp') y -= step;
+                    if (e.key === 'ArrowDown') y += step;
+                    if (e.key === 'ArrowLeft') x -= step;
+                    if (e.key === 'ArrowRight') x += step;
+
+                    moveElement(selectedElementId, x, y);
+                    // We need to trigger history save for keyboard movement
+                    // since it's "finished" on each press (different from drag)
+                    finishMovement();
+                }
             }
         };
 
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [undo, redo, selectedElementId, deleteTextElement]);
+    }, [undo, redo, selectedElementId, deleteTextElement, textElements, moveElement, finishMovement]);
 
     // Set document for hook
     const handlePdfLoad = useCallback(async (selectedFiles: File[]) => {
@@ -127,15 +143,34 @@ export const ContentEditorPDF: React.FC = () => {
     }, [reset]);
 
     // Handle Smart Detection
-    const handleSmartDetect = useCallback(async (x: number, y: number) => {
+    const handleSmartDetect = useCallback(async (x: number, y: number, sampledColor?: string) => {
         if (!pdfDocument) return;
+
+        // Check if there's already an element at this position
+        const existing = textElements.find(el => {
+            if (el.pageNumber !== currentPage) return false;
+            // Check distance to center anchor
+            const dist = Math.sqrt(Math.pow(el.x - x, 2) + Math.pow(el.y - y, 2));
+            return dist < 3; // Tightened threshold
+        });
+
+        if (existing) {
+            selectElement(existing.id);
+            return;
+        }
 
         const detected = await detectTextAt(pdfDocument, currentPage, x, y);
         if (detected) {
-            // Create an element covering this text
-            const id = addTextElement(detected.x, detected.y, detected.text);
-            updateTextElement(id, {
+            // Create an element covering this text immediately with correct properties
+            // We use textAlign: 'left' and x as left edge for maximum stability
+            const leftX = detected.x - detected.width / 2;
+            addTextElement(leftX, detected.y, detected.text, {
                 fontSize: detected.fontSize,
+                fontFamily: detected.fontFamily,
+                bold: detected.bold,
+                italic: detected.italic,
+                color: sampledColor || '#000000',
+                textAlign: 'left',
                 originalRect: {
                     x: detected.x - detected.width / 2,
                     y: detected.y - detected.height / 2,
@@ -145,7 +180,7 @@ export const ContentEditorPDF: React.FC = () => {
                 backgroundColor: '#FFFFFF'
             });
         }
-    }, [pdfDocument, currentPage, detectTextAt, addTextElement, updateTextElement]);
+    }, [pdfDocument, currentPage, detectTextAt, addTextElement, textElements, selectElement]);
 
     // Auto-load shared file
     useEffect(() => {
@@ -257,8 +292,10 @@ export const ContentEditorPDF: React.FC = () => {
                         selectedElementId={selectedElementId}
                         toolMode={toolMode}
                         onCanvasClick={(x, y) => {
-                            if (toolMode === 'add') addTextElement(x, y, t('addText.clickToEdit'));
-                            else selectElement(null);
+                            if (toolMode === 'add') {
+                                addTextElement(x, y, t('addText.clickToEdit'));
+                                setToolMode('select');
+                            } else selectElement(null);
                         }}
                         onElementSelect={selectElement}
                         onElementMove={(id, x, y) => {

@@ -10,7 +10,6 @@ import {
   Shield,
   ScanText,
   Stamp,
-  Type,
   PenTool,
   FileInput,
   RotateCw,
@@ -46,8 +45,7 @@ const TOOLS: Array<{ id: Tool; icon: React.ElementType; tier: number }> = [
 
   // Tier 2: Edit tools
   { id: 'watermark-pdf', icon: Stamp, tier: 2 },
-  { id: 'add-text-pdf', icon: Type, tier: 2 },
-  { id: 'edit-text-pdf', icon: PenTool, tier: 2 },
+  { id: 'edit-pdf', icon: PenTool, tier: 2 },
   { id: 'add-form-fields-pdf', icon: FileInput, tier: 2 },
   { id: 'rotate-pdf', icon: RotateCw, tier: 2 },
   { id: 'delete-pages-pdf', icon: Trash2, tier: 2 },
