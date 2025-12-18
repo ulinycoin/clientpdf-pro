@@ -1,236 +1,248 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
+import {
+  Bold,
+  Italic,
+  Trash2,
+  Type,
+  Palette,
+  Maximize,
+  RotateCw,
+  Ghost,
+  ChevronDown,
+  ChevronUp
+} from 'lucide-react';
+import { useI18n } from '@/hooks/useI18n';
 import type { TextElement } from '@/types/addText';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface FormatPanelProps {
   selectedElement: TextElement | null;
   onElementUpdate: (id: string, updates: Partial<TextElement>) => void;
+  onDelete: (id: string) => void;
 }
 
 export const FormatPanel: React.FC<FormatPanelProps> = ({
   selectedElement,
-  onElementUpdate
+  onElementUpdate,
+  onDelete
 }) => {
+  const { t } = useI18n();
+  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
+    style: true,
+    appearance: true
+  });
 
-  const fontFamilies = [
-    'Open Sans',
-    'Roboto',
-    'PT Sans',
-    'Noto Sans',
-    'Arial',
-    'Helvetica',
-    'Times New Roman',
-    'Georgia',
-    'Verdana',
-    'Courier New',
-    'Impact',
-    'Comic Sans MS'
-  ];
-
-  const fontSizes = [8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 48, 64];
-
-  const colors = [
-    '#000000', '#FF0000', '#00FF00', '#0000FF',
-    '#FFFF00', '#FF00FF', '#00FFFF', '#808080',
-    '#800000', '#008000', '#000080', '#808000',
-    '#800080', '#008080', '#C0C0C0', '#FFFFFF'
-  ];
-
-  const handleTextChange = (text: string) => {
-    if (selectedElement) {
-      onElementUpdate(selectedElement.id, { text });
-    }
-  };
-
-  const handleFontFamilyChange = (fontFamily: string) => {
-    if (selectedElement) {
-      onElementUpdate(selectedElement.id, { fontFamily });
-    }
-  };
-
-  const handleFontSizeChange = (value: string | number) => {
-    if (selectedElement) {
-      const fontSize = typeof value === 'string' ? parseInt(value) : value;
-      onElementUpdate(selectedElement.id, { fontSize });
-    }
-  };
-
-  const handleColorChange = (color: string) => {
-    if (selectedElement) {
-      onElementUpdate(selectedElement.id, { color });
-    }
-  };
-
-  const handlePositionChange = (x?: number, y?: number) => {
-    if (selectedElement) {
-      const updates: Partial<TextElement> = {};
-      if (x !== undefined) updates.x = Math.max(0, x);
-      if (y !== undefined) updates.y = Math.max(0, y);
-      onElementUpdate(selectedElement.id, updates);
-    }
+  const toggleSection = (section: string) => {
+    setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
   };
 
   if (!selectedElement) {
     return (
-      <div className="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-6 h-full flex flex-col">
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">
-          Format Panel
-        </h3>
-        <div className="text-center py-8">
-          <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg mx-auto mb-4">
-            🎨
-          </div>
-          <p className="text-gray-600 dark:text-gray-400">Select a text element to edit its format</p>
+      <div className="flex flex-col items-center justify-center p-8 text-center space-y-4 bg-gray-50/50 dark:bg-gray-900/20 rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-800">
+        <div className="w-12 h-12 bg-white dark:bg-gray-800 rounded-xl shadow-sm flex items-center justify-center text-gray-400">
+          <Type className="w-6 h-6" />
+        </div>
+        <div>
+          <h4 className="text-sm font-semibold text-gray-900 dark:text-white">{t('addText.format.title')}</h4>
+          <p className="text-xs text-gray-500 mt-1">{t('addText.clickToEdit')}</p>
         </div>
       </div>
     );
   }
 
+  const fontFamilies = [
+    'Roboto',
+    'Helvetica',
+    'Times New Roman',
+    'Courier New',
+    'Arial'
+  ];
+
+  const colors = [
+    '#000000', '#4B5563', '#9CA3AF', '#FFFFFF',
+    '#EF4444', '#F97316', '#F59E0B', '#10B981',
+    '#3B82F6', '#6366F1', '#8B5CF6', '#EC4899'
+  ];
+
   return (
-    <div className="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-6 space-y-6 h-full flex flex-col overflow-y-auto">
-      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">
-        Format Panel
-      </h3>
-
+    <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
       {/* Text Content */}
-      <div>
-        <Label>Text Content</Label>
-        <Textarea
+      <div className="space-y-3">
+        <div className="flex items-center gap-2">
+          <Type className="w-4 h-4 text-ocean-500" />
+          <Label className="text-sm font-semibold">{t('addText.format.textContent')}</Label>
+        </div>
+        <textarea
           value={selectedElement.text}
-          onChange={(e) => handleTextChange(e.target.value)}
-          rows={3}
-          placeholder="Enter text..."
-          className="mt-2"
+          onChange={(e) => onElementUpdate(selectedElement.id, { text: e.target.value })}
+          placeholder={t('addText.format.placeholder')}
+          className="w-full min-h-[100px] p-3 text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-ocean-500/20 focus:border-ocean-500 outline-none transition-all resize-none shadow-sm"
         />
       </div>
 
-      {/* Font Family */}
-      <div>
-        <Label>Font Family</Label>
-        <Select value={selectedElement.fontFamily} onValueChange={handleFontFamilyChange}>
-          <SelectTrigger className="mt-2">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {fontFamilies.map(font => (
-              <SelectItem key={font} value={font}>
-                {font}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+      <div className="space-y-4">
+        {/* Style Section */}
+        <div className="border-b border-gray-100 dark:border-gray-800 pb-4">
+          <button
+            onClick={() => toggleSection('style')}
+            className="flex items-center justify-between w-full py-2 group"
+          >
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 bg-blue-100 dark:bg-blue-900/30 rounded-lg group-hover:bg-blue-200 dark:group-hover:bg-blue-900/50 transition-colors">
+                <Maximize className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+              </div>
+              <span className="text-sm font-semibold">{t('addText.format.fontFamily')}</span>
+            </div>
+            {expandedSections.style ? <ChevronUp className="w-4 h-4 text-gray-400" /> : <ChevronDown className="w-4 h-4 text-gray-400" />}
+          </button>
 
-      {/* Font Size */}
-      <div>
-        <Label>Font Size</Label>
-        <div className="flex space-x-2 mt-2">
-          <Select value={selectedElement.fontSize.toString()} onValueChange={handleFontSizeChange}>
-            <SelectTrigger className="flex-1">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {fontSizes.map(size => (
-                <SelectItem key={size} value={size.toString()}>
-                  {size}px
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Input
-            type="number"
-            min="6"
-            max="200"
-            value={selectedElement.fontSize}
-            onChange={(e) => handleFontSizeChange(parseInt(e.target.value) || 12)}
-            className="w-20"
-          />
+          {expandedSections.style && (
+            <div className="pt-4 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
+              <Select
+                value={selectedElement.fontFamily}
+                onValueChange={(value) => onElementUpdate(selectedElement.id, { fontFamily: value })}
+              >
+                <SelectTrigger className="w-full bg-white dark:bg-gray-800 rounded-xl border-gray-200 dark:border-gray-700">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {fontFamilies.map(font => (
+                    <SelectItem key={font} value={font}>
+                      <span style={{ fontFamily: font }}>{font}</span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <Label className="text-xs text-gray-500">{t('addText.format.fontSize')}</Label>
+                  <span className="text-xs font-bold px-2 py-0.5 bg-gray-100 dark:bg-gray-800 rounded">{selectedElement.fontSize}px</span>
+                </div>
+                <input
+                  type="range"
+                  min="8"
+                  max="120"
+                  step="1"
+                  value={selectedElement.fontSize}
+                  onChange={(e) => onElementUpdate(selectedElement.id, { fontSize: parseInt(e.target.value) })}
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 accent-ocean-500"
+                />
+              </div>
+
+              <div className="flex gap-2">
+                <Button
+                  variant={selectedElement.bold ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => onElementUpdate(selectedElement.id, { bold: !selectedElement.bold })}
+                  className={`flex-1 rounded-xl h-10 ${selectedElement.bold ? 'bg-ocean-500 shadow-md text-white hover:bg-ocean-600' : 'bg-transparent text-gray-700 dark:text-gray-300'}`}
+                >
+                  <Bold className="w-4 h-4 mr-2" />
+                  {t('addText.format.bold')}
+                </Button>
+                <Button
+                  variant={selectedElement.italic ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => onElementUpdate(selectedElement.id, { italic: !selectedElement.italic })}
+                  className={`flex-1 rounded-xl h-10 ${selectedElement.italic ? 'bg-ocean-500 shadow-md text-white hover:bg-ocean-600' : 'bg-transparent text-gray-700 dark:text-gray-300'}`}
+                >
+                  <Italic className="w-4 h-4 mr-2" />
+                  {t('addText.format.italic')}
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Appearance Section */}
+        <div className="border-b border-gray-100 dark:border-gray-800 pb-4">
+          <button
+            onClick={() => toggleSection('appearance')}
+            className="flex items-center justify-between w-full py-2 group"
+          >
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 bg-purple-100 dark:bg-purple-900/30 rounded-lg group-hover:bg-purple-200 dark:group-hover:bg-purple-900/50 transition-colors">
+                <Palette className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+              </div>
+              <span className="text-sm font-semibold">{t('addText.format.textColor')}</span>
+            </div>
+            {expandedSections.appearance ? <ChevronUp className="w-4 h-4 text-gray-400" /> : <ChevronDown className="w-4 h-4 text-gray-400" />}
+          </button>
+
+          {expandedSections.appearance && (
+            <div className="pt-4 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
+              <div className="grid grid-cols-6 gap-2">
+                {colors.map(color => (
+                  <button
+                    key={color}
+                    onClick={() => onElementUpdate(selectedElement.id, { color })}
+                    className={`w-8 h-8 rounded-full border-2 transition-transform hover:scale-110 shadow-sm ${selectedElement.color === color ? 'border-ocean-500 scale-110' : 'border-transparent'
+                      }`}
+                    style={{ backgroundColor: color }}
+                  />
+                ))}
+              </div>
+
+              <div className="space-y-3 pt-2">
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-2">
+                    <Ghost className="w-3.5 h-3.5 text-gray-400" />
+                    <Label className="text-xs text-gray-500">{t('addText.format.opacity')}</Label>
+                  </div>
+                  <span className="text-xs font-bold">{selectedElement.opacity}%</span>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  step="1"
+                  value={selectedElement.opacity}
+                  onChange={(e) => onElementUpdate(selectedElement.id, { opacity: parseInt(e.target.value) })}
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 accent-ocean-500"
+                />
+              </div>
+
+              <div className="space-y-3 pt-2">
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-2">
+                    <RotateCw className="w-3.5 h-3.5 text-gray-400" />
+                    <Label className="text-xs text-gray-500">{t('addText.format.rotation')}</Label>
+                  </div>
+                  <span className="text-xs font-bold">{selectedElement.rotation}°</span>
+                </div>
+                <input
+                  type="range"
+                  min="-180"
+                  max="180"
+                  step="1"
+                  value={selectedElement.rotation}
+                  onChange={(e) => onElementUpdate(selectedElement.id, { rotation: parseInt(e.target.value) })}
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 accent-ocean-500"
+                />
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Color */}
-      <div>
-        <Label>Text Color</Label>
-        <div className="flex flex-wrap gap-2 mb-3 mt-2">
-          {colors.map(color => (
-            <Button
-              key={color}
-              onClick={() => handleColorChange(color)}
-              variant="outline"
-              size="sm"
-              className={`w-8 h-8 p-0 transition-all duration-200 hover:scale-110 shadow-lg ${
-                selectedElement.color === color
-                  ? 'border-ocean-500 ring-2 ring-ocean-500'
-                  : 'hover:border-ocean-400'
-              }`}
-              style={{ backgroundColor: color }}
-              title={color}
-            />
-          ))}
-        </div>
-        <input
-          type="color"
-          value={selectedElement.color}
-          onChange={(e) => handleColorChange(e.target.value)}
-          className="w-full h-10 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer"
-        />
-      </div>
-
-      {/* Position */}
-      <div>
-        <Label>Position</Label>
-        <div className="grid grid-cols-2 gap-3 mt-2">
-          <div>
-            <Label className="text-xs">X</Label>
-            <Input
-              type="number"
-              min="0"
-              value={Math.round(selectedElement.x)}
-              onChange={(e) => handlePositionChange(parseInt(e.target.value) || 0, undefined)}
-              className="mt-1"
-            />
-          </div>
-          <div>
-            <Label className="text-xs">Y</Label>
-            <Input
-              type="number"
-              min="0"
-              value={Math.round(selectedElement.y)}
-              onChange={(e) => handlePositionChange(undefined, parseInt(e.target.value) || 0)}
-              className="mt-1"
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Preview */}
-      <div>
-        <Label>Preview</Label>
-        <div
-          className="mt-2 p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 min-h-12"
-          style={{
-            fontFamily: selectedElement.fontFamily,
-            fontSize: `${Math.min(selectedElement.fontSize, 16)}px`,
-            color: selectedElement.color,
-            lineHeight: '1.2',
-            whiteSpace: 'pre-wrap'
-          }}
+      <div className="pt-4">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => onDelete(selectedElement.id)}
+          className="w-full h-11 rounded-xl text-red-500 hover:text-white hover:bg-red-500 hover:border-red-500 transition-all border-red-200 dark:border-red-900/30 bg-red-50 dark:bg-red-900/10"
         >
-          {selectedElement.text || 'Sample text'}
-        </div>
-      </div>
-
-      {/* Element Info */}
-      <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
-        <div className="text-xs text-gray-600 dark:text-gray-400 space-y-1">
-          <div>ID: {selectedElement.id.slice(0, 8)}...</div>
-          <div>Page: {selectedElement.pageNumber}</div>
-          <div>Lines: {selectedElement.text.split('\n').length}</div>
-        </div>
+          <Trash2 className="w-4 h-4 mr-2" />
+          {t('addText.format.delete')}
+        </Button>
       </div>
     </div>
   );

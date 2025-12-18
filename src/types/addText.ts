@@ -1,11 +1,15 @@
 export interface TextElement {
   id: string;
   text: string;
-  x: number;
-  y: number;
+  x: number; // Percentage 0-100
+  y: number; // Percentage 0-100
   fontSize: number;
   fontFamily: string;
   color: string;
+  opacity: number;
+  rotation: number;
+  bold: boolean;
+  italic: boolean;
   isSelected: boolean;
   pageNumber: number;
 }

@@ -920,18 +920,44 @@
     "appendPages": "Append pages"
   },
   "addText": {
-    "clickToEdit": "Click to edit",
+    "title": "Add Text",
+    "clickToEdit": "Click to edit personal text",
     "addedCount": "Text elements added: {count}",
     "originalSize": "Original size",
     "newSize": "New size",
     "processing": "Processing PDF",
     "addingText": "Adding text elements to your PDF...",
-    "modeAdd": "✏️ Add Text",
-    "modeSelect": "👆 Select",
+    "modeAdd": "Add Text",
+    "modeSelect": "Select",
     "selected": "Selected: \"{text}...\"",
     "zoom": "Zoom: {scale}%",
     "pageOf": "Page {current} of {total}",
-    "defaultFileName": "document_with_text.pdf"
+    "defaultFileName": "document_with_text.pdf",
+    "toolbar": {
+      "addText": "Add Text",
+      "select": "Select",
+      "page": "Page",
+      "of": "of",
+      "savePdf": "Save PDF",
+      "undo": "Undo",
+      "redo": "Redo"
+    },
+    "format": {
+      "title": "Format Text",
+      "placeholder": "Enter text here...",
+      "textContent": "Text Content",
+      "fontFamily": "Font Family",
+      "fontSize": "Font Size",
+      "textColor": "Text Color",
+      "position": "Position",
+      "preview": "Preview",
+      "sampleText": "Sample text",
+      "opacity": "Opacity",
+      "rotation": "Rotation",
+      "bold": "Bold",
+      "italic": "Italic",
+      "delete": "Delete Element"
+    }
   },
   "addFormFields": {
     "addedCount": "Form fields added: {count}",
@@ -995,7 +1021,26 @@
     "replaceError": "Error occurred while replacing text. Please try again.",
     "successMessage": "Text replaced successfully!",
     "useInOtherTools": "Use in other tools",
-    "settings": "Text Settings"
+    "settings": "Text Settings",
+    "smartEdit": "Smart Edit",
+    "format": {
+      "title": "Text Formatting",
+      "textContent": "Content",
+      "placeholder": "Enter text...",
+      "fontFamily": "Font",
+      "fontSize": "Size",
+      "textColor": "Color",
+      "opacity": "Opacity",
+      "rotation": "Rotation",
+      "bold": "Bold",
+      "italic": "Italic",
+      "delete": "Remove Element",
+      "alignment": "Alignment",
+      "alignLeft": "Left",
+      "alignCenter": "Center",
+      "alignRight": "Right",
+      "fitToWidth": "Fit to Width"
+    }
   },
   "extractImages": {
     "title": "Extract/Remove Images",

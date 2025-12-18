@@ -1,0 +1,477 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useState, useCallback, useRef } from 'react';
+import { PDFDocument, rgb, StandardFonts, degrees } from 'pdf-lib';
+import fontkit from '@pdf-lib/fontkit';
+import * as pdfjsLib from 'pdfjs-dist';
+import type { TextElement, UseContentEditorReturn } from '@/types/contentEditor';
+
+// Helper function to prepare text for PDF (preserve Unicode)
+const prepareTextForPDF = (text: string) => {
+    return text
+        .replace(/[""]/g, '"')
+        .replace(/['']/g, "'")
+        .replace(/[–—]/g, '-')
+        .replace(/[…]/g, '...');
+};
+
+// Helper function to draw multiline text with Unicode font
+const drawMultilineText = (page: any, text: string, centerX: number, centerY: number, options: any) => {
+    const lines = text.split('\n');
+    const size = options.size;
+    const font = options.font;
+    const lineHeight = size * 1.2;
+    const totalHeight = lines.length * lineHeight;
+    const textAlign = options.textAlign || 'center';
+    const xScale = options.scaleX || 1.0;
+    const originalWidth = options.originalWidth; // Width of the original text block in PDF points
+
+    // PDF coordinates start from bottom-left. 
+    // centerY is the logical center of the block.
+    // We adjust by size * 1.1 instead of size to fix the "slightly too high" alignment issue.
+    let currentY = centerY + (totalHeight / 2) - (size * 1.1);
+
+    lines.forEach((line) => {
+        if (line.trim()) {
+            // Calculate individual line width to handle alignment
+            // Note: font.widthOfTextAtSize returns width WITHOUT horizontal scaling
+            const rawWidth = font.widthOfTextAtSize(line, size);
+            const actualWidth = rawWidth * xScale;
+
+            let lineX = centerX;
+            if (textAlign === 'center') {
+                lineX = centerX - (actualWidth / 2);
+            } else if (textAlign === 'left' && originalWidth !== undefined) {
+                // Align to the left edge of the original bounding box
+                lineX = centerX - (originalWidth / 2);
+            } else if (textAlign === 'right' && originalWidth !== undefined) {
+                // Align to the right edge of the original bounding box
+                lineX = centerX + (originalWidth / 2) - actualWidth;
+            } else {
+                // Fallback to center if no originalWidth provided
+                lineX = centerX - (actualWidth / 2);
+            }
+
+            try {
+                page.drawText(line, {
+                    ...options,
+                    x: lineX,
+                    y: currentY,
+                    xScale: xScale
+                });
+            } catch (error) {
+                console.warn(`Failed to draw line: "${line}". Error:`, error);
+                try {
+                    const cleanedLine = prepareTextForPDF(line);
+                    const cleanedWidth = font.widthOfTextAtSize(cleanedLine, size) * xScale;
+                    page.drawText(cleanedLine, {
+                        ...options,
+                        x: centerX - (cleanedWidth / 2),
+                        y: currentY,
+                        xScale: xScale
+                    });
+                } catch (e) {
+                    console.error(`Fatal failure for line: "${line}"`, e);
+                }
+            }
+        }
+        currentY -= lineHeight;
+    });
+};
+
+export const useContentEditor = (): UseContentEditorReturn => {
+    // State
+    const [textElements, setTextElements] = useState<TextElement[]>([]);
+    const [selectedElementId, setSelectedElementId] = useState<string | null>(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [scale, setScale] = useState(1);
+    const [toolMode, setToolMode] = useState<'select' | 'add' | 'edit'>('add');
+    const [isProcessing, setIsProcessing] = useState(false);
+
+    // History management
+    const [history, setHistory] = useState<TextElement[][]>([[]]);
+    const [historyIndex, setHistoryIndex] = useState(0);
+    const elementIdCounter = useRef(0);
+
+    // History helpers
+    const saveToHistory = useCallback((elements: TextElement[]) => {
+        const newHistory = history.slice(0, historyIndex + 1);
+        newHistory.push([...elements]);
+        setHistory(newHistory);
+        setHistoryIndex(newHistory.length - 1);
+    }, [history, historyIndex]);
+
+    // Add text element
+    const addTextElement = useCallback((x: number, y: number, text: string = 'New Text') => {
+        const newElement: TextElement = {
+            id: `text-${Date.now()}-${++elementIdCounter.current}`,
+            text,
+            x, // In percentage
+            y, // In percentage
+            fontSize: 24,
+            fontFamily: 'Roboto',
+            color: '#000000',
+            opacity: 100,
+            rotation: 0,
+            bold: false,
+            italic: false,
+            isSelected: false,
+            pageNumber: currentPage,
+            backgroundColor: 'transparent',
+            textAlign: 'left',
+            horizontalScaling: 1.0
+        };
+
+        const newElements = [...textElements, newElement];
+        setTextElements(newElements);
+        setSelectedElementId(newElement.id);
+        saveToHistory(newElements);
+        return newElement.id;
+    }, [currentPage, textElements, saveToHistory]);
+
+    // Update text element
+    const updateTextElement = useCallback((id: string, updates: Partial<TextElement>) => {
+        setTextElements(prev => {
+            const newElements = prev.map(el =>
+                el.id === id ? { ...el, ...updates } : el
+            );
+            saveToHistory(newElements);
+            return newElements;
+        });
+    }, [saveToHistory]);
+
+    // Delete text element
+    const deleteTextElement = useCallback((id: string) => {
+        setTextElements(prev => {
+            const newElements = prev.filter(el => el.id !== id);
+            saveToHistory(newElements);
+            return newElements;
+        });
+        if (selectedElementId === id) setSelectedElementId(null);
+    }, [selectedElementId, saveToHistory]);
+
+    // Select element
+    const selectElement = useCallback((id: string | null) => {
+        setSelectedElementId(id);
+    }, []);
+
+    // Move element
+    const moveElement = useCallback((id: string, x: number, y: number) => {
+        setTextElements(prev => {
+            const newElements = prev.map(el =>
+                el.id === id ? { ...el, x, y } : el
+            );
+            // We don't save to history every pixel of movement, usually handle onDragEnd
+            return newElements;
+        });
+    }, []);
+
+    const finishMovement = useCallback(() => {
+        saveToHistory(textElements);
+    }, [textElements, saveToHistory]);
+
+    // Navigation and Scale
+    const goToPage = useCallback((page: number) => setCurrentPage(page), []);
+    const handleSetTotalPages = useCallback((total: number) => setTotalPages(total), []);
+    const handleSetScale = useCallback((s: number) => setScale(s), []);
+    const handleSetToolMode = useCallback((mode: 'select' | 'add' | 'edit') => setToolMode(mode), []);
+
+    // History actions
+    const undo = useCallback(() => {
+        if (historyIndex > 0) {
+            const newIndex = historyIndex - 1;
+            setHistoryIndex(newIndex);
+            setTextElements([...history[newIndex]]);
+        }
+    }, [history, historyIndex]);
+
+    const redo = useCallback(() => {
+        if (historyIndex < history.length - 1) {
+            const newIndex = historyIndex + 1;
+            setHistoryIndex(newIndex);
+            setTextElements([...history[newIndex]]);
+        }
+    }, [history, historyIndex]);
+
+    // Smart Detection Logic with Line Grouping
+    const detectTextAt = useCallback(async (pdfDocument: pdfjsLib.PDFDocumentProxy, pageNumber: number, xPercent: number, yPercent: number) => {
+        try {
+            const page = await pdfDocument.getPage(pageNumber);
+            const textContent = await page.getTextContent();
+            const viewport = page.getViewport({ scale: 1.0 });
+
+            const targetX = (xPercent / 100) * viewport.width;
+            const targetY = (yPercent / 100) * viewport.height;
+
+            // 1. Find the target item under cursor
+            let targetItem: any = null;
+            let minDistance = Infinity;
+
+            for (const item of textContent.items) {
+                if (!('str' in item)) continue;
+
+                const transform = item.transform;
+                const fontSize = Math.sqrt(transform[0] * transform[0] + transform[1] * transform[1]);
+                const itemX = transform[4];
+                const itemY = viewport.height - transform[5] - (item.height || fontSize);
+                const itemW = (item as any).width || ((item as any).str.length * fontSize * 0.5);
+                const itemH = (item as any).height || fontSize;
+
+                const centerX = itemX + itemW / 2;
+                const centerY = itemY + itemH / 2;
+                const dist = Math.sqrt(Math.pow(targetX - centerX, 2) + Math.pow(targetY - centerY, 2));
+
+                if (dist < minDistance && dist < 50) {
+                    minDistance = dist;
+                    targetItem = { item, fontSize, centerY };
+                }
+            }
+
+            if (!targetItem) return null;
+
+            // 2. Find all items on the SAME line (similar Y)
+            const Y_TOLERANCE = targetItem.fontSize * 0.5;
+            const lineItems = textContent.items.filter((item: any) => {
+                if (!('str' in item)) return false;
+                const itemY = viewport.height - item.transform[5] - (item.height || targetItem.fontSize);
+                const itemFontSize = Math.sqrt(item.transform[0] * item.transform[0] + item.transform[1] * item.transform[1]);
+                const itemCenterY = itemY + (item.height || itemFontSize) / 2;
+                return Math.abs(itemCenterY - targetItem.centerY) < Y_TOLERANCE;
+            }).sort((a: any, b: any) => a.transform[4] - b.transform[4]);
+
+            if (lineItems.length === 0) return null;
+
+            // 3. Merge into a single line
+            const firstItem = lineItems[0] as any;
+            const lastItem = lineItems[lineItems.length - 1] as any;
+
+            const firstX = firstItem.transform[4];
+            const lastX = lastItem.transform[4];
+            const lastW = (lastItem as any).width || (lastItem.str.length * targetItem.fontSize * 0.5);
+
+            const totalWidth = (lastX + lastW) - firstX;
+
+            // Intelligent Merging: check gaps between fragments
+            let mergedText = "";
+            for (let i = 0; i < lineItems.length; i++) {
+                const item = lineItems[i] as any;
+                if (i > 0) {
+                    const prevItem = lineItems[i - 1] as any;
+                    const prevX = prevItem.transform[4];
+                    const prevW = (prevItem as any).width || (prevItem.str.length * targetItem.fontSize * 0.5);
+                    const gap = item.transform[4] - (prevX + prevW);
+
+                    // If gap > 10% of font size, it's likely a space
+                    if (gap > targetItem.fontSize * 0.1 && !mergedText.endsWith(' ') && !item.str.startsWith(' ')) {
+                        mergedText += " ";
+                    }
+                }
+                mergedText += item.str;
+            }
+            mergedText = mergedText.replace(/\s+/g, ' ').trim();
+
+            return {
+                text: mergedText,
+                x: ((firstX + totalWidth / 2) / viewport.width) * 100,
+                y: (targetItem.centerY / viewport.height) * 100,
+                width: (totalWidth / viewport.width) * 100,
+                height: (targetItem.fontSize / viewport.height) * 100,
+                fontSize: targetItem.fontSize
+            };
+        } catch (error) {
+            console.error('Error detecting text line:', error);
+            return null;
+        }
+    }, []);
+
+    // Convert hex color to RGB
+    const hexToRgb = (hex: string) => {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+            r: parseInt(result[1], 16) / 255,
+            g: parseInt(result[2], 16) / 255,
+            b: parseInt(result[3], 16) / 255,
+        } : { r: 0, g: 0, b: 0 };
+    };
+
+    // Function to load fonts with Cyrillic support
+    const loadFonts = async (pdfDoc: any) => {
+        pdfDoc.registerFontkit(fontkit);
+
+        const fonts: Record<string, any> = {};
+        const fontNames = ['Roboto-Regular', 'Roboto-Bold', 'Roboto-Italic', 'Roboto-BoldItalic'];
+
+        // Primary source: Local; Secondary: CDN (Google Fonts)
+        const getFontUrl = (name: string) => {
+            const cdnMap: Record<string, string> = {
+                'Roboto-Regular': 'https://raw.githubusercontent.com/google/fonts/main/apache/roboto/static/Roboto-Regular.ttf',
+                'Roboto-Bold': 'https://raw.githubusercontent.com/google/fonts/main/apache/roboto/static/Roboto-Bold.ttf',
+                'Roboto-Italic': 'https://raw.githubusercontent.com/google/fonts/main/apache/roboto/static/Roboto-Italic.ttf',
+                'Roboto-BoldItalic': 'https://raw.githubusercontent.com/google/fonts/main/apache/roboto/static/Roboto-BoldItalic.ttf',
+            };
+            return cdnMap[name];
+        };
+
+        try {
+            for (const name of fontNames) {
+                let response = await fetch(`/fonts/${name}.ttf`);
+                if (!response.ok) {
+                    const cdnUrl = getFontUrl(name);
+                    if (cdnUrl) response = await fetch(cdnUrl);
+                }
+
+                if (response.ok) {
+                    const fontBytes = await response.arrayBuffer();
+                    fonts[name] = await pdfDoc.embedFont(fontBytes);
+                }
+            }
+        } catch (error) {
+            console.warn('Failed to load local or CDN fonts:', error);
+        }
+
+        const standardHelvetica = await pdfDoc.embedFont(StandardFonts.Helvetica);
+        const standardHelveticaBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+        const standardHelveticaOblique = await pdfDoc.embedFont(StandardFonts.HelveticaOblique);
+        const standardHelveticaBoldOblique = await pdfDoc.embedFont(StandardFonts.HelveticaBoldOblique);
+
+        const getBestFontForElement = (el: TextElement) => {
+            const isCustomFont = el.fontFamily === 'Roboto' || el.fontFamily === 'Arial';
+
+            if (isCustomFont) {
+                let selectedFont = null;
+                if (el.bold && el.italic) selectedFont = fonts['Roboto-BoldItalic'];
+                else if (el.bold) selectedFont = fonts['Roboto-Bold'];
+                else if (el.italic) selectedFont = fonts['Roboto-Italic'];
+                else selectedFont = fonts['Roboto-Regular'];
+
+                if (!selectedFont) selectedFont = fonts['Roboto-Regular'];
+                if (selectedFont) return selectedFont;
+
+                if (el.bold && el.italic) return standardHelveticaBoldOblique;
+                if (el.bold) return standardHelveticaBold;
+                if (el.italic) return standardHelveticaOblique;
+                return standardHelvetica;
+            }
+
+            if (el.fontFamily === 'Courier New') return StandardFonts.Courier;
+            if (el.fontFamily === 'Times New Roman') return StandardFonts.TimesRoman;
+            return standardHelvetica;
+        };
+
+        return { getBestFontForElement };
+    };
+
+    // Save PDF with text elements
+    const savePDF = useCallback(async (originalFile: File): Promise<Blob> => {
+        setIsProcessing(true);
+        try {
+            const arrayBuffer = await originalFile.arrayBuffer();
+            const pdfDoc = await PDFDocument.load(arrayBuffer);
+
+            const { getBestFontForElement } = await loadFonts(pdfDoc);
+
+            const elementsByPage: Record<number, TextElement[]> = textElements.reduce((acc: any, element: TextElement) => {
+                if (!acc[element.pageNumber]) {
+                    acc[element.pageNumber] = [];
+                }
+                acc[element.pageNumber].push(element);
+                return acc;
+            }, {});
+
+            Object.entries(elementsByPage).forEach(([pageNum, elements]) => {
+                const pageIndex = parseInt(pageNum) - 1;
+                if (pageIndex < 0 || pageIndex >= pdfDoc.getPageCount()) return;
+
+                const page = pdfDoc.getPage(pageIndex);
+                const { width, height } = page.getSize();
+
+                (elements as TextElement[]).forEach(element => {
+                    const color = hexToRgb(element.color);
+                    const font = getBestFontForElement(element);
+
+                    // Convert percentage coordinates back to PDF points
+                    const xPos = (element.x / 100) * width;
+                    const yPos = height - ((element.y / 100) * height);
+
+                    // If edited existing text, draw background cover first
+                    if (element.originalRect) {
+                        const rectX = (element.originalRect.x / 100) * width;
+                        const rectY = height - ((element.originalRect.y / 100) * height);
+                        const rectW = (element.originalRect.w / 100) * width;
+                        const rectH = (element.originalRect.h / 100) * height;
+
+                        // Draw white background (or detected background)
+                        page.drawRectangle({
+                            x: rectX,
+                            y: rectY - rectH,
+                            width: rectW,
+                            height: rectH,
+                            color: rgb(1, 1, 1), // Default to white for now
+                        });
+                    }
+
+                    drawMultilineText(page, element.text, xPos, yPos, {
+                        size: element.fontSize,
+                        color: rgb(color.r, color.g, color.b),
+                        font: font,
+                        opacity: element.opacity / 100,
+                        rotate: degrees(element.rotation),
+                        // Support for alignment and scaling
+                        textAlign: element.textAlign || 'center',
+                        scaleX: element.horizontalScaling || 1.0,
+                        originalWidth: element.originalRect ? (element.originalRect.w / 100) * width : undefined
+                    });
+                });
+            });
+
+            const pdfBytes = await pdfDoc.save();
+            return new Blob([pdfBytes as BlobPart], { type: 'application/pdf' });
+
+        } catch (error) {
+            console.error('Error saving PDF:', error);
+            throw error;
+        } finally {
+            setIsProcessing(false);
+        }
+    }, [textElements]);
+
+    // Reset all state
+    const reset = useCallback(() => {
+        setTextElements([]);
+        setSelectedElementId(null);
+        setCurrentPage(1);
+        setTotalPages(1);
+        setScale(1);
+        setToolMode('add');
+        setHistory([[]]);
+        setHistoryIndex(0);
+        elementIdCounter.current = 0;
+    }, []);
+
+    return {
+        textElements,
+        selectedElementId,
+        currentPage,
+        totalPages,
+        scale,
+        toolMode,
+        isProcessing,
+        canUndo: historyIndex > 0,
+        canRedo: historyIndex < history.length - 1,
+        addTextElement,
+        updateTextElement,
+        deleteTextElement,
+        selectElement,
+        moveElement,
+        finishMovement,
+        goToPage,
+        setTotalPages: handleSetTotalPages,
+        setScale: handleSetScale,
+        setToolMode: handleSetToolMode,
+        undo,
+        redo,
+        detectTextAt,
+        savePDF,
+        reset,
+    };
+};

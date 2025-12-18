@@ -6,25 +6,14 @@ import type { TextElement } from '@/types/addText';
 // Set worker path
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
-interface CanvasState {
-  scale: number;
-  offsetX: number;
-  offsetY: number;
-  isDragging: boolean;
-  dragStartX: number;
-  dragStartY: number;
-}
-
 interface CanvasProps {
   pdfFile: File | null;
   currentPage: number;
   textElements: TextElement[];
   selectedElementId: string | null;
-  scale: number;
   onCanvasClick: (x: number, y: number) => void;
   onElementSelect: (id: string) => void;
   onElementMove: (id: string, x: number, y: number) => void;
-  onPageChange?: (page: number) => void;
   onTotalPagesChange: (total: number) => void;
 }
 
@@ -33,7 +22,6 @@ export const Canvas: React.FC<CanvasProps> = ({
   currentPage,
   textElements,
   selectedElementId,
-  scale,
   onCanvasClick,
   onElementSelect,
   onElementMove,
@@ -41,20 +29,32 @@ export const Canvas: React.FC<CanvasProps> = ({
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLDivElement>(null);
   const renderTaskRef = useRef<pdfjsLib.RenderTask | null>(null);
   const isRenderingRef = useRef(false);
 
   const [pdfDocument, setPdfDocument] = useState<pdfjsLib.PDFDocumentProxy | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [canvasState, setCanvasState] = useState<CanvasState>({
-    scale: 1,
-    offsetX: 0,
-    offsetY: 0,
-    isDragging: false,
-    dragStartX: 0,
-    dragStartY: 0
-  });
+  const [previewScale, setPreviewScale] = useState(1);
+  const [pdfDimensions, setPdfDimensions] = useState({ width: 0, height: 0 });
+
+  const [isDragging, setIsDragging] = useState(false);
   const [draggedElement, setDraggedElement] = useState<string | null>(null);
+  const dragInfoRef = useRef<{
+    startX: number;
+    startY: number;
+    containerWidth: number;
+    containerHeight: number;
+    elementHalfW: number;
+    elementHalfH: number;
+    others: Array<{
+      id: string;
+      x: number;
+      y: number;
+      halfW: number;
+      halfH: number;
+    }>;
+  } | null>(null);
 
   // Filter text elements for current page only
   const currentPageElements = textElements.filter(el => el.pageNumber === currentPage);
@@ -70,80 +70,32 @@ export const Canvas: React.FC<CanvasProps> = ({
 
       setPdfDocument(pdf);
       onTotalPagesChange(pdf.numPages);
-
-      if (currentPage <= pdf.numPages) {
-        await renderPage(pdf, currentPage);
-      }
     } catch (error: unknown) {
       console.error('Error loading PDF:', error);
     } finally {
       setIsLoading(false);
     }
-  }, [currentPage, onTotalPagesChange]);
+  }, [onTotalPagesChange]);
 
-  // Helper function to render multiline text
-  const renderMultilineText = useCallback((
-    context: CanvasRenderingContext2D,
-    text: string,
-    x: number,
-    y: number,
-    fontSize: number,
-    lineHeight?: number
-  ) => {
-    const lines = text.split('\n');
-    const actualLineHeight = lineHeight || fontSize * 1.2;
-
-    lines.forEach((line, index) => {
-      const lineY = y + (index * actualLineHeight);
-      context.fillText(line, x, lineY);
-    });
-
-    return lines.length * actualLineHeight;
-  }, []);
-
-  // Get text bounds for multiline text
-  const getMultilineTextBounds = useCallback((
-    context: CanvasRenderingContext2D,
-    text: string,
-    fontSize: number,
-    lineHeight?: number
-  ) => {
-    const lines = text.split('\n');
-    const actualLineHeight = lineHeight || fontSize * 1.2;
-
-    let maxWidth = 0;
-    lines.forEach(line => {
-      const metrics = context.measureText(line);
-      maxWidth = Math.max(maxWidth, metrics.width);
-    });
-
-    return {
-      width: maxWidth,
-      height: lines.length * actualLineHeight,
-      lineCount: lines.length
-    };
-  }, []);
+  const updateScale = useCallback(() => {
+    if (canvasRef.current && imageRef.current && pdfDimensions.width > 0) {
+      const displayedWidth = imageRef.current.clientWidth;
+      setPreviewScale(displayedWidth / pdfDimensions.width);
+    }
+  }, [pdfDimensions]);
 
   // Render PDF page
   const renderPage = useCallback(async (pdf: pdfjsLib.PDFDocumentProxy, pageNumber: number) => {
-
     if (!pdf || !canvasRef.current) return;
 
-    // Cancel any existing render task
     if (renderTaskRef.current) {
       try {
         await renderTaskRef.current.cancel();
-      } catch {
-        // Task might already be completed or cancelled
-      }
+      } catch { /* ignore */ }
       renderTaskRef.current = null;
     }
 
-    // Wait for any ongoing rendering to complete
-    if (isRenderingRef.current) {
-      return;
-    }
-
+    if (isRenderingRef.current) return;
     isRenderingRef.current = true;
 
     try {
@@ -156,27 +108,23 @@ export const Canvas: React.FC<CanvasProps> = ({
         return;
       }
 
-      const viewport = page.getViewport({ scale: scale * canvasState.scale });
-
+      const viewport = page.getViewport({ scale: 1.5 }); // Base scale for quality
       canvas.width = viewport.width;
       canvas.height = viewport.height;
-      canvas.style.width = `${viewport.width}px`;
-      canvas.style.height = `${viewport.height}px`;
 
-      context.clearRect(0, 0, canvas.width, canvas.height);
+      setPdfDimensions({ width: viewport.width, height: viewport.height });
 
       const renderContext = {
         canvasContext: context,
         viewport: viewport
       };
 
-      // @ts-expect-error - pdfjs types mismatch in v5
+      // @ts-expect-error - pdfjs types mismatch
       renderTaskRef.current = page.render(renderContext);
       await renderTaskRef.current.promise;
       renderTaskRef.current = null;
 
-      renderTextElements(context);
-
+      updateScale();
     } catch (error: unknown) {
       if (error instanceof Error && error.name !== 'RenderingCancelledException') {
         console.error('Error rendering page:', error);
@@ -184,144 +132,250 @@ export const Canvas: React.FC<CanvasProps> = ({
     } finally {
       isRenderingRef.current = false;
     }
-  }, [scale, canvasState.scale, currentPageElements, selectedElementId]);
+  }, [updateScale]);
 
-  // Render text elements overlay
-  const renderTextElements = useCallback((context: CanvasRenderingContext2D) => {
-    currentPageElements.forEach(element => {
-      context.save();
-
-      context.font = `${element.fontSize * scale}px ${element.fontFamily}`;
-      context.fillStyle = element.color;
-      context.textBaseline = 'top';
-
-      const bounds = getMultilineTextBounds(
-        context,
-        element.text,
-        element.fontSize * scale
-      );
-
-      if (element.id === selectedElementId) {
-        context.strokeStyle = '#007bff';
-        context.lineWidth = 2;
-        context.setLineDash([5, 5]);
-
-        context.strokeRect(
-          element.x * scale - 2,
-          element.y * scale - 2,
-          bounds.width + 4,
-          bounds.height + 4
-        );
-      }
-
-      renderMultilineText(
-        context,
-        element.text,
-        element.x * scale,
-        element.y * scale,
-        element.fontSize * scale
-      );
-
-      context.restore();
-    });
-  }, [currentPageElements, selectedElementId, scale, renderMultilineText, getMultilineTextBounds]);
-
-  // Handle canvas click
-  const handleCanvasClick = useCallback((event: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!canvasRef.current) return;
-
-    const canvas = canvasRef.current;
-    const rect = canvas.getBoundingClientRect();
-    const x = (event.clientX - rect.left) / scale;
-    const y = (event.clientY - rect.top) / scale;
-
-    const clickedElement = currentPageElements.find(element => {
-      const canvas2d = canvas.getContext('2d');
-      if (!canvas2d) return false;
-
-      canvas2d.font = `${element.fontSize * scale}px ${element.fontFamily}`;
-      const bounds = getMultilineTextBounds(
-        canvas2d,
-        element.text,
-        element.fontSize * scale
-      );
-
-      return (
-        x >= element.x &&
-        x <= element.x + (bounds.width / scale) &&
-        y >= element.y &&
-        y <= element.y + (bounds.height / scale)
-      );
-    });
-
-    if (clickedElement) {
-      onElementSelect(clickedElement.id);
-    } else {
-      onCanvasClick(x, y);
-    }
-  }, [currentPageElements, scale, onElementSelect, onCanvasClick, getMultilineTextBounds]);
-
-  // Handle mouse down for dragging
-  const handleMouseDown = useCallback((event: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!canvasRef.current || !selectedElementId) return;
-
-    const canvas = canvasRef.current;
-    const rect = canvas.getBoundingClientRect();
-    const x = (event.clientX - rect.left) / scale;
-    const y = (event.clientY - rect.top) / scale;
-
-    const selectedElement = currentPageElements.find(el => el.id === selectedElementId);
-    if (selectedElement) {
-      setDraggedElement(selectedElementId);
-      setCanvasState(prev => ({
-        ...prev,
-        isDragging: true,
-        dragStartX: x - selectedElement.x,
-        dragStartY: y - selectedElement.y
-      }));
-    }
-  }, [selectedElementId, currentPageElements, scale]);
-
-  // Handle mouse move for dragging
-  const handleMouseMove = useCallback((event: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!canvasState.isDragging || !draggedElement || !canvasRef.current) return;
-
-    const canvas = canvasRef.current;
-    const rect = canvas.getBoundingClientRect();
-    const x = (event.clientX - rect.left) / scale;
-    const y = (event.clientY - rect.top) / scale;
-
-    const newX = x - canvasState.dragStartX;
-    const newY = y - canvasState.dragStartY;
-
-    onElementMove(draggedElement, Math.max(0, newX), Math.max(0, newY));
-  }, [canvasState.isDragging, canvasState.dragStartX, canvasState.dragStartY, draggedElement, scale, onElementMove]);
-
-  // Handle mouse up
-  const handleMouseUp = useCallback(() => {
-    setCanvasState(prev => ({ ...prev, isDragging: false }));
-    setDraggedElement(null);
-  }, []);
-
-  // Load PDF when file changes
+  // Resize observer
   useEffect(() => {
-    if (pdfFile) {
-      loadPDF(pdfFile);
+    const observer = new ResizeObserver(updateScale);
+    if (imageRef.current) observer.observe(imageRef.current);
+    return () => observer.disconnect();
+  }, [updateScale]);
+
+  const [activeSnaps, setActiveSnaps] = useState<{ x: number[], y: number[] }>({ x: [], y: [] });
+
+  // Passive Snap Detection (for Keyboard Nudging)
+  useEffect(() => {
+    if (isDragging || !selectedElementId || !imageRef.current) {
+      if (!isDragging) setActiveSnaps({ x: [], y: [] });
+      return;
     }
+
+    const containerRect = imageRef.current.getBoundingClientRect();
+    const containerWidth = containerRect.width;
+    const containerHeight = containerRect.height;
+    const element = textElements.find(el => el.id === selectedElementId);
+    if (!element) return;
+
+    const node = document.getElementById(`text-el-${selectedElementId}`);
+    if (!node) return;
+    const rect = node.getBoundingClientRect();
+    const halfW = (rect.width / containerWidth) * 50;
+    const halfH = (rect.height / containerHeight) * 50;
+
+    const snapThreshold = 1.0; // tighter for passive detection
+    const snapsX = new Set<number>();
+    const snapsY = new Set<number>();
+
+    const pageSnapsX = [0, 5, 10, 20, 25, 30, 40, 50, 60, 70, 75, 80, 90, 95, 100];
+    const pageSnapsY = [0, 5, 10, 20, 25, 30, 40, 50, 60, 70, 75, 80, 90, 95, 100];
+
+    // Check center, left, right against page snaps
+    const currentXPoints = [element.x, element.x - halfW, element.x + halfW];
+    const currentYPoints = [element.y, element.y - halfH, element.y + halfH];
+
+    pageSnapsX.forEach(px => {
+      currentXPoints.forEach(curX => {
+        if (Math.abs(curX - px) < snapThreshold) snapsX.add(px);
+      });
+    });
+    pageSnapsY.forEach(py => {
+      currentYPoints.forEach(curY => {
+        if (Math.abs(curY - py) < snapThreshold) snapsY.add(py);
+      });
+    });
+
+    // Element-to-element
+    const otherElements = currentPageElements.filter(el => el.id !== selectedElementId);
+    otherElements.forEach(other => {
+      const otherNode = document.getElementById(`text-el-${other.id}`);
+      if (!otherNode) return;
+      const otherRect = otherNode.getBoundingClientRect();
+      const oHalfW = (otherRect.width / containerWidth) * 50;
+      const oHalfH = (otherRect.height / containerHeight) * 50;
+      const otherEdgesX = [other.x, other.x - oHalfW, other.x + oHalfW];
+      const otherEdgesY = [other.y, other.y - oHalfH, other.y + oHalfH];
+
+      currentXPoints.forEach(curX => {
+        otherEdgesX.forEach(othX => {
+          if (Math.abs(curX - othX) < snapThreshold) snapsX.add(othX);
+        });
+      });
+      currentYPoints.forEach(curY => {
+        otherEdgesY.forEach(othY => {
+          if (Math.abs(curY - othY) < snapThreshold) snapsY.add(othY);
+        });
+      });
+    });
+
+    setActiveSnaps({ x: Array.from(snapsX), y: Array.from(snapsY) });
+  }, [selectedElementId, textElements, isDragging, currentPageElements]);
+
+  // Drag handlers
+  const handleDragStart = (e: React.MouseEvent | React.TouchEvent, id: string) => {
+    e.stopPropagation();
+    if (!imageRef.current) return;
+
+    onElementSelect(id);
+    setIsDragging(true);
+    setDraggedElement(id);
+
+    const clientX = 'touches' in e ? e.touches[0].clientX : (e as React.MouseEvent).clientX;
+    const clientY = 'touches' in e ? e.touches[0].clientY : (e as React.MouseEvent).clientY;
+
+    const containerRect = imageRef.current.getBoundingClientRect();
+    const dragNode = document.getElementById(`text-el-${id}`);
+    if (!dragNode) return;
+    const dragRect = dragNode.getBoundingClientRect();
+
+    // Cache everything
+    dragInfoRef.current = {
+      startX: clientX,
+      startY: clientY,
+      containerWidth: containerRect.width,
+      containerHeight: containerRect.height,
+      elementHalfW: (dragRect.width / containerRect.width) * 50,
+      elementHalfH: (dragRect.height / containerRect.height) * 50,
+      others: currentPageElements
+        .filter(el => el.id !== id)
+        .map(el => {
+          const node = document.getElementById(`text-el-${el.id}`);
+          if (!node) return null;
+          const rect = node.getBoundingClientRect();
+          return {
+            id: el.id,
+            x: el.x,
+            y: el.y,
+            halfW: (rect.width / containerRect.width) * 50,
+            halfH: (rect.height / containerRect.height) * 50
+          };
+        })
+        .filter((item): item is NonNullable<typeof item> => item !== null)
+    };
+  };
+
+  const handleDragMove = (e: React.MouseEvent | React.TouchEvent) => {
+    if (!isDragging || !draggedElement || !dragInfoRef.current || !imageRef.current) return;
+
+    const info = dragInfoRef.current;
+    const clientX = 'touches' in e ? e.touches[0].clientX : (e as React.MouseEvent).clientX;
+    const clientY = 'touches' in e ? e.touches[0].clientY : (e as React.MouseEvent).clientY;
+
+    const deltaX = clientX - info.startX;
+    const deltaY = clientY - info.startY;
+
+    const element = textElements.find(el => el.id === draggedElement);
+    if (!element) return;
+
+    // Current tentative position (center)
+    let newCenterX = element.x + (deltaX / info.containerWidth) * 100;
+    let newCenterY = element.y + (deltaY / info.containerHeight) * 100;
+
+    const halfW = info.elementHalfW;
+    const halfH = info.elementHalfH;
+
+    // Snap Points and Threshold
+    const snapThreshold = 2.0;
+    const snapsX = new Set<number>();
+    const snapsY = new Set<number>();
+
+    const pageSnapsX = [0, 5, 10, 20, 25, 30, 40, 50, 60, 70, 75, 80, 90, 95, 100];
+    const pageSnapsY = [0, 5, 10, 20, 25, 30, 40, 50, 60, 70, 75, 80, 90, 95, 100];
+
+    // Page Snaps
+    pageSnapsX.forEach(px => {
+      if (Math.abs((newCenterX - halfW) - px) < snapThreshold) {
+        newCenterX = px + halfW;
+        snapsX.add(px);
+      } else if (Math.abs(newCenterX - px) < snapThreshold) {
+        newCenterX = px;
+        snapsX.add(px);
+      } else if (Math.abs((newCenterX + halfW) - px) < snapThreshold) {
+        newCenterX = px - halfW;
+        snapsX.add(px);
+      }
+    });
+
+    pageSnapsY.forEach(py => {
+      if (Math.abs((newCenterY - halfH) - py) < snapThreshold) {
+        newCenterY = py + halfH;
+        snapsY.add(py);
+      } else if (Math.abs(newCenterY - py) < snapThreshold) {
+        newCenterY = py;
+        snapsY.add(py);
+      } else if (Math.abs((newCenterY + halfH) - py) < snapThreshold) {
+        newCenterY = py - halfH;
+        snapsY.add(py);
+      }
+    });
+
+    // Element-to-Element Snaps
+    info.others.forEach(other => {
+      const otherEdgesX = [other.x, other.x - other.halfW, other.x + other.halfW];
+      const otherEdgesY = [other.y, other.y - other.halfH, other.y + other.halfH];
+      const currentEdgesX = [newCenterX, newCenterX - halfW, newCenterX + halfW];
+      const currentEdgesY = [newCenterY, newCenterY - halfH, newCenterY + halfH];
+
+      currentEdgesX.forEach((curEdge, curIdx) => {
+        otherEdgesX.forEach(othEdge => {
+          if (Math.abs(curEdge - othEdge) < snapThreshold) {
+            if (curIdx === 0) newCenterX = othEdge;
+            else if (curIdx === 1) newCenterX = othEdge + halfW;
+            else if (curIdx === 2) newCenterX = othEdge - halfW;
+            snapsX.add(othEdge);
+          }
+        });
+      });
+
+      currentEdgesY.forEach((curEdge, curIdx) => {
+        otherEdgesY.forEach(othEdge => {
+          if (Math.abs(curEdge - othEdge) < snapThreshold) {
+            if (curIdx === 0) newCenterY = othEdge;
+            else if (curIdx === 1) newCenterY = othEdge + halfH;
+            else if (curIdx === 2) newCenterY = othEdge - halfH;
+            snapsY.add(othEdge);
+          }
+        });
+      });
+    });
+
+    setActiveSnaps({ x: Array.from(snapsX), y: Array.from(snapsY) });
+    onElementMove(draggedElement, newCenterX, newCenterY);
+
+    // Update start pos for next move to be relative to the move we just made
+    info.startX = clientX;
+    info.startY = clientY;
+  };
+
+  const handleDragEnd = () => {
+    setIsDragging(false);
+    setDraggedElement(null);
+    dragInfoRef.current = null;
+    setActiveSnaps({ x: [], y: [] });
+  };
+  const handleContainerClick = (e: React.MouseEvent) => {
+    if (isDragging) return;
+
+    if (imageRef.current) {
+      const rect = imageRef.current.getBoundingClientRect();
+      const xPercent = ((e.clientX - rect.left) / rect.width) * 100;
+      const yPercent = ((e.clientY - rect.top) / rect.height) * 100;
+
+      if (xPercent >= 0 && xPercent <= 100 && yPercent >= 0 && yPercent <= 100) {
+        onCanvasClick(xPercent, yPercent);
+      } else {
+        onElementSelect('');
+      }
+    }
+  };
+
+  // Effects
+  useEffect(() => {
+    if (pdfFile) loadPDF(pdfFile);
   }, [pdfFile, loadPDF]);
 
-  // Re-render when page or elements change
   useEffect(() => {
-    if (!pdfDocument) return;
-
-    const timeoutId = setTimeout(() => {
-      renderPage(pdfDocument, currentPage);
-    }, 50);
-
-    return () => {
-      clearTimeout(timeoutId);
-    };
-  }, [pdfDocument, currentPage, currentPageElements, selectedElementId, scale, renderPage]);
+    if (pdfDocument) renderPage(pdfDocument, currentPage);
+  }, [pdfDocument, currentPage, renderPage]);
 
   // Cleanup render task on unmount
   useEffect(() => {
@@ -341,37 +395,75 @@ export const Canvas: React.FC<CanvasProps> = ({
   return (
     <div
       ref={containerRef}
-      className="relative bg-gray-100 dark:bg-gray-900 rounded-lg overflow-auto h-full"
-      style={{
-        width: '100%',
-        overflowX: 'auto',
-        overflowY: 'auto'
-      }}
+      className="relative w-full h-full flex items-center justify-center p-8 bg-dots-light dark:bg-dots-dark overflow-auto"
+      onClick={handleContainerClick}
+      onMouseMove={handleDragMove}
+      onMouseUp={handleDragEnd}
+      onMouseLeave={handleDragEnd}
+      onTouchMove={handleDragMove}
+      onTouchEnd={handleDragEnd}
     >
-      {isLoading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-white/75 dark:bg-gray-900/75 z-10">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ocean-500 mx-auto"></div>
-            <p className="mt-2 text-gray-600 dark:text-gray-400">Loading PDF...</p>
-          </div>
-        </div>
-      )}
-
-      <canvas
-        ref={canvasRef}
-        onClick={handleCanvasClick}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
-        className="cursor-crosshair"
+      <div
+        ref={imageRef}
+        className="relative shadow-2xl rounded-sm bg-white"
         style={{
-          display: 'block',
-          margin: '20px auto',
-          boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-          maxWidth: 'none'
+          width: pdfDimensions.width ? 'auto' : '100%',
+          maxWidth: '100%',
+          aspectRatio: pdfDimensions.width ? `${pdfDimensions.width}/${pdfDimensions.height}` : 'auto'
         }}
-      />
+      >
+        <canvas ref={canvasRef} className="max-w-full h-auto block" />
+
+        {/* Smart Guides */}
+        {activeSnaps.x.map((x: number, i: number) => (
+          <div
+            key={`snap-x-${i}`}
+            className="absolute top-0 bottom-0 border-l border-dashed border-ocean-500 z-50 pointer-events-none"
+            style={{ left: `${x}%` }}
+          />
+        ))}
+        {activeSnaps.y.map((y: number, i: number) => (
+          <div
+            key={`snap-y-${i}`}
+            className="absolute left-0 right-0 border-t border-dashed border-ocean-500 z-50 pointer-events-none"
+            style={{ top: `${y}%` }}
+          />
+        ))}
+
+        {currentPageElements.map(element => (
+          <div
+            key={element.id}
+            id={`text-el-${element.id}`}
+            onMouseDown={(e) => handleDragStart(e, element.id)}
+            onTouchStart={(e) => handleDragStart(e, element.id)}
+            className={`absolute flex items-center justify-center cursor-grab active:cursor-grabbing hover:ring-2 hover:ring-ocean-500/50 rounded transition-shadow ${selectedElementId === element.id ? 'ring-2 ring-ocean-500 shadow-lg z-10' : 'z-0'
+              }`}
+            style={{
+              left: `${element.x}%`,
+              top: `${element.y}%`,
+              transform: `translate(-50%, -50%) rotate(${element.rotation}deg)`,
+              color: element.color,
+              opacity: element.opacity / 100,
+              fontSize: `${element.fontSize * previewScale * 1.5}px`, // 1.5 because viewport scale was 1.5
+              fontFamily: element.fontFamily,
+              fontWeight: element.bold ? 'bold' : 'normal',
+              fontStyle: element.italic ? 'italic' : 'normal',
+              whiteSpace: 'pre',
+              minWidth: 'max-content',
+              pointerEvents: isDragging && draggedElement !== element.id ? 'none' : 'auto',
+              userSelect: 'none'
+            }}
+          >
+            {element.text || ' '}
+          </div>
+        ))}
+
+        {isLoading && (
+          <div className="absolute inset-0 flex items-center justify-center bg-white/50 backdrop-blur-sm z-20">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ocean-500" />
+          </div>
+        )}
+      </div>
     </div>
   );
 };

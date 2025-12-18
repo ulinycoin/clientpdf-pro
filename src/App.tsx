@@ -20,8 +20,7 @@ const WatermarkPDF = lazy(() => import('@/components/tools/WatermarkPDF').then(m
 const RotatePDF = lazy(() => import('@/components/tools/RotatePDF').then(m => ({ default: m.RotatePDF })));
 const DeletePagesPDF = lazy(() => import('@/components/tools/DeletePagesPDF').then(m => ({ default: m.DeletePagesPDF })));
 const ExtractPagesPDF = lazy(() => import('@/components/tools/ExtractPagesPDF').then(m => ({ default: m.ExtractPagesPDF })));
-const AddTextPDF = lazy(() => import('@/components/tools/AddTextPDF').then(m => ({ default: m.AddTextPDF })));
-const EditTextPDF = lazy(() => import('@/components/tools/EditTextPDF').then(m => ({ default: m.EditTextPDF })));
+const ContentEditorPDF = lazy(() => import('@/components/tools/ContentEditorPDF').then(m => ({ default: m.ContentEditorPDF })));
 const AddFormFieldsPDF = lazy(() => import('@/components/tools/AddFormFieldsPDF').then(m => ({ default: m.AddFormFieldsPDF })));
 const ImagesToPDF = lazy(() => import('@/components/tools/ImagesToPDF').then(m => ({ default: m.ImagesToPDF })));
 const PDFToImages = lazy(() => import('@/components/tools/PDFToImages').then(m => ({ default: m.PDFToImages })));
@@ -199,9 +198,9 @@ function App() {
                 ) : currentTool === 'extract-pages-pdf' ? (
                   <ExtractPagesPDF />
                 ) : currentTool === 'add-text-pdf' ? (
-                  <AddTextPDF />
+                  <ContentEditorPDF />
                 ) : currentTool === 'edit-text-pdf' ? (
-                  <EditTextPDF />
+                  <ContentEditorPDF />
                 ) : currentTool === 'add-form-fields-pdf' ? (
                   <AddFormFieldsPDF />
                 ) : currentTool === 'images-to-pdf' ? (
