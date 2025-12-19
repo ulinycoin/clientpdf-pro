@@ -609,7 +609,8 @@
       "tsvEmpty": "TSVデータが空です。OCRを再度実行してください。",
       "searchablePdfFailed": "検索可能なPDFの作成に失敗しました: {error}",
       "downloadFailed": "ファイルの生成に失敗しました。もう一度お試しください。"
-    }
+    },
+    "pageTitle": "OCR Result"
   },
   "watermark": {
     "filePreview": "透かしを入れるファイル",
@@ -824,7 +825,9 @@
       "invalidFormat": "無効なファイル形式です。.docxファイルを選択してください",
       "conversionFailed": "WordからPDFへの変換に失敗しました"
     },
-    "success": "Wordドキュメントが正常に変換されました！"
+    "success": "Wordドキュメントが正常に変換されました！",
+    "editabilityWarning": "⚠️ 'Formatted' mode creates PDF from images. Text in this file will not be editable via standard search, but you can add new text or cover areas manually.",
+    "editResult": "Edit PDF"
   },
   "pdfToWord": {
     "convert": "Wordに変換",
@@ -938,7 +941,39 @@
     "selected": "選択中: \"{text}...\"",
     "zoom": "ズーム: {scale}%",
     "pageOf": "ページ {current} / {total}",
-    "defaultFileName": "document_with_text.pdf"
+    "defaultFileName": "document_with_text.pdf",
+    "title": "テキストを追加",
+    "toolbar": {
+      "addText": "Add Text",
+      "select": "Select",
+      "page": "Page",
+      "of": "of",
+      "savePdf": "PDFを保存",
+      "undo": "Undo",
+      "redo": "Redo"
+    },
+    "format": {
+      "title": "Format Text",
+      "placeholder": "Enter text here...",
+      "textContent": "Text Content",
+      "fontFamily": "フォント",
+      "fontSize": "サイズ",
+      "textColor": "色",
+      "position": "Position",
+      "preview": "Preview",
+      "sampleText": "Sample text",
+      "opacity": "Opacity",
+      "rotation": "Rotation",
+      "bold": "Bold",
+      "italic": "Italic",
+      "delete": "Delete Element",
+      "alignment": "整列",
+      "alignLeft": "左揃え",
+      "alignCenter": "中央揃え",
+      "alignRight": "右揃え",
+      "fitToWidth": "幅に合わせる",
+      "backgroundColor": "背景の塗りつぶし"
+    }
   },
   "addFormFields": {
     "addedCount": "追加されたフォームフィールド: {count}",
@@ -997,7 +1032,31 @@
     "replaceError": "テキストの置換中にエラーが発生しました。もう一度お試しください。",
     "successMessage": "テキストが正常に置換されました！",
     "useInOtherTools": "他のツールで使用",
-    "settings": "テキスト設定"
+    "settings": "テキスト設定",
+    "selectPageToEdit": "Select Page to Edit",
+    "textPosition": "Text Position (for selected area)",
+    "pagePreview": "Page Preview",
+    "xLabel": "X:",
+    "yLabel": "Y:",
+    "smartEdit": "スマート編集",
+    "format": {
+      "title": "テキストの書式設定",
+      "textContent": "Content",
+      "placeholder": "Enter text...",
+      "fontFamily": "Font",
+      "fontSize": "Size",
+      "textColor": "Color",
+      "opacity": "Opacity",
+      "rotation": "Rotation",
+      "bold": "Bold",
+      "italic": "Italic",
+      "delete": "Remove Element",
+      "alignment": "Alignment",
+      "alignLeft": "左揃え",
+      "alignCenter": "中央揃え",
+      "alignRight": "右揃え",
+      "fitToWidth": "Fit to Width"
+    }
   },
   "extractImages": {
     "title": "画像の抽出/削除",

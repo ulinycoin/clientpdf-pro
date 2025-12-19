@@ -5,7 +5,7 @@ import type { TextElement } from '@/types/contentEditor';
 import { Loader2 } from 'lucide-react';
 
 interface CanvasProps {
-    pdfFile: File | null;
+    pdfDocument: pdfjsLib.PDFDocumentProxy | null;
     currentPage: number;
     textElements: TextElement[];
     selectedElementId: string | null;
@@ -13,12 +13,14 @@ interface CanvasProps {
     onCanvasClick: (x: number, y: number) => void;
     onElementSelect: (id: string | null) => void;
     onElementMove: (id: string, x: number, y: number) => void;
+    onElementUpdate: (id: string, updates: Partial<TextElement>) => void;
     onTotalPagesChange: (total: number) => void;
-    onSmartDetect?: (x: number, y: number, color?: string) => void;
+    onSmartDetect?: (x: number, y: number, textColor?: string, bgColor?: string) => void;
+    isDocumentLoading?: boolean;
 }
 
 export const Canvas: React.FC<CanvasProps> = ({
-    pdfFile,
+    pdfDocument,
     currentPage,
     textElements,
     selectedElementId,
@@ -26,12 +28,13 @@ export const Canvas: React.FC<CanvasProps> = ({
     onCanvasClick,
     onElementSelect,
     onElementMove,
+    onElementUpdate,
     onTotalPagesChange,
-    onSmartDetect
+    onSmartDetect,
+    isDocumentLoading
 }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const imageRef = useRef<HTMLDivElement>(null);
-    const [pdfDocument, setPdfDocument] = useState<pdfjsLib.PDFDocumentProxy | null>(null);
     const [pdfDimensions, setPdfDimensions] = useState({ width: 0, height: 0 });
     const [pdfPointDimensions, setPdfPointDimensions] = useState({ width: 0, height: 0 });
     const [previewScale] = useState(1.5);
@@ -39,19 +42,6 @@ export const Canvas: React.FC<CanvasProps> = ({
 
     const renderTaskRef = useRef<pdfjsLib.RenderTask | null>(null);
     const isRenderingRef = useRef(false);
-
-    // Load PDF
-    const loadPDF = useCallback(async (file: File) => {
-        try {
-            const arrayBuffer = await file.arrayBuffer();
-            const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
-            const pdf = await loadingTask.promise;
-            setPdfDocument(pdf);
-            onTotalPagesChange(pdf.numPages);
-        } catch (error) {
-            console.error('Error loading PDF:', error);
-        }
-    }, [onTotalPagesChange]);
 
     // Render Page
     const renderPage = useCallback(async (pdf: pdfjsLib.PDFDocumentProxy, pageNumber: number) => {
@@ -126,6 +116,8 @@ export const Canvas: React.FC<CanvasProps> = ({
         containerHeight: number;
         elementHalfW: number;
         elementHalfH: number;
+        elementOriginalX: number;
+        elementOriginalY: number;
         others: Array<{
             id: string;
             x: number;
@@ -143,7 +135,8 @@ export const Canvas: React.FC<CanvasProps> = ({
         onElementSelect(id);
 
         const element = textElements.find(el => el.id === id);
-        if (element?.originalRect) return; // Sticky position: disable dragging
+        if (!element) return;
+
         setIsDragging(true);
         setDraggedElement(id);
 
@@ -162,6 +155,8 @@ export const Canvas: React.FC<CanvasProps> = ({
                 containerHeight: rect.height,
                 elementHalfW: (elRect.width / 2 / rect.width) * 100,
                 elementHalfH: (elRect.height / 2 / rect.height) * 100,
+                elementOriginalX: element.x,
+                elementOriginalY: element.y,
                 others: textElements
                     .filter(el => el.id !== id && el.pageNumber === currentPage)
                     .map(el => {
@@ -181,29 +176,36 @@ export const Canvas: React.FC<CanvasProps> = ({
         }
     };
 
-    const handleDragMove = (e: React.MouseEvent | React.TouchEvent) => {
+    const handleDragMove = useCallback((e: MouseEvent | TouchEvent) => {
         if (!isDragging || !draggedElement || !dragInfoRef.current) return;
 
         const info = dragInfoRef.current;
-        const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-        const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+        const clientX = 'touches' in e ? e.touches[0].clientX : (e as MouseEvent).clientX;
+        const clientY = 'touches' in e ? e.touches[0].clientY : (e as MouseEvent).clientY;
 
         const dx = ((clientX - info.startX) / info.containerWidth) * 100;
         const dy = ((clientY - info.startY) / info.containerHeight) * 100;
 
+        // Threshold for movement to avoid accidental drag when clicking to focus
+        if (!isDragging && (Math.abs(dx) > 0.1 || Math.abs(dy) > 0.1)) {
+            setIsDragging(true);
+        }
+
+        if (!isDragging) return;
+
         const element = textElements.find(el => el.id === draggedElement);
         if (!element) return;
 
-        let newCenterX = element.x + dx;
-        let newCenterY = element.y + dy;
+        let newCenterX = info.elementOriginalX + dx;
+        let newCenterY = info.elementOriginalY + dy;
 
         // Snapping logic
         const snapThreshold = 1.0; // % threshold
         const snapsX = new Set<number>();
         const snapsY = new Set<number>();
 
-        const pageSnapsX = [0, 10, 20, 25, 30, 40, 50, 60, 70, 75, 80, 90, 100];
-        const pageSnapsY = [0, 10, 20, 25, 30, 40, 50, 60, 70, 75, 80, 90, 100];
+        const pageSnapsX = [0, 50, 100];
+        const pageSnapsY = [0, 50, 100];
 
         const halfW = info.elementHalfW;
         const halfH = info.elementHalfH;
@@ -212,26 +214,26 @@ export const Canvas: React.FC<CanvasProps> = ({
         pageSnapsX.forEach(px => {
             if (Math.abs((newCenterX - halfW) - px) < snapThreshold) {
                 newCenterX = px + halfW;
-                snapsX.add(px);
+                snapsX.clear(); snapsX.add(px);
             } else if (Math.abs(newCenterX - px) < snapThreshold) {
                 newCenterX = px;
-                snapsX.add(px);
+                snapsX.clear(); snapsX.add(px);
             } else if (Math.abs((newCenterX + halfW) - px) < snapThreshold) {
                 newCenterX = px - halfW;
-                snapsX.add(px);
+                snapsX.clear(); snapsX.add(px);
             }
         });
 
         pageSnapsY.forEach(py => {
             if (Math.abs((newCenterY - halfH) - py) < snapThreshold) {
                 newCenterY = py + halfH;
-                snapsY.add(py);
+                snapsY.clear(); snapsY.add(py);
             } else if (Math.abs(newCenterY - py) < snapThreshold) {
                 newCenterY = py;
-                snapsY.add(py);
+                snapsY.clear(); snapsY.add(py);
             } else if (Math.abs((newCenterY + halfH) - py) < snapThreshold) {
                 newCenterY = py - halfH;
-                snapsY.add(py);
+                snapsY.clear(); snapsY.add(py);
             }
         });
 
@@ -260,7 +262,7 @@ export const Canvas: React.FC<CanvasProps> = ({
                             else if (curIdx === 1) newCenterX = othEdge;
                             else if (curIdx === 2) newCenterX = othEdge - halfW;
                         }
-                        snapsX.add(othEdge);
+                        snapsX.clear(); snapsX.add(othEdge);
                     }
                 });
             });
@@ -268,7 +270,7 @@ export const Canvas: React.FC<CanvasProps> = ({
             // Y snapping (Center to Center)
             if (Math.abs(newCenterY - other.y) < snapThreshold) {
                 newCenterY = other.y;
-                snapsY.add(other.y);
+                snapsY.clear(); snapsY.add(other.y);
             }
         });
 
@@ -281,13 +283,13 @@ export const Canvas: React.FC<CanvasProps> = ({
 
             if (element.textAlign === 'left' && Math.abs(newCenterX - leftX) < snapThreshold) {
                 newCenterX = leftX;
-                snapsX.add(leftX);
+                snapsX.clear(); snapsX.add(leftX);
             } else if (element.textAlign === 'right' && Math.abs(newCenterX - rightX) < snapThreshold) {
                 newCenterX = rightX;
-                snapsX.add(rightX);
+                snapsX.clear(); snapsX.add(rightX);
             } else if (element.textAlign === 'center' && Math.abs(newCenterX - centerX) < snapThreshold) {
                 newCenterX = centerX;
-                snapsX.add(centerX);
+                snapsX.clear(); snapsX.add(centerX);
             }
 
             // Vertical Snap (Center anchor to Baseline area)
@@ -304,17 +306,34 @@ export const Canvas: React.FC<CanvasProps> = ({
 
         // Constraints
         onElementMove(draggedElement, newCenterX, newCenterY);
+    }, [isDragging, draggedElement, textElements, onElementMove, originalTextBounds]);
 
-        info.startX = clientX;
-        info.startY = clientY;
-    };
-
-    const handleDragEnd = () => {
+    const handleDragEnd = useCallback(() => {
         setIsDragging(false);
         setDraggedElement(null);
         dragInfoRef.current = null;
         setActiveSnaps({ x: [], y: [] });
-    };
+    }, []);
+
+    useEffect(() => {
+        if (isDragging) {
+            window.addEventListener('mousemove', handleDragMove);
+            window.addEventListener('mouseup', handleDragEnd);
+            window.addEventListener('touchmove', handleDragMove);
+            window.addEventListener('touchend', handleDragEnd);
+        } else {
+            window.removeEventListener('mousemove', handleDragMove);
+            window.removeEventListener('mouseup', handleDragEnd);
+            window.removeEventListener('touchmove', handleDragMove);
+            window.removeEventListener('touchend', handleDragEnd);
+        }
+        return () => {
+            window.removeEventListener('mousemove', handleDragMove);
+            window.removeEventListener('mouseup', handleDragEnd);
+            window.removeEventListener('touchmove', handleDragMove);
+            window.removeEventListener('touchend', handleDragEnd);
+        };
+    }, [isDragging, handleDragMove, handleDragEnd]);
 
     const rgbToHex = (r: number, g: number, b: number) => {
         return '#' + [r, g, b].map(x => {
@@ -335,6 +354,8 @@ export const Canvas: React.FC<CanvasProps> = ({
                 if (toolMode === 'edit' && onSmartDetect) {
                     // Smart Pipette 2.0: Sample an area around the click to find the most significant color
                     let detectedColor = '#000000';
+                    let detectedBgColor = '#FFFFFF';
+
                     try {
                         const ctx = canvasRef.current.getContext('2d', { willReadFrequently: true });
                         if (ctx) {
@@ -346,7 +367,8 @@ export const Canvas: React.FC<CanvasProps> = ({
                             const imageData = ctx.getImageData(canvasX - areaSize, canvasY - areaSize, areaSize * 2 + 1, areaSize * 2 + 1);
                             const pixels = imageData.data;
 
-                            let bestPixel = { r: 0, g: 0, b: 0, score: -1 };
+                            const colorCounts: Record<string, number> = {};
+                            let bestTextPixel = { r: 0, g: 0, b: 0, score: -1 };
 
                             for (let i = 0; i < pixels.length; i += 4) {
                                 const r = pixels[i];
@@ -354,28 +376,63 @@ export const Canvas: React.FC<CanvasProps> = ({
                                 const b = pixels[i + 2];
                                 const a = pixels[i + 3];
 
-                                if (a < 128) continue; // Skip semi-transparent
+                                if (a < 128) continue;
 
-                                // Score: we want the "least white" pixel (darkest/most saturated)
-                                // In many PDFs text is dark on white.
-                                // Distance from white (255, 255, 255)
+                                const hex = rgbToHex(r, g, b);
+                                colorCounts[hex] = (colorCounts[hex] || 0) + 1;
+
+                                // Score for text: furthest from white
                                 const distFromWhite = Math.sqrt(
                                     Math.pow(255 - r, 2) + Math.pow(255 - g, 2) + Math.pow(255 - b, 2)
                                 );
 
-                                if (distFromWhite > bestPixel.score) {
-                                    bestPixel = { r, g, b, score: distFromWhite };
+                                if (distFromWhite > bestTextPixel.score) {
+                                    bestTextPixel = { r, g, b, score: distFromWhite };
                                 }
                             }
 
-                            if (bestPixel.score > 10) { // If we found something reasonably non-white
-                                detectedColor = rgbToHex(bestPixel.r, bestPixel.g, bestPixel.b);
+                            // Background color: most frequent color
+                            let maxCount = 0;
+                            let mostFrequentColor = '#FFFFFF';
+                            for (const [hex, count] of Object.entries(colorCounts)) {
+                                if (count > maxCount) {
+                                    maxCount = count;
+                                    mostFrequentColor = hex;
+                                }
+                            }
+                            detectedBgColor = mostFrequentColor;
+
+                            // Text color: Furthest from background (contrast)
+                            const bgR = parseInt(detectedBgColor.slice(1, 3), 16);
+                            const bgG = parseInt(detectedBgColor.slice(3, 5), 16);
+                            const bgB = parseInt(detectedBgColor.slice(5, 7), 16);
+
+                            let bestTextHex = detectedBgColor === '#FFFFFF' ? '#000000' : '#FFFFFF';
+                            let maxContrast = -1;
+
+                            for (const hex in colorCounts) {
+                                const r = parseInt(hex.slice(1, 3), 16);
+                                const g = parseInt(hex.slice(3, 5), 16);
+                                const b = parseInt(hex.slice(5, 7), 16);
+
+                                const contrast = Math.sqrt(
+                                    Math.pow(bgR - r, 2) + Math.pow(bgG - g, 2) + Math.pow(bgB - b, 2)
+                                );
+
+                                if (contrast > maxContrast) {
+                                    maxContrast = contrast;
+                                    bestTextHex = hex;
+                                }
+                            }
+
+                            if (maxContrast > 50) {
+                                detectedColor = bestTextHex;
                             }
                         }
                     } catch (err) {
-                        console.error('Error sampling color:', err);
+                        console.error('Error sampling colors:', err);
                     }
-                    onSmartDetect(xPercent, yPercent, detectedColor);
+                    onSmartDetect(xPercent, yPercent, detectedColor, detectedBgColor);
                 } else {
                     onCanvasClick(xPercent, yPercent);
                 }
@@ -387,12 +444,11 @@ export const Canvas: React.FC<CanvasProps> = ({
 
     // Effects
     useEffect(() => {
-        if (pdfFile) loadPDF(pdfFile);
-    }, [pdfFile, loadPDF]);
-
-    useEffect(() => {
-        if (pdfDocument) renderPage(pdfDocument, currentPage);
-    }, [pdfDocument, currentPage, renderPage]);
+        if (pdfDocument) {
+            onTotalPagesChange(pdfDocument.numPages);
+            renderPage(pdfDocument, currentPage);
+        }
+    }, [pdfDocument, currentPage, renderPage, onTotalPagesChange]);
 
     const currentPageElements = textElements.filter(el => el.pageNumber === currentPage);
 
@@ -400,11 +456,6 @@ export const Canvas: React.FC<CanvasProps> = ({
         <div
             className="relative w-full h-full flex items-center justify-center p-8 bg-dots-light dark:bg-dots-dark overflow-auto"
             onClick={handleContainerClick}
-            onMouseMove={handleDragMove}
-            onMouseUp={handleDragEnd}
-            onMouseLeave={handleDragEnd}
-            onTouchMove={handleDragMove}
-            onTouchEnd={handleDragEnd}
         >
             <div
                 ref={imageRef}
@@ -433,7 +484,7 @@ export const Canvas: React.FC<CanvasProps> = ({
                     />
                 ))}
 
-                {isRendering && (
+                {(isDocumentLoading || isRendering || !pdfDocument) && (
                     <div className="absolute inset-0 flex items-center justify-center bg-white/50 dark:bg-black/50 backdrop-blur-sm z-50">
                         <Loader2 className="w-8 h-8 animate-spin text-ocean-500" />
                     </div>
@@ -464,12 +515,13 @@ export const Canvas: React.FC<CanvasProps> = ({
                         onMouseDown={(e) => handleDragStart(e, element.id)}
                         onTouchStart={(e) => handleDragStart(e, element.id)}
                         onClick={(e) => e.stopPropagation()}
-                        className={`absolute flex items-center ${element.textAlign === 'left' ? 'justify-start' : element.textAlign === 'right' ? 'justify-end' : 'justify-center'} ${element.originalRect ? 'cursor-default' : 'cursor-grab active:cursor-grabbing'} hover:ring-2 hover:ring-ocean-500/50 rounded transition-shadow ${selectedElementId === element.id ? 'ring-2 ring-ocean-500 shadow-lg z-10' : 'z-0'
+                        className={`absolute flex items-center ${(element.textAlign || 'left') === 'left' ? 'justify-start' : element.textAlign === 'right' ? 'justify-end' : 'justify-center'} rounded transition-all ${selectedElementId === element.id ? 'bg-ocean-400/10 z-10' : 'hover:bg-ocean-400/5 z-0'
                             }`}
                         style={{
                             left: `${element.x}%`,
                             top: `${element.y}%`,
-                            transform: `${element.textAlign === 'left' ? 'translate(0, -50%)' : element.textAlign === 'right' ? 'translate(-100%, -50%)' : 'translate(-50%, -50%)'} rotate(${element.rotation}deg) scaleX(${element.horizontalScaling || 1.0})`,
+                            transform: `${(element.textAlign || 'left') === 'left' ? 'translate(0, -50%)' : element.textAlign === 'right' ? 'translate(-100%, -50%)' : 'translate(-50%, -50%)'} rotate(${element.rotation}deg) scaleX(${element.horizontalScaling || 1.0})`,
+                            cursor: selectedElementId === element.id ? 'text' : 'grab',
                             color: element.color,
                             opacity: element.opacity / 100,
                             fontSize: `${element.fontSize * (pdfDimensions.width / (pdfPointDimensions.width || 595))}px`,
@@ -480,7 +532,22 @@ export const Canvas: React.FC<CanvasProps> = ({
                             whiteSpace: 'pre',
                             minWidth: 'max-content',
                             pointerEvents: isDragging && draggedElement !== element.id ? 'none' : 'auto',
-                            userSelect: 'none',
+                            userSelect: selectedElementId === element.id ? 'text' : 'none',
+                            outline: 'none'
+                        }}
+                        contentEditable={selectedElementId === element.id}
+                        suppressContentEditableWarning
+                        onBlur={(e) => {
+                            const newText = e.currentTarget.textContent || '';
+                            if (newText !== element.text) {
+                                onElementUpdate(element.id, { text: newText });
+                            }
+                        }}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' && !e.shiftKey) {
+                                e.preventDefault();
+                                e.currentTarget.blur();
+                            }
                         }}
                     >
                         {element.text || ' '}
@@ -506,3 +573,5 @@ export const Canvas: React.FC<CanvasProps> = ({
         </div>
     );
 };
+
+

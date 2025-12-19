@@ -1,1041 +1,1094 @@
 {
-    "app": {
-        "title": "LocalPDF",
-        "subtitle": "您的浏览器中的隐私优先 PDF 工具"
+  "app": {
+    "title": "LocalPDF",
+    "subtitle": "您的浏览器中的隐私优先 PDF 工具"
+  },
+  "welcome": {
+    "securePrefix": "简单且安全",
+    "titleSuffix": "",
+    "title": "PDF 变得简单",
+    "subtitle": "您所需的所有工具尽在一处。只需拖放文件即可开启魔法。",
+    "firstTimeBanner": "欢迎！所有处理都在您的浏览器中进行 - 您的文件从未离开您的设备。",
+    "selectTool": "从侧边栏选择工具或在下方选择"
+  },
+  "sidebar": {
+    "tools": "工具",
+    "collapse": "折叠侧边栏",
+    "expand": "展开侧边栏",
+    "backToMain": "← 返回主站"
+  },
+  "toolGroups": {
+    "all": "所有工具",
+    "organize": "组织",
+    "edit": "编辑",
+    "security": "安全",
+    "convert": "转换"
+  },
+  "tools": {
+    "merge-pdf": {
+      "name": "合并 PDF",
+      "description": "将多个 PDF 合并为一个"
     },
-    "welcome": {
-        "securePrefix": "简单且安全",
-        "titleSuffix": "",
-        "title": "PDF 变得简单",
-        "subtitle": "您所需的所有工具尽在一处。只需拖放文件即可开启魔法。",
-        "firstTimeBanner": "欢迎！所有处理都在您的浏览器中进行 - 您的文件从未离开您的设备。",
-        "selectTool": "从侧边栏选择工具或在下方选择"
+    "split-pdf": {
+      "name": "拆分 PDF",
+      "description": "从 PDF 中提取页面"
     },
-    "sidebar": {
-        "tools": "工具",
-        "collapse": "折叠侧边栏",
-        "expand": "展开侧边栏",
-        "backToMain": "← 返回主站"
+    "compress-pdf": {
+      "name": "压缩 PDF",
+      "description": "减小 PDF 文件大小"
     },
-    "toolGroups": {
-        "all": "所有工具",
-        "organize": "组织",
-        "edit": "编辑",
-        "security": "安全",
-        "convert": "转换"
+    "protect-pdf": {
+      "name": "保护 PDF",
+      "description": "添加密码保护"
     },
-    "tools": {
-        "merge-pdf": {
-            "name": "合并 PDF",
-            "description": "将多个 PDF 合并为一个"
-        },
-        "split-pdf": {
-            "name": "拆分 PDF",
-            "description": "从 PDF 中提取页面"
-        },
-        "compress-pdf": {
-            "name": "压缩 PDF",
-            "description": "减小 PDF 文件大小"
-        },
-        "protect-pdf": {
-            "name": "保护 PDF",
-            "description": "添加密码保护"
-        },
-        "ocr-pdf": {
-            "name": "OCR PDF",
-            "description": "从扫描的 PDF 中提取文本"
-        },
-        "organize-pdf": {
-            "name": "组织页面",
-            "description": "重新排序、旋转和删除 PDF 页面"
-        },
-        "watermark-pdf": {
-            "name": "PDF 水印",
-            "description": "向 PDF 添加水印"
-        },
-        "add-text-pdf": {
-            "name": "添加文本到 PDF",
-            "description": "添加自定义文本到 PDF 页面"
-        },
-        "edit-text-pdf": {
-            "name": "编辑 PDF 文本",
-            "description": "查找并替换 PDF 中的文本"
-        },
-        "add-form-fields-pdf": {
-            "name": "添加表单字段",
-            "description": "创建带有文本字段、复选框等的交互式 PDF 表单"
-        },
-        "rotate-pdf": {
-            "name": "旋转 PDF",
-            "description": "旋转 PDF 页面"
-        },
-        "delete-pages-pdf": {
-            "name": "删除页面",
-            "description": "删除不需要的页面"
-        },
-        "extract-pages-pdf": {
-            "name": "提取页面",
-            "description": "提取特定页面"
-        },
-        "images-to-pdf": {
-            "name": "图片转 PDF",
-            "description": "将图片转换为 PDF"
-        },
-        "pdf-to-images": {
-            "name": "PDF 转图片",
-            "description": "将 PDF 转换为图片"
-        },
-        "pdf-to-word": {
-            "name": "PDF 转 Word",
-            "description": "将 PDF 转换为 DOCX"
-        },
-        "word-to-pdf": {
-            "name": "Word 转 PDF",
-            "description": "将 DOCX 转换为 PDF"
-        },
-        "sign-pdf": {
-            "name": "签署 PDF",
-            "description": "添加数字签名"
-        },
-        "flatten-pdf": {
-            "name": "扁平化 PDF",
-            "description": "使 PDF 表单和注释不可编辑"
-        },
-        "extract-images-pdf": {
-            "name": "提取/删除图片",
-            "description": "从 PDF 中提取所有图片或删除它们"
-        },
-        "edit-pdf": {
-            "name": "编辑 PDF",
-            "description": "编辑 PDF 内容"
-        }
+    "ocr-pdf": {
+      "name": "OCR PDF",
+      "description": "从扫描的 PDF 中提取文本"
     },
-    "common": {
-        "upload": "上传文件",
-        "uploadDescription": "拖放或点击上传",
-        "selectFile": "选择文件",
-        "uploadFile": "上传文件",
-        "download": "下载",
-        "processing": "处理中...",
-        "searching": "搜索中...",
-        "error": "错误",
-        "success": "成功",
-        "cancel": "取消",
-        "close": "关闭",
-        "back": "返回",
-        "next": "下一步",
-        "done": "完成",
-        "remove": "移除",
-        "newFile": "新文件",
-        "filePreview": "文件预览",
-        "totalPages": "总页数",
-        "page": "页",
-        "pages": "页",
-        "fileSize": "文件大小",
-        "changeFile": "更改文件",
-        "autoLoaded": "文件从上一个工具加载",
-        "autoLoadedDescription": "您的 PDF 已自动加载",
-        "reset": "重置",
-        "processAnother": "处理另一个",
-        "relatedTools": "相关工具",
-        "clickToEdit": "点击编辑",
-        "convertAnother": "转换另一个",
-        "quickActions": "快速操作",
-        "preview": "预览",
-        "clearAll": "清除所有",
-        "processingTime": "处理时间",
-        "selectedFile": "选定的文件",
-        "originalSize": "原始大小",
-        "newSize": "新大小",
-        "useInOtherTools": "在其他工具中使用",
-        "recommended": "推荐",
-        "generatingThumbnails": "生成缩略图...",
-        "whatsNext": "接下来做什么？",
-        "continueWorking": "使用这些工具继续处理您的 PDF：",
-        "selectAll": "全选",
-        "convert": "转换",
-        "hide": "隐藏",
-        "loading": "加载中...",
-        "previous": "上一个",
-        "save": "保存",
-        "show": "显示",
-        "zoom": "缩放"
+    "organize-pdf": {
+      "name": "组织页面",
+      "description": "重新排序、旋转和删除 PDF 页面"
     },
-    "upload": {
-        "selectFiles": "选择文件",
-        "dragOrClick": "将文件拖到此处或点击选择",
-        "dropHere": "将文件拖到此处",
-        "multipleFilesAllowed": "允许多个文件",
-        "singleFileAllowed": "仅限单个文件",
-        "pasteHint": "或按 Ctrl+V 粘贴文件",
-        "maxFiles": "最大文件数",
-        "maxSize": "每个文件的最大大小",
-        "acceptedTypes": "接受的类型",
-        "errors": {
-            "tooManyFiles": "文件太多。最大值：{max}",
-            "invalidFileType": "无效的文件类型。请仅选择 PDF 文件。",
-            "fileTooLarge": "文件太大。最大大小：{max} MB"
-        },
-        "readyToProcess": "准备开始",
-        "filesReadySingle": "{count} 个文件已就绪",
-        "filesReadyPlural": "{count} 个文件已就绪"
+    "watermark-pdf": {
+      "name": "PDF 水印",
+      "description": "向 PDF 添加水印"
     },
-    "merge": {
-        "fileList": "要合并的文件",
-        "reorderHint": "拖动以重新排序",
-        "mergeButton": "合并 PDF",
-        "mergeAnother": "合并另一个",
-        "minFilesHint": "添加至少 2 个 PDF 文件以合并",
-        "errors": {
-            "minFiles": "请选择至少 2 个 PDF 文件以合并"
-        },
-        "success": {
-            "title": "PDF 合并成功！",
-            "pages": "总页数",
-            "size": "文件大小",
-            "time": "处理时间"
-        },
-        "quickActions": {
-            "title": "接下来做什么？",
-            "description": "使用这些工具继续处理合并后的 PDF：",
-            "compress": "减小文件大小",
-            "protect": "添加密码",
-            "watermark": "添加水印",
-            "split": "提取页面"
-        }
+    "add-text-pdf": {
+      "name": "添加文本到 PDF",
+      "description": "添加自定义文本到 PDF 页面"
     },
-    "smartMerge": {
-        "title": "智能合并",
-        "analyzing": "正在分析文档...",
-        "sortSuggestions": "排序建议",
-        "detectedDates": "检测到的日期",
-        "duplicatesFound": "发现可能的重复",
-        "similarFiles": "相似文件",
-        "keepFirst": "保留第一个",
-        "sortApplied": "排序已应用",
-        "duplicatesRemoved": "重复已移除"
+    "edit-text-pdf": {
+      "name": "编辑 PDF 文本",
+      "description": "查找并替换 PDF 中的文本"
     },
-    "smartOrganize": {
-        "title": "智能组织",
-        "analyzing": "正在分析页面...",
-        "quickActions": "快速操作",
-        "detectedChapters": "检测到的章节",
-        "removeBlank": "移除空白页",
-        "removeDuplicates": "移除重复",
-        "fixRotation": "修复旋转",
-        "moveTOC": "将目录移至前面",
-        "noIssues": "未检测到问题 - 文档看起来不错！"
+    "add-form-fields-pdf": {
+      "name": "添加表单字段",
+      "description": "创建带有文本字段、复选框等的交互式 PDF 表单"
     },
-    "smartCompression": {
-        "title": "智能分析",
-        "analyzing": "正在分析 PDF 内容...",
-        "highPotential": "检测到高压缩潜力",
-        "optimized": "文件已充分优化",
-        "images": "图片",
-        "structure": "结构",
-        "heavy": "较大（图片较多）",
-        "light": "较小（主要是文本）",
-        "recommendation": "推荐模式",
-        "apply": "应用",
-        "applied": "推荐模式已应用",
-        "insights": {
-            "mostlyText": "主要是文本内容",
-            "imageCount": "包含 ~{count} 张图片",
-            "largeImages": "由于图片导致文件较大",
-            "highDensity": "高密度内容",
-            "efficient": "结构已很高效",
-            "standard": "标准 PDF 分析"
-        }
+    "rotate-pdf": {
+      "name": "旋转 PDF",
+      "description": "旋转 PDF 页面"
     },
-    "smartImageFilter": {
-        "title": "智能图片筛选",
-        "analyzing": "正在分析图片...",
-        "totalImages": "总计",
-        "useful": "有用",
-        "junk": "垃圾",
-        "quickFilters": "快速筛选",
-        "categories": "分类",
-        "processingInfo": "所有分析都在您的浏览器本地运行。图片按大小、格式和特征分类。",
-        "presets": {
-            "useful": {
-                "label": "有用图片",
-                "description": "仅照片和图表"
-            },
-            "photosOnly": {
-                "label": "仅照片",
-                "description": "高质量照片"
-            },
-            "excludeIcons": {
-                "label": "无图标",
-                "description": "排除小图标"
-            },
-            "large": {
-                "label": "大图片",
-                "description": "图片 > 0.1 MP"
-            }
-        },
-        "junkWarning": {
-            "title": "检测到低价值图片",
-            "description": "发现 {count} 个小图标/装饰。考虑使用“有用图片”筛选器。"
-        }
+    "delete-pages-pdf": {
+      "name": "删除页面",
+      "description": "删除不需要的页面"
     },
-    "compress": {
-        "filePreview": "要压缩的文件",
-        "originalSize": "原始大小",
-        "pages": "页数",
-        "changeFile": "更改文件",
-        "selectQuality": "选择压缩级别",
-        "selected": "已选择",
-        "compressButton": "压缩 PDF",
-        "compressAnother": "压缩另一个",
-        "quality": {
-            "low": {
-                "name": "最大",
-                "description": "文件最小，质量较低"
-            },
-            "medium": {
-                "name": "平衡",
-                "description": "大小和质量之间的良好平衡"
-            },
-            "high": {
-                "name": "最小",
-                "description": "最佳质量，文件较大"
-            }
-        },
-        "success": {
-            "title": "PDF 压缩成功！",
-            "originalSize": "原始大小",
-            "compressedSize": "压缩后大小",
-            "saved": "节省空间",
-            "time": "处理时间"
-        },
-        "quickActions": {
-            "title": "接下来做什么？",
-            "description": "继续处理压缩后的 PDF：",
-            "protect": "添加密码",
-            "merge": "与他人合并",
-            "split": "提取页面",
-            "watermark": "添加水印"
-        },
-        "autoLoaded": {
-            "title": "文件从上一个工具加载",
-            "description": "您的合并后 PDF 已自动加载"
-        }
+    "extract-pages-pdf": {
+      "name": "提取页面",
+      "description": "提取特定页面"
     },
-    "flatten": {
-        "filePreview": "要扁平化的文件",
-        "description": "使表单和注释不可编辑",
-        "originalSize": "原始大小",
-        "pages": "页数",
-        "changeFile": "更改文件",
-        "flattenButton": "扁平化 PDF",
-        "flattenAnother": "扁平化另一个",
-        "success": {
-            "title": "PDF 扁平化成功！",
-            "originalSize": "原始大小",
-            "processedSize": "处理后大小",
-            "time": "处理时间"
-        },
-        "quickActions": {
-            "title": "接下来做什么？",
-            "description": "继续处理扁平化后的 PDF：",
-            "protect": "添加密码",
-            "merge": "与他人合并",
-            "compress": "减小文件大小"
-        },
-        "autoLoaded": {
-            "title": "文件从上一个工具加载",
-            "description": "您的 PDF 已自动加载"
-        }
+    "images-to-pdf": {
+      "name": "图片转 PDF",
+      "description": "将图片转换为 PDF"
     },
-    "split": {
-        "filePreview": "要拆分的文件",
-        "pages": "页数",
-        "totalPages": "总页数",
-        "fileSize": "文件大小",
-        "changeFile": "更改文件",
-        "selectMode": "选择拆分模式",
-        "splitButton": "拆分 PDF",
-        "splitAnother": "拆分另一个",
-        "downloadAll": "下载所有文件",
-        "downloadAsZip": "下载 ZIP",
-        "previewTitle": "预览页面",
-        "outputFiles": "输出文件",
-        "selectAll": "全选",
-        "deselectAll": "取消全选",
-        "selectedCount": "选择了 {count} 页",
-        "selectPagesHint": "请至少选择一页以继续",
-        "mergingSelected": "正在合并选定页面...",
-        "mergeFailed": "合并选定页面失败",
-        "mode": {
-            "all": {
-                "name": "所有页面",
-                "description": "拆分为单独的页面"
-            },
-            "range": {
-                "name": "页面范围",
-                "description": "提取特定页面范围"
-            },
-            "intervals": {
-                "name": "按间隔",
-                "description": "每 N 页拆分"
-            },
-            "custom": {
-                "name": "自定义页面",
-                "description": "选择特定页面"
-            },
-            "byStructure": {
-                "name": "按结构",
-                "description": "按章节智能拆分"
-            }
-        },
-        "structureSettings": "文档结构",
-        "analyzeFirst": "分析文档以检测章节和部分",
-        "analyzeButton": "分析结构",
-        "analyzing": "分析中...",
-        "chaptersDetected": "检测到 {count} 个章节",
-        "reanalyze": "重新分析",
-        "rangeSettings": "页面范围设置",
-        "startPage": "起始页",
-        "endPage": "结束页",
-        "rangeHint": "总页数：{total}",
-        "intervalSettings": "间隔设置",
-        "pagesPerFile": "每个文件的页数",
-        "intervalHint": "将从 {total} 页创建 {files} 个文件",
-        "customSettings": "自定义页面选择",
-        "pageNumbers": "页码",
-        "customHint": "输入以逗号分隔的页码或使用范围（例如，1,3,5-7,10）",
-        "success": {
-            "title": "PDF 拆分成功！",
-            "filesCreated": "创建了 {count} 个文件"
-        },
-        "pageNumber": "第 {page} 页",
-        "pageRange": "第 {start}-{end} 页",
-        "pageCount": "{count} 页",
-        "pageCountSingle": "1 页",
-        "autoLoaded": {
-            "title": "文件从上一个工具加载",
-            "description": "您的 PDF 已自动加载"
-        },
-        "quickActions": {
-            "title": "接下来做什么？",
-            "description": "在上方选择页面并继续使用这些工具处理它们：",
-            "descriptionWithSelection": "继续使用这些工具处理 {count} 个选定页面：",
-            "compress": "减小文件大小",
-            "merge": "与他人合并",
-            "protect": "添加密码",
-            "watermark": "添加水印"
-        }
+    "pdf-to-images": {
+      "name": "PDF 转图片",
+      "description": "将 PDF 转换为图片"
     },
-    "protect": {
-        "filePreview": "要保护的文件",
-        "protectButton": "保护 PDF",
-        "protectAnother": "保护另一个",
-        "userPassword": "打开 PDF 的密码",
-        "userPasswordPlaceholder": "输入密码",
-        "ownerPassword": "所有者密码（可选）",
-        "ownerPasswordPlaceholder": "输入所有者密码",
-        "useOwnerPassword": "使用不同的所有者密码",
-        "permissionsOnly": "仅限制（无需密码即可打开）",
-        "permissionsOnlyHint": "PDF 可以无需密码打开，但使用将受到限制",
-        "passwordWarning": {
-            "title": "警告：密码无法恢复",
-            "message": "如果您丢失了密码，将无法恢复。请妥善保管！"
-        },
-        "securityLevel": "安全级别",
-        "advancedSettings": "高级设置",
-        "encryptionLevel": "加密级别",
-        "recommended": "(推荐)",
-        "permissionsTitle": "权限",
-        "presets": {
-            "basic": {
-                "name": "基本",
-                "description": "允许打印和复制"
-            },
-            "business": {
-                "name": "商务",
-                "description": "仅允许打印"
-            },
-            "confidential": {
-                "name": "机密",
-                "description": "禁止打印或复制"
-            }
-        },
-        "permissions": {
-            "printing": "打印",
-            "printingNone": "不允许",
-            "printingLow": "低分辨率",
-            "printingHigh": "高分辨率",
-            "copying": "允许复制文本",
-            "modifying": "允许修改内容",
-            "annotating": "允许注释",
-            "fillingForms": "允许填写表单",
-            "contentAccessibility": "允许屏幕阅读器"
-        },
-        "passwordStrength": {
-            "strength": "强度",
-            "weak": "弱",
-            "medium": "中",
-            "strong": "强",
-            "tooShort": "密码太短（最少 8 个字符）",
-            "useUpperAndLower": "使用大小写字母",
-            "useNumbers": "添加数字",
-            "useSpecialChars": "添加特殊字符"
-        },
-        "errors": {
-            "passwordRequired": "密码是必需的",
-            "protectionFailed": "保护 PDF 失败"
-        },
-        "success": {
-            "title": "PDF 已成功保护！",
-            "encryption": "加密级别",
-            "password": "密码",
-            "passwordSet": "已设置"
-        },
-        "activePermissions": "当前权限",
-        "badge": {
-            "printingAllowed": "允许打印",
-            "noPrinting": "禁止打印",
-            "copyingAllowed": "允许复制",
-            "noCopying": "禁止复制",
-            "editingAllowed": "允许编辑",
-            "noEditing": "禁止编辑"
-        },
-        "quickActions": {
-            "title": "接下来做什么？",
-            "description": "继续处理受保护的 PDF：",
-            "compress": "减小文件大小",
-            "split": "提取页面",
-            "watermark": "添加水印",
-            "merge": "与他人合并"
-        },
-        "autoLoaded": {
-            "title": "文件从上一个工具加载",
-            "description": "您的 PDF 已自动加载"
-        }
+    "pdf-to-word": {
+      "name": "PDF 转 Word",
+      "description": "将 PDF 转换为 DOCX"
     },
-    "ocr": {
-        "filePreview": "要处理的文件",
-        "recognitionLanguage": "识别语言",
-        "languageHint": "选择文档中的文本语言",
-        "autoDetect": "自动检测语言",
-        "autoDetectHint": "语言将从文档内容自动检测",
-        "detectingLanguage": "检测语言...",
-        "analyzingContent": "分析文档内容...",
-        "pageSelection": "要处理的页面",
-        "firstPageOnly": "仅第一页",
-        "allPages": "所有页面",
-        "pageRange": "页面范围",
-        "page": "页",
-        "pages": "页",
-        "processed": "已处理",
-        "processingPage": "正在处理第 {current} 页，共 {total} 页...",
-        "startOCR": "开始 OCR",
-        "processing": "处理 OCR...",
-        "analyzing": "分析中...",
-        "initializing": "正在初始化 OCR 引擎...",
-        "loadingModel": "正在加载语言模型...",
-        "processingImage": "正在处理图片...",
-        "processingPDF": "正在处理 PDF...",
-        "recognizing": "正在识别文本",
-        "completed": "OCR 完成！",
-        "pageTitle": "OCR 结果",
-        "resultsTitle": "识别的文本",
-        "confidence": "置信度",
-        "extractedText": "提取的文本",
-        "copyText": "复制文本",
-        "downloadTXT": "下载 TXT",
-        "textCopied": "文本已复制到剪贴板！",
-        "remove": "移除",
-        "newFile": "新文件",
-        "preview": "预览",
-        "view": "查看",
-        "edit": "编辑",
-        "editPlaceholder": "在此处编辑提取的文本...",
-        "textModified": "文本已修改",
-        "words": "词",
-        "lines": "行",
-        "characters": "字符",
-        "languageDetection": {
-            "highConfidence": "高置信度",
-            "mediumConfidence": "中等置信度",
-            "lowConfidence": "低置信度",
-            "verifyLanguage": "验证语言选择以获得更好的 OCR 准确性"
-        },
-        "outputFormat": {
-            "title": "输出格式",
-            "text": "纯文本 (.txt)",
-            "textDesc": "仅提取文本，可编辑和复制",
-            "searchablePdf": "可搜索 PDF（保留原件）",
-            "searchablePdfDesc": "保留原始图片并添加不可见的 OCR 文本层 - 外观与原件完全相同，但可完全搜索",
-            "hocr": "hOCR (.html)",
-            "hocrDesc": "带有精确词语定位和置信度分数的 HTML - 适用于自动处理",
-            "tsv": "TSV (.tsv)",
-            "tsvDesc": "带有边界框的制表符分隔值 - 易于解析以进行数据分析"
-        },
-        "results": {
-            "textReady": "识别的文本",
-            "searchablePdfReady": "准备创建可搜索 PDF",
-            "hocrReady": "hOCR 数据就绪",
-            "tsvReady": "TSV 数据就绪",
-            "pagesWillProcess": "{count} {pages} 将使用 OCR 处理",
-            "confidenceAndPages": "置信度：{confidence}% • 已处理 {count} {pages}"
-        },
-        "infoPanel": {
-            "searchablePdfTitle": "带有不可见文本层的可搜索 PDF",
-            "searchablePdfDesc": "原始文档图片将完全保留。OCR 文本将作为不可见层添加，使 PDF 完全可搜索并允许文本选择，同时保持原始视觉外观。",
-            "hocrTitle": "hOCR 格式（基于 HTML 的 OCR）",
-            "hocrDesc": "带有每个词的精确边界框和置信度分数的 HTML 文档。非常适合自动处理、NLP 管道和自定义文本提取工作流。包含有关文本位置、层级和识别质量的结构化数据。",
-            "tsvTitle": "TSV 格式（制表符分隔值）",
-            "tsvDesc": "带有边界框坐标和置信度分数的电子表格兼容格式。易于导入 Excel、Google Sheets 或 Python/Pandas 等数据分析工具。每行包含层级、页码、块、段落、行、词、位置和文本。"
-        },
-        "download": {
-            "createSearchablePdf": "创建可搜索 PDF",
-            "downloadHocr": "下载 hOCR (.html)",
-            "downloadTsv": "下载 TSV (.tsv)",
-            "downloadTxt": "下载 TXT",
-            "searchablePdfReady": "准备好创建可搜索 PDF！",
-            "searchablePdfDownloaded": "可搜索 PDF 已下载！"
-        },
-        "infoTitle": "关于 OCR",
-        "info1": "支持 PDF 文档和图片 (JPG, PNG)",
-        "info2": "5 种语言识别：EN, RU, DE, FR, ES",
-        "info3": "支持多页 PDF 和页面范围选择",
-        "info4": "所有处理都在您的浏览器中进行 - 文件保持私密",
-        "errors": {
-            "noFile": "请先选择文件",
-            "processingFailed": "OCR 处理失败。请重试。",
-            "unsupportedFileType": "OCR 仅支持 PDF 和图片文件 (JPG, PNG)。不支持您的文件类型 (.{ext})。",
-            "hocrEmpty": "hOCR 数据为空。请尝试重新运行 OCR。",
-            "tsvEmpty": "TSV 数据为空。请尝试重新运行 OCR。",
-            "searchablePdfFailed": "创建可搜索 PDF 失败：{error}",
-            "downloadFailed": "生成文件失败。请重试。"
-        }
+    "word-to-pdf": {
+      "name": "Word 转 PDF",
+      "description": "将 DOCX 转换为 PDF"
     },
-    "watermark": {
-        "filePreview": "要添加水印的文件",
-        "settings": "水印设置",
-        "text": "水印文本",
-        "watermarkText": "水印文本",
-        "watermarkPlaceholder": "输入水印文本",
-        "position": "位置",
-        "positions": {
-            "diagonal": "对角线",
-            "center": "居中",
-            "topLeft": "左上",
-            "topRight": "右上",
-            "bottomLeft": "左下",
-            "bottomRight": "右下",
-            "custom": "手动 (拖拽)"
-        },
-        "color": "颜色",
-        "colors": {
-            "black": "黑色",
-            "gray": "灰色",
-            "red": "红色",
-            "blue": "蓝色"
-        },
-        "opacity": "不透明度",
-        "fontSize": "字体大小",
-        "rotation": "旋转",
-        "apply": "应用",
-        "processing": "正在添加水印...",
-        "processingPage": "正在处理第 {current} 页，共 {total} 页...",
-        "saving": "正在保存 PDF...",
-        "completed": "水印已添加！",
-        "preview": "预览",
-        "loading": "加载中...",
-        "loadingPreview": "正在加载预览...",
-        "errors": {
-            "noText": "请输入水印文本",
-            "failed": "添加水印失败",
-            "cyrillicNotSupported": "所选字体可能不支持西里尔字符"
-        },
-        "success": {
-            "title": "水印添加成功",
-            "watermarkApplied": "水印",
-            "pages": "已处理页面",
-            "size": "文件大小"
-        },
-        "quickActions": {
-            "title": "接下来做什么？",
-            "description": "继续处理您的文件：",
-            "compress": "减小文件大小",
-            "protect": "添加密码",
-            "split": "拆分 PDF",
-            "merge": "合并 PDF"
-        },
-        "infoTitle": "关于水印",
-        "info1": "支持完全支持西里尔和拉丁字符的文本水印",
-        "info2": "6 个位置选项：对角线、居中和 4 个角落",
-        "info3": "所有处理都在您的浏览器中进行 - 文件保持私密"
+    "sign-pdf": {
+      "name": "签署 PDF",
+      "description": "添加数字签名"
     },
-    "rotate": {
-        "settings": "旋转设置",
-        "selectAngle": "选择旋转角度",
-        "clockwise": "顺时针",
-        "upsideDown": "倒置",
-        "counterClockwise": "逆时针",
-        "selectPages": "选择要旋转的页面",
-        "allPages": "所有页面",
-        "rotateAllPages": "旋转文档中的所有页面",
-        "specificPages": "特定页面",
-        "choosePages": "选择要旋转的页面",
-        "pageNumbers": "页码",
-        "pageNumbersHint": "示例：1,3,5-7,10（总页数：{total}）",
-        "rotateButton": "旋转 PDF",
-        "rotateAnother": "旋转另一个",
-        "invalidPages": "请输入有效的页码",
-        "failed": "旋转 PDF 失败",
-        "success": "PDF 旋转成功！",
-        "successDescription": "您的 PDF 页面已按指定旋转",
-        "quickActions": {
-            "title": "接下来做什么？",
-            "description": "继续处理旋转后的 PDF：",
-            "compress": "减小文件大小",
-            "protect": "添加密码",
-            "watermark": "添加水印",
-            "split": "提取页面"
-        }
+    "flatten-pdf": {
+      "name": "扁平化 PDF",
+      "description": "使 PDF 表单和注释不可编辑"
     },
-    "deletePages": {
-        "selectPages": "选择要删除的页面",
-        "pagesToDelete": "要删除的页面",
-        "hint": "示例：1,3,5-7,10（总页数：{total}）",
-        "warning": "警告：此操作无法撤销",
-        "warningDescription": "页面将从 PDF 中永久删除",
-        "deleteButton": "删除页面",
-        "deleteAnother": "从另一个删除",
-        "invalidPages": "请输入有效的页码",
-        "cannotDeleteAll": "无法删除 PDF 中的所有页面",
-        "failed": "删除页面失败",
-        "success": "页面删除成功！",
-        "successDescription": "选定页面已从您的 PDF 中移除",
-        "quickActions": {
-            "title": "接下来做什么？",
-            "description": "继续处理您的 PDF：",
-            "compress": "减小文件大小",
-            "protect": "添加密码",
-            "watermark": "添加水印",
-            "merge": "与他人合并"
-        }
+    "extract-images-pdf": {
+      "name": "提取/删除图片",
+      "description": "从 PDF 中提取所有图片或删除它们"
     },
-    "extractPages": {
-        "selectPages": "选择要提取的页面",
-        "pagesToExtract": "要提取的页面",
-        "hint": "示例：1,3,5-7,10（总页数：{total}）",
-        "info": "提取将创建一个新的 PDF",
-        "infoDescription": "原始 PDF 保持不变，仅选定页面被复制到新文件",
-        "extractButton": "提取页面",
-        "extractAnother": "从另一个提取",
-        "invalidPages": "请输入有效的页码",
-        "failed": "提取页面失败",
-        "success": "页面提取成功！",
-        "successDescription": "选定页面已提取到新的 PDF",
-        "quickActions": {
-            "title": "接下来做什么？",
-            "description": "继续处理提取的页面：",
-            "compress": "减小文件大小",
-            "protect": "添加密码",
-            "watermark": "添加水印",
-            "merge": "与他人合并"
-        }
-    },
-    "imagesToPdf": {
-        "imagesList": "图片",
-        "settings": "PDF 设置",
-        "pageSize": "页面大小",
-        "pageSizes": {
-            "fit": "适应图片",
-            "a4": "A4",
-            "letter": "信纸"
-        },
-        "orientation": "方向",
-        "orientations": {
-            "portrait": "纵向",
-            "landscape": "横向"
-        },
-        "margin": "边距",
-        "convert": "转换为 PDF",
-        "convertAnother": "转换另一个",
-        "errors": {
-            "noImages": "请至少选择一张图片"
-        },
-        "success": {
-            "title": "图片转换成功！",
-            "pages": "创建的页面"
-        },
-        "successMessage": "成功创建带有 {count} 页的 PDF",
-        "quickActions": {
-            "title": "接下来做什么？",
-            "description": "继续处理您的 PDF：",
-            "compress": "减小文件大小",
-            "protect": "添加密码",
-            "watermark": "添加水印",
-            "merge": "与他人合并"
-        }
-    },
-    "pdfToImages": {
-        "title": "PDF 转图片",
-        "description": "将 PDF 页面转换为高质量图片",
-        "format": "输出格式",
-        "quality": "质量",
-        "pages": "要转换的页面",
-        "allPages": "所有页面",
-        "pageRange": "页面范围",
-        "specificPages": "特定页面",
-        "backgroundColor": "背景颜色",
-        "convert": "转换为图片",
-        "success": "转换成功！",
-        "imagesCreated": "已创建图片",
-        "totalSize": "总大小",
-        "preview": "预览",
-        "page": "页",
-        "download": "下载图片",
-        "downloadZip": "下载为 ZIP",
-        "downloadAll": "全部下载",
-        "downloadIndividual": "下载单张图片：",
-        "errors": {
-            "conversionFailed": "PDF 转图片失败",
-            "zipFailed": "创建 ZIP 归档失败"
-        }
-    },
-    "wordToPdf": {
-        "convert": "转换为 PDF",
-        "convertAnother": "转换另一个",
-        "conversionMode": "转换模式",
-        "withFormatting": "带格式",
-        "textOnly": "仅文本",
-        "formattingDescription": "保留图片、表格、标题和文本样式",
-        "textDescription": "仅提取文本。文件更小，转换更快",
-        "quality": "输出质量",
-        "qualityStandard": "标准（更快，文件更小）",
-        "qualityHigh": "高质量（平衡）",
-        "qualityMax": "最大（最佳质量，文件较大）",
-        "errors": {
-            "noFile": "请先选择一个 Word 文档",
-            "invalidFormat": "无效的文件格式。请选择 .docx 文件",
-            "conversionFailed": "Word 转 PDF 失败"
-        },
-        "success": "Word 文档转换成功！"
-    },
-    "pdfToWord": {
-        "convert": "转换为 Word",
-        "convertAnother": "转换另一个",
-        "options": "转换选项",
-        "smartHeadings": "智能标题",
-        "smartHeadingsDescription": "按字体大小检测标题并应用 Word 标题样式",
-        "errors": {
-            "noFile": "请先选择一个 PDF 文件",
-            "invalidPdf": "无效的 PDF 文件。请选择有效的 PDF",
-            "conversionFailed": "PDF 转 Word 失败"
-        },
-        "success": "PDF 转换为 Word 成功！",
-        "readyToDownload": "您的 Word 文档准备好下载了",
-        "conversionComplete": "转换完成"
-    },
-    "sign": {
-        "signatureType": "签名类型",
-        "drawSignature": "绘制签名",
-        "uploadImage": "上传签名图片",
-        "signatureText": "签名文本",
-        "position": "位置",
-        "positions": {
-            "bottomRight": "右下",
-            "bottomLeft": "左下",
-            "topRight": "右上",
-            "topLeft": "左上"
-        },
-        "applyToPages": "应用到页面",
-        "allPages": "所有页面",
-        "pageNumber": "第 {number} 页",
-        "pagesSigned": "已签署页面",
-        "fileSize": "文件大小",
-        "yourName": "您的名字",
-        "loadingHighQuality": "正在加载高质量...",
-        "generatingPreview": "正在生成预览...",
-        "saving": "保存中...",
-        "addingSignature": "正在添加签名...",
-        "signingPage": "正在签署第 {current} 页，共 {total} 页...",
-        "successTitle": "签名添加成功",
-        "modeDraw": "绘制",
-        "modeUpload": "上传",
-        "modeText": "文本",
-        "clearSignature": "清除签名",
-        "noFile": "请上传 PDF 文件",
-        "enterText": "请输入签名文本",
-        "provideSignature": "请绘制或上传签名",
-        "textSize": "文本大小",
-        "signatureSize": "签名大小",
-        "addSignature": "添加签名",
-        "quickActions": {
-            "title": "接下来做什么？",
-            "description": "继续处理已签署的 PDF：",
-            "protect": "添加密码",
-            "compress": "减小文件大小",
-            "watermark": "添加水印",
-            "merge": "与他人合并"
-        }
-    },
-    "pageEditor": {
-        "deleted": "已删除",
-        "dragDrop": "拖放",
-        "reorderPages": "以重新排序页面",
-        "clickRotate": "点击旋转",
-        "toRotate": "旋转 90°",
-        "clickDelete": "点击删除",
-        "toRemove": "移除页面",
-        "restore": "恢复",
-        "uploadNew": "上传新文件",
-        "processing": "处理中...",
-        "downloadOrganized": "下载整理后的 PDF",
-        "noChanges": "未做更改",
-        "failedRead": "读取 PDF 文件失败",
-        "noPages": "无法创建没有页面的 PDF",
-        "successOrganized": "PDF 整理成功！",
-        "failedOrganize": "整理 PDF 失败",
-        "errorOrganize": "整理 PDF 时发生错误",
-        "pageCount": "{count} 页",
-        "pagesAfter": "编辑后 {count} 页",
-        "pageNumber": "第 {number} 页",
-        "rotate90": "旋转 90°",
-        "deletePage": "删除页面",
-        "restorePage": "恢复页面",
-        "odd": "奇数",
-        "even": "偶数",
-        "extract": "提取",
-        "delete": "删除",
-        "extracting": "正在提取页面...",
-        "pagesDeleted": "页面已删除",
-        "extractSuccess": "页面提取成功",
-        "extractError": "无法提取页面",
-        "addPDF": "添加 PDF",
-        "appendPages": "追加页面",
-        "tips": {
-            "title": "提示",
-            "drag": "拖动页面以重新排序",
-            "select": "使用复选框或点击以选择多个",
-            "rotateDelete": "将鼠标悬停在页面上以旋转或删除",
-            "extract": "使用工具栏提取选定的页面"
-        }
-    },
-    "addText": {
-        "clickToEdit": "点击编辑",
-        "addedCount": "已添加文本元素：{count}",
-        "originalSize": "原始大小",
-        "newSize": "新大小",
-        "processing": "处理 PDF",
-        "addingText": "正在向您的 PDF 添加文本元素...",
-        "modeAdd": "✏️ 添加文本",
-        "modeSelect": "👆 选择",
-        "selected": "已选择：“{text}...”",
-        "zoom": "缩放：{scale}%",
-        "pageOf": "第 {current} 页，共 {total} 页",
-        "defaultFileName": "document_with_text.pdf"
-    },
-    "addFormFields": {
-        "addedCount": "已添加表单字段：{count}",
-        "originalSize": "原始大小：{size} KB",
-        "newSize": "新大小：{size} KB",
-        "alertNoFields": "请在保存前至少添加一个表单字段",
-        "successTitle": "成功",
-        "fields": "字段：{count}",
-        "selected": "已选择：{name} ({type})",
-        "zoom": "缩放：{scale}%",
-        "pageOf": "第 {current} 页，共 {total} 页",
-        "selectFieldToEdit": "选择要编辑的字段"
-    },
-    "editText": {
-        "rasterizationWarning": "注意：编辑的页面将转换为图片。编辑后这些页面上的文本将不可选择。",
-        "selectPage": "选择页面",
-        "searchText": "搜索文本",
-        "textToFind": "要查找的文本",
-        "enterTextToFind": "输入要查找的文本",
-        "findText": "查找文本",
-        "occurrencesFound": "找到 {count} 处",
-        "selectAll": "全选",
-        "deselectAll": "取消全选",
-        "replacementSettings": "替换设置",
-        "selectPageToEdit": "选择要编辑的页面",
-        "textPosition": "文本位置（针对选定区域）",
-        "pagePreview": "页面预览",
-        "xLabel": "X:",
-        "yLabel": "Y:",
-        "newText": "新文本",
-        "enterNewText": "输入新文本",
-        "backgroundColor": "背景颜色",
-        "textColor": "文本颜色",
-        "fontSize": "字体大小",
-        "font": "字体",
-        "textAlignment": "文本对齐",
-        "showLivePreview": "显示实时预览",
-        "selectionMode": "选择模式",
-        "modeReplace": "替换文本",
-        "modeCover": "仅覆盖",
-        "modeReplaceDesc": "绘制并添加替换文本",
-        "modeCoverDesc": "绘制以覆盖文本/图片而不添加新文本",
-        "clickAndDrag": "💡 点击并拖动以选择要覆盖或替换的区域",
-        "autoDetectedFontSize": "🔍 自动检测到的字体大小：{size}px",
-        "coverMode": "(覆盖模式 🎨)",
-        "previewModeActive": "👁️ 预览模式已激活 - 实时显示所有更改",
-        "selectionsOnPage": "选择 ({count} 在第 {page} 页)",
-        "clearPage": "清除页面",
-        "noSelections": "此页面无选择。所有页面共计：{total}。",
-        "editActiveSelection": "编辑当前选择",
-        "replacementText": "替换文本",
-        "enterReplacementText": "输入替换文本 (支持多行)...",
-        "latinCharactersOnly": "⚠️ 仅支持拉丁字符 (A-Z, 0-9)",
-        "applyChanges": "应用 {count} 个更改",
-        "applyAllHint": "所有选择将应用到 PDF",
-        "cover": "覆盖",
-        "replace": "替换",
-        "replaceText": "替换文本",
-        "noOccurrencesSelected": "请至少选择一处以进行替换",
-        "searchError": "搜索文本时发生错误。请重试。",
-        "replaceError": "替换文本时发生错误。请重试。",
-        "successMessage": "文本替换成功！",
-        "useInOtherTools": "在其他工具中使用",
-        "settings": "文本设置"
-    },
-    "extractImages": {
-        "title": "提取/删除图片",
-        "mode": "提取模式",
-        "description": "从 PDF 中提取所有图片或删除它们以减小文件大小。",
-        "modeExtract": "提取图片",
-        "modeRemove": "删除图片",
-        "extractDescription": "提取 PDF 中发现的所有图片。您可以预览并选择要下载的图片。",
-        "removeDescription": "从 PDF 中删除图片以减小文件大小。您可以预览并选择要删除的图片。",
-        "extractBtn": "提取图片",
-        "removeBtn": "预览图片",
-        "successExtract": "图片提取成功！",
-        "successRemove": "图片删除成功！",
-        "previewTitle": "提取的图片",
-        "previewTitleRemove": "选择要删除的图片",
-        "previewDescription": "发现 {count} 张图片。选择要下载的图片。",
-        "previewDescriptionRemove": "发现 {count} 张图片。选择要从 PDF 中删除的图片。",
-        "selectAll": "全选",
-        "downloadSelected": "下载 ({count})",
-        "removeSelected": "删除 ({count})",
-        "noImagesSelected": "请至少选择一张图片下载。",
-        "smartFilter": {
-            "quickFilters": "快速筛选",
-            "usefulJunk": "{useful} 有用 / {junk} 垃圾 检测到",
-            "categories": {
-                "all": "全部",
-                "photo": "照片",
-                "chart": "图表",
-                "logo": "标志",
-                "icon": "图标和按钮",
-                "decoration": "装饰",
-                "other": "其他"
-            },
-            "presets": {
-                "photosOnly": "仅照片",
-                "useful": "有用图片",
-                "large": "大图片",
-                "charts": "图表",
-                "excludeIcons": "无图标"
-            }
-        }
+    "edit-pdf": {
+      "name": "编辑 PDF",
+      "description": "编辑 PDF 内容"
     }
+  },
+  "common": {
+    "upload": "上传文件",
+    "uploadDescription": "拖放或点击上传",
+    "selectFile": "选择文件",
+    "uploadFile": "上传文件",
+    "download": "下载",
+    "processing": "处理中...",
+    "searching": "搜索中...",
+    "error": "错误",
+    "success": "成功",
+    "cancel": "取消",
+    "close": "关闭",
+    "back": "返回",
+    "next": "下一步",
+    "done": "完成",
+    "remove": "移除",
+    "newFile": "新文件",
+    "filePreview": "文件预览",
+    "totalPages": "总页数",
+    "page": "页",
+    "pages": "页",
+    "fileSize": "文件大小",
+    "changeFile": "更改文件",
+    "autoLoaded": "文件从上一个工具加载",
+    "autoLoadedDescription": "您的 PDF 已自动加载",
+    "reset": "重置",
+    "processAnother": "处理另一个",
+    "relatedTools": "相关工具",
+    "clickToEdit": "点击编辑",
+    "convertAnother": "转换另一个",
+    "quickActions": "快速操作",
+    "preview": "预览",
+    "clearAll": "清除所有",
+    "processingTime": "处理时间",
+    "selectedFile": "选定的文件",
+    "originalSize": "原始大小",
+    "newSize": "新大小",
+    "useInOtherTools": "在其他工具中使用",
+    "recommended": "推荐",
+    "generatingThumbnails": "生成缩略图...",
+    "whatsNext": "接下来做什么？",
+    "continueWorking": "使用这些工具继续处理您的 PDF：",
+    "selectAll": "全选",
+    "convert": "转换",
+    "hide": "隐藏",
+    "loading": "加载中...",
+    "previous": "上一个",
+    "save": "保存",
+    "show": "显示",
+    "zoom": "缩放"
+  },
+  "upload": {
+    "selectFiles": "选择文件",
+    "dragOrClick": "将文件拖到此处或点击选择",
+    "dropHere": "将文件拖到此处",
+    "multipleFilesAllowed": "允许多个文件",
+    "singleFileAllowed": "仅限单个文件",
+    "pasteHint": "或按 Ctrl+V 粘贴文件",
+    "maxFiles": "最大文件数",
+    "maxSize": "每个文件的最大大小",
+    "acceptedTypes": "接受的类型",
+    "errors": {
+      "tooManyFiles": "文件太多。最大值：{max}",
+      "invalidFileType": "无效的文件类型。请仅选择 PDF 文件。",
+      "fileTooLarge": "文件太大。最大大小：{max} MB"
+    },
+    "readyToProcess": "准备开始",
+    "filesReadySingle": "{count} 个文件已就绪",
+    "filesReadyPlural": "{count} 个文件已就绪"
+  },
+  "merge": {
+    "fileList": "要合并的文件",
+    "reorderHint": "拖动以重新排序",
+    "mergeButton": "合并 PDF",
+    "mergeAnother": "合并另一个",
+    "minFilesHint": "添加至少 2 个 PDF 文件以合并",
+    "errors": {
+      "minFiles": "请选择至少 2 个 PDF 文件以合并"
+    },
+    "success": {
+      "title": "PDF 合并成功！",
+      "pages": "总页数",
+      "size": "文件大小",
+      "time": "处理时间"
+    },
+    "quickActions": {
+      "title": "接下来做什么？",
+      "description": "使用这些工具继续处理合并后的 PDF：",
+      "compress": "减小文件大小",
+      "protect": "添加密码",
+      "watermark": "添加水印",
+      "split": "提取页面"
+    }
+  },
+  "smartMerge": {
+    "title": "智能合并",
+    "analyzing": "正在分析文档...",
+    "sortSuggestions": "排序建议",
+    "detectedDates": "检测到的日期",
+    "duplicatesFound": "发现可能的重复",
+    "similarFiles": "相似文件",
+    "keepFirst": "保留第一个",
+    "sortApplied": "排序已应用",
+    "duplicatesRemoved": "重复已移除"
+  },
+  "smartOrganize": {
+    "title": "智能组织",
+    "analyzing": "正在分析页面...",
+    "quickActions": "快速操作",
+    "detectedChapters": "检测到的章节",
+    "removeBlank": "移除空白页",
+    "removeDuplicates": "移除重复",
+    "fixRotation": "修复旋转",
+    "moveTOC": "将目录移至前面",
+    "noIssues": "未检测到问题 - 文档看起来不错！"
+  },
+  "smartCompression": {
+    "title": "智能分析",
+    "analyzing": "正在分析 PDF 内容...",
+    "highPotential": "检测到高压缩潜力",
+    "optimized": "文件已充分优化",
+    "images": "图片",
+    "structure": "结构",
+    "heavy": "较大（图片较多）",
+    "light": "较小（主要是文本）",
+    "recommendation": "推荐模式",
+    "apply": "应用",
+    "applied": "推荐模式已应用",
+    "insights": {
+      "mostlyText": "主要是文本内容",
+      "imageCount": "包含 ~{count} 张图片",
+      "largeImages": "由于图片导致文件较大",
+      "highDensity": "高密度内容",
+      "efficient": "结构已很高效",
+      "standard": "标准 PDF 分析"
+    }
+  },
+  "smartImageFilter": {
+    "title": "智能图片筛选",
+    "analyzing": "正在分析图片...",
+    "totalImages": "总计",
+    "useful": "有用",
+    "junk": "垃圾",
+    "quickFilters": "快速筛选",
+    "categories": "分类",
+    "processingInfo": "所有分析都在您的浏览器本地运行。图片按大小、格式和特征分类。",
+    "presets": {
+      "useful": {
+        "label": "有用图片",
+        "description": "仅照片和图表"
+      },
+      "photosOnly": {
+        "label": "仅照片",
+        "description": "高质量照片"
+      },
+      "excludeIcons": {
+        "label": "无图标",
+        "description": "排除小图标"
+      },
+      "large": {
+        "label": "大图片",
+        "description": "图片 > 0.1 MP"
+      }
+    },
+    "junkWarning": {
+      "title": "检测到低价值图片",
+      "description": "发现 {count} 个小图标/装饰。考虑使用“有用图片”筛选器。"
+    }
+  },
+  "compress": {
+    "filePreview": "要压缩的文件",
+    "originalSize": "原始大小",
+    "pages": "页数",
+    "changeFile": "更改文件",
+    "selectQuality": "选择压缩级别",
+    "selected": "已选择",
+    "compressButton": "压缩 PDF",
+    "compressAnother": "压缩另一个",
+    "quality": {
+      "low": {
+        "name": "最大",
+        "description": "文件最小，质量较低"
+      },
+      "medium": {
+        "name": "平衡",
+        "description": "大小和质量之间的良好平衡"
+      },
+      "high": {
+        "name": "最小",
+        "description": "最佳质量，文件较大"
+      }
+    },
+    "success": {
+      "title": "PDF 压缩成功！",
+      "originalSize": "原始大小",
+      "compressedSize": "压缩后大小",
+      "saved": "节省空间",
+      "time": "处理时间"
+    },
+    "quickActions": {
+      "title": "接下来做什么？",
+      "description": "继续处理压缩后的 PDF：",
+      "protect": "添加密码",
+      "merge": "与他人合并",
+      "split": "提取页面",
+      "watermark": "添加水印"
+    },
+    "autoLoaded": {
+      "title": "文件从上一个工具加载",
+      "description": "您的合并后 PDF 已自动加载"
+    }
+  },
+  "flatten": {
+    "filePreview": "要扁平化的文件",
+    "description": "使表单和注释不可编辑",
+    "originalSize": "原始大小",
+    "pages": "页数",
+    "changeFile": "更改文件",
+    "flattenButton": "扁平化 PDF",
+    "flattenAnother": "扁平化另一个",
+    "success": {
+      "title": "PDF 扁平化成功！",
+      "originalSize": "原始大小",
+      "processedSize": "处理后大小",
+      "time": "处理时间"
+    },
+    "quickActions": {
+      "title": "接下来做什么？",
+      "description": "继续处理扁平化后的 PDF：",
+      "protect": "添加密码",
+      "merge": "与他人合并",
+      "compress": "减小文件大小"
+    },
+    "autoLoaded": {
+      "title": "文件从上一个工具加载",
+      "description": "您的 PDF 已自动加载"
+    }
+  },
+  "split": {
+    "filePreview": "要拆分的文件",
+    "pages": "页数",
+    "totalPages": "总页数",
+    "fileSize": "文件大小",
+    "changeFile": "更改文件",
+    "selectMode": "选择拆分模式",
+    "splitButton": "拆分 PDF",
+    "splitAnother": "拆分另一个",
+    "downloadAll": "下载所有文件",
+    "downloadAsZip": "下载 ZIP",
+    "previewTitle": "预览页面",
+    "outputFiles": "输出文件",
+    "selectAll": "全选",
+    "deselectAll": "取消全选",
+    "selectedCount": "选择了 {count} 页",
+    "selectPagesHint": "请至少选择一页以继续",
+    "mergingSelected": "正在合并选定页面...",
+    "mergeFailed": "合并选定页面失败",
+    "mode": {
+      "all": {
+        "name": "所有页面",
+        "description": "拆分为单独的页面"
+      },
+      "range": {
+        "name": "页面范围",
+        "description": "提取特定页面范围"
+      },
+      "intervals": {
+        "name": "按间隔",
+        "description": "每 N 页拆分"
+      },
+      "custom": {
+        "name": "自定义页面",
+        "description": "选择特定页面"
+      },
+      "byStructure": {
+        "name": "按结构",
+        "description": "按章节智能拆分"
+      }
+    },
+    "structureSettings": "文档结构",
+    "analyzeFirst": "分析文档以检测章节和部分",
+    "analyzeButton": "分析结构",
+    "analyzing": "分析中...",
+    "chaptersDetected": "检测到 {count} 个章节",
+    "reanalyze": "重新分析",
+    "rangeSettings": "页面范围设置",
+    "startPage": "起始页",
+    "endPage": "结束页",
+    "rangeHint": "总页数：{total}",
+    "intervalSettings": "间隔设置",
+    "pagesPerFile": "每个文件的页数",
+    "intervalHint": "将从 {total} 页创建 {files} 个文件",
+    "customSettings": "自定义页面选择",
+    "pageNumbers": "页码",
+    "customHint": "输入以逗号分隔的页码或使用范围（例如，1,3,5-7,10）",
+    "success": {
+      "title": "PDF 拆分成功！",
+      "filesCreated": "创建了 {count} 个文件"
+    },
+    "pageNumber": "第 {page} 页",
+    "pageRange": "第 {start}-{end} 页",
+    "pageCount": "{count} 页",
+    "pageCountSingle": "1 页",
+    "autoLoaded": {
+      "title": "文件从上一个工具加载",
+      "description": "您的 PDF 已自动加载"
+    },
+    "quickActions": {
+      "title": "接下来做什么？",
+      "description": "在上方选择页面并继续使用这些工具处理它们：",
+      "descriptionWithSelection": "继续使用这些工具处理 {count} 个选定页面：",
+      "compress": "减小文件大小",
+      "merge": "与他人合并",
+      "protect": "添加密码",
+      "watermark": "添加水印"
+    }
+  },
+  "protect": {
+    "filePreview": "要保护的文件",
+    "protectButton": "保护 PDF",
+    "protectAnother": "保护另一个",
+    "userPassword": "打开 PDF 的密码",
+    "userPasswordPlaceholder": "输入密码",
+    "ownerPassword": "所有者密码（可选）",
+    "ownerPasswordPlaceholder": "输入所有者密码",
+    "useOwnerPassword": "使用不同的所有者密码",
+    "permissionsOnly": "仅限制（无需密码即可打开）",
+    "permissionsOnlyHint": "PDF 可以无需密码打开，但使用将受到限制",
+    "passwordWarning": {
+      "title": "警告：密码无法恢复",
+      "message": "如果您丢失了密码，将无法恢复。请妥善保管！"
+    },
+    "securityLevel": "安全级别",
+    "advancedSettings": "高级设置",
+    "encryptionLevel": "加密级别",
+    "recommended": "(推荐)",
+    "permissionsTitle": "权限",
+    "presets": {
+      "basic": {
+        "name": "基本",
+        "description": "允许打印和复制"
+      },
+      "business": {
+        "name": "商务",
+        "description": "仅允许打印"
+      },
+      "confidential": {
+        "name": "机密",
+        "description": "禁止打印或复制"
+      }
+    },
+    "permissions": {
+      "printing": "打印",
+      "printingNone": "不允许",
+      "printingLow": "低分辨率",
+      "printingHigh": "高分辨率",
+      "copying": "允许复制文本",
+      "modifying": "允许修改内容",
+      "annotating": "允许注释",
+      "fillingForms": "允许填写表单",
+      "contentAccessibility": "允许屏幕阅读器"
+    },
+    "passwordStrength": {
+      "strength": "强度",
+      "weak": "弱",
+      "medium": "中",
+      "strong": "强",
+      "tooShort": "密码太短（最少 8 个字符）",
+      "useUpperAndLower": "使用大小写字母",
+      "useNumbers": "添加数字",
+      "useSpecialChars": "添加特殊字符"
+    },
+    "errors": {
+      "passwordRequired": "密码是必需的",
+      "protectionFailed": "保护 PDF 失败"
+    },
+    "success": {
+      "title": "PDF 已成功保护！",
+      "encryption": "加密级别",
+      "password": "密码",
+      "passwordSet": "已设置"
+    },
+    "activePermissions": "当前权限",
+    "badge": {
+      "printingAllowed": "允许打印",
+      "noPrinting": "禁止打印",
+      "copyingAllowed": "允许复制",
+      "noCopying": "禁止复制",
+      "editingAllowed": "允许编辑",
+      "noEditing": "禁止编辑"
+    },
+    "quickActions": {
+      "title": "接下来做什么？",
+      "description": "继续处理受保护的 PDF：",
+      "compress": "减小文件大小",
+      "split": "提取页面",
+      "watermark": "添加水印",
+      "merge": "与他人合并"
+    },
+    "autoLoaded": {
+      "title": "文件从上一个工具加载",
+      "description": "您的 PDF 已自动加载"
+    }
+  },
+  "ocr": {
+    "filePreview": "要处理的文件",
+    "recognitionLanguage": "识别语言",
+    "languageHint": "选择文档中的文本语言",
+    "autoDetect": "自动检测语言",
+    "autoDetectHint": "语言将从文档内容自动检测",
+    "detectingLanguage": "检测语言...",
+    "analyzingContent": "分析文档内容...",
+    "pageSelection": "要处理的页面",
+    "firstPageOnly": "仅第一页",
+    "allPages": "所有页面",
+    "pageRange": "页面范围",
+    "page": "页",
+    "pages": "页",
+    "processed": "已处理",
+    "processingPage": "正在处理第 {current} 页，共 {total} 页...",
+    "startOCR": "开始 OCR",
+    "processing": "处理 OCR...",
+    "analyzing": "分析中...",
+    "initializing": "正在初始化 OCR 引擎...",
+    "loadingModel": "正在加载语言模型...",
+    "processingImage": "正在处理图片...",
+    "processingPDF": "正在处理 PDF...",
+    "recognizing": "正在识别文本",
+    "completed": "OCR 完成！",
+    "pageTitle": "OCR 结果",
+    "resultsTitle": "识别的文本",
+    "confidence": "置信度",
+    "extractedText": "提取的文本",
+    "copyText": "复制文本",
+    "downloadTXT": "下载 TXT",
+    "textCopied": "文本已复制到剪贴板！",
+    "remove": "移除",
+    "newFile": "新文件",
+    "preview": "预览",
+    "view": "查看",
+    "edit": "编辑",
+    "editPlaceholder": "在此处编辑提取的文本...",
+    "textModified": "文本已修改",
+    "words": "词",
+    "lines": "行",
+    "characters": "字符",
+    "languageDetection": {
+      "highConfidence": "高置信度",
+      "mediumConfidence": "中等置信度",
+      "lowConfidence": "低置信度",
+      "verifyLanguage": "验证语言选择以获得更好的 OCR 准确性"
+    },
+    "outputFormat": {
+      "title": "输出格式",
+      "text": "纯文本 (.txt)",
+      "textDesc": "仅提取文本，可编辑和复制",
+      "searchablePdf": "可搜索 PDF（保留原件）",
+      "searchablePdfDesc": "保留原始图片并添加不可见的 OCR 文本层 - 外观与原件完全相同，但可完全搜索",
+      "hocr": "hOCR (.html)",
+      "hocrDesc": "带有精确词语定位和置信度分数的 HTML - 适用于自动处理",
+      "tsv": "TSV (.tsv)",
+      "tsvDesc": "带有边界框的制表符分隔值 - 易于解析以进行数据分析"
+    },
+    "results": {
+      "textReady": "识别的文本",
+      "searchablePdfReady": "准备创建可搜索 PDF",
+      "hocrReady": "hOCR 数据就绪",
+      "tsvReady": "TSV 数据就绪",
+      "pagesWillProcess": "{count} {pages} 将使用 OCR 处理",
+      "confidenceAndPages": "置信度：{confidence}% • 已处理 {count} {pages}"
+    },
+    "infoPanel": {
+      "searchablePdfTitle": "带有不可见文本层的可搜索 PDF",
+      "searchablePdfDesc": "原始文档图片将完全保留。OCR 文本将作为不可见层添加，使 PDF 完全可搜索并允许文本选择，同时保持原始视觉外观。",
+      "hocrTitle": "hOCR 格式（基于 HTML 的 OCR）",
+      "hocrDesc": "带有每个词的精确边界框和置信度分数的 HTML 文档。非常适合自动处理、NLP 管道和自定义文本提取工作流。包含有关文本位置、层级和识别质量的结构化数据。",
+      "tsvTitle": "TSV 格式（制表符分隔值）",
+      "tsvDesc": "带有边界框坐标和置信度分数的电子表格兼容格式。易于导入 Excel、Google Sheets 或 Python/Pandas 等数据分析工具。每行包含层级、页码、块、段落、行、词、位置和文本。"
+    },
+    "download": {
+      "createSearchablePdf": "创建可搜索 PDF",
+      "downloadHocr": "下载 hOCR (.html)",
+      "downloadTsv": "下载 TSV (.tsv)",
+      "downloadTxt": "下载 TXT",
+      "searchablePdfReady": "准备好创建可搜索 PDF！",
+      "searchablePdfDownloaded": "可搜索 PDF 已下载！"
+    },
+    "infoTitle": "关于 OCR",
+    "info1": "支持 PDF 文档和图片 (JPG, PNG)",
+    "info2": "5 种语言识别：EN, RU, DE, FR, ES",
+    "info3": "支持多页 PDF 和页面范围选择",
+    "info4": "所有处理都在您的浏览器中进行 - 文件保持私密",
+    "errors": {
+      "noFile": "请先选择文件",
+      "processingFailed": "OCR 处理失败。请重试。",
+      "unsupportedFileType": "OCR 仅支持 PDF 和图片文件 (JPG, PNG)。不支持您的文件类型 (.{ext})。",
+      "hocrEmpty": "hOCR 数据为空。请尝试重新运行 OCR。",
+      "tsvEmpty": "TSV 数据为空。请尝试重新运行 OCR。",
+      "searchablePdfFailed": "创建可搜索 PDF 失败：{error}",
+      "downloadFailed": "生成文件失败。请重试。"
+    }
+  },
+  "watermark": {
+    "filePreview": "要添加水印的文件",
+    "settings": "水印设置",
+    "text": "水印文本",
+    "watermarkText": "水印文本",
+    "watermarkPlaceholder": "输入水印文本",
+    "position": "位置",
+    "positions": {
+      "diagonal": "对角线",
+      "center": "居中",
+      "topLeft": "左上",
+      "topRight": "右上",
+      "bottomLeft": "左下",
+      "bottomRight": "右下",
+      "custom": "手动 (拖拽)"
+    },
+    "color": "颜色",
+    "colors": {
+      "black": "黑色",
+      "gray": "灰色",
+      "red": "红色",
+      "blue": "蓝色"
+    },
+    "opacity": "不透明度",
+    "fontSize": "字体大小",
+    "rotation": "旋转",
+    "apply": "应用",
+    "processing": "正在添加水印...",
+    "processingPage": "正在处理第 {current} 页，共 {total} 页...",
+    "saving": "正在保存 PDF...",
+    "completed": "水印已添加！",
+    "preview": "预览",
+    "loading": "加载中...",
+    "loadingPreview": "正在加载预览...",
+    "errors": {
+      "noText": "请输入水印文本",
+      "failed": "添加水印失败",
+      "cyrillicNotSupported": "所选字体可能不支持西里尔字符"
+    },
+    "success": {
+      "title": "水印添加成功",
+      "watermarkApplied": "水印",
+      "pages": "已处理页面",
+      "size": "文件大小"
+    },
+    "quickActions": {
+      "title": "接下来做什么？",
+      "description": "继续处理您的文件：",
+      "compress": "减小文件大小",
+      "protect": "添加密码",
+      "split": "拆分 PDF",
+      "merge": "合并 PDF"
+    },
+    "infoTitle": "关于水印",
+    "info1": "支持完全支持西里尔和拉丁字符的文本水印",
+    "info2": "6 个位置选项：对角线、居中和 4 个角落",
+    "info3": "所有处理都在您的浏览器中进行 - 文件保持私密"
+  },
+  "rotate": {
+    "settings": "旋转设置",
+    "selectAngle": "选择旋转角度",
+    "clockwise": "顺时针",
+    "upsideDown": "倒置",
+    "counterClockwise": "逆时针",
+    "selectPages": "选择要旋转的页面",
+    "allPages": "所有页面",
+    "rotateAllPages": "旋转文档中的所有页面",
+    "specificPages": "特定页面",
+    "choosePages": "选择要旋转的页面",
+    "pageNumbers": "页码",
+    "pageNumbersHint": "示例：1,3,5-7,10（总页数：{total}）",
+    "rotateButton": "旋转 PDF",
+    "rotateAnother": "旋转另一个",
+    "invalidPages": "请输入有效的页码",
+    "failed": "旋转 PDF 失败",
+    "success": "PDF 旋转成功！",
+    "successDescription": "您的 PDF 页面已按指定旋转",
+    "quickActions": {
+      "title": "接下来做什么？",
+      "description": "继续处理旋转后的 PDF：",
+      "compress": "减小文件大小",
+      "protect": "添加密码",
+      "watermark": "添加水印",
+      "split": "提取页面"
+    }
+  },
+  "deletePages": {
+    "selectPages": "选择要删除的页面",
+    "pagesToDelete": "要删除的页面",
+    "hint": "示例：1,3,5-7,10（总页数：{total}）",
+    "warning": "警告：此操作无法撤销",
+    "warningDescription": "页面将从 PDF 中永久删除",
+    "deleteButton": "删除页面",
+    "deleteAnother": "从另一个删除",
+    "invalidPages": "请输入有效的页码",
+    "cannotDeleteAll": "无法删除 PDF 中的所有页面",
+    "failed": "删除页面失败",
+    "success": "页面删除成功！",
+    "successDescription": "选定页面已从您的 PDF 中移除",
+    "quickActions": {
+      "title": "接下来做什么？",
+      "description": "继续处理您的 PDF：",
+      "compress": "减小文件大小",
+      "protect": "添加密码",
+      "watermark": "添加水印",
+      "merge": "与他人合并"
+    }
+  },
+  "extractPages": {
+    "selectPages": "选择要提取的页面",
+    "pagesToExtract": "要提取的页面",
+    "hint": "示例：1,3,5-7,10（总页数：{total}）",
+    "info": "提取将创建一个新的 PDF",
+    "infoDescription": "原始 PDF 保持不变，仅选定页面被复制到新文件",
+    "extractButton": "提取页面",
+    "extractAnother": "从另一个提取",
+    "invalidPages": "请输入有效的页码",
+    "failed": "提取页面失败",
+    "success": "页面提取成功！",
+    "successDescription": "选定页面已提取到新的 PDF",
+    "quickActions": {
+      "title": "接下来做什么？",
+      "description": "继续处理提取的页面：",
+      "compress": "减小文件大小",
+      "protect": "添加密码",
+      "watermark": "添加水印",
+      "merge": "与他人合并"
+    }
+  },
+  "imagesToPdf": {
+    "imagesList": "图片",
+    "settings": "PDF 设置",
+    "pageSize": "页面大小",
+    "pageSizes": {
+      "fit": "适应图片",
+      "a4": "A4",
+      "letter": "信纸"
+    },
+    "orientation": "方向",
+    "orientations": {
+      "portrait": "纵向",
+      "landscape": "横向"
+    },
+    "margin": "边距",
+    "convert": "转换为 PDF",
+    "convertAnother": "转换另一个",
+    "errors": {
+      "noImages": "请至少选择一张图片"
+    },
+    "success": {
+      "title": "图片转换成功！",
+      "pages": "创建的页面"
+    },
+    "successMessage": "成功创建带有 {count} 页的 PDF",
+    "quickActions": {
+      "title": "接下来做什么？",
+      "description": "继续处理您的 PDF：",
+      "compress": "减小文件大小",
+      "protect": "添加密码",
+      "watermark": "添加水印",
+      "merge": "与他人合并"
+    }
+  },
+  "pdfToImages": {
+    "title": "PDF 转图片",
+    "description": "将 PDF 页面转换为高质量图片",
+    "format": "输出格式",
+    "quality": "质量",
+    "pages": "要转换的页面",
+    "allPages": "所有页面",
+    "pageRange": "页面范围",
+    "specificPages": "特定页面",
+    "backgroundColor": "背景颜色",
+    "convert": "转换为图片",
+    "success": "转换成功！",
+    "imagesCreated": "已创建图片",
+    "totalSize": "总大小",
+    "preview": "预览",
+    "page": "页",
+    "download": "下载图片",
+    "downloadZip": "下载为 ZIP",
+    "downloadAll": "全部下载",
+    "downloadIndividual": "下载单张图片：",
+    "errors": {
+      "conversionFailed": "PDF 转图片失败",
+      "zipFailed": "创建 ZIP 归档失败"
+    }
+  },
+  "wordToPdf": {
+    "convert": "转换为 PDF",
+    "convertAnother": "转换另一个",
+    "conversionMode": "转换模式",
+    "withFormatting": "带格式",
+    "textOnly": "仅文本",
+    "formattingDescription": "保留图片、表格、标题和文本样式",
+    "textDescription": "仅提取文本。文件更小，转换更快",
+    "quality": "输出质量",
+    "qualityStandard": "标准（更快，文件更小）",
+    "qualityHigh": "高质量（平衡）",
+    "qualityMax": "最大（最佳质量，文件较大）",
+    "errors": {
+      "noFile": "请先选择一个 Word 文档",
+      "invalidFormat": "无效的文件格式。请选择 .docx 文件",
+      "conversionFailed": "Word 转 PDF 失败"
+    },
+    "success": "Word 文档转换成功！",
+    "editabilityWarning": "⚠️ 'Formatted' mode creates PDF from images. Text in this file will not be editable via standard search, but you can add new text or cover areas manually.",
+    "editResult": "Edit PDF"
+  },
+  "pdfToWord": {
+    "convert": "转换为 Word",
+    "convertAnother": "转换另一个",
+    "options": "转换选项",
+    "smartHeadings": "智能标题",
+    "smartHeadingsDescription": "按字体大小检测标题并应用 Word 标题样式",
+    "errors": {
+      "noFile": "请先选择一个 PDF 文件",
+      "invalidPdf": "无效的 PDF 文件。请选择有效的 PDF",
+      "conversionFailed": "PDF 转 Word 失败"
+    },
+    "success": "PDF 转换为 Word 成功！",
+    "readyToDownload": "您的 Word 文档准备好下载了",
+    "conversionComplete": "转换完成"
+  },
+  "sign": {
+    "signatureType": "签名类型",
+    "drawSignature": "绘制签名",
+    "uploadImage": "上传签名图片",
+    "signatureText": "签名文本",
+    "position": "位置",
+    "positions": {
+      "bottomRight": "右下",
+      "bottomLeft": "左下",
+      "topRight": "右上",
+      "topLeft": "左上"
+    },
+    "applyToPages": "应用到页面",
+    "allPages": "所有页面",
+    "pageNumber": "第 {number} 页",
+    "pagesSigned": "已签署页面",
+    "fileSize": "文件大小",
+    "yourName": "您的名字",
+    "loadingHighQuality": "正在加载高质量...",
+    "generatingPreview": "正在生成预览...",
+    "saving": "保存中...",
+    "addingSignature": "正在添加签名...",
+    "signingPage": "正在签署第 {current} 页，共 {total} 页...",
+    "successTitle": "签名添加成功",
+    "modeDraw": "绘制",
+    "modeUpload": "上传",
+    "modeText": "文本",
+    "clearSignature": "清除签名",
+    "noFile": "请上传 PDF 文件",
+    "enterText": "请输入签名文本",
+    "provideSignature": "请绘制或上传签名",
+    "textSize": "文本大小",
+    "signatureSize": "签名大小",
+    "addSignature": "添加签名",
+    "quickActions": {
+      "title": "接下来做什么？",
+      "description": "继续处理已签署的 PDF：",
+      "protect": "添加密码",
+      "compress": "减小文件大小",
+      "watermark": "添加水印",
+      "merge": "与他人合并"
+    }
+  },
+  "pageEditor": {
+    "deleted": "已删除",
+    "dragDrop": "拖放",
+    "reorderPages": "以重新排序页面",
+    "clickRotate": "点击旋转",
+    "toRotate": "旋转 90°",
+    "clickDelete": "点击删除",
+    "toRemove": "移除页面",
+    "restore": "恢复",
+    "uploadNew": "上传新文件",
+    "processing": "处理中...",
+    "downloadOrganized": "下载整理后的 PDF",
+    "noChanges": "未做更改",
+    "failedRead": "读取 PDF 文件失败",
+    "noPages": "无法创建没有页面的 PDF",
+    "successOrganized": "PDF 整理成功！",
+    "failedOrganize": "整理 PDF 失败",
+    "errorOrganize": "整理 PDF 时发生错误",
+    "pageCount": "{count} 页",
+    "pagesAfter": "编辑后 {count} 页",
+    "pageNumber": "第 {number} 页",
+    "rotate90": "旋转 90°",
+    "deletePage": "删除页面",
+    "restorePage": "恢复页面",
+    "odd": "奇数",
+    "even": "偶数",
+    "extract": "提取",
+    "delete": "删除",
+    "extracting": "正在提取页面...",
+    "pagesDeleted": "页面已删除",
+    "extractSuccess": "页面提取成功",
+    "extractError": "无法提取页面",
+    "addPDF": "添加 PDF",
+    "appendPages": "追加页面",
+    "tips": {
+      "title": "提示",
+      "drag": "拖动页面以重新排序",
+      "select": "使用复选框或点击以选择多个",
+      "rotateDelete": "将鼠标悬停在页面上以旋转或删除",
+      "extract": "使用工具栏提取选定的页面"
+    }
+  },
+  "addText": {
+    "clickToEdit": "点击编辑",
+    "addedCount": "已添加文本元素：{count}",
+    "originalSize": "原始大小",
+    "newSize": "新大小",
+    "processing": "处理 PDF",
+    "addingText": "正在向您的 PDF 添加文本元素...",
+    "modeAdd": "✏️ 添加文本",
+    "modeSelect": "👆 选择",
+    "selected": "已选择：“{text}...”",
+    "zoom": "缩放：{scale}%",
+    "pageOf": "第 {current} 页，共 {total} 页",
+    "defaultFileName": "document_with_text.pdf",
+    "title": "添加文本",
+    "toolbar": {
+      "addText": "Add Text",
+      "select": "Select",
+      "page": "Page",
+      "of": "of",
+      "savePdf": "保存PDF",
+      "undo": "Undo",
+      "redo": "Redo"
+    },
+    "format": {
+      "title": "Format Text",
+      "placeholder": "Enter text here...",
+      "textContent": "Text Content",
+      "fontFamily": "字体",
+      "fontSize": "大小",
+      "textColor": "颜色",
+      "position": "Position",
+      "preview": "Preview",
+      "sampleText": "Sample text",
+      "opacity": "Opacity",
+      "rotation": "Rotation",
+      "bold": "Bold",
+      "italic": "Italic",
+      "delete": "Delete Element",
+      "alignment": "对齐",
+      "alignLeft": "靠左",
+      "alignCenter": "居中",
+      "alignRight": "靠右",
+      "fitToWidth": "适应宽度",
+      "backgroundColor": "背景覆盖"
+    }
+  },
+  "addFormFields": {
+    "addedCount": "已添加表单字段：{count}",
+    "originalSize": "原始大小：{size} KB",
+    "newSize": "新大小：{size} KB",
+    "alertNoFields": "请在保存前至少添加一个表单字段",
+    "successTitle": "成功",
+    "fields": "字段：{count}",
+    "selected": "已选择：{name} ({type})",
+    "zoom": "缩放：{scale}%",
+    "pageOf": "第 {current} 页，共 {total} 页",
+    "selectFieldToEdit": "选择要编辑的字段"
+  },
+  "editText": {
+    "rasterizationWarning": "注意：编辑的页面将转换为图片。编辑后这些页面上的文本将不可选择。",
+    "selectPage": "选择页面",
+    "searchText": "搜索文本",
+    "textToFind": "要查找的文本",
+    "enterTextToFind": "输入要查找的文本",
+    "findText": "查找文本",
+    "occurrencesFound": "找到 {count} 处",
+    "selectAll": "全选",
+    "deselectAll": "取消全选",
+    "replacementSettings": "替换设置",
+    "selectPageToEdit": "选择要编辑的页面",
+    "textPosition": "文本位置（针对选定区域）",
+    "pagePreview": "页面预览",
+    "xLabel": "X:",
+    "yLabel": "Y:",
+    "newText": "新文本",
+    "enterNewText": "输入新文本",
+    "backgroundColor": "背景颜色",
+    "textColor": "文本颜色",
+    "fontSize": "字体大小",
+    "font": "字体",
+    "textAlignment": "文本对齐",
+    "showLivePreview": "显示实时预览",
+    "selectionMode": "选择模式",
+    "modeReplace": "替换文本",
+    "modeCover": "仅覆盖",
+    "modeReplaceDesc": "绘制并添加替换文本",
+    "modeCoverDesc": "绘制以覆盖文本/图片而不添加新文本",
+    "clickAndDrag": "💡 点击并拖动以选择要覆盖或替换的区域",
+    "autoDetectedFontSize": "🔍 自动检测到的字体大小：{size}px",
+    "coverMode": "(覆盖模式 🎨)",
+    "previewModeActive": "👁️ 预览模式已激活 - 实时显示所有更改",
+    "selectionsOnPage": "选择 ({count} 在第 {page} 页)",
+    "clearPage": "清除页面",
+    "noSelections": "此页面无选择。所有页面共计：{total}。",
+    "editActiveSelection": "编辑当前选择",
+    "replacementText": "替换文本",
+    "enterReplacementText": "输入替换文本 (支持多行)...",
+    "latinCharactersOnly": "⚠️ 仅支持拉丁字符 (A-Z, 0-9)",
+    "applyChanges": "应用 {count} 个更改",
+    "applyAllHint": "所有选择将应用到 PDF",
+    "cover": "覆盖",
+    "replace": "替换",
+    "replaceText": "替换文本",
+    "noOccurrencesSelected": "请至少选择一处以进行替换",
+    "searchError": "搜索文本时发生错误。请重试。",
+    "replaceError": "替换文本时发生错误。请重试。",
+    "successMessage": "文本替换成功！",
+    "useInOtherTools": "在其他工具中使用",
+    "settings": "文本设置",
+    "smartEdit": "智能编辑",
+    "format": {
+      "title": "文本格式",
+      "textContent": "Content",
+      "placeholder": "Enter text...",
+      "fontFamily": "Font",
+      "fontSize": "Size",
+      "textColor": "Color",
+      "opacity": "Opacity",
+      "rotation": "Rotation",
+      "bold": "Bold",
+      "italic": "Italic",
+      "delete": "Remove Element",
+      "alignment": "Alignment",
+      "alignLeft": "靠左",
+      "alignCenter": "居中",
+      "alignRight": "靠右",
+      "fitToWidth": "Fit to Width"
+    }
+  },
+  "extractImages": {
+    "title": "提取/删除图片",
+    "mode": "提取模式",
+    "description": "从 PDF 中提取所有图片或删除它们以减小文件大小。",
+    "modeExtract": "提取图片",
+    "modeRemove": "删除图片",
+    "extractDescription": "提取 PDF 中发现的所有图片。您可以预览并选择要下载的图片。",
+    "removeDescription": "从 PDF 中删除图片以减小文件大小。您可以预览并选择要删除的图片。",
+    "extractBtn": "提取图片",
+    "removeBtn": "预览图片",
+    "successExtract": "图片提取成功！",
+    "successRemove": "图片删除成功！",
+    "previewTitle": "提取的图片",
+    "previewTitleRemove": "选择要删除的图片",
+    "previewDescription": "发现 {count} 张图片。选择要下载的图片。",
+    "previewDescriptionRemove": "发现 {count} 张图片。选择要从 PDF 中删除的图片。",
+    "selectAll": "全选",
+    "downloadSelected": "下载 ({count})",
+    "removeSelected": "删除 ({count})",
+    "noImagesSelected": "请至少选择一张图片下载。",
+    "smartFilter": {
+      "quickFilters": "快速筛选",
+      "usefulJunk": "{useful} 有用 / {junk} 垃圾 检测到",
+      "categories": {
+        "all": "全部",
+        "photo": "照片",
+        "chart": "图表",
+        "logo": "标志",
+        "icon": "图标和按钮",
+        "decoration": "装饰",
+        "other": "其他"
+      },
+      "presets": {
+        "photosOnly": "仅照片",
+        "useful": "有用图片",
+        "large": "大图片",
+        "charts": "图表",
+        "excludeIcons": "无图标"
+      }
+    }
+  }
 }

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { PDFDocument, rgb, StandardFonts, degrees } from 'pdf-lib';
 import fontkit from '@pdf-lib/fontkit';
 import * as pdfjsLib from 'pdfjs-dist';
@@ -70,21 +70,29 @@ export const useContentEditor = (): UseContentEditorReturn => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [scale, setScale] = useState(1);
-    const [toolMode, setToolMode] = useState<'select' | 'add' | 'edit'>('add');
+    const [toolMode, setToolMode] = useState<'select' | 'add' | 'edit'>('edit');
     const [isProcessing, setIsProcessing] = useState(false);
 
     // History management
     const [history, setHistory] = useState<TextElement[][]>([[]]);
     const [historyIndex, setHistoryIndex] = useState(0);
     const elementIdCounter = useRef(0);
+    const textElementsRef = useRef<TextElement[]>([]);
+
+    // Keep ref in sync
+    useEffect(() => {
+        textElementsRef.current = textElements;
+    }, [textElements]);
 
     // History helpers
     const saveToHistory = useCallback((elements: TextElement[]) => {
-        const newHistory = history.slice(0, historyIndex + 1);
-        newHistory.push([...elements]);
-        setHistory(newHistory);
-        setHistoryIndex(newHistory.length - 1);
-    }, [history, historyIndex]);
+        setHistory(prevHistory => {
+            const nextHistory = prevHistory.slice(0, historyIndex + 1);
+            nextHistory.push([...elements]);
+            return nextHistory;
+        });
+        setHistoryIndex(prevIndex => prevIndex + 1);
+    }, [historyIndex]);
 
     // Add text element
     const addTextElement = useCallback((x: number, y: number, text: string = 'New Text', initialProps?: Partial<TextElement>) => {
@@ -117,22 +125,18 @@ export const useContentEditor = (): UseContentEditorReturn => {
 
     // Update text element
     const updateTextElement = useCallback((id: string, updates: Partial<TextElement>) => {
-        setTextElements(prev => {
-            const newElements = prev.map(el =>
-                el.id === id ? { ...el, ...updates } : el
-            );
-            saveToHistory(newElements);
-            return newElements;
-        });
+        const next = textElementsRef.current.map(el =>
+            el.id === id ? { ...el, ...updates } : el
+        );
+        setTextElements(next);
+        saveToHistory(next);
     }, [saveToHistory]);
 
     // Delete text element
     const deleteTextElement = useCallback((id: string) => {
-        setTextElements(prev => {
-            const newElements = prev.filter(el => el.id !== id);
-            saveToHistory(newElements);
-            return newElements;
-        });
+        const next = textElementsRef.current.filter(el => el.id !== id);
+        setTextElements(next);
+        saveToHistory(next);
         if (selectedElementId === id) setSelectedElementId(null);
     }, [selectedElementId, saveToHistory]);
 
@@ -143,18 +147,15 @@ export const useContentEditor = (): UseContentEditorReturn => {
 
     // Move element
     const moveElement = useCallback((id: string, x: number, y: number) => {
-        setTextElements(prev => {
-            const newElements = prev.map(el =>
-                el.id === id ? { ...el, x, y } : el
-            );
-            // We don't save to history every pixel of movement, usually handle onDragEnd
-            return newElements;
-        });
+        const next = textElementsRef.current.map(el =>
+            el.id === id ? { ...el, x, y } : el
+        );
+        setTextElements(next);
     }, []);
 
     const finishMovement = useCallback(() => {
-        saveToHistory(textElements);
-    }, [textElements, saveToHistory]);
+        saveToHistory(textElementsRef.current);
+    }, [saveToHistory]);
 
     // Navigation and Scale
     const goToPage = useCallback((page: number) => setCurrentPage(page), []);
@@ -243,23 +244,37 @@ export const useContentEditor = (): UseContentEditorReturn => {
             let fontFamily = 'Roboto';
             let bold = false;
             let italic = false;
+            // Use vertical scaling (transform[0] is often horizontal scaling which can be compressed)
+            // But we need to use the larger of the two to avoid under-sizing
+            const scaleX = Math.sqrt(targetItem.item.transform[0] * targetItem.item.transform[0] + targetItem.item.transform[1] * targetItem.item.transform[1]);
+            const scaleY = Math.sqrt(targetItem.item.transform[2] * targetItem.item.transform[2] + targetItem.item.transform[3] * targetItem.item.transform[3]);
+            // Use the larger dimension to avoid issues with condensed text and round to 2 decimals
+            const fontSize = Math.round(Math.max(scaleX, scaleY) * 100) / 100;
 
             if (itemStyle) {
-                const fontName = itemStyle.fontFamily.toLowerCase();
-                bold = fontName.includes('bold') || fontName.includes('heavy') || fontName.includes('black');
+                // Normalize font name: remove subset prefix (e.g. "ABCDEF+Arial-Bold" -> "Arial-Bold")
+                const rawFontName = itemStyle.fontFamily || '';
+                const fontName = (rawFontName.includes('+') ? rawFontName.split('+')[1] : rawFontName).toLowerCase();
+
+                // Better Bold/Italic detection
+                bold = fontName.includes('bold') || fontName.includes('heavy') || fontName.includes('black') || fontName.includes('medium') || fontName.includes('demi');
                 italic = fontName.includes('italic') || fontName.includes('oblique') || fontName.includes('slanted');
 
-                if (fontName.includes('times') || fontName.includes('serif')) {
-                    fontFamily = 'Times New Roman';
-                } else if (fontName.includes('courier') || fontName.includes('mono')) {
-                    fontFamily = 'Courier New';
-                } else if (fontName.includes('helvetica') || fontName.includes('arial') || fontName.includes('sans')) {
-                    fontFamily = 'Arial';
-                } else if (fontName.includes('roboto')) {
+                // Intelligent Font Mapping
+                if (fontName.includes('roboto')) {
                     fontFamily = 'Roboto';
-                } else if (fontName.includes('calibri') || fontName.includes('segoe') || fontName.includes('gothic') || fontName.includes('verdana')) {
-                    fontFamily = 'Helvetica'; // Best generic match for clean sans-serif
+                } else if (fontName.includes('arial') || fontName.includes('helvetica') || fontName.includes('sans') || fontName.includes('inter') || fontName.includes('system') || fontName.includes('tahoma') || fontName.includes('verdana') || fontName.includes('calibri') || fontName.includes('segoe')) {
+                    fontFamily = 'Arial';
+                } else if (fontName.includes('times') || fontName.includes('serif') || fontName.includes('minion') || fontName.includes('garamond') || fontName.includes('georgia')) {
+                    fontFamily = 'Times New Roman';
+                } else if (fontName.includes('courier') || fontName.includes('mono') || fontName.includes('code') || fontName.includes('terminal') || fontName.includes('consolas')) {
+                    fontFamily = 'Courier New';
                 }
+            } else {
+                // Fallback if no style object, try to guess from targetItem fontName string if available
+                const directFontName = targetItem.item.fontName.toLowerCase();
+                bold = directFontName.includes('bold');
+                italic = directFontName.includes('italic');
             }
 
             // Intelligent Merging: check gaps between fragments
@@ -284,10 +299,10 @@ export const useContentEditor = (): UseContentEditorReturn => {
             return {
                 text: mergedText,
                 x: ((firstX + totalWidth / 2) / viewport.width) * 100,
-                y: ((targetItem.centerY + targetItem.fontSize * 0.1) / viewport.height) * 100,
+                y: (targetItem.centerY / viewport.height) * 100,
                 width: (totalWidth / viewport.width) * 100,
-                height: (targetItem.fontSize * 1.5 / viewport.height) * 100,
-                fontSize: targetItem.fontSize,
+                height: (fontSize * 1.1 / viewport.height) * 100,
+                fontSize: fontSize,
                 fontFamily,
                 bold,
                 italic
@@ -442,13 +457,15 @@ export const useContentEditor = (): UseContentEditorReturn => {
                         const rectW = (element.originalRect.w / 100) * width;
                         const rectH = (element.originalRect.h / 100) * height;
 
-                        // Draw white background (or detected background)
+                        const bgColor = hexToRgb(element.backgroundColor || '#FFFFFF');
+
+                        // Draw background (or detected background)
                         page.drawRectangle({
                             x: rectX,
                             y: rectY - rectH,
                             width: rectW,
                             height: rectH,
-                            color: rgb(1, 1, 1), // Default to white for now
+                            color: rgb(bgColor.r, bgColor.g, bgColor.b),
                         });
                     }
 
@@ -483,7 +500,7 @@ export const useContentEditor = (): UseContentEditorReturn => {
         setCurrentPage(1);
         setTotalPages(1);
         setScale(1);
-        setToolMode('add');
+        setToolMode('edit');
         setHistory([[]]);
         setHistoryIndex(0);
         elementIdCounter.current = 0;

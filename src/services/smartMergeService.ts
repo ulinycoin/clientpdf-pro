@@ -103,7 +103,7 @@ const MONTH_NAMES: Record<string, number> = {
   'июля': 6, 'августа': 7, 'сентября': 8, 'октября': 9, 'ноября': 10, 'декабря': 11,
   // German
   'januar': 0, 'februar': 1, 'märz': 2, 'mai': 4, 'juni': 5,
-  'juli': 6, 'august': 7, 'september': 8, 'oktober': 9, 'november': 10, 'dezember': 11,
+  'juli': 6, 'oktober': 9, 'dezember': 11,
 };
 
 class SmartMergeService {

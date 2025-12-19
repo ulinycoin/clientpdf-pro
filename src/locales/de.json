@@ -108,6 +108,10 @@
     "edit-pdf": {
       "name": "PDF bearbeiten",
       "description": "PDF-Inhalt bearbeiten"
+    },
+    "extract-images-pdf": {
+      "name": "Extract/Remove Images",
+      "description": "Extract all images from PDF or remove them"
     }
   },
   "compress": {
@@ -215,7 +219,15 @@
     "previous": "Zurück",
     "save": "Speichern",
     "show": "Anzeigen",
-    "zoom": "Zoom"
+    "zoom": "Zoom",
+    "searching": "Suchen...",
+    "page": "Page",
+    "pages": "pages",
+    "selectedFile": "Selected file",
+    "originalSize": "Original size",
+    "newSize": "New size",
+    "useInOtherTools": "Use in other tools",
+    "recommended": "Empfohlen"
   },
   "upload": {
     "selectFiles": "Dateien auswählen",
@@ -371,8 +383,25 @@
         "large": "Große Bilder",
         "charts": "Diagramme",
         "excludeIcons": "Keine Symbole"
-      }
-    }
+      },
+      "usefulJunk": "{useful} useful / {junk} junk detected"
+    },
+    "description": "Extract all images from a PDF or remove them to reduce file size.",
+    "modeExtract": "Extract Images",
+    "modeRemove": "Remove Images",
+    "removeDescription": "Remove images from the PDF to reduce file size. You can preview and select which images to remove.",
+    "extractBtn": "Extract Images",
+    "removeBtn": "Preview Images",
+    "successExtract": "Images extracted successfully!",
+    "successRemove": "Images removed successfully!",
+    "previewTitle": "Extracted Images",
+    "previewTitleRemove": "Select Images to Remove",
+    "previewDescription": "Found {count} images. Select images to download.",
+    "previewDescriptionRemove": "Found {count} images. Select images to remove from PDF.",
+    "selectAll": "Select All",
+    "downloadSelected": "Download ({count})",
+    "removeSelected": "Remove ({count})",
+    "noImagesSelected": "Please select at least one image to download."
   },
   "split": {
     "filePreview": "Zu teilende Datei",
@@ -627,7 +656,16 @@
     "info1": "Unterstützt PDF und Bilder (JPG, PNG)",
     "info2": "Erkennung in 5 Sprachen: EN, RU, DE, FR, ES",
     "info3": "Mehrseitige PDFs unterstützt",
-    "info4": "Verarbeitung im Browser - privat"
+    "info4": "Verarbeitung im Browser - privat",
+    "errors": {
+      "noFile": "Please select a file first",
+      "processingFailed": "OCR processing failed. Please try again.",
+      "unsupportedFileType": "OCR only supports PDF and image files (JPG, PNG). Your file type (.{ext}) is not supported.",
+      "hocrEmpty": "hOCR data is empty. Please try running OCR again.",
+      "tsvEmpty": "TSV data is empty. Please try running OCR again.",
+      "searchablePdfFailed": "Failed to create searchable PDF: {error}",
+      "downloadFailed": "Failed to generate file. Please try again."
+    }
   },
   "watermark": {
     "filePreview": "Datei für Wasserzeichen",
@@ -800,7 +838,9 @@
       "invalidFormat": "Ungültiges Format (.docx)",
       "conversionFailed": "Fehler bei Konvertierung"
     },
-    "success": "Word erfolgreich konvertiert!"
+    "success": "Word erfolgreich konvertiert!",
+    "editabilityWarning": "⚠️ 'Formatted' mode creates PDF from images. Text in this file will not be editable via standard search, but you can add new text or cover areas manually.",
+    "editResult": "Edit PDF"
   },
   "pdfToWord": {
     "convert": "In Word konvertieren",
@@ -914,7 +954,39 @@
     "selected": "Ausgewählt: \"{text}...\"",
     "zoom": "Zoom: {scale}%",
     "pageOf": "Seite {current} von {total}",
-    "defaultFileName": "dokument_mit_text.pdf"
+    "defaultFileName": "dokument_mit_text.pdf",
+    "title": "Text hinzufügen",
+    "toolbar": {
+      "addText": "Add Text",
+      "select": "Select",
+      "page": "Page",
+      "of": "of",
+      "savePdf": "PDF speichern",
+      "undo": "Undo",
+      "redo": "Redo"
+    },
+    "format": {
+      "title": "Format Text",
+      "placeholder": "Enter text here...",
+      "textContent": "Text Content",
+      "fontFamily": "Schriftart",
+      "fontSize": "Größe",
+      "textColor": "Farbe",
+      "position": "Position",
+      "preview": "Preview",
+      "sampleText": "Sample text",
+      "opacity": "Opacity",
+      "rotation": "Rotation",
+      "bold": "Bold",
+      "italic": "Italic",
+      "delete": "Delete Element",
+      "alignment": "Ausrichtung",
+      "alignLeft": "Links",
+      "alignCenter": "Zentriert",
+      "alignRight": "Rechts",
+      "fitToWidth": "An Breite anpassen",
+      "backgroundColor": "Hintergrundabdeckung"
+    }
   },
   "addFormFields": {
     "addedCount": "Felder hinzugefügt: {count}",
@@ -978,6 +1050,49 @@
     "replaceError": "Fehler beim Ersetzen",
     "successMessage": "Text ersetzt!",
     "useInOtherTools": "In anderen Tools nutzen",
-    "settings": "Texteinstellungen"
+    "settings": "Texteinstellungen",
+    "smartEdit": "Smart Edit",
+    "format": {
+      "title": "Textformatierung",
+      "textContent": "Content",
+      "placeholder": "Enter text...",
+      "fontFamily": "Font",
+      "fontSize": "Size",
+      "textColor": "Color",
+      "opacity": "Opacity",
+      "rotation": "Rotation",
+      "bold": "Bold",
+      "italic": "Italic",
+      "delete": "Remove Element",
+      "alignment": "Alignment",
+      "alignLeft": "Links",
+      "alignCenter": "Zentriert",
+      "alignRight": "Rechts",
+      "fitToWidth": "Fit to Width"
+    }
+  },
+  "merge": {
+    "fileList": "Files to merge",
+    "reorderHint": "Drag to reorder",
+    "mergeButton": "Merge PDFs",
+    "mergeAnother": "Merge another",
+    "minFilesHint": "Add at least 2 PDF files to merge",
+    "errors": {
+      "minFiles": "Please select at least 2 PDF files to merge"
+    },
+    "success": {
+      "title": "PDFs merged successfully!",
+      "pages": "Total pages",
+      "size": "File size",
+      "time": "Processing time"
+    },
+    "quickActions": {
+      "title": "What's next?",
+      "description": "Continue working with your merged PDF using these tools:",
+      "compress": "Reduce file size",
+      "protect": "Add password",
+      "watermark": "Add watermark",
+      "split": "Extract pages"
+    }
   }
 }

@@ -1,1041 +1,1094 @@
 {
-    "app": {
-        "title": "LocalPDF",
-        "subtitle": "Ferramentas PDF com privacidade no seu navegador"
+  "app": {
+    "title": "LocalPDF",
+    "subtitle": "Ferramentas PDF com privacidade no seu navegador"
+  },
+  "welcome": {
+    "securePrefix": "Simples e Seguro",
+    "titleSuffix": "",
+    "title": "PDF Simplificado",
+    "subtitle": "Todas as ferramentas que você precisa em um só lugar. Basta arrastar e soltar um arquivo para começar a mágica.",
+    "firstTimeBanner": "Bem-vindo! Todo o processamento acontece no seu navegador - seus arquivos nunca saem do seu dispositivo.",
+    "selectTool": "Selecione uma ferramenta na barra lateral ou escolha uma abaixo"
+  },
+  "sidebar": {
+    "tools": "Ferramentas",
+    "collapse": "Recolher barra lateral",
+    "expand": "Expandir barra lateral",
+    "backToMain": "← Voltar ao site principal"
+  },
+  "toolGroups": {
+    "all": "Todas as Ferramentas",
+    "organize": "Organizar",
+    "edit": "Editar",
+    "security": "Segurança",
+    "convert": "Converter"
+  },
+  "tools": {
+    "merge-pdf": {
+      "name": "Juntar PDF",
+      "description": "Combinar vários PDFs em um"
     },
-    "welcome": {
-        "securePrefix": "Simples e Seguro",
-        "titleSuffix": "",
-        "title": "PDF Simplificado",
-        "subtitle": "Todas as ferramentas que você precisa em um só lugar. Basta arrastar e soltar um arquivo para começar a mágica.",
-        "firstTimeBanner": "Bem-vindo! Todo o processamento acontece no seu navegador - seus arquivos nunca saem do seu dispositivo.",
-        "selectTool": "Selecione uma ferramenta na barra lateral ou escolha uma abaixo"
+    "split-pdf": {
+      "name": "Dividir PDF",
+      "description": "Extrair páginas de PDF"
     },
-    "sidebar": {
-        "tools": "Ferramentas",
-        "collapse": "Recolher barra lateral",
-        "expand": "Expandir barra lateral",
-        "backToMain": "← Voltar ao site principal"
+    "compress-pdf": {
+      "name": "Comprimir PDF",
+      "description": "Reduzir tamanho do arquivo PDF"
     },
-    "toolGroups": {
-        "all": "Todas as Ferramentas",
-        "organize": "Organizar",
-        "edit": "Editar",
-        "security": "Segurança",
-        "convert": "Converter"
+    "protect-pdf": {
+      "name": "Proteger PDF",
+      "description": "Adicionar proteção por senha"
     },
-    "tools": {
-        "merge-pdf": {
-            "name": "Juntar PDF",
-            "description": "Combinar vários PDFs em um"
-        },
-        "split-pdf": {
-            "name": "Dividir PDF",
-            "description": "Extrair páginas de PDF"
-        },
-        "compress-pdf": {
-            "name": "Comprimir PDF",
-            "description": "Reduzir tamanho do arquivo PDF"
-        },
-        "protect-pdf": {
-            "name": "Proteger PDF",
-            "description": "Adicionar proteção por senha"
-        },
-        "ocr-pdf": {
-            "name": "OCR PDF",
-            "description": "Extrair texto de PDFs digitalizados"
-        },
-        "organize-pdf": {
-            "name": "Organizar Páginas",
-            "description": "Reordenar, girar e excluir páginas PDF"
-        },
-        "watermark-pdf": {
-            "name": "Marca d'água em PDF",
-            "description": "Adicionar marca d'água ao PDF"
-        },
-        "add-text-pdf": {
-            "name": "Adicionar Texto ao PDF",
-            "description": "Adicionar texto personalizado às páginas do PDF"
-        },
-        "edit-text-pdf": {
-            "name": "Editar texto em PDF",
-            "description": "Localizar e substituir texto em PDF"
-        },
-        "add-form-fields-pdf": {
-            "name": "Adicionar Campos de Formulário",
-            "description": "Criar formulários PDF preenchíveis com campos de texto, caixas de seleção e mais"
-        },
-        "rotate-pdf": {
-            "name": "Girar PDF",
-            "description": "Girar páginas PDF"
-        },
-        "delete-pages-pdf": {
-            "name": "Excluir Páginas",
-            "description": "Remover páginas indesejadas"
-        },
-        "extract-pages-pdf": {
-            "name": "Extrair Páginas",
-            "description": "Extrair páginas específicas"
-        },
-        "images-to-pdf": {
-            "name": "Imagens para PDF",
-            "description": "Converter imagens em PDF"
-        },
-        "pdf-to-images": {
-            "name": "PDF para Imagens",
-            "description": "Converter PDF em imagens"
-        },
-        "pdf-to-word": {
-            "name": "PDF para Word",
-            "description": "Converter PDF em DOCX"
-        },
-        "word-to-pdf": {
-            "name": "Word para PDF",
-            "description": "Converter DOCX em PDF"
-        },
-        "sign-pdf": {
-            "name": "Assinar PDF",
-            "description": "Adicionar assinatura digital"
-        },
-        "flatten-pdf": {
-            "name": "Achatar PDF",
-            "description": "Tornar formulários e anotações PDF não editáveis"
-        },
-        "extract-images-pdf": {
-            "name": "Extrair/Remover Imagens",
-            "description": "Extrair todas as imagens do PDF ou removê-las"
-        },
-        "edit-pdf": {
-            "name": "Editar PDF",
-            "description": "Editar conteúdo do PDF"
-        }
+    "ocr-pdf": {
+      "name": "OCR PDF",
+      "description": "Extrair texto de PDFs digitalizados"
     },
-    "common": {
-        "upload": "Carregar arquivos",
-        "uploadDescription": "Arraste e solte ou clique para enviar",
-        "selectFile": "Selecionar arquivo",
-        "uploadFile": "Carregar arquivo",
-        "download": "Baixar",
-        "processing": "Processando...",
-        "searching": "Pesquisando...",
-        "error": "Erro",
-        "success": "Sucesso",
-        "cancel": "Cancelar",
-        "close": "Fechar",
-        "back": "Voltar",
-        "next": "Próximo",
-        "done": "Concluído",
-        "remove": "Remover",
-        "newFile": "Novo arquivo",
-        "filePreview": "Pré-visualização do arquivo",
-        "totalPages": "Total de páginas",
-        "page": "Página",
-        "pages": "páginas",
-        "fileSize": "Tamanho do arquivo",
-        "changeFile": "Alterar arquivo",
-        "autoLoaded": "Arquivo carregado da ferramenta anterior",
-        "autoLoadedDescription": "Seu PDF foi carregado automaticamente",
-        "reset": "Redefinir",
-        "processAnother": "Processar outro",
-        "relatedTools": "Ferramentas relacionadas",
-        "clickToEdit": "Clique para editar",
-        "convertAnother": "Converter outro",
-        "quickActions": "Ações Rápidas",
-        "preview": "Pré-visualizar",
-        "clearAll": "Limpar Tudo",
-        "processingTime": "Tempo de processamento",
-        "selectedFile": "Arquivo selecionado",
-        "originalSize": "Tamanho original",
-        "newSize": "Novo tamanho",
-        "useInOtherTools": "Usar em outras ferramentas",
-        "recommended": "Recomendado",
-        "generatingThumbnails": "Gerando miniaturas...",
-        "whatsNext": "O que vem a seguir?",
-        "continueWorking": "Continue trabalhando com seu PDF usando estas ferramentas:",
-        "selectAll": "Selecionar tudo",
-        "convert": "Converter",
-        "hide": "Ocultar",
-        "loading": "Carregando...",
-        "previous": "Anterior",
-        "save": "Salvar",
-        "show": "Mostrar",
-        "zoom": "Zoom"
+    "organize-pdf": {
+      "name": "Organizar Páginas",
+      "description": "Reordenar, girar e excluir páginas PDF"
     },
-    "upload": {
-        "selectFiles": "Selecionar arquivos",
-        "dragOrClick": "Arraste arquivos aqui ou clique para selecionar",
-        "dropHere": "Solte arquivos aqui",
-        "multipleFilesAllowed": "Vários arquivos permitidos",
-        "singleFileAllowed": "Apenas um arquivo",
-        "pasteHint": "Ou pressione Ctrl+V para colar arquivos",
-        "maxFiles": "Máximo de arquivos",
-        "maxSize": "Tamanho máximo por arquivo",
-        "acceptedTypes": "Tipos aceitos",
-        "errors": {
-            "tooManyFiles": "Muitos arquivos. Máximo: {max}",
-            "invalidFileType": "Tipo de arquivo inválido. Por favor, selecione apenas arquivos PDF.",
-            "fileTooLarge": "Arquivo muito grande. Tamanho máximo: {max} MB"
-        },
-        "readyToProcess": "Pronto para começar",
-        "filesReadySingle": "{count} arquivo pronto",
-        "filesReadyPlural": "{count} arquivos prontos"
+    "watermark-pdf": {
+      "name": "Marca d'água em PDF",
+      "description": "Adicionar marca d'água ao PDF"
     },
-    "merge": {
-        "fileList": "Arquivos para juntar",
-        "reorderHint": "Arraste para reordenar",
-        "mergeButton": "Juntar PDFs",
-        "mergeAnother": "Juntar outro",
-        "minFilesHint": "Adicione pelo menos 2 arquivos PDF para juntar",
-        "errors": {
-            "minFiles": "Por favor, selecione pelo menos 2 arquivos PDF para juntar"
-        },
-        "success": {
-            "title": "PDFs juntados com sucesso!",
-            "pages": "Total de páginas",
-            "size": "Tamanho do arquivo",
-            "time": "Tempo de processamento"
-        },
-        "quickActions": {
-            "title": "O que vem a seguir?",
-            "description": "Continue trabalhando com seu PDF juntado:",
-            "compress": "Reduzir tamanho do arquivo",
-            "protect": "Adicionar senha",
-            "watermark": "Adicionar marca d'água",
-            "split": "Extrair páginas"
-        }
+    "add-text-pdf": {
+      "name": "Adicionar Texto ao PDF",
+      "description": "Adicionar texto personalizado às páginas do PDF"
     },
-    "smartMerge": {
-        "title": "Juntar Inteligente",
-        "analyzing": "Analisando documentos...",
-        "sortSuggestions": "Sugestões de Classificação",
-        "detectedDates": "Datas Detectadas",
-        "duplicatesFound": "Possíveis Duplicatas Encontradas",
-        "similarFiles": "arquivos similares",
-        "keepFirst": "Manter Primeiro",
-        "sortApplied": "Classificação aplicada",
-        "duplicatesRemoved": "Duplicatas removidas"
+    "edit-text-pdf": {
+      "name": "Editar texto em PDF",
+      "description": "Localizar e substituir texto em PDF"
     },
-    "smartOrganize": {
-        "title": "organizar Inteligente",
-        "analyzing": "Analisando páginas...",
-        "quickActions": "Ações Rápidas",
-        "detectedChapters": "Capítulos Detectados",
-        "removeBlank": "Remover Páginas em Branco",
-        "removeDuplicates": "Remover Duplicatas",
-        "fixRotation": "Corrigir Rotação",
-        "moveTOC": "Mover Índice para o Início",
-        "noIssues": "Nenhum problema detectado - o documento parece bom!"
+    "add-form-fields-pdf": {
+      "name": "Adicionar Campos de Formulário",
+      "description": "Criar formulários PDF preenchíveis com campos de texto, caixas de seleção e mais"
     },
-    "smartCompression": {
-        "title": "Análise Inteligente",
-        "analyzing": "Analisando conteúdo PDF...",
-        "highPotential": "Alto potencial de compressão detectado",
-        "optimized": "O arquivo já está bem otimizado",
-        "images": "Imagens",
-        "structure": "Estrutura",
-        "heavy": "Pesado (muitas imagens)",
-        "light": "Leve (maioria texto)",
-        "recommendation": "Modo recomendado",
-        "apply": "Aplicar",
-        "applied": "Modo recomendado aplicado",
-        "insights": {
-            "mostlyText": "Conteúdo majoritariamente texto",
-            "imageCount": "Contém ~{count} imagens",
-            "largeImages": "Tamanho grande devido a imagens",
-            "highDensity": "Alta densidade de conteúdo",
-            "efficient": "Estrutura já eficiente",
-            "standard": "Análise padrão de PDF"
-        }
+    "rotate-pdf": {
+      "name": "Girar PDF",
+      "description": "Girar páginas PDF"
     },
-    "smartImageFilter": {
-        "title": "Filtro Inteligente de Imagem",
-        "analyzing": "Analisando imagens...",
-        "totalImages": "Total",
-        "useful": "Útil",
-        "junk": "Lixo",
-        "quickFilters": "Filtros Rápidos",
-        "categories": "Categorias",
-        "processingInfo": "Toda a análise é executada localmente no seu navegador. As imagens são categorizadas por tamanho, formato e características.",
-        "presets": {
-            "useful": {
-                "label": "Imagens Úteis",
-                "description": "Apenas fotos e gráficos"
-            },
-            "photosOnly": {
-                "label": "Apenas Fotos",
-                "description": "Fotos de alta qualidade"
-            },
-            "excludeIcons": {
-                "label": "Sem Ícones",
-                "description": "Excluir ícones pequenos"
-            },
-            "large": {
-                "label": "Imagens Grandes",
-                "description": "Imagens > 0.1 MP"
-            }
-        },
-        "junkWarning": {
-            "title": "Imagens de baixo valor detectadas",
-            "description": "Encontrados {count} ícones/decorações pequenos. Considere usar o filtro 'Imagens Úteis'."
-        }
+    "delete-pages-pdf": {
+      "name": "Excluir Páginas",
+      "description": "Remover páginas indesejadas"
     },
-    "compress": {
-        "filePreview": "Arquivo para comprimir",
-        "originalSize": "Tamanho original",
-        "pages": "Páginas",
-        "changeFile": "Alterar arquivo",
-        "selectQuality": "Selecione o nível de compressão",
-        "selected": "Selecionado",
-        "compressButton": "Comprimir PDF",
-        "compressAnother": "Comprimir outro",
-        "quality": {
-            "low": {
-                "name": "Máxima",
-                "description": "Menor tamanho de arquivo, qualidade inferior"
-            },
-            "medium": {
-                "name": "Equilibrada",
-                "description": "Bom equilíbrio entre tamanho e qualidade"
-            },
-            "high": {
-                "name": "Mínima",
-                "description": "Melhor qualidade, tamanho de arquivo maior"
-            }
-        },
-        "success": {
-            "title": "PDF comprimido com sucesso!",
-            "originalSize": "Tamanho original",
-            "compressedSize": "Tamanho comprimido",
-            "saved": "Espaço economizado",
-            "time": "Tempo de processamento"
-        },
-        "quickActions": {
-            "title": "O que vem a seguir?",
-            "description": "Continue trabalhando com seu PDF comprimido:",
-            "protect": "Adicionar senha",
-            "merge": "Juntar com outros",
-            "split": "Extrair páginas",
-            "watermark": "Adicionar marca d'água"
-        },
-        "autoLoaded": {
-            "title": "Arquivo carregado da ferramenta anterior",
-            "description": "Seu PDF juntado foi carregado automaticamente"
-        }
+    "extract-pages-pdf": {
+      "name": "Extrair Páginas",
+      "description": "Extrair páginas específicas"
     },
-    "flatten": {
-        "filePreview": "Arquivo para achatar",
-        "description": "Tornar formulários e anotações não editáveis",
-        "originalSize": "Tamanho original",
-        "pages": "Páginas",
-        "changeFile": "Alterar arquivo",
-        "flattenButton": "Achatar PDF",
-        "flattenAnother": "Achatar outro",
-        "success": {
-            "title": "PDF achatado com sucesso!",
-            "originalSize": "Tamanho original",
-            "processedSize": "Tamanho processado",
-            "time": "Tempo de processamento"
-        },
-        "quickActions": {
-            "title": "O que vem a seguir?",
-            "description": "Continue trabalhando com seu PDF achatado:",
-            "protect": "Adicionar senha",
-            "merge": "Juntar com outros",
-            "compress": "Reduzir tamanho do arquivo"
-        },
-        "autoLoaded": {
-            "title": "Arquivo carregado da ferramenta anterior",
-            "description": "Seu PDF foi carregado automaticamente"
-        }
+    "images-to-pdf": {
+      "name": "Imagens para PDF",
+      "description": "Converter imagens em PDF"
     },
-    "split": {
-        "filePreview": "Arquivo para dividir",
-        "pages": "Páginas",
-        "totalPages": "Total de páginas",
-        "fileSize": "Tamanho do arquivo",
-        "changeFile": "Alterar arquivo",
-        "selectMode": "Selecione o modo de divisão",
-        "splitButton": "Dividir PDF",
-        "splitAnother": "Dividir outro",
-        "downloadAll": "Baixar todos os arquivos",
-        "downloadAsZip": "Baixar como ZIP",
-        "previewTitle": "Pré-visualização da página",
-        "outputFiles": "Arquivos de saída",
-        "selectAll": "Selecionar Tudo",
-        "deselectAll": "Desmarcar Tudo",
-        "selectedCount": "{count} páginas selecionadas",
-        "selectPagesHint": "Selecione pelo menos uma página para continuar",
-        "mergingSelected": "Mesclando páginas selecionadas...",
-        "mergeFailed": "Falha ao mesclar páginas selecionadas",
-        "mode": {
-            "all": {
-                "name": "Todas as páginas",
-                "description": "Dividir em páginas individuais"
-            },
-            "range": {
-                "name": "Intervalo de páginas",
-                "description": "Extrair intervalo de páginas"
-            },
-            "intervals": {
-                "name": "Por intervalos",
-                "description": "Dividir a cada N páginas"
-            },
-            "custom": {
-                "name": "Páginas personalizadas",
-                "description": "Selecionar páginas específicas"
-            },
-            "byStructure": {
-                "name": "Por Estrutura",
-                "description": "Divisão inteligente por capítulos"
-            }
-        },
-        "structureSettings": "Estrutura do Documento",
-        "analyzeFirst": "Analise o documento para detectar capítulos e seções",
-        "analyzeButton": "Analisar Estrutura",
-        "analyzing": "Analisando...",
-        "chaptersDetected": "{count} capítulos detectados",
-        "reanalyze": "Reanalisar",
-        "rangeSettings": "Configurações de Intervalo de Páginas",
-        "startPage": "Página Inicial",
-        "endPage": "Página Final",
-        "rangeHint": "Total de páginas: {total}",
-        "intervalSettings": "Configurações de Intervalo",
-        "pagesPerFile": "Páginas por arquivo",
-        "intervalHint": "{files} arquivos serão criados de {total} páginas",
-        "customSettings": "Seleção de Páginas Personalizada",
-        "pageNumbers": "Números de página",
-        "customHint": "Digite números de página separados por vírgulas ou use intervalos (ex: 1,3,5-7,10)",
-        "success": {
-            "title": "PDF dividido com sucesso!",
-            "filesCreated": "{count} arquivos criados"
-        },
-        "pageNumber": "Página {page}",
-        "pageRange": "Páginas {start}-{end}",
-        "pageCount": "{count} páginas",
-        "pageCountSingle": "1 página",
-        "autoLoaded": {
-            "title": "Arquivo carregado da ferramenta anterior",
-            "description": "Seu PDF foi carregado automaticamente"
-        },
-        "quickActions": {
-            "title": "O que vem a seguir?",
-            "description": "Selecione as páginas acima e continue trabalhando com elas usando estas ferramentas:",
-            "descriptionWithSelection": "Continue trabalhando com {count} páginas selecionadas usando estas ferramentas:",
-            "compress": "Reduzir tamanho do arquivo",
-            "merge": "Juntar com outros",
-            "protect": "Adicionar senha",
-            "watermark": "Adicionar marca d'água"
-        }
+    "pdf-to-images": {
+      "name": "PDF para Imagens",
+      "description": "Converter PDF em imagens"
     },
-    "protect": {
-        "filePreview": "Arquivo para proteger",
-        "protectButton": "Proteger PDF",
-        "protectAnother": "Proteger outro",
-        "userPassword": "Senha para abrir PDF",
-        "userPasswordPlaceholder": "Digite a senha",
-        "ownerPassword": "Senha do proprietário (opcional)",
-        "ownerPasswordPlaceholder": "Digite a senha do proprietário",
-        "useOwnerPassword": "Usar senha de proprietário diferente",
-        "permissionsOnly": "Apenas restrições (sem senha para abrir)",
-        "permissionsOnlyHint": "PDF pode ser aberto sem senha, mas o uso será restrito",
-        "passwordWarning": {
-            "title": "Aviso: A senha não pode ser recuperada",
-            "message": "Se você perder sua senha, não há como recuperá-la. Guarde-a em um lugar seguro!"
-        },
-        "securityLevel": "Nível de segurança",
-        "advancedSettings": "Configurações avançadas",
-        "encryptionLevel": "Nível de criptografia",
-        "recommended": "(recomendado)",
-        "permissionsTitle": "Permissões",
-        "presets": {
-            "basic": {
-                "name": "Básico",
-                "description": "Permitir impressão e cópia"
-            },
-            "business": {
-                "name": "Negócios",
-                "description": "Permitir apenas impressão"
-            },
-            "confidential": {
-                "name": "Confidencial",
-                "description": "Sem impressão ou cópia"
-            }
-        },
-        "permissions": {
-            "printing": "Impressão",
-            "printingNone": "Não permitido",
-            "printingLow": "Baixa resolução",
-            "printingHigh": "Alta resolução",
-            "copying": "Permitir copiar texto",
-            "modifying": "Permitir modificar conteúdo",
-            "annotating": "Permitir anotações",
-            "fillingForms": "Permitir preencher formulários",
-            "contentAccessibility": "Permitir leitores de tela"
-        },
-        "passwordStrength": {
-            "strength": "Força",
-            "weak": "FRACA",
-            "medium": "MÉDIA",
-            "strong": "FORTE",
-            "tooShort": "Senha muito curta (min 8 caracteres)",
-            "useUpperAndLower": "Use maiúsculas e minúsculas",
-            "useNumbers": "Adicione números",
-            "useSpecialChars": "Adicione caracteres especiais"
-        },
-        "errors": {
-            "passwordRequired": "Senha é necessária",
-            "protectionFailed": "Falha ao proteger PDF"
-        },
-        "success": {
-            "title": "PDF protegido com sucesso!",
-            "encryption": "Criptografia",
-            "password": "Senha",
-            "passwordSet": "Definida"
-        },
-        "activePermissions": "Permissões Ativas",
-        "badge": {
-            "printingAllowed": "Impressão Permitida",
-            "noPrinting": "Impressão Proibida",
-            "copyingAllowed": "Cópia Permitida",
-            "noCopying": "Cópia Proibida",
-            "editingAllowed": "Edição Permitida",
-            "noEditing": "Edição Proibida"
-        },
-        "quickActions": {
-            "title": "O que vem a seguir?",
-            "description": "Continue trabalhando com seu PDF protegido:",
-            "compress": "Reduzir tamanho do arquivo",
-            "split": "Extrair páginas",
-            "watermark": "Adicionar marca d'água",
-            "merge": "Juntar com outros"
-        },
-        "autoLoaded": {
-            "title": "Arquivo carregado da ferramenta anterior",
-            "description": "Seu PDF foi carregado automaticamente"
-        }
+    "pdf-to-word": {
+      "name": "PDF para Word",
+      "description": "Converter PDF em DOCX"
     },
-    "ocr": {
-        "filePreview": "Arquivo para processar",
-        "recognitionLanguage": "Idioma de reconhecimento",
-        "languageHint": "Selecione o idioma do texto no seu documento",
-        "autoDetect": "Detectar idioma automaticamente",
-        "autoDetectHint": "O idioma será detectado automaticamente a partir do conteúdo do documento",
-        "detectingLanguage": "Detectando idioma...",
-        "analyzingContent": "Analisando conteúdo do documento...",
-        "pageSelection": "Páginas para processar",
-        "firstPageOnly": "Apenas primeira página",
-        "allPages": "Todas as páginas",
-        "pageRange": "Intervalo de páginas",
-        "page": "página",
-        "pages": "páginas",
-        "processed": "processado",
-        "processingPage": "Processando página {current} de {total}...",
-        "startOCR": "Iniciar OCR",
-        "processing": "Processando OCR...",
-        "analyzing": "Analisando...",
-        "initializing": "Inicializando motor OCR...",
-        "loadingModel": "Carregando modelo de idioma...",
-        "processingImage": "Processando imagem...",
-        "processingPDF": "Processando PDF...",
-        "recognizing": "Reconhecendo texto",
-        "completed": "OCR concluído!",
-        "pageTitle": "Resultado OCR",
-        "resultsTitle": "Texto Reconhecido",
-        "confidence": "Confiança",
-        "extractedText": "Texto extraído",
-        "copyText": "Copiar texto",
-        "downloadTXT": "Baixar TXT",
-        "textCopied": "Texto copiado para a área de transferência!",
-        "remove": "Remover",
-        "newFile": "Novo arquivo",
-        "preview": "Pré-visualizar",
-        "view": "Ver",
-        "edit": "Editar",
-        "editPlaceholder": "Edite seu texto extraído aqui...",
-        "textModified": "O texto foi modificado",
-        "words": "palavras",
-        "lines": "linhas",
-        "characters": "caracteres",
-        "languageDetection": {
-            "highConfidence": "Alta Confiança",
-            "mediumConfidence": "Confiança Média",
-            "lowConfidence": "Baixa Confiança",
-            "verifyLanguage": "Verifique a seleção do idioma para melhor precisão do OCR"
-        },
-        "outputFormat": {
-            "title": "Formato de Saída",
-            "text": "Texto Simples (.txt)",
-            "textDesc": "Extrair apenas texto, editável e copiável",
-            "searchablePdf": "PDF Pesquisável (preserva original)",
-            "searchablePdfDesc": "Mantém imagens originais com camada de texto OCR invisível - parece idêntico ao original, mas totalmente pesquisável",
-            "hocr": "hOCR (.html)",
-            "hocrDesc": "HTML com posicionamento preciso de palavras e pontuações de confiança - útil para processamento automatizado",
-            "tsv": "TSV (.tsv)",
-            "tsvDesc": "Valores separados por tabulação com caixas delimitadoras - fácil de analisar para análise de dados"
-        },
-        "results": {
-            "textReady": "Texto Reconhecido",
-            "searchablePdfReady": "Pronto para Criar PDF Pesquisável",
-            "hocrReady": "Dados hOCR Prontos",
-            "tsvReady": "Dados TSV Prontos",
-            "pagesWillProcess": "{count} {pages} serão processadas com OCR",
-            "confidenceAndPages": "Confiança: {confidence}% • {count} {pages} processadas"
-        },
-        "infoPanel": {
-            "searchablePdfTitle": "PDF Pesquisável com Camada de Texto Invisível",
-            "searchablePdfDesc": "As imagens originais do documento serão preservadas exatamente como aparecem. O texto OCR será adicionado como uma camada invisível, tornando o PDF totalmente pesquisável e permitindo a seleção de texto, mantendo a aparência visual original.",
-            "hocrTitle": "Formato hOCR (OCR baseado em HTML)",
-            "hocrDesc": "Documento HTML com caixas delimitadoras precisas e pontuações de confiança para cada palavra. Ideal para processamento automatizado, pipelines de PNL e fluxos de trabalho de extração de texto personalizados.",
-            "tsvTitle": "Formato TSV (Valores Separados por Tabulação)",
-            "tsvDesc": "Formato compatível com planilhas com coordenadas de caixa delimitadora e pontuações de confiança. Fácil de importar para Excel, Google Sheets ou ferramentas de análise de dados como Python/Pandas."
-        },
-        "download": {
-            "createSearchablePdf": "Criar PDF Pesquisável",
-            "downloadHocr": "Baixar hOCR (.html)",
-            "downloadTsv": "Baixar TSV (.tsv)",
-            "downloadTxt": "Baixar TXT",
-            "searchablePdfReady": "Pronto para criar PDF pesquisável!",
-            "searchablePdfDownloaded": "PDF pesquisável baixado!"
-        },
-        "infoTitle": "Sobre OCR",
-        "info1": "Suporta documentos PDF e imagens (JPG, PNG)",
-        "info2": "Reconhecimento em 5 idiomas: EN, RU, DE, FR, ES",
-        "info3": "Suporte a PDF multipágina com seleção de intervalo de páginas",
-        "info4": "Todo o processamento acontece no seu navegador - arquivos permanecem privados",
-        "errors": {
-            "noFile": "Por favor, selecione um arquivo primeiro",
-            "processingFailed": "Falha no processamento OCR. Por favor, tente novamente.",
-            "unsupportedFileType": "OCR suporta apenas arquivos PDF e imagem (JPG, PNG). Seu tipo de arquivo (.{ext}) não é suportado.",
-            "hocrEmpty": "Dados hOCR estão vazios. Por favor, tente executar o OCR novamente.",
-            "tsvEmpty": "Dados TSV estão vazios. Por favor, tente executar o OCR novamente.",
-            "searchablePdfFailed": "Falha ao criar PDF pesquisável: {error}",
-            "downloadFailed": "Falha ao gerar arquivo. Por favor, tente novamente."
-        }
+    "word-to-pdf": {
+      "name": "Word para PDF",
+      "description": "Converter DOCX em PDF"
     },
-    "watermark": {
-        "filePreview": "Arquivo para adicionar marca d'água",
-        "settings": "Configurações da marca d'água",
-        "text": "Texto da marca d'água",
-        "watermarkText": "Texto da marca d'água",
-        "watermarkPlaceholder": "Digite o texto da marca d'água",
-        "position": "Posição",
-        "positions": {
-            "diagonal": "Diagonal",
-            "center": "Centro",
-            "topLeft": "Superior Esquerda",
-            "topRight": "Superior Direita",
-            "bottomLeft": "Inferior Esquerda",
-            "bottomRight": "Inferior Direita",
-            "custom": "Manual (Drag & Drop)"
-        },
-        "color": "Cor",
-        "colors": {
-            "black": "Preto",
-            "gray": "Cinza",
-            "red": "Vermelho",
-            "blue": "Azul"
-        },
-        "opacity": "Opacidade",
-        "fontSize": "Tamanho da Fonte",
-        "rotation": "Rotação",
-        "apply": "Aplicar",
-        "processing": "Adicionando marca d'água...",
-        "processingPage": "Processando página {current} de {total}...",
-        "saving": "Salvando PDF...",
-        "completed": "Marca d'água adicionada!",
-        "preview": "Pré-visualizar",
-        "loading": "Carregando...",
-        "loadingPreview": "Carregando pré-visualização...",
-        "errors": {
-            "noText": "Por favor, digite o texto da marca d'água",
-            "failed": "Falha ao adicionar marca d'água",
-            "cyrillicNotSupported": "Caracteres cirílicos podem não ser suportados pela fonte selecionada"
-        },
-        "success": {
-            "title": "Marca d'água Adicionada com Sucesso",
-            "watermarkApplied": "Marca d'água",
-            "pages": "Páginas Processadas",
-            "size": "Tamanho do Arquivo"
-        },
-        "quickActions": {
-            "title": "O que vem a seguir?",
-            "description": "Continue trabalhando com seu arquivo:",
-            "compress": "Reduzir tamanho do arquivo",
-            "protect": "Adicionar senha",
-            "split": "Dividir PDF",
-            "merge": "Juntar PDF"
-        },
-        "infoTitle": "Sobre Marca d'água",
-        "info1": "Suporta marcas d'água de texto com suporte total a caracteres cirílicos e latinos",
-        "info2": "6 opções de posição: diagonal, centro e 4 cantos",
-        "info3": "Todo o processamento acontece no seu navegador - arquivos permanecem privados"
+    "sign-pdf": {
+      "name": "Assinar PDF",
+      "description": "Adicionar assinatura digital"
     },
-    "rotate": {
-        "settings": "Configurações de rotação",
-        "selectAngle": "Selecione o ângulo de rotação",
-        "clockwise": "Sentido horário",
-        "upsideDown": "De cabeça para baixo",
-        "counterClockwise": "Sentido anti-horário",
-        "selectPages": "Selecione páginas para girar",
-        "allPages": "Todas as páginas",
-        "rotateAllPages": "Girar todas as páginas no documento",
-        "specificPages": "Páginas específicas",
-        "choosePages": "Escolha quais páginas girar",
-        "pageNumbers": "Números das páginas",
-        "pageNumbersHint": "Exemplo: 1,3,5-7,10 (Total de páginas: {total})",
-        "rotateButton": "Girar PDF",
-        "rotateAnother": "Girar outro",
-        "invalidPages": "Por favor, digite números de página válidos",
-        "failed": "Falha ao girar PDF",
-        "success": "PDF girado com sucesso!",
-        "successDescription": "Suas páginas PDF foram giradas conforme especificado",
-        "quickActions": {
-            "title": "O que vem a seguir?",
-            "description": "Continue trabalhando com seu PDF girado:",
-            "compress": "Reduzir tamanho do arquivo",
-            "protect": "Adicionar senha",
-            "watermark": "Adicionar marca d'água",
-            "split": "Extrair páginas"
-        }
+    "flatten-pdf": {
+      "name": "Achatar PDF",
+      "description": "Tornar formulários e anotações PDF não editáveis"
     },
-    "deletePages": {
-        "selectPages": "Selecione páginas para excluir",
-        "pagesToDelete": "Páginas para excluir",
-        "hint": "Exemplo: 1,3,5-7,10 (Total de páginas: {total})",
-        "warning": "Aviso: Isso não pode ser desfeito",
-        "warningDescription": "As páginas serão removidas permanentemente do PDF",
-        "deleteButton": "Excluir Páginas",
-        "deleteAnother": "Excluir de outro",
-        "invalidPages": "Por favor, digite números de página válidos",
-        "cannotDeleteAll": "Não é possível excluir todas as páginas do PDF",
-        "failed": "Falha ao excluir páginas",
-        "success": "Páginas excluídas com sucesso!",
-        "successDescription": "Páginas selecionadas foram removidas do seu PDF",
-        "quickActions": {
-            "title": "O que vem a seguir?",
-            "description": "Continue trabalhando com seu PDF:",
-            "compress": "Reduzir tamanho do arquivo",
-            "protect": "Adicionar senha",
-            "watermark": "Adicionar marca d'água",
-            "merge": "Juntar com outros"
-        }
+    "extract-images-pdf": {
+      "name": "Extrair/Remover Imagens",
+      "description": "Extrair todas as imagens do PDF ou removê-las"
     },
-    "extractPages": {
-        "selectPages": "Selecione páginas para extrair",
-        "pagesToExtract": "Páginas para extrair",
-        "hint": "Exemplo: 1,3,5-7,10 (Total de páginas: {total})",
-        "info": "Extrair cria um novo PDF",
-        "infoDescription": "O PDF original permanece inalterado, apenas as páginas selecionadas são copiadas para o novo arquivo",
-        "extractButton": "Extrair Páginas",
-        "extractAnother": "Extrair de outro",
-        "invalidPages": "Por favor, digite números de página válidos",
-        "failed": "Falha ao extrair páginas",
-        "success": "Páginas extraídas com sucesso!",
-        "successDescription": "Páginas selecionadas foram extraídas para um novo PDF",
-        "quickActions": {
-            "title": "O que vem a seguir?",
-            "description": "Continue trabalhando com as páginas extraídas:",
-            "compress": "Reduzir tamanho do arquivo",
-            "protect": "Adicionar senha",
-            "watermark": "Adicionar marca d'água",
-            "merge": "Juntar com outros"
-        }
-    },
-    "imagesToPdf": {
-        "imagesList": "Imagens",
-        "settings": "Configurações de PDF",
-        "pageSize": "Tamanho da Página",
-        "pageSizes": {
-            "fit": "Ajustar à Imagem",
-            "a4": "A4",
-            "letter": "Carta"
-        },
-        "orientation": "Orientação",
-        "orientations": {
-            "portrait": "Retrato",
-            "landscape": "Paisagem"
-        },
-        "margin": "Margem",
-        "convert": "Converter para PDF",
-        "convertAnother": "Converter outro",
-        "errors": {
-            "noImages": "Por favor, selecione pelo menos uma imagem"
-        },
-        "success": {
-            "title": "Imagens convertidas com sucesso!",
-            "pages": "Páginas criadas"
-        },
-        "successMessage": "PDF criado com sucesso com {count} páginas",
-        "quickActions": {
-            "title": "O que vem a seguir?",
-            "description": "Continue trabalhando com seu PDF:",
-            "compress": "Reduzir tamanho do arquivo",
-            "protect": "Adicionar senha",
-            "watermark": "Adicionar marca d'água",
-            "merge": "Juntar com outros"
-        }
-    },
-    "pdfToImages": {
-        "title": "PDF para Imagens",
-        "description": "Converter páginas PDF em imagens de alta qualidade",
-        "format": "Formato de Saída",
-        "quality": "Qualidade",
-        "pages": "Páginas para Converter",
-        "allPages": "Todas as páginas",
-        "pageRange": "Intervalo de páginas",
-        "specificPages": "Páginas específicas",
-        "backgroundColor": "Cor de Fundo",
-        "convert": "Converter para Imagens",
-        "success": "Conversão bem-sucedida!",
-        "imagesCreated": "Imagens Criadas",
-        "totalSize": "Tamanho Total",
-        "preview": "Pré-visualizar",
-        "page": "Página",
-        "download": "Baixar Imagens",
-        "downloadZip": "Baixar como ZIP",
-        "downloadAll": "Baixar Tudo",
-        "downloadIndividual": "Baixar imagens individuais:",
-        "errors": {
-            "conversionFailed": "Falha ao converter PDF para imagens",
-            "zipFailed": "Falha ao criar arquivo ZIP"
-        }
-    },
-    "wordToPdf": {
-        "convert": "Converter para PDF",
-        "convertAnother": "Converter outro",
-        "conversionMode": "Modo de Conversão",
-        "withFormatting": "Com Formatação",
-        "textOnly": "Apenas Texto",
-        "formattingDescription": "Preserva imagens, tabelas, cabeçalhos e estilos de texto",
-        "textDescription": "Extrai apenas texto. Arquivo menor, conversão mais rápida",
-        "quality": "Qualidade de Saída",
-        "qualityStandard": "Padrão (mais rápido, arquivo menor)",
-        "qualityHigh": "Alta Qualidade (equilibrado)",
-        "qualityMax": "Máxima (melhor qualidade, arquivo maior)",
-        "errors": {
-            "noFile": "Por favor, selecione um documento Word primeiro",
-            "invalidFormat": "Formato de arquivo inválido. Por favor, selecione um arquivo .docx",
-            "conversionFailed": "Falha ao converter Word para PDF"
-        },
-        "success": "Documento Word convertido com sucesso!"
-    },
-    "pdfToWord": {
-        "convert": "Converter para Word",
-        "convertAnother": "Converter outro",
-        "options": "Opções de Conversão",
-        "smartHeadings": "Cabeçalhos Inteligentes",
-        "smartHeadingsDescription": "Detectar cabeçalhos por tamanho da fonte e aplicar estilos de título do Word",
-        "errors": {
-            "noFile": "Por favor, selecione um arquivo PDF primeiro",
-            "invalidPdf": "Arquivo PDF inválido. Por favor, selecione um PDF válido",
-            "conversionFailed": "Falha ao converter PDF para Word"
-        },
-        "success": "PDF convertido para Word com sucesso!",
-        "readyToDownload": "Seu documento Word está pronto para download",
-        "conversionComplete": "Conversão concluída"
-    },
-    "sign": {
-        "signatureType": "Tipo de Assinatura",
-        "drawSignature": "Desenhar Assinatura",
-        "uploadImage": "Enviar Imagem de Assinatura",
-        "signatureText": "Texto da Assinatura",
-        "position": "Posição",
-        "positions": {
-            "bottomRight": "Inferior Direita",
-            "bottomLeft": "Inferior Esquerda",
-            "topRight": "Superior Direita",
-            "topLeft": "Superior Esquerda"
-        },
-        "applyToPages": "Aplicar às Páginas",
-        "allPages": "Todas as Páginas",
-        "pageNumber": "Página {number}",
-        "pagesSigned": "Páginas Assinadas",
-        "fileSize": "Tamanho do Arquivo",
-        "yourName": "Seu Nome",
-        "loadingHighQuality": "Carregando alta qualidade...",
-        "generatingPreview": "Gerando pré-visualização...",
-        "saving": "Salvando...",
-        "addingSignature": "Adicionando assinatura...",
-        "signingPage": "Assinando página {current} de {total}...",
-        "successTitle": "Assinatura Adicionada com Sucesso",
-        "modeDraw": "Desenhar",
-        "modeUpload": "Enviar",
-        "modeText": "Texto",
-        "clearSignature": "Limpar assinatura",
-        "noFile": "Por favor, envie um arquivo PDF",
-        "enterText": "Por favor, digite o texto da assinatura",
-        "provideSignature": "Por favor, desenhe ou envie uma assinatura",
-        "textSize": "Tamanho do Texto",
-        "signatureSize": "Tamanho da Assinatura",
-        "addSignature": "Adicionar Assinatura",
-        "quickActions": {
-            "title": "O que vem a seguir?",
-            "description": "Continue trabalhando com seu PDF assinado:",
-            "protect": "Adicionar senha",
-            "compress": "Reduzir tamanho do arquivo",
-            "watermark": "Adicionar marca d'água",
-            "merge": "Juntar com outros"
-        }
-    },
-    "pageEditor": {
-        "deleted": "EXCLUÍDO",
-        "dragDrop": "Arrastar e soltar",
-        "reorderPages": "para reordenar páginas",
-        "clickRotate": "Clique em girar",
-        "toRotate": "para girar 90°",
-        "clickDelete": "Clique em excluir",
-        "toRemove": "para remover páginas",
-        "restore": "Restaurar",
-        "uploadNew": "Enviar Novo Arquivo",
-        "processing": "Processando...",
-        "downloadOrganized": "Baixar PDF Organizado",
-        "noChanges": "Nenhuma Alteração Feita",
-        "failedRead": "Falha ao ler arquivo PDF",
-        "noPages": "Não é possível criar PDF sem páginas",
-        "successOrganized": "PDF organizado com sucesso!",
-        "failedOrganize": "Falha ao organizar PDF",
-        "errorOrganize": "Ocorreu um erro ao organizar o PDF",
-        "pageCount": "{count} páginas",
-        "pagesAfter": "{count} páginas após edições",
-        "pageNumber": "Página {number}",
-        "rotate90": "Girar 90°",
-        "deletePage": "Excluir página",
-        "restorePage": "Restaurar página",
-        "odd": "Ímpares",
-        "even": "Pares",
-        "extract": "Extrair",
-        "delete": "Excluir",
-        "extracting": "Extraindo páginas...",
-        "pagesDeleted": "páginas excluídas",
-        "extractSuccess": "Páginas extraídas com sucesso",
-        "extractError": "Falha ao extrair páginas",
-        "addPDF": "Adicionar PDF",
-        "appendPages": "Anexar páginas",
-        "tips": {
-            "title": "Dicas",
-            "drag": "Arraste as páginas para reordená-las",
-            "select": "Use as caixas de seleção ou clique para selecionar várias",
-            "rotateDelete": "Passe o mouse sobre uma página para girar ou excluir",
-            "extract": "Use a barra de ferramentas para extrair as páginas selecionadas"
-        }
-    },
-    "addText": {
-        "clickToEdit": "Clique para editar",
-        "addedCount": "Elementos de texto adicionados: {count}",
-        "originalSize": "Tamanho original",
-        "newSize": "Novo tamanho",
-        "processing": "Processando PDF",
-        "addingText": "Adicionando elementos de texto ao seu PDF...",
-        "modeAdd": "✏️ Adicionar Texto",
-        "modeSelect": "👆 Selecionar",
-        "selected": "Selecionado: \"{text}...\"",
-        "zoom": "Zoom: {scale}%",
-        "pageOf": "Página {current} de {total}",
-        "defaultFileName": "documento_com_texto.pdf"
-    },
-    "addFormFields": {
-        "addedCount": "Campos de formulário adicionados: {count}",
-        "originalSize": "Tamanho original: {size} KB",
-        "newSize": "Novo tamanho: {size} KB",
-        "alertNoFields": "Por favor, adicione pelo menos um campo de formulário antes de salvar",
-        "successTitle": "Sucesso",
-        "fields": "Campos: {count}",
-        "selected": "Selecionado: {name} ({type})",
-        "zoom": "Zoom: {scale}%",
-        "pageOf": "Página {current} de {total}",
-        "selectFieldToEdit": "Selecione o campo para editar"
-    },
-    "editText": {
-        "rasterizationWarning": "Nota: As páginas editadas serão convertidas em imagens. O texto nessas páginas não será selecionável após a edição.",
-        "selectPage": "Selecionar Página",
-        "searchText": "Pesquisar por Texto",
-        "textToFind": "Texto para encontrar",
-        "enterTextToFind": "Digite o texto para encontrar",
-        "findText": "Encontrar Texto",
-        "occurrencesFound": "{count} ocorrência(s) encontrada(s)",
-        "selectAll": "Selecionar tudo",
-        "deselectAll": "Desmarcar tudo",
-        "replacementSettings": "Configurações de Substituição",
-        "selectPageToEdit": "Selecione a Página para Editar",
-        "textPosition": "Posição do Texto (para área selecionada)",
-        "pagePreview": "Pré-visualização da Página",
-        "xLabel": "X:",
-        "yLabel": "Y:",
-        "newText": "Novo texto",
-        "enterNewText": "Digite o novo texto",
-        "backgroundColor": "Cor de fundo",
-        "textColor": "Cor do texto",
-        "fontSize": "Tamanho da fonte",
-        "font": "Fonte",
-        "textAlignment": "Alinhamento de texto",
-        "showLivePreview": "Mostrar visualização ao vivo",
-        "selectionMode": "Modo de Seleção",
-        "modeReplace": "Substituir Texto",
-        "modeCover": "Apenas Cobrir",
-        "modeReplaceDesc": "Desenhar e adicionar texto de substituição",
-        "modeCoverDesc": "Desenhar para cobrir texto/imagens sem adicionar novo texto",
-        "clickAndDrag": "💡 Clique e arraste para selecionar área de texto ou imagem para cobrir no PDF",
-        "autoDetectedFontSize": "🔍 Tamanho da fonte detectado automaticamente: {size}px",
-        "coverMode": "(Modo de cobertura 🎨)",
-        "previewModeActive": "👁️ Modo de visualização ativo - mostrando todas as alterações em tempo real",
-        "selectionsOnPage": "Seleções ({count} na página {page})",
-        "clearPage": "Limpar Página",
-        "noSelections": "Nenhuma seleção nesta página. Total: {total} em todas as páginas.",
-        "editActiveSelection": "Editar Seleção Ativa",
-        "replacementText": "Texto de Substituição",
-        "enterReplacementText": "Digite o texto de substituição (multilinha suportado)...",
-        "latinCharactersOnly": "⚠️ Apenas caracteres latinos (A-Z, 0-9) são suportados",
-        "applyChanges": "Aplicar {count} Alteração(ões)",
-        "applyAllHint": "Todas as seleções serão aplicadas ao PDF",
-        "cover": "Cobrir",
-        "replace": "Substituir",
-        "replaceText": "Substituir Texto",
-        "noOccurrencesSelected": "Por favor, selecione pelo menos uma ocorrência para substituir",
-        "searchError": "Ocorreu um erro ao pesquisar por texto. Por favor, tente novamente.",
-        "replaceError": "Ocorreu um erro ao substituir texto. Por favor, tente novamente.",
-        "successMessage": "Texto substituído com sucesso!",
-        "useInOtherTools": "Usar em outras ferramentas",
-        "settings": "Configurações de texto"
-    },
-    "extractImages": {
-        "title": "Extrair/Remover Imagens",
-        "mode": "Modo de Extração",
-        "description": "Extrair todas as imagens de um PDF ou removê-las para reduzir o tamanho do arquivo.",
-        "modeExtract": "Extrair Imagens",
-        "modeRemove": "Remover Imagens",
-        "extractDescription": "Extrair todas as imagens encontradas no PDF. Você pode pré-visualizar e selecionar quais imagens baixar.",
-        "removeDescription": "Remover imagens do PDF para reduzir o tamanho do arquivo. Você pode pré-visualizar e selecionar quais imagens remover.",
-        "extractBtn": "Extrair Imagens",
-        "removeBtn": "Pré-visualizar Imagens",
-        "successExtract": "Imagens extraídas com sucesso!",
-        "successRemove": "Imagens removidas com sucesso!",
-        "previewTitle": "Imagens Extraídas",
-        "previewTitleRemove": "Selecione Imagens para Remover",
-        "previewDescription": "Encontradas {count} imagens. Selecione imagens para baixar.",
-        "previewDescriptionRemove": "Encontradas {count} imagens. Selecione imagens para remover do PDF.",
-        "selectAll": "Selecionar Tudo",
-        "downloadSelected": "Baixar ({count})",
-        "removeSelected": "Remover ({count})",
-        "noImagesSelected": "Por favor, selecione pelo menos uma imagem para baixar.",
-        "smartFilter": {
-            "quickFilters": "Filtros Rápidos",
-            "usefulJunk": "{useful} útil(eis) / {junk} lixo detectado",
-            "categories": {
-                "all": "Tudo",
-                "photo": "Fotos",
-                "chart": "Gráficos",
-                "logo": "Logotipos",
-                "icon": "Ícones e Botões",
-                "decoration": "Decorações",
-                "other": "Outros"
-            },
-            "presets": {
-                "photosOnly": "Apenas Fotos",
-                "useful": "Imagens Úteis",
-                "large": "Imagens Grandes",
-                "charts": "Gráficos",
-                "excludeIcons": "Sem Ícones"
-            }
-        }
+    "edit-pdf": {
+      "name": "Editar PDF",
+      "description": "Editar conteúdo do PDF"
     }
+  },
+  "common": {
+    "upload": "Carregar arquivos",
+    "uploadDescription": "Arraste e solte ou clique para enviar",
+    "selectFile": "Selecionar arquivo",
+    "uploadFile": "Carregar arquivo",
+    "download": "Baixar",
+    "processing": "Processando...",
+    "searching": "Pesquisando...",
+    "error": "Erro",
+    "success": "Sucesso",
+    "cancel": "Cancelar",
+    "close": "Fechar",
+    "back": "Voltar",
+    "next": "Próximo",
+    "done": "Concluído",
+    "remove": "Remover",
+    "newFile": "Novo arquivo",
+    "filePreview": "Pré-visualização do arquivo",
+    "totalPages": "Total de páginas",
+    "page": "Página",
+    "pages": "páginas",
+    "fileSize": "Tamanho do arquivo",
+    "changeFile": "Alterar arquivo",
+    "autoLoaded": "Arquivo carregado da ferramenta anterior",
+    "autoLoadedDescription": "Seu PDF foi carregado automaticamente",
+    "reset": "Redefinir",
+    "processAnother": "Processar outro",
+    "relatedTools": "Ferramentas relacionadas",
+    "clickToEdit": "Clique para editar",
+    "convertAnother": "Converter outro",
+    "quickActions": "Ações Rápidas",
+    "preview": "Pré-visualizar",
+    "clearAll": "Limpar Tudo",
+    "processingTime": "Tempo de processamento",
+    "selectedFile": "Arquivo selecionado",
+    "originalSize": "Tamanho original",
+    "newSize": "Novo tamanho",
+    "useInOtherTools": "Usar em outras ferramentas",
+    "recommended": "Recomendado",
+    "generatingThumbnails": "Gerando miniaturas...",
+    "whatsNext": "O que vem a seguir?",
+    "continueWorking": "Continue trabalhando com seu PDF usando estas ferramentas:",
+    "selectAll": "Selecionar tudo",
+    "convert": "Converter",
+    "hide": "Ocultar",
+    "loading": "Carregando...",
+    "previous": "Anterior",
+    "save": "Salvar",
+    "show": "Mostrar",
+    "zoom": "Zoom"
+  },
+  "upload": {
+    "selectFiles": "Selecionar arquivos",
+    "dragOrClick": "Arraste arquivos aqui ou clique para selecionar",
+    "dropHere": "Solte arquivos aqui",
+    "multipleFilesAllowed": "Vários arquivos permitidos",
+    "singleFileAllowed": "Apenas um arquivo",
+    "pasteHint": "Ou pressione Ctrl+V para colar arquivos",
+    "maxFiles": "Máximo de arquivos",
+    "maxSize": "Tamanho máximo por arquivo",
+    "acceptedTypes": "Tipos aceitos",
+    "errors": {
+      "tooManyFiles": "Muitos arquivos. Máximo: {max}",
+      "invalidFileType": "Tipo de arquivo inválido. Por favor, selecione apenas arquivos PDF.",
+      "fileTooLarge": "Arquivo muito grande. Tamanho máximo: {max} MB"
+    },
+    "readyToProcess": "Pronto para começar",
+    "filesReadySingle": "{count} arquivo pronto",
+    "filesReadyPlural": "{count} arquivos prontos"
+  },
+  "merge": {
+    "fileList": "Arquivos para juntar",
+    "reorderHint": "Arraste para reordenar",
+    "mergeButton": "Juntar PDFs",
+    "mergeAnother": "Juntar outro",
+    "minFilesHint": "Adicione pelo menos 2 arquivos PDF para juntar",
+    "errors": {
+      "minFiles": "Por favor, selecione pelo menos 2 arquivos PDF para juntar"
+    },
+    "success": {
+      "title": "PDFs juntados com sucesso!",
+      "pages": "Total de páginas",
+      "size": "Tamanho do arquivo",
+      "time": "Tempo de processamento"
+    },
+    "quickActions": {
+      "title": "O que vem a seguir?",
+      "description": "Continue trabalhando com seu PDF juntado:",
+      "compress": "Reduzir tamanho do arquivo",
+      "protect": "Adicionar senha",
+      "watermark": "Adicionar marca d'água",
+      "split": "Extrair páginas"
+    }
+  },
+  "smartMerge": {
+    "title": "Juntar Inteligente",
+    "analyzing": "Analisando documentos...",
+    "sortSuggestions": "Sugestões de Classificação",
+    "detectedDates": "Datas Detectadas",
+    "duplicatesFound": "Possíveis Duplicatas Encontradas",
+    "similarFiles": "arquivos similares",
+    "keepFirst": "Manter Primeiro",
+    "sortApplied": "Classificação aplicada",
+    "duplicatesRemoved": "Duplicatas removidas"
+  },
+  "smartOrganize": {
+    "title": "organizar Inteligente",
+    "analyzing": "Analisando páginas...",
+    "quickActions": "Ações Rápidas",
+    "detectedChapters": "Capítulos Detectados",
+    "removeBlank": "Remover Páginas em Branco",
+    "removeDuplicates": "Remover Duplicatas",
+    "fixRotation": "Corrigir Rotação",
+    "moveTOC": "Mover Índice para o Início",
+    "noIssues": "Nenhum problema detectado - o documento parece bom!"
+  },
+  "smartCompression": {
+    "title": "Análise Inteligente",
+    "analyzing": "Analisando conteúdo PDF...",
+    "highPotential": "Alto potencial de compressão detectado",
+    "optimized": "O arquivo já está bem otimizado",
+    "images": "Imagens",
+    "structure": "Estrutura",
+    "heavy": "Pesado (muitas imagens)",
+    "light": "Leve (maioria texto)",
+    "recommendation": "Modo recomendado",
+    "apply": "Aplicar",
+    "applied": "Modo recomendado aplicado",
+    "insights": {
+      "mostlyText": "Conteúdo majoritariamente texto",
+      "imageCount": "Contém ~{count} imagens",
+      "largeImages": "Tamanho grande devido a imagens",
+      "highDensity": "Alta densidade de conteúdo",
+      "efficient": "Estrutura já eficiente",
+      "standard": "Análise padrão de PDF"
+    }
+  },
+  "smartImageFilter": {
+    "title": "Filtro Inteligente de Imagem",
+    "analyzing": "Analisando imagens...",
+    "totalImages": "Total",
+    "useful": "Útil",
+    "junk": "Lixo",
+    "quickFilters": "Filtros Rápidos",
+    "categories": "Categorias",
+    "processingInfo": "Toda a análise é executada localmente no seu navegador. As imagens são categorizadas por tamanho, formato e características.",
+    "presets": {
+      "useful": {
+        "label": "Imagens Úteis",
+        "description": "Apenas fotos e gráficos"
+      },
+      "photosOnly": {
+        "label": "Apenas Fotos",
+        "description": "Fotos de alta qualidade"
+      },
+      "excludeIcons": {
+        "label": "Sem Ícones",
+        "description": "Excluir ícones pequenos"
+      },
+      "large": {
+        "label": "Imagens Grandes",
+        "description": "Imagens > 0.1 MP"
+      }
+    },
+    "junkWarning": {
+      "title": "Imagens de baixo valor detectadas",
+      "description": "Encontrados {count} ícones/decorações pequenos. Considere usar o filtro 'Imagens Úteis'."
+    }
+  },
+  "compress": {
+    "filePreview": "Arquivo para comprimir",
+    "originalSize": "Tamanho original",
+    "pages": "Páginas",
+    "changeFile": "Alterar arquivo",
+    "selectQuality": "Selecione o nível de compressão",
+    "selected": "Selecionado",
+    "compressButton": "Comprimir PDF",
+    "compressAnother": "Comprimir outro",
+    "quality": {
+      "low": {
+        "name": "Máxima",
+        "description": "Menor tamanho de arquivo, qualidade inferior"
+      },
+      "medium": {
+        "name": "Equilibrada",
+        "description": "Bom equilíbrio entre tamanho e qualidade"
+      },
+      "high": {
+        "name": "Mínima",
+        "description": "Melhor qualidade, tamanho de arquivo maior"
+      }
+    },
+    "success": {
+      "title": "PDF comprimido com sucesso!",
+      "originalSize": "Tamanho original",
+      "compressedSize": "Tamanho comprimido",
+      "saved": "Espaço economizado",
+      "time": "Tempo de processamento"
+    },
+    "quickActions": {
+      "title": "O que vem a seguir?",
+      "description": "Continue trabalhando com seu PDF comprimido:",
+      "protect": "Adicionar senha",
+      "merge": "Juntar com outros",
+      "split": "Extrair páginas",
+      "watermark": "Adicionar marca d'água"
+    },
+    "autoLoaded": {
+      "title": "Arquivo carregado da ferramenta anterior",
+      "description": "Seu PDF juntado foi carregado automaticamente"
+    }
+  },
+  "flatten": {
+    "filePreview": "Arquivo para achatar",
+    "description": "Tornar formulários e anotações não editáveis",
+    "originalSize": "Tamanho original",
+    "pages": "Páginas",
+    "changeFile": "Alterar arquivo",
+    "flattenButton": "Achatar PDF",
+    "flattenAnother": "Achatar outro",
+    "success": {
+      "title": "PDF achatado com sucesso!",
+      "originalSize": "Tamanho original",
+      "processedSize": "Tamanho processado",
+      "time": "Tempo de processamento"
+    },
+    "quickActions": {
+      "title": "O que vem a seguir?",
+      "description": "Continue trabalhando com seu PDF achatado:",
+      "protect": "Adicionar senha",
+      "merge": "Juntar com outros",
+      "compress": "Reduzir tamanho do arquivo"
+    },
+    "autoLoaded": {
+      "title": "Arquivo carregado da ferramenta anterior",
+      "description": "Seu PDF foi carregado automaticamente"
+    }
+  },
+  "split": {
+    "filePreview": "Arquivo para dividir",
+    "pages": "Páginas",
+    "totalPages": "Total de páginas",
+    "fileSize": "Tamanho do arquivo",
+    "changeFile": "Alterar arquivo",
+    "selectMode": "Selecione o modo de divisão",
+    "splitButton": "Dividir PDF",
+    "splitAnother": "Dividir outro",
+    "downloadAll": "Baixar todos os arquivos",
+    "downloadAsZip": "Baixar como ZIP",
+    "previewTitle": "Pré-visualização da página",
+    "outputFiles": "Arquivos de saída",
+    "selectAll": "Selecionar Tudo",
+    "deselectAll": "Desmarcar Tudo",
+    "selectedCount": "{count} páginas selecionadas",
+    "selectPagesHint": "Selecione pelo menos uma página para continuar",
+    "mergingSelected": "Mesclando páginas selecionadas...",
+    "mergeFailed": "Falha ao mesclar páginas selecionadas",
+    "mode": {
+      "all": {
+        "name": "Todas as páginas",
+        "description": "Dividir em páginas individuais"
+      },
+      "range": {
+        "name": "Intervalo de páginas",
+        "description": "Extrair intervalo de páginas"
+      },
+      "intervals": {
+        "name": "Por intervalos",
+        "description": "Dividir a cada N páginas"
+      },
+      "custom": {
+        "name": "Páginas personalizadas",
+        "description": "Selecionar páginas específicas"
+      },
+      "byStructure": {
+        "name": "Por Estrutura",
+        "description": "Divisão inteligente por capítulos"
+      }
+    },
+    "structureSettings": "Estrutura do Documento",
+    "analyzeFirst": "Analise o documento para detectar capítulos e seções",
+    "analyzeButton": "Analisar Estrutura",
+    "analyzing": "Analisando...",
+    "chaptersDetected": "{count} capítulos detectados",
+    "reanalyze": "Reanalisar",
+    "rangeSettings": "Configurações de Intervalo de Páginas",
+    "startPage": "Página Inicial",
+    "endPage": "Página Final",
+    "rangeHint": "Total de páginas: {total}",
+    "intervalSettings": "Configurações de Intervalo",
+    "pagesPerFile": "Páginas por arquivo",
+    "intervalHint": "{files} arquivos serão criados de {total} páginas",
+    "customSettings": "Seleção de Páginas Personalizada",
+    "pageNumbers": "Números de página",
+    "customHint": "Digite números de página separados por vírgulas ou use intervalos (ex: 1,3,5-7,10)",
+    "success": {
+      "title": "PDF dividido com sucesso!",
+      "filesCreated": "{count} arquivos criados"
+    },
+    "pageNumber": "Página {page}",
+    "pageRange": "Páginas {start}-{end}",
+    "pageCount": "{count} páginas",
+    "pageCountSingle": "1 página",
+    "autoLoaded": {
+      "title": "Arquivo carregado da ferramenta anterior",
+      "description": "Seu PDF foi carregado automaticamente"
+    },
+    "quickActions": {
+      "title": "O que vem a seguir?",
+      "description": "Selecione as páginas acima e continue trabalhando com elas usando estas ferramentas:",
+      "descriptionWithSelection": "Continue trabalhando com {count} páginas selecionadas usando estas ferramentas:",
+      "compress": "Reduzir tamanho do arquivo",
+      "merge": "Juntar com outros",
+      "protect": "Adicionar senha",
+      "watermark": "Adicionar marca d'água"
+    }
+  },
+  "protect": {
+    "filePreview": "Arquivo para proteger",
+    "protectButton": "Proteger PDF",
+    "protectAnother": "Proteger outro",
+    "userPassword": "Senha para abrir PDF",
+    "userPasswordPlaceholder": "Digite a senha",
+    "ownerPassword": "Senha do proprietário (opcional)",
+    "ownerPasswordPlaceholder": "Digite a senha do proprietário",
+    "useOwnerPassword": "Usar senha de proprietário diferente",
+    "permissionsOnly": "Apenas restrições (sem senha para abrir)",
+    "permissionsOnlyHint": "PDF pode ser aberto sem senha, mas o uso será restrito",
+    "passwordWarning": {
+      "title": "Aviso: A senha não pode ser recuperada",
+      "message": "Se você perder sua senha, não há como recuperá-la. Guarde-a em um lugar seguro!"
+    },
+    "securityLevel": "Nível de segurança",
+    "advancedSettings": "Configurações avançadas",
+    "encryptionLevel": "Nível de criptografia",
+    "recommended": "(recomendado)",
+    "permissionsTitle": "Permissões",
+    "presets": {
+      "basic": {
+        "name": "Básico",
+        "description": "Permitir impressão e cópia"
+      },
+      "business": {
+        "name": "Negócios",
+        "description": "Permitir apenas impressão"
+      },
+      "confidential": {
+        "name": "Confidencial",
+        "description": "Sem impressão ou cópia"
+      }
+    },
+    "permissions": {
+      "printing": "Impressão",
+      "printingNone": "Não permitido",
+      "printingLow": "Baixa resolução",
+      "printingHigh": "Alta resolução",
+      "copying": "Permitir copiar texto",
+      "modifying": "Permitir modificar conteúdo",
+      "annotating": "Permitir anotações",
+      "fillingForms": "Permitir preencher formulários",
+      "contentAccessibility": "Permitir leitores de tela"
+    },
+    "passwordStrength": {
+      "strength": "Força",
+      "weak": "FRACA",
+      "medium": "MÉDIA",
+      "strong": "FORTE",
+      "tooShort": "Senha muito curta (min 8 caracteres)",
+      "useUpperAndLower": "Use maiúsculas e minúsculas",
+      "useNumbers": "Adicione números",
+      "useSpecialChars": "Adicione caracteres especiais"
+    },
+    "errors": {
+      "passwordRequired": "Senha é necessária",
+      "protectionFailed": "Falha ao proteger PDF"
+    },
+    "success": {
+      "title": "PDF protegido com sucesso!",
+      "encryption": "Criptografia",
+      "password": "Senha",
+      "passwordSet": "Definida"
+    },
+    "activePermissions": "Permissões Ativas",
+    "badge": {
+      "printingAllowed": "Impressão Permitida",
+      "noPrinting": "Impressão Proibida",
+      "copyingAllowed": "Cópia Permitida",
+      "noCopying": "Cópia Proibida",
+      "editingAllowed": "Edição Permitida",
+      "noEditing": "Edição Proibida"
+    },
+    "quickActions": {
+      "title": "O que vem a seguir?",
+      "description": "Continue trabalhando com seu PDF protegido:",
+      "compress": "Reduzir tamanho do arquivo",
+      "split": "Extrair páginas",
+      "watermark": "Adicionar marca d'água",
+      "merge": "Juntar com outros"
+    },
+    "autoLoaded": {
+      "title": "Arquivo carregado da ferramenta anterior",
+      "description": "Seu PDF foi carregado automaticamente"
+    }
+  },
+  "ocr": {
+    "filePreview": "Arquivo para processar",
+    "recognitionLanguage": "Idioma de reconhecimento",
+    "languageHint": "Selecione o idioma do texto no seu documento",
+    "autoDetect": "Detectar idioma automaticamente",
+    "autoDetectHint": "O idioma será detectado automaticamente a partir do conteúdo do documento",
+    "detectingLanguage": "Detectando idioma...",
+    "analyzingContent": "Analisando conteúdo do documento...",
+    "pageSelection": "Páginas para processar",
+    "firstPageOnly": "Apenas primeira página",
+    "allPages": "Todas as páginas",
+    "pageRange": "Intervalo de páginas",
+    "page": "página",
+    "pages": "páginas",
+    "processed": "processado",
+    "processingPage": "Processando página {current} de {total}...",
+    "startOCR": "Iniciar OCR",
+    "processing": "Processando OCR...",
+    "analyzing": "Analisando...",
+    "initializing": "Inicializando motor OCR...",
+    "loadingModel": "Carregando modelo de idioma...",
+    "processingImage": "Processando imagem...",
+    "processingPDF": "Processando PDF...",
+    "recognizing": "Reconhecendo texto",
+    "completed": "OCR concluído!",
+    "pageTitle": "Resultado OCR",
+    "resultsTitle": "Texto Reconhecido",
+    "confidence": "Confiança",
+    "extractedText": "Texto extraído",
+    "copyText": "Copiar texto",
+    "downloadTXT": "Baixar TXT",
+    "textCopied": "Texto copiado para a área de transferência!",
+    "remove": "Remover",
+    "newFile": "Novo arquivo",
+    "preview": "Pré-visualizar",
+    "view": "Ver",
+    "edit": "Editar",
+    "editPlaceholder": "Edite seu texto extraído aqui...",
+    "textModified": "O texto foi modificado",
+    "words": "palavras",
+    "lines": "linhas",
+    "characters": "caracteres",
+    "languageDetection": {
+      "highConfidence": "Alta Confiança",
+      "mediumConfidence": "Confiança Média",
+      "lowConfidence": "Baixa Confiança",
+      "verifyLanguage": "Verifique a seleção do idioma para melhor precisão do OCR"
+    },
+    "outputFormat": {
+      "title": "Formato de Saída",
+      "text": "Texto Simples (.txt)",
+      "textDesc": "Extrair apenas texto, editável e copiável",
+      "searchablePdf": "PDF Pesquisável (preserva original)",
+      "searchablePdfDesc": "Mantém imagens originais com camada de texto OCR invisível - parece idêntico ao original, mas totalmente pesquisável",
+      "hocr": "hOCR (.html)",
+      "hocrDesc": "HTML com posicionamento preciso de palavras e pontuações de confiança - útil para processamento automatizado",
+      "tsv": "TSV (.tsv)",
+      "tsvDesc": "Valores separados por tabulação com caixas delimitadoras - fácil de analisar para análise de dados"
+    },
+    "results": {
+      "textReady": "Texto Reconhecido",
+      "searchablePdfReady": "Pronto para Criar PDF Pesquisável",
+      "hocrReady": "Dados hOCR Prontos",
+      "tsvReady": "Dados TSV Prontos",
+      "pagesWillProcess": "{count} {pages} serão processadas com OCR",
+      "confidenceAndPages": "Confiança: {confidence}% • {count} {pages} processadas"
+    },
+    "infoPanel": {
+      "searchablePdfTitle": "PDF Pesquisável com Camada de Texto Invisível",
+      "searchablePdfDesc": "As imagens originais do documento serão preservadas exatamente como aparecem. O texto OCR será adicionado como uma camada invisível, tornando o PDF totalmente pesquisável e permitindo a seleção de texto, mantendo a aparência visual original.",
+      "hocrTitle": "Formato hOCR (OCR baseado em HTML)",
+      "hocrDesc": "Documento HTML com caixas delimitadoras precisas e pontuações de confiança para cada palavra. Ideal para processamento automatizado, pipelines de PNL e fluxos de trabalho de extração de texto personalizados.",
+      "tsvTitle": "Formato TSV (Valores Separados por Tabulação)",
+      "tsvDesc": "Formato compatível com planilhas com coordenadas de caixa delimitadora e pontuações de confiança. Fácil de importar para Excel, Google Sheets ou ferramentas de análise de dados como Python/Pandas."
+    },
+    "download": {
+      "createSearchablePdf": "Criar PDF Pesquisável",
+      "downloadHocr": "Baixar hOCR (.html)",
+      "downloadTsv": "Baixar TSV (.tsv)",
+      "downloadTxt": "Baixar TXT",
+      "searchablePdfReady": "Pronto para criar PDF pesquisável!",
+      "searchablePdfDownloaded": "PDF pesquisável baixado!"
+    },
+    "infoTitle": "Sobre OCR",
+    "info1": "Suporta documentos PDF e imagens (JPG, PNG)",
+    "info2": "Reconhecimento em 5 idiomas: EN, RU, DE, FR, ES",
+    "info3": "Suporte a PDF multipágina com seleção de intervalo de páginas",
+    "info4": "Todo o processamento acontece no seu navegador - arquivos permanecem privados",
+    "errors": {
+      "noFile": "Por favor, selecione um arquivo primeiro",
+      "processingFailed": "Falha no processamento OCR. Por favor, tente novamente.",
+      "unsupportedFileType": "OCR suporta apenas arquivos PDF e imagem (JPG, PNG). Seu tipo de arquivo (.{ext}) não é suportado.",
+      "hocrEmpty": "Dados hOCR estão vazios. Por favor, tente executar o OCR novamente.",
+      "tsvEmpty": "Dados TSV estão vazios. Por favor, tente executar o OCR novamente.",
+      "searchablePdfFailed": "Falha ao criar PDF pesquisável: {error}",
+      "downloadFailed": "Falha ao gerar arquivo. Por favor, tente novamente."
+    }
+  },
+  "watermark": {
+    "filePreview": "Arquivo para adicionar marca d'água",
+    "settings": "Configurações da marca d'água",
+    "text": "Texto da marca d'água",
+    "watermarkText": "Texto da marca d'água",
+    "watermarkPlaceholder": "Digite o texto da marca d'água",
+    "position": "Posição",
+    "positions": {
+      "diagonal": "Diagonal",
+      "center": "Centro",
+      "topLeft": "Superior Esquerda",
+      "topRight": "Superior Direita",
+      "bottomLeft": "Inferior Esquerda",
+      "bottomRight": "Inferior Direita",
+      "custom": "Manual (Drag & Drop)"
+    },
+    "color": "Cor",
+    "colors": {
+      "black": "Preto",
+      "gray": "Cinza",
+      "red": "Vermelho",
+      "blue": "Azul"
+    },
+    "opacity": "Opacidade",
+    "fontSize": "Tamanho da Fonte",
+    "rotation": "Rotação",
+    "apply": "Aplicar",
+    "processing": "Adicionando marca d'água...",
+    "processingPage": "Processando página {current} de {total}...",
+    "saving": "Salvando PDF...",
+    "completed": "Marca d'água adicionada!",
+    "preview": "Pré-visualizar",
+    "loading": "Carregando...",
+    "loadingPreview": "Carregando pré-visualização...",
+    "errors": {
+      "noText": "Por favor, digite o texto da marca d'água",
+      "failed": "Falha ao adicionar marca d'água",
+      "cyrillicNotSupported": "Caracteres cirílicos podem não ser suportados pela fonte selecionada"
+    },
+    "success": {
+      "title": "Marca d'água Adicionada com Sucesso",
+      "watermarkApplied": "Marca d'água",
+      "pages": "Páginas Processadas",
+      "size": "Tamanho do Arquivo"
+    },
+    "quickActions": {
+      "title": "O que vem a seguir?",
+      "description": "Continue trabalhando com seu arquivo:",
+      "compress": "Reduzir tamanho do arquivo",
+      "protect": "Adicionar senha",
+      "split": "Dividir PDF",
+      "merge": "Juntar PDF"
+    },
+    "infoTitle": "Sobre Marca d'água",
+    "info1": "Suporta marcas d'água de texto com suporte total a caracteres cirílicos e latinos",
+    "info2": "6 opções de posição: diagonal, centro e 4 cantos",
+    "info3": "Todo o processamento acontece no seu navegador - arquivos permanecem privados"
+  },
+  "rotate": {
+    "settings": "Configurações de rotação",
+    "selectAngle": "Selecione o ângulo de rotação",
+    "clockwise": "Sentido horário",
+    "upsideDown": "De cabeça para baixo",
+    "counterClockwise": "Sentido anti-horário",
+    "selectPages": "Selecione páginas para girar",
+    "allPages": "Todas as páginas",
+    "rotateAllPages": "Girar todas as páginas no documento",
+    "specificPages": "Páginas específicas",
+    "choosePages": "Escolha quais páginas girar",
+    "pageNumbers": "Números das páginas",
+    "pageNumbersHint": "Exemplo: 1,3,5-7,10 (Total de páginas: {total})",
+    "rotateButton": "Girar PDF",
+    "rotateAnother": "Girar outro",
+    "invalidPages": "Por favor, digite números de página válidos",
+    "failed": "Falha ao girar PDF",
+    "success": "PDF girado com sucesso!",
+    "successDescription": "Suas páginas PDF foram giradas conforme especificado",
+    "quickActions": {
+      "title": "O que vem a seguir?",
+      "description": "Continue trabalhando com seu PDF girado:",
+      "compress": "Reduzir tamanho do arquivo",
+      "protect": "Adicionar senha",
+      "watermark": "Adicionar marca d'água",
+      "split": "Extrair páginas"
+    }
+  },
+  "deletePages": {
+    "selectPages": "Selecione páginas para excluir",
+    "pagesToDelete": "Páginas para excluir",
+    "hint": "Exemplo: 1,3,5-7,10 (Total de páginas: {total})",
+    "warning": "Aviso: Isso não pode ser desfeito",
+    "warningDescription": "As páginas serão removidas permanentemente do PDF",
+    "deleteButton": "Excluir Páginas",
+    "deleteAnother": "Excluir de outro",
+    "invalidPages": "Por favor, digite números de página válidos",
+    "cannotDeleteAll": "Não é possível excluir todas as páginas do PDF",
+    "failed": "Falha ao excluir páginas",
+    "success": "Páginas excluídas com sucesso!",
+    "successDescription": "Páginas selecionadas foram removidas do seu PDF",
+    "quickActions": {
+      "title": "O que vem a seguir?",
+      "description": "Continue trabalhando com seu PDF:",
+      "compress": "Reduzir tamanho do arquivo",
+      "protect": "Adicionar senha",
+      "watermark": "Adicionar marca d'água",
+      "merge": "Juntar com outros"
+    }
+  },
+  "extractPages": {
+    "selectPages": "Selecione páginas para extrair",
+    "pagesToExtract": "Páginas para extrair",
+    "hint": "Exemplo: 1,3,5-7,10 (Total de páginas: {total})",
+    "info": "Extrair cria um novo PDF",
+    "infoDescription": "O PDF original permanece inalterado, apenas as páginas selecionadas são copiadas para o novo arquivo",
+    "extractButton": "Extrair Páginas",
+    "extractAnother": "Extrair de outro",
+    "invalidPages": "Por favor, digite números de página válidos",
+    "failed": "Falha ao extrair páginas",
+    "success": "Páginas extraídas com sucesso!",
+    "successDescription": "Páginas selecionadas foram extraídas para um novo PDF",
+    "quickActions": {
+      "title": "O que vem a seguir?",
+      "description": "Continue trabalhando com as páginas extraídas:",
+      "compress": "Reduzir tamanho do arquivo",
+      "protect": "Adicionar senha",
+      "watermark": "Adicionar marca d'água",
+      "merge": "Juntar com outros"
+    }
+  },
+  "imagesToPdf": {
+    "imagesList": "Imagens",
+    "settings": "Configurações de PDF",
+    "pageSize": "Tamanho da Página",
+    "pageSizes": {
+      "fit": "Ajustar à Imagem",
+      "a4": "A4",
+      "letter": "Carta"
+    },
+    "orientation": "Orientação",
+    "orientations": {
+      "portrait": "Retrato",
+      "landscape": "Paisagem"
+    },
+    "margin": "Margem",
+    "convert": "Converter para PDF",
+    "convertAnother": "Converter outro",
+    "errors": {
+      "noImages": "Por favor, selecione pelo menos uma imagem"
+    },
+    "success": {
+      "title": "Imagens convertidas com sucesso!",
+      "pages": "Páginas criadas"
+    },
+    "successMessage": "PDF criado com sucesso com {count} páginas",
+    "quickActions": {
+      "title": "O que vem a seguir?",
+      "description": "Continue trabalhando com seu PDF:",
+      "compress": "Reduzir tamanho do arquivo",
+      "protect": "Adicionar senha",
+      "watermark": "Adicionar marca d'água",
+      "merge": "Juntar com outros"
+    }
+  },
+  "pdfToImages": {
+    "title": "PDF para Imagens",
+    "description": "Converter páginas PDF em imagens de alta qualidade",
+    "format": "Formato de Saída",
+    "quality": "Qualidade",
+    "pages": "Páginas para Converter",
+    "allPages": "Todas as páginas",
+    "pageRange": "Intervalo de páginas",
+    "specificPages": "Páginas específicas",
+    "backgroundColor": "Cor de Fundo",
+    "convert": "Converter para Imagens",
+    "success": "Conversão bem-sucedida!",
+    "imagesCreated": "Imagens Criadas",
+    "totalSize": "Tamanho Total",
+    "preview": "Pré-visualizar",
+    "page": "Página",
+    "download": "Baixar Imagens",
+    "downloadZip": "Baixar como ZIP",
+    "downloadAll": "Baixar Tudo",
+    "downloadIndividual": "Baixar imagens individuais:",
+    "errors": {
+      "conversionFailed": "Falha ao converter PDF para imagens",
+      "zipFailed": "Falha ao criar arquivo ZIP"
+    }
+  },
+  "wordToPdf": {
+    "convert": "Converter para PDF",
+    "convertAnother": "Converter outro",
+    "conversionMode": "Modo de Conversão",
+    "withFormatting": "Com Formatação",
+    "textOnly": "Apenas Texto",
+    "formattingDescription": "Preserva imagens, tabelas, cabeçalhos e estilos de texto",
+    "textDescription": "Extrai apenas texto. Arquivo menor, conversão mais rápida",
+    "quality": "Qualidade de Saída",
+    "qualityStandard": "Padrão (mais rápido, arquivo menor)",
+    "qualityHigh": "Alta Qualidade (equilibrado)",
+    "qualityMax": "Máxima (melhor qualidade, arquivo maior)",
+    "errors": {
+      "noFile": "Por favor, selecione um documento Word primeiro",
+      "invalidFormat": "Formato de arquivo inválido. Por favor, selecione um arquivo .docx",
+      "conversionFailed": "Falha ao converter Word para PDF"
+    },
+    "success": "Documento Word convertido com sucesso!",
+    "editabilityWarning": "⚠️ 'Formatted' mode creates PDF from images. Text in this file will not be editable via standard search, but you can add new text or cover areas manually.",
+    "editResult": "Edit PDF"
+  },
+  "pdfToWord": {
+    "convert": "Converter para Word",
+    "convertAnother": "Converter outro",
+    "options": "Opções de Conversão",
+    "smartHeadings": "Cabeçalhos Inteligentes",
+    "smartHeadingsDescription": "Detectar cabeçalhos por tamanho da fonte e aplicar estilos de título do Word",
+    "errors": {
+      "noFile": "Por favor, selecione um arquivo PDF primeiro",
+      "invalidPdf": "Arquivo PDF inválido. Por favor, selecione um PDF válido",
+      "conversionFailed": "Falha ao converter PDF para Word"
+    },
+    "success": "PDF convertido para Word com sucesso!",
+    "readyToDownload": "Seu documento Word está pronto para download",
+    "conversionComplete": "Conversão concluída"
+  },
+  "sign": {
+    "signatureType": "Tipo de Assinatura",
+    "drawSignature": "Desenhar Assinatura",
+    "uploadImage": "Enviar Imagem de Assinatura",
+    "signatureText": "Texto da Assinatura",
+    "position": "Posição",
+    "positions": {
+      "bottomRight": "Inferior Direita",
+      "bottomLeft": "Inferior Esquerda",
+      "topRight": "Superior Direita",
+      "topLeft": "Superior Esquerda"
+    },
+    "applyToPages": "Aplicar às Páginas",
+    "allPages": "Todas as Páginas",
+    "pageNumber": "Página {number}",
+    "pagesSigned": "Páginas Assinadas",
+    "fileSize": "Tamanho do Arquivo",
+    "yourName": "Seu Nome",
+    "loadingHighQuality": "Carregando alta qualidade...",
+    "generatingPreview": "Gerando pré-visualização...",
+    "saving": "Salvando...",
+    "addingSignature": "Adicionando assinatura...",
+    "signingPage": "Assinando página {current} de {total}...",
+    "successTitle": "Assinatura Adicionada com Sucesso",
+    "modeDraw": "Desenhar",
+    "modeUpload": "Enviar",
+    "modeText": "Texto",
+    "clearSignature": "Limpar assinatura",
+    "noFile": "Por favor, envie um arquivo PDF",
+    "enterText": "Por favor, digite o texto da assinatura",
+    "provideSignature": "Por favor, desenhe ou envie uma assinatura",
+    "textSize": "Tamanho do Texto",
+    "signatureSize": "Tamanho da Assinatura",
+    "addSignature": "Adicionar Assinatura",
+    "quickActions": {
+      "title": "O que vem a seguir?",
+      "description": "Continue trabalhando com seu PDF assinado:",
+      "protect": "Adicionar senha",
+      "compress": "Reduzir tamanho do arquivo",
+      "watermark": "Adicionar marca d'água",
+      "merge": "Juntar com outros"
+    }
+  },
+  "pageEditor": {
+    "deleted": "EXCLUÍDO",
+    "dragDrop": "Arrastar e soltar",
+    "reorderPages": "para reordenar páginas",
+    "clickRotate": "Clique em girar",
+    "toRotate": "para girar 90°",
+    "clickDelete": "Clique em excluir",
+    "toRemove": "para remover páginas",
+    "restore": "Restaurar",
+    "uploadNew": "Enviar Novo Arquivo",
+    "processing": "Processando...",
+    "downloadOrganized": "Baixar PDF Organizado",
+    "noChanges": "Nenhuma Alteração Feita",
+    "failedRead": "Falha ao ler arquivo PDF",
+    "noPages": "Não é possível criar PDF sem páginas",
+    "successOrganized": "PDF organizado com sucesso!",
+    "failedOrganize": "Falha ao organizar PDF",
+    "errorOrganize": "Ocorreu um erro ao organizar o PDF",
+    "pageCount": "{count} páginas",
+    "pagesAfter": "{count} páginas após edições",
+    "pageNumber": "Página {number}",
+    "rotate90": "Girar 90°",
+    "deletePage": "Excluir página",
+    "restorePage": "Restaurar página",
+    "odd": "Ímpares",
+    "even": "Pares",
+    "extract": "Extrair",
+    "delete": "Excluir",
+    "extracting": "Extraindo páginas...",
+    "pagesDeleted": "páginas excluídas",
+    "extractSuccess": "Páginas extraídas com sucesso",
+    "extractError": "Falha ao extrair páginas",
+    "addPDF": "Adicionar PDF",
+    "appendPages": "Anexar páginas",
+    "tips": {
+      "title": "Dicas",
+      "drag": "Arraste as páginas para reordená-las",
+      "select": "Use as caixas de seleção ou clique para selecionar várias",
+      "rotateDelete": "Passe o mouse sobre uma página para girar ou excluir",
+      "extract": "Use a barra de ferramentas para extrair as páginas selecionadas"
+    }
+  },
+  "addText": {
+    "clickToEdit": "Clique para editar",
+    "addedCount": "Elementos de texto adicionados: {count}",
+    "originalSize": "Tamanho original",
+    "newSize": "Novo tamanho",
+    "processing": "Processando PDF",
+    "addingText": "Adicionando elementos de texto ao seu PDF...",
+    "modeAdd": "✏️ Adicionar Texto",
+    "modeSelect": "👆 Selecionar",
+    "selected": "Selecionado: \"{text}...\"",
+    "zoom": "Zoom: {scale}%",
+    "pageOf": "Página {current} de {total}",
+    "defaultFileName": "documento_com_texto.pdf",
+    "title": "Adicionar texto",
+    "toolbar": {
+      "addText": "Add Text",
+      "select": "Select",
+      "page": "Page",
+      "of": "of",
+      "savePdf": "Salvar PDF",
+      "undo": "Undo",
+      "redo": "Redo"
+    },
+    "format": {
+      "title": "Format Text",
+      "placeholder": "Enter text here...",
+      "textContent": "Text Content",
+      "fontFamily": "Fonte",
+      "fontSize": "Tamanho",
+      "textColor": "Cor",
+      "position": "Position",
+      "preview": "Preview",
+      "sampleText": "Sample text",
+      "opacity": "Opacity",
+      "rotation": "Rotation",
+      "bold": "Bold",
+      "italic": "Italic",
+      "delete": "Delete Element",
+      "alignment": "Alinhamento",
+      "alignLeft": "Esquerda",
+      "alignCenter": "Centro",
+      "alignRight": "Direita",
+      "fitToWidth": "Ajustar à largura",
+      "backgroundColor": "Cobertura de fundo"
+    }
+  },
+  "addFormFields": {
+    "addedCount": "Campos de formulário adicionados: {count}",
+    "originalSize": "Tamanho original: {size} KB",
+    "newSize": "Novo tamanho: {size} KB",
+    "alertNoFields": "Por favor, adicione pelo menos um campo de formulário antes de salvar",
+    "successTitle": "Sucesso",
+    "fields": "Campos: {count}",
+    "selected": "Selecionado: {name} ({type})",
+    "zoom": "Zoom: {scale}%",
+    "pageOf": "Página {current} de {total}",
+    "selectFieldToEdit": "Selecione o campo para editar"
+  },
+  "editText": {
+    "rasterizationWarning": "Nota: As páginas editadas serão convertidas em imagens. O texto nessas páginas não será selecionável após a edição.",
+    "selectPage": "Selecionar Página",
+    "searchText": "Pesquisar por Texto",
+    "textToFind": "Texto para encontrar",
+    "enterTextToFind": "Digite o texto para encontrar",
+    "findText": "Encontrar Texto",
+    "occurrencesFound": "{count} ocorrência(s) encontrada(s)",
+    "selectAll": "Selecionar tudo",
+    "deselectAll": "Desmarcar tudo",
+    "replacementSettings": "Configurações de Substituição",
+    "selectPageToEdit": "Selecione a Página para Editar",
+    "textPosition": "Posição do Texto (para área selecionada)",
+    "pagePreview": "Pré-visualização da Página",
+    "xLabel": "X:",
+    "yLabel": "Y:",
+    "newText": "Novo texto",
+    "enterNewText": "Digite o novo texto",
+    "backgroundColor": "Cor de fundo",
+    "textColor": "Cor do texto",
+    "fontSize": "Tamanho da fonte",
+    "font": "Fonte",
+    "textAlignment": "Alinhamento de texto",
+    "showLivePreview": "Mostrar visualização ao vivo",
+    "selectionMode": "Modo de Seleção",
+    "modeReplace": "Substituir Texto",
+    "modeCover": "Apenas Cobrir",
+    "modeReplaceDesc": "Desenhar e adicionar texto de substituição",
+    "modeCoverDesc": "Desenhar para cobrir texto/imagens sem adicionar novo texto",
+    "clickAndDrag": "💡 Clique e arraste para selecionar área de texto ou imagem para cobrir no PDF",
+    "autoDetectedFontSize": "🔍 Tamanho da fonte detectado automaticamente: {size}px",
+    "coverMode": "(Modo de cobertura 🎨)",
+    "previewModeActive": "👁️ Modo de visualização ativo - mostrando todas as alterações em tempo real",
+    "selectionsOnPage": "Seleções ({count} na página {page})",
+    "clearPage": "Limpar Página",
+    "noSelections": "Nenhuma seleção nesta página. Total: {total} em todas as páginas.",
+    "editActiveSelection": "Editar Seleção Ativa",
+    "replacementText": "Texto de Substituição",
+    "enterReplacementText": "Digite o texto de substituição (multilinha suportado)...",
+    "latinCharactersOnly": "⚠️ Apenas caracteres latinos (A-Z, 0-9) são suportados",
+    "applyChanges": "Aplicar {count} Alteração(ões)",
+    "applyAllHint": "Todas as seleções serão aplicadas ao PDF",
+    "cover": "Cobrir",
+    "replace": "Substituir",
+    "replaceText": "Substituir Texto",
+    "noOccurrencesSelected": "Por favor, selecione pelo menos uma ocorrência para substituir",
+    "searchError": "Ocorreu um erro ao pesquisar por texto. Por favor, tente novamente.",
+    "replaceError": "Ocorreu um erro ao substituir texto. Por favor, tente novamente.",
+    "successMessage": "Texto substituído com sucesso!",
+    "useInOtherTools": "Usar em outras ferramentas",
+    "settings": "Configurações de texto",
+    "smartEdit": "Edição inteligente",
+    "format": {
+      "title": "Formatação de texto",
+      "textContent": "Content",
+      "placeholder": "Enter text...",
+      "fontFamily": "Font",
+      "fontSize": "Size",
+      "textColor": "Color",
+      "opacity": "Opacity",
+      "rotation": "Rotation",
+      "bold": "Bold",
+      "italic": "Italic",
+      "delete": "Remove Element",
+      "alignment": "Alignment",
+      "alignLeft": "Esquerda",
+      "alignCenter": "Centro",
+      "alignRight": "Direita",
+      "fitToWidth": "Fit to Width"
+    }
+  },
+  "extractImages": {
+    "title": "Extrair/Remover Imagens",
+    "mode": "Modo de Extração",
+    "description": "Extrair todas as imagens de um PDF ou removê-las para reduzir o tamanho do arquivo.",
+    "modeExtract": "Extrair Imagens",
+    "modeRemove": "Remover Imagens",
+    "extractDescription": "Extrair todas as imagens encontradas no PDF. Você pode pré-visualizar e selecionar quais imagens baixar.",
+    "removeDescription": "Remover imagens do PDF para reduzir o tamanho do arquivo. Você pode pré-visualizar e selecionar quais imagens remover.",
+    "extractBtn": "Extrair Imagens",
+    "removeBtn": "Pré-visualizar Imagens",
+    "successExtract": "Imagens extraídas com sucesso!",
+    "successRemove": "Imagens removidas com sucesso!",
+    "previewTitle": "Imagens Extraídas",
+    "previewTitleRemove": "Selecione Imagens para Remover",
+    "previewDescription": "Encontradas {count} imagens. Selecione imagens para baixar.",
+    "previewDescriptionRemove": "Encontradas {count} imagens. Selecione imagens para remover do PDF.",
+    "selectAll": "Selecionar Tudo",
+    "downloadSelected": "Baixar ({count})",
+    "removeSelected": "Remover ({count})",
+    "noImagesSelected": "Por favor, selecione pelo menos uma imagem para baixar.",
+    "smartFilter": {
+      "quickFilters": "Filtros Rápidos",
+      "usefulJunk": "{useful} útil(eis) / {junk} lixo detectado",
+      "categories": {
+        "all": "Tudo",
+        "photo": "Fotos",
+        "chart": "Gráficos",
+        "logo": "Logotipos",
+        "icon": "Ícones e Botões",
+        "decoration": "Decorações",
+        "other": "Outros"
+      },
+      "presets": {
+        "photosOnly": "Apenas Fotos",
+        "useful": "Imagens Úteis",
+        "large": "Imagens Grandes",
+        "charts": "Gráficos",
+        "excludeIcons": "Sem Ícones"
+      }
+    }
+  }
 }

@@ -8,7 +8,8 @@ import {
     MousePointer2,
     Sparkles,
     Plus,
-    Save
+    Save,
+    Trash2
 } from 'lucide-react';
 import { useI18n } from '@/hooks/useI18n';
 
@@ -22,6 +23,7 @@ interface ToolbarProps {
     onUndo: () => void;
     onRedo: () => void;
     onToolModeChange: (mode: 'select' | 'add' | 'edit') => void;
+    onReset: () => void;
     onSave: () => void;
 }
 
@@ -35,14 +37,15 @@ export const Toolbar: React.FC<ToolbarProps> = ({
     onUndo,
     onRedo,
     onToolModeChange,
+    onReset,
     onSave
 }) => {
     const { t } = useI18n();
 
     return (
-        <div className="flex flex-wrap items-center justify-between gap-4 p-3 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm transition-all">
+        <div className="flex flex-nowrap items-center justify-between gap-2 p-2 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm transition-all overflow-x-auto no-scrollbar min-w-0">
             {/* Mode Selectors */}
-            <div className="flex items-center gap-1.5 p-1 bg-gray-50/50 dark:bg-gray-800/50 rounded-xl border border-gray-100 dark:border-gray-700">
+            <div className="flex shrink-0 items-center gap-1.5 p-1 bg-gray-50/50 dark:bg-gray-800/50 rounded-xl border border-gray-100 dark:border-gray-700">
                 <Button
                     variant={toolMode === 'select' ? 'default' : 'ghost'}
                     size="sm"
@@ -73,7 +76,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
             </div>
 
             {/* Navigation */}
-            <div className="flex items-center gap-2">
+            <div className="flex shrink-0 items-center gap-2">
                 <div className="flex items-center gap-1 bg-gray-50/50 dark:bg-gray-800/50 p-1 rounded-xl">
                     <Button
                         variant="ghost"
@@ -84,7 +87,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
                     >
                         <ChevronLeft className="w-4 h-4" />
                     </Button>
-                    <span className="text-xs font-bold px-2 min-w-[60px] text-center">
+                    <span className="text-xs font-bold px-2 min-w-[60px] text-center whitespace-nowrap">
                         {currentPage} / {totalPages}
                     </span>
                     <Button
@@ -100,8 +103,21 @@ export const Toolbar: React.FC<ToolbarProps> = ({
             </div>
 
             {/* Actions */}
-            <div className="flex items-center gap-2">
+            <div className="flex shrink-0 items-center gap-2">
                 <div className="flex items-center gap-1 border-r border-gray-100 dark:border-gray-800 pr-2 mr-2">
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-9 w-9 rounded-xl text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
+                        title={t('common.reset')}
+                        onClick={() => {
+                            if (window.confirm(t('common.clearAll') + '?')) {
+                                onReset();
+                            }
+                        }}
+                    >
+                        <Trash2 className="w-4 h-4" />
+                    </Button>
                     <Button
                         variant="ghost"
                         size="icon"

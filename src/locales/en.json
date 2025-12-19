@@ -958,7 +958,13 @@
       "rotation": "Rotation",
       "bold": "Bold",
       "italic": "Italic",
-      "delete": "Delete Element"
+      "delete": "Delete Element",
+      "alignment": "Alignment",
+      "alignLeft": "Left",
+      "alignCenter": "Center",
+      "alignRight": "Right",
+      "fitToWidth": "Fit to Width",
+      "backgroundColor": "Background Cover"
     }
   },
   "addFormFields": {

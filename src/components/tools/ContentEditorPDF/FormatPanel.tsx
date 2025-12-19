@@ -173,7 +173,30 @@ export const FormatPanel: React.FC<FormatPanelProps> = ({
                                             variant="ghost"
                                             size="sm"
                                             className={`flex-1 h-8 rounded-lg ${selectedElement.textAlign === align ? 'bg-white dark:bg-gray-700 shadow-sm text-ocean-600' : 'text-gray-500'}`}
-                                            onClick={() => onElementUpdate(selectedElement.id, { textAlign: align })}
+                                            onClick={() => {
+                                                const oldAlign = selectedElement.textAlign || 'left';
+                                                if (oldAlign !== align) {
+                                                    let newX = selectedElement.x;
+                                                    const el = document.getElementById(`text-el-${selectedElement.id}`);
+                                                    const container = el?.parentElement;
+
+                                                    if (el && container) {
+                                                        const rect = el.getBoundingClientRect();
+                                                        const containerRect = container.getBoundingClientRect();
+                                                        const widthPercent = (rect.width / containerRect.width) * 100;
+
+                                                        const getAnchor = (a: string) => {
+                                                            if (a === 'center') return 0.5;
+                                                            if (a === 'right') return 1;
+                                                            return 0;
+                                                        };
+
+                                                        const diff = getAnchor(align) - getAnchor(oldAlign);
+                                                        newX += diff * widthPercent;
+                                                    }
+                                                    onElementUpdate(selectedElement.id, { textAlign: align, x: newX });
+                                                }
+                                            }}
                                         >
                                             {align === 'left' && <AlignLeft className="w-4 h-4" />}
                                             {align === 'center' && <AlignCenter className="w-4 h-4" />}
@@ -276,13 +299,13 @@ export const FormatPanel: React.FC<FormatPanelProps> = ({
                                 <div className="space-y-3 pt-4 border-t border-gray-100 dark:border-gray-800">
                                     <div className="flex items-center gap-2">
                                         <Square className="w-3.5 h-3.5 text-gray-400" />
-                                        <Label className="text-xs text-gray-500">Background Cover</Label>
+                                        <Label className="text-xs text-gray-500">{t('addText.format.backgroundColor')}</Label>
                                     </div>
-                                    <div className="flex gap-2">
-                                        {['#FFFFFF', '#F3F4F6', '#000000'].map(bg => (
+                                    <div className="grid grid-cols-6 gap-2">
+                                        {['#FFFFFF', '#F3F4F6', '#E5E7EB', '#D1D5DB', '#FDF2F2', '#000000'].map(bg => (
                                             <button
                                                 key={bg}
-                                                className={`w-6 h-6 rounded border ${selectedElement.backgroundColor === bg ? 'ring-2 ring-ocean-500' : 'border-gray-200 dark:border-gray-700'}`}
+                                                className={`w-6 h-6 rounded border transition-transform hover:scale-110 ${selectedElement.backgroundColor === bg ? 'ring-2 ring-ocean-500' : 'border-gray-200 dark:border-gray-700'}`}
                                                 style={{ backgroundColor: bg }}
                                                 onClick={() => onElementUpdate(selectedElement.id, { backgroundColor: bg })}
                                             />

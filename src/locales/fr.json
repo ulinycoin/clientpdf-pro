@@ -108,6 +108,10 @@
     "edit-pdf": {
       "name": "Modifier PDF",
       "description": "Modifier le contenu PDF"
+    },
+    "extract-images-pdf": {
+      "name": "Extract/Remove Images",
+      "description": "Extract all images from PDF or remove them"
     }
   },
   "compress": {
@@ -379,8 +383,25 @@
         "large": "Grandes images",
         "charts": "Graphiques",
         "excludeIcons": "Sans icônes"
-      }
-    }
+      },
+      "usefulJunk": "{useful} useful / {junk} junk detected"
+    },
+    "description": "Extract all images from a PDF or remove them to reduce file size.",
+    "modeExtract": "Extract Images",
+    "modeRemove": "Remove Images",
+    "removeDescription": "Remove images from the PDF to reduce file size. You can preview and select which images to remove.",
+    "extractBtn": "Extract Images",
+    "removeBtn": "Preview Images",
+    "successExtract": "Images extracted successfully!",
+    "successRemove": "Images removed successfully!",
+    "previewTitle": "Extracted Images",
+    "previewTitleRemove": "Select Images to Remove",
+    "previewDescription": "Found {count} images. Select images to download.",
+    "previewDescriptionRemove": "Found {count} images. Select images to remove from PDF.",
+    "selectAll": "Select All",
+    "downloadSelected": "Download ({count})",
+    "removeSelected": "Remove ({count})",
+    "noImagesSelected": "Please select at least one image to download."
   },
   "split": {
     "filePreview": "Fichier à diviser",
@@ -635,7 +656,16 @@
     "info1": "Supporte PDF et images",
     "info2": "5 langues : EN, RU, DE, FR, ES",
     "info3": "Support multi-pages",
-    "info4": "Traitement navigateur - privé"
+    "info4": "Traitement navigateur - privé",
+    "errors": {
+      "noFile": "Please select a file first",
+      "processingFailed": "OCR processing failed. Please try again.",
+      "unsupportedFileType": "OCR only supports PDF and image files (JPG, PNG). Your file type (.{ext}) is not supported.",
+      "hocrEmpty": "hOCR data is empty. Please try running OCR again.",
+      "tsvEmpty": "TSV data is empty. Please try running OCR again.",
+      "searchablePdfFailed": "Failed to create searchable PDF: {error}",
+      "downloadFailed": "Failed to generate file. Please try again."
+    }
   },
   "watermark": {
     "filePreview": "Fichier pour filigrane",
@@ -808,7 +838,9 @@
       "invalidFormat": "Format invalide (.docx)",
       "conversionFailed": "Échec de la conversion"
     },
-    "success": "Word converti avec succès !"
+    "success": "Word converti avec succès !",
+    "editabilityWarning": "⚠️ 'Formatted' mode creates PDF from images. Text in this file will not be editable via standard search, but you can add new text or cover areas manually.",
+    "editResult": "Edit PDF"
   },
   "pdfToWord": {
     "convert": "Convertir en Word",
@@ -922,7 +954,39 @@
     "selected": "Sélectionné : \"{text}...\"",
     "zoom": "Zoom : {scale}%",
     "pageOf": "Page {current} sur {total}",
-    "defaultFileName": "document_avec_texte.pdf"
+    "defaultFileName": "document_avec_texte.pdf",
+    "title": "Ajouter du texte",
+    "toolbar": {
+      "addText": "Add Text",
+      "select": "Select",
+      "page": "Page",
+      "of": "of",
+      "savePdf": "Enregistrer le PDF",
+      "undo": "Undo",
+      "redo": "Redo"
+    },
+    "format": {
+      "title": "Format Text",
+      "placeholder": "Enter text here...",
+      "textContent": "Text Content",
+      "fontFamily": "Police",
+      "fontSize": "Taille",
+      "textColor": "Couleur",
+      "position": "Position",
+      "preview": "Preview",
+      "sampleText": "Sample text",
+      "opacity": "Opacity",
+      "rotation": "Rotation",
+      "bold": "Bold",
+      "italic": "Italic",
+      "delete": "Delete Element",
+      "alignment": "Alignement",
+      "alignLeft": "Gauche",
+      "alignCenter": "Centré",
+      "alignRight": "Droite",
+      "fitToWidth": "Ajuster à la largeur",
+      "backgroundColor": "Couverture de fond"
+    }
   },
   "addFormFields": {
     "addedCount": "Champs ajoutés : {count}",
@@ -986,6 +1050,49 @@
     "replaceError": "Erreur remplacement",
     "successMessage": "Texte remplacé !",
     "useInOtherTools": "Utiliser ailleurs",
-    "settings": "Paramètres texte"
+    "settings": "Paramètres texte",
+    "smartEdit": "Édition intelligente",
+    "format": {
+      "title": "Formatage du texte",
+      "textContent": "Content",
+      "placeholder": "Enter text...",
+      "fontFamily": "Font",
+      "fontSize": "Size",
+      "textColor": "Color",
+      "opacity": "Opacity",
+      "rotation": "Rotation",
+      "bold": "Bold",
+      "italic": "Italic",
+      "delete": "Remove Element",
+      "alignment": "Alignment",
+      "alignLeft": "Gauche",
+      "alignCenter": "Centré",
+      "alignRight": "Droite",
+      "fitToWidth": "Fit to Width"
+    }
+  },
+  "merge": {
+    "fileList": "Files to merge",
+    "reorderHint": "Drag to reorder",
+    "mergeButton": "Merge PDFs",
+    "mergeAnother": "Merge another",
+    "minFilesHint": "Add at least 2 PDF files to merge",
+    "errors": {
+      "minFiles": "Please select at least 2 PDF files to merge"
+    },
+    "success": {
+      "title": "PDFs merged successfully!",
+      "pages": "Total pages",
+      "size": "File size",
+      "time": "Processing time"
+    },
+    "quickActions": {
+      "title": "What's next?",
+      "description": "Continue working with your merged PDF using these tools:",
+      "compress": "Reduce file size",
+      "protect": "Add password",
+      "watermark": "Add watermark",
+      "split": "Extract pages"
+    }
   }
 }

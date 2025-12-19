@@ -28,6 +28,7 @@ export const ContentEditorPDF: React.FC = () => {
     const [pdfDocument, setPdfDocument] = useState<pdfjsLib.PDFDocumentProxy | null>(null);
     const [isMobile, setIsMobile] = useState(false);
     const [showMobileDrawer, setShowMobileDrawer] = useState(false);
+    const [isDocumentLoading, setIsDocumentLoading] = useState(false);
 
     const {
         textElements,
@@ -54,12 +55,10 @@ export const ContentEditorPDF: React.FC = () => {
         finishMovement,
     } = useContentEditor();
 
-    // Set initial mode based on tool
+    // Set initial mode to 'edit' by default when the tool is loaded
     useEffect(() => {
-        if (currentTool === 'edit-pdf') {
-            setToolMode('edit');
-        }
-    }, [currentTool, setToolMode]);
+        setToolMode('edit');
+    }, [setToolMode]);
 
     // Handle mobile detection
     useEffect(() => {
@@ -72,8 +71,12 @@ export const ContentEditorPDF: React.FC = () => {
     // Keyboard Shortcuts (Undo/Redo)
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
-            // Don't trigger if user is typing in an input or textarea
-            if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+            // Don't trigger if user is typing in an input, textarea or contentEditable
+            if (
+                e.target instanceof HTMLInputElement ||
+                e.target instanceof HTMLTextAreaElement ||
+                (e.target as HTMLElement).isContentEditable
+            ) {
                 return;
             }
 
@@ -97,7 +100,7 @@ export const ContentEditorPDF: React.FC = () => {
                 deleteTextElement(selectedElementId);
             } else if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key) && selectedElementId) {
                 const element = textElements.find(el => el.id === selectedElementId);
-                if (element && !element.originalRect) {
+                if (element) {
                     e.preventDefault();
                     const step = e.shiftKey ? 1.0 : 0.1;
                     let { x, y } = element;
@@ -124,26 +127,33 @@ export const ContentEditorPDF: React.FC = () => {
         const selectedFile = selectedFiles[0];
         if (!selectedFile) return;
 
-        const arrayBuffer = await selectedFile.arrayBuffer();
-        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-        setPdfDocument(pdf);
+        setIsDocumentLoading(true);
+        try {
+            const arrayBuffer = await selectedFile.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+            setPdfDocument(pdf);
 
-        const uploadedFile: UploadedFile = {
-            id: `${Date.now()}`,
-            file: selectedFile,
-            name: selectedFile.name,
-            size: selectedFile.size,
-            status: 'completed',
-        };
+            const uploadedFile: UploadedFile = {
+                id: `${Date.now()}`,
+                file: selectedFile,
+                name: selectedFile.name,
+                size: selectedFile.size,
+                status: 'completed',
+            };
 
-        setFile(uploadedFile);
-        setResult(null);
-        setResultSaved(false);
-        reset();
+            setFile(uploadedFile);
+            setResult(null);
+            setResultSaved(false);
+            reset();
+        } catch (error) {
+            console.error('Error loading PDF:', error);
+        } finally {
+            setIsDocumentLoading(false);
+        }
     }, [reset]);
 
     // Handle Smart Detection
-    const handleSmartDetect = useCallback(async (x: number, y: number, sampledColor?: string) => {
+    const handleSmartDetect = useCallback(async (x: number, y: number, textColor?: string, bgColor?: string) => {
         if (!pdfDocument) return;
 
         // Check if there's already an element at this position
@@ -169,7 +179,7 @@ export const ContentEditorPDF: React.FC = () => {
                 fontFamily: detected.fontFamily,
                 bold: detected.bold,
                 italic: detected.italic,
-                color: sampledColor || '#000000',
+                color: textColor || '#000000',
                 textAlign: 'left',
                 originalRect: {
                     x: detected.x - detected.width / 2,
@@ -177,7 +187,7 @@ export const ContentEditorPDF: React.FC = () => {
                     w: detected.width,
                     h: detected.height
                 },
-                backgroundColor: '#FFFFFF'
+                backgroundColor: bgColor || '#FFFFFF'
             });
         }
     }, [pdfDocument, currentPage, detectTextAt, addTextElement, textElements, selectElement]);
@@ -281,12 +291,13 @@ export const ContentEditorPDF: React.FC = () => {
                     onUndo={undo}
                     onRedo={redo}
                     onToolModeChange={setToolMode}
+                    onReset={reset}
                     onSave={handleSave}
                 />
 
                 <div className="flex-1 bg-gray-100 dark:bg-gray-800 rounded-2xl relative border border-gray-200 dark:border-gray-700 shadow-inner overflow-hidden">
                     <Canvas
-                        pdfFile={file.file}
+                        pdfDocument={pdfDocument} isDocumentLoading={isDocumentLoading}
                         currentPage={currentPage}
                         textElements={textElements}
                         selectedElementId={selectedElementId}
@@ -302,6 +313,7 @@ export const ContentEditorPDF: React.FC = () => {
                             moveElement(id, x, y);
                             if (isMobile) setShowMobileDrawer(true);
                         }}
+                        onElementUpdate={updateTextElement}
                         onTotalPagesChange={setTotalPages}
                         onSmartDetect={handleSmartDetect}
                     />
@@ -332,11 +344,8 @@ export const ContentEditorPDF: React.FC = () => {
                         <FormatPanel
                             selectedElement={selectedElement}
                             onElementUpdate={updateTextElement}
-                            onDelete={(id) => { deleteTextElement(id); setShowMobileDrawer(false); }}
+                            onDelete={deleteTextElement}
                         />
-                        <Button onClick={handleSave} className="w-full h-12 mt-6 rounded-xl font-bold bg-ocean-500 text-white">
-                            {t('common.save')}
-                        </Button>
                     </div>
                 )}
             </div>
