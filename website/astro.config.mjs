@@ -18,6 +18,11 @@ export default defineConfig({
     format: 'file'
   },
   vite: {
+    server: {
+      fs: {
+        allow: ['..']
+      }
+    },
     build: {
       rollupOptions: {
         output: {

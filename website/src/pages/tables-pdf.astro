@@ -1,0 +1,127 @@
+---
+import ToolPage from '../components/ToolPage.astro';
+
+const keywords = "excel to pdf, csv to pdf, table to pdf, convert excel to pdf online, create tables in pdf, free excel to pdf converter, professional pdf tables, private pdf tool";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "image": "https://localpdf.online/logos/icon-512.png",
+  "name": "How to Convert Excel and CSV to Professional PDF Tables",
+  "description": "A step-by-step guide to creating high-quality PDF tables from your data files using LocalPDF's private and free tool.",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Open the Tables Tool",
+      "text": "Launch the 'Tables in PDF' tool from the sidebar to begin.",
+      "url": "https://localpdf.online/tables-pdf#tool",
+      "image": "https://localpdf.online/screenshots/tables-welcome.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Import Your Data",
+      "text": "Click 'Import Excel/CSV' to select your data file. We support .xlsx, .xls, and .csv formats.",
+      "image": "https://localpdf.online/screenshots/tables-welcome.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Select Sheets",
+      "text": "If you uploaded an Excel file, select which sheets (tabs) you want to include in your PDF document.",
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Customize Layout",
+      "text": "Choose your page orientation (Portrait or Landscape) and customize colors, stripes, and border settings for a professional look.",
+      "image": "https://localpdf.online/screenshots/tables-styles.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Generate and Download",
+      "text": "Click 'Generate PDF'. Your professional tables will be created instantly and ready for download.",
+      "image": "https://localpdf.online/screenshots/tables-preview.png"
+    }
+  ],
+  "totalTime": "PT1M"
+};
+
+const faqs = [
+  {
+    question: "Which file formats are supported for table creation?",
+    answer: "LocalPDF supports Microsoft Excel (.xlsx, .xls) and Comma Separated Values (.csv) files. You can also manually create tables within the tool."
+  },
+  {
+    question: "How does the tool handle very wide tables?",
+    answer: "Our advanced layout engine automatically calculates column widths. For extremely wide tables, we use horizontal pagination (split-tiling) to ensure all data is readable, repeating the first column for context on every page."
+  },
+  {
+    question: "Can I customize the look of my PDF tables?",
+    answer: "Yes! You can choose header colors, enable zebra striping for better readability, adjust font sizes, and toggle border visibility. You can also switch between Portrait and Landscape orientations."
+  },
+  {
+    question: "Are my Excel/CSV files safe?",
+    answer: "Absolutely. Like all LocalPDF tools, processing happens 100% locally in your browser. Your data files never leave your device and are never uploaded to any server."
+  },
+  {
+    question: "Can I convert multiple Excel sheets at once?",
+    answer: "Yes, when you upload an Excel workbook, you can select any combination of sheets to include. Each sheet will be rendered as a separate table section in the resulting PDF."
+  },
+  {
+    question: "Do I need to install any software?",
+    answer: "No. LocalPDF is a web-based application that works directly in your browser without any plugins or installations."
+  }
+];
+---
+
+<ToolPage
+  toolId="tables-pdf"
+  title="Tables in PDF — Convert Excel/CSV to Professional PDF"
+  metaDescription="Transform your Excel and CSV data into beautiful, professional PDF tables instantly. 100% private, client-side processing. No uploads required."
+  keywords={keywords}
+  description="Convert your spreadsheets into professional, readable PDF documents. Our tool handles complex layouts, long tables, and multiple sheets with ease—all while keeping your data private on your own device."
+  benefits={[
+    "📊 Professional — Clean, high-quality table layouts",
+    "🎨 Customizable — Colors, stripes, and orientation controls",
+    "🔒 100% Private — Data stays on your computer",
+    "⚡ Intelligent — Auto-layout and horizontal pagination"
+  ]}
+  relatedTools={[
+    { id: 'merge-pdf', icon: '📄', title: 'Merge PDF', description: 'Combine multiple documents' },
+    { id: 'edit-pdf', icon: '📝', title: 'Edit PDF', description: 'Modify page content' },
+    { id: 'compress-pdf', icon: '🗜️', title: 'Compress PDF', description: 'Smaller file sizes' },
+    { id: 'word-to-pdf', icon: '📘', title: 'Word to PDF', description: 'Convert Docx files' }
+  ]}
+  whyChoose={{
+    title: "Why Use LocalPDF for Table Generation?",
+    reasons: [
+      "Privacy First: Financial data and internal reports are sensitive. LocalPDF ensures your data never touches a server, providing the highest level of security available online.",
+      "Smart Layout Engine: No more broken tables or cut-off columns. Our engine wraps text, adjusts widths, and even splits wide tables horizontally to keep your data legible.",
+      "Multi-Tab Support: Convert entire Excel workbooks in one go. Select exactly which sheets you need and let the tool handle the rest.",
+      "Zero Cost: Enjoy premium table generation features without any subscription or hidden fees. Fast, free, and completely unrestricted.",
+      "Offline Ready: Once the app loads, you can generate tables without an internet connection, making it ideal for mobile work or high-security environments.",
+      "Lossless Quality: High-resolution output with embedded fonts ensures your tables look crisp on any screen and in print."
+    ]
+  }}
+  features={[
+    "Excel (.xlsx, .xls) and CSV support",
+    "Automatic column width calculation",
+    "Text wrapping within cells",
+    "Horizontal pagination for wide datasets",
+    "Customizable header and stripe colors",
+    "Portrait / Landscape auto-detection",
+    "Support for dates and number formatting",
+    "First column repetition on split pages",
+    "Multi-sheet selection from workbooks"
+  ]}
+  steps={[
+    'Open the "Tables in PDF" tool',
+    "Upload your Excel or CSV file manually",
+    "Select desired sheets and customize the style",
+    "Choose page orientation or use 'Auto' mode",
+    "Preview and download your professional PDF"
+  ]}
+  faqs={faqs}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>
