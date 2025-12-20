@@ -25,9 +25,13 @@ interface Props {
     question: string;
     answer: string;
   }>;
+  screenshots?: Array<{
+    url: string;
+    alt: string;
+  }>;
 }
 
-const { toolId, title, description, metaDescription, benefits, steps, whyChoose, features, relatedTools, faqs } = Astro.props;
+const { toolId, title, description, metaDescription, benefits, steps, whyChoose, features, relatedTools, faqs, screenshots } = Astro.props;
 
 const canonicalURL = `https://localpdf.online/${toolId}`;
 
@@ -166,6 +170,20 @@ const structuredData = {
       <strong>100% Private:</strong> Your files never leave your device. All processing happens locally in your browser.
     </div>
   </section>
+
+  <!-- Screenshots Gallery -->
+  {screenshots && screenshots.length > 0 && (
+    <section class="screenshots-section">
+      <h2 class="section-heading">Visual Overview</h2>
+      <div class="screenshots-grid">
+        {screenshots.map((shot) => (
+          <div class="screenshot-item">
+            <img src={shot.url} alt={shot.alt} loading="lazy" />
+          </div>
+        ))}
+      </div>
+    </section>
+  )}
 
   <!-- FAQ Section (if provided) -->
   {faqs && faqs.length > 0 && (
@@ -576,6 +594,49 @@ const structuredData = {
     .why-grid {
       grid-template-columns: 1fr;
       gap: 16px;
+    }
+  }
+</style>
+
+<style is:global>
+  /* Screenshots Gallery Styles */
+  .screenshots-section {
+    max-width: 1000px;
+    margin: 48px auto;
+    padding: 0 7vw;
+  }
+
+  .screenshots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    margin-top: 24px;
+  }
+
+  .screenshot-item {
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #E5E5E5;
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .screenshot-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+  }
+
+  .screenshot-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
+
+  @media (max-width: 768px) {
+    .screenshots-grid {
+      grid-template-columns: 1fr;
     }
   }
 </style>
