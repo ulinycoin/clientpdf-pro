@@ -159,13 +159,17 @@
     "previous": "上一个",
     "save": "保存",
     "show": "显示",
-    "zoom": "缩放"
+    "zoom": "缩放",
+    "addFiles": "添加更多文件",
+    "errors": {
+      "previewFailed": "无法加载预览"
+    }
   },
   "upload": {
     "selectFiles": "选择文件",
     "dragOrClick": "将文件拖到此处或点击选择",
     "dropHere": "将文件拖到此处",
-    "multipleFilesAllowed": "允许多个文件",
+    "multipleFilesAllowed": "支持多达10个.docx文件",
     "singleFileAllowed": "仅限单个文件",
     "pasteHint": "或按 Ctrl+V 粘贴文件",
     "maxFiles": "最大文件数",
@@ -809,17 +813,17 @@
     "formattingDescription": "保留图片、表格、标题和文本样式",
     "textDescription": "仅提取文本。文件更小，转换更快",
     "quality": "输出质量",
-    "qualityStandard": "标准（更快，文件更小）",
-    "qualityHigh": "高质量（平衡）",
-    "qualityMax": "最大（最佳质量，文件较大）",
+    "qualityStandard": "标准",
+    "qualityHigh": "高质量",
+    "qualityMax": "最高",
     "errors": {
       "noFile": "请先选择一个 Word 文档",
       "invalidFormat": "无效的文件格式。请选择 .docx 文件",
       "conversionFailed": "Word 转 PDF 失败"
     },
     "success": "Word 文档转换成功！",
-    "editabilityWarning": "⚠️ 'Formatted' mode creates PDF from images. Text in this file will not be editable via standard search, but you can add new text or cover areas manually.",
-    "editResult": "Edit PDF"
+    "editabilityWarning": "⚠️ “带格式”模式从图片创建 PDF。文本通常无法搜索，但您可以手动添加文本或覆盖区域。",
+    "editResult": "编辑 PDF"
   },
   "pdfToWord": {
     "convert": "转换为 Word",
@@ -827,6 +831,8 @@
     "options": "转换选项",
     "smartHeadings": "智能标题",
     "smartHeadingsDescription": "按字体大小检测标题并应用 Word 标题样式",
+    "extractComments": "提取注释",
+    "extractCommentsDescription": "将 PDF 便签转换为 Word 注释",
     "errors": {
       "noFile": "请先选择一个 PDF 文件",
       "invalidPdf": "无效的 PDF 文件。请选择有效的 PDF",

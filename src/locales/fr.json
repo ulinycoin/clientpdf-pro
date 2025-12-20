@@ -227,13 +227,17 @@
     "previous": "Précédent",
     "save": "Enregistrer",
     "show": "Afficher",
-    "zoom": "Zoom"
+    "zoom": "Zoom",
+    "addFiles": "Ajouter plus de fichiers",
+    "errors": {
+      "previewFailed": "Échec du chargement de l'aperçu"
+    }
   },
   "upload": {
     "selectFiles": "Sélectionner des fichiers",
     "dragOrClick": "Faites glisser les fichiers ici ou cliquez pour sélectionner",
     "dropHere": "Déposez les fichiers ici",
-    "multipleFilesAllowed": "Plusieurs fichiers autorisés",
+    "multipleFilesAllowed": "Prend en charge jusqu'à 10 fichiers .docx",
     "singleFileAllowed": "Un seul fichier",
     "pasteHint": "Ou appuyez sur Ctrl+V pour coller des fichiers",
     "maxFiles": "Fichiers maximum",
@@ -827,20 +831,20 @@
     "conversionMode": "Mode de conversion",
     "withFormatting": "Avec formatage",
     "textOnly": "Texte seul",
-    "formattingDescription": "Conserve images et mises en page",
-    "textDescription": "Texte uniquement, plus rapide",
-    "quality": "Qualité",
+    "formattingDescription": "Conserve les images, tableaux, titres et styles",
+    "textDescription": "Extraire uniquement le texte. Fichier plus petit, plus rapide",
+    "quality": "Qualité de sortie",
     "qualityStandard": "Standard",
-    "qualityHigh": "Élevée",
+    "qualityHigh": "Haute",
     "qualityMax": "Maximale",
     "errors": {
-      "noFile": "Veuillez choisir un fichier Word",
-      "invalidFormat": "Format invalide (.docx)",
-      "conversionFailed": "Échec de la conversion"
+      "noFile": "Veuillez d'abord choisir un document Word",
+      "invalidFormat": "Format invalide. Veuillez sélectionner un fichier .docx",
+      "conversionFailed": "Échec de la conversion Word vers PDF"
     },
-    "success": "Word converti avec succès !",
-    "editabilityWarning": "⚠️ 'Formatted' mode creates PDF from images. Text in this file will not be editable via standard search, but you can add new text or cover areas manually.",
-    "editResult": "Edit PDF"
+    "success": "Document Word converti avec succès !",
+    "editabilityWarning": "⚠️ Le mode « Avec formatage » crée un PDF à partir d'images. Le texte ne sera pas recherchable normalement, mais vous pourrez ajouter du texte ou masquer des zones manuellement.",
+    "editResult": "Modifier le PDF"
   },
   "pdfToWord": {
     "convert": "Convertir en Word",
@@ -848,6 +852,8 @@
     "options": "Options",
     "smartHeadings": "Titres intelligents",
     "smartHeadingsDescription": "Détecter les titres automatiquement",
+    "extractComments": "Extraire les commentaires",
+    "extractCommentsDescription": "Transférer les notes PDF vers Word",
     "errors": {
       "noFile": "Veuillez choisir un PDF",
       "invalidPdf": "PDF invalide",

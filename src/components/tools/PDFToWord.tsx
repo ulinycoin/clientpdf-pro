@@ -5,77 +5,181 @@ import { useSharedFile } from '@/hooks/useSharedFile';
 import pdfService from '@/services/pdfService';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { CheckCircle2, FileText, FileType2 } from 'lucide-react';
+import {
+  CheckCircle2,
+  FileText,
+  Download,
+  Archive,
+  Loader2,
+  X,
+  AlertCircle,
+  Eye,
+  Plus
+} from 'lucide-react';
+import { Progress } from '@/components/ui/progress';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
+import JSZip from 'jszip';
+
+interface FileStatus {
+  file: File;
+  id: string;
+  isProcessing: boolean;
+  isCompleted: boolean;
+  error?: string;
+  progress: number;
+  result?: {
+    blob: Blob;
+    originalSize: number;
+    processedSize: number;
+  };
+}
 
 
 export const PDFToWord: React.FC = () => {
   const { t } = useI18n();
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
   const { sharedFile, clearSharedFile } = useSharedFile();
-  const [file, setFile] = useState<File | null>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [result, setResult] = useState<{ blob: Blob; originalSize: number; processedSize: number } | null>(null);
+  const [files, setFiles] = useState<FileStatus[]>([]);
+  const [isProcessingAll, setIsProcessingAll] = useState(false);
+
+  // Preview state
+  const [previewFile, setPreviewFile] = useState<File | null>(null);
+  const [isPreviewLoading, setIsPreviewLoading] = useState(false);
 
   // Conversion options
   const [smartHeadings, setSmartHeadings] = useState(true);
+  const [extractComments, setExtractComments] = useState(false);
 
   useEffect(() => {
-    if (sharedFile && !file) {
-      setFile(new File([sharedFile.blob], sharedFile.name, { type: 'application/pdf' }));
+    if (sharedFile && files.length === 0) {
+      const newFile: FileStatus = {
+        file: new File([sharedFile.blob], sharedFile.name, { type: 'application/pdf' }),
+        id: Math.random().toString(36).substring(7),
+        isProcessing: false,
+        isCompleted: false,
+        progress: 0
+      };
+      setFiles([newFile]);
       clearSharedFile();
     }
-  }, [sharedFile, file, clearSharedFile]);
+  }, [sharedFile, files.length, clearSharedFile]);
 
   const handleFileSelected = async (selectedFiles: File[]) => {
-    if (selectedFiles.length > 0) {
-      const selectedFile = selectedFiles[0];
-      const isValid = await pdfService.validatePDF(selectedFile);
-      if (!isValid) {
-        alert(t('pdfToWord.errors.invalidPdf'));
-        return;
+    const newFiles: FileStatus[] = [];
+
+    for (const file of selectedFiles) {
+      if (file.name.toLowerCase().endsWith('.pdf')) {
+        const isValid = await pdfService.validatePDF(file);
+        if (isValid) {
+          newFiles.push({
+            file,
+            id: Math.random().toString(36).substring(7),
+            isProcessing: false,
+            isCompleted: false,
+            progress: 0
+          });
+        }
       }
-      setFile(selectedFile);
-      setResult(null);
     }
+
+    if (newFiles.length < selectedFiles.length) {
+      alert(t('pdfToWord.errors.invalidPdf'));
+    }
+
+    setFiles(prev => [...prev, ...newFiles]);
   };
 
-  const handleConvert = async () => {
-    if (!file) return;
-    setIsProcessing(true);
-    setResult(null);
+  const removeFile = (id: string) => {
+    setFiles(prev => prev.filter(f => f.id !== id));
+  };
 
+  const convertOne = async (status: FileStatus): Promise<FileStatus> => {
     try {
-      const conversionResult = await pdfService.pdfToWord(
-        file,
-        () => { }, // Progress
-        { includeImages: false, smartHeadings }
+      setFiles(prev => prev.map(f => f.id === status.id ? { ...f, isProcessing: true, error: undefined } : f));
+
+      const res = await pdfService.pdfToWord(
+        status.file,
+        (p) => {
+          setFiles(prev => prev.map(f => f.id === status.id ? { ...f, progress: p } : f));
+        },
+        { includeImages: false, smartHeadings, extractComments }
       );
 
-      if (conversionResult.success && conversionResult.blob) {
-        setResult({
-          blob: conversionResult.blob,
-          originalSize: conversionResult.originalSize || 0,
-          processedSize: conversionResult.processedSize || 0,
-        });
+      if (res.success && res.data) {
+        return {
+          ...status,
+          isProcessing: false,
+          isCompleted: true,
+          progress: 100,
+          result: {
+            blob: res.data,
+            originalSize: res.metadata?.originalSize || status.file.size,
+            processedSize: res.metadata?.processedSize || res.data.size
+          }
+        };
       } else {
-        alert(conversionResult.error?.message || t('pdfToWord.errors.conversionFailed'));
+        throw new Error(res.error?.message || t('pdfToWord.errors.conversionFailed'));
       }
-    } catch {
-      alert(t('pdfToWord.errors.conversionFailed'));
-    } finally {
-      setIsProcessing(false);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Conversion failed';
+      return {
+        ...status,
+        isProcessing: false,
+        isCompleted: false,
+        progress: 0,
+        error: message
+      };
     }
   };
 
-  const handleDownload = () => {
-    if (result?.blob) {
-      const fileName = file?.name.replace(/\.pdf$/i, '.docx') || 'converted.docx';
-      pdfService.downloadFile(result.blob, fileName);
+  const handleConvertAll = async () => {
+    setIsProcessingAll(true);
+    const toProcess = files.filter(f => !f.isCompleted);
+
+    for (const f of toProcess) {
+      const updated = await convertOne(f);
+      setFiles(prev => prev.map(curr => curr.id === f.id ? updated : curr));
     }
+
+    setIsProcessingAll(false);
+  };
+
+  const downloadFile = (status: FileStatus) => {
+    if (status.result?.blob) {
+      const fileName = status.file.name.replace(/\.pdf$/i, '.docx');
+      pdfService.downloadFile(status.result.blob, fileName);
+    }
+  };
+
+  const downloadAllAsZip = async () => {
+    const zip = new JSZip();
+    const completed = files.filter(f => f.isCompleted && f.result?.blob);
+
+    if (completed.length === 0) return;
+
+    completed.forEach(f => {
+      const fileName = f.file.name.replace(/\.pdf$/i, '.docx');
+      zip.file(fileName, f.result!.blob);
+    });
+
+    const content = await zip.generateAsync({ type: 'blob' });
+    pdfService.downloadFile(content, 'converted_word_documents.zip');
   };
 
   const handleReset = () => {
-    setFile(null);
-    setResult(null);
+    setFiles([]);
+    setIsProcessingAll(false);
+  };
+
+  const handlePreview = (status: FileStatus) => {
+    setIsPreviewLoading(true);
+    setPreviewFile(status.file);
   };
 
   const formatFileSize = (bytes: number) => {
@@ -87,49 +191,101 @@ export const PDFToWord: React.FC = () => {
   };
 
   const renderContent = () => {
-    if (!file) return null;
-
-    if (result) {
-      return (
-        <div className="space-y-6">
-          <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-2 border-green-200 dark:border-green-800 rounded-2xl p-8">
-            <div className="text-center space-y-4">
-              <div className="w-20 h-20 bg-green-100 dark:bg-green-900/50 rounded-full flex items-center justify-center mx-auto mb-4">
-                <CheckCircle2 className="w-10 h-10 text-green-600 dark:text-green-400" />
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                {t('common.success')}
-              </h2>
-              <div className="text-gray-600 dark:text-gray-400 space-y-1">
-                <p className="flex items-center justify-center gap-2">
-                  <FileType2 className="w-5 h-5" />
-                  {t('pdfToWord.readyToDownload') || 'Word document ready'}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex gap-3 justify-center">
-            <Button onClick={handleDownload} size="lg" className="bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-xl transition-all">
-              {t('common.download')}
-            </Button>
-            <Button variant="outline" onClick={handleReset} size="lg">
-              {t('common.convertAnother')}
-            </Button>
-          </div>
-        </div>
-      )
-    }
+    if (files.length === 0) return null;
 
     return (
-      <div className="flex justify-center py-12">
-        <div className="text-center space-y-4">
-          <div className="w-24 h-24 bg-red-100 dark:bg-red-900/30 rounded-2xl flex items-center justify-center mx-auto text-red-600 dark:text-red-400">
-            <FileText className="w-12 h-12" />
+      <div className="space-y-4">
+        {files.map((f) => (
+          <div key={f.id} className="bg-white dark:bg-gray-900 border rounded-xl p-4 shadow-sm transition-all hover:shadow-md">
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3 overflow-hidden">
+                <div className={`p-2 rounded-lg ${f.isCompleted ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
+                  {f.isCompleted ? <CheckCircle2 className="w-5 h-5" /> : <FileText className="w-5 h-5" />}
+                </div>
+                <div className="overflow-hidden">
+                  <p className="font-medium truncate text-sm">{f.file.name}</p>
+                  <p className="text-xs text-gray-500">{formatFileSize(f.file.size)}</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-1">
+                {f.error && (
+                  <div className="flex items-center text-red-500 text-xs px-2 py-1 bg-red-50 rounded-md">
+                    <AlertCircle className="w-3 h-3 mr-1" />
+                    {f.error}
+                  </div>
+                )}
+                {f.isProcessing && <Loader2 className="w-4 h-4 animate-spin text-blue-500" />}
+
+                {!isProcessingAll && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handlePreview(f)}
+                    className="h-8 w-8 p-0 text-gray-400 hover:text-ocean-500"
+                    title={t('common.preview') || 'Preview'}
+                  >
+                    <Eye className="w-4 h-4" />
+                  </Button>
+                )}
+
+                {f.isCompleted && (
+                  <Button variant="ghost" size="sm" onClick={() => downloadFile(f)} className="h-8 w-8 p-0 text-green-600">
+                    <Download className="w-4 h-4" />
+                  </Button>
+                )}
+
+                {!isProcessingAll && !f.isCompleted && (
+                  <Button variant="ghost" size="sm" onClick={() => removeFile(f.id)} className="h-8 w-8 p-0 text-gray-400 hover:text-red-500">
+                    <X className="w-4 h-4" />
+                  </Button>
+                )}
+              </div>
+            </div>
+            {(f.isProcessing || (f.progress > 0 && f.progress < 100)) && (
+              <Progress value={f.progress} className="h-1 mt-3" />
+            )}
+            {f.isCompleted && f.result && (
+              <div className="mt-2 text-[10px] text-green-600 font-medium">
+                {t('common.success')}: {formatFileSize(f.result.processedSize)}
+              </div>
+            )}
           </div>
-          <h3 className="text-xl font-semibold">{file.name}</h3>
-          <p className="text-gray-500">{formatFileSize(file.size)}</p>
-        </div>
+        ))}
+
+        {files.some(f => f.isCompleted) && files.length > 1 && (
+          <div className="flex justify-center pt-4">
+            <Button onClick={downloadAllAsZip} className="bg-ocean-600 hover:bg-ocean-700">
+              <Archive className="w-4 h-4 mr-2" />
+              {t('common.downloadAll') || 'Download all as ZIP'}
+            </Button>
+          </div>
+        )}
+
+        {!isProcessingAll && files.length < 10 && (
+          <div className="flex justify-center pt-2">
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={(e) => {
+                if (e.target.files) handleFileSelected(Array.from(e.target.files));
+                e.target.value = '';
+              }}
+              accept=".pdf"
+              multiple
+              className="hidden"
+            />
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => fileInputRef.current?.click()}
+              className="border-dashed border-2 hover:border-ocean-500 hover:text-ocean-600 h-12 w-full rounded-xl transition-all"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              {t('common.addFiles') || 'Add more files'}
+            </Button>
+          </div>
+        )}
       </div>
     );
   };
@@ -147,6 +303,23 @@ export const PDFToWord: React.FC = () => {
             className="toggle"
             checked={smartHeadings}
             onChange={(e) => setSmartHeadings(e.target.checked)}
+            disabled={isProcessingAll}
+          />
+        </div>
+      </div>
+
+      <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+        <div className="flex items-center justify-between">
+          <div className="space-y-1">
+            <Label className="text-base">{t('pdfToWord.extractComments') || 'Extract Comments'}</Label>
+            <p className="text-xs text-gray-500">{t('pdfToWord.extractCommentsDescription') || 'Convert PDF sticky notes to Word comments'}</p>
+          </div>
+          <input
+            type="checkbox"
+            className="toggle"
+            checked={extractComments}
+            onChange={(e) => setExtractComments(e.target.checked)}
+            disabled={isProcessingAll}
           />
         </div>
       </div>
@@ -154,30 +327,71 @@ export const PDFToWord: React.FC = () => {
   );
 
   const renderActions = () => (
-    <Button
-      onClick={handleConvert}
-      disabled={isProcessing || !file}
-      className="w-full py-6 text-lg font-bold"
-    >
-      {isProcessing ? t('common.processing') : t('pdfToWord.convert')}
-    </Button>
+    <div className="space-y-3">
+      <Button
+        onClick={handleConvertAll}
+        disabled={isProcessingAll || files.length === 0 || files.every(f => f.isCompleted)}
+        className="w-full py-6 text-lg font-bold shadow-lg"
+      >
+        {isProcessingAll ? (
+          <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> {t('common.processing')}</>
+        ) : (
+          t('pdfToWord.convert')
+        )}
+      </Button>
+      {files.some(f => f.isCompleted) && !isProcessingAll && (
+        <Button variant="outline" onClick={handleReset} className="w-full">
+          {t('common.convertAnother')}
+        </Button>
+      )}
+    </div>
   );
 
   return (
     <ToolLayout
       title={t('tools.pdf-to-word.name')}
       description={t('tools.pdf-to-word.description')}
-      hasFiles={!!file}
+      hasFiles={files.length > 0}
       onUpload={handleFileSelected}
-      isProcessing={isProcessing}
-      maxFiles={1}
-      uploadTitle={t('common.selectFile')}
-      uploadDescription={t('upload.singleFileAllowed')}
-      accept=".pdf"
-      settings={!result && file ? renderSettings() : null}
-      actions={!result && file ? renderActions() : null}
+      isProcessing={isProcessingAll}
+      maxFiles={10}
+      uploadTitle={t('common.selectFiles') || 'Select PDF Files'}
+      uploadDescription={t('upload.multipleFilesAllowed') || 'Supports up to 10 PDF files'}
+      acceptedTypes=".pdf"
+      settings={files.length > 0 ? renderSettings() : null}
+      actions={files.length > 0 ? renderActions() : null}
     >
       {renderContent()}
+
+      <Dialog open={!!previewFile} onOpenChange={(open) => !open && setPreviewFile(null)}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col p-6">
+          <DialogHeader className="mb-4">
+            <DialogTitle className="flex items-center gap-2">
+              <FileText className="w-5 h-5 text-red-600" />
+              {previewFile?.name}
+            </DialogTitle>
+            <DialogDescription>
+              {t('common.filePreview') || 'File preview'}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-950 rounded-lg flex items-center justify-center p-4 relative min-h-[400px]">
+            {isPreviewLoading && (
+              <div className="absolute inset-0 flex items-center justify-center bg-gray-50/50 dark:bg-gray-950/50 z-10">
+                <Loader2 className="w-8 h-8 animate-spin text-ocean-600" />
+              </div>
+            )}
+            {previewFile && (
+              <iframe
+                src={URL.createObjectURL(previewFile) + '#toolbar=0&navpanes=0&scrollbar=0'}
+                className="w-full h-full min-h-[600px] border-0 rounded-md shadow-inner bg-white"
+                title="PDF Preview"
+                onLoad={() => setIsPreviewLoading(false)}
+              />
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </ToolLayout>
   );
 };

@@ -118,8 +118,10 @@
     "upload": "Загрузить файлы",
     "uploadDescription": "Перетащите или нажмите для загрузки",
     "selectFile": "Выбрать файл",
+    "selectFiles": "Выбрать файлы",
     "uploadFile": "Загрузить файл",
     "download": "Скачать",
+    "downloadAll": "Скачать все (ZIP)",
     "processing": "Обработка...",
     "error": "Ошибка",
     "success": "Успешно",
@@ -161,6 +163,10 @@
     "save": "Сохранить",
     "show": "Показать",
     "zoom": "Масштаб",
+    "addFiles": "Добавить файлы",
+    "errors": {
+      "previewFailed": "Не удалось загрузить предпросмотр"
+    },
     "searching": "Поиск...",
     "clickToEdit": "Нажмите для редактирования",
     "recommended": "Рекомендуется"
@@ -169,7 +175,7 @@
     "selectFiles": "Выбрать файлы",
     "dragOrClick": "Перетащите файлы сюда или нажмите для выбора",
     "dropHere": "Отпустите файлы здесь",
-    "multipleFilesAllowed": "Можно выбрать несколько файлов",
+    "multipleFilesAllowed": "Поддерживается до 10 файлов .docx",
     "singleFileAllowed": "Только один файл",
     "pasteHint": "Или нажмите Ctrl+V для вставки файлов",
     "maxFiles": "Максимум файлов",
@@ -820,30 +826,22 @@
       }
     }
   },
-  "pdfToImages": {
-    "title": "PDF в Изображения",
-    "description": "Конвертировать страницы PDF в изображения высокого качества",
-    "format": "Формат вывода",
-    "quality": "Качество",
-    "pages": "Страницы для конвертации",
-    "allPages": "Все страницы",
-    "pageRange": "Диапазон страниц",
-    "specificPages": "Выбранные страницы",
-    "backgroundColor": "Цвет фона",
-    "convert": "Конвертировать в изображения",
-    "success": "Конвертация успешна!",
-    "imagesCreated": "Создано изображений",
-    "totalSize": "Общий размер",
-    "preview": "Предпросмотр",
-    "page": "Страница",
-    "download": "Скачать изображения",
-    "downloadZip": "Скачать как ZIP",
-    "downloadAll": "Скачать все",
-    "downloadIndividual": "Скачать отдельно:",
+  "pdfToWord": {
+    "convert": "Конвертировать в Word",
+    "convertAnother": "Конвертировать другой",
+    "readyToDownload": "Документ Word готов",
+    "options": "Настройки конвертации",
+    "smartHeadings": "Умные заголовки",
+    "smartHeadingsDescription": "Определять заголовки по размеру шрифта",
+    "extractComments": "Извлечь комментарии",
+    "extractCommentsDescription": "Перенести заметки из PDF в комментарии Word",
     "errors": {
-      "conversionFailed": "Не удалось конвертировать PDF в изображения",
-      "zipFailed": "Не удалось создать ZIP архив"
-    }
+      "noFile": "Пожалуйста, сначала выберите PDF файл",
+      "invalidPdf": "Неверный PDF файл",
+      "conversionFailed": "Не удалось конвертировать PDF в Word"
+    },
+    "success": "PDF успешно конвертирован в Word!",
+    "conversionComplete": "Конвертация завершена"
   },
   "wordToPdf": {
     "convert": "Конвертировать в PDF",
@@ -854,9 +852,9 @@
     "formattingDescription": "Сохраняет изображения, таблицы, заголовки и стили",
     "textDescription": "Извлекает только текст. Меньший файл, быстрее",
     "quality": "Качество вывода",
-    "qualityStandard": "Стандартное (быстро, малый размер)",
-    "qualityHigh": "Высокое (сбалансировано)",
-    "qualityMax": "Максимальное (лучшее качество, больше размер)",
+    "qualityStandard": "Стандартное",
+    "qualityHigh": "Высокое",
+    "qualityMax": "Максимальное",
     "errors": {
       "noFile": "Пожалуйста, сначала выберите документ Word",
       "invalidFormat": "Неверный формат. Выберите файл .docx",
@@ -865,21 +863,6 @@
     "success": "Документ Word успешно конвертирован!",
     "editabilityWarning": "⚠️ Режим «С форматированием» создает PDF из изображений. Текст в таком файле нельзя будет редактировать стандартным поиском, но можно будет добавлять новый или скрывать области вручную.",
     "editResult": "Редактировать PDF"
-  },
-  "pdfToWord": {
-    "convert": "Конвертировать в Word",
-    "convertAnother": "Конвертировать другой",
-    "options": "Опции конвертации",
-    "smartHeadings": "Умные заголовки",
-    "smartHeadingsDescription": "Определять заголовки по размеру шрифта и применять стили Word",
-    "errors": {
-      "noFile": "Пожалуйста, сначала выберите PDF файл",
-      "invalidPdf": "Неверный PDF. Выберите корректный файл",
-      "conversionFailed": "Не удалось конвертировать PDF в Word"
-    },
-    "success": "PDF успешно конвертирован в Word!",
-    "readyToDownload": "Ваш документ Word готов к скачиванию",
-    "conversionComplete": "Конвертация завершена"
   },
   "sign": {
     "signatureType": "Тип подписи",

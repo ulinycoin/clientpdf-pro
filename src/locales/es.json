@@ -219,6 +219,10 @@
     "save": "Guardar",
     "show": "Mostrar",
     "zoom": "Zoom",
+    "addFiles": "Añadir más archivos",
+    "errors": {
+      "previewFailed": "Error al cargar la vista previa"
+    },
     "searching": "Buscando...",
     "page": "Page",
     "pages": "pages",
@@ -827,20 +831,20 @@
     "conversionMode": "Modo de conversión",
     "withFormatting": "Con formato",
     "textOnly": "Solo texto",
-    "formattingDescription": "Mantiene imágenes y diseño",
-    "textDescription": "Solo texto, más rápido",
-    "quality": "Calidad",
+    "formattingDescription": "Conserva imágenes, tablas, títulos y estilos",
+    "textDescription": "Extraer solo el texto. Archivo más pequeño, más rápido",
+    "quality": "Calidad de salida",
     "qualityStandard": "Estándar",
     "qualityHigh": "Alta",
     "qualityMax": "Máxima",
     "errors": {
-      "noFile": "Seleccione archivo Word",
-      "invalidFormat": "Formato inválido (.docx)",
-      "conversionFailed": "Error de conversión"
+      "noFile": "Seleccione primero un documento Word",
+      "invalidFormat": "Formato inválido. Seleccione un archivo .docx",
+      "conversionFailed": "Error en la conversión de Word a PDF"
     },
-    "success": "¡Word convertido con éxito!",
-    "editabilityWarning": "⚠️ 'Formatted' mode creates PDF from images. Text in this file will not be editable via standard search, but you can add new text or cover areas manually.",
-    "editResult": "Edit PDF"
+    "success": "¡Documento Word convertido con éxito!",
+    "editabilityWarning": "⚠️ El modo «Con formato» crea un PDF a partir de imágenes. El texto no se podrá buscar normalmente, pero podrá añadir texto o cubrir áreas manualmente.",
+    "editResult": "Editar PDF"
   },
   "pdfToWord": {
     "convert": "Convertir a Word",
@@ -848,6 +852,8 @@
     "options": "Opciones",
     "smartHeadings": "Títulos inteligentes",
     "smartHeadingsDescription": "Detectar títulos automáticamente",
+    "extractComments": "Extraer comentarios",
+    "extractCommentsDescription": "Convertir notas PDF en comentarios de Word",
     "errors": {
       "noFile": "Seleccione PDF",
       "invalidPdf": "PDF inválido",

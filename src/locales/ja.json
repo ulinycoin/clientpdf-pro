@@ -114,8 +114,10 @@
     "upload": "ファイルをアップロード",
     "uploadDescription": "ドラッグ＆ドロップまたはクリックしてアップロード",
     "selectFile": "ファイルを選択",
+    "selectFiles": "ファイルを選択",
     "uploadFile": "ファイルをアップロード",
     "download": "ダウンロード",
+    "downloadAll": "すべてダウンロード (ZIP)",
     "processing": "処理中...",
     "searching": "検索中...",
     "error": "エラー",
@@ -159,7 +161,11 @@
     "previous": "前へ",
     "save": "保存",
     "show": "表示",
-    "zoom": "ズーム"
+    "zoom": "ズーム",
+    "addFiles": "ファイルを追加",
+    "errors": {
+      "previewFailed": "プレビューの読み込みに失敗しました"
+    }
   },
   "upload": {
     "selectFiles": "ファイルを選択",
@@ -817,17 +823,17 @@
     "formattingDescription": "画像、表、見出し、テキストスタイルを保持",
     "textDescription": "テキストのみを抽出。ファイルサイズが小さく、変換が高速",
     "quality": "出力品質",
-    "qualityStandard": "標準（高速、小さいファイル）",
-    "qualityHigh": "高品質（バランス）",
-    "qualityMax": "最大（最高品質、大きいファイル）",
+    "qualityStandard": "標準",
+    "qualityHigh": "高品質",
+    "qualityMax": "最大",
     "errors": {
       "noFile": "まずWordドキュメントを選択してください",
       "invalidFormat": "無効なファイル形式です。.docxファイルを選択してください",
       "conversionFailed": "WordからPDFへの変換に失敗しました"
     },
     "success": "Wordドキュメントが正常に変換されました！",
-    "editabilityWarning": "⚠️ 'Formatted' mode creates PDF from images. Text in this file will not be editable via standard search, but you can add new text or cover areas manually.",
-    "editResult": "Edit PDF"
+    "editabilityWarning": "⚠️ 「書式あり」モードは画像からPDFを作成します。テキストは通常の検索では見つかりませんが、手動でテキストを追加したり、領域をカバーしたりすることは可能です。",
+    "editResult": "PDFを編集"
   },
   "pdfToWord": {
     "convert": "Wordに変換",
@@ -835,6 +841,8 @@
     "options": "変換オプション",
     "smartHeadings": "スマート見出し",
     "smartHeadingsDescription": "フォントサイズで見出しを検出し、Wordの見出しスタイルを適用",
+    "extractComments": "コメントを抽出",
+    "extractCommentsDescription": "PDFの付箋をWordのコメントに変換",
     "errors": {
       "noFile": "まずPDFファイルを選択してください",
       "invalidPdf": "無効なPDFファイルです。有効なPDFを選択してください",

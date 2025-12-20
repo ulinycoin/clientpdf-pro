@@ -114,8 +114,10 @@
     "upload": "Carregar arquivos",
     "uploadDescription": "Arraste e solte ou clique para enviar",
     "selectFile": "Selecionar arquivo",
+    "selectFiles": "Selecionar arquivos",
     "uploadFile": "Carregar arquivo",
     "download": "Baixar",
+    "downloadAll": "Baixar tudo (ZIP)",
     "processing": "Processando...",
     "searching": "Pesquisando...",
     "error": "Erro",
@@ -159,7 +161,11 @@
     "previous": "Anterior",
     "save": "Salvar",
     "show": "Mostrar",
-    "zoom": "Zoom"
+    "zoom": "Zoom",
+    "addFiles": "Adicionar mais arquivos",
+    "errors": {
+      "previewFailed": "Falha ao carregar a visualização"
+    }
   },
   "upload": {
     "selectFiles": "Selecionar arquivos",
@@ -809,17 +815,17 @@
     "formattingDescription": "Preserva imagens, tabelas, cabeçalhos e estilos de texto",
     "textDescription": "Extrai apenas texto. Arquivo menor, conversão mais rápida",
     "quality": "Qualidade de Saída",
-    "qualityStandard": "Padrão (mais rápido, arquivo menor)",
-    "qualityHigh": "Alta Qualidade (equilibrado)",
-    "qualityMax": "Máxima (melhor qualidade, arquivo maior)",
+    "qualityStandard": "Padrão",
+    "qualityHigh": "Alta",
+    "qualityMax": "Máxima",
     "errors": {
       "noFile": "Por favor, selecione um documento Word primeiro",
       "invalidFormat": "Formato de arquivo inválido. Por favor, selecione um arquivo .docx",
       "conversionFailed": "Falha ao converter Word para PDF"
     },
     "success": "Documento Word convertido com sucesso!",
-    "editabilityWarning": "⚠️ 'Formatted' mode creates PDF from images. Text in this file will not be editable via standard search, but you can add new text or cover areas manually.",
-    "editResult": "Edit PDF"
+    "editabilityWarning": "⚠️ O modo «Com formatação» cria um PDF a partir de imagens. O texto não será pesquisável normalmente, mas você poderá adicionar texto ou cobrir áreas manualmente.",
+    "editResult": "Editar PDF"
   },
   "pdfToWord": {
     "convert": "Converter para Word",
@@ -827,6 +833,8 @@
     "options": "Opções de Conversão",
     "smartHeadings": "Cabeçalhos Inteligentes",
     "smartHeadingsDescription": "Detectar cabeçalhos por tamanho da fonte e aplicar estilos de título do Word",
+    "extractComments": "Extrair comentários",
+    "extractCommentsDescription": "Converter notas PDF em comentários Word",
     "errors": {
       "noFile": "Por favor, selecione um arquivo PDF primeiro",
       "invalidPdf": "Arquivo PDF inválido. Por favor, selecione um PDF válido",

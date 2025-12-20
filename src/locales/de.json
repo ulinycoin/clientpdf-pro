@@ -220,6 +220,10 @@
     "save": "Speichern",
     "show": "Anzeigen",
     "zoom": "Zoom",
+    "addFiles": "Weitere Dateien hinzufügen",
+    "errors": {
+      "previewFailed": "Vorschau konnte nicht geladen werden"
+    },
     "searching": "Suchen...",
     "page": "Page",
     "pages": "pages",
@@ -233,7 +237,7 @@
     "selectFiles": "Dateien auswählen",
     "dragOrClick": "Dateien hierher ziehen oder klicken zum Auswählen",
     "dropHere": "Dateien hier ablegen",
-    "multipleFilesAllowed": "Mehrere Dateien erlaubt",
+    "multipleFilesAllowed": "Unterstützt bis zu 10 .docx-Dateien",
     "singleFileAllowed": "Nur eine Datei",
     "pasteHint": "Oder drücken Sie Strg+V zum Einfügen von Dateien",
     "maxFiles": "Maximale Dateien",
@@ -827,20 +831,20 @@
     "conversionMode": "Konvertierungsmodus",
     "withFormatting": "Mit Formatierung",
     "textOnly": "Nur Text",
-    "formattingDescription": "Behält Bilder und Layout bei",
-    "textDescription": "Nur Text, schneller",
-    "quality": "Qualität",
+    "formattingDescription": "Behält Tabellen, Bilder, Überschriften und Stile bei",
+    "textDescription": "Extrahiert nur Text. Kleinere Datei, schnellere Konvertierung",
+    "quality": "Ausgabequalität",
     "qualityStandard": "Standard",
     "qualityHigh": "Hoch",
     "qualityMax": "Maximal",
     "errors": {
-      "noFile": "Bitte Word-Datei wählen",
-      "invalidFormat": "Ungültiges Format (.docx)",
-      "conversionFailed": "Fehler bei Konvertierung"
+      "noFile": "Bitte wählen Sie zuerst ein Word-Dokument aus",
+      "invalidFormat": "Ungültiges Dateiformat. Bitte wählen Sie eine .docx-Datei",
+      "conversionFailed": "Word-zu-PDF-Konvertierung fehlgeschlagen"
     },
-    "success": "Word erfolgreich konvertiert!",
-    "editabilityWarning": "⚠️ 'Formatted' mode creates PDF from images. Text in this file will not be editable via standard search, but you can add new text or cover areas manually.",
-    "editResult": "Edit PDF"
+    "success": "Word-Dokument erfolgreich konvertiert!",
+    "editabilityWarning": "⚠️ Der Modus „Mit Formatierung“ erstellt ein PDF aus Bildern. Der Text ist nicht über die Standardsuche suchbar, aber Sie können manuell Text hinzufügen oder Bereiche abdecken.",
+    "editResult": "PDF bearbeiten"
   },
   "pdfToWord": {
     "convert": "In Word konvertieren",

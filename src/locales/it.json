@@ -159,13 +159,17 @@
     "previous": "Precedente",
     "save": "Salva",
     "show": "Mostra",
-    "zoom": "Zoom"
+    "zoom": "Zoom",
+    "addFiles": "Aggiungi altri file",
+    "errors": {
+      "previewFailed": "Impossible caricare l'anteprima"
+    }
   },
   "upload": {
     "selectFiles": "Seleziona file",
     "dragOrClick": "Trascina i file qui o clicca per selezionare",
     "dropHere": "Rilascia i file qui",
-    "multipleFilesAllowed": "File multipli consentiti",
+    "multipleFilesAllowed": "Supporta fino a 10 file .docx",
     "singleFileAllowed": "Solo file singolo",
     "pasteHint": "O premi Ctrl+V per incollare i file",
     "maxFiles": "File massimi",
@@ -809,17 +813,17 @@
     "formattingDescription": "Preserva immagini, tabelle, intestazioni e stili di testo",
     "textDescription": "Estrae solo testo. File più piccolo, conversione più veloce",
     "quality": "Qualità Output",
-    "qualityStandard": "Standard (più veloce, file più piccolo)",
-    "qualityHigh": "Alta Qualità (bilanciato)",
-    "qualityMax": "Massima (migliore qualità, file più grande)",
+    "qualityStandard": "Standard",
+    "qualityHigh": "Alta",
+    "qualityMax": "Massima",
     "errors": {
       "noFile": "Seleziona prima un documento Word",
       "invalidFormat": "Formato file non valido. Seleziona un file .docx",
       "conversionFailed": "Impossibile convertire Word in PDF"
     },
     "success": "Documento Word convertito con successo!",
-    "editabilityWarning": "⚠️ 'Formatted' mode creates PDF from images. Text in this file will not be editable via standard search, but you can add new text or cover areas manually.",
-    "editResult": "Edit PDF"
+    "editabilityWarning": "⚠️ La modalità «Con formattazione» crea un PDF da immagini. Il testo non sarà ricercabile normalmente, ma potrai aggiungere testo o coprire aree manualmente.",
+    "editResult": "Modifica PDF"
   },
   "pdfToWord": {
     "convert": "Converti in Word",
@@ -827,6 +831,8 @@
     "options": "Opzioni Conversione",
     "smartHeadings": "Intestazioni Intelligenti",
     "smartHeadingsDescription": "Rileva intestazioni dalla dimensione del carattere e applica stili titolo Word",
+    "extractComments": "Estrai commenti",
+    "extractCommentsDescription": "Converti note PDF in commenti Word",
     "errors": {
       "noFile": "Seleziona prima un file PDF",
       "invalidPdf": "File PDF non valido. Seleziona un PDF valido",

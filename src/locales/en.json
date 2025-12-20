@@ -113,9 +113,11 @@
   "common": {
     "upload": "Upload files",
     "selectFile": "Select file",
+    "selectFiles": "Select files",
     "uploadFile": "Upload file",
     "uploadDescription": "Drag and drop or click to upload",
     "download": "Download",
+    "downloadAll": "Download All (ZIP)",
     "processing": "Processing...",
     "searching": "Searching...",
     "error": "Error",
@@ -159,13 +161,17 @@
     "previous": "Previous",
     "save": "Save",
     "show": "Show",
-    "zoom": "Zoom"
+    "zoom": "Zoom",
+    "addFiles": "Add More Files",
+    "errors": {
+      "previewFailed": "Failed to load preview"
+    }
   },
   "upload": {
     "selectFiles": "Select files",
     "dragOrClick": "Drag files here or click to select",
     "dropHere": "Drop files here",
-    "multipleFilesAllowed": "Multiple files allowed",
+    "multipleFilesAllowed": "Supports up to 10 .docx files",
     "singleFileAllowed": "Single file only",
     "pasteHint": "Or press Ctrl+V to paste files",
     "maxFiles": "Maximum files",
@@ -809,9 +815,9 @@
     "formattingDescription": "Preserves images, tables, headings, and text styles",
     "textDescription": "Extracts text only. Smaller file, faster conversion",
     "quality": "Output Quality",
-    "qualityStandard": "Standard (faster, smaller file)",
-    "qualityHigh": "High Quality (balanced)",
-    "qualityMax": "Maximum (best quality, larger file)",
+    "qualityStandard": "Standard",
+    "qualityHigh": "High Quality",
+    "qualityMax": "Maximum",
     "errors": {
       "noFile": "Please select a Word document first",
       "invalidFormat": "Invalid file format. Please select a .docx file",
@@ -827,6 +833,8 @@
     "options": "Conversion Options",
     "smartHeadings": "Smart Headings",
     "smartHeadingsDescription": "Detect headings by font size and apply Word heading styles",
+    "extractComments": "Extract Comments",
+    "extractCommentsDescription": "Convert PDF sticky notes to Word comments",
     "errors": {
       "noFile": "Please select a PDF file first",
       "invalidPdf": "Invalid PDF file. Please select a valid PDF",

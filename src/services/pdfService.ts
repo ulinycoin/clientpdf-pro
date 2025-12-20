@@ -6,7 +6,16 @@ import * as pdfjsLib from 'pdfjs-dist';
 import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import { Buffer } from 'buffer';
 import mammoth from 'mammoth';
-import { Document, Packer, Paragraph, TextRun, ImageRun, AlignmentType } from 'docx';
+import {
+  Document,
+  Packer,
+  Paragraph,
+  TextRun,
+  ImageRun,
+  AlignmentType,
+  CommentRangeStart,
+  CommentRangeEnd,
+} from 'docx';
 import type {
   PDFProcessingResult,
   MergeOptions,
@@ -2053,6 +2062,31 @@ export class PDFService {
   }
 
   /**
+   * Generates an HTML preview for a Word document using mammoth
+   */
+  public async getWordPreviewHTML(file: File): Promise<string> {
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const result = await mammoth.convertToHtml(
+        { arrayBuffer },
+        {
+          convertImage: mammoth.images.imgElement((image) => {
+            return image.read("base64").then((imageBuffer) => {
+              return {
+                src: `data:${image.contentType};base64,${imageBuffer}`
+              };
+            });
+          })
+        }
+      );
+      return result.value;
+    } catch (error) {
+      console.error('Word preview generation error:', error);
+      throw new Error('Failed to generate preview for Word document');
+    }
+  }
+
+  /**
    * Convert Word document to PDF with formatting (images, tables, headings)
    * Uses mammoth → HTML → html2canvas → jsPDF
    */
@@ -2288,11 +2322,17 @@ export class PDFService {
   async pdfToWord(
     file: File,
     onProgress?: ProgressCallback,
-    options?: { includeImages?: boolean; smartHeadings?: boolean; extractImages?: boolean }
+    options?: {
+      includeImages?: boolean;
+      smartHeadings?: boolean;
+      extractImages?: boolean;
+      extractComments?: boolean;
+    }
   ): Promise<PDFProcessingResult> {
     const includeImages = options?.includeImages ?? true;
     const smartHeadings = options?.smartHeadings ?? true;
-    const extractImages = options?.extractImages ?? true; // Extract embedded images when in text mode
+    const extractImages = options?.extractImages ?? true;
+    const extractComments = options?.extractComments ?? false;
 
     try {
       onProgress?.(5, 'Reading PDF file...');
@@ -2378,10 +2418,9 @@ export class PDFService {
       onProgress?.(15, 'Extracting content from PDF...');
 
       // Extract text and images from all pages
-      // Extract text and images from all pages
       const sections: Paragraph[] = [];
-      // The type definition for extractedImages was also incorrect in the original snippet.
-      // The correct type for extractedImages is defined within the scope of the loop.
+      const allExtractedComments = new Map<string, { numId: number; author: string; text: string }>();
+      const matchedComments = new Set<string>();
 
       for (let pageNum = 1; pageNum <= numPages; pageNum++) {
         const page = await pdfDoc.getPage(pageNum);
@@ -2450,10 +2489,31 @@ export class PDFService {
         } else {
           // Mode: Extract text with optional embedded images
           const textContent = await page.getTextContent();
+          const annotations = extractComments ? await page.getAnnotations() : [];
           const viewport = page.getViewport({ scale: 1.0 });
           const pageWidth = viewport.width;
           const pageHeight = viewport.height;
           const items = textContent.items as PDFTextItem[];
+
+          // Filter for Text (Sticky Note) annotations with content
+          interface PDFAnnotation {
+            id: string;
+            subtype: string;
+            contents: string;
+            rect: number[];
+            author?: string;
+          }
+          const pageComments = (annotations as unknown as PDFAnnotation[])
+            .filter(ann => (ann.subtype === 'Text' || ann.subtype === 'FreeText') && ann.contents)
+            .map(ann => ({
+              id: ann.id,
+              text: ann.contents,
+              author: ann.author || 'Author',
+              // PDF rect: [x_min, y_min, x_max, y_max], origin at bottom-left
+              x: ann.rect[0],
+              y: ann.rect[3], // Top edge of the annotation
+              yNormalized: 1 - (ann.rect[3] / pageHeight)
+            }));
 
           // Use pre-analyzed heading sizes from document analysis
           // headingSizes and bodyTextSize are available in closure
@@ -2945,43 +3005,76 @@ export class PDFService {
                 // Calculate normalized Y position for ordering
                 const paragraphYNormalized = 1 - (paragraphYStart / pageHeight);
 
+                // Match annotations to this paragraph
+                let activeCommentId: string | undefined;
+                if (extractComments) {
+                  const closestAnn = pageComments.find(ann => {
+                    // Within range of the paragraph Y
+                    const yDist = Math.abs(ann.yNormalized - paragraphYNormalized);
+                    return yDist < 0.05 && !matchedComments.has(ann.id);
+                  });
+
+                  if (closestAnn) {
+                    activeCommentId = closestAnn.id;
+                    matchedComments.add(activeCommentId);
+
+                    // Store for global document comments collection
+                    const numId = allExtractedComments.size;
+                    allExtractedComments.set(activeCommentId, {
+                      numId,
+                      author: closestAnn.author,
+                      text: closestAnn.text
+                    });
+                  }
+                }
+
                 let para: Paragraph;
+                const paraChildren: (TextRun | ImageRun | CommentRangeStart | CommentRangeEnd)[] = [];
+
+                if (activeCommentId !== undefined) {
+                  const commentData = allExtractedComments.get(activeCommentId)!;
+                  paraChildren.push(new CommentRangeStart(commentData.numId));
+                }
+
                 if (bulletMatch && !headingLevel) {
-                  // Bulleted list item
                   const listText = bulletMatch[2];
+                  paraChildren.push(new TextRun({ text: listText, size: 22 }));
+
+                  if (activeCommentId !== undefined) {
+                    paraChildren.push(new CommentRangeEnd(allExtractedComments.get(activeCommentId)!.numId));
+                  }
+
                   para = new Paragraph({
-                    children: [
-                      new TextRun({
-                        text: listText,
-                        size: 22,
-                      }),
-                    ],
+                    children: paraChildren,
                     bullet: { level: 0 },
                     alignment: alignment,
                   });
                 } else if (numberedMatch && !headingLevel) {
-                  // Numbered list item
                   const listText = numberedMatch[3];
+                  paraChildren.push(new TextRun({ text: listText, size: 22 }));
+
+                  if (activeCommentId !== undefined) {
+                    paraChildren.push(new CommentRangeEnd(allExtractedComments.get(activeCommentId)!.numId));
+                  }
+
                   para = new Paragraph({
-                    children: [
-                      new TextRun({
-                        text: listText,
-                        size: 22,
-                      }),
-                    ],
+                    children: paraChildren,
                     numbering: { reference: 'default-numbering', level: 0 },
                     alignment: alignment,
                   });
                 } else {
-                  // Regular paragraph or heading
+                  paraChildren.push(new TextRun({
+                    text: paraText,
+                    size: 22,
+                    bold: headingLevel !== undefined,
+                  }));
+
+                  if (activeCommentId !== undefined) {
+                    paraChildren.push(new CommentRangeEnd(allExtractedComments.get(activeCommentId)!.numId));
+                  }
+
                   para = new Paragraph({
-                    children: [
-                      new TextRun({
-                        text: paraText,
-                        size: 22,
-                        bold: headingLevel !== undefined,
-                      }),
-                    ],
+                    children: paraChildren,
                     heading: headingLevel,
                     alignment: alignment,
                   });
@@ -3147,6 +3240,15 @@ export class PDFService {
             children: sections,
           },
         ],
+        comments: extractComments ? {
+          children: Array.from(allExtractedComments.values()).map(c => ({
+            id: c.numId,
+            author: c.author,
+            initials: c.author.substring(0, 2).toUpperCase(),
+            date: new Date(),
+            children: [new Paragraph(c.text)],
+          }))
+        } : undefined
       });
 
       onProgress?.(90, 'Generating DOCX file...');
