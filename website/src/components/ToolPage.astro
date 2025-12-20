@@ -9,7 +9,7 @@ interface Props {
   description: string;
   metaDescription: string;
   benefits: string[];
-  steps: string[];
+  steps: Array<string | { text: string; image?: string }>;
   whyChoose?: {
     title: string;
     reasons: string[];
@@ -25,13 +25,9 @@ interface Props {
     question: string;
     answer: string;
   }>;
-  screenshots?: Array<{
-    url: string;
-    alt: string;
-  }>;
 }
 
-const { toolId, title, description, metaDescription, benefits, steps, whyChoose, features, relatedTools, faqs, screenshots } = Astro.props;
+const { toolId, title, description, metaDescription, benefits, steps, whyChoose, features, relatedTools, faqs } = Astro.props;
 
 const canonicalURL = `https://localpdf.online/${toolId}`;
 
@@ -162,28 +158,29 @@ const structuredData = {
   <section class="howto-section">
     <h2 class="section-heading">How It Works</h2>
     <ol class="steps-list">
-      {steps.map((step) => (
-        <li>{step}</li>
-      ))}
+      {steps.map((step) => {
+        const isObject = typeof step !== 'string';
+        const text = isObject ? step.text : step;
+        const image = isObject ? step.image : null;
+        
+        return (
+          <li class="step-item">
+            <div class="step-content">
+              <span class="step-text">{text}</span>
+              {image && (
+                <div class="step-visual">
+                  <img src={image} alt={text} loading="lazy" class="step-image" />
+                </div>
+              )}
+            </div>
+          </li>
+        );
+      })}
     </ol>
     <div class="privacy-note">
       <strong>100% Private:</strong> Your files never leave your device. All processing happens locally in your browser.
     </div>
   </section>
-
-  <!-- Screenshots Gallery -->
-  {screenshots && screenshots.length > 0 && (
-    <section class="screenshots-section">
-      <h2 class="section-heading">Visual Overview</h2>
-      <div class="screenshots-grid">
-        {screenshots.map((shot) => (
-          <div class="screenshot-item">
-            <img src={shot.url} alt={shot.alt} loading="lazy" />
-          </div>
-        ))}
-      </div>
-    </section>
-  )}
 
   <!-- FAQ Section (if provided) -->
   {faqs && faqs.length > 0 && (
@@ -459,6 +456,32 @@ const structuredData = {
     left: -8px;
     color: #2563EB;
     font-weight: 600;
+  }
+
+  .step-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .step-text {
+    display: block;
+  }
+
+  .step-visual {
+    max-width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #E5E5E5;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    background: #fff;
+  }
+
+  .step-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
   }
 
   .privacy-note {
