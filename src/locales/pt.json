@@ -1041,21 +1041,21 @@
     "smartEdit": "Edição inteligente",
     "format": {
       "title": "Formatação de texto",
-      "textContent": "Content",
-      "placeholder": "Enter text...",
-      "fontFamily": "Font",
-      "fontSize": "Size",
-      "textColor": "Color",
-      "opacity": "Opacity",
-      "rotation": "Rotation",
-      "bold": "Bold",
-      "italic": "Italic",
-      "delete": "Remove Element",
-      "alignment": "Alignment",
+      "textContent": "Conteúdo",
+      "placeholder": "Digitar texto...",
+      "fontFamily": "Fonte",
+      "fontSize": "Tamanho",
+      "textColor": "Cor",
+      "opacity": "Opacidade",
+      "rotation": "Rotação",
+      "bold": "Negrito",
+      "italic": "Itálico",
+      "delete": "Remover elemento",
+      "alignment": "Alinhamento",
       "alignLeft": "Esquerda",
       "alignCenter": "Centro",
       "alignRight": "Direita",
-      "fitToWidth": "Fit to Width"
+      "fitToWidth": "Ajustar à largura"
     }
   },
   "extractImages": {
@@ -1097,6 +1097,33 @@
         "charts": "Gráficos",
         "excludeIcons": "Sem Ícones"
       }
+    }
+  },
+  "tables": {
+    "title": "Tabelas em PDF",
+    "description": "Crie tabelas profissionais diretamente no seu documento",
+    "selectTabs": "Selecionar planilhas",
+    "selectedTabs": "{count} planilhas selecionadas",
+    "noTabsSelected": "Selecione pelo menos uma planilha",
+    "rows": "Linhas",
+    "cols": "Colunas",
+    "style": {
+      "header": "Cor do cabeçalho",
+      "stripes": "Listras de zebra",
+      "orientation": "Orientação da página",
+      "orientations": {
+        "portrait": "Retrato",
+        "landscape": "Paisagem",
+        "auto": "Automático"
+      }
+    },
+    "actions": {
+      "generate": "Gerar PDF"
+    },
+    "errors": {
+      "parseFailed": "Falha ao analisar o arquivo",
+      "generateFailed": "Falha ao gerar PDF",
+      "noData": "Nenhum dado encontrado nas planilhas selecionadas"
     }
   }
 }

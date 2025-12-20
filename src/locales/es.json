@@ -1060,21 +1060,21 @@
     "smartEdit": "Edición inteligente",
     "format": {
       "title": "Formato de texto",
-      "textContent": "Content",
-      "placeholder": "Enter text...",
-      "fontFamily": "Font",
-      "fontSize": "Size",
+      "textContent": "Contenido",
+      "placeholder": "Introducir texto...",
+      "fontFamily": "Fuente",
+      "fontSize": "Tamaño",
       "textColor": "Color",
-      "opacity": "Opacity",
-      "rotation": "Rotation",
-      "bold": "Bold",
-      "italic": "Italic",
-      "delete": "Remove Element",
-      "alignment": "Alignment",
+      "opacity": "Opacidad",
+      "rotation": "Rotación",
+      "bold": "Negrita",
+      "italic": "Cursiva",
+      "delete": "Eliminar elemento",
+      "alignment": "Alineación",
       "alignLeft": "Izquierda",
       "alignCenter": "Centro",
       "alignRight": "Derecha",
-      "fitToWidth": "Fit to Width"
+      "fitToWidth": "Ajustar al ancho"
     }
   },
   "merge": {
@@ -1099,6 +1099,33 @@
       "protect": "Add password",
       "watermark": "Add watermark",
       "split": "Extract pages"
+    }
+  },
+  "tables": {
+    "title": "Tablas en PDF",
+    "description": "Cree tablas profesionales directamente en su documento",
+    "selectTabs": "Seleccionar hojas",
+    "selectedTabs": "{count} hojas seleccionadas",
+    "noTabsSelected": "Seleccione al menos una hoja",
+    "rows": "Filas",
+    "cols": "Columnas",
+    "style": {
+      "header": "Color de encabezado",
+      "stripes": "Rayas de cebra",
+      "orientation": "Orientación de la página",
+      "orientations": {
+        "portrait": "Retrato",
+        "landscape": "Paisaje",
+        "auto": "Automático"
+      }
+    },
+    "actions": {
+      "generate": "Generar PDF"
+    },
+    "errors": {
+      "parseFailed": "Error al analizar el archivo",
+      "generateFailed": "Error al generar PDF",
+      "noData": "No se encontraron datos en las hojas seleccionadas"
     }
   }
 }

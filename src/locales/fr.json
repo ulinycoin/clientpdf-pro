@@ -1060,21 +1060,21 @@
     "smartEdit": "Édition intelligente",
     "format": {
       "title": "Formatage du texte",
-      "textContent": "Content",
-      "placeholder": "Enter text...",
-      "fontFamily": "Font",
-      "fontSize": "Size",
-      "textColor": "Color",
-      "opacity": "Opacity",
+      "textContent": "Contenu",
+      "placeholder": "Entrer texte...",
+      "fontFamily": "Police",
+      "fontSize": "Taille",
+      "textColor": "Couleur",
+      "opacity": "Opacité",
       "rotation": "Rotation",
-      "bold": "Bold",
-      "italic": "Italic",
-      "delete": "Remove Element",
-      "alignment": "Alignment",
+      "bold": "Gras",
+      "italic": "Italique",
+      "delete": "Supprimer l'élément",
+      "alignment": "Alignement",
       "alignLeft": "Gauche",
       "alignCenter": "Centré",
       "alignRight": "Droite",
-      "fitToWidth": "Fit to Width"
+      "fitToWidth": "Ajuster à la largeur"
     }
   },
   "merge": {
@@ -1099,6 +1099,33 @@
       "protect": "Add password",
       "watermark": "Add watermark",
       "split": "Extract pages"
+    }
+  },
+  "tables": {
+    "title": "Tableaux dans PDF",
+    "description": "Créez des tableaux professionnels directement dans votre document",
+    "selectTabs": "Sélectionner les feuilles",
+    "selectedTabs": "{count} feuilles sélectionnées",
+    "noTabsSelected": "Veuillez sélectionner au moins une feuille",
+    "rows": "Lignes",
+    "cols": "Colonnes",
+    "style": {
+      "header": "Couleur de l'en-tête",
+      "stripes": "Rayures zébrées",
+      "orientation": "Orientation de la page",
+      "orientations": {
+        "portrait": "Portrait",
+        "landscape": "Paysage",
+        "auto": "Automatique"
+      }
+    },
+    "actions": {
+      "generate": "Générer le PDF"
+    },
+    "errors": {
+      "parseFailed": "Échec de l'analyse du fichier",
+      "generateFailed": "Échec de la génération du PDF",
+      "noData": "Aucune donnée trouvée dans les feuilles sélectionnées"
     }
   }
 }

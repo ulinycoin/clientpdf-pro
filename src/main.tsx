@@ -22,10 +22,19 @@
       (window as any).global = globalThis;
     }
 
-    // Lightweight Buffer fallback
+    // Use real Buffer package
+    import('buffer').then(({ Buffer }) => {
+      if (typeof (window as any).Buffer === 'undefined' || (window as any).Buffer === Uint8Array || !(window as any).Buffer.isBuffer) {
+        (window as any).Buffer = Buffer;
+        (globalThis as any).Buffer = Buffer;
+      }
+    });
+
+    // Immediate fallback with critical methods to prevent crashes during load
     if (typeof (window as any).Buffer === 'undefined') {
       (window as any).Buffer = Uint8Array;
-      (globalThis as any).Buffer = Uint8Array;
+      (window as any).Buffer.isBuffer = (obj: any) => obj instanceof Uint8Array;
+      (globalThis as any).Buffer = (window as any).Buffer;
     }
   };
 

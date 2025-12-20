@@ -1039,21 +1039,21 @@
     "smartEdit": "智能编辑",
     "format": {
       "title": "文本格式",
-      "textContent": "Content",
-      "placeholder": "Enter text...",
-      "fontFamily": "Font",
-      "fontSize": "Size",
-      "textColor": "Color",
-      "opacity": "Opacity",
-      "rotation": "Rotation",
-      "bold": "Bold",
-      "italic": "Italic",
-      "delete": "Remove Element",
-      "alignment": "Alignment",
+      "textContent": "内容",
+      "placeholder": "输入文本...",
+      "fontFamily": "字体",
+      "fontSize": "字号",
+      "textColor": "颜色",
+      "opacity": "透明度",
+      "rotation": "旋转",
+      "bold": "加粗",
+      "italic": "斜体",
+      "delete": "删除元素",
+      "alignment": "对齐",
       "alignLeft": "靠左",
       "alignCenter": "居中",
       "alignRight": "靠右",
-      "fitToWidth": "Fit to Width"
+      "fitToWidth": "适应宽度"
     }
   },
   "extractImages": {
@@ -1095,6 +1095,33 @@
         "charts": "图表",
         "excludeIcons": "无图标"
       }
+    }
+  },
+  "tables": {
+    "title": "PDF 表格",
+    "description": "直接在文档中创建专业表格",
+    "selectTabs": "选择工作表",
+    "selectedTabs": "已选择 {count} 个工作表",
+    "noTabsSelected": "请至少选择一个工作表",
+    "rows": "行",
+    "cols": "列",
+    "style": {
+      "header": "表头颜色",
+      "stripes": "斑马纹",
+      "orientation": "页面方向",
+      "orientations": {
+        "portrait": "纵向",
+        "landscape": "横向",
+        "auto": "自动"
+      }
+    },
+    "actions": {
+      "generate": "生成 PDF"
+    },
+    "errors": {
+      "parseFailed": "文件解析失败",
+      "generateFailed": "PDF 生成失败",
+      "noData": "在选择的工作表中未找到数据"
     }
   }
 }

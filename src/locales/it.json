@@ -1038,22 +1038,22 @@
     "settings": "Impostazioni testo",
     "smartEdit": "Modifica intelligente",
     "format": {
-      "title": "Formattazione testo",
-      "textContent": "Content",
-      "placeholder": "Enter text...",
-      "fontFamily": "Font",
-      "fontSize": "Size",
-      "textColor": "Color",
-      "opacity": "Opacity",
-      "rotation": "Rotation",
-      "bold": "Bold",
-      "italic": "Italic",
-      "delete": "Remove Element",
-      "alignment": "Alignment",
+      "title": "Formattazione del testo",
+      "textContent": "Contenuto",
+      "placeholder": "Inserisci testo...",
+      "fontFamily": "Carattere",
+      "fontSize": "Dimensione",
+      "textColor": "Colore",
+      "opacity": "Opacità",
+      "rotation": "Rotazione",
+      "bold": "Grassetto",
+      "italic": "Corsivo",
+      "delete": "Rimuovi elemento",
+      "alignment": "Allineamento",
       "alignLeft": "Sinistra",
       "alignCenter": "Centro",
       "alignRight": "Destra",
-      "fitToWidth": "Fit to Width"
+      "fitToWidth": "Adatta alla larghezza"
     }
   },
   "extractImages": {
@@ -1095,6 +1095,33 @@
         "charts": "Grafici",
         "excludeIcons": "No Icone"
       }
+    }
+  },
+  "tables": {
+    "title": "Tabelle in PDF",
+    "description": "Crea tabelle professionali direttamente nel tuo documento",
+    "selectTabs": "Seleziona fogli",
+    "selectedTabs": "{count} fogli selezionati",
+    "noTabsSelected": "Seleziona almeno un foglio",
+    "rows": "Righe",
+    "cols": "Colonne",
+    "style": {
+      "header": "Colore intestazione",
+      "stripes": "Righe alternate",
+      "orientation": "Orientamento pagina",
+      "orientations": {
+        "portrait": "Ritratto",
+        "landscape": "Orizzontale",
+        "auto": "Automatico"
+      }
+    },
+    "actions": {
+      "generate": "Genera PDF"
+    },
+    "errors": {
+      "parseFailed": "Errore durante l'analisi del file",
+      "generateFailed": "Generazione PDF fallita",
+      "noData": "Nessun dato trovato nei fogli selezionati"
     }
   }
 }

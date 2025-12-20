@@ -30,6 +30,7 @@ const SignPDF = lazy(() => import('@/components/tools/SignPDF').then(m => ({ def
 const FlattenPDF = lazy(() => import('@/components/tools/FlattenPDF').then(m => ({ default: m.FlattenPDF })));
 const ExtractImagesPDF = lazy(() => import('@/components/tools/ExtractImagesPDF').then(m => ({ default: m.ExtractImagesPDF })));
 const PageEditorPDF = lazy(() => import('@/components/tools/PageEditorPDF').then(m => ({ default: m.PageEditorPDF })));
+const TablesPDF = lazy(() => import('@/components/tools/TablesPDF').then(m => ({ default: m.TablesPDF })));
 
 // Loading component for lazy loaded tools
 const ToolLoading = () => (
@@ -215,6 +216,8 @@ function App() {
                   <FlattenPDF />
                 ) : currentTool === 'extract-images-pdf' ? (
                   <ExtractImagesPDF />
+                ) : currentTool === 'tables-pdf' ? (
+                  <TablesPDF />
                 ) : currentTool === 'organize-pdf' ? (
                   <PageEditorPDF />
                 ) : (

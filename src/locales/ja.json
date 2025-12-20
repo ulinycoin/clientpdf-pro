@@ -1049,21 +1049,21 @@
     "smartEdit": "スマート編集",
     "format": {
       "title": "テキストの書式設定",
-      "textContent": "Content",
-      "placeholder": "Enter text...",
-      "fontFamily": "Font",
-      "fontSize": "Size",
-      "textColor": "Color",
-      "opacity": "Opacity",
-      "rotation": "Rotation",
-      "bold": "Bold",
-      "italic": "Italic",
-      "delete": "Remove Element",
-      "alignment": "Alignment",
+      "textContent": "内容",
+      "placeholder": "テキストを入力...",
+      "fontFamily": "フォント",
+      "fontSize": "サイズ",
+      "textColor": "色",
+      "opacity": "不透明度",
+      "rotation": "回転",
+      "bold": "太字",
+      "italic": "斜体",
+      "delete": "要素を削除",
+      "alignment": "配置",
       "alignLeft": "左揃え",
       "alignCenter": "中央揃え",
       "alignRight": "右揃え",
-      "fitToWidth": "Fit to Width"
+      "fitToWidth": "幅に合わせる"
     }
   },
   "extractImages": {
@@ -1105,6 +1105,33 @@
         "charts": "グラフ",
         "excludeIcons": "アイコンなし"
       }
+    }
+  },
+  "tables": {
+    "title": "PDF内のテーブル",
+    "description": "ドキュメント内に直接プロフェッショナルなテーブルを作成します",
+    "selectTabs": "シートを選択",
+    "selectedTabs": "{count} 個のシートが選択されました",
+    "noTabsSelected": "少なくとも1つのシートを選択してください",
+    "rows": "行",
+    "cols": "列",
+    "style": {
+      "header": "ヘッダーの色",
+      "stripes": "ゼブラ模様",
+      "orientation": "ページの向き",
+      "orientations": {
+        "portrait": "縦向き",
+        "landscape": "横向き",
+        "auto": "自動"
+      }
+    },
+    "actions": {
+      "generate": "PDFを生成"
+    },
+    "errors": {
+      "parseFailed": "ファイルの解析に失敗しました",
+      "generateFailed": "PDFの生成に失敗しました",
+      "noData": "選択したシートにデータが見つかりません"
     }
   }
 }

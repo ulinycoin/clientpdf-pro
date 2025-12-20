@@ -22,7 +22,8 @@ import {
   Feather,
   Layers,
   FileOutput as ExtractIcon,
-  BookOpen
+  BookOpen,
+  Table
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -59,6 +60,7 @@ const TOOLS: Array<{ id: Tool; icon: React.ElementType; tier: number }> = [
   { id: 'sign-pdf', icon: Feather, tier: 3 },
   { id: 'flatten-pdf', icon: Layers, tier: 3 },
   { id: 'extract-images-pdf', icon: ExtractIcon, tier: 3 },
+  { id: 'tables-pdf', icon: Table, tier: 3 },
 ];
 
 export const Sidebar: React.FC<SidebarProps> = ({

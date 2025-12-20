@@ -1058,21 +1058,21 @@
     "smartEdit": "Smart Edit",
     "format": {
       "title": "Textformatierung",
-      "textContent": "Content",
-      "placeholder": "Enter text...",
-      "fontFamily": "Font",
-      "fontSize": "Size",
-      "textColor": "Color",
-      "opacity": "Opacity",
-      "rotation": "Rotation",
-      "bold": "Bold",
-      "italic": "Italic",
-      "delete": "Remove Element",
-      "alignment": "Alignment",
+      "textContent": "Inhalt",
+      "placeholder": "Text eingeben...",
+      "fontFamily": "Schriftart",
+      "fontSize": "Größe",
+      "textColor": "Farbe",
+      "opacity": "Deckkraft",
+      "rotation": "Drehung",
+      "bold": "Fett",
+      "italic": "Kursiv",
+      "delete": "Element entfernen",
+      "alignment": "Ausrichtung",
       "alignLeft": "Links",
       "alignCenter": "Zentriert",
       "alignRight": "Rechts",
-      "fitToWidth": "Fit to Width"
+      "fitToWidth": "An Breite anpassen"
     }
   },
   "merge": {
@@ -1097,6 +1097,33 @@
       "protect": "Add password",
       "watermark": "Add watermark",
       "split": "Extract pages"
+    }
+  },
+  "tables": {
+    "title": "Tabellen in PDF",
+    "description": "Erstellen Sie professionelle Tabellen direkt in Ihrem Dokument",
+    "selectTabs": "Blätter auswählen",
+    "selectedTabs": "{count} Blätter ausgewählt",
+    "noTabsSelected": "Bitte wählen Sie mindestens ein Blatt aus",
+    "rows": "Zeilen",
+    "cols": "Spalten",
+    "style": {
+      "header": "Kopfzeilenfarbe",
+      "stripes": "Zebrastreifen",
+      "orientation": "Seitenausrichtung",
+      "orientations": {
+        "portrait": "Hochformat",
+        "landscape": "Querformat",
+        "auto": "Automatisch"
+      }
+    },
+    "actions": {
+      "generate": "PDF generieren"
+    },
+    "errors": {
+      "parseFailed": "Fehler beim Analysieren der Datei",
+      "generateFailed": "PDF-Generierung fehlgeschlagen",
+      "noData": "Keine Daten in ausgewählten Blättern gefunden"
     }
   }
 }

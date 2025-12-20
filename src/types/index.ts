@@ -28,7 +28,8 @@ export type Tool =
   | 'word-to-pdf'
   | 'sign-pdf'
   | 'flatten-pdf'
-  | 'extract-images-pdf';
+  | 'extract-images-pdf'
+  | 'tables-pdf';
 
 // Tool category for grouping
 export type ToolCategory = 'core' | 'edit' | 'convert' | 'security';
@@ -65,6 +66,7 @@ export const TOOL_GROUPS: Record<ToolGroup, Tool[]> = {
     'sign-pdf',
     'flatten-pdf',
     'extract-images-pdf',
+    'tables-pdf',
   ],
   'organize': [
     'organize-pdf',
@@ -80,6 +82,7 @@ export const TOOL_GROUPS: Record<ToolGroup, Tool[]> = {
     'watermark-pdf',
     'sign-pdf',
     'flatten-pdf',
+    'tables-pdf',
   ],
   'security': [
     'protect-pdf',
@@ -161,6 +164,7 @@ export const TOOL_HASH_MAP: Record<string, Tool> = {
   'sign': 'sign-pdf',
   'flatten': 'flatten-pdf',
   'extract-images': 'extract-images-pdf',
+  'tables': 'tables-pdf',
 };
 
 // Reverse mapping for generating hashes from tools
@@ -196,4 +200,5 @@ export const TOOL_TIERS: Record<Tool, ToolTier> = {
   'sign-pdf': 3,
   'flatten-pdf': 3,
   'extract-images-pdf': 3,
+  'tables-pdf': 3,
 };

@@ -108,6 +108,10 @@
     "edit-pdf": {
       "name": "Edit PDF",
       "description": "Edit PDF content"
+    },
+    "tables-pdf": {
+      "name": "Tables in PDF",
+      "description": "Add, edit and style tables in your PDF"
     }
   },
   "common": {
@@ -1097,6 +1101,40 @@
         "charts": "Charts & Graphs",
         "excludeIcons": "No Icons"
       }
+    }
+  },
+  "tables": {
+    "title": "Tables in PDF",
+    "description": "Create professional tables directly in your document",
+    "addTable": "Add Table",
+    "importExcel": "Import Excel/CSV",
+    "selectTabs": "Select Sheets",
+    "selectedTabs": "{count} sheets selected",
+    "noTabsSelected": "Please select at least one sheet",
+    "rows": "Rows",
+    "cols": "Columns",
+    "style": {
+      "title": "Table Style",
+      "header": "Header Color",
+      "stripes": "Zebra Striping",
+      "border": "Borders",
+      "font": "Font Settings",
+      "orientation": "Page Orientation",
+      "orientations": {
+        "portrait": "Portrait",
+        "landscape": "Landscape",
+        "auto": "Automatic"
+      }
+    },
+    "actions": {
+      "insertPage": "Insert after page",
+      "float": "Floating on page",
+      "generate": "Generate PDF"
+    },
+    "errors": {
+      "parseFailed": "Failed to parse file",
+      "generateFailed": "Failed to generate PDF",
+      "noData": "No data found in selected sheets"
     }
   }
 }

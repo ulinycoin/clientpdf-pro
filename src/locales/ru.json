@@ -112,6 +112,10 @@
     "edit-pdf": {
       "name": "Редактировать PDF",
       "description": "Редактировать содержимое PDF"
+    },
+    "tables-pdf": {
+      "name": "Таблицы в PDF",
+      "description": "Добавляйте, редактируйте и стилизуйте таблицы в PDF"
     }
   },
   "common": {
@@ -1076,6 +1080,40 @@
       "alignCenter": "По центру",
       "alignRight": "Справа",
       "fitToWidth": "Вписать по ширине"
+    }
+  },
+  "tables": {
+    "title": "Таблицы в PDF",
+    "description": "Создавайте профессиональные таблицы прямо в вашем документе",
+    "addTable": "Добавить таблицу",
+    "importExcel": "Импорт Excel/CSV",
+    "selectTabs": "Выбор листов",
+    "selectedTabs": "Выбрано листов: {count}",
+    "noTabsSelected": "Пожалуйста, выберите хотя бы один лист",
+    "rows": "Строки",
+    "cols": "Столбцы",
+    "style": {
+      "title": "Стиль таблицы",
+      "header": "Цвет шапки",
+      "stripes": "Зебра (чередование)",
+      "border": "Границы",
+      "font": "Настройки шрифта",
+      "orientation": "Ориентация страницы",
+      "orientations": {
+        "portrait": "Портретная",
+        "landscape": "Альбомная",
+        "auto": "Автоматически"
+      }
+    },
+    "actions": {
+      "insertPage": "Вставить после страницы",
+      "float": "Наложение на страницу",
+      "generate": "Создать PDF"
+    },
+    "errors": {
+      "parseFailed": "Ошибка при чтении файла",
+      "generateFailed": "Ошибка при создании PDF",
+      "noData": "Данные не найдены в выбранных листах"
     }
   }
 }
