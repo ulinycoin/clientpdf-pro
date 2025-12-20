@@ -8,6 +8,7 @@ interface Props {
   title: string;
   description: string;
   metaDescription: string;
+  image?: string;
   benefits: string[];
   steps: Array<string | { text: string; image?: string }>;
   whyChoose?: {
@@ -27,7 +28,7 @@ interface Props {
   }>;
 }
 
-const { toolId, title, description, metaDescription, benefits, steps, whyChoose, features, relatedTools, faqs } = Astro.props;
+const { toolId, title, description, metaDescription, image, benefits, steps, whyChoose, features, relatedTools, faqs } = Astro.props;
 
 const canonicalURL = `https://localpdf.online/${toolId}`;
 
@@ -84,7 +85,7 @@ const structuredData = {
 
 ---
 
-<BaseLayout title={title} description={metaDescription} canonical={canonicalURL}>
+<BaseLayout title={title} description={metaDescription} canonical={canonicalURL} image={image}>
 
   <!-- Schema.org structured data -->
   <script type="application/ld+json" slot="head" set:html={JSON.stringify(structuredData)} />
