@@ -6,7 +6,7 @@ const keywords = "edit pdf text, replace text in pdf, redact pdf, cover text in 
 const howToSchema = {
   "@context": "https://schema.org",
   "@type": "HowTo",
-  "image": "https://localpdf.online/logos/icon-512.png",
+  "image": "https://localpdf.online/screenshots/edit-active.png",
   "name": "How to Edit Text in a PDF",
   "description": "A step-by-step guide on how to replace, cover, or redact text in a PDF document using the free and private LocalPDF text editor.",
   "step": [
@@ -14,31 +14,26 @@ const howToSchema = {
       "@type": "HowToStep",
       "name": "Open the Tool and Upload PDF",
       "text": "Click 'Open Tool' and upload the PDF document you want to edit.",
-      "url": "https://localpdf.online/edit-text-pdf#tool"
+      "url": "https://localpdf.online/edit-text-pdf#tool",
+      "image": "https://localpdf.online/screenshots/edit-welcome.png"
     },
     {
       "@type": "HowToStep",
-      "name": "Select Text Area",
-      "text": "Navigate to the desired page and drag a selection box over the text you want to edit or cover.",
-      "image": "https://localpdf.online/screenshots/edit-select-area.png"
+      "name": "Smart Text Detection",
+      "text": "The tool automatically detects text blocks. Simply click on the text you want to modify to create an editable area.",
+      "image": "https://localpdf.online/screenshots/edit-active.png"
     },
     {
       "@type": "HowToStep",
-      "name": "Edit or Replace Text",
-      "text": "In 'Replace Text' mode, type the new text in the input field. The original text is auto-detected. Adjust font, size, and color as needed.",
-      "image": "https://localpdf.online/screenshots/edit-replace-text.png"
+      "name": "Edit and Style",
+      "text": "Type your new text in the floating editor. Use the styling panel to adjust font, color, and formatting.",
+      "image": "https://localpdf.online/screenshots/edit-styles.png"
     },
     {
       "@type": "HowToStep",
-      "name": "Apply Changes",
-      "text": "Create as many selections as you need across multiple pages. When ready, click 'Apply Changes' to process all edits.",
-      "image": "https://localpdf.online/screenshots/edit-apply-changes.png"
-    },
-    {
-      "@type": "HowToStep",
-      "name": "Download the Edited PDF",
-      "text": "After processing, a download button will appear. Click it to save your edited PDF.",
-      "image": "https://localpdf.online/screenshots/edit-download.png"
+      "name": "Save and Download",
+      "text": "When finished, click 'Save' to process your changes locally, then download your edited PDF.",
+      "image": "https://localpdf.online/screenshots/edit-active.png"
     }
   ],
   "totalTime": "PT3M"
@@ -49,12 +44,14 @@ const howToSchema = {
   toolId="edit-text-pdf"
   title="Edit Text in PDF Online — Free & Private | Replace, Cover, Redact"
   metaDescription="Edit, replace, or cover text in PDFs instantly. Multi-page editing with multiline support. 100% private client-side processing. No uploads."
+  image="https://localpdf.online/screenshots/edit-active.png"
   keywords={keywords}
-  description="Edit and replace text in PDF documents directly in your browser. Create multiple text selections, replace with new text, or simply cover unwanted content. Perfect for correcting typos, updating information, or redacting sensitive data."
+  description="Edit and replace text in PDF documents directly in your browser. Our advanced editor allows you to replace original text with perfect alignment, redact sensitive data, or add new content—all while keeping your files 100% private."
   benefits={[
-    "✏️ Advanced — Multiple selections per page, multiline text support",
-    "🔒 Private — All editing happens locally in your browser",
-    "🆓 Free — No limits during beta testing"
+    "✏️ Smart Detection — Automatically find and replace original PDF text",
+    "🎨 Pro Styling — Full control over fonts, colors, and formatting",
+    "🔒 100% Private — Processing happens entirely on your device",
+    "⚡ Instant — Real-time preview and fast local processing"
   ]}
   relatedTools={[
     { id: 'add-text-pdf', icon: '📝', title: 'Add Text to PDF', description: 'Add new text overlays to PDF pages' },
@@ -63,47 +60,43 @@ const howToSchema = {
     { id: 'tables-pdf', icon: '📊', title: 'Tables in PDF', description: 'Convert Excel/CSV to PDF tables' }
   ]}
   whyChoose={{
-    title: "Why Choose Our PDF Text Editor?",
+    title: "Why Use LocalPDF for Editing?",
     reasons: [
-      "True Client-Side Processing: Unlike cloud-based PDF editors that upload your documents to remote servers, LocalPDF processes everything locally. Your sensitive documents, contracts, or personal information never leave your device — ensuring complete privacy and security.",
-      "Multiple Editing Modes: Switch between 'Replace Text' mode for corrections and updates, or 'Cover Only' mode for quick redaction of sensitive information. Create unlimited selections on any page and apply all changes at once.",
-      "Multiline Text Support: Our advanced text engine automatically handles line breaks and word wrapping. Replace single words or entire paragraphs with proper formatting.",
-      "Multi-Page Editing: Work with documents of any length. Create selections on different pages, switch between them freely, and apply all changes in a single operation. Perfect for batch corrections across large documents.",
-      "Visual Selection Tool: Click and drag to select text areas directly on the PDF preview. Resize and move selections with precision. Real-time preview shows exactly how changes will look before applying.",
-      "Professional Typography: Full control over font family, size, style (bold/italic), color, and positioning. Auto-detect original font size for PDF.",
-      "High-Quality Output: All edits are rendered at 2x resolution for crisp, professional results. The final PDF maintains original quality while seamlessly integrating your changes.",
-      "No File Size Limits: Edit PDFs of any size — from single-page forms to hundred-page reports. Your browser memory is the only constraint.",
-      "Works Offline: Once the page loads, you can edit PDFs without an internet connection. Perfect for working with confidential documents that shouldn't be transmitted over networks."
+      "True Privacy: Most online editors upload your files. We don't. Your documents never leave your browser, which is critical for legal and personal data.",
+      "Intelligent Editing: Our 'Smart Edit' feature detects the position and style of original text, making replacements look natural and perfectly aligned.",
+      "Professional Layout: Adjust indentation, alignment, and line spacing for every text block to match the original document's typography.",
+      "Redaction Made Easy: Easily cover sensitive information with solid color blocks for secure document sharing.",
+      "Zero Installation: A professional-grade PDF editor that works directly in your browser. No registration, no ads, no cloud."
     ]
   }}
   features={[
-    "Replace text with multiline support and automatic word wrapping",
-    "Cover/redact text or images without adding new content",
-    "Create multiple selections on each page",
-    "Edit text across multiple pages simultaneously",
-    "Drag, resize, and position selection areas with precision",
-    "Real-time preview with live updates as you type",
-    "Zoom controls (50%-300%) for detailed work",
-    "Auto-detect original font size from PDF",
-    "Full typography control: font family, size, bold, italic",
+    "Smart text detection and replacement",
+    "Add new text elements anywhere on the page",
+    "Precise alignment and positioning controls",
+    "Full typography: Roboto, Helvetica, Courier support",
     "Custom text and background colors",
-    "Fine-tune text position with X/Y offset sliders",
-    "Manage selections: view list, switch between pages, delete individually",
-    "Apply all changes across all pages in one click"
+    "Multiline support with automatic wrapping",
+    "Secure redaction for sensitive data",
+    "High-resolution professional output",
+    "100% client-side privacy protection"
   ]}
   steps={[
-    'Click "Open Tool" button above to launch the editor',
-    'Select a PDF file from your device (any number of pages)',
-    'Choose editing mode: "Replace Text" ✏️ or "Cover Only" 🎨',
-    'Navigate to the page you want to edit using page controls',
-    'Click and drag on the PDF to select a text area',
-    'For text mode: the original text is auto-extracted — edit or replace it',
-    'Adjust font, size, color, and position as needed',
-    'Use zoom controls (+/−) to work with precision',
-    'Create more selections on the same page or switch to other pages',
-    'Enable "Show live preview" to see changes in real-time',
-    'Click "Apply N Changes" to process all selections',
-    'Download your edited PDF instantly'
+    { 
+      text: 'Open the Edit tool and upload your PDF document.', 
+      image: '/screenshots/edit-welcome.png' 
+    },
+    { 
+      text: 'Click on existing text to edit it, or use "Add Text" for new content.', 
+      image: '/screenshots/edit-active.png' 
+    },
+    { 
+      text: 'Style your text using the formatting panel (font, size, color).', 
+      image: '/screenshots/edit-styles.png' 
+    },
+    { 
+      text: 'Preview your changes and click "Save" to download the result.', 
+      image: '/screenshots/edit-active.png' 
+    }
   ]}
 >
   <Fragment slot="head">

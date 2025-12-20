@@ -6,39 +6,34 @@ const keywords = "add text to pdf, write on pdf, pdf text editor, add text box t
 const howToSchema = {
   "@context": "https://schema.org",
   "@type": "HowTo",
-  "image": "https://localpdf.online/logos/icon-512.png",
+  "image": "https://localpdf.online/screenshots/edit-styles.png",
   "name": "How to Add Text to a PDF",
   "description": "A step-by-step guide on how to add, format, and position custom text on a PDF document using the free LocalPDF text tool.",
   "step": [
     {
       "@type": "HowToStep",
-      "name": "Open Tool and Upload PDF",
-      "text": "Click 'Open Tool' and upload the PDF document you wish to add text to.",
-      "url": "https://localpdf.online/add-text-pdf#tool"
+      "name": "Launch the Add Text Tool",
+      "text": "Open the 'Add Text to PDF' tool and upload your document.",
+      "url": "https://localpdf.online/add-text-pdf#tool",
+      "image": "https://localpdf.online/screenshots/edit-welcome.png"
     },
     {
       "@type": "HowToStep",
-      "name": "Add a Text Box",
-      "text": "Click the 'Add Text' button in the toolbar. A new text box will appear on the current page.",
-      "image": "https://localpdf.online/screenshots/add-text-box.png"
+      "name": "Insert Text Box",
+      "text": "Click the 'Add Text' button. A new text box will appear on your PDF. You can drag it to any position.",
+      "image": "https://localpdf.online/screenshots/edit-active.png"
     },
     {
       "@type": "HowToStep",
-      "name": "Enter and Format Text",
-      "text": "Type your desired text into the box. Use the formatting panel to change the font, size, color, and alignment.",
-      "image": "https://localpdf.online/screenshots/add-text-format.png"
+      "name": "Format and Style",
+      "text": "Use the sidebar to change the font, size, and color. Our editor supports bold, italic, and perfect text alignment.",
+      "image": "https://localpdf.online/screenshots/edit-styles.png"
     },
     {
       "@type": "HowToStep",
-      "name": "Position the Text",
-      "text": "Drag the text box to place it exactly where you want it on the PDF page.",
-      "image": "https://localpdf.online/screenshots/add-text-position.png"
-    },
-    {
-      "@type": "HowToStep",
-      "name": "Download the PDF",
-      "text": "After adding all necessary text, click 'Download' to save the modified PDF file.",
-      "image": "https://localpdf.online/screenshots/add-text-download.png"
+      "name": "Download Modified PDF",
+      "text": "Once you're happy with the results, download your new PDF instantly without any watermarks.",
+      "image": "https://localpdf.online/screenshots/edit-active.png"
     }
   ],
   "totalTime": "PT2M"
@@ -47,14 +42,16 @@ const howToSchema = {
 
 <ToolPage
   toolId="add-text-pdf"
-  title="Add Text to PDF Online — Free Editor"
-  metaDescription="Add custom text to PDF files. 100% private client-side processing. No uploads, full formatting control. Edit PDFs instantly."
+  title="Add Text to PDF Online — Free & Private Editor"
+  metaDescription="Add custom text, annotations, and labels to PDF files instantly. 100% private client-side processing. No uploads, full formatting control."
+  image="https://localpdf.online/screenshots/edit-styles.png"
   keywords={keywords}
-  description="Add custom text to PDF pages with full control over position, size, color, and font. Perfect for annotations, labels, or filling forms — all in your browser."
+  description="Add custom text to PDF pages with professional control over typography, colors, and positioning. Perfect for adding notes, filling forms, or adding labels—all while keeping your files 100% private on your device."
   benefits={[
-    "⚡ Instant — Add text in seconds",
-    "🔒 Private — Files stay local",
-    "🆓 Free — Unlimited text editing during beta"
+    "⚡ Fast — Add text boxes and overlays instantly",
+    "🎨 Pro Fonts — Customize font family, size, and style",
+    "🔒 100% Private — Files never leave your web browser",
+    "🆓 Free — Unlimited use without watermarks or registration"
   ]}
   relatedTools={[
     { id: 'edit-text-pdf', icon: '✏️', title: 'Edit Text in PDF', description: 'Replace or redact existing text in PDFs' },
@@ -63,31 +60,43 @@ const howToSchema = {
     { id: 'tables-pdf', icon: '📊', title: 'Tables in PDF', description: 'Convert Excel/CSV to PDF tables' }
   ]}
   whyChoose={{
-    title: "Why Choose Our PDF Text Editor?",
+    title: "Why Use LocalPDF for Adding Text?",
     reasons: [
-      "Maximum Privacy: Your PDF never leaves your device. Cloud PDF editors upload files to servers. LocalPDF adds text locally using client-side rendering.",
-      "Full Formatting Control: Customize font size, color, position, and alignment. Place text anywhere on any page with pixel precision.",
-      "No Watermarks: Many free PDF editors stamp their logo on edited files. LocalPDF never adds branding or watermarks to your documents.",
-      "Instant Preview: See exactly how text will appear before saving. Adjust position and formatting in real-time.",
-      "Preserve Original Quality: Text is added as an overlay layer without re-encoding the PDF. Original pages remain pristine.",
-      "No Page Limits: Add text to PDFs of any length. Cloud tools often restrict free users to 10-50 pages."
+      "Privacy Guaranteed: Unlike other editors, we don't upload your documents. Your data is processed entirely in your RAM using client-side libraries.",
+      "Perfect Positioning: Drag and drop text boxes with pixel-perfect precision. Use fine-tuning controls for exact X/Y positioning.",
+      "No Branding: We don't add 'Edited with LocalPDF' watermarks. Your documents remain professional and clean.",
+      "Multi-Page Support: Easily navigate through pages and add text where needed. The tool handles documents of any size.",
+      "Offline Capability: Once the tool is loaded, you can add text even without an active internet connection."
     ]
   }}
   features={[
-    "Add custom text to any page",
-    "Control font size and color",
-    "Position text anywhere (drag-and-drop)",
-    "Apply to specific pages or all pages",
-    "Real-time preview",
-    "Multiple text boxes per page"
+    "Easily add multiple text boxes to any page",
+    "Drag-and-drop positioning with fine-tuning sliders",
+    "Full typography control: Font size, family, and styles",
+    "Custom text and background colors",
+    "Real-time live preview of your changes",
+    "Automatic layout preservation",
+    "High-quality PDF output rendering",
+    "No registration or account required",
+    "100% private, serverless processing"
   ]}
   steps={[
-    'Click "Open Tool" button above',
-    "Upload the PDF you want to edit",
-    "Enter your text content",
-    "Customize font size, color, and position",
-    "Select which pages to apply text to",
-    "Download your edited PDF"
+    { 
+      text: 'Start by uploading your PDF document to the Add Text tool.', 
+      image: '/screenshots/edit-welcome.png' 
+    },
+    { 
+      text: 'Click "Add Text" and type your content into the new box.', 
+      image: '/screenshots/edit-active.png' 
+    },
+    { 
+      text: 'Customize the appearance using the professional styling panel.', 
+      image: '/screenshots/edit-styles.png' 
+    },
+    { 
+      text: 'Review the placement and download your modified document.', 
+      image: '/screenshots/edit-active.png' 
+    }
   ]}
 >
   <Fragment slot="head">

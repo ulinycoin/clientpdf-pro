@@ -150,6 +150,8 @@ export const TOOL_HASH_MAP: Record<string, Tool> = {
   'protect': 'protect-pdf',
   'ocr': 'ocr-pdf',
   'edit': 'edit-pdf',
+  'edit-text': 'edit-pdf',
+  'add-text': 'edit-pdf',
   'add-form-fields': 'add-form-fields-pdf',
   'watermark': 'watermark-pdf',
   'rotate': 'rotate-pdf',
