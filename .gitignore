@@ -75,5 +75,20 @@ src-tauri/
 *.rs.bk
 Cargo.lock
 
-# Ideas & Roadmap
+# Ideas, Roadmap & Internal Docs (Development only)
 IDEAS.md
+ROADMAP.md
+GEMINI.md
+SaaS_digita.md
+*.log
+scripts/
+.github/ISSUE_TEMPLATE
+
+# Development artifacts
+lint-report*.txt
+lint-report*.json
+tsc_output.txt
+
+# Brain/AI metadata
+.gemini/
+.agent/

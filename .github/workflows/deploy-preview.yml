@@ -1,0 +1,32 @@
+name: Build Verification
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  verify-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Full Build (Astro + React Merge)
+        run: npm run build:all
+
+      - name: Check build output
+        run: |
+          ls -R dist/
+          test -f dist/index.html
+          test -f dist/app/index.html

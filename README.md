@@ -1,17 +1,17 @@
-# LocalPDF v3.2
+# LocalPDF v4.0 💎
 
-**Privacy-first PDF toolkit** - Hash-based Single Page Application with AI-powered Smart Features
+**Privacy-first PDF toolkit** - The ultimate client-side document processing suite with "Private Sanctuary" design aesthetics.
 
-🚀 **Optimized for performance** - 91% smaller bundle with code splitting and lazy loading
-🤖 **AI-powered analysis** - Smart features run 100% locally in your browser
+🚀 **Zero-Server Processing** - All files stay on your device. Period.
+💎 **Private Sanctuary Design** - Premium "Liquid Glass" UI with backlit refraction effects.
+🤖 **Neural-Local AI** - Smart features (Merge, Organize, Editor) running 100% locally.
 
-[![Version](https://img.shields.io/badge/version-3.2.0-blue.svg)](https://github.com/ulinycoin/clientpdf-pro)
+[![Version](https://img.shields.io/badge/version-4.0.0-blue.svg)](https://github.com/ulinycoin/clientpdf-pro)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
 [![Deploy](https://img.shields.io/badge/deploy-auto-brightgreen.svg)](https://localpdf.online)
 
-> **Note:** This is version 3.2 - featuring Premium Design & Enhanced Accessibility.
->
-> **Auto-deploy:** Pushes to `main` branch automatically deploy to production via Vercel.
+> [!IMPORTANT]
+> **Version 4.0 "Private Sanctuary"**: Featuring advanced text reflow, premium table processing, and high-fidelity local OCR.
 
 ---
 
@@ -21,180 +21,99 @@
 # Install dependencies
 npm install
 
-# Start both app and website
+# Start both App (React) and Website (Astro)
 npm run dev:all
 
-# Or start separately
-npm run dev          # App-SPA on port 3000
-npm run dev:web      # Website on port 4321
+# Separate servers
+npm run dev          # App-SPA (Port 3000)
+npm run dev:web      # Website/SEO (Port 4321)
 ```
 
-## 📱 Available Tools (20 tools)
+## 📱 Premium Tools (21 tools)
 
-### 📂 Organize Tools
-- **Organize Pages** 🤖 - `/#organize` - Drag & drop page reordering with Smart Analysis (blank pages, duplicates, rotation issues)
-- **Merge PDF** 🤖 - `/#merge` - Combine multiple PDF files with Smart Merge (date extraction, duplicate detection)
-- **Split PDF** - `/#split` - Split by structure, page ranges, or file size
-- **Extract Pages** - `/#extract-pages` - Extract specific pages to new PDF
-- **Delete Pages** - `/#delete-pages` - Remove unwanted pages
-- **Rotate PDF** - `/#rotate` - Rotate pages by 90/180/270 degrees
+### 📊 Table & Data Tools
+- **Premium Tables** 💎 - `/#tables` - Convert Excel/CSV to PDF with advanced layout, multi-tab support, and horizontal pagination.
 
-### ✏️ Edit Tools
-- **Add Text PDF** - `/#add-text` - Add custom text with fonts and colors
-- **Edit Text PDF** - `/#edit-text` - Edit existing text in PDF
-- **Add Form Fields** - `/#add-form-fields` - Add interactive form fields
-- **Watermark PDF** - `/#watermark` - Add text/image watermarks
-- **Sign PDF** - `/#sign` - Add digital signatures
-- **Flatten PDF** - `/#flatten` - Flatten forms and annotations
+### 📂 Organize & Structure
+- **Smart Organize** 🤖 - `/#organize` - AI-powered page reordering, blank page detection, and chapter analysis.
+- **Smart Merge** 🤖 - `/#merge` - Intelligent file combination with metadata unification and duplicate detection.
+- **Split / Extract / Delete** - Robust page-level manipulation with interactive previews.
+- **Rotate PDF** - Batch rotation with 90/180/270 degree support.
 
-### 🔒 Security Tools
-- **Protect PDF** - `/#protect` - Add password protection (40-256 bit)
-- **Compress PDF** - `/#compress` - Reduce file size intelligently
+### ✏️ Content Editor (Unified)
+- **Edit Text** 🤖 - `/#edit-text` - Full text reflow, **Smart Line Detection**, and Unicode/Cyrillic support (Smart Styles 2.0).
+- **Add Text / Watermark** - Interactive drag-and-drop positioning and premium typography.
+- **Sign / Form Fields** - Secure client-side signing and interactive form creation.
 
-### 🔄 Convert Tools
-- **Images to PDF** 🤖 - `/#images-to-pdf` - Convert JPG/PNG to PDF with Smart Image Filter
-- **PDF to Images** - `/#pdf-to-images` - Export pages as JPG/PNG
-- **PDF to Word** - `/#pdf-to-word` - Convert PDF to DOCX
-- **Word to PDF** - `/#word-to-pdf` - Convert DOCX to PDF
-- **OCR PDF** - `/#ocr` - Extract text with multi-language OCR
-- **Extract Images** - `/#extract-images` - Extract embedded images
-
-🤖 = **AI-powered Smart Features** (100% local, no external API calls)
-
----
-
-## 🛠️ Commands
-
-```bash
-# Development
-npm run dev          # App-SPA dev server (port 3000)
-npm run dev:web      # Website dev server (port 4321)
-npm run dev:all      # Both servers simultaneously
-
-# Production
-npm run build        # Build app-spa
-npm run build:web    # Build website
-npm run build:all    # Build both
-
-# Code Quality
-npx tsc --noEmit     # Type check
-npm run lint         # Lint code
-```
+### 🔄 Conversion Power
+- **Batch PDF/Word** - Process up to 10 files simultaneously with rich previews.
+- **OCR Suite** 🤖 - Multi-language text extraction using local Tesseract.js (WASM).
+- **Images to PDF** - Smart image filtering (blur/quality detection) and automatic orientation.
 
 ---
 
 ## 🔑 Key Features
 
-- **100% client-side** — files never leave your device, fully private
-- **AI-powered Smart Features** — automatic analysis runs locally in browser
-  - Smart Merge: date extraction, duplicate detection, sort suggestions
-  - Smart Organize: blank pages, duplicates, chapters, rotation issues
-  - Smart Image Filter: low-quality detection, blur/contrast analysis
-- **Code splitting** — tools load on demand (~74 KB initial, -91% from v2)
-- **Multi-language** — EN, RU, DE, FR, ES with full i18n support
-- **Dark mode** — automatic theme switching with Tailwind CSS
-- **Hash routing** — SEO-friendly, works anywhere without server config
-- **OCR support** — multi-language text extraction with Tesseract.js
+- **100% Zero-Knowledge** — Files never leave the browser. No telemetry, no logs, no servers.
+- **Smart Styles 2.0** — Automatic font fallback and style matching for seamless PDF editing.
+- **Liquid Glass UI** — Modern design system with Glassmorphism and SVG refraction (Backlit Liquid Glass).
+- **Multi-language (9 Voices)** — EN, RU, DE, FR, ES, JA, IT, PT, ZH with full i18n support.
+- **Enterprise SEO** — Astro 5.0 integration with Schema.org (SoftwareApplication) and high-performance RAG-friendly content for AI search (GEO).
 
 ---
 
 ## 📂 Project Structure
 
 ```
-├── src/                           # React App-SPA (React 19.1.2 + TypeScript)
+├── src/                           # React App-SPA (React 19 + Vite)
 │   ├── components/
-│   │   ├── tools/                 # 20 PDF tool components (lazy loaded)
-│   │   ├── smart/                 # AI-powered UI panels
-│   │   └── layout/                # Sidebar, TopBar, etc.
+│   │   ├── tools/                 # Premium PDF tools (lazy loaded)
+│   │   ├── smart/                 # Local AI logic (Services)
+│   │   └── common/                # Shared UI (Design System)
 │   ├── services/
-│   │   ├── pdfService.ts          # Core PDF operations (pdf-lib, pdfjs-dist)
-│   │   ├── smartMergeService.ts   # Smart Merge AI logic
-│   │   ├── smartOrganizeService.ts # Smart Organize AI logic
-│   │   └── smartImageService.ts   # Smart Image Filter AI logic
-│   ├── hooks/                     # useHashRouter, useI18n, useSharedFile
-│   ├── locales/                   # 5 language JSON files (EN, RU, DE, FR, ES)
-│   └── types/                     # TypeScript definitions
-├── website/                       # Astro static site generator
-│   ├── src/
-│   │   ├── pages/                 # 20+ SEO landing pages
-│   │   ├── content/blog/          # Blog articles (MDX)
-│   │   └── components/            # Astro components
-│   └── public/                    # Static assets
-├── src-tauri/                     # Tauri desktop app (optional)
-├── vite.config.ts                 # Code splitting + chunk optimization
-├── tailwind.config.js             # Custom theme (ocean-*, privacy-*)
-└── CLAUDE.md                      # AI assistant development guide
+│   │   ├── pdfService.ts          # Core engine (pdf-lib, pdfjs, fontkit)
+│   │   └── smart*Service.ts       # Domain-specific logic
+│   └── locales/                   # 9 Language packs (JSON)
+├── website/                       # Astro 5.0 Marketing & SEO Site
+│   ├── src/pages/                 # RAG-optimized SEO landing pages
+│   └── public/                    # Social preview images & screenshots
+├── src-tauri/                     # Native Desktop wrapper (Experimental)
+└── vite.config.ts                 # Granular code splitting (~74 KB initial)
 ```
 
 ---
 
-## 🏗️ Dual Architecture
+## 🏗️ Dual-Engine Architecture
 
-This project contains **TWO applications**:
-
-### 1. App-SPA (`/src`) - React 19.1.2 + TypeScript + Vite
-- **Hash routing:** `/#merge`, `/#split`, `/#organize`, etc.
-- **100% client-side:** All PDF processing in browser (pdf-lib, pdfjs-dist, tesseract.js)
-- **AI-powered:** Smart features with local analysis (no external APIs)
-- **Code splitting:** React.lazy() + manual chunks (~74 KB initial load)
-- **Multi-language:** 5 languages with useI18n hook
-- **State management:** React hooks only (no Redux/Zustand)
-
-### 2. Website (`/website`) - Astro 5 Static Site Generator
-- **20+ SEO landing pages:** `/merge-pdf`, `/split-pdf`, `/organize-pdf`, etc.
-- **Schema.org markup:** Rich snippets for Google search
-- **Blog system:** MDX articles with automatic sitemap
-- **Performance:** Static HTML, optimized for Core Web Vitals
-- **Links to App-SPA:** Each page has "Go to Tool" button → hash route
-
-### URL Flow
-```
-User searches "merge pdf"
-  ↓
-Lands on /merge-pdf (SEO landing page)
-  ↓
-Clicks "Go to Tool" button
-  ↓
-Navigates to /#merge (React app loads tool)
-```
-
----
-
-## 📞 Links & Documentation
-
-- **Production:** https://localpdf.online
-- **Repository:** https://github.com/ulinycoin/clientpdf-pro
-- **Development Roadmap:** [ROADMAP.md](./ROADMAP.md)
-- **AI Development Guide:** [CLAUDE.md](./CLAUDE.md)
-- **Issues & Feedback:** https://github.com/ulinycoin/clientpdf-pro/issues
+1.  **The App (`/src`):** A high-performance React 19 SPA. Uses Hash-routing (`/#tool`) for maximum compatibility and speed. All processing happens in Web Workers and WASM.
+2.  **The Oracle (`/website`):** An Astro 5.0 static site serving 30+ SEO-optimized pages. Designed for "Generative Engine Optimization" (GEO) to dominate AI-driven search.
 
 ---
 
 ## 🧠 Technology Stack
 
-**Frontend:**
-- React 19.1.2 + TypeScript + Vite 6
-- Tailwind CSS 3 (custom theme)
-- Hash-based routing (custom `useHashRouter`)
-
-**PDF Processing:**
-- `pdf-lib` + `@pdf-lib/fontkit` - PDF creation/editing
-- `pdf-lib-plus-encrypt` - Password protection
-- `pdfjs-dist` - PDF rendering and text extraction
-- `tesseract.js` - OCR with multi-language support
-
-**SEO & Content:**
-- Astro 5 - Static site generator
-- MDX - Blog articles
-- Schema.org - Structured data
-
-**AI Features:**
-- 100% client-side analysis (no external APIs)
-- SHA-256 hashing for duplicate detection
-- Multi-language pattern recognition (EN, DE, FR, ES, RU)
-- Image quality analysis (blur, contrast, sharpness)
+- **Core:** React 19, TypeScript, Vite 6, Tailwind CSS 3
+- **PDF Engine:** `pdf-lib` (Creation), `pdfjs-dist` (Analysis/Rendering)
+- **local-AI:** `tesseract.js` (OCR), `fontkit` (Typography), `SHA-256` (Deduplication)
+- **Style:** Custom "Private Sanctuary" design with vanilla CSS + Backdrop Filters
 
 ---
 
-**Tools:** 20 PDF tools (3 with AI) | **Languages:** 5 | **SEO Pages:** 20+ | **Bundle:** ~74 KB gzip
-**Last updated:** December 2025
+## 🚀 Deployment
+
+### Vercel (Recommended)
+This project is optimized for Vercel. Use the following command to build both engines and merge them:
+```bash
+npm run build:all
+```
+The output will be in the `dist/` directory, structured for an Astro homepage with the React SPA accessible at `/app`.
+
+### CI/CD
+Automated workflows are configured in `.github/workflows/`:
+- **CI**: Runs linting, type checking, and component builds on every push/PR.
+- **Build Verification**: Ensures the full merged build (`build:all`) completes successfully.
+
+---
+
+**Last updated:** December 23, 2025
+**Bundle size:** ~74 KB gzip (Initial) | **Tools:** 21 | **Languages:** 9
