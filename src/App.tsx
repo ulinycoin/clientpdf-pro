@@ -1,6 +1,6 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
 import { useHashRouter } from '@/hooks/useHashRouter';
-import { I18nProvider } from '@/contexts/I18nContext';
+import { useI18n } from '@/hooks/useI18n';
 import { WelcomeScreen } from '@/components/WelcomeScreen';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { ToolGroupNav } from '@/components/layout/ToolGroupNav';
@@ -45,6 +45,7 @@ const ToolLoading = () => (
 function App() {
   // Routing
   const { currentTool, setCurrentTool, context } = useHashRouter();
+  const { t } = useI18n();
 
   // Theme management
   const [theme, setTheme] = useState<Theme>(() => {
@@ -95,156 +96,175 @@ function App() {
   };
 
   return (
-    <I18nProvider>
-      <div className="app min-h-screen bg-gray-50 dark:bg-privacy-900 bg-gradient-mesh transition-colors duration-200">
-        {/* Header */}
-        <header className="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-privacy-900 border-b border-gray-200 dark:border-privacy-700">
-          <div className="flex items-center justify-between h-16 pr-4">
-            {/* Logo - aligned with sidebar */}
-            <div className="flex items-center gap-3 pl-2">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-                className="hover:bg-gray-100 dark:hover:bg-privacy-800"
-                aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-              >
-                <span className="text-2xl">☰</span>
-              </Button>
-              <a
-                href="/"
-                className="text-xl font-bold text-gradient-ocean hover:opacity-80 transition-opacity"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setCurrentTool(null);
-                  window.location.hash = '';
-                }}
-              >
-                LocalPDF
-              </a>
-            </div>
+    <div className="app min-h-screen bg-gray-50 dark:bg-privacy-900 transition-colors duration-200">
+      {/* Global Liquid Glass Filter */}
+      <svg style={{ position: 'fixed', top: '-100%', left: '-100%', width: 0, height: 0 }}>
+        <filter id="liquid-refraction" x="-10%" y="-10%" width="120%" height="120%">
+          <feTurbulence type="turbulence" baseFrequency="0.003" numOctaves="2" result="noise" seed="2" />
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G" result="distorted" />
+          <feColorMatrix in="distorted" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="red" />
+          <feOffset in="red" dx="0.6" dy="0" result="red_offset" />
+          <feColorMatrix in="distorted" type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="green" />
+          <feColorMatrix in="distorted" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="blue" />
+          <feOffset in="blue" dx="-0.6" dy="0" result="blue_offset" />
+          <feBlend in="red_offset" in2="green" mode="screen" result="rg" />
+          <feBlend in="rg" in2="blue_offset" mode="screen" />
+        </filter>
+      </svg>
 
-            {/* Actions */}
-            <div className="flex items-center gap-2">
-              {/* Buy Me a Coffee */}
-              <a
-                href="https://www.buymeacoffee.com/localpdf"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hidden sm:flex items-center gap-2 px-4 py-2 bg-[#5F7FFF] hover:bg-[#4d6ee6] text-white rounded-lg transition-all duration-200 hover:shadow-md font-medium text-sm"
-                aria-label="Buy me a coffee"
-              >
-                <span className="text-lg">☕</span>
-                <span>Buy me a coffee</span>
-              </a>
-
-              {/* Language Selector */}
-              <LanguageSelector />
-
-              {/* Theme toggle */}
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={toggleTheme}
-                className="hover:bg-gray-100 dark:hover:bg-privacy-800"
-                aria-label="Toggle theme"
-              >
-                <span className="text-xl">{theme === 'dark' ? '☀️' : '🌙'}</span>
-              </Button>
-            </div>
+      {/* Header */}
+      <header className="fixed top-0 left-0 right-0 z-50 h-16 border-b border-white/20 dark:border-white/10 overflow-hidden">
+        <div className="card-glass"></div>
+        <div className="flex items-center justify-between h-full pr-4 relative z-10">
+          {/* Logo - aligned with sidebar */}
+          <div className="flex items-center gap-3 pl-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+              className="hover:bg-black/5 dark:hover:bg-white/10"
+              aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            >
+              <span className="text-2xl">☰</span>
+            </Button>
+            <a
+              href="/"
+              className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+              onClick={(e) => {
+                e.preventDefault();
+                setCurrentTool(null);
+                window.location.hash = '';
+              }}
+            >
+              <img src="/logos/localpdf-header-64x64.png" alt="LocalPDF" className="logo-image" />
+              <div className="logo-text">
+                <div className="logo-title">LocalPDF</div>
+                <div className="logo-subtitle">Sanctuary</div>
+              </div>
+            </a>
           </div>
-        </header>
 
-        {/* Tool Group Navigation */}
-        <ToolGroupNav
-          selectedGroup={selectedGroup}
-          onGroupSelect={setSelectedGroup}
-        />
+          {/* Actions */}
+          <div className="flex items-center gap-2">
+            {/* Support Developer Button */}
+            <a
+              href="https://www.buymeacoffee.com/localpdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden sm:flex items-center gap-2 px-4 py-2 bg-accent-blue/10 hover:bg-accent-blue/20 text-accent-blue dark:text-accent-light border border-accent-blue/20 hover:border-accent-blue/40 rounded-lg transition-all duration-300 hover:shadow-[0_0_15px_rgba(59,130,246,0.15)] font-medium text-sm group relative overflow-hidden"
+              aria-label={t('common.supportDeveloper')}
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+              <span className="text-lg relative z-10 transition-transform duration-500 group-hover:rotate-[12deg]">☕</span>
+              <span className="relative z-10">{t('common.supportDeveloper')}</span>
+            </a>
 
-        {/* Sidebar */}
-        <Sidebar
-          currentTool={currentTool}
-          onToolSelect={setCurrentTool}
-          collapsed={sidebarCollapsed}
-          onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
-          selectedGroup={selectedGroup}
-        />
+            {/* Language Selector */}
+            <LanguageSelector />
 
-        {/* Main content */}
-        <main className={`transition-all duration-300 ${sidebarCollapsed ? 'pl-16' : 'pl-64'}`} style={{ paddingTop: '7.5rem' }}>
-          {!currentTool ? (
-            <WelcomeScreen
-              context={context}
-              onToolSelect={setCurrentTool}
-            />
-          ) : (
-            <div className="container-responsive py-8">
-              <Suspense fallback={<ToolLoading />}>
-                {currentTool === 'merge-pdf' ? (
-                  <MergePDF />
-                ) : currentTool === 'compress-pdf' ? (
-                  <CompressPDF />
-                ) : currentTool === 'split-pdf' ? (
-                  <SplitPDF />
-                ) : currentTool === 'protect-pdf' ? (
-                  <ProtectPDF />
-                ) : currentTool === 'ocr-pdf' ? (
-                  <OCRPDF />
-                ) : currentTool === 'watermark-pdf' ? (
-                  <WatermarkPDF />
-                ) : currentTool === 'rotate-pdf' ? (
-                  <RotatePDF />
-                ) : currentTool === 'delete-pages-pdf' ? (
-                  <DeletePagesPDF />
-                ) : currentTool === 'extract-pages-pdf' ? (
-                  <ExtractPagesPDF />
-                ) : currentTool === 'edit-pdf' ? (
-                  <ContentEditorPDF />
-                ) : currentTool === 'add-form-fields-pdf' ? (
-                  <AddFormFieldsPDF />
-                ) : currentTool === 'images-to-pdf' ? (
-                  <ImagesToPDF />
-                ) : currentTool === 'pdf-to-images' ? (
-                  <PDFToImages />
-                ) : currentTool === 'word-to-pdf' ? (
-                  <WordToPDF />
-                ) : currentTool === 'pdf-to-word' ? (
-                  <PDFToWord />
-                ) : currentTool === 'sign-pdf' ? (
-                  <SignPDF />
-                ) : currentTool === 'flatten-pdf' ? (
-                  <FlattenPDF />
-                ) : currentTool === 'extract-images-pdf' ? (
-                  <ExtractImagesPDF />
-                ) : currentTool === 'tables-pdf' ? (
-                  <TablesPDF />
-                ) : currentTool === 'organize-pdf' ? (
-                  <PageEditorPDF />
-                ) : (
-                  <div className="card p-8">
-                    <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">
-                      Tool Not Implemented
-                    </h2>
-                    <p className="text-gray-600 dark:text-gray-400 mb-6">
-                      This tool is coming soon.
+            {/* Theme toggle */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleTheme}
+              className="hover:bg-black/5 dark:hover:bg-white/10"
+              aria-label="Toggle theme"
+            >
+              <span className="text-xl">{theme === 'dark' ? '☀️' : '🌙'}</span>
+            </Button>
+          </div>
+        </div>
+      </header>
+
+      {/* Tool Group Navigation */}
+      <ToolGroupNav
+        selectedGroup={selectedGroup}
+        onGroupSelect={setSelectedGroup}
+      />
+
+      {/* Sidebar */}
+      <Sidebar
+        currentTool={currentTool}
+        onToolSelect={setCurrentTool}
+        collapsed={sidebarCollapsed}
+        onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
+        selectedGroup={selectedGroup}
+      />
+
+      {/* Main content */}
+      <main className={`transition-all duration-300 ${sidebarCollapsed ? 'pl-16' : 'pl-64'}`} style={{ paddingTop: '8rem' }}>
+        {!currentTool ? (
+          <WelcomeScreen
+            context={context}
+            onToolSelect={setCurrentTool}
+          />
+        ) : (
+          <div className="container-responsive py-8">
+            <Suspense fallback={<ToolLoading />}>
+              {currentTool === 'merge-pdf' ? (
+                <MergePDF />
+              ) : currentTool === 'compress-pdf' ? (
+                <CompressPDF />
+              ) : currentTool === 'split-pdf' ? (
+                <SplitPDF />
+              ) : currentTool === 'protect-pdf' ? (
+                <ProtectPDF />
+              ) : currentTool === 'ocr-pdf' ? (
+                <OCRPDF />
+              ) : currentTool === 'watermark-pdf' ? (
+                <WatermarkPDF />
+              ) : currentTool === 'rotate-pdf' ? (
+                <RotatePDF />
+              ) : currentTool === 'delete-pages-pdf' ? (
+                <DeletePagesPDF />
+              ) : currentTool === 'extract-pages-pdf' ? (
+                <ExtractPagesPDF />
+              ) : currentTool === 'edit-pdf' ? (
+                <ContentEditorPDF />
+              ) : currentTool === 'add-form-fields-pdf' ? (
+                <AddFormFieldsPDF />
+              ) : currentTool === 'images-to-pdf' ? (
+                <ImagesToPDF />
+              ) : currentTool === 'pdf-to-images' ? (
+                <PDFToImages />
+              ) : currentTool === 'word-to-pdf' ? (
+                <WordToPDF />
+              ) : currentTool === 'pdf-to-word' ? (
+                <PDFToWord />
+              ) : currentTool === 'sign-pdf' ? (
+                <SignPDF />
+              ) : currentTool === 'flatten-pdf' ? (
+                <FlattenPDF />
+              ) : currentTool === 'extract-images-pdf' ? (
+                <ExtractImagesPDF />
+              ) : currentTool === 'tables-pdf' ? (
+                <TablesPDF />
+              ) : currentTool === 'organize-pdf' ? (
+                <PageEditorPDF />
+              ) : (
+                <div className="card p-8">
+                  <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">
+                    Tool Not Implemented
+                  </h2>
+                  <p className="text-gray-600 dark:text-gray-400 mb-6">
+                    This tool is coming soon.
+                  </p>
+                  <div className="bg-ocean-50 dark:bg-ocean-900/20 border border-ocean-200 dark:border-ocean-800 rounded-lg p-6">
+                    <p className="text-center text-ocean-700 dark:text-ocean-300">
+                      Tool implementation coming soon...
                     </p>
-                    <div className="bg-ocean-50 dark:bg-ocean-900/20 border border-ocean-200 dark:border-ocean-800 rounded-lg p-6">
-                      <p className="text-center text-ocean-700 dark:text-ocean-300">
-                        Tool implementation coming soon...
-                      </p>
-                      <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-2">
-                        Tool: {currentTool}
-                      </p>
-                    </div>
+                    <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-2">
+                      Tool: {currentTool}
+                    </p>
                   </div>
-                )}
-              </Suspense>
-            </div>
-          )}
-        </main>
-        <Toaster />
-      </div>
-    </I18nProvider>
+                </div>
+              )}
+            </Suspense>
+          </div>
+        )}
+      </main>
+      <Toaster />
+    </div>
   );
 }
 

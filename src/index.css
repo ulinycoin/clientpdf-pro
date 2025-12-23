@@ -26,21 +26,32 @@
     --input: 240 5.9% 90%;
     --ring: 240 5.9% 10%;
     --radius: 0.5rem;
+
+    /* Liquid Glass Prototype Variables */
+    --accent-blue: #3b82f6;
+    --accent-light: #60a5fa;
+    --glass-bg: rgba(255, 255, 255, 0.4);
+    --glass-border: rgba(0, 0, 0, 0.08);
+    --ios-blur: blur(60px) saturate(250%);
+    --inner-glow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
   }
 
   .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
+    --background: 240 10% 4%;
+    /* #18181b approximate Zinc 900 */
+    --foreground: 240 5% 96%;
+    /* #f5f5f7 approximate Gray 50 */
+    --card: 240 10% 4%;
+    --card-foreground: 240 5% 96%;
+    --popover: 240 10% 4%;
+    --popover-foreground: 240 10% 98%;
     --primary: 0 0% 98%;
     --primary-foreground: 240 5.9% 10%;
     --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
     --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
+    --muted-foreground: 240 5% 65%;
+    /* #8e8e93 approximate Gray 500 */
     --accent: 240 3.7% 15.9%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
@@ -48,6 +59,11 @@
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
     --ring: 240 4.9% 83.9%;
+
+    /* Liquid Glass Dark Mode Spec */
+    --glass-bg: rgba(28, 28, 30, 0.4);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --inner-glow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
   }
 
   html {
@@ -87,6 +103,7 @@
 
 /* Custom component styles */
 @layer components {
+
   /* Button base styles */
   .btn {
     @apply px-4 py-2 rounded-lg font-medium transition-all duration-200;
@@ -173,10 +190,49 @@
     @apply glass backdrop-blur-lg rounded-2xl p-6;
     @apply shadow-large;
   }
+
+  /* Liquid Glass Utility Layers */
+  .card-glass {
+    @apply absolute inset-0 transition-[filter] duration-500 pointer-events-none z-[1];
+    background: var(--glass-bg);
+    backdrop-filter: var(--ios-blur);
+    -webkit-backdrop-filter: var(--ios-blur);
+  }
+
+  .card-glow {
+    @apply absolute inset-0 opacity-0 transition-opacity duration-500 pointer-events-none z-[2];
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+  }
+
+  .liquid-glass-card {
+    @apply relative overflow-hidden transition-all duration-500;
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--inner-glow);
+  }
+
+  /* Logo Typography */
+  .logo-text {
+    @apply flex flex-col leading-tight;
+  }
+
+  .logo-title {
+    @apply text-lg font-bold text-gray-900 dark:text-white uppercase tracking-wider;
+    font-family: 'Outfit', sans-serif;
+  }
+
+  .logo-subtitle {
+    @apply text-[10px] font-semibold text-accent-blue uppercase tracking-[0.2em] -mt-1;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .logo-image {
+    @apply w-10 h-10 object-contain;
+  }
 }
 
 /* Utility classes */
 @layer utilities {
+
   /* Text utilities */
   .text-balance {
     text-wrap: balance;
@@ -203,15 +259,19 @@
   .delay-100 {
     animation-delay: 100ms;
   }
+
   .delay-200 {
     animation-delay: 200ms;
   }
+
   .delay-300 {
     animation-delay: 300ms;
   }
+
   .delay-400 {
     animation-delay: 400ms;
   }
+
   .delay-500 {
     animation-delay: 500ms;
   }

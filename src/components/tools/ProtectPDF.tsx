@@ -247,11 +247,11 @@ export const ProtectPDF: React.FC = () => {
 
       {showAdvanced && (
         <div className="space-y-3 animate-in fade-in slide-in-from-top-1">
-          <Label className="text-xs uppercase text-gray-500 font-bold">Permissions</Label>
+          <Label className="text-xs uppercase text-gray-500 font-bold">{t('protect.permissionsTitle')}</Label>
           <div className="space-y-2">
-            <div className="flex items-center justify-between"><Label>Printing</Label><select value={permissions.printing} onChange={e => setPermissions({ ...permissions, printing: e.target.value as 'none' | 'lowResolution' | 'highResolution' })} className="text-sm border rounded"><option value="none">None</option><option value="lowResolution">Low</option><option value="highResolution">High</option></select></div>
-            <div className="flex items-center justify-between"><Label>Copying</Label><Checkbox checked={permissions.copying} onCheckedChange={c => setPermissions({ ...permissions, copying: !!c })} /></div>
-            <div className="flex items-center justify-between"><Label>Modifying</Label><Checkbox checked={permissions.modifying} onCheckedChange={c => setPermissions({ ...permissions, modifying: !!c })} /></div>
+            <div className="flex items-center justify-between"><Label>{t('protect.permissions.printing')}</Label><select value={permissions.printing} onChange={e => setPermissions({ ...permissions, printing: e.target.value as 'none' | 'lowResolution' | 'highResolution' })} className="text-sm border rounded"><option value="none">{t('protect.permissions.printingNone')}</option><option value="lowResolution">{t('protect.permissions.printingLow')}</option><option value="highResolution">{t('protect.permissions.printingHigh')}</option></select></div>
+            <div className="flex items-center justify-between"><Label>{t('protect.permissions.copying')}</Label><Checkbox checked={permissions.copying} onCheckedChange={c => setPermissions({ ...permissions, copying: !!c })} /></div>
+            <div className="flex items-center justify-between"><Label>{t('protect.permissions.modifying')}</Label><Checkbox checked={permissions.modifying} onCheckedChange={c => setPermissions({ ...permissions, modifying: !!c })} /></div>
           </div>
         </div>
       )}
@@ -267,7 +267,7 @@ export const ProtectPDF: React.FC = () => {
             <FileCheck className="w-10 h-10" />
           </div>
           <h2 className="text-2xl font-bold">{t('protect.success.title')}</h2>
-          <p className="text-gray-500">{t('protect.success.encryption')}: {result.metadata.encryption}</p>
+          <p className="text-gray-500">{t('protect.success.encryption')}: {String(result.metadata.encryption)}</p>
           <div className="flex justify-center gap-4">
             <Button onClick={handleDownload} size="lg" className="bg-green-600 hover:bg-green-700">{t('common.download')}</Button>
             <Button onClick={handleReset} variant="outline" size="lg">{t('protect.protectAnother')}</Button>

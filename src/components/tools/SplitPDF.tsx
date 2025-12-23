@@ -14,6 +14,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Checkbox } from '@/components/ui/checkbox';
 import { useI18n } from '@/hooks/useI18n';
 import { useSharedFile } from '@/hooks/useSharedFile';
 import pdfService from '@/services/pdfService';
@@ -61,7 +62,11 @@ export const SplitPDF: React.FC = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [selectedChapters, setSelectedChapters] = useState<Set<number>>(new Set());
 
-  // Preview Zoom state
+  // Selection for source document pages
+  const [selectedSourcePages, setSelectedSourcePages] = useState<Set<number>>(new Set());
+  const [zoomSourcePage, setZoomSourcePage] = useState<number | null>(null);
+
+  // Result preview state
   const [previewResult, setPreviewResult] = useState<SplitResult | null>(null);
 
   // Selection for continuing to other tools
@@ -436,6 +441,40 @@ export const SplitPDF: React.FC = () => {
     }
   };
 
+  const toggleSourcePageSelection = (page: number) => {
+    setSelectedSourcePages((prev) => {
+      const next = new Set(prev);
+      if (next.has(page)) {
+        next.delete(page);
+      } else {
+        next.add(page);
+      }
+
+      // Sync with customPagesInput
+      const sortedPages = Array.from(next).sort((a, b) => a - b);
+      setCustomPagesInput(sortedPages.join(', '));
+
+      // Auto-switch to custom mode if selection exists
+      if (next.size > 0 && splitMode !== 'custom') {
+        setSplitMode('custom');
+      }
+      return next;
+    });
+  };
+
+  const selectAllSourcePages = () => {
+    if (!file?.info?.pages) return;
+    const all = new Set(Array.from({ length: file.info.pages }, (_, i) => i + 1));
+    setSelectedSourcePages(all);
+    setCustomPagesInput(`1-${file.info.pages}`);
+    if (splitMode !== 'custom') setSplitMode('custom');
+  };
+
+  const clearSourcePages = () => {
+    setSelectedSourcePages(new Set());
+    setCustomPagesInput('');
+  };
+
   const handleReset = () => {
     setFile(null);
     setResults([]);
@@ -566,9 +605,50 @@ export const SplitPDF: React.FC = () => {
           description={t('upload.singleFileAllowed')}
         />
       }
+      sidebarWidth="lg:w-96"
       settings={
         file && results.length === 0 ? (
           <div className="space-y-6 animate-slide-up">
+            {/* Mode Selector */}
+            <div className="space-y-3">
+              <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider opacity-70">
+                {t('split.selectMode')}
+              </h3>
+              <Tabs value={splitMode} onValueChange={(v) => setSplitMode(v as SplitMode)} className="w-full">
+                <TabsList className="grid grid-cols-2 gap-2 h-auto bg-transparent p-0">
+                  {[
+                    { id: 'all', icon: '📄', label: t('split.mode.all.name') },
+                    { id: 'range', icon: '📑', label: t('split.mode.range.name') },
+                    { id: 'intervals', icon: '📚', label: t('split.mode.intervals.name') },
+                    { id: 'custom', icon: '🎯', label: t('split.mode.custom.name') },
+                    { id: 'by-structure', icon: '✨', label: t('split.mode.byStructure.name') },
+                  ].map((mode) => (
+                    <TabsTrigger
+                      key={mode.id}
+                      value={mode.id}
+                      disabled={isProcessing}
+                      className="flex items-center justify-start gap-2 px-3 py-2.5 rounded-xl border transition-all text-sm
+                                 data-[state=active]:bg-ocean-600 data-[state=active]:text-white data-[state=active]:border-ocean-600 data-[state=active]:shadow-md
+                                 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300
+                                 hover:border-ocean-300 dark:hover:border-ocean-700"
+                    >
+                      <span className="text-base">{mode.icon}</span>
+                      <span className="font-medium truncate">{mode.label}</span>
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+              </Tabs>
+              <div className="text-xs text-gray-500 dark:text-gray-400 mt-2 bg-ocean-50/50 dark:bg-ocean-900/10 p-2.5 rounded-lg border border-ocean-100/50 dark:border-ocean-800/50 leading-relaxed">
+                {splitMode === 'all' && t('split.mode.all.description')}
+                {splitMode === 'range' && t('split.mode.range.description')}
+                {splitMode === 'intervals' && t('split.mode.intervals.description')}
+                {splitMode === 'custom' && t('split.mode.custom.description')}
+                {splitMode === 'by-structure' && t('split.mode.byStructure.description')}
+              </div>
+            </div>
+
+            <div className="h-px bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-800 to-transparent my-4" />
+
             {/* Range Mode Settings */}
             {splitMode === 'range' && (
               <div className="space-y-4">
@@ -823,73 +903,102 @@ export const SplitPDF: React.FC = () => {
 
       {/* Main Content Area */}
       {file && results.length === 0 ? (
-        <div className="space-y-8 animate-slide-up">
-          {/* File Preview */}
-          <div className="flex justify-center">
-            <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-ocean-400 to-purple-400 rounded-xl blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
-              <Card className="relative p-6 min-w-[300px] flex flex-col items-center">
-                <PDFPreview file={file.file} width={240} height={320} className="shadow-lg mb-6" />
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white text-center max-w-[280px] truncate">
-                  {file.name}
-                </h3>
-                <p className="text-gray-500 dark:text-gray-400 mt-1">
-                  {t('split.totalPages')}: {file.info?.pages || 0} • {pdfService.formatFileSize(file.size)}
-                </p>
+        <div className="space-y-6 animate-slide-up">
+          {/* All Page Previews */}
+          <div className="bg-gray-50/50 dark:bg-gray-900/20 rounded-[2rem] p-6 border border-gray-200/50 dark:border-gray-800/50">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-6">
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <span>📄</span> {file.name}
+                  </h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    {t('split.totalPages')}: {file.info?.pages || 0} • {pdfService.formatFileSize(file.size)}
+                  </p>
+                </div>
 
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleRemoveFile}
-                  className="mt-4 text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
+                <div className="flex items-center gap-2 border-l border-gray-200 dark:border-gray-800 pl-6">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={selectAllSourcePages}
+                    className="text-xs font-semibold hover:bg-ocean-50 dark:hover:bg-ocean-900/20 text-ocean-600"
+                  >
+                    {t('split.selectAll')}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={clearSourcePages}
+                    className="text-xs font-semibold hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500"
+                  >
+                    {t('split.clearSelection')}
+                  </Button>
+                </div>
+              </div>
+
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleRemoveFile}
+                className="rounded-full border-red-200 text-red-500 hover:bg-red-50 hover:text-red-600 dark:border-red-900/30 dark:hover:bg-red-900/20"
+              >
+                {t('split.changeFile')}
+              </Button>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 max-h-[70vh] overflow-y-auto pr-2 custom-scrollbar p-2">
+              {Array.from({ length: file.info?.pages || 0 }).map((_, i) => (
+                <div
+                  key={i + 1}
+                  className="flex flex-col items-center gap-2 group cursor-pointer"
+                  onClick={() => toggleSourcePageSelection(i + 1)}
                 >
-                  {t('split.changeFile')}
-                </Button>
-              </Card>
+                  <div className="relative">
+                    <div className={`absolute -inset-1 bg-gradient-to-br from-ocean-400 to-purple-400 rounded-xl blur-[2px] transition-opacity duration-300 ${selectedSourcePages.has(i + 1) ? 'opacity-40' : 'opacity-0 group-hover:opacity-20'}`}></div>
+                    <div className={`relative transition-all duration-300 ${selectedSourcePages.has(i + 1) ? 'scale-[0.98] -translate-y-0.5' : 'group-hover:-translate-y-1'}`}>
+                      <PDFPreview
+                        file={file.file}
+                        pageNumber={i + 1}
+                        width={140}
+                        height={190}
+                        className={`shadow-sm border transition-all duration-300 ${selectedSourcePages.has(i + 1) ? 'border-ocean-500 ring-2 ring-ocean-500/20 shadow-md' : 'border-gray-100 dark:border-gray-800'}`}
+                      />
+
+                      {/* Checkbox overlay */}
+                      <div className="absolute top-2 left-2 z-10">
+                        <Checkbox
+                          checked={selectedSourcePages.has(i + 1)}
+                          className="bg-white/90 border-gray-300 data-[state=checked]:bg-ocean-500 data-[state=checked]:border-ocean-500 shadow-sm"
+                          onCheckedChange={() => toggleSourcePageSelection(i + 1)}
+                        />
+                      </div>
+
+                      {/* Zoom Button overlay */}
+                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/5 rounded-lg">
+                        <Button
+                          size="icon"
+                          variant="secondary"
+                          className="h-9 w-9 rounded-full shadow-lg bg-white/90 hover:bg-white text-ocean-600"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setZoomSourcePage(i + 1);
+                          }}
+                        >
+                          <span className="text-xl">🔍</span>
+                        </Button>
+                      </div>
+
+                      <div className={`absolute top-2 right-2 flex items-center justify-center min-w-[24px] h-6 px-1.5 text-[10px] font-bold rounded-full shadow-lg ring-2 ring-white dark:ring-gray-900 transition-colors ${selectedSourcePages.has(i + 1) ? 'bg-ocean-500 text-white' : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300'}`}>
+                        {i + 1}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* Mode Selector Tabs */}
-          <div>
-            <Label className="text-lg font-semibold mb-4 block text-center">
-              {t('split.selectMode')}
-            </Label>
-            <Tabs value={splitMode} onValueChange={(v) => setSplitMode(v as SplitMode)} className="w-full">
-              <TabsList className="flex flex-wrap justify-center gap-2 h-auto bg-transparent p-0">
-                {[
-                  { id: 'all', icon: '📄', label: t('split.mode.all.name') },
-                  { id: 'range', icon: '📑', label: t('split.mode.range.name') },
-                  { id: 'intervals', icon: '📚', label: t('split.mode.intervals.name') },
-                  { id: 'custom', icon: '🎯', label: t('split.mode.custom.name') },
-                  { id: 'by-structure', icon: '✨', label: t('split.mode.byStructure.name') },
-                ].map((mode) => (
-                  <TabsTrigger
-                    key={mode.id}
-                    value={mode.id}
-                    disabled={isProcessing}
-                    className={`
-                               flex items-center gap-2 px-6 py-3 rounded-full border transition-all
-                               data-[state=active]:bg-ocean-600 data-[state=active]:text-white data-[state=active]:border-ocean-600 data-[state=active]:shadow-lg
-                               bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300
-                               hover:border-ocean-300 dark:hover:border-ocean-700
-                            `}
-                  >
-                    <span className="text-xl">{mode.icon}</span>
-                    <span className="font-medium">{mode.label}</span>
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-
-              {/* Description of current mode */}
-              <div className="text-center mt-4 text-gray-500 dark:text-gray-400 min-h-[24px]">
-                {splitMode === 'all' && t('split.mode.all.description')}
-                {splitMode === 'range' && t('split.mode.range.description')}
-                {splitMode === 'intervals' && t('split.mode.intervals.description')}
-                {splitMode === 'custom' && t('split.mode.custom.description')}
-                {splitMode === 'by-structure' && t('split.mode.byStructure.description')}
-              </div>
-            </Tabs>
-          </div>
         </div>
       ) : results.length > 0 ? (
         /* Results View */
@@ -1026,7 +1135,7 @@ export const SplitPDF: React.FC = () => {
         </div>
       ) : null}
 
-      {/* Zoom Preview Modal */}
+      {/* Zoom Preview Modal for Results */}
       <Dialog open={!!previewResult} onOpenChange={(open) => !open && setPreviewResult(null)}>
         <DialogContent className="max-w-4xl w-full max-h-[90vh] overflow-y-auto">
           <DialogHeader>
@@ -1056,6 +1165,46 @@ export const SplitPDF: React.FC = () => {
                 variant="outline"
                 className="flex-1"
                 onClick={() => setPreviewResult(null)}
+              >
+                {t('common.close')}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Zoom Modal for Source Pages */}
+      <Dialog open={!!zoomSourcePage} onOpenChange={(open) => !open && setZoomSourcePage(null)}>
+        <DialogContent className="max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {t('split.pagePreview')} {zoomSourcePage}
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="flex flex-col items-center p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
+            {zoomSourcePage && file && (
+              <PDFPreview
+                file={file.file}
+                pageNumber={zoomSourcePage}
+                width={600}
+                height={800}
+                className="shadow-xl"
+              />
+            )}
+
+            <div className="flex gap-4 mt-6 w-full max-w-sm">
+              <Button
+                className="flex-1"
+                onClick={() => zoomSourcePage && toggleSourcePageSelection(zoomSourcePage)}
+                variant={zoomSourcePage && selectedSourcePages.has(zoomSourcePage) ? "outline" : "default"}
+              >
+                {zoomSourcePage && selectedSourcePages.has(zoomSourcePage) ? t('split.deselectPage') : t('split.selectPage')}
+              </Button>
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => setZoomSourcePage(null)}
               >
                 {t('common.close')}
               </Button>

@@ -5,9 +5,9 @@
   },
   "welcome": {
     "securePrefix": "Simple & Sécurisé",
-    "titleSuffix": "",
-    "title": "Le PDF en toute simplicité",
-    "subtitle": "Tous les outils dont vous avez besoin au même endroit. Glissez-déposez un fichier pour opérer la magie.",
+    "title": "Votre",
+    "titleSuffix": "PDF Sanctuary.",
+    "subtitle": "La seule boîte à outils PDF qui fonctionne à 100 % dans votre navigateur. Pas de téléchargements, pas de serveurs, pas de traces. Juste des outils professionnels, optimisés par votre appareil.",
     "firstTimeBanner": "Bienvenue ! Tout le traitement se fait dans votre navigateur - vos fichiers ne quittent jamais votre appareil.",
     "selectTool": "Sélectionnez un outil dans la barre latérale ou choisissez-en un ci-dessous"
   },
@@ -110,8 +110,12 @@
       "description": "Modifier le contenu PDF"
     },
     "extract-images-pdf": {
-      "name": "Extract/Remove Images",
-      "description": "Extract all images from PDF or remove them"
+      "name": "Extraire/Supprimer images",
+      "description": "Extraire toutes les images du PDF ou les supprimer"
+    },
+    "tables-pdf": {
+      "name": "Tableaux en PDF",
+      "description": "Ajouter, modifier et styliser des tableaux dans votre PDF"
     }
   },
   "compress": {
@@ -143,6 +147,10 @@
       "compressedSize": "Taille compressée",
       "saved": "Espace économisé",
       "time": "Temps de traitement"
+    },
+    "optimized": {
+      "title": "Le fichier est déjà optimisé",
+      "description": "Votre PDF est déjà à sa taille minimale possible avec cet outil."
     },
     "quickActions": {
       "title": "Et après ?",
@@ -182,6 +190,7 @@
     "upload": "Télécharger des fichiers",
     "selectFile": "Sélectionner un fichier",
     "uploadFile": "Télécharger le fichier",
+    "supportDeveloper": "Soutenir le développeur",
     "uploadDescription": "Glissez-déposez ou cliquez pour télécharger",
     "download": "Télécharger",
     "processing": "Traitement en cours...",
@@ -228,6 +237,8 @@
     "save": "Enregistrer",
     "show": "Afficher",
     "zoom": "Zoom",
+    "zoomIn": "Agrandir",
+    "zoomOut": "Réduire",
     "addFiles": "Ajouter plus de fichiers",
     "errors": {
       "previewFailed": "Échec du chargement de l'aperçu"
@@ -237,7 +248,7 @@
     "selectFiles": "Sélectionner des fichiers",
     "dragOrClick": "Faites glisser les fichiers ici ou cliquez pour sélectionner",
     "dropHere": "Déposez les fichiers ici",
-    "multipleFilesAllowed": "Prend en charge jusqu'à 10 fichiers .docx",
+    "multipleFilesAllowed": "Prend en charge jusqu'à 10 fichiers",
     "singleFileAllowed": "Un seul fichier",
     "pasteHint": "Ou appuyez sur Ctrl+V pour coller des fichiers",
     "maxFiles": "Fichiers maximum",
@@ -392,20 +403,20 @@
     },
     "description": "Extract all images from a PDF or remove them to reduce file size.",
     "modeExtract": "Extract Images",
-    "modeRemove": "Remove Images",
-    "removeDescription": "Remove images from the PDF to reduce file size. You can preview and select which images to remove.",
-    "extractBtn": "Extract Images",
-    "removeBtn": "Preview Images",
-    "successExtract": "Images extracted successfully!",
-    "successRemove": "Images removed successfully!",
-    "previewTitle": "Extracted Images",
-    "previewTitleRemove": "Select Images to Remove",
-    "previewDescription": "Found {count} images. Select images to download.",
-    "previewDescriptionRemove": "Found {count} images. Select images to remove from PDF.",
-    "selectAll": "Select All",
-    "downloadSelected": "Download ({count})",
-    "removeSelected": "Remove ({count})",
-    "noImagesSelected": "Please select at least one image to download."
+    "modeRemove": "Supprimer les images",
+    "removeDescription": "Supprimez les images du PDF pour réduire la taille du fichier. Vous pouvez prévisualiser et sélectionner les images à supprimer.",
+    "extractBtn": "Extraire les images",
+    "removeBtn": "Analyser les images",
+    "successExtract": "Images extraites avec succès !",
+    "successRemove": "Images supprimées avec succès !",
+    "previewTitle": "Images extraites",
+    "previewTitleRemove": "Sélectionnez les images à supprimer",
+    "previewDescription": "{count} images trouvées. Sélectionnez les images à télécharger.",
+    "previewDescriptionRemove": "{count} images trouvées. Sélectionnez les images à supprimer du PDF.",
+    "selectAll": "Tout sélectionner",
+    "downloadSelected": "Télécharger ({count})",
+    "removeSelected": "Supprimer ({count})",
+    "noImagesSelected": "Veuillez sélectionner au moins une image à télécharger."
   },
   "split": {
     "filePreview": "Fichier à diviser",
@@ -426,6 +437,10 @@
     "selectPagesHint": "Veuillez sélectionner au moins une page",
     "mergingSelected": "Fusion des pages sélectionnées...",
     "mergeFailed": "Échec de la fusion",
+    "clearSelection": "Effacer la sélection",
+    "pagePreview": "Aperçu de la page",
+    "selectPage": "Sélectionner la page",
+    "deselectPage": "Désélectionner la page",
     "mode": {
       "all": {
         "name": "Toutes les pages",
@@ -522,11 +537,11 @@
     },
     "permissions": {
       "printing": "Impression",
-      "printingNone": "Interdit",
-      "printingLow": "Basse résolution",
-      "printingHigh": "Haute résolution",
-      "copying": "Autoriser la copie de texte",
-      "modifying": "Autoriser la modification de contenu",
+      "printingNone": "Aucune",
+      "printingLow": "Basse",
+      "printingHigh": "Haute",
+      "copying": "Copie",
+      "modifying": "Modification",
       "annotating": "Autoriser les annotations",
       "fillingForms": "Autoriser le remplissage de formulaires",
       "contentAccessibility": "Autoriser les lecteurs d'écran"
@@ -579,6 +594,7 @@
     "languageHint": "Sélectionnez la langue du texte",
     "autoDetect": "Détection auto",
     "autoDetectHint": "Langue détectée automatiquement",
+    "detected": "Détecté",
     "detectingLanguage": "Détection de langue...",
     "analyzingContent": "Analyse du contenu...",
     "pageSelection": "Pages à traiter",
@@ -621,15 +637,33 @@
       "lowConfidence": "Basse confiance",
       "verifyLanguage": "Vérifiez la langue pour une meilleure précision"
     },
+    "startOver": "Recommencer",
+    "languages": {
+      "eng": "Anglais",
+      "rus": "Russe",
+      "deu": "Allemand",
+      "fra": "Français",
+      "spa": "Espagnol",
+      "ita": "Italien",
+      "por": "Portugais",
+      "pol": "Polonais",
+      "ukr": "Ukrainien",
+      "bel": "Biélorusse",
+      "nld": "Néerlandais"
+    },
     "outputFormat": {
       "title": "Format de sortie",
       "text": "Texte brut (.txt)",
+      "textShort": "Texte (modifiable)",
       "textDesc": "Texte uniquement, modifiable",
       "searchablePdf": "PDF consultable",
+      "searchablePdfShort": "PDF interrogeable",
       "searchablePdfDesc": "Conserve les images originales avec texte invisible",
       "hocr": "hOCR (.html)",
+      "hocrShort": "hOCR (HTML)",
       "hocrDesc": "HTML avec positions de mots",
       "tsv": "TSV (.tsv)",
+      "tsvShort": "TSV (Données)",
       "tsvDesc": "Valeurs séparées par tabulation"
     },
     "results": {
@@ -638,7 +672,8 @@
       "hocrReady": "Données hOCR prêtes",
       "tsvReady": "Données TSV prêtes",
       "pagesWillProcess": "{count} {pages} seront traitées",
-      "confidenceAndPages": "Confiance : {confidence}% • {count} {pages} traitées"
+      "confidenceAndPages": "Confiance : {confidence}% • {count} {pages} traitées",
+      "successMessage": "Votre document a été traité avec succès. Vous pouvez maintenant télécharger le résultat dans la barre latérale."
     },
     "infoPanel": {
       "searchablePdfTitle": "PDF consultable",
@@ -672,11 +707,17 @@
     }
   },
   "watermark": {
+    "mode": "Mode",
+    "textMode": "Texte",
+    "imageMode": "Image",
+    "chooseImage": "Choisir une image",
     "filePreview": "Fichier pour filigrane",
     "settings": "Paramètres du filigrane",
     "text": "Texte du filigrane",
     "watermarkText": "Texte du filigrane",
     "watermarkPlaceholder": "Entrer texte",
+    "image": "Image",
+    "imageScale": "Échelle de l'image",
     "position": "Position",
     "positions": {
       "diagonal": "Diagonale",
@@ -707,6 +748,7 @@
     "loadingPreview": "Chargement aperçu...",
     "errors": {
       "noText": "Veuillez entrer du texte",
+      "noImage": "Veuillez d'abord sélectionner une image",
       "failed": "Échec de l'ajout",
       "cyrillicNotSupported": "Caractères non supportés"
     },
@@ -873,8 +915,10 @@
       "bottomRight": "Bas Droite",
       "bottomLeft": "Bas Gauche",
       "topRight": "Haut Droite",
-      "topLeft": "Haut Gauche"
+      "topLeft": "Haut Gauche",
+      "custom": "Manuel (Glisser-déposer)"
     },
+    "dragToMove": "Faites glisser pour déplacer",
     "applyToPages": "Appliquer aux pages",
     "allPages": "Toutes les pages",
     "pageNumber": "Page {number}",
@@ -896,6 +940,10 @@
     "provideSignature": "Veuillez fournir une signature",
     "textSize": "Taille texte",
     "signatureSize": "Taille signature",
+    "includeName": "Ajouter le nom imprimé",
+    "namePlaceholder": "Entrer le nom",
+    "printedName": "Nom imprimé",
+    "nameSize": "Taille du nom",
     "addSignature": "Ajouter signature",
     "quickActions": {
       "title": "Et après ?",
@@ -963,29 +1011,29 @@
     "defaultFileName": "document_avec_texte.pdf",
     "title": "Ajouter du texte",
     "toolbar": {
-      "addText": "Add Text",
-      "select": "Select",
+      "addText": "Ajouter du texte",
+      "select": "Sélectionner",
       "page": "Page",
-      "of": "of",
+      "of": "sur",
       "savePdf": "Enregistrer le PDF",
-      "undo": "Undo",
-      "redo": "Redo"
+      "undo": "Annuler",
+      "redo": "Rétablir"
     },
     "format": {
-      "title": "Format Text",
-      "placeholder": "Enter text here...",
-      "textContent": "Text Content",
+      "title": "Formatage du texte",
+      "placeholder": "Saisir le texte ici...",
+      "textContent": "Contenu du texte",
       "fontFamily": "Police",
       "fontSize": "Taille",
       "textColor": "Couleur",
       "position": "Position",
-      "preview": "Preview",
-      "sampleText": "Sample text",
-      "opacity": "Opacity",
+      "preview": "Aperçu",
+      "sampleText": "Texte d'exemple",
+      "opacity": "Opacité",
       "rotation": "Rotation",
-      "bold": "Bold",
-      "italic": "Italic",
-      "delete": "Delete Element",
+      "bold": "Gras",
+      "italic": "Italique",
+      "delete": "Supprimer l'élément",
       "alignment": "Alignement",
       "alignLeft": "Gauche",
       "alignCenter": "Centré",
@@ -1004,7 +1052,49 @@
     "selected": "Sélection : {name} ({type})",
     "zoom": "Zoom : {scale}%",
     "pageOf": "Page {current} sur {total}",
-    "selectFieldToEdit": "Sélectionnez un champ à modifier"
+    "selectFieldToEdit": "Sélectionnez un champ à modifier",
+    "addNewField": "+ Ajouter un nouveau champ",
+    "toolbar": {
+      "addField": "Ajouter un champ :",
+      "addText": "Ajouter un champ texte",
+      "addMultiline": "Ajouter un champ multiligne",
+      "addCheckbox": "Ajouter une case à cocher",
+      "addRadio": "Ajouter un bouton radio",
+      "addDropdown": "Ajouter une liste déroulante",
+      "savePdf": "Enregistrer le PDF"
+    },
+    "panel": {
+      "title": "Propriétés du champ",
+      "deleteField": "Supprimer le champ",
+      "fieldName": "Nom du champ",
+      "xPosition": "Position X",
+      "yPosition": "Position Y",
+      "width": "Largeur",
+      "height": "Hauteur",
+      "defaultValue": "Valeur par défaut",
+      "defaultPlaceholder": "Entrez le texte par défaut...",
+      "maxLength": "Longueur max",
+      "maxLengthPlaceholder": "Pas de limite",
+      "fontSize": "Taille de police",
+      "checkedByDefault": "Coché par défaut",
+      "radioGroup": "Groupe radio",
+      "radioGroupHint": "Les boutons radio avec le même nom de groupe s'excluent mutuellement",
+      "value": "Valeur",
+      "selectedByDefault": "Sélectionné par défaut",
+      "options": "Options (une par ligne)",
+      "allowMultiSelect": "Autoriser la sélection multiple",
+      "requiredField": "Champ obligatoire",
+      "readOnlyField": "Lecture seule",
+      "duplicateField": "Dupliquer le champ",
+      "selectToEdit": "Sélectionnez un champ pour modifier ses propriétés"
+    },
+    "types": {
+      "text": "Texte",
+      "multiline": "Multiligne",
+      "checkbox": "Case à cocher",
+      "radio": "Bouton radio",
+      "dropdown": "Liste déroulante"
+    }
   },
   "editText": {
     "rasterizationWarning": "Note : Les pages éditées seront converties en images.",
@@ -1078,27 +1168,27 @@
     }
   },
   "merge": {
-    "fileList": "Files to merge",
-    "reorderHint": "Drag to reorder",
-    "mergeButton": "Merge PDFs",
-    "mergeAnother": "Merge another",
-    "minFilesHint": "Add at least 2 PDF files to merge",
+    "fileList": "Fichiers à fusionner",
+    "reorderHint": "Faites glisser pour réorganiser",
+    "mergeButton": "Fusionner les PDF",
+    "mergeAnother": "Fusionner un autre",
+    "minFilesHint": "Ajoutez au moins 2 fichiers PDF à fusionner",
     "errors": {
-      "minFiles": "Please select at least 2 PDF files to merge"
+      "minFiles": "Veuillez sélectionner au moins 2 fichiers PDF à fusionner"
     },
     "success": {
-      "title": "PDFs merged successfully!",
-      "pages": "Total pages",
-      "size": "File size",
-      "time": "Processing time"
+      "title": "PDF fusionnés avec succès !",
+      "pages": "Pages totales",
+      "size": "Taille du fichier",
+      "time": "Temps de traitement"
     },
     "quickActions": {
-      "title": "What's next?",
-      "description": "Continue working with your merged PDF using these tools:",
-      "compress": "Reduce file size",
-      "protect": "Add password",
-      "watermark": "Add watermark",
-      "split": "Extract pages"
+      "title": "Et après ?",
+      "description": "Continuez à travailler avec votre PDF fusionné avec ces outils :",
+      "compress": "Réduire la taille",
+      "protect": "Ajouter un mot de passe",
+      "watermark": "Ajouter un filigrane",
+      "split": "Extraire des pages"
     }
   },
   "tables": {

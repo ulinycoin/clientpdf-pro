@@ -37,6 +37,25 @@ const howToSchema = {
   ],
   "totalTime": "PT1M"
 };
+
+const faqs = [
+  {
+    question: "What encryption standard is used?",
+    answer: "We use laboratory-grade **AES-256 bit encryption**, which is the current standard for high-security applications worldwide. Your document is encrypted directly in your browser using the browser's native cryptographic APIs."
+  },
+  {
+    question: "What is the difference between User and Owner passwords?",
+    answer: "The **User Password** (Open Password) is required to view the document. The **Owner Password** (Permissions Password) is required to change security settings or override usage restrictions like printing or copying text."
+  },
+  {
+    question: "Can I recover a forgotten password?",
+    answer: "No. Since LocalPDF processing is entirely local and we do not store your passwords or documents, there is no way for us to recover a forgotten password. Please ensure you keep your passwords secure."
+  },
+  {
+    question: "Are my passwords sent to a server?",
+    answer: "No. Your passwords never leave your browser. They are used locally to generate the encryption keys needed to secure your PDF file in your device's memory."
+  }
+];
 ---
 
 <ToolPage
@@ -82,6 +101,7 @@ const howToSchema = {
     "Configure permissions (optional)",
     "Download your encrypted PDF instantly"
   ]}
+  faqs={faqs}
 >
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />

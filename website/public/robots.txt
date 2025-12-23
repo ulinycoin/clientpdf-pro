@@ -4,6 +4,16 @@
 User-agent: *
 Allow: /
 
+# AI Bots - Explicit Allow for Generative Engine Optimization
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: GoogleBot-Extended
+Allow: /
+
 # Sitemaps
 Sitemap: https://localpdf.online/sitemap-index.xml
 

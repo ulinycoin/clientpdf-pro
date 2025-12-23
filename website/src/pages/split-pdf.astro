@@ -37,6 +37,25 @@ const howToSchema = {
   ],
   "totalTime": "PT1M"
 };
+
+const faqs = [
+  {
+    question: "How can I split a PDF by custom page ranges?",
+    answer: "Select the 'Custom Ranges' mode and enter your desired pages. For example, '1-5, 10, 15-20' will create three separate documents from those specific sections. Everything is calculated instantly in your browser."
+  },
+  {
+    question: "Does splitting a PDF reduce its quality?",
+    answer: "No. LocalPDF uses lossless splitting, meaning it extracts the original pages without re-encoding images or changing text formats. The output files will have the exact same quality as the source."
+  },
+  {
+    question: "How does the AI 'By Structure' splitting work?",
+    answer: "Our smart engine analyzes headings, table of contents, and layout patterns to identify logical chapters and sections. It allows you to split books or long reports into meaningful files without manually checking page numbers."
+  },
+  {
+    question: "Can I split password-protected documents?",
+    answer: "Yes, you can upload protected PDFs. You will be prompted for the password locally in your browser to unlock the file for splitting. We never see or store your passwords."
+  }
+];
 ---
 
 <ToolPage
@@ -87,6 +106,7 @@ const howToSchema = {
     "Select which chapters to split and click \"Split\"",
     "Download individual PDFs with smart filenames or ZIP archive"
   ]}
+  faqs={faqs}
 >
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />

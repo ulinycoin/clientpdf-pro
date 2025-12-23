@@ -1,681 +1,720 @@
 ---
+import Header from '../components/Header.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { CATEGORIES, ICONS } from '../data/tools';
 
-const tools = [
-  { id: 'merge-pdf', name: 'Merge PDF', icon: '📑', desc: 'Combine PDFs' },
-  { id: 'split-pdf', name: 'Split PDF', icon: '✂️', desc: 'Divide pages' },
-  { id: 'compress-pdf', name: 'Compress', icon: '🗜️', desc: 'Reduce size' },
-  { id: 'protect-pdf', name: 'Protect', icon: '🔒', desc: 'Add password' },
-  { id: 'ocr-pdf', name: 'OCR', icon: '🔍', desc: 'Extract text' },
-  { id: 'edit-text-pdf', name: 'Edit Text', icon: '✏️', desc: 'Replace & redact' },
-  { id: 'add-form-fields-pdf', name: 'Form Fields', icon: '📋', desc: 'Create fillable forms' },
-  { id: 'watermark-pdf', name: 'Watermark', icon: '💧', desc: 'Add mark' },
-  { id: 'add-text-pdf', name: 'Add Text', icon: '📝', desc: 'Insert text' },
-  { id: 'rotate-pdf', name: 'Rotate', icon: '🔄', desc: 'Change view' },
-  { id: 'delete-pages-pdf', name: 'Delete Pages', icon: '🗑️', desc: 'Remove pages' },
-  { id: 'extract-pages-pdf', name: 'Extract', icon: '📄', desc: 'Get pages' },
-  { id: 'organize-pdf', name: 'Organize Pages', icon: '📋', desc: 'Reorder & rotate' },
-  { id: 'extract-images-pdf', name: 'Extract/Remove Images', icon: '🖼️', desc: 'Get or delete images' },
-  { id: 'images-to-pdf', name: 'Images to PDF', icon: '🖼️', desc: 'Convert images' },
-  { id: 'pdf-to-images', name: 'PDF to Images', icon: '📸', desc: 'Convert pages' },
-  { id: 'pdf-to-word', name: 'PDF to Word', icon: '📃', desc: 'Convert to DOCX' },
-  { id: 'word-to-pdf', name: 'Word to PDF', icon: '📄', desc: 'Convert from DOCX' },
-  { id: 'sign-pdf', name: 'Sign PDF', icon: '✍️', desc: 'Add signature' },
-  { id: 'flatten-pdf', name: 'Flatten PDF', icon: '📏', desc: 'Merge layers' },
-  { id: 'tables-pdf', name: 'Tables in PDF', icon: '📊', desc: 'Excel/CSV to PDF' },
-];
+// Redesigned Homepage - v2.0 "Private Sanctuary"
+const title = "LocalPDF Sanctuary | 100% Private Online PDF Tools (No Uploads)";
+const metaDescription = "Free premium PDF toolbox. Merge, split, compress, and edit PDFs directly in your browser. 100% client-side processing, no file uploads, privacy-first design.";
+const keywords = "private pdf tools, local pdf processing, no upload pdf editor, free online pdf tools, secure pdf editor, client-side pdf tools, localpdf sanctuary";
 
-// Structured data для SEO
 const structuredData = {
   "@context": "https://schema.org",
-  "@type": "WebApplication",
-  "name": "LocalPDF",
-  "applicationCategory": "UtilityApplication",
+  "@type": "SoftwareApplication",
+  "name": "LocalPDF Sanctuary",
   "operatingSystem": "Any",
+  "applicationCategory": "UtilityApplication",
   "url": "https://localpdf.online",
   "image": "https://localpdf.online/logos/icon-512.png",
+  "softwareVersion": "2.0",
   "offers": {
     "@type": "Offer",
     "price": "0",
     "priceCurrency": "USD",
     "availability": "https://schema.org/InStock"
   },
-  "description": "Free online PDF tools for merging, splitting, compressing, and editing PDFs. 100% client-side processing with complete privacy.",
+  "description": "Premium 100% private online PDF tools. Merge, split, compress, and edit PDFs directly in your browser. No uploads, no servers, privacy by design.",
   "browserRequirements": "Requires JavaScript. Works in Chrome 90+, Firefox 88+, Safari 14+",
   "featureList": [
-    "Merge multiple PDF files",
-    "Split PDF by pages or ranges",
-    "Compress PDF to reduce file size",
-    "Password protect PDFs",
-    "OCR text extraction",
-    "Edit and replace text in PDFs",
-    "Create fillable PDF forms with interactive fields",
-    "Add watermarks and text",
-    "Rotate and edit pages",
-    "Delete and extract pages",
-    "Organize and reorder PDF pages with drag-and-drop",
-    "Extract images from PDF files",
-    "Convert images to PDF",
-    "Convert PDF to images",
-    "Convert PDF to Word and Word to PDF",
-    "Add digital signatures",
-    "Flatten PDF forms and annotations",
-    "Convert Excel and CSV to professional PDF tables"
+    "Merge PDF files locally",
+    "Split PDF ranges instantly",
+    "Compress PDF without quality loss",
+    "AES-256 PDF protection",
+    "On-device OCR extraction",
+    "Visual PDF editing",
+    "Form filling in browser sandbox"
   ]
+};
+
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "LocalPDF Sanctuary",
+  "url": "https://localpdf.online",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://localpdf.online/search?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+};
+
+const faqData = [
+  {
+    question: "Is LocalPDF safe for sensitive documents?",
+    answer: "Yes. LocalPDF processes all documents locally in your browser's RAM using WebAssembly. Your files are never uploaded to any cloud, ensuring complete data sovereignty and protection against breaches."
+  },
+  {
+    question: "How is LocalPDF different from other online PDF editors?",
+    answer: "Most PDF tools upload your files to their servers for processing. LocalPDF works 100% client-side. This means zero upload time, zero latency, and absolute privacy as your data never leaves your machine."
+  },
+  {
+    question: "Does LocalPDF work without an internet connection?",
+    answer: "Yes. Once the LocalPDF application is loaded in your browser, the processing engine runs locally. You can disconnect from the internet and continue editing, merging, or splitting your PDFs securely."
+  },
+  {
+    question: "What technology powers LocalPDF?",
+    answer: "LocalPDF utilizes modern browser technologies including WebAssembly (WASM), Web Workers, and specialized client-side libraries like pdf-lib and Tesseract.js to achieve desktop-grade performance inside a web sandbox."
+  },
+  {
+    question: "Is the service truly free and without watermarks?",
+    answer: "LocalPDF is currently free with no usage limits, no file size caps, and no watermarks. Since we don't have server costs for file processing, we can maintain high-quality tools without charging user fees."
+  }
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faqData.map(item => ({
+    "@type": "Question",
+    "name": item.question,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": item.answer
+    }
+  }))
 };
 ---
 
-<BaseLayout
-  title="LocalPDF — Free Online PDF Tools | Privacy-First PDF Editor"
-  description="Free online PDF tools: merge, split, compress, protect, and edit PDFs in your browser. No uploads, 100% private, instant processing. Works offline."
-  canonical="https://localpdf.online/"
->
-  <!-- Structured Data -->
-  <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+<BaseLayout title={title} description={metaDescription} keywords={keywords}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+    <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+    <style>
+      .hero {
+        position: relative;
+        padding: 60px 7vw 100px;
+        text-align: center;
+        min-height: 80vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+  
+      .hero-glow {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100vw;
+        height: 100vh;
+        background: radial-gradient(circle at 50% 30%, rgba(59, 130, 246, 0.12) 0%, transparent 60%);
+        pointer-events: none;
+        z-index: 0;
+      }
+  
+      .pill-info {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 16px;
+        background: rgba(59, 130, 246, 0.08);
+        border: 1px solid rgba(59, 130, 246, 0.2);
+        border-radius: 99px;
+        font-size: 0.85rem;
+        color: var(--accent-light);
+        margin-bottom: 32px;
+        backdrop-filter: blur(10px);
+        position: relative;
+        z-index: 1;
+      }
+  
+      .dot-live {
+        width: 8px;
+        height: 8px;
+        background: #10B981;
+        border-radius: 50%;
+        box-shadow: 0 0 10px #10B981;
+        animation: pulse 2s infinite;
+      }
+  
+      @keyframes pulse {
+        0% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.4); opacity: 0.4; }
+        100% { transform: scale(1); opacity: 1; }
+      }
+  
+      .hero-h1 {
+        font-family: 'Outfit', sans-serif;
+        font-size: clamp(3rem, 8vw, 5.5rem);
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: -0.02em;
+        margin: 0 0 24px;
+        position: relative;
+        z-index: 1;
+        color: #fff;
+      }
+  
+      .gradient-text {
+        background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+  
+      .hero-p {
+        font-size: clamp(1rem, 2vw, 1.4rem);
+        color: var(--text-muted);
+        max-width: 650px;
+        margin: 0 0 48px;
+        position: relative;
+        z-index: 1;
+      }
+  
+      .btn-main {
+        padding: 18px 48px;
+        background: var(--accent-blue);
+        color: #fff;
+        text-decoration: none;
+        border-radius: 14px;
+        font-weight: 700;
+        font-size: 1.15rem;
+        box-shadow: 0 12px 30px rgba(59, 130, 246, 0.3);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        position: relative;
+        z-index: 1;
+      }
+  
+      .btn-main:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 45px rgba(59, 130, 246, 0.45);
+      }
+  
+      .trust-viz {
+        margin-top: 60px;
+        width: 100%;
+        max-width: 800px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+        z-index: 1;
+      }
+  
+      .node {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        position: relative;
+        z-index: 2;
+      }
+  
+      .node-icon {
+        width: 96px;
+        height: 96px;
+        background: linear-gradient(145deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 2.5rem;
+        box-shadow: 0 20px 40px -10px rgba(0,0,0,0.3);
+        backdrop-filter: blur(20px);
+        transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+  
+      .node:hover .node-icon {
+        transform: translateY(-8px);
+      }
+  
+      .node.special .node-icon {
+        width: 120px;
+        height: 120px;
+        font-size: 3.5rem;
+        background: linear-gradient(145deg, rgba(37, 99, 235, 0.15) 0%, rgba(37, 99, 235, 0.05) 100%);
+        border: 1px solid rgba(96, 165, 250, 0.3);
+        box-shadow: 0 30px 60px -12px rgba(59, 130, 246, 0.4);
+      }
+  
+      .node span {
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: #9CA3AF;
+      }
+  
+      .node.special span {
+        color: #fff;
+        font-weight: 600;
+      }
+  
+      .con-line {
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(90deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.05) 100%);
+        margin: 0 32px;
+        position: relative;
+      }
+  
+      .con-line::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        width: 40%;
+        height: 3px;
+        background: linear-gradient(90deg, transparent, #3B82F6, transparent);
+        transform: translateY(-50%);
+        opacity: 0.6;
+        filter: blur(4px);
+        animation: elegant-flow 4s infinite ease-in-out;
+      }
+  
+      @keyframes elegant-flow {
+        0% { left: 0%; opacity: 0; }
+        20% { opacity: 0.8; }
+        80% { opacity: 0.8; }
+        100% { left: 60%; opacity: 0; }
+      }
+  
+      .tools-section {
+        padding: 100px 7vw;
+      }
+  
+      .tools-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 24px;
+        max-width: 1200px;
+        margin: 64px auto 0;
+      }
+  
+      .tool-group {
+        margin-bottom: 80px;
+      }
+  
+      .group-header {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 40px;
+      }
+  
+      .group-label {
+        padding: 10px 24px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 99px;
+        font-family: 'Outfit', sans-serif;
+        font-size: 1rem;
+        font-weight: 700;
+        color: #fff;
+        backdrop-filter: blur(12px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        white-space: nowrap;
+        letter-spacing: 0.02em;
+      }
+  
+      .group-line {
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0.2) 0%, transparent 100%);
+      }
+  
+      .g-icon {
+        color: var(--accent-light);
+        display: flex;
+        align-items: center;
+        filter: drop-shadow(0 0 4px rgba(59, 130, 246, 0.5));
+      }
+  
+      .tool-card {
+        position: relative;
+        padding: 24px;
+        border-radius: var(--ios-radius);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-top: 1px solid rgba(255, 255, 255, 0.15);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.5s;
+      }
+  
+      .card-glass {
+        position: absolute;
+        inset: 0;
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        z-index: 1;
+        transition: all 0.5s ease;
+        pointer-events: none;
+      }
+  
+      .card-glow {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at center, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+        opacity: 0;
+        z-index: 2;
+        transition: opacity 0.5s ease;
+        pointer-events: none;
+      }
+  
+      .tool-card:hover {
+        transform: scale(1.02);
+        border-color: rgba(255, 255, 255, 0.4);
+      }
+  
+      .tool-card:hover .card-glass {
+        filter: url('#liquid-refraction');
+      }
+  
+      .tool-card:hover .card-glow {
+        opacity: 1;
+      }
+  
+      .t-icon, .t-meta {
+        position: relative;
+        z-index: 3;
+      }
+  
+      .t-icon {
+        font-size: 2.2rem;
+        background: rgba(255, 255, 255, 0.02);
+        padding: 12px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid rgba(255, 255, 255, 0.03);
+        transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+  
+      .tool-card:hover .t-icon {
+        transform: scale(1.1);
+        background: rgba(255, 255, 255, 0.08);
+        border-color: #fff;
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+      }
+  
+      .t-meta h4 { margin: 0 0 4px; font-size: 1.1rem; color: #fff; text-align: left; }
+      .t-meta p { margin: 0; font-size: 0.9rem; color: var(--text-muted); line-height: 1.4; text-align: left; }
+  
+      .seo-glass-section { padding: 0 7vw 100px; position: relative; z-index: 10; }
+  
+      .seo-h2 {
+        font-size: 2rem;
+        font-weight: 800;
+        margin: 0 0 48px;
+        text-align: center;
+        color: #fff;
+        font-family: 'Outfit', sans-serif;
+      }
+  
+      .seo-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 40px;
+        margin-bottom: 64px;
+      }
+  
+      .seo-item {
+        padding: 32px;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        transition: all 0.3s ease;
+      }
+  
+      .seo-item:hover {
+        background: rgba(255, 255, 255, 0.04);
+        border-color: rgba(59, 130, 246, 0.3);
+        transform: translateY(-5px);
+      }
+  
+      .seo-item h3 { font-size: 1.25rem; color: #60A5FA; margin: 0 0 16px; }
+      .seo-item p { color: var(--text-muted); font-size: 1rem; line-height: 1.7; margin: 0; }
+      .seo-item strong { color: #60A5FA; }
+  
+      .faq-section {
+        padding: 0 7vw 100px;
+      }
+  
+      .faq-content {
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+  
+      .faq-h2 {
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 48px;
+        text-align: center;
+        color: #fff;
+        font-family: 'Outfit', sans-serif;
+      }
+  
+      .faq-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 32px;
+      }
+  
+      .faq-item {
+        padding: 32px;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        transition: all 0.3s ease;
+      }
+  
+      .faq-item:hover {
+        background: rgba(255, 255, 255, 0.04);
+        border-color: rgba(59, 130, 246, 0.3);
+      }
+  
+      .faq-q {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #60A5FA;
+        margin: 0 0 16px;
+        line-height: 1.4;
+      }
+  
+      .faq-a {
+        color: var(--text-muted);
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin: 0;
+      }
+  
+      .technical-breakdown {
+        padding: 0 7vw 100px;
+      }
+  
+      .tech-content {
+        max-width: 1000px;
+        margin: 0 auto;
+        text-align: center;
+      }
+  
+      .tech-h2 {
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 48px;
+        color: #fff;
+        font-family: 'Outfit', sans-serif;
+      }
+  
+      .tech-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 32px;
+      }
+  
+      .tech-card {
+        padding: 32px;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        text-align: left;
+        transition: all 0.3s ease;
+      }
+  
+      .tech-card:hover {
+        background: rgba(255, 255, 255, 0.04);
+        border-color: rgba(59, 130, 246, 0.3);
+        transform: translateY(-5px);
+      }
+  
+      .tech-card h4 {
+        font-size: 1.1rem;
+        color: #60A5FA;
+        margin: 0 0 16px;
+      }
+  
+      .tech-card p {
+        color: var(--text-muted);
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin: 0;
+      }
+  
+      @media (max-width: 768px) {
+        .hero-h1 { font-size: 3rem; }
+        .trust-viz { display: none; }
+        .tools-grid { grid-template-columns: 1fr; }
+      }
+    </style>
+  </Fragment>
 
-  <!-- Hero Section - Compact -->
-  <section class="hero">
-    <div class="hero-content">
-      <div class="hero-badge">Free during beta testing</div>
-      <h1 class="hero-title">Privacy-First PDF Tools</h1>
-      <p class="hero-subtitle">
-        Edit PDFs instantly in your browser. No uploads, no accounts, no tracking. Your files never leave your device.
-      </p>
+  <svg style="position: fixed; top: -100%; left: -100%; width: 0; height: 0;">
+    <filter id="liquid-refraction" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="turbulence" baseFrequency="0.003" numOctaves="2" result="noise" seed="2" />
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G" result="distorted" />
+      <feColorMatrix in="distorted" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="red" />
+      <feOffset in="red" dx="0.6" dy="0" result="red_offset" />
+      <feColorMatrix in="distorted" type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="green" />
+      <feColorMatrix in="distorted" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="blue" />
+      <feOffset in="blue" dx="-0.6" dy="0" result="blue_offset" />
+      <feBlend in="red_offset" in2="green" mode="screen" result="rg" />
+      <feBlend in="rg" in2="blue_offset" mode="screen" />
+    </filter>
+  </svg>
 
-      <!-- Key Benefits - Horizontal -->
-      <div class="hero-benefits">
-        <div class="benefit">
-          <span class="benefit-icon">🔒</span>
-          <span class="benefit-text"><strong>100% Private</strong> — Files stay local</span>
-        </div>
-        <div class="benefit">
-          <span class="benefit-icon">⚡</span>
-          <span class="benefit-text"><strong>Instant</strong> — No uploads</span>
-        </div>
-        <div class="benefit">
-          <span class="benefit-icon">🆓</span>
-          <span class="benefit-text"><strong>Free Beta</strong> — No limits</span>
-        </div>
-      </div>
+  <div class="hero">
+    <div class="hero-glow"></div>
+    <div class="pill-info">
+      <span class="dot-live"></span>
+      <span id="pill-text">Secure Browser Sandbox</span>
     </div>
-  </section>
+    
+    <script is:inline>
+      const texts = ["Secure Browser Sandbox", "GDPR Compliant by design", "Works Offline"];
+      let index = 0;
+      const el = document.getElementById('pill-text');
+      if (el) {
+        setInterval(() => {
+          el.style.opacity = '0';
+          el.style.transform = 'translateY(5px)';
+          setTimeout(() => {
+            index = (index + 1) % texts.length;
+            el.textContent = texts[index];
+            el.style.opacity = '1';
+            el.style.transform = 'translateY(0)';
+          }, 300);
+        }, 3000);
+      }
+    </script>
+    
+    <h1 class="hero-h1">
+      Your Private <br/> 
+      <span class="gradient-text">PDF Sanctuary.</span>
+    </h1>
+    
+    <p class="hero-p">
+      The only PDF toolkit that works 100% in your browser. No uploads, no servers, no traces. Just professional tools, powered by your device.
+    </p>
 
-  <!-- Main CTA Button -->
-  <section class="main-cta-section">
-    <a href="/app#" class="main-cta-button">
-      <span class="cta-icon">⚡</span>
-      <div class="cta-content">
-        <span class="cta-title">Open PDF Tools</span>
-        <span class="cta-subtitle">Start editing instantly</span>
-      </div>
-      <span class="cta-arrow">→</span>
+    <a href="/app#" class="btn-main">
+      Launch Studio 🚀
     </a>
+
+    <div class="trust-viz">
+      <div class="node">
+        <div class="node-icon">📄</div>
+        <span>Import</span>
+      </div>
+      <div class="con-line"></div>
+      <div class="node special">
+        <div class="node-icon">🔒</div>
+        <span>Local RAM</span>
+      </div>
+      <div class="con-line"></div>
+      <div class="node">
+        <div class="node-icon">💾</div>
+        <span>Pure Output</span>
+      </div>
+    </div>
+  </div>
+
+  <section class="tools-section">
+    {CATEGORIES.map((category) => (
+      <div class="tool-group">
+        <div class="group-header">
+           <div class="group-label">
+             <span class="g-icon" set:html={ICONS[category.icon]} />
+             {category.name}
+           </div>
+           <div class="group-line"></div>
+        </div>
+        <div class="tools-grid">
+          {category.tools.map((tool) => (
+            <a href={`/${tool.id}`} class="tool-card">
+              <div class="card-glass"></div>
+              <div class="card-glow"></div>
+              <div class="t-icon" set:html={ICONS[tool.icon]} />
+              <div class="t-meta">
+                <h4>{tool.name}</h4>
+                <p>{tool.desc}</p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    ))}
   </section>
 
-  <!-- Tools Grid - Compact -->
-  <section class="tools-section" id="tools">
-    <h2 class="section-title">Choose Your Tool</h2>
-    <div class="tools-grid">
-      {tools.map((tool) => (
-        <a href={`/${tool.id}`} class="tool-card">
-          <span class="tool-icon">{tool.icon}</span>
-          <div class="tool-info">
-            <span class="tool-name">{tool.name}</span>
-            <span class="tool-desc">{tool.desc}</span>
+  <section class="seo-glass-section">
+    <div class="faq-content">
+      <h2 class="seo-h2">Why Choose LocalPDF Sanctuary?</h2>
+      <div class="faq-grid">
+        <div class="seo-item">
+          <h3>Absolute Privacy</h3>
+          <p>Unlike cloud tools, <strong>LocalPDF</strong> never sees your files. Everything is processed in a secure WebAssembly sandbox on your own device.</p>
+        </div>
+        <div class="seo-item">
+          <h3>Unmatched Speed</h3>
+          <p>Zero upload time. Zero download wait. Processing happens at the speed of your local CPU, effectively instant for most documents.</p>
+        </div>
+        <div class="seo-item">
+          <h3>100% Offline</h3>
+          <p>Once loaded, you can disconnect. Perfect for secure environments where data leakage is the primary concern.</p>
+        </div>
+        <div class="seo-item">
+          <h3>GDPR by Design</h3>
+          <p>We don't need to comply because we never collect. No storage, no tracking, no risk of data breaches.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="faq-section">
+    <div class="faq-content">
+      <h2 class="faq-h2">Frequently Asked Questions</h2>
+      <div class="faq-grid">
+        {faqData.map(item => (
+          <div class="faq-item">
+            <h3 class="faq-q">{item.question}</h3>
+            <p class="faq-a">{item.answer}</p>
           </div>
-        </a>
-      ))}
-    </div>
-  </section>
-
-  <!-- Trust Indicators -->
-  <section class="trust-section">
-    <div class="trust-grid">
-      <div class="trust-item">
-        <div class="trust-number">0 KB</div>
-        <div class="trust-label">uploaded to servers</div>
-      </div>
-      <div class="trust-item">
-        <div class="trust-number">&lt;2s</div>
-        <div class="trust-label">average processing time</div>
-      </div>
-      <div class="trust-item">
-        <div class="trust-number">100%</div>
-        <div class="trust-label">client-side processing</div>
+        ))}
       </div>
     </div>
   </section>
 
-  <!-- SEO Content Section - Why Choose LocalPDF -->
-  <article class="seo-content">
-    <h2 class="seo-heading">Why Choose LocalPDF for Your PDF Needs?</h2>
-
-    <p>
-      In an era where data privacy is increasingly under threat, <strong>LocalPDF</strong> stands out as the only truly privacy-first PDF toolkit on the market. Unlike traditional online PDF services like Adobe Acrobat Online, Smallpdf, or iLovePDF—which require uploading your sensitive documents to remote servers—LocalPDF processes everything locally in your web browser. This fundamental architectural difference means your files never leave your device, making it impossible for anyone (including us) to access, scan, or store your data.
-    </p>
-
-    <h3>The Privacy Problem with Cloud-Based PDF Tools</h3>
-    <p>
-      Most online PDF tools follow a simple but concerning workflow: you upload your file to their servers, they process it remotely, and then send the result back. During this process, your document—whether it's a confidential contract, medical record, tax return, or personal letter—passes through systems you don't control. These services may promise to delete files after processing, but there's no way to verify that claim. Worse, many free PDF tools monetize by scanning uploaded documents for keywords to target ads, or sell aggregated data to third parties.
-    </p>
-
-    <p>
-      With <strong>LocalPDF</strong>, this entire risk is eliminated. Since processing happens in your browser using JavaScript and WebAssembly, there are zero network requests during PDF manipulation. Your merge, split, compress, or protect operation runs on your device's CPU, using open-source libraries like pdf-lib and PDF.js. When you close the browser tab, all file data is automatically erased from memory. No servers. No uploads. No traces.
-    </p>
-
-    <h3>Speed That Matches Security</h3>
-    <p>
-      Privacy isn't LocalPDF's only advantage—it's also significantly faster. Cloud-based tools suffer from upload and download bottlenecks. A 50 MB PDF can take 30-60 seconds to upload on typical broadband, plus processing time, plus download time. With LocalPDF, that same file processes in 2-3 seconds because it's already on your device. No network latency. No queues. Just instant results powered by your own hardware.
-    </p>
-
-    <h3>No Artificial Limits or Hidden Costs</h3>
-    <p>
-      Free tiers of competing services often impose frustrating restrictions: 5 MB file size limits, 2 tasks per day, watermarked outputs, or forced account creation. These limitations exist to push users toward paid subscriptions. LocalPDF, currently in beta testing, has no file size caps beyond your browser's memory (typically 2-4 GB), no daily limits, no watermarks, and requires zero registration. While we may introduce premium features in the future, core functionality will always remain free and unrestricted.
-    </p>
-
-    <h3>Works Offline, Respects GDPR</h3>
-    <p>
-      Because LocalPDF runs entirely in your browser, it works offline once loaded—perfect for flights, remote locations, or areas with unreliable internet. For European users, this architecture means automatic GDPR compliance: since we never process personal data, there's no need for consent forms, data processing agreements, or subject access requests. Your right to be forgotten is built into the design—close the tab, and your data is gone.
-    </p>
-
-    <h3>Open-Source Transparency</h3>
-    <p>
-      LocalPDF is built on open-source libraries trusted by millions of developers worldwide. We don't use proprietary "black box" algorithms. Our processing logic is based on pdf-lib (MIT License), PDF.js (Apache 2.0), and Tesseract.js (Apache 2.0). This transparency means security researchers can audit the code, and developers can verify that we're doing exactly what we claim: processing locally, without network calls.
-    </p>
-
-    <div class="seo-cta">
-      <h3>Ready to Experience Privacy-First PDF Tools?</h3>
-      <p>
-        Join thousands of users who've switched to LocalPDF for a safer, faster, and more transparent way to work with PDFs. No registration required. No credit card. Just instant, private processing.
-      </p>
-      <div style="text-align: center; margin-top: 24px;">
-        <a href="#tools" class="cta-link">Explore Our Tools →</a>
+  <section class="technical-breakdown">
+    <div class="tech-content">
+      <h2 class="tech-h2">Technical Architecture: How LocalPDF Works</h2>
+      <div class="tech-grid">
+        <div class="tech-card">
+          <h4>WebAssembly (WASM)</h4>
+          <p>We use high-performance C++ and Rust libraries compiled to WASM. This allows us to handle complex PDF operations like merging, OCR, and compression directly at near-native speeds.</p>
+        </div>
+        <div class="tech-card">
+          <h4>Secure Sandboxing</h4>
+          <p>Each document is processed within a transient Web Worker. Once the worker is terminated, all document data is purged from your browser's RAM, leaving zero digital footprints.</p>
+        </div>
+        <div class="tech-card">
+          <h4>Client-Side OCR</h4>
+          <p>For text recognition, we utilize Tesseract.js, running the entire neural network engine on your local CPU. Your scans never touch a remote server.</p>
+        </div>
       </div>
     </div>
-  </article>
+  </section>
 </BaseLayout>
-
-<style>
-  /* Hero Section - Minimal padding, max info */
-  .hero {
-    max-width: 900px;
-    margin: 0 auto;
-    text-align: center;
-    padding: 32px 7vw 24px;
-  }
-
-  .hero-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-  }
-
-  .hero-badge {
-    display: inline-block;
-    padding: 6px 16px;
-    background: linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%);
-    color: #1E40AF;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    border-radius: 20px;
-    border: 1px solid #93C5FD;
-  }
-
-  .hero-title {
-    font-size: 3rem;
-    font-weight: 700;
-    margin: 0;
-    letter-spacing: -0.02em;
-    color: #0A0A0A;
-    line-height: 1.1;
-  }
-
-  .hero-subtitle {
-    font-size: 1.125rem;
-    color: #404040;
-    line-height: 1.6;
-    max-width: 600px;
-    margin: 0;
-  }
-
-  /* Hero Benefits - Horizontal Pills */
-  .hero-benefits {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-top: 8px;
-  }
-
-  .benefit {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    background: #FAFAFA;
-    border: 1px solid #E5E5E5;
-    border-radius: 24px;
-    font-size: 0.875rem;
-    color: #0A0A0A;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .benefit:hover {
-    border-color: #2563EB;
-    background: #F5F5F5;
-  }
-
-  .benefit-icon {
-    font-size: 1.25rem;
-    line-height: 1;
-  }
-
-  .benefit-text strong {
-    font-weight: 600;
-  }
-
-  /* Main CTA Button - Prominent */
-  .main-cta-section {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 32px 7vw 24px;
-    text-align: center;
-  }
-
-  .main-cta-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 16px;
-    padding: 20px 40px;
-    background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
-    color: #FFFFFF;
-    text-decoration: none;
-    border-radius: 16px;
-    box-shadow:
-      0 4px 6px rgba(0, 0, 0, 0.05),
-      0 20px 60px rgba(37, 99, 235, 0.25);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .main-cta-button::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s;
-  }
-
-  .main-cta-button:hover::before {
-    left: 100%;
-  }
-
-  .main-cta-button:hover {
-    transform: translateY(-4px) scale(1.02);
-    box-shadow:
-      0 8px 12px rgba(0, 0, 0, 0.1),
-      0 24px 80px rgba(37, 99, 235, 0.35);
-  }
-
-  .main-cta-button:active {
-    transform: translateY(-2px) scale(1.01);
-  }
-
-  .cta-icon {
-    font-size: 2rem;
-    line-height: 1;
-    animation: pulse 2s infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% {
-      transform: scale(1);
-    }
-    50% {
-      transform: scale(1.1);
-    }
-  }
-
-  .cta-content {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    text-align: left;
-  }
-
-  .cta-title {
-    font-size: 1.25rem;
-    font-weight: 700;
-    letter-spacing: -0.01em;
-    line-height: 1.2;
-  }
-
-  .cta-subtitle {
-    font-size: 0.875rem;
-    font-weight: 400;
-    opacity: 0.9;
-    line-height: 1.2;
-  }
-
-  .cta-arrow {
-    font-size: 1.5rem;
-    line-height: 1;
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .main-cta-button:hover .cta-arrow {
-    transform: translateX(4px);
-  }
-
-  /* Tools Section - Compact Grid */
-  .tools-section {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 32px 7vw 24px;
-  }
-
-  .section-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-bottom: 20px;
-    text-align: center;
-    color: #0A0A0A;
-    letter-spacing: -0.01em;
-  }
-
-  .tools-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 12px;
-  }
-
-  .tool-card {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 12px;
-    padding: 16px;
-    background: #FAFAFA;
-    border: 1px solid #E5E5E5;
-    border-radius: 8px;
-    text-decoration: none;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .tool-card:hover {
-    border-color: #2563EB;
-    background: #fff;
-    box-shadow:
-      0 1px 3px rgba(0, 0, 0, 0.05),
-      0 10px 40px rgba(37, 99, 235, 0.08);
-    transform: translateY(-2px);
-  }
-
-  .tool-icon {
-    font-size: 2rem;
-    line-height: 1;
-    flex-shrink: 0;
-  }
-
-  .tool-info {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    min-width: 0;
-  }
-
-  .tool-name {
-    font-size: 0.9375rem;
-    font-weight: 600;
-    color: #0A0A0A;
-    line-height: 1.3;
-  }
-
-  .tool-desc {
-    font-size: 0.75rem;
-    color: #737373;
-    line-height: 1.2;
-  }
-
-  /* Trust Section - Stats */
-  .trust-section {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 24px 7vw 48px;
-  }
-
-  .trust-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-    background: linear-gradient(135deg, #FAFAFA 0%, #F5F5F5 100%);
-    border: 1px solid #E5E5E5;
-    border-radius: 12px;
-    padding: 32px 24px;
-  }
-
-  .trust-item {
-    text-align: center;
-  }
-
-  .trust-number {
-    font-size: 2.25rem;
-    font-weight: 700;
-    color: #2563EB;
-    letter-spacing: -0.02em;
-    line-height: 1;
-    margin-bottom: 8px;
-  }
-
-  .trust-label {
-    font-size: 0.8125rem;
-    color: #737373;
-    line-height: 1.4;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    font-weight: 500;
-  }
-
-  /* SEO Content Section */
-  .seo-content {
-    max-width: 900px;
-    margin: 48px auto 64px;
-    padding: 0 7vw;
-  }
-
-  .seo-heading {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #0A0A0A;
-    margin: 0 0 24px 0;
-    letter-spacing: -0.02em;
-    line-height: 1.2;
-    text-align: center;
-  }
-
-  .seo-content h3 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #0A0A0A;
-    margin: 32px 0 16px 0;
-    letter-spacing: -0.01em;
-  }
-
-  .seo-content p {
-    font-size: 1.0625rem;
-    color: #404040;
-    line-height: 1.8;
-    margin: 0 0 20px 0;
-  }
-
-  .seo-content strong {
-    font-weight: 600;
-    color: #0A0A0A;
-  }
-
-  .seo-cta {
-    margin-top: 48px;
-    padding: 32px;
-    background: linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%);
-    border: 1px solid #93C5FD;
-    border-radius: 12px;
-    text-align: center;
-  }
-
-  .seo-cta h3 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #0A0A0A;
-    margin: 0 0 12px 0;
-  }
-
-  .seo-cta p {
-    font-size: 1.0625rem;
-    color: #1E40AF;
-    margin: 0;
-  }
-
-  .cta-link {
-    display: inline-block;
-    padding: 14px 40px;
-    background: #2563EB;
-    color: #fff;
-    font-size: 1rem;
-    font-weight: 600;
-    border-radius: 8px;
-    text-decoration: none;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow:
-      0 1px 3px rgba(0, 0, 0, 0.05),
-      0 10px 40px rgba(37, 99, 235, 0.15);
-  }
-
-  .cta-link:hover {
-    background: #1D4ED8;
-    transform: translateY(-2px);
-    box-shadow:
-      0 4px 6px rgba(0, 0, 0, 0.07),
-      0 12px 48px rgba(37, 99, 235, 0.2);
-  }
-
-  /* Responsive */
-  @media (max-width: 768px) {
-    .hero-title {
-      font-size: 2rem;
-    }
-
-    .hero-subtitle {
-      font-size: 1rem;
-    }
-
-    .hero-benefits {
-      flex-direction: column;
-      align-items: stretch;
-    }
-
-    .benefit {
-      justify-content: center;
-    }
-
-    .main-cta-section {
-      padding: 24px 5vw 20px;
-    }
-
-    .main-cta-button {
-      padding: 16px 28px;
-      gap: 12px;
-      width: 100%;
-      max-width: 400px;
-    }
-
-    .cta-icon {
-      font-size: 1.75rem;
-    }
-
-    .cta-title {
-      font-size: 1.125rem;
-    }
-
-    .cta-subtitle {
-      font-size: 0.8125rem;
-    }
-
-    .cta-arrow {
-      font-size: 1.25rem;
-    }
-
-    .tools-grid {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-    }
-
-    .tool-card {
-      flex-direction: column;
-      text-align: center;
-      padding: 20px 12px;
-    }
-
-    .tool-icon {
-      font-size: 2.5rem;
-    }
-
-    .trust-grid {
-      grid-template-columns: 1fr;
-      gap: 24px;
-      padding: 24px 20px;
-    }
-
-    .trust-number {
-      font-size: 1.875rem;
-    }
-
-    .seo-content {
-      padding: 0 5vw;
-      margin: 32px auto 48px;
-    }
-
-    .seo-heading {
-      font-size: 1.75rem;
-    }
-
-    .seo-content h3 {
-      font-size: 1.25rem;
-    }
-
-    .seo-content p {
-      font-size: 1rem;
-    }
-
-    .seo-cta {
-      padding: 24px 20px;
-    }
-
-    .seo-cta h3 {
-      font-size: 1.25rem;
-    }
-
-    .cta-link {
-      padding: 12px 32px;
-      font-size: 0.9375rem;
-    }
-  }
-
-  @media (min-width: 769px) and (max-width: 1024px) {
-    .tools-grid {
-      grid-template-columns: repeat(3, 1fr);
-    }
-  }
-
-  @media (min-width: 1025px) {
-    .tools-grid {
-      grid-template-columns: repeat(5, 1fr);
-    }
-  }
-</style>

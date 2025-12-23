@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Breadcrumbs from './Breadcrumbs.astro';
 import FAQSchema from './FAQSchema.astro';
+import { ALL_TOOLS, getToolById, getRelatedTools, ICONS } from '../data/tools';
 
 interface Props {
   toolId: string;
@@ -26,37 +27,29 @@ interface Props {
     question: string;
     answer: string;
   }>;
+  techInfo?: Array<{
+    title: string;
+    description: string;
+  }>;
 }
 
-const { toolId, title, description, metaDescription, image, benefits, steps, whyChoose, features, relatedTools, faqs } = Astro.props;
+const { toolId, title, description, metaDescription, image, benefits, steps, whyChoose, features, relatedTools, faqs, techInfo } = Astro.props;
 
 const canonicalURL = `https://localpdf.online/${toolId}`;
 
-// Map toolId to correct hash for app routing
-const toolHashMap: Record<string, string> = {
-  'merge-pdf': 'merge',
-  'split-pdf': 'split',
-  'compress-pdf': 'compress',
-  'protect-pdf': 'protect',
-  'ocr-pdf': 'ocr',
-  'organize-pdf': 'pages',
-  'add-text-pdf': 'add-text',
-  'edit-text-pdf': 'edit-text',
-  'watermark-pdf': 'watermark',
-  'rotate-pdf': 'rotate',
-  'delete-pages-pdf': 'delete-pages',
-  'extract-pages-pdf': 'extract-pages',
-  'unlock-pdf': 'unlock',
-  'images-to-pdf': 'images-to-pdf',
-  'pdf-to-images': 'pdf-to-images',
-  'pdf-to-word': 'pdf-to-word',
-  'word-to-pdf': 'word-to-pdf',
-  'sign-pdf': 'sign',
-  'flatten-pdf': 'flatten',
-  'tables-pdf': 'tables',
-};
+// Get tool data from centralized registry
+const currentTool = getToolById(toolId);
+const appURL = `/app#${currentTool?.hash || toolId}`;
 
-const appURL = `/app#${toolHashMap[toolId] || toolId}`;
+// Smart Related Tools Logic
+const finalRelatedTools = relatedTools && relatedTools.length > 0
+  ? relatedTools
+  : getRelatedTools(toolId, 4).map(t => ({
+      id: t.id,
+      icon: ICONS[t.icon],
+      title: t.name,
+      description: t.desc
+    }));
 
 // Schema.org structured data for SEO
 const structuredData = {
@@ -83,6 +76,34 @@ const structuredData = {
   "image": image || "https://localpdf.online/logos/icon-512.png"
 };
 
+const defaultFaqs = [
+  {
+    question: "Are my files uploaded to a server?",
+    answer: "<strong>Never.</strong> All processing happens 100% locally in your browser. Your files stay on your device, ensuring total privacy and security."
+  },
+  {
+    question: "Is there a limit on file size?",
+    answer: "There are no artificial limits. The only constraint is your device's available memory. Most modern computers and phones can handle large PDF files without issues."
+  },
+  {
+    question: "Does it work on mobile devices?",
+    answer: "Yes! LocalPDF Sanctuary is fully responsive and works on iOS, Android, and tablets through any modern web browser."
+  }
+];
+
+const defaultTechInfo = [
+  {
+    title: "Zero-Knowledge Architecture",
+    description: "Our system is designed so that your data is never seen by anyone else. Processing happens in the browser's secure memory space."
+  },
+  {
+    title: "WebAssembly Performance",
+    description: "We use high-performance WebAssembly modules to achieve desktop-grade PDF processing speeds directly in your web browser."
+  }
+];
+
+const displayedFaqs = faqs && faqs.length > 0 ? faqs : defaultFaqs;
+const displayedTechInfo = techInfo && techInfo.length > 0 ? techInfo : defaultTechInfo;
 ---
 
 <BaseLayout title={title} description={metaDescription} canonical={canonicalURL} image={image}>
@@ -106,561 +127,624 @@ const structuredData = {
     { label: title }
   ]} />
 
-  <!-- Hero Section - Compact -->
+  <!-- Hero Section - Sanctuary Style -->
   <section class="tool-hero">
-    <div class="hero-badge">Free during beta</div>
+    <div class="hero-glow"></div>
+    <div class="hero-badge">
+      <span class="dot-live"></span>
+      Free Sandbox Beta
+    </div>
     <h1 class="tool-title">{title}</h1>
     <p class="tool-desc" set:html={description} />
 
     <!-- Key Benefits Pills -->
     <div class="benefits-pills">
       {benefits.map((benefit) => (
-        <div class="pill">{benefit}</div>
+        <div class="pill">
+          <div class="pill-glass"></div>
+          <span set:html={benefit} />
+        </div>
       ))}
     </div>
 
     <a class="cta-button" href={appURL}>
-      Open Tool →
+      Launch Studio 🚀
     </a>
   </section>
 
-  <!-- Why Choose Section - SEO Content -->
-  {whyChoose && (
-    <section class="why-section">
-      <h2 class="section-heading">{whyChoose.title}</h2>
-      <div class="why-grid">
-        {whyChoose.reasons.map((reason) => {
-          const [title, ...rest] = reason.split(':');
-          const desc = rest.join(':').trim();
+  <!-- Content Container with Rounded Corner aesthetic -->
+  <div class="sanctuary-container">
+    
+    <!-- Why Choose Section -->
+    {whyChoose && (
+      <section class="why-section">
+        <h2 class="section-heading">{whyChoose.title}</h2>
+        <div class="why-grid">
+          {whyChoose.reasons.map((reason) => {
+            const [title, ...rest] = reason.split(':');
+            const desc = rest.join(':').trim();
+            return (
+              <div class="why-card">
+                <div class="card-glass"></div>
+                <div class="card-glow"></div>
+                <div class="card-content">
+                  <h3 class="why-title">{title}</h3>
+                  {desc && <p class="why-desc">{desc}</p>}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+    )}
+
+    <!-- Features Section -->
+    {features && features.length > 0 && (
+      <section class="features-section">
+        <h2 class="section-heading">Key Features</h2>
+        <div class="features-grid">
+          {features.map((feature) => (
+            <div class="feature-item">
+              <span class="check">✓</span>
+              {feature}
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- How It Works Section -->
+    <section class="howto-section">
+      <h2 class="section-heading">How It Works</h2>
+      <div class="steps-grid">
+        {steps.map((step, idx) => {
+          const isObject = typeof step !== 'string';
+          const text = isObject ? step.text : step;
+          const image = isObject ? step.image : null;
+          
           return (
-            <div class="why-card">
-              <h3 class="why-title">{title}</h3>
-              {desc && <p class="why-desc">{desc}</p>}
+            <div class="step-card">
+              <div class="step-num">{idx + 1}</div>
+              <div class="step-meta">
+                <span class="step-text">{text}</span>
+                {image && (
+                  <div class="step-visual">
+                    <img src={image} alt={text} loading="lazy" class="step-image" />
+                  </div>
+                )}
+              </div>
             </div>
           );
         })}
       </div>
+      <div class="privacy-note">
+        <div class="privacy-icon">🔒</div>
+        <p>
+          <strong>100% Private Sandbox:</strong> Your files never leave your device. All processing happens locally in your browser's secure memory.
+        </p>
+      </div>
     </section>
-  )}
 
-  <!-- Features List (Optional) -->
-  {features && features.length > 0 && (
-    <section class="features-section">
-      <h2 class="section-heading">Key Features</h2>
-      <ul class="features-list">
-        {features.map((feature) => (
-          <li>{feature}</li>
-        ))}
-      </ul>
-    </section>
-  )}
+    <!-- FAQ Section -->
+    {displayedFaqs && displayedFaqs.length > 0 && (
+      <section class="faq-section">
+        <div class="faq-content">
+          <h2 class="faq-h2">Frequently Asked Questions</h2>
+          <div class="faq-grid">
+            {displayedFaqs.map(item => (
+              <div class="faq-item">
+                <h3 class="faq-q">{item.question}</h3>
+                <p class="faq-a" set:html={item.answer}></p>
+              </div>
+            ))}
+          </div>
+        </div>
+        <FAQSchema faqs={displayedFaqs} ui={false} />
+      </section>
+    )}
 
-  <!-- How It Works -->
-  <section class="howto-section">
-    <h2 class="section-heading">How It Works</h2>
-    <ol class="steps-list">
-      {steps.map((step) => {
-        const isObject = typeof step !== 'string';
-        const text = isObject ? step.text : step;
-        const image = isObject ? step.image : null;
-        
-        return (
-          <li class="step-item">
-            <div class="step-content">
-              <span class="step-text">{text}</span>
-              {image && (
-                <div class="step-visual">
-                  <img src={image} alt={text} loading="lazy" class="step-image" />
-                </div>
-              )}
-            </div>
-          </li>
-        );
-      })}
-    </ol>
-    <div class="privacy-note">
-      <strong>100% Private:</strong> Your files never leave your device. All processing happens locally in your browser.
-    </div>
-  </section>
+    <!-- Technical Breakdown -->
+    {displayedTechInfo && displayedTechInfo.length > 0 && (
+      <section class="technical-breakdown">
+        <div class="tech-content">
+          <h2 class="tech-h2">Technical Architecture: How it Works</h2>
+          <div class="tech-grid">
+            {displayedTechInfo.map(item => (
+              <div class="tech-card">
+                <h4>{item.title}</h4>
+                <p>{item.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
 
-  <!-- FAQ Section (if provided) -->
-  {faqs && faqs.length > 0 && (
-    <FAQSchema faqs={faqs} />
-  )}
-
-  <!-- Related Tools - Internal Linking -->
-  <section class="related-tools">
-    <h2 class="section-heading">Related PDF Tools</h2>
-    <div class="tools-grid">
-      {relatedTools && relatedTools.length > 0 ? (
-        // Custom related tools if provided
-        relatedTools.map((tool) => (
-          <a href={`/${tool.id}`} class="related-tool-card">
-            <span class="tool-icon">{tool.icon}</span>
-            <div class="tool-info">
-              <strong>{tool.title}</strong>
-              <span>{tool.description}</span>
+    <!-- Related Tools -->
+    <section class="related-tools">
+      <h2 class="section-heading">Related PDF Tools</h2>
+      <div class="tools-grid">
+        {finalRelatedTools.map((tool) => (
+          <a href={`/${tool.id}`} class="tool-card">
+            <div class="card-glass"></div>
+            <div class="card-glow"></div>
+            <span class="t-icon" set:html={tool.icon} />
+            <div class="t-meta">
+              <h4>{tool.title}</h4>
+              <p>{tool.description}</p>
             </div>
           </a>
-        ))
-      ) : (
-        // Default related tools (core 4)
-        <>
-          {toolId !== 'merge-pdf' && (
-            <a href="/merge-pdf" class="related-tool-card">
-              <span class="tool-icon">📑</span>
-              <div class="tool-info">
-                <strong>Merge PDF</strong>
-                <span>Combine multiple PDFs into one</span>
-              </div>
-            </a>
-          )}
-          {toolId !== 'split-pdf' && (
-            <a href="/split-pdf" class="related-tool-card">
-              <span class="tool-icon">✂️</span>
-              <div class="tool-info">
-                <strong>Split PDF</strong>
-                <span>Divide PDF into pages or ranges</span>
-              </div>
-            </a>
-          )}
-          {toolId !== 'compress-pdf' && (
-            <a href="/compress-pdf" class="related-tool-card">
-              <span class="tool-icon">🗜️</span>
-              <div class="tool-info">
-                <strong>Compress PDF</strong>
-                <span>Reduce file size</span>
-              </div>
-            </a>
-          )}
-          {toolId !== 'protect-pdf' && (
-            <a href="/protect-pdf" class="related-tool-card">
-              <span class="tool-icon">🔒</span>
-              <div class="tool-info">
-                <strong>Protect PDF</strong>
-                <span>Add password encryption</span>
-              </div>
-            </a>
-          )}
-        </>
-      )}
-    </div>
-    <div class="view-all-tools">
-      <a href="/" class="view-all-link">View All Tools →</a>
-    </div>
-  </section>
+        ))}
+      </div>
+      <div class="view-all">
+        <a href="/" class="view-all-link">View All Tools →</a>
+      </div>
+    </section>
+  </div>
 </BaseLayout>
 
 <style>
   /* Hero Section */
   .tool-hero {
-    max-width: 800px;
-    margin: 0 auto;
+    padding: 120px 7vw 80px;
     text-align: center;
-    padding: 32px 7vw 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-glow {
+    position: absolute;
+    top: -50%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 140%;
+    height: 200%;
+    background: radial-gradient(circle at 50% 30%, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
   }
 
   .hero-badge {
-    display: inline-block;
-    padding: 6px 16px;
-    background: linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%);
-    color: #1E40AF;
-    font-size: 0.75rem;
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px;
+    background: rgba(59, 130, 246, 0.08);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 99px;
+    font-size: 0.8rem;
     font-weight: 600;
+    color: var(--accent-light);
+    margin-bottom: 24px;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    border-radius: 20px;
-    border: 1px solid #93C5FD;
-    margin-bottom: 20px;
+  }
+
+  .dot-live {
+    width: 8px;
+    height: 8px;
+    background: #10B981;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #10B981;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.4); opacity: 0.4; }
+    100% { transform: scale(1); opacity: 1; }
   }
 
   .tool-title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin: 0 0 16px 0;
-    letter-spacing: -0.02em;
-    color: #0A0A0A;
+    position: relative;
+    z-index: 1;
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: #fff;
     line-height: 1.1;
+    margin-bottom: 20px;
   }
 
   .tool-desc {
+    position: relative;
+    z-index: 1;
+    max-width: 700px;
+    margin: 0 auto 32px;
     font-size: 1.125rem;
-    color: #404040;
+    color: var(--text-muted);
     line-height: 1.6;
-    margin: 0 0 24px 0;
   }
 
-  /* Benefits Pills */
   .benefits-pills {
+    position: relative;
+    z-index: 1;
     display: flex;
-    gap: 10px;
+    gap: 12px;
     flex-wrap: wrap;
     justify-content: center;
-    margin-bottom: 32px;
+    margin-bottom: 40px;
   }
 
   .pill {
-    padding: 8px 16px;
-    background: #F5F5F5;
-    border: 1px solid #E5E5E5;
-    border-radius: 24px;
-    font-size: 0.875rem;
-    color: #0A0A0A;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    padding: 10px 20px;
+    border-radius: 99px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-main);
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.1);
   }
 
-  .pill:hover {
-    border-color: #2563EB;
-    background: #FAFAFA;
+  .pill-glass {
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.03);
+    backdrop-filter: blur(10px);
+    z-index: -1;
   }
 
-  /* CTA Button */
   .cta-button {
+    position: relative;
+    z-index: 1;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 14px 40px;
-    background: #2563EB;
+    gap: 12px;
+    padding: 18px 48px;
+    background: var(--accent-blue);
     color: #fff;
-    font-size: 1rem;
-    font-weight: 600;
-    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border-radius: 14px;
     text-decoration: none;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow:
-      0 1px 3px rgba(0, 0, 0, 0.05),
-      0 10px 40px rgba(37, 99, 235, 0.15);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 12px 30px rgba(59, 130, 246, 0.3);
   }
 
   .cta-button:hover {
-    background: #1D4ED8;
-    transform: translateY(-2px);
-    box-shadow:
-      0 4px 6px rgba(0, 0, 0, 0.07),
-      0 12px 48px rgba(37, 99, 235, 0.2);
+    transform: translateY(-3px);
+    box-shadow: 0 15px 45px rgba(59, 130, 246, 0.45);
   }
 
-  .cta-button:active {
-    transform: translateY(0);
+  /* Sanctuary Content Container */
+  .sanctuary-container {
+    max-width: 1200px;
+    margin: 0 auto 100px;
+    padding: 80px 7vw;
   }
 
-  /* Section Heading */
   .section-heading {
-    font-size: 1.75rem;
-    font-weight: 600;
-    color: #0A0A0A;
-    margin: 0 0 24px 0;
-    letter-spacing: -0.01em;
-  }
-
-  /* Why Choose Section */
-  .why-section {
-    max-width: 1000px;
-    margin: 48px auto;
-    padding: 0 7vw;
-  }
-
-  .why-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
-  }
-
-  .why-card {
-    padding: 24px;
-    background: #FAFAFA;
-    border: 1px solid #E5E5E5;
-    border-radius: 8px;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .why-card:hover {
-    border-color: #2563EB;
-    background: #fff;
-    box-shadow:
-      0 1px 3px rgba(0, 0, 0, 0.05),
-      0 10px 40px rgba(37, 99, 235, 0.08);
-  }
-
-  .why-title {
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: #0A0A0A;
-    margin: 0 0 8px 0;
-    line-height: 1.3;
-  }
-
-  .why-desc {
-    font-size: 0.9375rem;
-    color: #404040;
-    margin: 0;
-    line-height: 1.6;
-  }
-
-  /* Features Section */
-  .features-section {
-    max-width: 800px;
-    margin: 48px auto;
-    padding: 0 7vw;
-  }
-
-  .features-list {
-    margin: 0;
-    padding: 0 0 0 24px;
-    list-style: none;
-  }
-
-  .features-list li {
-    position: relative;
-    padding-left: 12px;
-    margin-bottom: 12px;
-    font-size: 1rem;
-    color: #404040;
-    line-height: 1.6;
-  }
-
-  .features-list li::before {
-    content: "✓";
-    position: absolute;
-    left: -12px;
-    color: #2563EB;
+    font-family: 'Outfit', sans-serif;
+    font-size: 2rem;
     font-weight: 700;
-  }
-
-  /* How It Works Section */
-  .howto-section {
-    max-width: 800px;
-    margin: 48px auto 64px;
-    padding: 0 7vw;
-  }
-
-  .steps-list {
-    margin: 0;
-    padding: 0 0 0 24px;
-    counter-reset: step-counter;
-    list-style: none;
-  }
-
-  .steps-list li {
-    position: relative;
-    padding-left: 16px;
-    margin-bottom: 16px;
-    font-size: 1rem;
-    color: #404040;
-    line-height: 1.6;
-    counter-increment: step-counter;
-  }
-
-  .steps-list li::before {
-    content: counter(step-counter) ".";
-    position: absolute;
-    left: -8px;
-    color: #2563EB;
-    font-weight: 600;
-  }
-
-  .step-content {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .step-text {
-    display: block;
-  }
-
-  .step-visual {
-    max-width: 100%;
-    border-radius: 12px;
-    overflow: hidden;
-    border: 1px solid #E5E5E5;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    background: #fff;
-  }
-
-  .step-image {
-    width: 100%;
-    height: auto;
-    display: block;
-    object-fit: contain;
-  }
-
-  .privacy-note {
-    margin-top: 32px;
-    padding: 20px 24px;
-    background: linear-gradient(135deg, #F5F5F5 0%, #FAFAFA 100%);
-    border: 1px solid #E5E5E5;
-    border-left: 4px solid #2563EB;
-    border-radius: 8px;
-    font-size: 0.9375rem;
-    color: #404040;
-    line-height: 1.6;
-  }
-
-  .privacy-note strong {
-    color: #0A0A0A;
-  }
-
-  /* Related Tools Section */
-  .related-tools {
-    max-width: 1000px;
-    margin: 64px auto 32px;
-    padding: 0 7vw;
-  }
-
-  .related-tools .tools-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 16px;
-    margin-bottom: 32px;
-  }
-
-  .related-tool-card {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 20px;
-    background: #FAFAFA;
-    border: 1px solid #E5E5E5;
-    border-radius: 8px;
-    text-decoration: none;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .related-tool-card:hover {
-    border-color: #2563EB;
-    background: #fff;
-    box-shadow:
-      0 1px 3px rgba(0, 0, 0, 0.05),
-      0 10px 40px rgba(37, 99, 235, 0.08);
-    transform: translateY(-2px);
-  }
-
-  .related-tool-card .tool-icon {
-    font-size: 2.5rem;
-    line-height: 1;
-  }
-
-  .related-tool-card .tool-info {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .related-tool-card .tool-info strong {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #0A0A0A;
-  }
-
-  .related-tool-card .tool-info span {
-    font-size: 0.875rem;
-    color: #737373;
-  }
-
-  .view-all-tools {
+    color: #fff;
+    margin-bottom: 40px;
+    letter-spacing: -0.01em;
     text-align: center;
   }
 
+  /* Why Section Grid */
+  .why-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 32px;
+    margin-bottom: 80px;
+  }
+
+  .why-card {
+    position: relative;
+    padding: 32px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    transition: all 0.3s ease;
+  }
+
+  .why-card:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(59, 130, 246, 0.3);
+    transform: translateY(-5px);
+  }
+
+  .card-content { position: relative; z-index: 2; }
+
+  .why-title { font-size: 1.25rem; font-weight: 600; color: var(--accent-light); margin-bottom: 12px; }
+  .why-desc { font-size: 0.95rem; color: var(--text-muted); line-height: 1.6; }
+
+  /* Features */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 80px;
+  }
+
+  .feature-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.05rem;
+    color: var(--text-main);
+  }
+
+  .feature-item .check {
+    color: var(--accent-light);
+    font-weight: 800;
+  }
+
+  /* How It Works Steps */
+  .steps-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    margin-bottom: 60px;
+  }
+
+  .step-card {
+    display: flex;
+    gap: 32px;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    width: 48px;
+    height: 48px;
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--accent-light);
+    flex-shrink: 0;
+  }
+
+  .step-meta { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+
+  .step-text { font-size: 1.15rem; color: var(--text-main); }
+
+  .step-visual {
+    max-width: 100%;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid var(--glass-border);
+    background: rgba(0,0,0,0.2);
+  }
+
+  .step-image { width: 100%; display: block; filter: brightness(0.9); }
+
+  .privacy-note {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 24px;
+    background: rgba(59, 130, 246, 0.05);
+    border: 1px solid rgba(59, 130, 246, 0.15);
+    border-radius: 20px;
+    font-size: 1rem;
+    color: var(--text-muted);
+  }
+
+  .privacy-icon { font-size: 2rem; }
+
+  /* Related Tools Grid */
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+  }
+
+  .tool-card {
+    position: relative;
+    padding: 24px;
+    border-radius: var(--ios-radius);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.5s;
+  }
+
+  .card-glass {
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 1;
+    transition: all 0.5s ease;
+    pointer-events: none;
+  }
+
+  .card-glow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+    opacity: 0;
+    z-index: 2;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+  }
+
+  .tool-card:hover {
+    transform: scale(1.02);
+    border-color: rgba(255, 255, 255, 0.4);
+  }
+
+  .tool-card:hover .card-glass {
+    filter: url('#liquid-refraction');
+  }
+
+  .tool-card:hover .card-glow {
+    opacity: 1;
+  }
+
+  .t-icon, .t-meta {
+    position: relative;
+    z-index: 3;
+  }
+
+  .t-icon {
+    font-size: 2rem;
+    background: rgba(255, 255, 255, 0.02);
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .tool-card:hover .t-icon {
+    transform: scale(1.1);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: #fff;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+  }
+
+  .t-meta { position: relative; z-index: 2; }
+  .t-meta h4 { font-size: 1.1rem; color: #fff; margin-bottom: 4px; }
+  .t-meta p { font-size: 0.9rem; color: var(--text-muted); }
+
+  .view-all { text-align: center; }
   .view-all-link {
     display: inline-block;
     padding: 12px 32px;
-    background: transparent;
-    border: 2px solid #E5E5E5;
-    border-radius: 8px;
-    color: #0A0A0A;
-    font-size: 1rem;
-    font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    color: var(--text-muted);
     text-decoration: none;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 600;
+    transition: all 0.3s;
   }
 
-  .view-all-link:hover {
-    border-color: #2563EB;
-    color: #2563EB;
-    background: #FAFAFA;
-  }
+  .view-all-link:hover { color: #fff; border-color: #fff; background: rgba(255,255,255,0.05); }
 
   /* Responsive */
-  @media (max-width: 768px) {
-    .tool-hero {
-      padding: 24px 5vw 32px;
-    }
-
-    .tool-title {
-      font-size: 2rem;
-    }
-
-    .tool-desc {
-      font-size: 1rem;
-    }
-
-    .benefits-pills {
-      flex-direction: column;
-      align-items: stretch;
-    }
-
-    .pill {
-      text-align: center;
-    }
-
-    .why-section,
-    .features-section,
-    .howto-section {
-      padding: 0 5vw;
-      margin: 32px auto;
-    }
-
-    .section-heading {
-      font-size: 1.5rem;
-    }
-
-    .why-grid {
-      grid-template-columns: 1fr;
-      gap: 16px;
-    }
+  /* FAQ Section Styles */
+  .faq-section {
+    padding: 80px 0;
   }
-</style>
 
-<style is:global>
-  /* Screenshots Gallery Styles */
-  .screenshots-section {
+  .faq-content {
     max-width: 1000px;
-    margin: 48px auto;
-    padding: 0 7vw;
+    margin: 0 auto;
   }
 
-  .screenshots-grid {
+  .faq-h2 {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 48px;
+    text-align: center;
+    color: #fff;
+    font-family: 'Outfit', sans-serif;
+  }
+
+  .faq-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 24px;
-    margin-top: 24px;
+    gap: 32px;
   }
 
-  .screenshot-item {
-    border-radius: 12px;
-    overflow: hidden;
-    border: 1px solid #E5E5E5;
-    background: #fff;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  .faq-item {
+    padding: 32px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    transition: all 0.3s ease;
   }
 
-  .screenshot-item:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+  .faq-item:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(59, 130, 246, 0.3);
   }
 
-  .screenshot-item img {
-    width: 100%;
-    height: auto;
-    display: block;
-    object-fit: cover;
+  .faq-q {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent-light);
+    margin: 0 0 16px;
+    line-height: 1.4;
+  }
+
+  .faq-a {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* Technical Architecture Styles */
+  .technical-breakdown {
+    padding: 80px 0;
+  }
+
+  .tech-content {
+    max-width: 1000px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .tech-h2 {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 48px;
+    color: #fff;
+    font-family: 'Outfit', sans-serif;
+  }
+
+  .tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 32px;
+  }
+
+  .tech-card {
+    padding: 32px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    text-align: left;
+    transition: all 0.3s ease;
+  }
+
+  .tech-card:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(59, 130, 246, 0.3);
+    transform: translateY(-5px);
+  }
+
+  .tech-card h4 {
+    font-size: 1.1rem;
+    color: var(--accent-light);
+    margin: 0 0 16px;
+  }
+
+  .tech-card p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0;
   }
 
   @media (max-width: 768px) {
-    .screenshots-grid {
-      grid-template-columns: 1fr;
-    }
+    .tool-hero { padding: 100px 5vw 48px; }
+    .tool-title { font-size: 2.25rem; }
+    .sanctuary-container { padding: 48px 5vw; }
+    .step-card { flex-direction: column; gap: 16px; }
   }
 </style>

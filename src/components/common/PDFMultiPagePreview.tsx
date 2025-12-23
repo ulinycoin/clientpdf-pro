@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import * as pdfjsLib from 'pdfjs-dist';
 import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
-import { Button } from '@/components/ui/button';
 
 // Configure worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
 interface PDFMultiPagePreviewProps {
   file: File;
-  maxPages?: number; // Maximum number of pages to show (default: all)
-  pageWidth?: number; // Width of each page preview
+  maxPages?: number;
+  pageWidth?: number;
   onError?: (error: Error) => void;
 }
 
@@ -22,42 +21,41 @@ export const PDFMultiPagePreview: React.FC<PDFMultiPagePreviewProps> = ({
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [pageImages, setPageImages] = useState<string[]>([]);
+  const [renderedCount, setRenderedCount] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
+    let pdfDoc: pdfjsLib.PDFDocumentProxy | null = null;
 
     const renderPages = async () => {
       try {
+        console.log('PDFMultiPagePreview: Starting render for', file.name);
         setIsLoading(true);
         setError(null);
+        setPageImages([]);
+        setRenderedCount(0);
 
-        // Load PDF
         const arrayBuffer = await file.arrayBuffer();
         const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
-        const pdf = await loadingTask.promise;
+        pdfDoc = await loadingTask.promise;
 
         if (!isMounted) return;
 
-        const numPages = pdf.numPages;
+        const numPages = pdfDoc.numPages;
         setTotalPages(numPages);
+        setIsLoading(false); // Show partial results as they come
 
-        // Render pages up to maxPages or all if showAll
-        const pagesToRender = showAll ? numPages : Math.min(numPages, maxPages);
-        const images: string[] = [];
+        const pagesToRender = Math.min(numPages, maxPages);
 
         for (let pageNum = 1; pageNum <= pagesToRender; pageNum++) {
           if (!isMounted) break;
 
-          const page = await pdf.getPage(pageNum);
-
-          // Calculate scale to fit page width
+          const page = await pdfDoc.getPage(pageNum);
           const viewport = page.getViewport({ scale: 1 });
           const scale = pageWidth / viewport.width;
           const scaledViewport = page.getViewport({ scale });
 
-          // Create canvas
           const canvas = document.createElement('canvas');
           const context = canvas.getContext('2d');
           if (!context) continue;
@@ -65,24 +63,25 @@ export const PDFMultiPagePreview: React.FC<PDFMultiPagePreviewProps> = ({
           canvas.width = scaledViewport.width;
           canvas.height = scaledViewport.height;
 
-          // Render page
           await page.render({
             canvasContext: context,
             viewport: scaledViewport,
+            canvas: canvas as HTMLCanvasElement // Add this to satisfy some versions of pdfjs types
           }).promise;
 
-          // Convert to image
-          images.push(canvas.toDataURL('image/png'));
-        }
+          if (isMounted) {
+            const dataUrl = canvas.toDataURL('image/png');
+            setPageImages(prev => [...prev, dataUrl]);
+            setRenderedCount(pageNum);
+          }
 
-        if (isMounted) {
-          setPageImages(images);
-          setIsLoading(false);
+          // Clean up page
+          page.cleanup();
         }
       } catch (err) {
+        console.error('PDFMultiPagePreview error:', err);
         if (isMounted) {
           const error = err instanceof Error ? err : new Error('Failed to render PDF');
-          console.error('PDFMultiPagePreview error:', error);
           setError(error.message);
           setIsLoading(false);
           onError?.(error);
@@ -94,69 +93,75 @@ export const PDFMultiPagePreview: React.FC<PDFMultiPagePreviewProps> = ({
 
     return () => {
       isMounted = false;
+      if (pdfDoc) {
+        pdfDoc.destroy();
+      }
     };
-  }, [file, maxPages, pageWidth, onError, showAll]);
+  }, [file, maxPages, pageWidth, onError]);
 
-  if (isLoading) {
+  if (isLoading && pageImages.length === 0) {
     return (
-      <div className="flex items-center justify-center p-8">
+      <div className="flex items-center justify-center p-12">
         <div className="text-center">
-          <div className="animate-spin w-8 h-8 border-4 border-ocean-500 border-t-transparent rounded-full mx-auto mb-2" />
-          <p className="text-sm text-gray-600 dark:text-gray-400">Loading preview...</p>
+          <div className="animate-spin w-10 h-10 border-4 border-ocean-500 border-t-transparent rounded-full mx-auto mb-4" />
+          <p className="text-sm text-gray-600 dark:text-gray-400 font-medium">Loading document...</p>
         </div>
       </div>
     );
   }
 
-  if (error) {
+  if (error && pageImages.length === 0) {
     return (
-      <div className="flex items-center justify-center p-8">
-        <div className="text-center text-red-600 dark:text-red-400">
-          <p className="text-sm">Failed to load preview</p>
-          <p className="text-xs mt-1 text-gray-500">{error}</p>
+      <div className="flex items-center justify-center p-12 border-2 border-dashed border-red-200 rounded-xl bg-red-50/50">
+        <div className="text-center text-red-600">
+          <p className="font-bold mb-1">Failed to load preview</p>
+          <p className="text-xs opacity-80">{error}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="pdf-multi-page-preview">
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+    <div className="pdf-multi-page-preview space-y-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center">
         {pageImages.map((imageUrl, index) => (
           <div
             key={index}
-            className="relative border-2 border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden hover:border-ocean-500 transition-colors"
+            className="group relative bg-white dark:bg-gray-800 p-2 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md hover:border-ocean-300 transition-all duration-200"
+            style={{ width: pageWidth + 16 }}
           >
-            <img
-              src={imageUrl}
-              alt={`Page ${index + 1}`}
-              className="w-full h-auto"
-            />
-            <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-70 text-white text-xs py-1 px-2 text-center">
+            <div className="relative rounded overflow-hidden bg-gray-100">
+              <img
+                src={imageUrl}
+                alt={`Page ${index + 1}`}
+                className="w-full h-auto block"
+              />
+              <div className="absolute top-2 right-2 bg-black/50 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                {index + 1} / {totalPages}
+              </div>
+            </div>
+            <div className="mt-2 text-center text-[10px] text-gray-400 font-medium">
               Page {index + 1}
             </div>
           </div>
         ))}
+
+        {renderedCount < totalPages && renderedCount < maxPages && (
+          <div
+            className="flex items-center justify-center bg-gray-50 dark:bg-gray-900/50 rounded-xl border-2 border-dashed border-gray-200 dark:border-gray-800 animate-pulse"
+            style={{ width: pageWidth + 16, height: (pageWidth * 1.4) }}
+          >
+            <p className="text-xs text-gray-400">Rendering...</p>
+          </div>
+        )}
       </div>
 
-      {/* Show More Button */}
-      {!showAll && totalPages > maxPages && (
-        <div className="mt-4 text-center">
-          <Button
-            onClick={() => setShowAll(true)}
-            variant="outline"
-            className="text-sm"
-          >
-            Show all {totalPages} pages
-          </Button>
+      {totalPages > maxPages && (
+        <div className="p-4 bg-ocean-50/50 dark:bg-ocean-900/10 rounded-xl border border-ocean-100 dark:border-ocean-900/20 text-center">
+          <p className="text-xs text-ocean-700 dark:text-ocean-300 font-medium">
+            Showing first {maxPages} pages of {totalPages}.
+          </p>
         </div>
-      )}
-
-      {/* Summary */}
-      {totalPages > pageImages.length && !showAll && (
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
-          Showing {pageImages.length} of {totalPages} pages
-        </p>
       )}
     </div>
   );

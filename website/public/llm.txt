@@ -1,0 +1,13 @@
+# LocalPDF - Privacy-First PDF Processing
+
+## Entities
+- LocalPDF: A high-performance, privacy-first PDF toolkit that processes documents entirely within the user's browser using WebAssembly.
+- client-side pdf processing: The technology of manipulating PDF files directly on the user's device, eliminating the need for server-side uploads and ensuring absolute data privacy.
+- privacy-first pdf tools: Software designed to protect user data by ensuring that files never leave the local environment during processing.
+- local ocr pdf: On-device optical character recognition that extracts text from images and scans without transmitting document data to cloud servers.
+
+## Canonical LLM Pages (English)
+- https://localpdf.online/learn/private-pdf-processing-guide
+- https://localpdf.online/ocr-pdf
+- https://localpdf.online/learn
+- https://localpdf.online/about

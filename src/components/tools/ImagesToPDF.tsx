@@ -291,18 +291,28 @@ export const ImagesToPDF: React.FC = () => {
         {/* Page Size */}
         <div>
           <Label>{t('imagesToPdf.pageSize')}</Label>
-          <div className="grid grid-cols-3 gap-2 mt-2">
-            {(['fit', 'a4', 'letter'] as PageSize[]).map((size) => (
-              <Button
-                key={size}
-                onClick={() => setPageSize(size)}
-                variant={pageSize === size ? "default" : "outline"}
-                size="sm"
-                className="w-full"
-              >
-                {t(`imagesToPdf.pageSizes.${size}`)}
-              </Button>
-            ))}
+          <div className="grid grid-cols-1 gap-2 mt-2">
+            <Button
+              onClick={() => setPageSize('fit')}
+              variant={pageSize === 'fit' ? "default" : "outline"}
+              size="sm"
+              className="w-full h-auto py-2 whitespace-normal text-center min-h-[2.25rem]"
+            >
+              {t('imagesToPdf.pageSizes.fit')}
+            </Button>
+            <div className="grid grid-cols-2 gap-2">
+              {(['a4', 'letter'] as PageSize[]).map((size) => (
+                <Button
+                  key={size}
+                  onClick={() => setPageSize(size)}
+                  variant={pageSize === size ? "default" : "outline"}
+                  size="sm"
+                  className="w-full"
+                >
+                  {t(`imagesToPdf.pageSizes.${size}`)}
+                </Button>
+              ))}
+            </div>
           </div>
         </div>
 

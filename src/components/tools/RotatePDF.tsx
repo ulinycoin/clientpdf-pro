@@ -1,103 +1,99 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { ToolLayout } from '@/components/common/ToolLayout';
 import { ProgressBar } from '@/components/common/ProgressBar';
 import { PDFPreview } from '@/components/common/PDFPreview';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge';
 import { useI18n } from '@/hooks/useI18n';
 import { useSharedFile } from '@/hooks/useSharedFile';
 import pdfService from '@/services/pdfService';
 import type { UploadedFile } from '@/types/pdf';
-import { RotateCw, Repeat, FileStack, CheckCircle2 } from 'lucide-react';
+import { RotateCw, Repeat, FileStack, CheckCircle2, Files, Scissors, ZoomIn, ZoomOut, Maximize, Download } from 'lucide-react';
+import { toast } from 'sonner';
 
 type RotationAngle = 90 | 180 | 270;
 type PageSelection = 'all' | 'specific';
 
 export const RotatePDF: React.FC = () => {
   const { t } = useI18n();
-  const { sharedFile, clearSharedFile, setSharedFile } = useSharedFile();
-  const [file, setFile] = useState<UploadedFile | null>(null);
+  const { sharedFiles, clearSharedFiles, setSharedFile } = useSharedFile();
+  const [files, setFiles] = useState<UploadedFile[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [progressMessage, setProgressMessage] = useState('');
-  const [result, setResult] = useState<Blob | null>(null);
-  const [loadedFromShared, setLoadedFromShared] = useState(false);
+  const [results, setResults] = useState<Array<{ blob: Blob; filename: string; pages: number; originalSize: number }>>([]);
+  const [hasLoadedSharedFiles, setHasLoadedSharedFiles] = useState(false);
   const [resultSaved, setResultSaved] = useState(false);
 
   // Rotation settings
   const [rotationAngle, setRotationAngle] = useState<RotationAngle>(90);
   const [pageSelection, setPageSelection] = useState<PageSelection>('all');
   const [specificPages, setSpecificPages] = useState('');
+  const [zoomScale, setZoomScale] = useState(1);
 
-  // Auto-load file from shared state
-  useEffect(() => {
-    if (sharedFile && !file && !result) {
-      const sharedFileObj = new File([sharedFile.blob], sharedFile.name, {
-        type: 'application/pdf',
-      });
+  const handleFilesSelected = useCallback(async (selectedFiles: File[], replaceExisting = false) => {
+    const uploadedFiles: UploadedFile[] = selectedFiles.map((file, index) => ({
+      id: `${Date.now()}-${index}`,
+      file,
+      name: file.name,
+      size: file.size,
+      status: 'pending' as const,
+    }));
 
-      const uploadedFile: UploadedFile = {
-        id: `${Date.now()}`,
-        file: sharedFileObj,
-        name: sharedFile.name,
-        size: sharedFileObj.size,
-        status: 'pending',
-      };
+    setFiles((prev) => replaceExisting ? uploadedFiles : [...prev, ...uploadedFiles]);
+    setResults([]);
+    setResultSaved(false);
 
-      setFile(uploadedFile);
-      setLoadedFromShared(true);
-
-      pdfService.getPDFInfo(sharedFileObj).then((info) => {
-        setFile((prev) => (prev ? { ...prev, info, status: 'completed' } : null));
-      }).catch(() => {
-        setFile((prev) =>
-          prev ? { ...prev, status: 'error', error: 'Failed to read PDF' } : null
+    // Get PDF info for each file
+    for (const uploadedFile of uploadedFiles) {
+      try {
+        const info = await pdfService.getPDFInfo(uploadedFile.file);
+        setFiles((prev) =>
+          prev.map((f) =>
+            f.id === uploadedFile.id ? { ...f, info, status: 'completed' as const } : f
+          )
         );
-      });
-
-      clearSharedFile();
+      } catch {
+        setFiles((prev) =>
+          prev.map((f) =>
+            f.id === uploadedFile.id
+              ? { ...f, status: 'error' as const, error: 'Failed to read PDF' }
+              : f
+          )
+        );
+      }
     }
-  }, [sharedFile, file, result, clearSharedFile]);
+  }, []);
 
-  // Auto-save result to sharedFile when processing is complete
+  // Auto-load shared files from WelcomeScreen or other tools
   useEffect(() => {
-    if (result && !isProcessing && !resultSaved) {
-      const fileName = file?.name.replace(/\.pdf$/i, '_rotated.pdf') || 'rotated.pdf';
-      setSharedFile(result, fileName, 'rotate-pdf');
+    if (sharedFiles && sharedFiles.files.length > 0 && !hasLoadedSharedFiles) {
+      const loadedFiles = sharedFiles.files.map(sf =>
+        new File([sf.blob], sf.name, { type: sf.blob.type })
+      );
+      handleFilesSelected(loadedFiles, true);
+      clearSharedFiles();
+      setHasLoadedSharedFiles(true);
+    }
+  }, [sharedFiles, hasLoadedSharedFiles, clearSharedFiles, handleFilesSelected]);
+
+  // Auto-save first result to sharedFile for quick actions
+  useEffect(() => {
+    if (results.length === 1 && !isProcessing && !resultSaved) {
+      setSharedFile(results[0].blob, results[0].filename, 'rotate-pdf');
       setResultSaved(true);
     }
-  }, [result, isProcessing, resultSaved, file?.name, setSharedFile]);
+  }, [results, isProcessing, resultSaved, setSharedFile]);
 
-  const handleFileSelected = async (selectedFiles: File[]) => {
-    const selectedFile = selectedFiles[0];
-    if (!selectedFile) return;
 
-    const uploadedFile: UploadedFile = {
-      id: `${Date.now()}`,
-      file: selectedFile,
-      name: selectedFile.name,
-      size: selectedFile.size,
-      status: 'pending',
-    };
-
-    setFile(uploadedFile);
-
-    try {
-      const info = await pdfService.getPDFInfo(selectedFile);
-      setFile((prev) => (prev ? { ...prev, info, status: 'completed' } : null));
-    } catch {
-      setFile((prev) =>
-        prev ? { ...prev, status: 'error', error: 'Failed to read PDF' } : null
-      );
+  const handleRemoveFile = (id: string) => {
+    setFiles((prev) => prev.filter((f) => f.id !== id));
+    if (files.length <= 1) {
+      setResults([]);
     }
-  };
-
-  const handleRemoveFile = () => {
-    setFile(null);
-    setResult(null);
-    setResultSaved(false);
   };
 
   const parsePageNumbers = (input: string, maxPages: number): number[] => {
@@ -124,98 +120,127 @@ export const RotatePDF: React.FC = () => {
   };
 
   const handleRotate = async () => {
-    if (!file) return;
+    if (files.length === 0) return;
 
     setIsProcessing(true);
     setProgress(0);
-    setResult(null);
+    setResults([]);
     setResultSaved(false);
 
     try {
-      const maxPages = file.info?.pages || 0;
-      let pagesToRotate: number[] = [];
+      const processedResults = [];
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        if (file.status !== 'completed' || !file.info) continue;
 
-      if (pageSelection === 'all') {
-        pagesToRotate = Array.from({ length: maxPages }, (_, i) => i + 1);
-      } else {
-        pagesToRotate = parsePageNumbers(specificPages, maxPages);
-        if (pagesToRotate.length === 0) {
-          alert(t('rotate.invalidPages'));
-          setIsProcessing(false);
-          return;
+        const maxPages = file.info.pages;
+        let pagesToRotate: number[] = [];
+
+        if (pageSelection === 'all') {
+          pagesToRotate = Array.from({ length: maxPages }, (_, idx) => idx + 1);
+        } else {
+          pagesToRotate = parsePageNumbers(specificPages, maxPages);
+          if (pagesToRotate.length === 0) {
+            toast.error(`${t('rotate.invalidPages')} (${file.name})`);
+            continue;
+          }
+        }
+
+        const rotateResult = await pdfService.rotatePDF(
+          file.file,
+          rotationAngle,
+          pagesToRotate,
+          (prog) => {
+            const overallProgress = (i / files.length) * 100 + (prog / files.length);
+            setProgress(overallProgress);
+            setProgressMessage(`Processing ${file.name}...`);
+          }
+        );
+
+        if (rotateResult.success && rotateResult.data) {
+          processedResults.push({
+            blob: rotateResult.data,
+            filename: file.name.replace(/\.pdf$/i, '_rotated.pdf'),
+            pages: maxPages,
+            originalSize: file.size
+          });
         }
       }
 
-      const rotateResult = await pdfService.rotatePDF(
-        file.file,
-        rotationAngle,
-        pagesToRotate,
-        (prog, msg) => {
-          setProgress(prog);
-          setProgressMessage(msg);
-        }
-      );
-
-      if (rotateResult.success && rotateResult.data) {
-        setResult(rotateResult.data);
+      if (processedResults.length > 0) {
+        setResults(processedResults);
+        toast.success(t('rotate.success'));
       } else {
-        alert(t('rotate.failed'));
+        toast.error(t('rotate.failed'));
       }
     } catch (error) {
-      alert(t('rotate.failed'));
+      toast.error(t('rotate.failed'));
       console.error(error);
     } finally {
       setIsProcessing(false);
+      setProgress(100);
     }
   };
 
   const handleDownload = () => {
-    if (!result || !file) return;
-    const filename = file.name.replace('.pdf', '_rotated.pdf');
-    pdfService.downloadFile(result, filename);
+    if (results.length === 0) return;
+
+    if (results.length === 1) {
+      pdfService.downloadFile(results[0].blob, results[0].filename);
+    } else {
+      setProgress(0);
+      setProgressMessage('Creating ZIP archive...');
+      pdfService.downloadAsZip(
+        results.map(r => ({ blob: r.blob, filename: r.filename })),
+        'rotated_pdfs.zip',
+        (prog) => setProgress(prog)
+      ).then(() => {
+        toast.success('ZIP archive downloaded');
+      }).catch(() => {
+        toast.error('Failed to create ZIP archive');
+      });
+    }
   };
 
   const handleReset = () => {
-    setFile(null);
-    setResult(null);
+    setFiles([]);
+    setResults([]);
     setResultSaved(false);
     setProgress(0);
     setProgressMessage('');
-    setLoadedFromShared(false);
     setSpecificPages('');
+    setHasLoadedSharedFiles(false);
   };
 
 
-
-  const maxPages = file?.info?.pages || 1;
-
   const renderContent = () => {
-    if (!file) return null;
+    if (files.length === 0) return null;
 
-    if (result) {
+    if (results.length > 0) {
       return (
         <div className="space-y-6">
-          <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-2 border-green-200 dark:border-green-800 rounded-2xl p-8">
-            <div className="text-center space-y-4">
-              <div className="w-20 h-20 bg-green-100 dark:bg-green-900/50 rounded-full flex items-center justify-center mx-auto mb-4">
-                <CheckCircle2 className="w-10 h-10 text-green-600 dark:text-green-400" />
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                {t('rotate.success')}
-              </h2>
-              <p className="text-gray-600 dark:text-gray-400">
-                {t('rotate.successDescription')}
-              </p>
+          <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-2 border-green-200 dark:border-green-800 rounded-2xl p-8 text-center">
+            <div className="w-20 h-20 bg-green-100 dark:bg-green-900/50 rounded-full flex items-center justify-center mx-auto mb-4">
+              <CheckCircle2 className="w-10 h-10 text-green-600 dark:text-green-400" />
             </div>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+              {t('rotate.success')}
+            </h2>
+            <p className="text-gray-600 dark:text-gray-400 mt-2">
+              {results.length === 1
+                ? t('rotate.successDescription')
+                : t('split.success.filesCreated', { count: results.length })}
+            </p>
           </div>
 
           <div className="flex gap-3 justify-center">
             <Button
               onClick={handleDownload}
               size="lg"
-              className="bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-xl transition-all"
+              className="bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-xl transition-all gap-2"
             >
-              {t('common.download')}
+              {results.length > 1 ? <FileStack className="w-5 h-5" /> : <Download className="w-5 h-5" />}
+              {results.length > 1 ? t('common.downloadAll') : t('common.download')}
             </Button>
             <Button
               onClick={handleReset}
@@ -231,70 +256,97 @@ export const RotatePDF: React.FC = () => {
 
     return (
       <div className="space-y-6">
-        {/* Auto-loaded indicator */}
-        {loadedFromShared && (
-          <div className="bg-ocean-50 dark:bg-ocean-900/20 border border-ocean-200 dark:border-ocean-800 rounded-lg p-4 animate-in fade-in slide-in-from-top-2">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <span className="text-2xl">✨</span>
-                <div>
-                  <p className="font-medium text-ocean-700 dark:text-ocean-300">
-                    {t('common.autoLoaded')}
-                  </p>
-                  <p className="text-sm text-ocean-600 dark:text-ocean-400">
-                    {t('common.autoLoadedDescription')}
-                  </p>
-                </div>
-              </div>
-              <Button
-                variant="ghost"
-                onClick={handleRemoveFile}
-                className="text-ocean-600 dark:text-ocean-400 hover:text-ocean-800 dark:hover:text-ocean-200 font-semibold text-sm"
-              >
-                ✕ {t('common.close')}
-              </Button>
-            </div>
-          </div>
-        )}
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
+          {files.map((file, index) => (
+            <div key={file.id} className="relative group">
+              <Card className="p-4 hover:shadow-medium transition-all duration-200 relative h-full border-transparent hover:border-ocean-200 dark:hover:border-ocean-800 bg-white dark:bg-privacy-800">
+                <div className="mb-4 flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-900 rounded-lg p-4 relative overflow-hidden group/preview">
+                  <PDFPreview
+                    file={file.file}
+                    width={180 * zoomScale}
+                    height={240 * zoomScale}
+                    className="transition-transform duration-200"
+                  />
 
-        {/* File Preview Card */}
-        <Card className="overflow-hidden border-ocean-100 dark:border-gray-700">
-          <CardContent className="p-6">
-            <div className="flex items-start gap-6">
-              <div className="flex-shrink-0 relative group">
-                <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg" />
-                <PDFPreview file={file.file} width={160} height={220} />
-              </div>
-              <div className="flex-1 space-y-4">
-                <div>
-                  <h3 className="font-semibold text-lg text-gray-900 dark:text-white mb-1">
-                    {file.name}
-                  </h3>
-                  <div className="flex flex-wrap gap-3 text-sm text-gray-500 dark:text-gray-400">
-                    <span className="flex items-center gap-1">
-                      <FileStack className="w-4 h-4" />
-                      {file.info?.pages || 0} {t('common.pages')}
-                    </span>
-                    <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600 self-center" />
-                    <span>{pdfService.formatFileSize(file.size)}</span>
+                  {/* Zoom Controls Overlay */}
+                  <div className="absolute bottom-2 right-2 flex gap-1 opacity-0 group-hover/preview:opacity-100 transition-opacity bg-white/90 dark:bg-black/50 rounded-lg p-1 backdrop-blur-sm shadow-sm border border-gray-200 dark:border-gray-700">
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="h-7 w-7"
+                      onClick={() => setZoomScale(prev => Math.max(0.5, prev - 0.25))}
+                      title={t('common.zoomOut')}
+                    >
+                      <ZoomOut className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="h-7 w-7"
+                      onClick={() => setZoomScale(1)}
+                      title={t('common.reset')}
+                    >
+                      <Maximize className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="h-7 w-7"
+                      onClick={() => setZoomScale(prev => Math.min(2, prev + 0.25))}
+                      title={t('common.zoomIn')}
+                    >
+                      <ZoomIn className="h-4 w-4" />
+                    </Button>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleRemoveFile}
-                    disabled={isProcessing}
-                    className="text-error-500 hover:text-error-600 hover:bg-error-50 dark:hover:bg-error-900/20"
-                  >
-                    {t('common.changeFile')}
-                  </Button>
+                <div className="space-y-3 font-private">
+                  <div className="flex items-center justify-between">
+                    <Badge variant="secondary" className="w-8 h-8 p-0 flex items-center justify-center bg-white dark:bg-gray-700 shadow-sm text-sm">
+                      {index + 1}
+                    </Badge>
+                    {file.info && (
+                      <span className="text-xs text-ocean-500 font-medium">{file.info.pages} {t('common.pages')}</span>
+                    )}
+                  </div>
+                  <p className="text-sm font-medium truncate text-gray-900 dark:text-gray-100" title={file.name}>
+                    {file.name}
+                  </p>
                 </div>
-              </div>
+
+                {!isProcessing && (
+                  <div className="absolute top-2 right-2 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity bg-white/90 dark:bg-black/50 rounded-lg p-1 backdrop-blur-sm shadow-sm">
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="h-6 w-6 text-red-500 hover:text-red-600"
+                      onClick={() => handleRemoveFile(file.id)}
+                    >
+                      <Scissors className="h-3 w-3" />
+                    </Button>
+                  </div>
+                )}
+              </Card>
             </div>
-          </CardContent>
-        </Card>
+          ))}
+
+          {/* Add More Button */}
+          <div className="h-full min-h-[280px]">
+            <label className="cursor-pointer h-full border-2 border-dashed border-gray-200 dark:border-privacy-700 hover:border-ocean-400 dark:hover:border-ocean-500 rounded-xl flex flex-col items-center justify-center p-4 transition-all hover:bg-ocean-50/50 dark:hover:bg-ocean-900/10 group">
+              <input
+                type="file"
+                multiple
+                accept=".pdf"
+                className="hidden"
+                onChange={(e) => e.target.files && handleFilesSelected(Array.from(e.target.files), false)}
+              />
+              <div className="w-12 h-12 rounded-full bg-ocean-100 dark:bg-ocean-900/50 flex items-center justify-center mb-2 text-ocean-600 dark:text-ocean-400 text-2xl group-hover:scale-110 transition-transform">
+                <Files className="h-6 w-6" />
+              </div>
+              <span className="text-sm font-medium text-gray-600 dark:text-gray-400">{t('common.addFiles')}</span>
+            </label>
+          </div>
+        </div>
 
         {isProcessing && (
           <div className="mt-8">
@@ -404,7 +456,7 @@ export const RotatePDF: React.FC = () => {
               className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700"
             />
             <p className="text-xs text-gray-500 mt-2">
-              {t('rotate.pageNumbersHint', { total: String(maxPages) })}
+              {t('rotate.pageNumbersHint', { total: files.length === 1 ? String(files[0].info?.pages || 1) : '?' })}
             </p>
           </div>
         )}
@@ -416,13 +468,14 @@ export const RotatePDF: React.FC = () => {
     return (
       <Button
         onClick={handleRotate}
-        disabled={isProcessing || !file}
+        disabled={isProcessing || files.length === 0}
         className="w-full py-6 text-lg rounded-xl font-bold shadow-lg hover:shadow-xl transition-all"
       >
         {isProcessing ? t('common.processing') : (
           <span className="flex items-center gap-2">
             <RotateCw className="w-5 h-5" />
             {t('rotate.rotateButton')}
+            {files.length > 1 && ` (${files.length} ${t('common.pages')})`}
           </span>
         )}
       </Button>
@@ -433,14 +486,14 @@ export const RotatePDF: React.FC = () => {
     <ToolLayout
       title={t('tools.rotate-pdf.name')}
       description={t('tools.rotate-pdf.description')}
-      hasFiles={!!file}
-      onUpload={handleFileSelected}
+      hasFiles={files.length > 0}
+      onUpload={(newFiles) => handleFilesSelected(newFiles, false)}
       isProcessing={isProcessing}
-      maxFiles={1}
-      uploadTitle={t('common.selectFile')}
-      uploadDescription={t('upload.singleFileAllowed')}
-      settings={!result ? renderSettings() : null}
-      actions={!result ? renderActions() : null}
+      maxFiles={10}
+      uploadTitle={t('common.selectFiles')}
+      uploadDescription={t('upload.multipleFilesAllowed')}
+      settings={results.length === 0 ? renderSettings() : null}
+      actions={results.length === 0 ? renderActions() : null}
     >
       {renderContent()}
     </ToolLayout>

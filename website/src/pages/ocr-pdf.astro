@@ -49,6 +49,25 @@ const howToSchema = {
   ],
   "totalTime": "PT3M"
 };
+
+const faqs = [
+  {
+    question: "How accurate is the OCR text recognition?",
+    answer: "Our tool uses the latest Tesseract.js engine, which provides high accuracy for standard fonts and clear scans. Accuracy depends on the image resolution and clarity. We recommend scanning at 300 DPI for best results."
+  },
+  {
+    question: "Which languages are supported?",
+    answer: "We support over 45 languages, including English, Russian, Spanish, French, German, Chinese, Japanese, and many others. Our system can also automatically detect the dominant language of your document."
+  },
+  {
+    question: "Is the OCR processing private?",
+    answer: "Yes. Unlike most online OCR tools, our processing happens entirely in your browser using Web Workers. Your documents are never sent to a server, making it ideal for processing confidential data."
+  },
+  {
+    question: "What is a 'Searchable PDF'?",
+    answer: "A searchable PDF contains an invisible layer of text placed exactly over the original scanned image. This allows you to search, highlight, and copy text while keeping the document's original visual appearance."
+  }
+];
 ---
 
 <ToolPage
@@ -103,6 +122,7 @@ const howToSchema = {
     "Review and edit extracted text if needed",
     "Download in your chosen format"
   ]}
+  faqs={faqs}
 >
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />

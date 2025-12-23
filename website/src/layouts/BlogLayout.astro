@@ -44,9 +44,9 @@ const formattedDate = pubDate.toLocaleDateString('en-US', {
 });
 
 const difficultyColors = {
-  beginner: 'bg-green-100 text-green-800',
-  intermediate: 'bg-yellow-100 text-yellow-800',
-  advanced: 'bg-red-100 text-red-800'
+  beginner: 'bg-green-900/30 text-green-400 border-green-800/50',
+  intermediate: 'bg-yellow-900/30 text-yellow-400 border-yellow-800/50',
+  advanced: 'bg-red-900/30 text-red-400 border-red-800/50'
 };
 
 const toolNames: Record<string, string> = {
@@ -155,12 +155,12 @@ const toolNames: Record<string, string> = {
 
   <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 blog-article">
     <!-- Breadcrumbs -->
-    <nav class="mb-8 text-sm text-gray-600" style="margin-left: 0; padding-left: 0;">
-      <a href="/" class="hover:text-blue-600 transition-colors">Home</a>
-      <span class="mx-2">/</span>
-      <a href="/blog" class="hover:text-blue-600 transition-colors">Blog</a>
-      <span class="mx-2">/</span>
-      <span class="text-gray-900">{title}</span>
+    <nav class="mb-8 text-sm" style="margin-left: 0; padding-left: 0;">
+      <a href="/" class="text-muted hover:text-accent-light transition-colors">Home</a>
+      <span class="mx-2 text-muted">/</span>
+      <a href="/blog" class="text-muted hover:text-accent-light transition-colors">Blog</a>
+      <span class="mx-2 text-muted">/</span>
+      <span class="text-main">{title}</span>
     </nav>
 
     <!-- Article Header -->
@@ -178,25 +178,25 @@ const toolNames: Record<string, string> = {
       )}
 
       <div class="flex flex-wrap gap-2 mb-4">
-        <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
+        <span class="px-3 py-1 bg-glass border border-glass-border text-accent-light rounded-full text-sm font-medium">
           {category}
         </span>
         {difficulty && (
-          <span class={`px-3 py-1 rounded-full text-sm font-medium ${difficultyColors[difficulty]}`}>
+          <span class={`px-3 py-1 border rounded-full text-sm font-medium ${difficultyColors[difficulty]}`}>
             {difficulty.charAt(0).toUpperCase() + difficulty.slice(1)}
           </span>
         )}
       </div>
 
-      <h1 class="text-4xl sm:text-5xl font-bold text-gray-900 mb-4 leading-tight">
+      <h1 class="text-4xl sm:text-5xl font-bold text-main mb-4 leading-tight">
         {title}
       </h1>
 
-      <p class="text-xl text-gray-600 mb-6">
+      <p class="text-xl text-muted mb-6">
         {description}
       </p>
 
-      <div class="flex flex-wrap items-center gap-4 text-sm text-gray-600">
+      <div class="flex flex-wrap items-center gap-4 text-sm text-muted">
         <time datetime={pubDate.toISOString()}>
           {formattedDate}
         </time>
@@ -215,7 +215,7 @@ const toolNames: Record<string, string> = {
         {tags.map(tag => (
           <a
             href={`/blog?tag=${encodeURIComponent(tag)}`}
-            class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-gray-200 transition-colors"
+            class="px-3 py-1 bg-glass border border-glass-border text-muted rounded-full text-sm hover:bg-glass-heavy transition-colors"
           >
             #{tag}
           </a>
@@ -235,18 +235,18 @@ const toolNames: Record<string, string> = {
 
     <!-- Related Tools -->
     {relatedTools && relatedTools.length > 0 && (
-      <aside class="related-tools mt-12 p-6 bg-blue-50 rounded-xl">
-        <h2 class="text-2xl font-bold text-gray-900 mb-4">Related Tools</h2>
+      <aside class="related-tools mt-12 p-6 bg-glass border border-glass-border rounded-xl">
+        <h2 class="text-2xl font-bold text-main mb-4">Related Tools</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {relatedTools.map(tool => (
             <a
               href={`/${tool}`}
-              class="flex items-center gap-3 p-4 bg-white rounded-lg hover:shadow-md transition-shadow"
+              class="flex items-center gap-3 p-4 bg-glass border border-glass-border rounded-lg hover:border-accent-light transition-all"
             >
-              <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-6 h-6 text-accent-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
-              <span class="font-medium text-gray-900">{toolNames[tool] || tool}</span>
+              <span class="font-medium text-main">{toolNames[tool] || tool}</span>
             </a>
           ))}
         </div>
@@ -254,17 +254,17 @@ const toolNames: Record<string, string> = {
     )}
 
     <!-- Social Share -->
-    <div class="social-share mt-12 pt-8 border-t border-gray-200">
-      <h3 class="text-lg font-semibold text-gray-900 mb-4">Share this article</h3>
+    <div class="social-share mt-12 pt-8 border-t border-glass-border">
+      <h3 class="text-lg font-semibold text-main mb-4">Share this article</h3>
       <div class="flex gap-4">
         <a
           href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(`https://localpdf.online${Astro.url.pathname}`)}`}
           target="_blank"
           rel="noopener noreferrer"
-          class="p-3 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+          class="p-3 bg-glass border border-glass-border rounded-lg hover:bg-glass-heavy transition-colors"
           aria-label="Share on Twitter"
         >
-          <svg class="w-6 h-6 text-gray-700" fill="currentColor" viewBox="0 0 24 24">
+          <svg class="w-6 h-6 text-muted" fill="currentColor" viewBox="0 0 24 24">
             <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/>
           </svg>
         </a>
@@ -272,10 +272,10 @@ const toolNames: Record<string, string> = {
           href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`https://localpdf.online${Astro.url.pathname}`)}`}
           target="_blank"
           rel="noopener noreferrer"
-          class="p-3 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+          class="p-3 bg-glass border border-glass-border rounded-lg hover:bg-glass-heavy transition-colors"
           aria-label="Share on Facebook"
         >
-          <svg class="w-6 h-6 text-gray-700" fill="currentColor" viewBox="0 0 24 24">
+          <svg class="w-6 h-6 text-muted" fill="currentColor" viewBox="0 0 24 24">
             <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
           </svg>
         </a>
@@ -283,10 +283,10 @@ const toolNames: Record<string, string> = {
           href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(`https://localpdf.online${Astro.url.pathname}`)}&title=${encodeURIComponent(title)}`}
           target="_blank"
           rel="noopener noreferrer"
-          class="p-3 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+          class="p-3 bg-glass border border-glass-border rounded-lg hover:bg-glass-heavy transition-colors"
           aria-label="Share on LinkedIn"
         >
-          <svg class="w-6 h-6 text-gray-700" fill="currentColor" viewBox="0 0 24 24">
+          <svg class="w-6 h-6 text-muted" fill="currentColor" viewBox="0 0 24 24">
             <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
           </svg>
         </a>
@@ -296,6 +296,13 @@ const toolNames: Record<string, string> = {
 </BaseLayout>
 
 <style>
+  .text-main { color: var(--text-main); }
+  .text-muted { color: var(--text-muted); }
+  .bg-glass { background: var(--glass-bg); backdrop-filter: var(--ios-blur); }
+  .bg-glass-heavy { background: rgba(255, 255, 255, 0.05); }
+  .border-glass-border { border-color: var(--glass-border); }
+  .text-accent-light { color: var(--accent-light); }
+
   /* Ensure content is not hidden under sticky header */
   .blog-article {
     padding-top: 2rem !important;
@@ -318,93 +325,42 @@ const toolNames: Record<string, string> = {
     margin-bottom: 2rem !important;
   }
 
-  .cover-image-wrapper img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  article header h1,
-  article header p,
-  article .blog-content {
-    clear: both;
-    display: block;
-    width: 100%;
-    position: relative;
-    z-index: 1;
-  }
-
-  /* Ensure title and description don't overlap content */
-  article header.article-header h1 {
-    margin-bottom: 1rem !important;
-  }
-
-  article header.article-header > p {
-    margin-bottom: 1.5rem !important;
-  }
-
   /* Blog content styling */
   .blog-content {
-    color: #262626;
+    color: var(--text-main);
     font-size: 1.125rem;
     line-height: 1.75;
     margin-top: 3rem !important;
     clear: both;
   }
 
-  .blog-content :global(h1) {
-    font-size: 2.25rem;
-    font-weight: 800;
-    margin-top: 3rem;
-    margin-bottom: 1.5rem;
-    line-height: 1.2;
-    color: #0a0a0a;
-  }
-
-  .blog-content :global(h2) {
-    font-size: 1.875rem;
-    font-weight: 700;
-    margin-top: 2.5rem;
-    margin-bottom: 1rem;
-    line-height: 1.3;
-    color: #0a0a0a;
-  }
-
-  .blog-content :global(h3) {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-top: 2rem;
-    margin-bottom: 0.75rem;
-    line-height: 1.4;
-    color: #171717;
-  }
-
+  .blog-content :global(h1),
+  .blog-content :global(h2),
+  .blog-content :global(h3),
   .blog-content :global(h4) {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-top: 1.5rem;
-    margin-bottom: 0.5rem;
-    color: #171717;
+    font-family: 'Outfit', sans-serif;
+    color: #fff;
+    line-height: 1.2;
+    margin-top: 2.5rem;
+    margin-bottom: 1.25rem;
   }
+
+  .blog-content :global(h1) { font-size: 2.5rem; font-weight: 800; }
+  .blog-content :global(h2) { font-size: 2rem; font-weight: 700; }
+  .blog-content :global(h3) { font-size: 1.6rem; font-weight: 600; }
+  .blog-content :global(h4) { font-size: 1.3rem; font-weight: 600; }
 
   .blog-content :global(p) {
     margin-bottom: 1.5rem;
-    color: #404040;
+    color: var(--text-main);
+    opacity: 0.9;
   }
 
   .blog-content :global(ul),
   .blog-content :global(ol) {
     margin-bottom: 1.5rem;
     margin-left: 1.5rem;
-  }
-
-  .blog-content :global(ul) {
-    list-style-type: disc;
-  }
-
-  .blog-content :global(ol) {
-    list-style-type: decimal;
+    color: var(--text-main);
   }
 
   .blog-content :global(li) {
@@ -413,90 +369,67 @@ const toolNames: Record<string, string> = {
   }
 
   .blog-content :global(a) {
-    color: #2563eb;
-    text-decoration: none;
-    font-weight: 500;
-    transition: color 0.2s;
+    color: var(--accent-light);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    transition: opacity 0.2s;
   }
 
   .blog-content :global(a:hover) {
-    color: #1d4ed8;
-    text-decoration: underline;
+    opacity: 0.8;
   }
 
   .blog-content :global(strong) {
     font-weight: 700;
-    color: #0a0a0a;
-  }
-
-  .blog-content :global(em) {
-    font-style: italic;
+    color: #fff;
   }
 
   .blog-content :global(code) {
-    background: #f5f5f5;
-    padding: 0.125rem 0.375rem;
-    border-radius: 0.25rem;
-    font-size: 0.875em;
-    font-family: 'Monaco', 'Courier New', monospace;
-    color: #dc2626;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    padding: 0.2rem 0.4rem;
+    border-radius: 6px;
+    font-size: 0.9em;
+    color: var(--accent-light);
   }
 
   .blog-content :global(pre) {
-    background: #1e1e1e;
-    color: #d4d4d4;
+    background: #000;
+    border: 1px solid var(--glass-border);
     padding: 1.5rem;
-    border-radius: 0.5rem;
-    overflow-x: auto;
-    margin-bottom: 1.5rem;
-  }
-
-  .blog-content :global(pre code) {
-    background: transparent;
-    padding: 0;
-    color: inherit;
-    font-size: 0.875rem;
-  }
-
-  .blog-content :global(blockquote) {
-    border-left: 4px solid #2563eb;
-    padding-left: 1.5rem;
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-    font-style: italic;
-    color: #525252;
-    background: #f9fafb;
-    margin: 1.5rem 0;
-  }
-
-  .blog-content :global(img) {
-    max-width: 100%;
-    height: auto;
-    border-radius: 0.5rem;
+    border-radius: 12px;
     margin: 2rem 0;
   }
 
-  .blog-content :global(hr) {
-    border: none;
-    border-top: 1px solid #e5e7eb;
-    margin: 3rem 0;
+  .blog-content :global(blockquote) {
+    border-left: 4px solid var(--accent-blue);
+    background: rgba(59, 130, 246, 0.05);
+    padding: 1.5rem;
+    border-radius: 0 12px 12px 0;
+    font-style: italic;
+    color: var(--text-main);
+    margin: 2rem 0;
   }
 
   .blog-content :global(table) {
     width: 100%;
     border-collapse: collapse;
-    margin: 1.5rem 0;
+    margin: 2rem 0;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 12px;
+    overflow: hidden;
   }
 
   .blog-content :global(th),
   .blog-content :global(td) {
-    border: 1px solid #e5e7eb;
-    padding: 0.75rem;
+    border: 1px solid var(--glass-border);
+    padding: 1rem;
     text-align: left;
   }
 
   .blog-content :global(th) {
-    background: #f9fafb;
-    font-weight: 600;
+    background: rgba(255, 255, 255, 0.03);
+    color: #fff;
+    font-weight: 700;
   }
 </style>

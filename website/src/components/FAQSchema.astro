@@ -6,9 +6,10 @@ export interface FAQ {
 
 interface Props {
   faqs: FAQ[];
+  ui?: boolean;
 }
 
-const { faqs } = Astro.props;
+const { faqs, ui = true } = Astro.props;
 
 const faqSchema = {
   "@context": "https://schema.org",
@@ -26,65 +27,70 @@ const faqSchema = {
 
 <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
 
-<!-- FAQ Section for better UX -->
-<section class="faq-section">
-  <h2 class="faq-title">Frequently Asked Questions</h2>
-  <div class="faq-list">
-    {faqs.map((faq) => (
-      <details class="faq-item">
-        <summary class="faq-question">{faq.question}</summary>
-        <div class="faq-answer" set:html={faq.answer} />
-      </details>
-    ))}
-  </div>
-</section>
+{ui && (
+  <section class="faq-section">
+    <h2 class="faq-title">Frequently Asked Questions</h2>
+    <div class="faq-list">
+      {faqs.map((faq) => (
+        <details class="faq-item">
+          <summary class="faq-question">{faq.question}</summary>
+          <div class="faq-answer" set:html={faq.answer} />
+        </details>
+      ))}
+    </div>
+  </section>
+)}
 
 <style>
   .faq-section {
-    margin: 3rem auto;
-    max-width: 800px;
-    padding: 0 1rem;
+    margin: 4rem auto;
+    max-width: 900px;
+    padding: 0 7vw;
   }
 
   .faq-title {
-    font-size: 1.875rem;
+    font-family: 'Outfit', sans-serif;
+    font-size: 2rem;
     font-weight: 700;
-    margin-bottom: 1.5rem;
-    color: #111827;
+    margin-bottom: 2rem;
+    color: #fff;
+    text-align: center;
   }
 
   .faq-list {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 16px;
   }
 
   .faq-item {
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 0.5rem;
-    padding: 1.25rem;
-    transition: all 0.2s;
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 20px 24px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .faq-item:hover {
-    border-color: #3b82f6;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.04);
   }
 
   .faq-item[open] {
-    border-color: #3b82f6;
+    border-color: var(--accent-blue);
+    background: rgba(59, 130, 246, 0.05);
   }
 
   .faq-question {
-    font-size: 1.125rem;
+    font-size: 1.1rem;
     font-weight: 600;
-    color: #1f2937;
+    color: #fff;
     cursor: pointer;
     list-style: none;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 12px;
   }
 
   .faq-question::-webkit-details-marker {
@@ -93,46 +99,41 @@ const faqSchema = {
 
   .faq-question::before {
     content: '+';
+    font-family: 'Outfit', sans-serif;
     font-size: 1.5rem;
     font-weight: 700;
-    color: #3b82f6;
-    transition: transform 0.2s;
+    color: var(--accent-light);
+    transition: transform 0.3s;
     display: inline-block;
-    width: 1.5rem;
+    width: 20px;
     text-align: center;
   }
 
   .faq-item[open] .faq-question::before {
     content: '−';
+    transform: rotate(180deg);
   }
 
   .faq-answer {
-    margin-top: 1rem;
-    padding-left: 2rem;
-    color: #4b5563;
+    margin-top: 16px;
+    padding-left: 32px;
+    color: var(--text-muted);
     line-height: 1.7;
+    font-size: 0.95rem;
   }
 
   .faq-answer :global(p) {
-    margin-bottom: 0.75rem;
+    margin-bottom: 12px;
   }
 
   .faq-answer :global(strong) {
-    color: #1f2937;
+    color: #fff;
     font-weight: 600;
   }
 
   @media (max-width: 640px) {
-    .faq-title {
-      font-size: 1.5rem;
-    }
-
-    .faq-question {
-      font-size: 1rem;
-    }
-
-    .faq-item {
-      padding: 1rem;
-    }
+    .faq-title { font-size: 1.75rem; }
+    .faq-question { font-size: 1rem; }
+    .faq-item { padding: 16px; }
   }
 </style>

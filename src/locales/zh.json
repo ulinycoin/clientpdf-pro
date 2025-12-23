@@ -5,9 +5,9 @@
   },
   "welcome": {
     "securePrefix": "简单且安全",
-    "titleSuffix": "",
-    "title": "PDF 变得简单",
-    "subtitle": "您所需的所有工具尽在一处。只需拖放文件即可开启魔法。",
+    "title": "您的私人",
+    "titleSuffix": "PDF Sanctuary.",
+    "subtitle": "唯一 100% 在浏览器中运行的 PDF 工具包。无需上传，无需服务器，不留痕迹。由您的设备驱动的专业工具。",
     "firstTimeBanner": "欢迎！所有处理都在您的浏览器中进行 - 您的文件从未离开您的设备。",
     "selectTool": "从侧边栏选择工具或在下方选择"
   },
@@ -108,6 +108,10 @@
     "edit-pdf": {
       "name": "编辑 PDF",
       "description": "编辑 PDF 内容"
+    },
+    "tables-pdf": {
+      "name": "PDF表格",
+      "description": "在您的PDF中添加、编辑和设置表格样式"
     }
   },
   "common": {
@@ -116,6 +120,7 @@
     "selectFile": "选择文件",
     "uploadFile": "上传文件",
     "download": "下载",
+    "supportDeveloper": "支持开发者",
     "processing": "处理中...",
     "searching": "搜索中...",
     "error": "错误",
@@ -160,6 +165,8 @@
     "save": "保存",
     "show": "显示",
     "zoom": "缩放",
+    "zoomIn": "放大",
+    "zoomOut": "缩小",
     "addFiles": "添加更多文件",
     "errors": {
       "previewFailed": "无法加载预览"
@@ -169,7 +176,7 @@
     "selectFiles": "选择文件",
     "dragOrClick": "将文件拖到此处或点击选择",
     "dropHere": "将文件拖到此处",
-    "multipleFilesAllowed": "支持多达10个.docx文件",
+    "multipleFilesAllowed": "支持多达10个文件",
     "singleFileAllowed": "仅限单个文件",
     "pasteHint": "或按 Ctrl+V 粘贴文件",
     "maxFiles": "最大文件数",
@@ -313,6 +320,10 @@
       "saved": "节省空间",
       "time": "处理时间"
     },
+    "optimized": {
+      "title": "文件已优化",
+      "description": "您的 PDF 已经通过此工具达到了最小可能的大小。"
+    },
     "quickActions": {
       "title": "接下来做什么？",
       "description": "继续处理压缩后的 PDF：",
@@ -371,6 +382,10 @@
     "selectPagesHint": "请至少选择一页以继续",
     "mergingSelected": "正在合并选定页面...",
     "mergeFailed": "合并选定页面失败",
+    "clearSelection": "清除选择",
+    "pagePreview": "页面预览",
+    "selectPage": "选择页面",
+    "deselectPage": "取消选择",
     "mode": {
       "all": {
         "name": "所有页面",
@@ -467,11 +482,11 @@
     },
     "permissions": {
       "printing": "打印",
-      "printingNone": "不允许",
-      "printingLow": "低分辨率",
-      "printingHigh": "高分辨率",
-      "copying": "允许复制文本",
-      "modifying": "允许修改内容",
+      "printingNone": "无",
+      "printingLow": "低",
+      "printingHigh": "高",
+      "copying": "复制",
+      "modifying": "修改",
       "annotating": "允许注释",
       "fillingForms": "允许填写表单",
       "contentAccessibility": "允许屏幕阅读器"
@@ -524,6 +539,7 @@
     "languageHint": "选择文档中的文本语言",
     "autoDetect": "自动检测语言",
     "autoDetectHint": "语言将从文档内容自动检测",
+    "detected": "检测到",
     "detectingLanguage": "检测语言...",
     "analyzingContent": "分析文档内容...",
     "pageSelection": "要处理的页面",
@@ -566,15 +582,33 @@
       "lowConfidence": "低置信度",
       "verifyLanguage": "验证语言选择以获得更好的 OCR 准确性"
     },
+    "startOver": "重新开始",
+    "languages": {
+      "eng": "英语",
+      "rus": "俄语",
+      "deu": "德语",
+      "fra": "法语",
+      "spa": "西班牙语",
+      "ita": "意大利语",
+      "por": "葡萄牙语",
+      "pol": "波兰语",
+      "ukr": "乌克兰语",
+      "bel": "白俄罗斯语",
+      "nld": "荷兰语"
+    },
     "outputFormat": {
       "title": "输出格式",
       "text": "纯文本 (.txt)",
+      "textShort": "文本 (可编辑)",
       "textDesc": "仅提取文本，可编辑和复制",
       "searchablePdf": "可搜索 PDF（保留原件）",
+      "searchablePdfShort": "可搜索 PDF",
       "searchablePdfDesc": "保留原始图片并添加不可见的 OCR 文本层 - 外观与原件完全相同，但可完全搜索",
       "hocr": "hOCR (.html)",
+      "hocrShort": "hOCR (HTML)",
       "hocrDesc": "带有精确词语定位和置信度分数的 HTML - 适用于自动处理",
       "tsv": "TSV (.tsv)",
+      "tsvShort": "TSV (数据)",
       "tsvDesc": "带有边界框的制表符分隔值 - 易于解析以进行数据分析"
     },
     "results": {
@@ -583,7 +617,8 @@
       "hocrReady": "hOCR 数据就绪",
       "tsvReady": "TSV 数据就绪",
       "pagesWillProcess": "{count} {pages} 将使用 OCR 处理",
-      "confidenceAndPages": "置信度：{confidence}% • 已处理 {count} {pages}"
+      "confidenceAndPages": "置信度：{confidence}% • 已处理 {count} {pages}",
+      "successMessage": "您的文档已成功处理。您现在可以从侧边栏下载结果。"
     },
     "infoPanel": {
       "searchablePdfTitle": "带有不可见文本层的可搜索 PDF",
@@ -617,11 +652,17 @@
     }
   },
   "watermark": {
-    "filePreview": "要添加水印的文件",
+    "mode": "模式",
+    "textMode": "文本",
+    "imageMode": "图片",
+    "chooseImage": "选择图片",
+    "filePreview": "添加水印文件",
     "settings": "水印设置",
     "text": "水印文本",
     "watermarkText": "水印文本",
     "watermarkPlaceholder": "输入水印文本",
+    "image": "图片",
+    "imageScale": "图片缩放",
     "position": "位置",
     "positions": {
       "diagonal": "对角线",
@@ -652,6 +693,7 @@
     "loadingPreview": "正在加载预览...",
     "errors": {
       "noText": "请输入水印文本",
+      "noImage": "请先选择一张图片",
       "failed": "添加水印失败",
       "cyrillicNotSupported": "所选字体可能不支持西里尔字符"
     },
@@ -852,8 +894,10 @@
       "bottomRight": "右下",
       "bottomLeft": "左下",
       "topRight": "右上",
-      "topLeft": "左上"
+      "topLeft": "左上",
+      "custom": "手动（拖放）"
     },
+    "dragToMove": "拖动以移动",
     "applyToPages": "应用到页面",
     "allPages": "所有页面",
     "pageNumber": "第 {number} 页",
@@ -875,6 +919,10 @@
     "provideSignature": "请绘制或上传签名",
     "textSize": "文本大小",
     "signatureSize": "签名大小",
+    "includeName": "包含印刷姓名",
+    "namePlaceholder": "输入姓名",
+    "printedName": "印刷姓名",
+    "nameSize": "姓名大小",
     "addSignature": "添加签名",
     "quickActions": {
       "title": "接下来做什么？",
@@ -942,29 +990,29 @@
     "defaultFileName": "document_with_text.pdf",
     "title": "添加文本",
     "toolbar": {
-      "addText": "Add Text",
-      "select": "Select",
-      "page": "Page",
-      "of": "of",
-      "savePdf": "保存PDF",
-      "undo": "Undo",
-      "redo": "Redo"
+      "addText": "添加文本",
+      "select": "选择",
+      "page": "页面",
+      "of": "/",
+      "savePdf": "保存 PDF",
+      "undo": "撤销",
+      "redo": "重做"
     },
     "format": {
-      "title": "Format Text",
-      "placeholder": "Enter text here...",
-      "textContent": "Text Content",
+      "title": "文本格式",
+      "placeholder": "在此处输入文本...",
+      "textContent": "文本内容",
       "fontFamily": "字体",
-      "fontSize": "大小",
+      "fontSize": "字号",
       "textColor": "颜色",
-      "position": "Position",
-      "preview": "Preview",
-      "sampleText": "Sample text",
-      "opacity": "Opacity",
-      "rotation": "Rotation",
-      "bold": "Bold",
-      "italic": "Italic",
-      "delete": "Delete Element",
+      "position": "位置",
+      "preview": "预览",
+      "sampleText": "示例文本",
+      "opacity": "不透明度",
+      "rotation": "旋转",
+      "bold": "加粗",
+      "italic": "斜体",
+      "delete": "删除元素",
       "alignment": "对齐",
       "alignLeft": "靠左",
       "alignCenter": "居中",
@@ -983,7 +1031,49 @@
     "selected": "已选择：{name} ({type})",
     "zoom": "缩放：{scale}%",
     "pageOf": "第 {current} 页，共 {total} 页",
-    "selectFieldToEdit": "选择要编辑的字段"
+    "selectFieldToEdit": "选择要编辑的字段",
+    "addNewField": "+ 添加新字段",
+    "toolbar": {
+      "addField": "添加字段:",
+      "addText": "添加文本字段",
+      "addMultiline": "添加多行文本字段",
+      "addCheckbox": "添加复选框",
+      "addRadio": "添加单选按钮",
+      "addDropdown": "添加下拉菜单",
+      "savePdf": "保存 PDF"
+    },
+    "panel": {
+      "title": "字段属性",
+      "deleteField": "删除字段",
+      "fieldName": "字段名称",
+      "xPosition": "X轴位置",
+      "yPosition": "Y轴位置",
+      "width": "宽度",
+      "height": "高度",
+      "defaultValue": "默认值",
+      "defaultPlaceholder": "输入默认文本...",
+      "maxLength": "最大长度",
+      "maxLengthPlaceholder": "无限制",
+      "fontSize": "字体大小",
+      "checkedByDefault": "默认选中",
+      "radioGroup": "单选组",
+      "radioGroupHint": "具有相同组名的单选按钮是互斥的",
+      "value": "值",
+      "selectedByDefault": "默认选中",
+      "options": "选项（每行一个）",
+      "allowMultiSelect": "允许允许多选",
+      "requiredField": "必填字段",
+      "readOnlyField": "只读字段",
+      "duplicateField": "复制字段",
+      "selectToEdit": "选择一个字段以编辑其属性"
+    },
+    "types": {
+      "text": "文本",
+      "multiline": "多行文本",
+      "checkbox": "复选框",
+      "radio": "单选按钮",
+      "dropdown": "下拉菜单"
+    }
   },
   "editText": {
     "rasterizationWarning": "注意：编辑的页面将转换为图片。编辑后这些页面上的文本将不可选择。",

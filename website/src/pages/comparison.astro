@@ -19,80 +19,80 @@ import ContentPage from '../components/ContentPage.astro';
 
   <h2>Quick Comparison Table</h2>
 
-  <div style="overflow-x: auto;">
-    <table style="width: 100%; border-collapse: collapse; margin: 32px 0;">
-      <thead style="background: #F5F5F5;">
+  <div class="table-container">
+    <table>
+      <thead>
         <tr>
-          <th style="padding: 12px; text-align: left; border: 1px solid #E5E5E5;">Feature</th>
-          <th style="padding: 12px; text-align: center; border: 1px solid #E5E5E5; background: #DBEAFE;"><strong>LocalPDF</strong></th>
-          <th style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">Adobe Acrobat</th>
-          <th style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">Smallpdf</th>
-          <th style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">iLovePDF</th>
+          <th>Feature</th>
+          <th class="active-col"><strong>LocalPDF</strong></th>
+          <th>Adobe Acrobat</th>
+          <th>Smallpdf</th>
+          <th>iLovePDF</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td style="padding: 12px; border: 1px solid #E5E5E5;"><strong>Files uploaded to servers</strong></td>
-          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5; background: #F0FDF4;">❌ Never</td>
-          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">✅ Yes</td>
-          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">✅ Yes</td>
-          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">✅ Yes</td>
+          <td><strong>Files uploaded to servers</strong></td>
+          <td class="success-cell">❌ Never</td>
+          <td>✅ Yes</td>
+          <td>✅ Yes</td>
+          <td>✅ Yes</td>
         </tr>
         <tr>
-          <td style="padding: 12px; border: 1px solid #E5E5E5;"><strong>Privacy by design</strong></td>
-          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5; background: #F0FDF4;">✅ 100%</td>
-          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">❌ No</td>
-          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">❌ No</td>
-          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">❌ No</td>
+          <td><strong>Privacy by design</strong></td>
+          <td class="success-cell">✅ 100%</td>
+          <td>❌ No</td>
+          <td>❌ No</td>
+          <td>❌ No</td>
         </tr>
         <tr>
-          <td style="padding: 12px; border: 1px solid #E5E5E5;"><strong>Processing speed (10 MB PDF)</strong></td>
-          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5; background: #F0FDF4;">&lt;2s</td>
-          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">5-10s</td>
-          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">10-15s</td>
-          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">8-12s</td>
+          <td><strong>Processing speed (10 MB PDF)</strong></td>
+          <td class="success-cell">&lt;2s</td>
+          <td>5-10s</td>
+          <td>10-15s</td>
+          <td>8-12s</td>
         </tr>
         <tr>
-          <td style="padding: 12px; border: 1px solid #E5E5E5;"><strong>File size limit (free tier)</strong></td>
-          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5; background: #F0FDF4;">Unlimited*</td>
-          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">100 MB</td>
-          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">5 MB</td>
-          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">200 MB</td>
+          <td><strong>File size limit (free tier)</strong></td>
+          <td class="success-cell">Unlimited*</td>
+          <td>100 MB</td>
+          <td>5 MB</td>
+          <td>200 MB</td>
         </tr>
         <tr>
-          <td style="padding: 12px; border: 1px solid #E5E5E5;"><strong>Requires account/registration</strong></td>
-          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5; background: #F0FDF4;">❌ No</td>
-          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">✅ Yes</td>
-          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">✅ Yes (pro)</td>
-          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">✅ Yes (pro)</td>
+          <td><strong>Requires account/registration</strong></td>
+          <td class="success-cell">❌ No</td>
+          <td>✅ Yes</td>
+          <td>✅ Yes (pro)</td>
+          <td>✅ Yes (pro)</td>
         </tr>
         <tr>
-          <td style="padding: 12px; border: 1px solid #E5E5E5;"><strong>Free tier pricing</strong></td>
-          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5; background: #F0FDF4;">$0 (beta)</td>
-          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">$12.99/mo</td>
-          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">$9/mo</td>
-          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">$6/mo</td>
+          <td><strong>Free tier pricing</strong></td>
+          <td class="success-cell">$0 (beta)</td>
+          <td>$12.99/mo</td>
+          <td>$9/mo</td>
+          <td>$6/mo</td>
         </tr>
         <tr>
-          <td style="padding: 12px; border: 1px solid #E5E5E5;"><strong>Works offline</strong></td>
-          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5; background: #F0FDF4;">✅ Yes</td>
-          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">❌ No</td>
-          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">❌ No</td>
-          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">❌ No</td>
+          <td><strong>Works offline</strong></td>
+          <td class="success-cell">✅ Yes</td>
+          <td>❌ No</td>
+          <td>❌ No</td>
+          <td>❌ No</td>
         </tr>
         <tr>
-          <td style="padding: 12px; border: 1px solid #E5E5E5;"><strong>Watermarks on output</strong></td>
-          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5; background: #F0FDF4;">❌ Never</td>
-          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">❌ No</td>
-          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">✅ Free tier</td>
-          <td style="padding: 12px; text-align: center; border: 1px solid #E5E5E5;">❌ No</td>
+          <td><strong>Watermarks on output</strong></td>
+          <td class="success-cell">❌ Never</td>
+          <td>❌ No</td>
+          <td>✅ Free tier</td>
+          <td>❌ No</td>
         </tr>
       </tbody>
     </table>
   </div>
 
-  <p style="font-size: 0.875rem; color: #737373; margin-top: -16px;">
-    *Unlimited within browser memory constraints (typically 2-4 GB depending on device)
+  <p class="footnote">
+    *Unlimited within browser memory constraints (typically 2-4 GB depending on device).
   </p>
 
   <h2>Key Differences Explained</h2>
@@ -104,29 +104,29 @@ import ContentPage from '../components/ContentPage.astro';
       <h3>Cloud-Based Tools (Adobe, Smallpdf, etc.)</h3>
       <p>
         When you upload a PDF to cloud-based tools, your file is transmitted over the internet to their
-        servers, processed remotely, and stored temporarily (or permanently, depending on their policy).
+        servers, processed remotely, and stored temporarily (or permanently).
       </p>
       <p><strong>Privacy risks:</strong></p>
-      <ul style="margin: 8px 0 0 20px;">
+      <ul>
         <li>Files can be intercepted during transmission</li>
         <li>Servers may scan content for analytics or ad targeting</li>
         <li>Data breaches expose user documents</li>
-        <li>No guarantees of deletion</li>
+        <li>No guarantees of absolute deletion</li>
       </ul>
     </div>
 
-    <div class="card" style="border: 2px solid #2563EB;">
+    <div class="card featured-card">
       <h3>LocalPDF (Client-Side)</h3>
       <p>
         Your PDF never leaves your device. All processing happens in your browser using JavaScript and
         WebAssembly. There are zero network requests during processing.
       </p>
       <p><strong>Privacy benefits:</strong></p>
-      <ul style="margin: 8px 0 0 20px;">
+      <ul>
         <li>No risk of interception—files stay local</li>
         <li>No server-side scanning or data collection</li>
         <li>Impossible to breach what we don't have</li>
-        <li>Automatic deletion (browser memory cleared on tab close)</li>
+        <li>Automatic deletion (memory cleared on tab close)</li>
       </ul>
     </div>
   </div>
@@ -209,8 +209,86 @@ import ContentPage from '../components/ContentPage.astro';
     </ul>
   </div>
 
-  <p style="margin-top: 32px;">
-    <strong>Ready to try the privacy-first approach?</strong>
-    <a href="/" style="color: #2563EB; text-decoration: none; border-bottom: 1px solid #2563EB;">Get started with LocalPDF →</a>
+  <p style="margin-top: 48px; text-align: center;">
+    <strong>Ready to try the privacy-first approach?</strong><br />
+    <a href="/" class="btn-cta">Get started with LocalPDF Sanctuary 🚀</a>
   </p>
 </ContentPage>
+
+<style>
+  .table-container {
+    overflow-x: auto;
+    margin: 40px 0;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    backdrop-filter: var(--ios-blur);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th, td {
+    padding: 16px;
+    border: 1px solid var(--glass-border);
+    text-align: center;
+    font-size: 0.95rem;
+  }
+
+  th {
+    background: rgba(255, 255, 255, 0.03);
+    color: #fff;
+    font-weight: 700;
+    text-align: left;
+  }
+
+  th:first-child, td:first-child {
+    text-align: left;
+    background: rgba(255, 255, 255, 0.01);
+    color: #fff;
+  }
+
+  .active-col {
+    background: rgba(59, 130, 246, 0.1) !important;
+    color: var(--accent-light) !important;
+    border-bottom: 2px solid var(--accent-blue);
+  }
+
+  .success-cell {
+    background: rgba(34, 197, 94, 0.05) !important;
+    color: #4ade80 !important;
+    font-weight: 600;
+  }
+
+  .footnote {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: -8px;
+    margin-bottom: 40px;
+    opacity: 0.7;
+  }
+
+  .featured-card {
+    border: 2px solid var(--accent-blue) !important;
+    background: rgba(59, 130, 246, 0.05) !important;
+  }
+
+  .btn-cta {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 16px 40px;
+    background: var(--accent-blue);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 12px;
+    font-weight: 700;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .btn-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(59, 130, 246, 0.2);
+  }
+</style>

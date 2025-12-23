@@ -34,46 +34,46 @@ const formattedDate = pubDate.toLocaleDateString('en-US', {
 const defaultImage = '/logos/localpdf-social-1200x630.png';
 ---
 
-<article class={`group relative bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 ${featured ? 'ring-2 ring-blue-500' : ''}`}>
+<article class={`group relative bg-glass border border-glass-border rounded-xl overflow-hidden hover:border-white/20 transition-all duration-300 ${featured ? 'ring-2 ring-accent-blue/50' : ''}`}>
   {featured && (
-    <div class="absolute top-4 right-4 z-10 px-3 py-1 bg-blue-600 text-white text-xs font-bold rounded-full">
+    <div class="absolute top-4 right-4 z-10 px-3 py-1 bg-accent-blue text-white text-xs font-bold rounded-full shadow-lg">
       Featured
     </div>
   )}
 
   <a href={`/blog/${slug}`} class="block">
     <!-- Cover Image -->
-    <div class="relative h-48 overflow-hidden bg-gray-100">
+    <div class="relative h-48 overflow-hidden bg-glass-heavy">
       <img
         src={coverImage || defaultImage}
         alt={coverImageAlt || title}
-        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 opacity-80 group-hover:opacity-100"
         loading="lazy"
       />
-      <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-300"></div>
     </div>
 
     <!-- Content -->
     <div class="p-6">
       <!-- Category Badge -->
       <div class="mb-3">
-        <span class="inline-block px-3 py-1 bg-blue-100 text-blue-800 text-xs font-semibold rounded-full">
+        <span class="inline-block px-3 py-1 bg-glass border border-glass-border text-accent-light text-xs font-semibold rounded-full">
           {category}
         </span>
       </div>
 
       <!-- Title -->
-      <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors line-clamp-2">
+      <h3 class="text-xl font-bold text-main mb-2 group-hover:text-accent-light transition-colors line-clamp-2">
         {title}
       </h3>
 
       <!-- Description -->
-      <p class="text-gray-600 text-sm mb-4 line-clamp-3">
+      <p class="text-muted text-sm mb-4 line-clamp-3 opacity-90">
         {description}
       </p>
 
       <!-- Meta Info -->
-      <div class="flex items-center justify-between text-xs text-gray-500 mb-4">
+      <div class="flex items-center justify-between text-xs text-muted/80 mb-4">
         <time datetime={pubDate.toISOString()}>
           {formattedDate}
         </time>
@@ -90,12 +90,12 @@ const defaultImage = '/logos/localpdf-social-1200x630.png';
       <!-- Tags -->
       <div class="flex flex-wrap gap-2">
         {tags.slice(0, 3).map(tag => (
-          <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">
+          <span class="px-2 py-1 bg-glass-heavy border border-glass-border text-muted text-xs rounded transition-colors group-hover:border-white/10">
             #{tag}
           </span>
         ))}
         {tags.length > 3 && (
-          <span class="px-2 py-1 text-gray-500 text-xs">
+          <span class="px-2 py-1 text-muted text-xs opacity-60">
             +{tags.length - 3} more
           </span>
         )}
@@ -105,6 +105,13 @@ const defaultImage = '/logos/localpdf-social-1200x630.png';
 </article>
 
 <style>
+  .bg-glass { background: var(--glass-bg); backdrop-filter: var(--ios-blur); }
+  .bg-glass-heavy { background: rgba(255, 255, 255, 0.05); }
+  .text-main { color: var(--text-main); }
+  .text-muted { color: var(--text-muted); }
+  .text-accent-light { color: var(--accent-light); }
+  .border-glass-border { border-color: var(--glass-border); }
+
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;

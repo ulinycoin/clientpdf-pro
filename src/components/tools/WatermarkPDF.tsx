@@ -8,12 +8,13 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useI18n } from '@/hooks/useI18n';
 import { useSharedFile } from '@/hooks/useSharedFile';
-import { PDFDocument, rgb, StandardFonts, degrees } from 'pdf-lib';
+import { PDFDocument, rgb, degrees, type PDFFont, type PDFImage } from 'pdf-lib';
 import fontkit from '@pdf-lib/fontkit';
 import * as pdfjsLib from 'pdfjs-dist';
 import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import type { UploadedFile, PDFFileInfo } from '@/types/pdf';
-import { FileCheck, Type, Move, Palette, Sliders, RotateCw } from 'lucide-react';
+import { FileCheck, Type, Move, Palette, Sliders, Image as ImageIcon, Upload } from 'lucide-react';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 // Configure PDF.js worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
@@ -21,13 +22,26 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 type Position = 'center' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'diagonal' | 'custom';
 
 interface WatermarkSettings {
+  mode: 'text' | 'image';
   text: string;
   position: Position;
   opacity: number;
   fontSize: number;
   rotation: number;
   color: { r: number; g: number; b: number };
+  imageScale: number;
 }
+
+// Ensure Roboto is available for preview metrics
+const fontStyles = `
+  @font-face {
+    font-family: 'Roboto';
+    src: url('/fonts/Roboto-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+`;
 
 export const WatermarkPDF: React.FC = () => {
   const { t } = useI18n();
@@ -41,13 +55,19 @@ export const WatermarkPDF: React.FC = () => {
   const [resultSaved, setResultSaved] = useState(false);
 
   const [settings, setSettings] = useState<WatermarkSettings>({
+    mode: 'text',
     text: 'CONFIDENTIAL',
     position: 'diagonal',
     opacity: 30,
     fontSize: 48,
     rotation: -45,
     color: { r: 128, g: 128, b: 128 },
+    imageScale: 50,
   });
+
+  const [watermarkImage, setWatermarkImage] = useState<File | null>(null);
+  const [watermarkImagePreview, setWatermarkImagePreview] = useState<string | null>(null);
+  const [imageDimensions, setImageDimensions] = useState({ width: 0, height: 0 });
 
   const [previewScale, setPreviewScale] = useState(1);
   const imageRef = useRef<HTMLImageElement>(null);
@@ -257,53 +277,70 @@ export const WatermarkPDF: React.FC = () => {
     const margin = 50;
 
     switch (position) {
+      case 'diagonal':
       case 'center':
         return {
-          x: (pageWidth - textWidth) / 2,
-          y: (pageHeight - textHeight) / 2,
+          x: pageWidth / 2,
+          y: pageHeight / 2,
         };
       case 'top-left':
-        return { x: margin, y: pageHeight - margin - textHeight };
-      case 'top-right':
-        return { x: pageWidth - margin - textWidth, y: pageHeight - margin - textHeight };
-      case 'bottom-left':
-        return { x: margin, y: margin };
-      case 'bottom-right':
-        return { x: pageWidth - margin - textWidth, y: margin };
-      case 'diagonal':
         return {
-          x: pageWidth / 2 - textWidth / 2,
-          y: pageHeight / 2 - textHeight / 2,
+          x: margin + textWidth / 2,
+          y: pageHeight - margin - textHeight / 2
+        };
+      case 'top-right':
+        return {
+          x: pageWidth - margin - textWidth / 2,
+          y: pageHeight - margin - textHeight / 2
+        };
+      case 'bottom-left':
+        return {
+          x: margin + textWidth / 2,
+          y: margin + textHeight / 2
+        };
+      case 'bottom-right':
+        return {
+          x: pageWidth - margin - textWidth / 2,
+          y: margin + textHeight / 2
         };
       case 'custom':
         return {
-          // Convert percentage (0-100) to points. 
-          // Note: customPosition.y is % from top, but PDF coordinates are from bottom-left (usually).
-          // However, pdf-lib drawText y lies from bottom.
-          // Let's assume customPosition.x/y are % from top-left of the page.
-          x: (customPosition.x / 100) * pageWidth - (textWidth / 2),
-          y: pageHeight - ((customPosition.y / 100) * pageHeight) - (textHeight / 2),
+          x: (customPosition.x / 100) * pageWidth,
+          y: pageHeight - ((customPosition.y / 100) * pageHeight),
         };
       default:
         return {
-          x: (pageWidth - textWidth) / 2,
-          y: (pageHeight - textHeight) / 2,
+          x: pageWidth / 2,
+          y: pageHeight / 2,
         };
     }
   };
 
-  // Load font with Cyrillic support
+  const handleWatermarkImageSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setWatermarkImage(file);
+      const url = URL.createObjectURL(file);
+      setWatermarkImagePreview(url);
+      const img = new Image();
+      img.onload = () => {
+        setImageDimensions({ width: img.width, height: img.height });
+      };
+      img.src = url;
+    }
+  };
+
+  // Cleanup image preview
+  useEffect(() => {
+    return () => {
+      if (watermarkImagePreview) URL.revokeObjectURL(watermarkImagePreview);
+    };
+  }, [watermarkImagePreview]);
+
   const loadCyrillicFont = async (pdfDoc: PDFDocument) => {
     try {
-      // Check if text contains Cyrillic characters
-      const hasCyrillic = /[а-яА-ЯёЁ]/.test(settings.text);
-
-      if (!hasCyrillic) {
-        // Use standard font for Latin text
-        return await pdfDoc.embedFont(StandardFonts.Helvetica);
-      }
-
-      // Register fontkit for custom fonts
+      // Always embed Roboto for Cyrillic support OR consistent metrics
+      // This ensures that the PDF output matches the preview regardless of system fonts
       pdfDoc.registerFontkit(fontkit);
 
       // Load local Roboto font with Cyrillic support
@@ -329,8 +366,8 @@ export const WatermarkPDF: React.FC = () => {
   };
 
   const handleAddWatermark = async () => {
-    if (!file || !settings.text.trim()) {
-      alert(t('watermark.errors.noText'));
+    if (!file || (settings.mode === 'text' && !settings.text.trim()) || (settings.mode === 'image' && !watermarkImage)) {
+      alert(settings.mode === 'text' ? t('watermark.errors.noText') : t('watermark.errors.noImage'));
       return;
     }
 
@@ -350,8 +387,21 @@ export const WatermarkPDF: React.FC = () => {
       setProgress(30);
       setProgressMessage(t('watermark.processing'));
 
-      // Load font with Cyrillic support if needed
-      const font = await loadCyrillicFont(pdfDoc);
+      let font: PDFFont | null = null;
+      let embeddedImage: PDFImage | null = null;
+
+      if (settings.mode === 'text') {
+        font = await loadCyrillicFont(pdfDoc);
+      } else if (watermarkImage) {
+        const imageBytes = await watermarkImage.arrayBuffer();
+        if (watermarkImage.type === 'image/png') {
+          embeddedImage = await pdfDoc.embedPng(imageBytes);
+        } else {
+          embeddedImage = await pdfDoc.embedJpg(imageBytes);
+        }
+        // Calculate size based on imageScale (percentage of page width)
+        // We'll handle per-page sizing in the loop
+      }
 
       // Get pages
       const pages = pdfDoc.getPages();
@@ -361,34 +411,87 @@ export const WatermarkPDF: React.FC = () => {
       for (let i = 0; i < totalPages; i++) {
         const page = pages[i];
         const { width, height } = page.getSize();
+        const pageRotation = page.getRotation().angle;
 
-        // Calculate text dimensions
-        const textWidth = font.widthOfTextAtSize(settings.text, settings.fontSize);
-        const textHeight = settings.fontSize;
+        // Correct dimensions if the page is rotated
+        const isRotated = pageRotation === 90 || pageRotation === 270;
+        const visibleWidth = isRotated ? height : width;
+        const visibleHeight = isRotated ? width : height;
 
-        // Calculate position
-        const position = calculatePosition(
+        let wWidth = 0;
+        let wHeight = 0;
+
+        if (settings.mode === 'text' && font) {
+          wWidth = font.widthOfTextAtSize(settings.text, settings.fontSize);
+          wHeight = settings.fontSize * 0.8; // Approximate height of the text block
+        } else if (embeddedImage) {
+          // Scale image relative to page width
+          const scaleFactor = (settings.imageScale / 100) * (visibleWidth / embeddedImage.width);
+          wWidth = embeddedImage.width * scaleFactor;
+          wHeight = embeddedImage.height * scaleFactor;
+        }
+
+        // Calculate rotation angle
+        // We negate settings.rotation because PDF-lib rotation is CCW (positive is up)
+        // while CSS/User expectation is CW (standard for rotation sliders)
+        let finalRotation = -settings.rotation;
+
+        if (settings.position === 'diagonal') {
+          // Actual corner-to-corner angle in degrees
+          // slope up = positive angle in PDF
+          finalRotation = Math.atan2(visibleHeight, visibleWidth) * (180 / Math.PI);
+        }
+
+        // Calculate center position on the visible page
+        const pos = calculatePosition(
           settings.position,
-          width,
-          height,
-          textWidth,
-          textHeight
+          visibleWidth,
+          visibleHeight,
+          wWidth,
+          wHeight
         );
 
-        // Draw watermark
-        page.drawText(settings.text, {
-          x: position.x,
-          y: position.y,
-          size: settings.fontSize,
-          font: font,
-          color: rgb(
-            settings.color.r / 255,
-            settings.color.g / 255,
-            settings.color.b / 255
-          ),
-          opacity: settings.opacity / 100,
-          rotate: degrees(settings.rotation),
-        });
+        // Rotation math to match CSS transform-origin: center
+        // PDF-lib rotation is around the point (x, y), which is the bottom-left of text/image
+        // To rotate around center of the object, we apply an offset:
+        const rad = (finalRotation * Math.PI) / 180;
+        const cos = Math.cos(rad);
+        const sin = Math.sin(rad);
+
+        // Offset to move (x,y) from bottom-left to center before rotation, then rotate
+        // and move back to original space.
+        const rx = (-wWidth / 2) * cos - (-wHeight / 2) * sin;
+        const ry = (-wWidth / 2) * sin + (-wHeight / 2) * cos;
+
+        // Final coordinates: centered position + rotation offset
+        // For text, pdf-lib draws from baseline, so we adjust ry slightly
+        const drawX = pos.x + rx;
+        const drawY = pos.y + ry;
+
+        if (settings.mode === 'text' && font) {
+          page.drawText(settings.text, {
+            x: drawX,
+            y: drawY,
+            size: settings.fontSize,
+            font: font,
+            color: rgb(
+              settings.color.r / 255,
+              settings.color.g / 255,
+              settings.color.b / 255
+            ),
+            opacity: settings.opacity / 100,
+            rotate: degrees(finalRotation),
+          });
+        } else if (embeddedImage) {
+          page.drawImage(embeddedImage, {
+            x: drawX,
+            y: drawY,
+            width: wWidth,
+            height: wHeight,
+            opacity: settings.opacity / 100,
+            rotate: degrees(finalRotation),
+          });
+        }
 
         // Update progress
         const pageProgress = 30 + ((i + 1) / totalPages) * 60;
@@ -412,7 +515,7 @@ export const WatermarkPDF: React.FC = () => {
           originalSize: file.size,
           finalSize: blob.size,
           pageCount: totalPages,
-          watermarkText: settings.text,
+          watermarkText: settings.mode === 'text' ? settings.text : 'Image',
         },
       });
 
@@ -460,79 +563,93 @@ export const WatermarkPDF: React.FC = () => {
 
   // Get preview position style
   const getPreviewStyle = () => {
-    const baseStyle = {
-      color: `rgb(${settings.color.r}, ${settings.color.g}, ${settings.color.b})`,
+    const baseStyle: React.CSSProperties = {
       opacity: settings.opacity / 100,
-      fontSize: `${settings.fontSize * previewScale}px`, // Adjusted font size
-      fontWeight: 'bold' as const,
       userSelect: 'none' as const,
-      // Change pointer events to auto to allow dragging
       pointerEvents: 'auto' as const,
-      whiteSpace: 'nowrap' as const,
       cursor: isDragging ? 'grabbing' : 'grab',
-      touchAction: 'none' as const, // Important for touch dragging
+      touchAction: 'none' as const,
+      position: 'absolute' as const,
     };
 
-    if (settings.position === 'custom') {
-      return {
-        ...baseStyle,
-        left: `${customPosition.x}%`,
-        top: `${customPosition.y}%`,
-        transform: `translate(-50%, -50%) rotate(${settings.rotation}deg)`,
-      };
+    let transform = '';
+    let width = '';
+    let height = '';
+    let left = '';
+    let top = '';
+    let right = '';
+    let bottom = '';
+
+    if (settings.mode === 'text') {
+      baseStyle.color = `rgb(${settings.color.r}, ${settings.color.g}, ${settings.color.b})`;
+      baseStyle.fontSize = `${settings.fontSize * previewScale}px`;
+      baseStyle.fontWeight = 'bold';
+      baseStyle.fontFamily = 'Roboto, sans-serif';
+      baseStyle.whiteSpace = 'nowrap';
+    } else {
+      // Image sizing relative to preview
+      if (imageRef.current) {
+        const displayedWidth = imageRef.current.clientWidth;
+        const w = (settings.imageScale / 100) * displayedWidth;
+        const ratio = imageDimensions.height / imageDimensions.width;
+        width = `${w}px`;
+        height = `${w * ratio}px`;
+      }
     }
 
-    switch (settings.position) {
-      case 'center':
-        return {
-          ...baseStyle,
-          top: '50%',
-          left: '50%',
-          transform: `translate(-50%, -50%) rotate(${settings.rotation}deg)`,
-        };
-      case 'top-left':
-        return {
-          ...baseStyle,
-          top: '10px',
-          left: '10px',
-          transform: `rotate(${settings.rotation}deg)`,
-        };
-      case 'top-right':
-        return {
-          ...baseStyle,
-          top: '10px',
-          right: '10px',
-          transform: `rotate(${settings.rotation}deg)`,
-        };
-      case 'bottom-left':
-        return {
-          ...baseStyle,
-          bottom: '10px',
-          left: '10px',
-          transform: `rotate(${settings.rotation}deg)`,
-        };
-      case 'bottom-right':
-        return {
-          ...baseStyle,
-          bottom: '10px',
-          right: '10px',
-          transform: `rotate(${settings.rotation}deg)`,
-        };
-      case 'diagonal':
-        return {
-          ...baseStyle,
-          top: '50%',
-          left: '50%',
-          transform: `translate(-50%, -50%) rotate(${settings.rotation}deg)`,
-        };
-      default:
-        return {
-          ...baseStyle,
-          top: '50%',
-          left: '50%',
-          transform: `translate(-50%, -50%) rotate(${settings.rotation}deg)`,
-        };
+    let previewRotation = settings.rotation;
+    if (settings.position === 'diagonal' && imageRef.current) {
+      const w = imageRef.current.clientWidth;
+      const h = imageRef.current.clientHeight;
+      // CSS rotate is CW, slope up is negative angle
+      previewRotation = -Math.atan2(h, w) * (180 / Math.PI);
     }
+
+    if (settings.position === 'custom') {
+      left = `${customPosition.x}%`;
+      top = `${customPosition.y}%`;
+      transform = `translate(-50%, -50%) rotate(${previewRotation}deg)`;
+    } else {
+      switch (settings.position) {
+        case 'diagonal':
+        case 'center':
+          top = '50%';
+          left = '50%';
+          transform = `translate(-50%, -50%) rotate(${previewRotation}deg)`;
+          break;
+        case 'top-left':
+          top = '20px';
+          left = '20px';
+          transform = `translate(0, 0) rotate(${previewRotation}deg)`;
+          break;
+        case 'top-right':
+          top = '20px';
+          right = '20px';
+          transform = `translate(0, 0) rotate(${previewRotation}deg)`;
+          break;
+        case 'bottom-left':
+          bottom = '20px';
+          left = '20px';
+          transform = `translate(0, 0) rotate(${previewRotation}deg)`;
+          break;
+        case 'bottom-right':
+          bottom = '20px';
+          right = '20px';
+          transform = `translate(0, 0) rotate(${previewRotation}deg)`;
+          break;
+      }
+    }
+
+    return {
+      ...baseStyle,
+      width,
+      height,
+      left,
+      top,
+      right,
+      bottom,
+      transform,
+    };
   };
 
   const renderContent = () => {
@@ -598,14 +715,18 @@ export const WatermarkPDF: React.FC = () => {
                   alt="PDF Preview"
                   className="max-h-[550px] w-auto object-contain"
                 />
-                {settings.text && (
+                {(settings.mode === 'text' ? settings.text : watermarkImagePreview) && (
                   <div
-                    className="absolute watermark-element hover:ring-2 hover:ring-ocean-500/50 rounded px-2 transition-shadow"
+                    className="absolute watermark-element hover:ring-2 hover:ring-ocean-500/50 rounded px-2 transition-shadow flex items-center justify-center overflow-hidden"
                     style={getPreviewStyle()}
                     onMouseDown={handleDragStart}
                     onTouchStart={handleDragStart}
                   >
-                    {settings.text}
+                    {settings.mode === 'text' ? (
+                      settings.text
+                    ) : (
+                      <img src={watermarkImagePreview!} alt="Watermark" className="w-full h-full object-contain pointer-events-none" />
+                    )}
                   </div>
                 )}
               </div>
@@ -639,136 +760,192 @@ export const WatermarkPDF: React.FC = () => {
           </h3>
         </div>
 
-        {/* Text Input */}
-        <div className="space-y-3">
-          <Label className="text-sm font-medium flex items-center gap-2">
-            <Type className="w-4 h-4 text-gray-500" />
-            {t('watermark.text')}
-          </Label>
-          <Input
-            type="text"
-            value={settings.text}
-            onChange={(e) => setSettings({ ...settings, text: e.target.value })}
-            disabled={isProcessing}
-            placeholder={t('watermark.watermarkPlaceholder')}
-            className="rounded-xl border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-ocean-500"
-          />
-        </div>
+        <Tabs value={settings.mode} onValueChange={(v) => setSettings({ ...settings, mode: v as 'text' | 'image' })}>
+          <TabsList className="grid w-full grid-cols-2 bg-gray-100 dark:bg-gray-800 p-1 rounded-xl">
+            <TabsTrigger value="text" className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 shadow-sm transition-all">
+              <Type className="w-4 h-4 mr-2" />
+              {t('watermark.textMode')}
+            </TabsTrigger>
+            <TabsTrigger value="image" className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 shadow-sm transition-all">
+              <ImageIcon className="w-4 h-4 mr-2" />
+              {t('watermark.imageMode')}
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
 
-        {/* Position */}
-        <div className="space-y-3">
-          <Label className="text-sm font-medium flex items-center gap-2">
-            <Move className="w-4 h-4 text-gray-500" />
-            {t('watermark.position')}
-          </Label>
-          <Select
-            value={settings.position}
-            onValueChange={(value) => setSettings({ ...settings, position: value as Position })}
-            disabled={isProcessing}
-          >
-            <SelectTrigger className="w-full rounded-xl border-gray-200 dark:border-gray-700">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="diagonal">{t('watermark.positions.diagonal')}</SelectItem>
-              <SelectItem value="center">{t('watermark.positions.center')}</SelectItem>
-              <SelectItem value="top-left">{t('watermark.positions.topLeft')}</SelectItem>
-              <SelectItem value="top-right">{t('watermark.positions.topRight')}</SelectItem>
-              <SelectItem value="bottom-left">{t('watermark.positions.bottomLeft')}</SelectItem>
-              <SelectItem value="bottom-right">{t('watermark.positions.bottomRight')}</SelectItem>
-              <SelectItem value="custom">{t('watermark.positions.custom') || 'Manual'}</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Color Presets */}
-        <div className="space-y-3">
-          <Label className="text-sm font-medium flex items-center gap-2">
-            <Palette className="w-4 h-4 text-gray-500" />
-            {t('watermark.color')}
-          </Label>
-          <div className="grid grid-cols-4 gap-2">
-            {colorPresets.map((preset, index) => (
-              <button
-                key={index}
-                type="button"
-                onClick={() => setSettings({ ...settings, color: preset.value })}
-                disabled={isProcessing}
-                className={`
-                  relative h-10 w-full rounded-lg transition-all duration-200 border-2
-                  ${settings.color.r === preset.value.r &&
-                    settings.color.g === preset.value.g &&
-                    settings.color.b === preset.value.b
-                    ? 'border-ocean-500 scale-105 shadow-md'
-                    : 'border-transparent hover:border-gray-200 dark:hover:border-gray-700'
-                  }
-                `}
-                style={{
-                  backgroundColor: `rgb(${preset.value.r}, ${preset.value.g}, ${preset.value.b})`,
-                }}
-                title={preset.name}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Sliders Area */}
-        <div className="space-y-6 pt-4 border-t border-gray-100 dark:border-gray-800">
-          {/* Opacity */}
-          <div className="space-y-3">
-            <div className="flex justify-between items-center">
-              <Label className="text-sm font-medium">{t('watermark.opacity')}</Label>
-              <span className="text-xs text-gray-500 font-mono">{settings.opacity}%</span>
-            </div>
-            <input
-              type="range"
-              min="10"
-              max="100"
-              step="5"
-              value={settings.opacity}
-              onChange={(e) => setSettings({ ...settings, opacity: parseInt(e.target.value) })}
-              disabled={isProcessing}
-              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 accent-ocean-500"
-            />
-          </div>
-
-          {/* Font Size */}
-          <div className="space-y-3">
-            <div className="flex justify-between items-center">
-              <Label className="text-sm font-medium">{t('watermark.fontSize')}</Label>
-              <span className="text-xs text-gray-500 font-mono">{settings.fontSize}pt</span>
-            </div>
-            <input
-              type="range"
-              min="24"
-              max="96"
-              step="4"
-              value={settings.fontSize}
-              onChange={(e) => setSettings({ ...settings, fontSize: parseInt(e.target.value) })}
-              disabled={isProcessing}
-              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 accent-ocean-500"
-            />
-          </div>
-
-          {/* Rotation */}
-          <div className="space-y-3">
-            <div className="flex justify-between items-center">
-              <Label className="text-sm font-medium flex items-center gap-2">
-                <RotateCw className="w-3 h-3 text-gray-500" />
-                {t('watermark.rotation')}
+        {settings.mode === 'text' ? (
+          <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
+            <div className="space-y-3">
+              <Label className="text-sm font-medium flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                <Type className="w-4 h-4 text-ocean-500" />
+                {t('watermark.text')}
               </Label>
-              <span className="text-xs text-gray-500 font-mono">{settings.rotation}°</span>
+              <Input
+                type="text"
+                value={settings.text}
+                onChange={(e) => setSettings({ ...settings, text: e.target.value })}
+                disabled={isProcessing}
+                placeholder={t('watermark.watermarkPlaceholder')}
+                className="rounded-xl border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-ocean-500 bg-white dark:bg-gray-900"
+              />
             </div>
-            <input
-              type="range"
-              min="-90"
-              max="90"
-              step="5"
-              value={settings.rotation}
-              onChange={(e) => setSettings({ ...settings, rotation: parseInt(e.target.value) })}
+
+            <div className="space-y-3">
+              <Label className="text-sm font-medium flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                <Palette className="w-4 h-4 text-ocean-500" />
+                {t('watermark.color')}
+              </Label>
+              <div className="grid grid-cols-4 gap-2">
+                {colorPresets.map((preset, index) => (
+                  <button
+                    key={index}
+                    type="button"
+                    onClick={() => setSettings({ ...settings, color: preset.value })}
+                    disabled={isProcessing}
+                    className={`
+                      relative h-10 w-full rounded-lg transition-all duration-200 border-2
+                      ${settings.color.r === preset.value.r &&
+                        settings.color.g === preset.value.g &&
+                        settings.color.b === preset.value.b
+                        ? 'border-ocean-500 scale-105 shadow-md'
+                        : 'border-transparent hover:border-gray-200 dark:hover:border-gray-700'
+                      }
+                    `}
+                    style={{ backgroundColor: `rgb(${preset.value.r}, ${preset.value.g}, ${preset.value.b})` }}
+                    title={preset.name}
+                  />
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <div className="flex justify-between items-center">
+                <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('watermark.fontSize')}</Label>
+                <span className="text-xs text-ocean-600 dark:text-ocean-400 font-mono font-bold bg-ocean-50 dark:bg-ocean-900/30 px-2 py-0.5 rounded">{settings.fontSize}pt</span>
+              </div>
+              <input
+                type="range" min="24" max="144" step="4"
+                value={settings.fontSize}
+                onChange={(e) => setSettings({ ...settings, fontSize: parseInt(e.target.value) })}
+                disabled={isProcessing}
+                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 accent-ocean-500"
+              />
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
+            <div className="space-y-3">
+              <Label className="text-sm font-medium flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                <Upload className="w-4 h-4 text-ocean-500" />
+                {t('watermark.image')}
+              </Label>
+              <div className="relative group">
+                <Input
+                  type="file"
+                  accept="image/png, image/jpeg"
+                  onChange={handleWatermarkImageSelected}
+                  disabled={isProcessing}
+                  className="hidden"
+                  id="watermark-image-upload"
+                />
+                <label
+                  htmlFor="watermark-image-upload"
+                  className={`
+                    flex flex-col items-center justify-center w-full h-32 rounded-xl border-2 border-dashed
+                    transition-all duration-200 cursor-pointer
+                    ${watermarkImagePreview
+                      ? 'border-ocean-500 bg-ocean-50/50 dark:bg-ocean-900/20'
+                      : 'border-gray-200 dark:border-gray-700 hover:border-ocean-400 dark:hover:border-ocean-600 bg-white dark:bg-gray-900'
+                    }
+                  `}
+                >
+                  {watermarkImagePreview ? (
+                    <div className="relative w-full h-full p-2">
+                      <img src={watermarkImagePreview} alt="Selected" className="w-full h-full object-contain rounded-lg" />
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity rounded-lg">
+                        <span className="text-white text-xs font-bold">{t('common.change')}</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <Upload className="w-8 h-8 text-gray-400 mb-2" />
+                      <span className="text-sm text-gray-500">{t('watermark.chooseImage')}</span>
+                    </>
+                  )}
+                </label>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <div className="flex justify-between items-center">
+                <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('watermark.imageScale')}</Label>
+                <span className="text-xs text-ocean-600 dark:text-ocean-400 font-mono font-bold bg-ocean-50 dark:bg-ocean-900/30 px-2 py-0.5 rounded">{settings.imageScale}%</span>
+              </div>
+              <input
+                type="range" min="10" max="100" step="5"
+                value={settings.imageScale}
+                onChange={(e) => setSettings({ ...settings, imageScale: parseInt(e.target.value) })}
+                disabled={isProcessing}
+                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 accent-ocean-500"
+              />
+            </div>
+          </div>
+        )}
+
+        <div className="pt-6 border-t border-gray-100 dark:border-gray-800 space-y-4">
+          <div className="space-y-3">
+            <Label className="text-sm font-medium flex items-center gap-2 text-gray-700 dark:text-gray-300">
+              <Move className="w-4 h-4 text-ocean-500" />
+              {t('watermark.position')}
+            </Label>
+            <Select
+              value={settings.position}
+              onValueChange={(value) => setSettings({ ...settings, position: value as Position })}
               disabled={isProcessing}
-              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 accent-ocean-500"
-            />
+            >
+              <SelectTrigger className="w-full rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-sm">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="rounded-xl border-gray-200 dark:border-gray-700">
+                <SelectItem value="diagonal">{t('watermark.positions.diagonal')}</SelectItem>
+                <SelectItem value="center">{t('watermark.positions.center')}</SelectItem>
+                <SelectItem value="top-left">{t('watermark.positions.topLeft')}</SelectItem>
+                <SelectItem value="top-right">{t('watermark.positions.topRight')}</SelectItem>
+                <SelectItem value="bottom-left">{t('watermark.positions.bottomLeft')}</SelectItem>
+                <SelectItem value="bottom-right">{t('watermark.positions.bottomRight')}</SelectItem>
+                <SelectItem value="custom">{t('watermark.positions.custom') || 'Manual'}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-3">
+              <div className="flex justify-between items-center">
+                <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('watermark.opacity')}</Label>
+                <span className="text-xs font-mono font-bold text-ocean-600 dark:text-ocean-400">{settings.opacity}%</span>
+              </div>
+              <input
+                type="range" min="10" max="100" step="5"
+                value={settings.opacity}
+                onChange={(e) => setSettings({ ...settings, opacity: parseInt(e.target.value) })}
+                disabled={isProcessing}
+                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 accent-ocean-500"
+              />
+            </div>
+
+            <div className="space-y-3">
+              <div className="flex justify-between items-center">
+                <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('watermark.rotation')}</Label>
+                <span className="text-xs font-mono font-bold text-ocean-600 dark:text-ocean-400">{settings.rotation}°</span>
+              </div>
+              <input
+                type="range" min="-180" max="180" step="5"
+                value={settings.rotation}
+                onChange={(e) => setSettings({ ...settings, rotation: parseInt(e.target.value) })}
+                disabled={isProcessing}
+                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 accent-ocean-500"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -776,10 +953,11 @@ export const WatermarkPDF: React.FC = () => {
   };
 
   const renderActions = () => {
+    const isDisabled = isProcessing || (settings.mode === 'text' ? !settings.text.trim() : !watermarkImage);
     return (
       <Button
         onClick={handleAddWatermark}
-        disabled={isProcessing || !settings.text.trim()}
+        disabled={isDisabled}
         className="w-full py-6 text-lg rounded-xl font-bold shadow-lg hover:shadow-xl transition-all"
       >
         {t('watermark.apply')}
@@ -800,6 +978,7 @@ export const WatermarkPDF: React.FC = () => {
       settings={!result ? renderSettings() : null}
       actions={!result ? renderActions() : null}
     >
+      <style>{fontStyles}</style>
       {renderContent()}
     </ToolLayout>
   );

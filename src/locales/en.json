@@ -5,9 +5,9 @@
   },
   "welcome": {
     "securePrefix": "Simple & Secure",
-    "titleSuffix": "",
-    "title": "PDF Made Simple",
-    "subtitle": "All the tools you need in one place. Just drag and drop a file to start the magic.",
+    "title": "Your Private",
+    "titleSuffix": "PDF Sanctuary.",
+    "subtitle": "The only PDF toolkit that works 100% in your browser. No uploads, no servers, no traces. Just professional tools, powered by your device.",
     "firstTimeBanner": "Welcome! All processing happens in your browser - your files never leave your device.",
     "selectTool": "Select a tool from the sidebar or choose one below"
   },
@@ -122,6 +122,7 @@
     "uploadDescription": "Drag and drop or click to upload",
     "download": "Download",
     "downloadAll": "Download All (ZIP)",
+    "supportDeveloper": "Support Developer",
     "processing": "Processing...",
     "searching": "Searching...",
     "error": "Error",
@@ -166,6 +167,8 @@
     "save": "Save",
     "show": "Show",
     "zoom": "Zoom",
+    "zoomIn": "Zoom In",
+    "zoomOut": "Zoom Out",
     "addFiles": "Add More Files",
     "errors": {
       "previewFailed": "Failed to load preview"
@@ -175,7 +178,7 @@
     "selectFiles": "Select files",
     "dragOrClick": "Drag files here or click to select",
     "dropHere": "Drop files here",
-    "multipleFilesAllowed": "Supports up to 10 .docx files",
+    "multipleFilesAllowed": "Supports up to 10 files",
     "singleFileAllowed": "Single file only",
     "pasteHint": "Or press Ctrl+V to paste files",
     "maxFiles": "Maximum files",
@@ -319,6 +322,10 @@
       "saved": "Space saved",
       "time": "Processing time"
     },
+    "optimized": {
+      "title": "File is already optimized",
+      "description": "Your PDF is already at its minimum possible size with this tool."
+    },
     "quickActions": {
       "title": "What's next?",
       "description": "Continue working with your compressed PDF:",
@@ -377,6 +384,10 @@
     "selectPagesHint": "Please select at least one page to continue",
     "mergingSelected": "Merging selected pages...",
     "mergeFailed": "Failed to merge selected pages",
+    "clearSelection": "Clear selection",
+    "pagePreview": "Page Preview",
+    "selectPage": "Select page",
+    "deselectPage": "Deselect page",
     "mode": {
       "all": {
         "name": "All Pages",
@@ -473,11 +484,11 @@
     },
     "permissions": {
       "printing": "Printing",
-      "printingNone": "Not allowed",
-      "printingLow": "Low resolution",
-      "printingHigh": "High resolution",
-      "copying": "Allow copying text",
-      "modifying": "Allow modifying content",
+      "printingNone": "None",
+      "printingLow": "Low",
+      "printingHigh": "High",
+      "copying": "Copying",
+      "modifying": "Modifying",
       "annotating": "Allow annotations",
       "fillingForms": "Allow filling forms",
       "contentAccessibility": "Allow screen readers"
@@ -530,6 +541,7 @@
     "languageHint": "Select the language of text in your document",
     "autoDetect": "Auto-detect language",
     "autoDetectHint": "Language will be detected automatically from document content",
+    "detected": "Detected",
     "detectingLanguage": "Detecting language...",
     "analyzingContent": "Analyzing document content...",
     "pageSelection": "Pages to process",
@@ -572,15 +584,33 @@
       "lowConfidence": "Low Confidence",
       "verifyLanguage": "Verify language selection for better OCR accuracy"
     },
+    "startOver": "Start Over",
+    "languages": {
+      "eng": "English",
+      "rus": "Russian",
+      "deu": "German",
+      "fra": "French",
+      "spa": "Spanish",
+      "ita": "Italian",
+      "por": "Portuguese",
+      "pol": "Polish",
+      "ukr": "Ukrainian",
+      "bel": "Belarusian",
+      "nld": "Dutch"
+    },
     "outputFormat": {
       "title": "Output Format",
       "text": "Plain Text (.txt)",
+      "textShort": "Text (Editable)",
       "textDesc": "Extract text only, editable and copyable",
       "searchablePdf": "Searchable PDF (preserves original)",
+      "searchablePdfShort": "Searchable PDF",
       "searchablePdfDesc": "Keeps original images with invisible OCR text layer - looks identical to original but fully searchable",
       "hocr": "hOCR (.html)",
+      "hocrShort": "hOCR (HTML)",
       "hocrDesc": "HTML with precise word positioning and confidence scores - useful for automated processing",
       "tsv": "TSV (.tsv)",
+      "tsvShort": "TSV (Data)",
       "tsvDesc": "Tab-separated values with bounding boxes - easy to parse for data analysis"
     },
     "results": {
@@ -628,6 +658,12 @@
     "text": "Watermark text",
     "watermarkText": "Watermark text",
     "watermarkPlaceholder": "Enter watermark text",
+    "mode": "Watermark Mode",
+    "textMode": "Text",
+    "imageMode": "Image",
+    "chooseImage": "Choose Image",
+    "image": "Watermark Image",
+    "imageScale": "Image Scale",
     "position": "Position",
     "positions": {
       "diagonal": "Diagonal",
@@ -658,6 +694,7 @@
     "loadingPreview": "Loading preview...",
     "errors": {
       "noText": "Please enter watermark text",
+      "noImage": "Please choose an image for the watermark",
       "failed": "Failed to add watermark",
       "cyrillicNotSupported": "Cyrillic characters might not be supported by the selected font"
     },
@@ -858,8 +895,10 @@
       "bottomRight": "Bottom Right",
       "bottomLeft": "Bottom Left",
       "topRight": "Top Right",
-      "topLeft": "Top Left"
+      "topLeft": "Top Left",
+      "custom": "Manual (Drag & Drop)"
     },
+    "dragToMove": "Drag to reposition",
     "applyToPages": "Apply to Pages",
     "allPages": "All Pages",
     "pageNumber": "Page {number}",
@@ -881,6 +920,10 @@
     "provideSignature": "Please draw or upload a signature",
     "textSize": "Text Size",
     "signatureSize": "Signature Size",
+    "includeName": "Include printed name",
+    "namePlaceholder": "Enter name",
+    "printedName": "Printed Name",
+    "nameSize": "Name Size",
     "addSignature": "Add Signature",
     "quickActions": {
       "title": "What's next?",
@@ -989,7 +1032,50 @@
     "selected": "Selected: {name} ({type})",
     "zoom": "Zoom: {scale}%",
     "pageOf": "Page {current} of {total}",
-    "selectFieldToEdit": "Select a field to edit"
+    "selectFieldToEdit": "Select a field to edit",
+    "addNewField": "+ Add New Field",
+    "toolbar": {
+      "addField": "Add Field:",
+      "addText": "Add text field",
+      "addMultiline": "Add multiline text field",
+      "addCheckbox": "Add checkbox",
+      "addRadio": "Add radio button",
+      "addDropdown": "Add dropdown",
+      "savePdf": "Save PDF"
+    },
+    "panel": {
+      "title": "Field Properties",
+      "deleteField": "Delete field",
+      "fieldName": "Field Name",
+      "xPosition": "X Position",
+      "yPosition": "Y Position",
+      "width": "Width",
+      "height": "Height",
+      "defaultValue": "Default Value",
+      "defaultPlaceholder": "Enter default text...",
+      "maxLength": "Max Length",
+      "maxLengthPlaceholder": "No limit",
+      "fontSize": "Font Size",
+      "checkedByDefault": "Checked by default",
+      "radioGroup": "Radio Group",
+      "radioGroupHint": "Radio buttons with the same group name are mutually exclusive",
+      "value": "Value",
+      "selectedByDefault": "Selected by default",
+      "options": "Options (one per line)",
+      "defaultOptions": "Option 1\nOption 2\nOption 3",
+      "allowMultiSelect": "Allow multiple selections",
+      "requiredField": "Required field",
+      "readOnlyField": "Read-only field",
+      "duplicateField": "Duplicate Field",
+      "selectToEdit": "Select a field to edit its properties"
+    },
+    "types": {
+      "text": "Text",
+      "multiline": "Multiline",
+      "checkbox": "Checkbox",
+      "radio": "Radio",
+      "dropdown": "Dropdown"
+    }
   },
   "editText": {
     "rasterizationWarning": "Note: Edited pages will be converted to images. Text on those pages will not be selectable after editing.",

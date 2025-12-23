@@ -1,103 +1,134 @@
 ---
 import ToolPage from '../components/ToolPage.astro';
 
-const keywords = "edit pdf text, replace text in pdf, redact pdf, cover text in pdf, pdf text editor, free pdf editor";
+const ICONS = {
+  pen: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>`,
+  style: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path></svg>`,
+  lock: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>`,
+  zap: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>`,
+  plus: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>`,
+  search: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>`,
+  shield: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>`,
+  table: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-7z"></path><path d="M3 9h18"></path><path d="M3 15h18"></path><path d="M9 3v18"></path></svg>`
+};
+
+const keywords = "edit pdf text, replace text in pdf, redact pdf, cover text in pdf, pdf text editor, free pdf editor, client-side pdf editor";
 
 const howToSchema = {
   "@context": "https://schema.org",
   "@type": "HowTo",
-  "image": "https://localpdf.online/screenshots/edit-active.png",
-  "name": "How to Edit Text in a PDF",
-  "description": "A step-by-step guide on how to replace, cover, or redact text in a PDF document using the free and private LocalPDF text editor.",
+  "name": "How to Edit Text in a PDF Locally",
+  "description": "A step-by-step guide on how to replace, cover, or redact text in a PDF document using the private LocalPDF editor.",
   "step": [
     {
       "@type": "HowToStep",
       "name": "Open the Tool and Upload PDF",
-      "text": "Click 'Open Tool' and upload the PDF document you want to edit.",
-      "url": "https://localpdf.online/edit-text-pdf#tool",
-      "image": "https://localpdf.online/screenshots/edit-welcome.png"
+      "text": "Click 'Launch Studio' and upload the PDF document you want to edit.",
+      "url": "https://localpdf.online/edit-text-pdf#tool"
     },
     {
       "@type": "HowToStep",
-      "name": "Smart Text Detection",
-      "text": "The tool automatically detects text blocks. Simply click on the text you want to modify to create an editable area.",
-      "image": "https://localpdf.online/screenshots/edit-active.png"
+      "name": "Select and Edit Text",
+      "text": "Click on any text block to edit it. Our smart engine detects the original font and positioning."
     },
     {
       "@type": "HowToStep",
-      "name": "Edit and Style",
-      "text": "Type your new text in the floating editor. Use the styling panel to adjust font, color, and formatting.",
-      "image": "https://localpdf.online/screenshots/edit-styles.png"
+      "name": "Update and Style",
+      "text": "Type your new text and use the styling panel to adjust font size and alignment."
     },
     {
       "@type": "HowToStep",
-      "name": "Save and Download",
-      "text": "When finished, click 'Save' to process your changes locally, then download your edited PDF.",
-      "image": "https://localpdf.online/screenshots/edit-active.png"
+      "name": "Save Locally",
+      "text": "Click 'Save' to process and download your document directly to your device."
     }
   ],
   "totalTime": "PT3M"
 };
+
+const faqs = [
+  {
+    question: "Is it safe to edit sensitive documents here?",
+    answer: "Absolutely. LocalPDF uses WebAssembly to process your documents entirely in your browser's RAM. Your files are never uploaded to any server, making it the most secure way to redact or edit sensitive information."
+  },
+  {
+    question: "Does the edited text match the original font?",
+    answer: "Our smart editor attempts to detect the original font style. While we support standard PDF fonts (Helvetica, Roboto, etc.), some custom embedded fonts may be replaced with high-quality alternatives while maintained alignment."
+  },
+  {
+    question: "Can I redact or black out text?",
+    answer: "Yes. You can use the editor to completely cover or remove sensitive data. Since the processing is done locally, you can be sure no 'hidden' data or metadata is accidentally uploaded."
+  }
+];
+
+const techInfo = [
+  {
+    title: "Client-Side Rendering",
+    description: "We use PDF.js and custom canvas rendering to accurately display and interact with PDF layers without any server-side involvement."
+  },
+  {
+    title: "Smart Text Injection",
+    description: "Our engine analyzes the PDF's content streams to calculate precise positioning and kerning for replacement text, ensuring a professional look."
+  },
+  {
+    title: "WebWorker Security",
+    description: "The editing engine runs in a dedicated Web Worker thread, which is destroyed upon completion, purging all transient data from your device's memory."
+  }
+];
 ---
 
 <ToolPage
   toolId="edit-text-pdf"
-  title="Edit Text in PDF Online — Free & Private | Replace, Cover, Redact"
-  metaDescription="Edit, replace, or cover text in PDFs instantly. Multi-page editing with multiline support. 100% private client-side processing. No uploads."
+  title="Edit PDF Text Locally | 100% Private PDF Editor"
+  metaDescription="Professional PDF text editor works entirely in your browser. Replace, redact, or add text without uploading files. Secure, instant, and private."
   image="https://localpdf.online/screenshots/edit-active.png"
   keywords={keywords}
-  description="Edit and replace text in PDF documents directly in your browser. Our advanced editor allows you to replace original text with perfect alignment, redact sensitive data, or add new content—all while keeping your files 100% private."
+  description="Edit and replace text in PDF documents directly in your browser. Our advanced engine allows you to replace original text with perfect alignment, redact sensitive data, or add new content—all while keeping your files 100% private."
   benefits={[
-    "✏️ Smart Detection — Automatically find and replace original PDF text",
-    "🎨 Pro Styling — Full control over fonts, colors, and formatting",
-    "🔒 100% Private — Processing happens entirely on your device",
-    "⚡ Instant — Real-time preview and fast local processing"
+    "Smart Detection — Replace original PDF text instantly",
+    "Pro Styling — Full control over fonts and alignment",
+    "Absolute Privacy — No document ever leaves your machine",
+    "Instant Preview — Real-time local processing"
   ]}
   relatedTools={[
-    { id: 'add-text-pdf', icon: '📝', title: 'Add Text to PDF', description: 'Add new text overlays to PDF pages' },
-    { id: 'ocr-pdf', icon: '🔍', title: 'OCR PDF', description: 'Extract text from scanned documents' },
-    { id: 'watermark-pdf', icon: '💧', title: 'Watermark PDF', description: 'Add watermarks to protect documents' },
-    { id: 'tables-pdf', icon: '📊', title: 'Tables in PDF', description: 'Convert Excel/CSV to PDF tables' }
+    { id: 'add-text-pdf', icon: ICONS.plus, title: 'Text Overlay', description: 'Add new text to existing PDF pages' },
+    { id: 'ocr-pdf', icon: ICONS.search, title: 'Smart OCR', description: 'Extract text from scanned documents' },
+    { id: 'protect-pdf', icon: ICONS.shield, title: 'Protect PDF', description: 'Secure documents with AES encryption' },
+    { id: 'tables-pdf', icon: ICONS.table, title: 'Tables Pro', description: 'Convert data to structured PDF tables' }
   ]}
+  faqs={faqs}
+  techInfo={techInfo}
   whyChoose={{
-    title: "Why Use LocalPDF for Editing?",
+    title: "Why Choose LocalPDF Sanctuary for Editing?",
     reasons: [
-      "True Privacy: Most online editors upload your files. We don't. Your documents never leave your browser, which is critical for legal and personal data.",
-      "Intelligent Editing: Our 'Smart Edit' feature detects the position and style of original text, making replacements look natural and perfectly aligned.",
-      "Professional Layout: Adjust indentation, alignment, and line spacing for every text block to match the original document's typography.",
-      "Redaction Made Easy: Easily cover sensitive information with solid color blocks for secure document sharing.",
-      "Zero Installation: A professional-grade PDF editor that works directly in your browser. No registration, no ads, no cloud."
+      "Privacy First: Traditional editors upload your files to their cloud. LocalPDF processes everything in your browser's secure sandbox.",
+      "Pixel Precision: Our smart engine detects the exact position and style of original text for seamless replacements.",
+      "No Traces: Once you close the tab, all document data is purged from your RAM. No temporary files are ever stored on a server.",
+      "Professional Output: High-resolution PDF generation with standard font support for professional-looking documents.",
+      "Developer Grade: Powered by modern WebAssembly and Web Workers for desktop-speed performance in the browser."
     ]
   }}
   features={[
-    "Smart text detection and replacement",
-    "Add new text elements anywhere on the page",
+    "Smart text detection and visual replacement",
+    "Add new text elements on any page",
     "Precise alignment and positioning controls",
-    "Full typography: Roboto, Helvetica, Courier support",
-    "Custom text and background colors",
-    "Multiline support with automatic wrapping",
-    "Secure redaction for sensitive data",
-    "High-resolution professional output",
-    "100% client-side privacy protection"
+    "Standard font support (Helvetica, Roboto, etc.)",
+    "Custom text and highlight colors",
+    "Multiline support for text blocks",
+    "Secure redaction for sensitive information",
+    "High-resolution professional-grade output",
+    "100% private client-side processing engine"
   ]}
   steps={[
-    { 
-      text: 'Open the Edit tool and upload your PDF document.', 
-      image: '/screenshots/edit-welcome.png' 
-    },
-    { 
-      text: 'Click on existing text to edit it, or use "Add Text" for new content.', 
-      image: '/screenshots/edit-active.png' 
-    },
-    { 
-      text: 'Style your text using the formatting panel (font, size, color).', 
-      image: '/screenshots/edit-styles.png' 
-    },
-    { 
-      text: 'Preview your changes and click "Save" to download the result.', 
-      image: '/screenshots/edit-active.png' 
-    }
+    { text: 'Launch the Studio and upload your PDF document.' },
+    { text: 'Click on any existing text to edit it, or use "Add Text".' },
+    { text: 'Adjust styling (font, size, alignment) using the toolbar.' },
+    { text: 'Preview and click "Save" to download your edited PDF.' }
   ]}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>
 >
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />

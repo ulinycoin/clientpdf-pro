@@ -105,29 +105,25 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = () => {
   };
 
   return (
-    <div className="min-h-[85vh] flex flex-col items-center justify-center p-4 relative overflow-hidden">
-      {/* Background Decorative Elements */}
-      <div className="absolute top-20 left-10 w-72 h-72 bg-purple-300/20 rounded-full blur-3xl animate-pulse-slow mix-blend-multiply dark:mix-blend-overlay"></div>
-      <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-300/20 rounded-full blur-3xl animate-gentle-float mix-blend-multiply dark:mix-blend-overlay" style={{ animationDelay: '1s' }}></div>
-
+    <div className="flex flex-col items-center justify-start pt-6 p-4 relative overflow-hidden">
       <div className="container-responsive max-w-6xl z-10">
         {/* Header Section */}
-        <div className="text-center mb-12 animate-fade-in space-y-6">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-premium dark:glass-premium-dark border border-white/20 shadow-glow mb-4 hover:scale-105 transition-transform duration-300">
-            <Shield className="w-4 h-4 text-ocean-500" />
-            <span className="text-sm font-medium bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300">
+        <div className="text-center mb-8 animate-fade-in space-y-6">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 shadow-sm mb-4 hover:scale-105 transition-transform duration-300">
+            <Shield className="w-4 h-4 text-accent-blue" />
+            <span className="text-sm font-medium text-gray-900 dark:text-gray-300">
               {t('welcome.securePrefix')}
             </span>
           </div>
 
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-balance text-gray-900 dark:text-white drop-shadow-sm">
+          <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-balance text-gray-900 dark:text-gray-50 drop-shadow-sm leading-tight">
             {t('welcome.title')}
-            <span className="block mt-2 text-transparent bg-clip-text bg-gradient-to-r from-ocean-500 via-purple-500 to-pink-500">
+            <span className="block mt-2 text-gradient-blue">
               {t('welcome.titleSuffix')}
             </span>
           </h1>
 
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed text-pretty">
+          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed text-pretty">
             {t('welcome.subtitle')}
           </p>
         </div>
@@ -147,15 +143,10 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = () => {
                 rounded-[3rem]
                 backdrop-blur-3xl
                 ${isDragging
-                  ? 'bg-[#e5e5e5]/80 dark:bg-[#2a2a2a]/80 shadow-[0_20px_80px_rgba(0,0,0,0.2)] scale-[1.01] -translate-y-2'
-                  : 'border border-white/20 dark:border-white/5 bg-gradient-to-br from-white/40 via-white/20 to-white/40 dark:from-[#2c2c2e]/60 dark:via-[#1c1c1e]/40 dark:to-[#000000]/60 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.5)] hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.25)] dark:hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.7)] hover:-translate-y-3'
+                  ? 'bg-ocean-100/80 dark:bg-ocean-800/80 shadow-[0_20px_80px_rgba(0,0,0,0.2)] scale-[1.01] -translate-y-2'
+                  : 'border border-white/20 dark:border-white/5 bg-white/20 dark:bg-[#1c1c1e]/40 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.5)] hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.25)] dark:hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.7)] hover:-translate-y-3'
                 }
               `}
-              style={{
-                backgroundImage: isDragging
-                  ? undefined
-                  : 'linear-gradient(120deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.05) 30%, rgba(255,255,255,0) 100%)',
-              }}
             >
               <input
                 id="file-input"
@@ -170,17 +161,17 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = () => {
                 {/* Icon Container */}
                 <div className={`
                   p-8 rounded-[2rem] 
-                  bg-gradient-to-br from-white/80 to-white/40 dark:from-white/10 dark:to-white/5 
-                  backdrop-blur-md border border-white/40 dark:border-white/10 
+                  bg-white/40 dark:bg-white/5 
+                  backdrop-blur-md border border-white/20 dark:border-white/10 
                   text-gray-700 dark:text-gray-200 
                   transition-all duration-500 shadow-xl
                   ${isDragging ? 'scale-110 shadow-2xl rotate-3' : 'group-hover:scale-105 group-hover:-rotate-3'}
                 `}>
-                  <UploadCloud className={`w-24 h-24 ${isDragging ? 'animate-bounce text-ocean-500' : 'text-gray-600 dark:text-gray-300'}`} />
+                  <UploadCloud className={`w-24 h-24 ${isDragging ? 'animate-bounce text-accent-blue' : 'text-gray-600 dark:text-gray-400'}`} />
                 </div>
 
                 <div className="space-y-4">
-                  <h3 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300">
+                  <h3 className="text-4xl font-bold text-gray-900 dark:text-gray-100">
                     {isDragging ? t('upload.dropHere') : t('upload.selectFiles')}
                   </h3>
                   <p className="text-xl text-gray-500 dark:text-gray-400 font-medium">
@@ -203,7 +194,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = () => {
             </div>
           ) : (
             /* File Preview / Ready State */
-            <div className="relative w-full max-w-4xl mx-auto backdrop-blur-3xl rounded-[2.5rem] border border-white/20 dark:border-white/5 bg-gradient-to-br from-white/60 via-white/40 to-white/60 dark:from-[#2c2c2e]/80 dark:via-[#1c1c1e]/60 dark:to-[#000000]/80 shadow-2xl overflow-hidden p-8 md:p-12 animate-scale-in">
+            <div className="relative w-full max-w-4xl mx-auto backdrop-blur-3xl rounded-[3rem] border border-white/20 dark:border-white/5 bg-white/40 dark:bg-[#1c1c1e]/60 shadow-2xl overflow-hidden p-8 md:p-12 animate-scale-in">
               <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-8">
                 <div className="flex items-center gap-4">
                   <div className="p-3 rounded-2xl bg-success-100 dark:bg-success-900/30 text-success-600 dark:text-success-400">

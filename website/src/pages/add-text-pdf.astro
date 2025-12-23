@@ -1,7 +1,30 @@
 ---
 import ToolPage from '../components/ToolPage.astro';
 
-const keywords = "add text to pdf, write on pdf, pdf text editor, add text box to pdf, type on pdf, free pdf editor";
+const faqs = [
+  {
+    question: "How to add text to a PDF for free without registration?",
+    answer: "Simply use LocalPDF's Add Text tool. Upload your document, click the 'Add Text' button, type your content, and download the modified PDF. It's completely free, and you don't need to create an account."
+  },
+  {
+    question: "Is it safe to type on a PDF online?",
+    answer: "Most online editors upload your files to their servers. LocalPDF is different — our technology processes your document entirely in your browser. Your file never leaves your device, making it 100% private and secure for sensitive data."
+  },
+  {
+    question: "Can I customize the font and color when adding text?",
+    answer: "Yes, LocalPDF provides a professional styling panel. You can choose from popular fonts (Roboto, Helvetica, Courier), adjust font size, change colors, and even set text alignment (left, center, right) or fit to width."
+  },
+  {
+    question: "Does this tool work on mobile devices?",
+    answer: "Absolutely. LocalPDF is fully responsive and works on any modern web browser on iPhone, Android, tablets, and desktop computers. No installation is required."
+  },
+  {
+    question: "Can I add text to multiple pages of a PDF?",
+    answer: "Yes, you can navigate through all pages of your PDF document and add as many separate text boxes to each page as you need."
+  }
+];
+
+const keywords = "add text to pdf, write on pdf, pdf text editor, add text box to pdf, type on pdf, free pdf editor, annotate pdf online, private pdf editor";
 
 const howToSchema = {
   "@context": "https://schema.org",
@@ -59,6 +82,7 @@ const howToSchema = {
     { id: 'sign-pdf', icon: '✍️', title: 'Sign PDF', description: 'Add digital signatures to documents' },
     { id: 'tables-pdf', icon: '📊', title: 'Tables in PDF', description: 'Convert Excel/CSV to PDF tables' }
   ]}
+  faqs={faqs}
   whyChoose={{
     title: "Why Use LocalPDF for Adding Text?",
     reasons: [

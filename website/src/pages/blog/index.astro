@@ -53,11 +53,11 @@ const description = selectedTag
 <BaseLayout title={title} description={description} canonical="https://localpdf.online/blog">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <!-- Header -->
-    <header class="text-center mb-12">
-      <h1 class="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
+    <header class="text-center mb-16">
+      <h1 class="text-4xl sm:text-6xl font-extrabold text-main mb-6 leading-tight font-outfit">
         {selectedTag ? `Articles about #${selectedTag}` : 'LocalPDF Blog'}
       </h1>
-      <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+      <p class="text-xl text-muted max-w-3xl mx-auto leading-relaxed">
         {selectedTag
           ? `Explore our ${filteredPosts.length} articles about ${selectedTag}`
           : 'Learn tips, tricks, and best practices for working with PDFs'
@@ -96,9 +96,9 @@ const description = selectedTag
 
     <!-- All Posts -->
     <section>
-      <h2 class="text-2xl font-bold text-gray-900 mb-6">
-        {selectedTag ? 'Filtered Articles' : 'All Articles'}
-        <span class="text-gray-500 font-normal text-lg ml-2">
+      <h2 class="text-3xl font-bold text-main mb-8 font-outfit">
+        {selectedTag ? 'Filtered Articles' : 'Recent Updates'}
+        <span class="text-muted font-normal text-lg ml-2 opacity-60">
           ({postsWithReadingTime.length})
         </span>
       </h2>
@@ -121,31 +121,31 @@ const description = selectedTag
           ))}
         </div>
       ) : (
-        <div class="text-center py-12">
-          <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-          </svg>
-          <h3 class="text-lg font-medium text-gray-900 mb-2">No articles found</h3>
-          <p class="text-gray-600 mb-4">
-            {selectedTag
-              ? `We don't have any articles about "${selectedTag}" yet.`
-              : 'No articles available at the moment.'
-            }
-          </p>
-          {selectedTag && (
-            <a href="/blog" class="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-              View All Articles
-            </a>
-          )}
-        </div>
+          <div class="text-center py-16 px-8 bg-glass border border-glass-border rounded-[2rem]">
+            <svg class="mx-auto h-16 w-16 text-muted mb-6 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <h3 class="text-2xl font-bold text-main mb-3">No articles found</h3>
+            <p class="text-muted mb-8 text-lg">
+              {selectedTag
+                ? `We don't have any articles about "${selectedTag}" yet.`
+                : 'No articles available at the moment.'
+              }
+            </p>
+            {selectedTag && (
+              <a href="/blog" class="inline-block px-8 py-3.5 bg-accent-blue text-white font-bold rounded-xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-900/20">
+                View All Articles
+              </a>
+            )}
+          </div>
       )}
     </section>
 
     <!-- Categories Overview -->
     {!selectedTag && (
-      <section class="mt-16 pt-12 border-t border-gray-200">
-        <h2 class="text-2xl font-bold text-gray-900 mb-6">Browse by Category</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <section class="mt-20 pt-16 border-t border-glass-border">
+        <h2 class="text-3xl font-bold text-main mb-10 font-outfit">Explore by Category</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {[
             'PDF Basics',
             'Advanced Features',
@@ -159,12 +159,12 @@ const description = selectedTag
             return count > 0 ? (
               <a
                 href={`/blog?category=${encodeURIComponent(category)}`}
-                class="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group"
+                class="p-6 bg-glass border border-glass-border rounded-2xl hover:border-white/20 transition-all group"
               >
-                <h3 class="font-semibold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">
+                <h3 class="text-lg font-bold text-main mb-2 group-hover:text-accent-light transition-colors">
                   {category}
                 </h3>
-                <p class="text-sm text-gray-600">{count} article{count !== 1 ? 's' : ''}</p>
+                <p class="text-sm text-muted opacity-80">{count} article{count !== 1 ? 's' : ''}</p>
               </a>
             ) : null;
           })}

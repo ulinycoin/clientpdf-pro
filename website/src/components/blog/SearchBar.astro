@@ -2,16 +2,16 @@
 // Client-side search component with debounce
 ---
 
-<div class="search-bar mb-8">
-  <div class="relative max-w-md">
+<div class="search-bar mb-12">
+  <div class="relative max-w-xl mx-auto">
     <input
       type="text"
       id="blog-search"
       placeholder="Search articles..."
-      class="w-full px-4 py-3 pl-12 text-gray-900 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+      class="w-full px-6 py-4 pl-14 text-main bg-glass border border-glass-border rounded-2xl focus:border-accent-light outline-none transition-all placeholder:text-muted/50 shadow-xl"
     />
     <svg
-      class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
+      class="absolute left-5 top-1/2 transform -translate-y-1/2 w-6 h-6 text-muted/60"
       fill="none"
       stroke="currentColor"
       viewBox="0 0 24 24"
@@ -23,22 +23,24 @@
         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
       />
     </svg>
-    <div id="search-spinner" class="absolute right-4 top-1/2 transform -translate-y-1/2 hidden">
-      <div class="animate-spin h-5 w-5 border-2 border-blue-600 border-t-transparent rounded-full"></div>
+    <div id="search-spinner" class="absolute right-5 top-1/2 transform -translate-y-1/2 hidden">
+      <div class="animate-spin h-5 w-5 border-2 border-accent-blue border-t-transparent rounded-full"></div>
     </div>
   </div>
 
-  <div id="search-results" class="mt-4 hidden">
-    <div class="text-sm text-gray-600 mb-3">
-      <span id="results-count">0</span> results found
+  <div id="search-results" class="mt-8 hidden">
+    <div class="text-sm text-muted mb-4 px-2">
+      <span id="results-count" class="font-bold text-main">0</span> results found
     </div>
-    <div id="results-container" class="space-y-4"></div>
+    <div id="results-container" class="grid grid-cols-1 gap-4"></div>
   </div>
 
-  <div id="no-results" class="mt-4 hidden">
-    <p class="text-gray-600 text-center py-8">
-      No articles found. Try different keywords.
-    </p>
+  <div id="no-results" class="mt-12 hidden">
+    <div class="text-center py-12 px-6 bg-glass border border-glass-border rounded-3xl">
+      <p class="text-muted text-lg">
+        No articles found. Try different keywords.
+      </p>
+    </div>
   </div>
 </div>
 
@@ -115,14 +117,14 @@
         resultsContainer.innerHTML = results
           .map(
             post => `
-          <a href="/blog/${post.slug}" class="block p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
-            <h3 class="font-semibold text-gray-900 mb-1">${highlightMatch(post.title, query)}</h3>
-            <p class="text-sm text-gray-600 mb-2">${highlightMatch(post.description, query)}</p>
+          <a href="/blog/${post.slug}" class="block p-5 bg-glass border border-glass-border rounded-xl hover:border-white/20 transition-all">
+            <h3 class="font-bold text-main mb-2 text-lg">${highlightMatch(post.title, query)}</h3>
+            <p class="text-sm text-muted mb-4 opacity-80">${highlightMatch(post.description, query)}</p>
             <div class="flex gap-2">
-              <span class="text-xs px-2 py-1 bg-blue-100 text-blue-800 rounded">${post.category}</span>
+              <span class="text-xs px-2 py-1 bg-glass border border-glass-border text-accent-light rounded-full">${post.category}</span>
               ${post.tags
-                .slice(0, 3)
-                .map(tag => `<span class="text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded">#${tag}</span>`)
+                .slice(0, 2)
+                .map(tag => `<span class="text-xs px-2 py-1 bg-glass-heavy border border-glass-border text-muted rounded">#${tag}</span>`)
                 .join('')}
             </div>
           </a>
@@ -139,7 +141,7 @@
   // Highlight matching text
   function highlightMatch(text: string, query: string): string {
     const regex = new RegExp(`(${query})`, 'gi');
-    return text.replace(regex, '<mark class="bg-yellow-200 px-1 rounded">$1</mark>');
+    return text.replace(regex, '<mark class="bg-accent-blue/30 text-accent-light px-1 rounded">$1</mark>');
   }
 
   // Initialize
@@ -176,14 +178,6 @@
 
 <style>
   #blog-search:focus {
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-  }
-
-  @media (prefers-color-scheme: dark) {
-    #blog-search {
-      background: #1a1a1a;
-      color: #fff;
-      border-color: #333;
-    }
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
   }
 </style>

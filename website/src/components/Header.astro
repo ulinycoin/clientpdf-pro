@@ -1,0 +1,102 @@
+---
+---
+<header>
+  <a href="/" class="logo">
+    <img src="/logos/localpdf-header-64x64.png" alt="LocalPDF" class="logo-image" />
+    <div class="logo-text">
+      <div class="logo-title">LocalPDF</div>
+      <div class="logo-subtitle">Sanctuary</div>
+    </div>
+  </a>
+  <nav>
+    <a href="/">Tools</a>
+    <a href="/blog">Blog</a>
+    <a href="/learn">Learn</a>
+    <a href="/comparison">Compare</a>
+    <a href="/about">About</a>
+  </nav>
+</header>
+
+<style>
+  header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 20px 7vw;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(3, 7, 18, 0.75);
+    backdrop-filter: blur(16px);
+    z-index: 1000;
+    border-bottom: 1px solid var(--glass-border);
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    font-size: 1.5rem;
+    color: #fff;
+    text-decoration: none;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .logo:hover { transform: scale(1.02); }
+
+  .logo-image {
+    width: 40px;
+    height: 40px;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .logo:hover .logo-image { transform: scale(1.05) rotate(3deg); }
+
+  .logo-text { display: flex; flex-direction: column; gap: 0; }
+  .logo-title {
+    font-size: 1.4rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #fff;
+    line-height: 1.2;
+  }
+  .logo-subtitle {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--accent-light);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    line-height: 1;
+  }
+
+  nav { display: flex; gap: 24px; }
+  nav a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 6px 0;
+    position: relative;
+  }
+  nav a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--accent-blue);
+    transition: width 0.3s ease;
+  }
+  nav a:hover { color: #fff; }
+  nav a:hover::after { width: 100%; }
+
+  @media (max-width: 768px) {
+    header { padding: 16px 5vw; }
+    nav { display: none; }
+    .logo-subtitle { display: none; }
+  }
+</style>

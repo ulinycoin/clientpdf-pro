@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
+import { useI18n } from '@/hooks/useI18n';
 
 interface FieldPanelProps {
   selectedField: FormField | null;
@@ -16,12 +17,14 @@ export const FieldPanel: React.FC<FieldPanelProps> = ({
   onFieldUpdate,
   onFieldDelete,
 }) => {
+  const { t } = useI18n();
+
   if (!selectedField) {
     return (
       <div className="w-80 border-r border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 p-6">
         <div className="text-center text-gray-500 dark:text-gray-400 mt-20">
           <p className="text-4xl mb-4">📝</p>
-          <p className="text-sm">Select a field to edit its properties</p>
+          <p className="text-sm">{t('addFormFields.panel.selectToEdit')}</p>
         </div>
       </div>
     );
@@ -36,13 +39,13 @@ export const FieldPanel: React.FC<FieldPanelProps> = ({
       <div className="space-y-4">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Field Properties</h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{t('addFormFields.panel.title')}</h3>
           <Button
             onClick={() => onFieldDelete(selectedField.id)}
             variant="ghost"
             size="sm"
             className="text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
-            title="Delete field"
+            title={t('addFormFields.panel.deleteField')}
           >
             🗑️
           </Button>
@@ -50,13 +53,13 @@ export const FieldPanel: React.FC<FieldPanelProps> = ({
 
         {/* Field type badge */}
         <div className="inline-block px-3 py-1 bg-ocean-100 dark:bg-ocean-900 text-ocean-700 dark:text-ocean-300 rounded-full text-xs font-medium">
-          {selectedField.type}
+          {t(`addFormFields.types.${selectedField.type}`)}
         </div>
 
         {/* Field Name */}
         <div>
           <Label>
-            Field Name
+            {t('addFormFields.panel.fieldName')}
           </Label>
           <Input
             type="text"
@@ -69,7 +72,7 @@ export const FieldPanel: React.FC<FieldPanelProps> = ({
         <div className="grid grid-cols-2 gap-3">
           <div>
             <Label>
-              X Position
+              {t('addFormFields.panel.xPosition')}
             </Label>
             <Input
               type="number"
@@ -79,7 +82,7 @@ export const FieldPanel: React.FC<FieldPanelProps> = ({
           </div>
           <div>
             <Label>
-              Y Position
+              {t('addFormFields.panel.yPosition')}
             </Label>
             <Input
               type="number"
@@ -93,7 +96,7 @@ export const FieldPanel: React.FC<FieldPanelProps> = ({
         <div className="grid grid-cols-2 gap-3">
           <div>
             <Label>
-              Width
+              {t('addFormFields.panel.width')}
             </Label>
             <Input
               type="number"
@@ -103,7 +106,7 @@ export const FieldPanel: React.FC<FieldPanelProps> = ({
           </div>
           <div>
             <Label>
-              Height
+              {t('addFormFields.panel.height')}
             </Label>
             <Input
               type="number"
@@ -118,31 +121,31 @@ export const FieldPanel: React.FC<FieldPanelProps> = ({
           <>
             <div>
               <Label>
-                Default Value
+                {t('addFormFields.panel.defaultValue')}
               </Label>
               <Input
                 type="text"
                 value={(selectedField as TextFormField | MultilineFormField).defaultValue || ''}
                 onChange={(e) => handleUpdate({ defaultValue: e.target.value })}
-                placeholder="Enter default text..."
+                placeholder={t('addFormFields.panel.defaultPlaceholder')}
               />
             </div>
 
             <div>
               <Label>
-                Max Length
+                {t('addFormFields.panel.maxLength')}
               </Label>
               <Input
                 type="number"
                 value={(selectedField as TextFormField | MultilineFormField).maxLength || ''}
                 onChange={(e) => handleUpdate({ maxLength: e.target.value ? Number(e.target.value) : undefined })}
-                placeholder="No limit"
+                placeholder={t('addFormFields.panel.maxLengthPlaceholder')}
               />
             </div>
 
             <div>
               <Label>
-                Font Size
+                {t('addFormFields.panel.fontSize')}
               </Label>
               <Input
                 type="number"
@@ -164,7 +167,7 @@ export const FieldPanel: React.FC<FieldPanelProps> = ({
               onCheckedChange={(checked) => handleUpdate({ checked: checked as boolean })}
             />
             <Label htmlFor="checkbox-checked" className="text-sm font-normal cursor-pointer">
-              Checked by default
+              {t('addFormFields.panel.checkedByDefault')}
             </Label>
           </div>
         )}
@@ -174,7 +177,7 @@ export const FieldPanel: React.FC<FieldPanelProps> = ({
           <>
             <div>
               <Label>
-                Radio Group
+                {t('addFormFields.panel.radioGroup')}
               </Label>
               <Input
                 type="text"
@@ -182,13 +185,13 @@ export const FieldPanel: React.FC<FieldPanelProps> = ({
                 onChange={(e) => handleUpdate({ group: e.target.value })}
               />
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                Radio buttons with the same group name are mutually exclusive
+                {t('addFormFields.panel.radioGroupHint')}
               </p>
             </div>
 
             <div>
               <Label>
-                Value
+                {t('addFormFields.panel.value')}
               </Label>
               <Input
                 type="text"
@@ -204,7 +207,7 @@ export const FieldPanel: React.FC<FieldPanelProps> = ({
                 onCheckedChange={(checked) => handleUpdate({ selected: checked as boolean })}
               />
               <Label htmlFor="radio-selected" className="text-sm font-normal cursor-pointer">
-                Selected by default
+                {t('addFormFields.panel.selectedByDefault')}
               </Label>
             </div>
           </>
@@ -215,7 +218,7 @@ export const FieldPanel: React.FC<FieldPanelProps> = ({
           <>
             <div>
               <Label>
-                Options (one per line)
+                {t('addFormFields.panel.options')}
               </Label>
               <textarea
                 value={(selectedField as DropdownFormField).options.join('\n')}
@@ -232,7 +235,7 @@ export const FieldPanel: React.FC<FieldPanelProps> = ({
                 onCheckedChange={(checked) => handleUpdate({ multiSelect: checked as boolean })}
               />
               <Label htmlFor="dropdown-multiselect" className="text-sm font-normal cursor-pointer">
-                Allow multiple selections
+                {t('addFormFields.panel.allowMultiSelect')}
               </Label>
             </div>
           </>
@@ -247,7 +250,7 @@ export const FieldPanel: React.FC<FieldPanelProps> = ({
               onCheckedChange={(checked) => handleUpdate({ required: checked as boolean })}
             />
             <Label htmlFor="field-required" className="text-sm font-normal cursor-pointer">
-              Required field
+              {t('addFormFields.panel.requiredField')}
             </Label>
           </div>
 
@@ -258,7 +261,7 @@ export const FieldPanel: React.FC<FieldPanelProps> = ({
               onCheckedChange={(checked) => handleUpdate({ readonly: checked as boolean })}
             />
             <Label htmlFor="field-readonly" className="text-sm font-normal cursor-pointer">
-              Read-only field
+              {t('addFormFields.panel.readOnlyField')}
             </Label>
           </div>
         </div>

@@ -78,89 +78,98 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   return (
     <aside
-      className={`fixed left-0 top-0 h-screen border-r border-white/20 dark:border-white/10 transition-all duration-300 ease-in-out z-20 overflow-y-auto ${collapsed ? 'w-20' : 'w-72'} 
-      backdrop-blur-3xl bg-[#fbfbfd]/60 dark:bg-[#1c1c1e]/60 shadow-[0_0_30px_rgba(0,0,0,0.03)] dark:shadow-[0_0_30px_rgba(0,0,0,0.2)]`}
-      style={{ paddingTop: '7.5rem' }}
+      className={`fixed left-0 top-0 h-screen border-r border-white/20 dark:border-white/10 transition-all duration-300 ease-in-out z-20 overflow-y-auto ${collapsed ? 'w-20' : 'w-72'} shadow-2xl`}
+      style={{ paddingTop: '8rem' }}
     >
-      {/* Section title */}
-      {!collapsed && (
-        <div className="px-4 py-3 border-b border-gray-200/40 dark:border-privacy-700/40">
-          <h2 className="text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide">
-            {t('sidebar.tools')}
-          </h2>
-        </div>
-      )}
+      <div className="card-glass"></div>
+      <div className="relative z-10">
+        {/* Section title */}
+        {!collapsed && (
+          <div className="px-4 py-3 border-b border-white/10">
+            <h2 className="text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide">
+              {t('sidebar.tools')}
+            </h2>
+          </div>
+        )}
 
-      {/* Tools list */}
-      <nav className="p-2">
-        <ul className="space-y-1">
-          {filteredTools.map((tool) => {
-            const isActive = currentTool === tool.id;
-            const Icon = tool.icon;
+        {/* Tools list */}
+        <nav className="p-2">
+          <ul className="space-y-1">
+            {filteredTools.map((tool) => {
+              const isActive = currentTool === tool.id;
+              const Icon = tool.icon;
 
-            return (
-              <li key={tool.id}>
+              return (
+                <li key={tool.id}>
+                  <Button
+                    variant="ghost"
+                    onClick={() => onToolSelect(tool.id)}
+                    className={`group w-full justify-start gap-4 px-4 py-3 h-auto transition-all duration-300 rounded-lg mx-0 relative overflow-hidden ${isActive
+                      ? 'text-gray-900 dark:text-white font-semibold'
+                      : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                      }`}
+                    title={collapsed ? t(`tools.${tool.id}.name`) : undefined}
+                    aria-label={t(`tools.${tool.id}.name`)}
+                    aria-current={isActive ? 'page' : undefined}
+                  >
+                    {/* Hover/Active Glass layers */}
+                    <>
+                      <div className={`card-glass opacity-0 group-hover:opacity-100 ${isActive ? 'opacity-100' : ''} group-hover:[filter:url(#liquid-refraction)]`}></div>
+                      <div className={`card-glow opacity-0 group-hover:opacity-100 ${isActive ? 'opacity-50' : ''}`}></div>
+                    </>
+
+                    <span className={`relative z-10 flex-shrink-0 transition-transform duration-300 group-hover:scale-110 ${isActive ? 'text-gray-900 dark:text-white' : 'text-gray-400 dark:text-gray-500 group-hover:text-gray-700 dark:group-hover:text-gray-200'}`}>
+                      <Icon size={20} strokeWidth={isActive ? 2.5 : 1.5} />
+                    </span>
+                    {!collapsed && (
+                      <span className="relative z-10 text-sm truncate transition-colors duration-200">
+                        {t(`tools.${tool.id}.name`)}
+                      </span>
+                    )}
+                    {isActive && !collapsed && (
+                      <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-r-full bg-accent-blue z-20 shadow-[0_0_10px_rgba(59,130,246,0.5)]"></span>
+                    )}
+                  </Button>
+                </li>
+              );
+            })}
+          </ul>
+
+          {/* Blog Link */}
+          <div className="mt-4 pt-4 border-t border-white/10">
+            {!collapsed && (
+              <div className="px-3 mb-2">
+                <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-500 uppercase tracking-wide">
+                  Resources
+                </h3>
+              </div>
+            )}
+            <ul className="space-y-1">
+              <li>
                 <Button
                   variant="ghost"
-                  onClick={() => onToolSelect(tool.id)}
-                  className={`group w-full justify-start gap-4 px-4 py-3 h-auto transition-all duration-200 rounded-lg mx-0 relative overflow-hidden ${isActive
-                    ? 'bg-black/5 dark:bg-white/10 text-gray-900 dark:text-white font-medium shadow-sm'
-                    : 'border-transparent text-gray-500 dark:text-gray-400 hover:bg-black/5 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-gray-200'
-                    }`}
-                  title={collapsed ? t(`tools.${tool.id}.name`) : undefined}
-                  aria-label={t(`tools.${tool.id}.name`)}
-                  aria-current={isActive ? 'page' : undefined}
+                  asChild
+                  className="group w-full justify-start gap-3 px-3 py-2.5 h-auto transition-all duration-300 rounded-lg relative overflow-hidden text-gray-700 dark:text-gray-300"
+                  title={collapsed ? 'Blog' : undefined}
                 >
-                  <span className={`flex-shrink-0 transition-transform duration-200 group-hover:scale-105 ${isActive ? 'text-gray-900 dark:text-white' : 'text-gray-400 dark:text-gray-500 group-hover:text-gray-700 dark:group-hover:text-gray-300'}`}>
-                    <Icon size={20} strokeWidth={isActive ? 2 : 1.5} />
-                  </span>
-                  {!collapsed && (
-                    <span className="text-sm truncate transition-colors duration-200">
-                      {t(`tools.${tool.id}.name`)}
+                  <a href="/blog">
+                    <div className="card-glass opacity-0 group-hover:opacity-100 group-hover:[filter:url(#liquid-refraction)]"></div>
+                    <div className="card-glow opacity-0 group-hover:opacity-100"></div>
+                    <span className="relative z-10 flex-shrink-0 transition-transform duration-300 group-hover:scale-110 text-gray-500 dark:text-gray-400 group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
+                      <BookOpen size={20} strokeWidth={2} />
                     </span>
-                  )}
-                  {isActive && !collapsed && (
-                    <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-r-full bg-gray-400 dark:bg-gray-500"></span>
-                  )}
+                    {!collapsed && (
+                      <span className="relative z-10 text-sm truncate transition-colors duration-200">
+                        Blog
+                      </span>
+                    )}
+                  </a>
                 </Button>
               </li>
-            );
-          })}
-        </ul>
-
-        {/* Blog Link */}
-        <div className="mt-4 pt-4 border-t border-gray-200/50 dark:border-privacy-700/50">
-          {!collapsed && (
-            <div className="px-3 mb-2">
-              <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-500 uppercase tracking-wide">
-                Resources
-              </h3>
-            </div>
-          )}
-          <ul className="space-y-1">
-            <li>
-              <Button
-                variant="ghost"
-                asChild
-                className="group w-full justify-start gap-3 px-3 py-2.5 h-auto transition-all duration-200 border border-transparent text-gray-700 dark:text-gray-300 hover:bg-ocean-50/50 dark:hover:bg-ocean-900/20 hover:text-ocean-600 dark:hover:text-ocean-400 hover:scale-[1.02]"
-                title={collapsed ? 'Blog' : undefined}
-              >
-                <a href="/blog">
-                  <span className="flex-shrink-0 transition-transform duration-200 group-hover:scale-110 text-gray-500 dark:text-gray-400 group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
-                    <BookOpen size={20} strokeWidth={2} />
-                  </span>
-                  {!collapsed && (
-                    <span className="text-sm truncate transition-colors duration-200">
-                      Blog
-                    </span>
-                  )}
-                </a>
-              </Button>
-            </li>
-          </ul>
-        </div>
-      </nav>
-
+            </ul>
+          </div>
+        </nav>
+      </div>
     </aside>
   );
 };

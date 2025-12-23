@@ -55,9 +55,14 @@ export const ContentEditorPDF: React.FC = () => {
         finishMovement,
     } = useContentEditor();
 
-    // Set initial mode to 'edit' by default when the tool is loaded
+    // Set initial mode based on URL hash or default to 'edit'
     useEffect(() => {
-        setToolMode('edit');
+        const hash = window.location.hash.slice(1);
+        if (hash.startsWith('add-text')) {
+            setToolMode('add');
+        } else {
+            setToolMode('edit');
+        }
     }, [setToolMode]);
 
     // Handle mobile detection

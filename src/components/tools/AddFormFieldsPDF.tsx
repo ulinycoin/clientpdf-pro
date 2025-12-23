@@ -10,6 +10,11 @@ import { addFormFieldsToPDF } from '@/services/pdfService';
 import type { UploadedFile } from '@/types/pdf';
 import type { FormField } from '@/types/formFields';
 import { CheckCircle2, Copy } from 'lucide-react';
+import * as pdfjsLib from 'pdfjs-dist';
+import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
+
+// Configure PDF.js worker
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
 export const AddFormFieldsPDF: React.FC = () => {
   const { t } = useI18n();
@@ -18,6 +23,8 @@ export const AddFormFieldsPDF: React.FC = () => {
   const [result, setResult] = useState<Blob | null>(null);
   const [resultSaved, setResultSaved] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [pdfDocument, setPdfDocument] = useState<pdfjsLib.PDFDocumentProxy | null>(null);
+  const [isDocumentLoading, setIsDocumentLoading] = useState(false);
   const [, setProgress] = useState({ percent: 0, message: '' });
 
   // Form fields state
@@ -50,19 +57,31 @@ export const AddFormFieldsPDF: React.FC = () => {
     const selectedFile = selectedFiles[0];
     if (!selectedFile) return;
 
-    const uploadedFile: UploadedFile = {
-      id: `${Date.now()}`,
-      file: selectedFile,
-      name: selectedFile.name,
-      size: selectedFile.size,
-      status: 'completed',
-    };
+    setIsDocumentLoading(true);
+    try {
+      const arrayBuffer = await selectedFile.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      setPdfDocument(pdf);
 
-    setFile(uploadedFile);
-    setResult(null);
-    setResultSaved(false);
-    setFormFields([]);
-    setSelectedFieldId(null);
+      const uploadedFile: UploadedFile = {
+        id: `${Date.now()}`,
+        file: selectedFile,
+        name: selectedFile.name,
+        size: selectedFile.size,
+        status: 'completed',
+      };
+
+      setFile(uploadedFile);
+      setResult(null);
+      setResultSaved(false);
+      setFormFields([]);
+      setSelectedFieldId(null);
+      setCurrentPage(0);
+    } catch (error) {
+      console.error('Error loading PDF:', error);
+    } finally {
+      setIsDocumentLoading(false);
+    }
   };
 
   // Get selected field
@@ -79,13 +98,13 @@ export const AddFormFieldsPDF: React.FC = () => {
       width: type === 'checkbox' || type === 'radio' ? 20 : 200,
       height: type === 'multiline' ? 80 : 20,
       page: currentPage,
-      ...(type === 'dropdown' && { options: ['Option 1', 'Option 2', 'Option 3'] }),
-      ...(type === 'radio' && { group: `radio_group_${formFields.filter(f => f.type === 'radio').length + 1}`, value: 'option1' }),
+      ...(type === 'dropdown' && { options: t('addFormFields.panel.defaultOptions').split('\n') }),
+      ...(type === 'radio' && { group: `radio_group_${formFields.filter(f => f.type === 'radio').length + 1}`, value: t('addFormFields.panel.value') + ' 1' }),
     } as FormField;
 
     setFormFields(prev => [...prev, newField]);
     setSelectedFieldId(newField.id);
-  }, [currentPage, formFields.length]); // formFields.length is a primitive, so it's safe. formFields itself would cause re-renders.
+  }, [currentPage, formFields, t]); // Added formFields and t
 
   // Update field
   const handleUpdateField = useCallback((fieldId: string, updates: Partial<FormField>) => {
@@ -174,11 +193,17 @@ export const AddFormFieldsPDF: React.FC = () => {
   };
 
   const handleReset = () => {
+    if (pdfDocument) {
+      pdfDocument.destroy();
+    }
+    setPdfDocument(null);
     setFile(null);
     setResult(null);
     setResultSaved(false);
     setFormFields([]);
     setSelectedFieldId(null);
+    setCurrentPage(0);
+    setTotalPages(0);
   };
 
 
@@ -231,28 +256,30 @@ export const AddFormFieldsPDF: React.FC = () => {
           />
         </div>
 
-        {/* Canvas Area */}
-        <div className="flex-1 overflow-hidden bg-gray-100 dark:bg-gray-800 rounded-xl relative border border-gray-200 dark:border-gray-700">
-          <div className="absolute inset-0 overflow-auto flex items-center justify-center p-4">
-            <Canvas
-              pdfFile={file?.file || null}
-              currentPage={currentPage}
-              formFields={formFields}
-              selectedFieldId={selectedFieldId}
-              scale={scale}
-              onFieldSelect={setSelectedFieldId}
-              onFieldMove={handleMoveField}
-              onFieldResize={handleResizeField}
-              onPageChange={setCurrentPage}
-              onTotalPagesChange={setTotalPages}
-            />
+        {/* Workspace Container */}
+        <div className="flex-1 flex flex-col min-h-[600px] bg-gray-100 dark:bg-gray-800 rounded-xl relative border border-gray-200 dark:border-gray-700 shadow-inner overflow-hidden">
+          <div className="absolute inset-0 overflow-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-600">
+            <div className="min-h-full flex items-center justify-center p-8">
+              <Canvas
+                pdfDocument={pdfDocument}
+                isDocumentLoading={isDocumentLoading}
+                currentPage={currentPage}
+                formFields={formFields}
+                selectedFieldId={selectedFieldId}
+                scale={scale}
+                onFieldSelect={setSelectedFieldId}
+                onFieldMove={handleMoveField}
+                onFieldResize={handleResizeField}
+                onTotalPagesChange={setTotalPages}
+              />
+            </div>
           </div>
         </div>
 
         {/* Status Bar */}
         <div className="text-xs text-center text-gray-500">
           {t('addFormFields.fields', { count: formFields.length })}
-          {selectedField && ` | ${selectedField.name} (${selectedField.type})`}
+          {selectedField && ` | ${t('addFormFields.selected', { name: selectedField.name, type: t(`addFormFields.types.${selectedField.type}`) })}`}
         </div>
       </div>
     );
@@ -264,7 +291,7 @@ export const AddFormFieldsPDF: React.FC = () => {
         <div className="text-center text-gray-500 py-8">
           <p>{t('addFormFields.selectFieldToEdit')}</p>
           <Button variant="outline" size="sm" className="mt-4" onClick={() => handleAddField('text')}>
-            + Add New Field
+            {t('addFormFields.addNewField')}
           </Button>
         </div>
       );
@@ -277,7 +304,7 @@ export const AddFormFieldsPDF: React.FC = () => {
           onFieldDelete={handleDeleteField}
         />
         <Button variant="outline" className="w-full" onClick={handleDuplicateField}>
-          <Copy className="w-4 h-4 mr-2" /> Duplicate Field
+          <Copy className="w-4 h-4 mr-2" /> {t('addFormFields.panel.duplicateField')}
         </Button>
       </div>
     );
@@ -290,7 +317,7 @@ export const AddFormFieldsPDF: React.FC = () => {
         disabled={isProcessing || !file || formFields.length === 0}
         className="w-full py-6 text-lg rounded-xl font-bold shadow-lg hover:shadow-xl transition-all"
       >
-        {isProcessing ? t('common.processing') : t('common.save')}
+        {isProcessing ? t('common.processing') : t('addFormFields.toolbar.savePdf')}
       </Button>
     );
   };

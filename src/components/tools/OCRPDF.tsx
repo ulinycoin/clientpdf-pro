@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useSharedFile } from '@/hooks/useSharedFile';
 import { FileUpload } from '@/components/common/FileUpload';
 import { useI18n } from '@/hooks/useI18n';
@@ -71,38 +71,8 @@ export const OCRPDF: React.FC = () => {
   const [editedText, setEditedText] = useState<string>('');
   const [isEditMode, setIsEditMode] = useState(false);
 
-  // Auto-load shared file from WelcomeScreen
-  useEffect(() => {
-    if (sharedFile && !file) {
-      const loadedFile = new File([sharedFile.blob], sharedFile.name, {
-        type: sharedFile.blob.type,
-      });
-
-      // Check if file type is supported by OCR
-      const fileExt = loadedFile.name.toLowerCase().split('.').pop();
-      const supportedExtensions = ['pdf', 'jpg', 'jpeg', 'png'];
-
-      if (fileExt && supportedExtensions.includes(fileExt)) {
-        handleFilesSelected([loadedFile]);
-      } else {
-        alert(t('ocr.errors.unsupportedFileType').replace('{ext}', fileExt || 'unknown'));
-      }
-
-      clearSharedFile();
-    }
-  }, [sharedFile, file, clearSharedFile, t]);
-
-  // Cleanup preview URL
-  useEffect(() => {
-    return () => {
-      if (previewUrl) {
-        URL.revokeObjectURL(previewUrl);
-      }
-    };
-  }, [previewUrl]);
-
   // Advanced language detection using new utilities
-  const performLanguageDetection = async (file: File): Promise<void> => {
+  const performLanguageDetection = useCallback(async (file: File): Promise<void> => {
     setIsAnalyzing(true);
     try {
       // Step 1: Filename-based detection
@@ -134,9 +104,9 @@ export const OCRPDF: React.FC = () => {
       setIsAnalyzing(false);
       setProgressMessage('');
     }
-  };
+  }, [autoDetectLanguage, t]);
 
-  const handleFilesSelected = async (selectedFiles: File[]) => {
+  const handleFilesSelected = useCallback(async (selectedFiles: File[]) => {
     const selectedFile = selectedFiles[0];
     if (!selectedFile) return;
 
@@ -183,7 +153,37 @@ export const OCRPDF: React.FC = () => {
       const url = URL.createObjectURL(selectedFile);
       setPreviewUrl(url);
     }
-  };
+  }, [performLanguageDetection]);
+
+  // Auto-load shared file from WelcomeScreen
+  useEffect(() => {
+    if (sharedFile && !file) {
+      const loadedFile = new File([sharedFile.blob], sharedFile.name, {
+        type: sharedFile.blob.type,
+      });
+
+      // Check if file type is supported by OCR
+      const fileExt = loadedFile.name.toLowerCase().split('.').pop();
+      const supportedExtensions = ['pdf', 'jpg', 'jpeg', 'png'];
+
+      if (fileExt && supportedExtensions.includes(fileExt)) {
+        handleFilesSelected([loadedFile]);
+      } else {
+        alert(t('ocr.errors.unsupportedFileType').replace('{ext}', fileExt || 'unknown'));
+      }
+
+      clearSharedFile();
+    }
+  }, [sharedFile, file, clearSharedFile, t, handleFilesSelected]);
+
+  // Cleanup preview URL
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
 
   const handleRemoveFile = () => {
     setFile(null);
@@ -467,21 +467,21 @@ export const OCRPDF: React.FC = () => {
         <div className="space-y-6">
           {/* Language Selection */}
           <div className="space-y-3">
-            <Label className="text-base font-semibold">Language</Label>
+            <Label className="text-base font-semibold">{t('ocr.recognitionLanguage')}</Label>
             {languageDetection && !isAnalyzing && (
               <div className={`p-3 rounded-lg border text-xs ${languageDetection.confidence === 'high' ? 'bg-green-50 border-green-200 text-green-800' : 'bg-yellow-50 border-yellow-200 text-yellow-800'
                 }`}>
-                Detected: {languageDetection.language} ({languageDetection.confidence})
+                {t('ocr.detected')}: {t(`ocr.languages.${languageDetection.language}`)} ({t(`ocr.languageDetection.${languageDetection.confidence}Confidence`)})
               </div>
             )}
             <label className="flex items-center space-x-2 text-sm">
               <input type="checkbox" checked={autoDetectLanguage} onChange={e => setAutoDetectLanguage(e.target.checked)} className="rounded text-ocean-600" />
-              <span>Auto-detect</span>
+              <span>{t('ocr.autoDetect')}</span>
             </label>
             <Select value={selectedLanguage} onValueChange={setSelectedLanguage} disabled={isProcessing || autoDetectLanguage}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
-                {SUPPORTED_LANGUAGES.map(l => <SelectItem key={l.code} value={l.code}>{l.name}</SelectItem>)}
+                {SUPPORTED_LANGUAGES.map(l => <SelectItem key={l.code} value={l.code}>{t(`ocr.languages.${l.code}`)}</SelectItem>)}
               </SelectContent>
             </Select>
           </div>
@@ -489,11 +489,11 @@ export const OCRPDF: React.FC = () => {
           {/* Page Range */}
           {totalPages > 1 && (
             <div className="space-y-3 pt-4 border-t border-gray-100 dark:border-gray-800">
-              <Label className="text-base font-semibold">Pages</Label>
+              <Label className="text-base font-semibold">{t('ocr.pageSelection')}</Label>
               <RadioGroup value={pageMode} onValueChange={(v) => setPageMode(v as PageSelectionMode)}>
-                <div className="flex items-center space-x-2"><RadioGroupItem value="all" id="r-all" /><Label htmlFor="r-all">All ({totalPages})</Label></div>
-                <div className="flex items-center space-x-2"><RadioGroupItem value="first" id="r-first" /><Label htmlFor="r-first">First Page</Label></div>
-                <div className="flex items-center space-x-2"><RadioGroupItem value="range" id="r-range" /><Label htmlFor="r-range">Range</Label></div>
+                <div className="flex items-center space-x-2"><RadioGroupItem value="all" id="r-all" /><Label htmlFor="r-all">{t('ocr.allPages')} ({totalPages})</Label></div>
+                <div className="flex items-center space-x-2"><RadioGroupItem value="first" id="r-first" /><Label htmlFor="r-first">{t('ocr.firstPageOnly')}</Label></div>
+                <div className="flex items-center space-x-2"><RadioGroupItem value="range" id="r-range" /><Label htmlFor="r-range">{t('ocr.pageRange')}</Label></div>
               </RadioGroup>
               {pageMode === 'range' && (
                 <div className="flex items-center gap-2">
@@ -507,14 +507,14 @@ export const OCRPDF: React.FC = () => {
 
           {/* Output Format */}
           <div className="space-y-3 pt-4 border-t border-gray-100 dark:border-gray-800">
-            <Label className="text-base font-semibold">Output Format</Label>
+            <Label className="text-base font-semibold">{t('ocr.outputFormat.title')}</Label>
             <Select value={outputFormat} onValueChange={(v) => setOutputFormat(v as OutputFormat)}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="text">Text (Editable)</SelectItem>
-                <SelectItem value="searchable-pdf">Searchable PDF</SelectItem>
-                <SelectItem value="hocr">hOCR (HTML)</SelectItem>
-                <SelectItem value="tsv">TSV (Data)</SelectItem>
+                <SelectItem value="text">{t('ocr.outputFormat.textShort')}</SelectItem>
+                <SelectItem value="searchable-pdf">{t('ocr.outputFormat.searchablePdfShort')}</SelectItem>
+                <SelectItem value="hocr">{t('ocr.outputFormat.hocrShort')}</SelectItem>
+                <SelectItem value="tsv">{t('ocr.outputFormat.tsvShort')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -524,12 +524,12 @@ export const OCRPDF: React.FC = () => {
         <div className="space-y-3">
           {!result ? (
             <Button onClick={handleOCR} disabled={isProcessing || isAnalyzing} size="lg" className="w-full bg-ocean-600 hover:bg-ocean-700 text-white shadow-lg shadow-ocean-500/20">
-              {isProcessing ? 'Processing...' : 'Start OCR'}
+              {isProcessing ? t('ocr.processing') : t('ocr.startOCR')}
             </Button>
           ) : (
             <div className="space-y-3">
               <Button onClick={handleDownload} size="lg" className="w-full bg-green-600 hover:bg-green-700 text-white shadow-lg shadow-green-500/20">
-                <Download className="mr-2 h-4 w-4" /> Download
+                <Download className="mr-2 h-4 w-4" /> {t('common.download')}
               </Button>
               {outputFormat === 'text' && (
                 <Button onClick={handleCopyText} variant="outline" className="w-full">
@@ -537,13 +537,13 @@ export const OCRPDF: React.FC = () => {
                 </Button>
               )}
               <Button onClick={() => setResult(null)} variant="ghost" className="w-full">
-                <RefreshCw className="mr-2 h-4 w-4" /> Start Over
+                <RefreshCw className="mr-2 h-4 w-4" /> {t('ocr.startOver')}
               </Button>
             </div>
           )}
           {file && !result && (
             <Button onClick={handleRemoveFile} variant="ghost" className="w-full text-red-500 hover:text-red-600 hover:bg-red-50">
-              Remove File
+              {t('ocr.remove')}
             </Button>
           )}
         </div>
@@ -567,7 +567,7 @@ export const OCRPDF: React.FC = () => {
               ) : (
                 <div className="text-center text-gray-400">
                   <FileText className="w-24 h-24 mx-auto mb-4 opacity-50" />
-                  <p>Loading Preview...</p>
+                  <p>{t('ocr.preview')}...</p>
                 </div>
               )}
             </CardContent>
@@ -590,7 +590,7 @@ export const OCRPDF: React.FC = () => {
                 {outputFormat === 'text' && (
                   <Button size="sm" variant="ghost" onClick={() => setIsEditMode(!isEditMode)}>
                     {isEditMode ? <Eye className="w-4 h-4 mr-1" /> : <Edit className="w-4 h-4 mr-1" />}
-                    {isEditMode ? 'View' : 'Edit'}
+                    {isEditMode ? t('ocr.view') : t('ocr.edit')}
                   </Button>
                 )}
               </div>
@@ -616,9 +616,9 @@ export const OCRPDF: React.FC = () => {
                     <div className="w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mb-6 text-green-600 dark:text-green-400 text-4xl animate-bounce">
                       ✓
                     </div>
-                    <h3 className="text-2xl font-bold mb-2">Processing Complete!</h3>
+                    <h3 className="text-2xl font-bold mb-2">{t('ocr.completed')}</h3>
                     <p className="text-gray-500 max-w-md mx-auto">
-                      Your document has been processed successfully. You can now download the result from the sidebar.
+                      {t('ocr.results.successMessage') || 'Your document has been processed successfully. You can now download the result from the sidebar.'}
                     </p>
                   </div>
                 )}

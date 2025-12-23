@@ -5,9 +5,9 @@
   },
   "welcome": {
     "securePrefix": "シンプルで安全",
-    "titleSuffix": "",
-    "title": "PDFをシンプルに",
-    "subtitle": "必要なツールがすべてここに。ファイルをドラッグ＆ドロップして、魔法を始めましょう。",
+    "title": "あなたのプライベートな",
+    "titleSuffix": "PDF Sanctuary.",
+    "subtitle": "ブラウザ内で 100% 動作する唯一の PDF ツールキットです。アップロードなし、サーバーなし、痕跡なし。お使いのデバイスで動作するプロフェッショナルなツールです。",
     "firstTimeBanner": "ようこそ！すべての処理はブラウザ内で行われます - ファイルがデバイスから離れることはありません。",
     "selectTool": "サイドバーからツールを選択するか、以下から選択してください"
   },
@@ -108,6 +108,10 @@
     "edit-pdf": {
       "name": "PDF編集",
       "description": "PDFコンテンツを編集"
+    },
+    "tables-pdf": {
+      "name": "PDF内のテーブル",
+      "description": "PDF内のテーブルを追加、編集、スタイル設定します"
     }
   },
   "common": {
@@ -120,6 +124,7 @@
     "downloadAll": "すべてダウンロード (ZIP)",
     "processing": "処理中...",
     "searching": "検索中...",
+    "supportDeveloper": "開発者をサポート",
     "error": "エラー",
     "success": "成功",
     "cancel": "キャンセル",
@@ -162,6 +167,8 @@
     "save": "保存",
     "show": "表示",
     "zoom": "ズーム",
+    "zoomIn": "拡大",
+    "zoomOut": "縮小",
     "addFiles": "ファイルを追加",
     "errors": {
       "previewFailed": "プレビューの読み込みに失敗しました"
@@ -315,6 +322,10 @@
       "saved": "節約されたスペース",
       "time": "処理時間"
     },
+    "optimized": {
+      "title": "ファイルは既に最適化されています",
+      "description": "このPDFはこのツールで可能な最小サイズになっています。"
+    },
     "quickActions": {
       "title": "次のステップは？",
       "description": "圧縮したPDFを引き続き処理:",
@@ -373,6 +384,10 @@
     "selectPagesHint": "続行するには少なくとも1ページを選択してください",
     "mergingSelected": "選択したページを結合中...",
     "mergeFailed": "選択したページの結合に失敗しました",
+    "clearSelection": "選択を解除",
+    "pagePreview": "ページプレビュー",
+    "selectPage": "ページを選択",
+    "deselectPage": "選択を解除",
     "mode": {
       "all": {
         "name": "すべてのページ",
@@ -469,11 +484,11 @@
     },
     "permissions": {
       "printing": "印刷",
-      "printingNone": "許可しない",
-      "printingLow": "低解像度",
-      "printingHigh": "高解像度",
-      "copying": "テキストのコピーを許可",
-      "modifying": "コンテンツの変更を許可",
+      "printingNone": "なし",
+      "printingLow": "低",
+      "printingHigh": "高",
+      "copying": "コピー",
+      "modifying": "変更",
       "annotating": "注釈を許可",
       "fillingForms": "フォームへの入力を許可",
       "contentAccessibility": "スクリーンリーダーを許可"
@@ -526,6 +541,7 @@
     "languageHint": "ドキュメント内のテキストの言語を選択",
     "autoDetect": "言語を自動検出",
     "autoDetectHint": "ドキュメントコンテンツから言語が自動的に検出されます",
+    "detected": "検出済み",
     "detectingLanguage": "言語を検出中...",
     "analyzingContent": "ドキュメントコンテンツを分析中...",
     "pageSelection": "処理するページ",
@@ -567,15 +583,33 @@
       "lowConfidence": "低い信頼度",
       "verifyLanguage": "より良いOCR精度のために言語選択を確認してください"
     },
+    "startOver": "最初からやり直す",
+    "languages": {
+      "eng": "英語",
+      "rus": "ロシア語",
+      "deu": "ドイツ語",
+      "fra": "フランス語",
+      "spa": "スペイン語",
+      "ita": "イタリア語",
+      "por": "ポルトガル語",
+      "pol": "ポーランド語",
+      "ukr": "ウクライナ語",
+      "bel": "ベラルーシ語",
+      "nld": "オランダ語"
+    },
     "outputFormat": {
       "title": "出力フォーマット",
       "text": "プレーンテキスト (.txt)",
+      "textShort": "テキスト（編集可能）",
       "textDesc": "テキストのみを抽出、編集およびコピー可能",
       "searchablePdf": "検索可能なPDF（元画像を保持）",
+      "searchablePdfShort": "検索可能PDF",
       "searchablePdfDesc": "非表示のOCRテキストレイヤーを使用して元の画像を保持 - 元と同一に見えますが、完全に検索可能",
       "hocr": "hOCR (.html)",
+      "hocrShort": "hOCR (HTML)",
       "hocrDesc": "正確な単語位置と信頼度スコアを持つHTML - 自動処理に便利",
       "tsv": "TSV (.tsv)",
+      "tsvShort": "TSV (データ)",
       "tsvDesc": "バウンディングボックス付きのタブ区切り値 - データ分析のための解析が簡単"
     },
     "results": {
@@ -584,7 +618,8 @@
       "hocrReady": "hOCRデータの準備完了",
       "tsvReady": "TSVデータの準備完了",
       "pagesWillProcess": "{count} {pages}がOCRで処理されます",
-      "confidenceAndPages": "信頼度: {confidence}% • {count} {pages}処理済み"
+      "confidenceAndPages": "信頼度: {confidence}% • {count} {pages}処理済み",
+      "successMessage": "ドキュメントの処理が正常に完了しました。サイドバーから結果をダウンロードできます。"
     },
     "infoPanel": {
       "searchablePdfTitle": "非表示テキストレイヤー付き検索可能なPDF",
@@ -616,14 +651,20 @@
       "searchablePdfFailed": "検索可能なPDFの作成に失敗しました: {error}",
       "downloadFailed": "ファイルの生成に失敗しました。もう一度お試しください。"
     },
-    "pageTitle": "OCR Result"
+    "pageTitle": "OCR結果"
   },
   "watermark": {
+    "mode": "モード",
+    "textMode": "テキスト",
+    "imageMode": "画像",
+    "chooseImage": "画像を選択",
     "filePreview": "透かしを入れるファイル",
     "settings": "透かし設定",
     "text": "透かしテキスト",
     "watermarkText": "透かしテキスト",
     "watermarkPlaceholder": "透かしテキストを入力",
+    "image": "画像",
+    "imageScale": "画像のスケール",
     "position": "位置",
     "positions": {
       "diagonal": "斜め",
@@ -657,6 +698,7 @@
     "errors": {
       "noText": "透かしテキストを入力してください",
       "textRequired": "透かしテキストを入力してください",
+      "noImage": "最初に画像を選択してください",
       "failed": "透かしの適用に失敗しました",
       "cyrillicNotSupported": "キリル文字はサポートされていません。ラテン文字を使用してください。"
     },
@@ -862,8 +904,10 @@
       "bottomRight": "右下",
       "bottomLeft": "左下",
       "topRight": "右上",
-      "topLeft": "左上"
+      "topLeft": "左上",
+      "custom": "手動（ドラッグ＆ドロップ）"
     },
+    "dragToMove": "ドラッグして移動",
     "applyToPages": "ページに適用",
     "allPages": "すべてのページ",
     "pageNumber": "ページ {number}",
@@ -885,6 +929,10 @@
     "provideSignature": "署名を描画またはアップロードしてください",
     "textSize": "テキストサイズ",
     "signatureSize": "署名サイズ",
+    "includeName": "印刷された名前を含める",
+    "namePlaceholder": "名前を入力",
+    "printedName": "印刷された名前",
+    "nameSize": "名前のサイズ",
     "addSignature": "署名を追加",
     "quickActions": {
       "title": "次のステップは？",
@@ -952,29 +1000,29 @@
     "defaultFileName": "document_with_text.pdf",
     "title": "テキストを追加",
     "toolbar": {
-      "addText": "Add Text",
-      "select": "Select",
-      "page": "Page",
-      "of": "of",
+      "addText": "テキストを追加",
+      "select": "選択",
+      "page": "ページ",
+      "of": "/",
       "savePdf": "PDFを保存",
-      "undo": "Undo",
-      "redo": "Redo"
+      "undo": "元に戻す",
+      "redo": "やり直し"
     },
     "format": {
-      "title": "Format Text",
-      "placeholder": "Enter text here...",
-      "textContent": "Text Content",
+      "title": "テキストの書式設定",
+      "placeholder": "ここにテキストを入力...",
+      "textContent": "テキスト内容",
       "fontFamily": "フォント",
       "fontSize": "サイズ",
       "textColor": "色",
-      "position": "Position",
-      "preview": "Preview",
-      "sampleText": "Sample text",
-      "opacity": "Opacity",
-      "rotation": "Rotation",
-      "bold": "Bold",
-      "italic": "Italic",
-      "delete": "Delete Element",
+      "position": "位置",
+      "preview": "プレビュー",
+      "sampleText": "サンプルテキスト",
+      "opacity": "不透明度",
+      "rotation": "回転",
+      "bold": "太字",
+      "italic": "斜体",
+      "delete": "要素を削除",
       "alignment": "整列",
       "alignLeft": "左揃え",
       "alignCenter": "中央揃え",
@@ -993,7 +1041,49 @@
     "selected": "選択中: {name} ({type})",
     "zoom": "ズーム: {scale}%",
     "pageOf": "ページ {current} / {total}",
-    "selectFieldToEdit": "編集するフィールドを選択"
+    "selectFieldToEdit": "編集するフィールドを選択",
+    "addNewField": "+ 新しいフィールドを追加",
+    "toolbar": {
+      "addField": "フィールドを追加:",
+      "addText": "テキストフィールドを追加",
+      "addMultiline": "複数行フィールドを追加",
+      "addCheckbox": "チェックボックスを追加",
+      "addRadio": "ラジオボタンを追加",
+      "addDropdown": "ドロップダウンを追加",
+      "savePdf": "PDFを保存"
+    },
+    "panel": {
+      "title": "フィールドのプロパティ",
+      "deleteField": "フィールドを削除",
+      "fieldName": "フィールド名",
+      "xPosition": "X位置",
+      "yPosition": "Y位置",
+      "width": "幅",
+      "height": "高さ",
+      "defaultValue": "デフォルト値",
+      "defaultPlaceholder": "デフォルトテキストを入力...",
+      "maxLength": "最大文字数",
+      "maxLengthPlaceholder": "無制限",
+      "fontSize": "フォントサイズ",
+      "checkedByDefault": "デフォルトでチェック済み",
+      "radioGroup": "ラジオグループ",
+      "radioGroupHint": "同じグループ名のラジオボタンは相互に排他的です",
+      "value": "値",
+      "selectedByDefault": "デフォルトで選択済み",
+      "options": "オプション（1行に1つ）",
+      "allowMultiSelect": "複数選択を許可",
+      "requiredField": "必須フィールド",
+      "readOnlyField": "読み取り専用",
+      "duplicateField": "フィールドを複製",
+      "selectToEdit": "プロパティを編集するフィールドを選択してください"
+    },
+    "types": {
+      "text": "テキスト",
+      "multiline": "複数行",
+      "checkbox": "チェックボックス",
+      "radio": "ラジオボタン",
+      "dropdown": "ドロップダウン"
+    }
   },
   "editText": {
     "rasterizationWarning": "注意: 編集されたページは画像に変換されます。これらのページのテキストは編集後に選択できなくなります。",
@@ -1041,9 +1131,9 @@
     "successMessage": "テキストが正常に置換されました！",
     "useInOtherTools": "他のツールで使用",
     "settings": "テキスト設定",
-    "selectPageToEdit": "Select Page to Edit",
-    "textPosition": "Text Position (for selected area)",
-    "pagePreview": "Page Preview",
+    "selectPageToEdit": "編集するページを選択",
+    "textPosition": "テキスト位置 (選択範囲用)",
+    "pagePreview": "ページプレビュー",
     "xLabel": "X:",
     "yLabel": "Y:",
     "smartEdit": "スマート編集",

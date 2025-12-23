@@ -1,6 +1,7 @@
 import React from 'react';
 import type { FormField } from '@/types/formFields';
 import { Button } from '@/components/ui/button';
+import { useI18n } from '@/hooks/useI18n';
 
 interface ToolbarProps {
   currentPage: number;
@@ -10,6 +11,7 @@ interface ToolbarProps {
   onScaleChange: (scale: number) => void;
   onSave: () => void;
   onAddField: (type: FormField['type']) => void;
+  hideSave?: boolean;
 }
 
 export const Toolbar: React.FC<ToolbarProps> = ({
@@ -20,56 +22,59 @@ export const Toolbar: React.FC<ToolbarProps> = ({
   onScaleChange,
   onSave,
   onAddField,
+  hideSave,
 }) => {
+  const { t } = useI18n();
+
   return (
     <div className="flex items-center gap-4 px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
       {/* Add field buttons */}
       <div className="flex items-center gap-2">
-        <span className="text-xs text-gray-600 dark:text-gray-400 font-medium mr-1">Add Field:</span>
+        <span className="text-xs text-gray-600 dark:text-gray-400 font-medium mr-1">{t('addFormFields.toolbar.addField')}</span>
         <Button
           onClick={() => onAddField('text')}
           variant="outline"
           size="sm"
           className="text-xs"
-          title="Add text field"
+          title={t('addFormFields.toolbar.addText')}
         >
-          📝 Text
+          📝 {t('addFormFields.types.text')}
         </Button>
         <Button
           onClick={() => onAddField('multiline')}
           variant="outline"
           size="sm"
           className="text-xs"
-          title="Add multiline text field"
+          title={t('addFormFields.toolbar.addMultiline')}
         >
-          📄 Multiline
+          📄 {t('addFormFields.types.multiline')}
         </Button>
         <Button
           onClick={() => onAddField('checkbox')}
           variant="outline"
           size="sm"
           className="text-xs"
-          title="Add checkbox"
+          title={t('addFormFields.toolbar.addCheckbox')}
         >
-          ☑️ Checkbox
+          ☑️ {t('addFormFields.types.checkbox')}
         </Button>
         <Button
           onClick={() => onAddField('radio')}
           variant="outline"
           size="sm"
           className="text-xs"
-          title="Add radio button"
+          title={t('addFormFields.toolbar.addRadio')}
         >
-          🔘 Radio
+          🔘 {t('addFormFields.types.radio')}
         </Button>
         <Button
           onClick={() => onAddField('dropdown')}
           variant="outline"
           size="sm"
           className="text-xs"
-          title="Add dropdown"
+          title={t('addFormFields.toolbar.addDropdown')}
         >
-          ▼ Dropdown
+          ▼ {t('addFormFields.types.dropdown')}
         </Button>
       </div>
 
@@ -108,7 +113,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
           variant="outline"
           size="sm"
           className="text-xs"
-          title="Zoom out"
+          title={t('common.zoom')}
         >
           −
         </Button>
@@ -121,19 +126,21 @@ export const Toolbar: React.FC<ToolbarProps> = ({
           variant="outline"
           size="sm"
           className="text-xs"
-          title="Zoom in"
+          title={t('common.zoom')}
         >
           +
         </Button>
       </div>
 
       {/* Save button */}
-      <Button
-        onClick={onSave}
-        size="sm"
-      >
-        Save PDF
-      </Button>
+      {!hideSave && (
+        <Button
+          onClick={onSave}
+          size="sm"
+        >
+          {t('addFormFields.toolbar.savePdf')}
+        </Button>
+      )}
     </div>
   );
 };

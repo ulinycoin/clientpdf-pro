@@ -12,6 +12,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CheckCircle2 } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
 
 type SignatureType = 'draw' | 'upload' | 'text';
 type SignaturePosition = 'bottom-left' | 'bottom-right' | 'top-left' | 'top-right' | 'custom';
@@ -26,6 +27,9 @@ interface SignatureSettings {
   height: number;
   text?: string;
   textSize?: number;
+  includeName?: boolean;
+  nameText?: string;
+  nameSize?: number;
 }
 
 export const SignPDF: React.FC = () => {
@@ -39,6 +43,8 @@ export const SignPDF: React.FC = () => {
   const [resultSaved, setResultSaved] = useState(false);
   const [signatureImage, setSignatureImage] = useState<string | null>(null);
   const [isDrawing, setIsDrawing] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -50,6 +56,11 @@ export const SignPDF: React.FC = () => {
     height: 80,
     text: '',
     textSize: 12,
+    customX: 50,
+    customY: 50,
+    includeName: false,
+    nameText: '',
+    nameSize: 14,
   });
 
   useEffect(() => {
@@ -193,7 +204,11 @@ export const SignPDF: React.FC = () => {
       case 'bottom-right': return { x: pageWidth - margin - sigWidth, y: margin };
       case 'top-left': return { x: margin, y: pageHeight - margin - sigHeight };
       case 'top-right': return { x: pageWidth - margin - sigWidth, y: pageHeight - margin - sigHeight };
-      case 'custom': return { x: settings.customX || pageWidth / 2 - sigWidth / 2, y: settings.customY || pageHeight / 2 - sigHeight / 2 };
+      case 'custom': {
+        const x = ((settings.customX || 50) / 100) * (pageWidth - sigWidth);
+        const y = (1 - (settings.customY || 50) / 100) * (pageHeight - sigHeight);
+        return { x, y };
+      }
       default: return { x: pageWidth - margin - sigWidth, y: margin };
     }
   };
@@ -203,7 +218,6 @@ export const SignPDF: React.FC = () => {
     if (settings.type === 'text' && !settings.text?.trim()) { alert(t('sign.enterText')); return; }
     if ((settings.type === 'draw' || settings.type === 'upload') && !signatureImage) { alert(t('sign.provideSignature')); return; }
 
-    setIsProcessing(true);
     setIsProcessing(true);
 
     try {
@@ -234,7 +248,21 @@ export const SignPDF: React.FC = () => {
           page.drawText(settings.text || '', { x: pos.x, y: pos.y, size: settings.textSize || 12, color: rgb(0, 0, 0) });
         } else if (signatureImageBytes) {
           const signatureImg = await pdfDoc.embedPng(signatureImageBytes);
-          page.drawImage(signatureImg, { x: pos.x, y: pos.y, width: settings.width, height: settings.height });
+          const sigWidth = settings.width;
+          const sigHeight = settings.height;
+
+          page.drawImage(signatureImg, { x: pos.x, y: pos.y, width: sigWidth, height: sigHeight });
+
+          if (settings.includeName && settings.nameText) {
+            const fontSize = settings.nameSize || 14;
+            // Draw name centered below signature
+            page.drawText(settings.nameText, {
+              x: pos.x + (sigWidth / 2) - (settings.nameText.length * fontSize * 0.25), // Rough centering
+              y: pos.y - (fontSize + 10),
+              size: fontSize,
+              color: rgb(0, 0, 0)
+            });
+          }
         }
 
       }
@@ -271,37 +299,153 @@ export const SignPDF: React.FC = () => {
     clearSharedFile();
   };
 
+  const handleDragStart = (e: React.MouseEvent | React.TouchEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+    setDragStart({ x: clientX, y: clientY });
+  };
+
+  const handleDragMove = (e: React.MouseEvent | React.TouchEvent) => {
+    if (!isDragging) return;
+    e.preventDefault();
+
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+
+    const deltaX = clientX - dragStart.x;
+    const deltaY = clientY - dragStart.y;
+
+    const previewContainer = document.getElementById('signature-preview-container');
+    if (!previewContainer) return;
+
+    const rect = previewContainer.getBoundingClientRect();
+    const percentDeltaX = (deltaX / rect.width) * 100;
+    const percentDeltaY = (deltaY / rect.height) * 100;
+
+    setSettings(prev => ({
+      ...prev,
+      position: 'custom',
+      customX: Math.max(0, Math.min(100, (prev.customX || 50) + percentDeltaX)),
+      customY: Math.max(0, Math.min(100, (prev.customY || 50) + percentDeltaY))
+    }));
+
+    setDragStart({ x: clientX, y: clientY });
+  };
+
+  const handleDragEnd = () => {
+    setIsDragging(false);
+  };
+
+  const renderCombinedNameSettings = () => (
+    <div className="space-y-4 pt-4 border-t border-dashed">
+      <div className="flex items-center space-x-2">
+        <Checkbox
+          id="includeName"
+          checked={settings.includeName}
+          onCheckedChange={(checked) => setSettings({ ...settings, includeName: !!checked })}
+        />
+        <Label htmlFor="includeName" className="cursor-pointer font-medium">{t('sign.includeName')}</Label>
+      </div>
+
+      {settings.includeName && (
+        <div className="space-y-3 pl-6 animate-in fade-in slide-in-from-left-2 duration-300">
+          <div className="space-y-1">
+            <Label className="text-xs text-muted-foreground">{t('sign.printedName')}</Label>
+            <Input
+              value={settings.nameText}
+              onChange={e => setSettings({ ...settings, nameText: e.target.value })}
+              placeholder={t('sign.namePlaceholder')}
+              className="h-8"
+            />
+          </div>
+          <div className="space-y-1">
+            <Label className="text-xs text-muted-foreground">{t('sign.nameSize')}: {settings.nameSize}pt</Label>
+            <Input
+              type="range"
+              min="8"
+              max="32"
+              value={settings.nameSize}
+              onChange={e => setSettings({ ...settings, nameSize: parseInt(e.target.value) })}
+              className="h-4"
+            />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
   const renderSignaturePreviewOverlay = () => {
     if (!signatureImage && (!settings.text || settings.type !== 'text')) return null;
-    if (!file?.info?.dimensions) return null; // Need original dims
-
-    // const dims = file.info.dimensions;
-    // We need to scale the overlay position to the current display size of the image
-    // But for simplicity in this preview, let's assume valid CSS positioning using % or simply corners.
-    // Since 'custom' isn't interactive here yet, corner logic is enough.
 
     const style: React.CSSProperties = {
       position: 'absolute',
       zIndex: 10,
-      width: '20%', // Rough approximation for preview
+      width: settings.type === 'text' ? 'auto' : '20%',
       height: 'auto',
-      border: '1px dashed #3b82f6',
-      backgroundColor: 'rgba(255, 255, 255, 0.5)'
+      border: '2px dashed #3b82f6',
+      backgroundColor: 'rgba(255, 255, 255, 0.7)',
+      cursor: isDragging ? 'grabbing' : 'grab',
+      transition: isDragging ? 'none' : 'all 0.2s ease',
+      userSelect: 'none',
+      borderRadius: '4px',
+      padding: '4px',
+      boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
     };
 
     if (settings.position === 'bottom-right') { style.bottom = '5%'; style.right = '5%'; }
     else if (settings.position === 'bottom-left') { style.bottom = '5%'; style.left = '5%'; }
     else if (settings.position === 'top-right') { style.top = '5%'; style.right = '5%'; }
     else if (settings.position === 'top-left') { style.top = '5%'; style.left = '5%'; }
-    else { style.top = '50%'; style.left = '50%'; style.transform = 'translate(-50%, -50%)'; }
+    else {
+      style.top = `${settings.customY}%`;
+      style.left = `${settings.customX}%`;
+      style.transform = 'translate(-50%, -50%)';
+    }
 
     return (
-      <div style={style} className="p-1">
+      <div
+        style={style}
+        onMouseDown={handleDragStart}
+        onTouchStart={handleDragStart}
+        onMouseMove={handleDragMove}
+        onTouchMove={handleDragMove}
+        onMouseUp={handleDragEnd}
+        onTouchEnd={handleDragEnd}
+        onMouseLeave={handleDragEnd}
+        className="group relative"
+      >
         {settings.type === 'text' ? (
-          <div style={{ fontSize: '10px', fontFamily: 'sans-serif' }}>{settings.text}</div>
+          <div style={{
+            fontSize: `${(settings.textSize || 12) * 1.5}px`,
+            fontFamily: 'serif',
+            whiteSpace: 'nowrap',
+            color: '#000'
+          }}>
+            {settings.text}
+          </div>
         ) : (
-          <img src={signatureImage!} alt="sig" className="w-full h-auto" />
+          <div className="flex flex-col items-center gap-1">
+            <img src={signatureImage!} alt="sig" className="w-full h-auto pointer-events-none" />
+            {settings.includeName && settings.nameText && (
+              <div style={{
+                fontSize: `${(settings.nameSize || 14) * 0.8}px`,
+                fontFamily: 'sans-serif',
+                color: '#000',
+                borderTop: '1px solid #ccc',
+                paddingTop: '2px',
+                width: '100%',
+                textAlign: 'center'
+              }}>
+                {settings.nameText}
+              </div>
+            )}
+          </div>
         )}
+        <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-blue-600 text-white text-[10px] px-2 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+          {t('sign.dragToMove')}
+        </div>
       </div>
     );
   };
@@ -338,18 +482,22 @@ export const SignPDF: React.FC = () => {
           <Button variant="ghost" size="sm" onClick={clearCanvas} className="text-xs w-full text-red-500 hover:text-red-600">
             {t('sign.clearSignature')}
           </Button>
+          {signatureImage && renderCombinedNameSettings()}
         </div>
       )}
 
       {settings.type === 'upload' && (
-        <div className="space-y-2">
-          <Label>{t('sign.uploadImage')}</Label>
-          <Input type="file" accept="image/*" onChange={handleImageUpload} />
-          {signatureImage && (
-            <div className="border rounded p-2 bg-white">
-              <img src={signatureImage} className="max-h-20 mx-auto" alt="preview" />
-            </div>
-          )}
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label>{t('sign.uploadImage')}</Label>
+            <Input type="file" accept="image/*" onChange={handleImageUpload} />
+            {signatureImage && (
+              <div className="border rounded p-2 bg-white">
+                <img src={signatureImage} className="max-h-20 mx-auto" alt="preview" />
+              </div>
+            )}
+          </div>
+          {signatureImage && renderCombinedNameSettings()}
         </div>
       )}
 
@@ -375,6 +523,7 @@ export const SignPDF: React.FC = () => {
             <SelectItem value="bottom-left">{t('sign.positions.bottomLeft')}</SelectItem>
             <SelectItem value="top-right">{t('sign.positions.topRight')}</SelectItem>
             <SelectItem value="top-left">{t('sign.positions.topLeft')}</SelectItem>
+            <SelectItem value="custom">{t('sign.positions.custom')}</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -415,8 +564,8 @@ export const SignPDF: React.FC = () => {
     return (
       <div className="flex flex-col items-center justify-center bg-gray-100 dark:bg-gray-800 rounded-lg p-4 min-h-[400px] relative overflow-hidden">
         {previewUrl ? (
-          <div className="relative shadow-lg max-w-full">
-            <img src={previewUrl} alt="PDF Preview" className="max-h-[60vh] object-contain" />
+          <div id="signature-preview-container" className="relative shadow-lg max-w-full touch-none">
+            <img src={previewUrl} alt="PDF Preview" className="max-h-[60vh] object-contain pointer-events-none" />
             {renderSignaturePreviewOverlay()}
           </div>
         ) : (

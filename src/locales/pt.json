@@ -5,9 +5,9 @@
   },
   "welcome": {
     "securePrefix": "Simples e Seguro",
-    "titleSuffix": "",
-    "title": "PDF Simplificado",
-    "subtitle": "Todas as ferramentas que você precisa em um só lugar. Basta arrastar e soltar um arquivo para começar a mágica.",
+    "title": "Seu",
+    "titleSuffix": "PDF Sanctuary.",
+    "subtitle": "O único conjunto de ferramentas PDF que funciona 100% no seu navegador. Sem uploads, sem servidores, sem rastros. Apenas ferramentas profissionais, alimentadas pelo seu dispositivo.",
     "firstTimeBanner": "Bem-vindo! Todo o processamento acontece no seu navegador - seus arquivos nunca saem do seu dispositivo.",
     "selectTool": "Selecione uma ferramenta na barra lateral ou escolha uma abaixo"
   },
@@ -108,6 +108,10 @@
     "edit-pdf": {
       "name": "Editar PDF",
       "description": "Editar conteúdo do PDF"
+    },
+    "tables-pdf": {
+      "name": "Tabelas em PDF",
+      "description": "Adicione, edite e estilize tabelas em seu PDF"
     }
   },
   "common": {
@@ -118,6 +122,7 @@
     "uploadFile": "Carregar arquivo",
     "download": "Baixar",
     "downloadAll": "Baixar tudo (ZIP)",
+    "supportDeveloper": "Apoiar o desenvolvedor",
     "processing": "Processando...",
     "searching": "Pesquisando...",
     "error": "Erro",
@@ -162,6 +167,8 @@
     "save": "Salvar",
     "show": "Mostrar",
     "zoom": "Zoom",
+    "zoomIn": "Aumentar",
+    "zoomOut": "Reduzir",
     "addFiles": "Adicionar mais arquivos",
     "errors": {
       "previewFailed": "Falha ao carregar a visualização"
@@ -315,6 +322,10 @@
       "saved": "Espaço economizado",
       "time": "Tempo de processamento"
     },
+    "optimized": {
+      "title": "O arquivo já está otimizado",
+      "description": "Seu PDF já está no tamanho mínimo possível com esta ferramenta."
+    },
     "quickActions": {
       "title": "O que vem a seguir?",
       "description": "Continue trabalhando com seu PDF comprimido:",
@@ -373,6 +384,10 @@
     "selectPagesHint": "Selecione pelo menos uma página para continuar",
     "mergingSelected": "Mesclando páginas selecionadas...",
     "mergeFailed": "Falha ao mesclar páginas selecionadas",
+    "clearSelection": "Limpar seleção",
+    "pagePreview": "Visualização da página",
+    "selectPage": "Selecionar página",
+    "deselectPage": "Desmarcar página",
     "mode": {
       "all": {
         "name": "Todas as páginas",
@@ -469,11 +484,11 @@
     },
     "permissions": {
       "printing": "Impressão",
-      "printingNone": "Não permitido",
-      "printingLow": "Baixa resolução",
-      "printingHigh": "Alta resolução",
-      "copying": "Permitir copiar texto",
-      "modifying": "Permitir modificar conteúdo",
+      "printingNone": "Nenhuma",
+      "printingLow": "Baixa",
+      "printingHigh": "Alta",
+      "copying": "Cópia",
+      "modifying": "Modificação",
       "annotating": "Permitir anotações",
       "fillingForms": "Permitir preencher formulários",
       "contentAccessibility": "Permitir leitores de tela"
@@ -526,6 +541,7 @@
     "languageHint": "Selecione o idioma do texto no seu documento",
     "autoDetect": "Detectar idioma automaticamente",
     "autoDetectHint": "O idioma será detectado automaticamente a partir do conteúdo do documento",
+    "detected": "Detectado",
     "detectingLanguage": "Detectando idioma...",
     "analyzingContent": "Analisando conteúdo do documento...",
     "pageSelection": "Páginas para processar",
@@ -564,19 +580,37 @@
     "characters": "caracteres",
     "languageDetection": {
       "highConfidence": "Alta Confiança",
-      "mediumConfidence": "Confiança Média",
+      "mediumConfidence": "Confianza Média",
       "lowConfidence": "Baixa Confiança",
       "verifyLanguage": "Verifique a seleção do idioma para melhor precisão do OCR"
+    },
+    "startOver": "Recomeçar",
+    "languages": {
+      "eng": "Inglês",
+      "rus": "Russo",
+      "deu": "Alemão",
+      "fra": "Francês",
+      "spa": "Espanhol",
+      "ita": "Italiano",
+      "por": "Português",
+      "pol": "Polonês",
+      "ukr": "Ucraniano",
+      "bel": "Bielorrusso",
+      "nld": "Holandês"
     },
     "outputFormat": {
       "title": "Formato de Saída",
       "text": "Texto Simples (.txt)",
+      "textShort": "Texto (editável)",
       "textDesc": "Extrair apenas texto, editável e copiável",
       "searchablePdf": "PDF Pesquisável (preserva original)",
+      "searchablePdfShort": "PDF pesquisável",
       "searchablePdfDesc": "Mantém imagens originais com camada de texto OCR invisível - parece idêntico ao original, mas totalmente pesquisável",
       "hocr": "hOCR (.html)",
+      "hocrShort": "hOCR (HTML)",
       "hocrDesc": "HTML com posicionamento preciso de palavras e pontuações de confiança - útil para processamento automatizado",
       "tsv": "TSV (.tsv)",
+      "tsvShort": "TSV (Dados)",
       "tsvDesc": "Valores separados por tabulação com caixas delimitadoras - fácil de analisar para análise de dados"
     },
     "results": {
@@ -585,7 +619,8 @@
       "hocrReady": "Dados hOCR Prontos",
       "tsvReady": "Dados TSV Prontos",
       "pagesWillProcess": "{count} {pages} serão processadas com OCR",
-      "confidenceAndPages": "Confiança: {confidence}% • {count} {pages} processadas"
+      "confidenceAndPages": "Confiança: {confidence}% • {count} {pages} processadas",
+      "successMessage": "Seu documento foi processado com sucesso. Agora você pode baixar o resultado na barra lateral."
     },
     "infoPanel": {
       "searchablePdfTitle": "PDF Pesquisável com Camada de Texto Invisível",
@@ -619,11 +654,17 @@
     }
   },
   "watermark": {
+    "mode": "Modo",
+    "textMode": "Texto",
+    "imageMode": "Imagem",
+    "chooseImage": "Escolher imagem",
     "filePreview": "Arquivo para adicionar marca d'água",
     "settings": "Configurações da marca d'água",
     "text": "Texto da marca d'água",
     "watermarkText": "Texto da marca d'água",
     "watermarkPlaceholder": "Digite o texto da marca d'água",
+    "image": "Imagem",
+    "imageScale": "Escala da imagem",
     "position": "Posição",
     "positions": {
       "diagonal": "Diagonal",
@@ -654,6 +695,7 @@
     "loadingPreview": "Carregando pré-visualização...",
     "errors": {
       "noText": "Por favor, digite o texto da marca d'água",
+      "noImage": "Por favor, selecione uma imagem primeiro",
       "failed": "Falha ao adicionar marca d'água",
       "cyrillicNotSupported": "Caracteres cirílicos podem não ser suportados pela fonte selecionada"
     },
@@ -854,8 +896,10 @@
       "bottomRight": "Inferior Direita",
       "bottomLeft": "Inferior Esquerda",
       "topRight": "Superior Direita",
-      "topLeft": "Superior Esquerda"
+      "topLeft": "Superior Esquerda",
+      "custom": "Manual (Arrastar e soltar)"
     },
+    "dragToMove": "Arraste para mover",
     "applyToPages": "Aplicar às Páginas",
     "allPages": "Todas as Páginas",
     "pageNumber": "Página {number}",
@@ -877,6 +921,10 @@
     "provideSignature": "Por favor, desenhe ou envie uma assinatura",
     "textSize": "Tamanho do Texto",
     "signatureSize": "Tamanho da Assinatura",
+    "includeName": "Incluir nome impreso",
+    "namePlaceholder": "Digite o nome",
+    "printedName": "Nome Impresso",
+    "nameSize": "Tamanho do Nome",
     "addSignature": "Adicionar Assinatura",
     "quickActions": {
       "title": "O que vem a seguir?",
@@ -942,31 +990,28 @@
     "zoom": "Zoom: {scale}%",
     "pageOf": "Página {current} de {total}",
     "defaultFileName": "documento_com_texto.pdf",
-    "title": "Adicionar texto",
     "toolbar": {
-      "addText": "Add Text",
-      "select": "Select",
-      "page": "Page",
-      "of": "of",
-      "savePdf": "Salvar PDF",
-      "undo": "Undo",
-      "redo": "Redo"
+      "addText": "Adicionar Texto",
+      "select": "Selecionar",
+      "page": "Página",
+      "of": "de",
+      "savePdf": "Salvar PDF"
     },
     "format": {
-      "title": "Format Text",
-      "placeholder": "Enter text here...",
-      "textContent": "Text Content",
+      "title": "Formatar Texto",
+      "placeholder": "Insira o texto aqui...",
+      "textContent": "Conteúdo do Texto",
       "fontFamily": "Fonte",
       "fontSize": "Tamanho",
       "textColor": "Cor",
-      "position": "Position",
-      "preview": "Preview",
-      "sampleText": "Sample text",
-      "opacity": "Opacity",
-      "rotation": "Rotation",
-      "bold": "Bold",
-      "italic": "Italic",
-      "delete": "Delete Element",
+      "position": "Posição",
+      "preview": "Pré-visualização",
+      "sampleText": "Texto de exemplo",
+      "opacity": "Opacidade",
+      "rotation": "Rotação",
+      "bold": "Negrito",
+      "italic": "Itálico",
+      "delete": "Excluir Elemento",
       "alignment": "Alinhamento",
       "alignLeft": "Esquerda",
       "alignCenter": "Centro",
@@ -985,7 +1030,49 @@
     "selected": "Selecionado: {name} ({type})",
     "zoom": "Zoom: {scale}%",
     "pageOf": "Página {current} de {total}",
-    "selectFieldToEdit": "Selecione o campo para editar"
+    "selectFieldToEdit": "Selecione o campo para editar",
+    "addNewField": "+ Adicionar novo campo",
+    "toolbar": {
+      "addField": "Adicionar campo:",
+      "addText": "Adicionar campo de texto",
+      "addMultiline": "Adicionar campo multilinha",
+      "addCheckbox": "Adicionar caixa de seleção",
+      "addRadio": "Adicionar botão de rádio",
+      "addDropdown": "Adicionar menu suspenso",
+      "savePdf": "Salvar PDF"
+    },
+    "panel": {
+      "title": "Propriedades do campo",
+      "deleteField": "Excluir campo",
+      "fieldName": "Nome do campo",
+      "xPosition": "Posição X",
+      "yPosition": "Posição Y",
+      "width": "Largura",
+      "height": "Altura",
+      "defaultValue": "Valor padrão",
+      "defaultPlaceholder": "Insira o texto padrão...",
+      "maxLength": "Comprimento máx.",
+      "maxLengthPlaceholder": "Sem limite",
+      "fontSize": "Tamanho da fonte",
+      "checkedByDefault": "Marcado por padrão",
+      "radioGroup": "Grupo de rádio",
+      "radioGroupHint": "Botões de rádio com o mesmo nome de grupo são mutuamente exclusivos",
+      "value": "Valor",
+      "selectedByDefault": "Selecionado por padrão",
+      "options": "Opções (uma por linha)",
+      "allowMultiSelect": "Permitir seleção múltipla",
+      "requiredField": "Campo obrigatório",
+      "readOnlyField": "Somente leitura",
+      "duplicateField": "Duplicar campo",
+      "selectToEdit": "Selecione um campo para editar suas propriedades"
+    },
+    "types": {
+      "text": "Texto",
+      "multiline": "Multilinha",
+      "checkbox": "Caixa de seleção",
+      "radio": "Botão de rádio",
+      "dropdown": "Menu suspenso"
+    }
   },
   "editText": {
     "rasterizationWarning": "Nota: As páginas editadas serão convertidas em imagens. O texto nessas páginas não será selecionável após a edição.",

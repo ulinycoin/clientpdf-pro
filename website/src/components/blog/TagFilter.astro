@@ -8,16 +8,16 @@ const { allTags, selectedTag } = Astro.props;
 const sortedTags = [...allTags].sort();
 ---
 
-<div class="tag-filter mb-8">
-  <div class="flex flex-wrap gap-2 items-center">
-    <span class="text-sm font-semibold text-gray-700 mr-2">Filter by tag:</span>
+<div class="tag-filter mb-12">
+  <div class="flex flex-wrap gap-3 items-center">
+    <span class="text-sm font-bold text-muted mr-3 uppercase letter-spacing-wider">Filter by tag:</span>
 
     <a
       href="/blog"
-      class={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+      class={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all border ${
         !selectedTag
-          ? 'bg-blue-600 text-white shadow-md'
-          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+          ? 'bg-accent-blue text-white border-accent-blue shadow-lg shadow-blue-900/20'
+          : 'bg-glass border-glass-border text-muted hover:border-white/20 hover:text-main'
       }`}
     >
       All Posts
@@ -26,10 +26,10 @@ const sortedTags = [...allTags].sort();
     {sortedTags.map(tag => (
       <a
         href={`/blog?tag=${encodeURIComponent(tag)}`}
-        class={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+        class={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all border ${
           selectedTag === tag
-            ? 'bg-blue-600 text-white shadow-md'
-            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            ? 'bg-accent-blue text-white border-accent-blue shadow-lg shadow-blue-900/20'
+            : 'bg-glass border-glass-border text-muted hover:border-white/20 hover:text-main'
         }`}
       >
         #{tag}

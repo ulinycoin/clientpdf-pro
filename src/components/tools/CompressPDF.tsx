@@ -115,9 +115,6 @@ export const CompressPDF: React.FC = () => {
       );
       setIsAnalyzing(false);
     }
-    setFile((prev) =>
-      prev ? { ...prev, status: 'error', error: 'Failed to read PDF' } : null
-    );
   }
 
 
@@ -357,10 +354,18 @@ export const CompressPDF: React.FC = () => {
 
                 <div className="space-y-2">
                   <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
-                    {t('compress.success.title')}
+                    {result.metadata?.compressionRatio && result.metadata.compressionRatio > 0
+                      ? t('compress.success.title')
+                      : t('compress.optimized.title', { defaultValue: 'File is already optimized' })}
                   </h2>
                   <p className="text-center text-gray-500 dark:text-gray-400 max-w-md mx-auto">
-                    {t('compress.success.saved')} <span className="text-green-600 font-bold">{result.metadata?.compressionRatio}%</span>
+                    {result.metadata?.compressionRatio && result.metadata.compressionRatio > 0 ? (
+                      <>
+                        {t('compress.success.saved')} <span className="text-green-600 font-bold">{result.metadata.compressionRatio}%</span>
+                      </>
+                    ) : (
+                      t('compress.optimized.description', { defaultValue: 'Your PDF is already at its minimum possible size with this tool.' })
+                    )}
                   </p>
                 </div>
 

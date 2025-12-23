@@ -65,7 +65,7 @@ export const ToolLayout: React.FC<ToolLayoutProps> = ({
         <main id="main-content" className="tool-layout space-y-6 w-full max-w-[98%] mx-auto px-4 md:px-6 py-8 animate-fade-in" role="main">
             {/* Header */}
             <div className="text-center md:text-left space-y-2">
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300">
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
                     {title}
                 </h1>
                 <p className="text-lg text-gray-600 dark:text-gray-400 max-w-3xl">
@@ -101,10 +101,10 @@ export const ToolLayout: React.FC<ToolLayoutProps> = ({
 
                 {/* Sidebar / Settings Area (Desktop: Right side, Mobile: Bottom) */}
                 {hasFiles && (settings || actions) && (
-                    <div className={`${sidebarWidth || 'lg:w-80 xl:w-96'} flex-shrink-0 space-y-6`}>
+                    <div className={`${sidebarWidth || 'lg:w-80 xl:w-96'} flex-shrink-0 space-y-6 lg:sticky lg:top-24 lg:max-h-[calc(100vh-120px)] lg:overflow-y-auto lg:pr-2 custom-scrollbar`}>
                         {/* Settings Card */}
                         {settings && (
-                            <Card className="sticky top-24 glass-premium dark:glass-premium-dark overflow-hidden transition-all duration-300 hover:shadow-glow/20">
+                            <Card className="glass-premium dark:glass-premium-dark overflow-hidden transition-all duration-300 hover:shadow-glow/20">
                                 <CardContent className="p-6 space-y-6">
                                     {settings}
                                 </CardContent>

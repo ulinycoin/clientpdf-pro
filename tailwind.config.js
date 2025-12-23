@@ -111,6 +111,8 @@ export default {
           800: '#991b1b',
           900: '#7f1d1d',
         },
+        'accent-blue': '#3b82f6',
+        'accent-light': '#60a5fa',
       },
       spacing: {
         '18': '4.5rem',
