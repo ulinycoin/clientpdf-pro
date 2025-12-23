@@ -1,8 +1,0 @@
-blank_issues_enabled: true
-contact_links:
-  - name: Development Roadmap
-    url: https://github.com/ulinycoin/clientpdf-pro/blob/main/ROADMAP.md
-    about: View planned features and development priorities
-  - name: Documentation
-    url: https://github.com/ulinycoin/clientpdf-pro/blob/main/README.md
-    about: Read project documentation and setup guide
