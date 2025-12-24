@@ -92,7 +92,7 @@ inject();
 if (typeof window !== 'undefined' && import.meta.env.VITE_POSTHOG_KEY) {
   posthog.init(import.meta.env.VITE_POSTHOG_KEY, {
     api_host: window.location.origin + '/ingest',
-    ui_host: 'https://app.posthog.com',
+    ui_host: 'https://eu.posthog.com',
     person_profiles: 'always',
     autocapture: true, // Enable autocapture temporarily to verify working status
     capture_pageview: true,
