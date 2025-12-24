@@ -96,9 +96,9 @@ if (typeof window !== 'undefined') {
     api_host: window.location.origin + '/ingest',
     ui_host: 'https://eu.posthog.com',
     person_profiles: 'always',
-    autocapture: true, // Enable autocapture temporarily to verify working status
+    autocapture: false, // Leaner production configuration
     capture_pageview: true,
-    debug: true, // Enable debug mode to see logs in console
+    debug: false, // Disable debug logs in production
     session_recording: {
       maskAllInputs: true,
       maskTextSelector: ".ph-no-capture",

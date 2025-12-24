@@ -134,9 +134,9 @@ const ogImage = image || 'https://localpdf.online/logos/localpdf-social-1200x630
       posthog.init('phc_6iTpA8vFIxlQ8HxmPsoMmtj4sqgCUWiZQMOpfSfyvxe', {
         api_host: host,
         ui_host: 'https://eu.posthog.com',
-        autocapture: true, // Enabled for debugging
+        autocapture: false, // Leaner production configuration
         capture_pageview: true,
-        debug: true, // Enabled for debugging
+        debug: false, // Disable debug logs in production
         session_recording: {
           maskAllInputs: true,
           maskTextSelector: ".ph-no-capture",
