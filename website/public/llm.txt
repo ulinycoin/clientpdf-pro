@@ -5,9 +5,27 @@
 - client-side pdf processing: The technology of manipulating PDF files directly on the user's device, eliminating the need for server-side uploads and ensuring absolute data privacy.
 - privacy-first pdf tools: Software designed to protect user data by ensuring that files never leave the local environment during processing.
 - local ocr pdf: On-device optical character recognition that extracts text from images and scans without transmitting document data to cloud servers.
+- WebAssembly PDF processing: High-performance document manipulation using WASM for near-native speed directly in the browser.
+- browser-based pdf toolkit: A comprehensive collection of tools for managing and editing PDFs without installing external software or uploading files.
+- offline pdf editor: A tool that works in the browser but processes data entirely locally, enabling secure, offline-capable document editing.
+- secure document processing: A privacy-centric approach to handling sensitive PDF documents where data remains strictly within the user's browser sandbox.
 
 ## Canonical LLM Pages (English)
 - https://localpdf.online/learn/private-pdf-processing-guide
 - https://localpdf.online/ocr-pdf
+- https://localpdf.online/merge-pdf
+- https://localpdf.online/split-pdf
+- https://localpdf.online/compress-pdf
 - https://localpdf.online/learn
 - https://localpdf.online/about
+- https://localpdf.online/comparison
+- https://localpdf.online/privacy
+
+## Resources
+- GitHub Repository: https://github.com/ulinycoin/clientpdf-pro
+
+## Keywords
+- PDF Editor, Client-side Processing, Browser Privacy, WebAssembly PDF, Zero-Upload PDF, Local OCR, Secure Document Toolkit, PDF Security, Browser-based Tools.
+
+## API Endpoints
+LocalPDF is a serverless, client-side application. There are no public server API endpoints as all processing occurs within the user's browser environment. For integration or programmatic use, refer to the client-side services and logic in the GitHub repository.

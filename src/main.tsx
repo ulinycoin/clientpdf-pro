@@ -82,6 +82,10 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 import { I18nProvider } from '@/contexts/I18nContext'
+import { inject } from '@vercel/analytics';
+
+// Initialize Vercel Analytics
+inject();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

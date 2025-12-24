@@ -117,6 +117,12 @@ const ogImage = image || 'https://localpdf.online/logos/localpdf-social-1200x630
     }
   </script>
 
+  <!-- Vercel Analytics -->
+  <script is:inline>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script is:inline async src="/_vercel/insights/script.js"></script>
+
   <style is:global>
     :root {
       --accent-blue: #3b82f6;
