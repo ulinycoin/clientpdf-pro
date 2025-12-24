@@ -83,9 +83,25 @@ import './index.css'
 import App from './App.tsx'
 import { I18nProvider } from '@/contexts/I18nContext'
 import { inject } from '@vercel/analytics';
+import posthog from 'posthog-js';
 
 // Initialize Vercel Analytics
 inject();
+
+// Initialize PostHog with Privacy-First configuration
+if (typeof window !== 'undefined' && import.meta.env.VITE_POSTHOG_KEY) {
+  posthog.init(import.meta.env.VITE_POSTHOG_KEY, {
+    api_host: import.meta.env.VITE_POSTHOG_HOST || 'https://app.posthog.com',
+    person_profiles: 'always',
+    autocapture: false, // Don't capture everything automatically
+    capture_pageview: true,
+    session_recording: {
+      maskAllInputs: true, // Mask all form fields
+      maskTextSelector: ".ph-no-capture", // Custom class for manual masking
+      blockSelector: ".ph-no-capture, canvas" // Block PDF rendering areas from recording
+    }
+  });
+}
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
