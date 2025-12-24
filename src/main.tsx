@@ -89,8 +89,10 @@ import posthog from 'posthog-js';
 inject();
 
 // Initialize PostHog with Privacy-First configuration
-if (typeof window !== 'undefined' && import.meta.env.VITE_POSTHOG_KEY) {
-  posthog.init(import.meta.env.VITE_POSTHOG_KEY, {
+const POSTHOG_KEY = 'phc_6iTpA8vFIxlQ8HxmPsoMmtj4sqgCUWiZQMOpfSfyvxe';
+
+if (typeof window !== 'undefined') {
+  posthog.init(POSTHOG_KEY, {
     api_host: window.location.origin + '/ingest',
     ui_host: 'https://eu.posthog.com',
     person_profiles: 'always',
