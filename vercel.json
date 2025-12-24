@@ -5,7 +5,6 @@
   "framework": null,
   "installCommand": "npm install",
   "devCommand": "npm run dev:all",
-
   "redirects": [
     {
       "source": "/:path*",
@@ -19,8 +18,15 @@
       "statusCode": 301
     }
   ],
-
   "rewrites": [
+    {
+      "source": "/ingest/static/:path*",
+      "destination": "https://us-assets.i.posthog.com/static/:path*"
+    },
+    {
+      "source": "/ingest/:path*",
+      "destination": "https://us.i.posthog.com/:path*"
+    },
     {
       "source": "/app",
       "destination": "/app/index.html"
@@ -42,7 +48,6 @@
       "destination": "/$1.html"
     }
   ],
-
   "headers": [
     {
       "source": "/(.*)",
@@ -124,8 +129,6 @@
       ]
     }
   ],
-
   "trailingSlash": false,
-
   "cleanUrls": true
 }

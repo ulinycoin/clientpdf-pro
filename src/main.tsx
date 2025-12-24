@@ -91,14 +91,16 @@ inject();
 // Initialize PostHog with Privacy-First configuration
 if (typeof window !== 'undefined' && import.meta.env.VITE_POSTHOG_KEY) {
   posthog.init(import.meta.env.VITE_POSTHOG_KEY, {
-    api_host: import.meta.env.VITE_POSTHOG_HOST || 'https://app.posthog.com',
+    api_host: window.location.origin + '/ingest',
+    ui_host: 'https://app.posthog.com',
     person_profiles: 'always',
-    autocapture: false, // Don't capture everything automatically
+    autocapture: true, // Enable autocapture temporarily to verify working status
     capture_pageview: true,
+    debug: true, // Enable debug mode to see logs in console
     session_recording: {
-      maskAllInputs: true, // Mask all form fields
-      maskTextSelector: ".ph-no-capture", // Custom class for manual masking
-      blockSelector: ".ph-no-capture, canvas" // Block PDF rendering areas from recording
+      maskAllInputs: true,
+      maskTextSelector: ".ph-no-capture",
+      blockSelector: ".ph-no-capture, canvas"
     }
   });
 }
