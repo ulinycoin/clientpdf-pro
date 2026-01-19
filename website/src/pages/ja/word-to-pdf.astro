@@ -1,0 +1,94 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import { UI_LABELS_JA } from '../../data/tools_ja';
+
+const keywords = "word pdf 変換, ワード pdf 変換, docx pdf 変換, word pdf コンバーター, 無料 word pdf, word を pdf で保存";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "image": "https://localpdf.online/logos/icon-512.png",
+  "name": "WordをPDFに変換する方法",
+  "description": "無料かつプライベートなLocalPDFコンバーターを使用して、Microsoft Word（.docx）ドキュメントをPDFファイルに変換する手順ガイド。",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "ツールを開いてドキュメントをアップロード",
+      "text": "「ツールを開く」をクリックし、変換したいWordファイル（.docx）をアップロードします。",
+      "url": "https://localpdf.online/ja/word-to-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "自動変換処理",
+      "text": "ツールが自動的にWordからPDFへの変換を開始し、書式やレイアウトを維持します。",
+      "image": "https://localpdf.online/screenshots/word-to-pdf-convert.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "PDFのプレビュー",
+      "text": "新しく作成されたPDFのプレビューが表示され、変換結果を確認できます。",
+      "image": "https://localpdf.online/screenshots/word-to-pdf-preview.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "PDFをダウンロード",
+      "text": "「ダウンロード」をクリックして、変換されたPDFファイルをデバイスに保存します。",
+      "image": "https://localpdf.online/screenshots/word-to-pdf-download.png"
+    }
+  ],
+  "totalTime": "PT1M"
+};
+---
+
+<ToolPage
+  toolId="word-to-pdf"
+  title="WordをPDFに変換 オンライン — 無料のDOCX PDFコンバーター"
+  metaDescription="Wordドキュメント（DOCX）を画像、表、書式を維持したままPDFに変換。100%プライベートなクライアントサイド変換。アップロード不要。数秒で変換完了。"
+  keywords={keywords}
+  description="Microsoft Wordドキュメント（.docx）をPDF形式に変換します。画像、表、見出し、テキストの書式をすべて維持しながら、ブラウザ内で完全にプライベートに処理されます。"
+  benefits={[
+    "🖼️ 画像と表 — 書式を完全に維持",
+    "🔒 プライベート — サーバーへの送信なし",
+    "🆓 無料 — ベータ期間中は制限なし"
+  ]}
+  relatedTools={[
+    { id: 'pdf-to-word', icon: '📃', title: 'PDFからWord', description: '再びWord形式に変換' },
+    { id: 'merge-pdf', icon: '📑', title: 'PDF結合', description: '複数のPDFを一つにまとめる' },
+    { id: 'protect-pdf', icon: '🔒', title: 'PDF保護', description: 'パスワードを設定可能' },
+    { id: 'compress-pdf', icon: '🗜️', title: 'PDF圧縮', description: 'ファイルサイズを削減' }
+  ]}
+  whyChoose={{
+    title: "当社のWord PDFコンバーターが選ばれる理由",
+    reasons: [
+      "完全なプライバシー: Wordドキュメントがお客様のデバイスから離れることはありません。クラウド型とは異なり、LocalPDFはすべてローカルで変換を行います。",
+      "画像と表の正確な再現: テキスト主体の単純な変換とは異なり、ドキュメント内の画像や表、視覚的なレイアウト情報を高精度にPDFへ反映させます。",
+      "2つの最適化モード: 画像やレイアウトを重視する「書式維持モード」と、処理速度とサイズを優先する「テキスト主体モード」から用途に合わせて選べます。",
+      "完璧なUnicode対応: 日本語はもちろん、各国の特殊文字や多言語テキストも文字化けすることなく正確に処理、出力します。",
+      "品質の細かな調整: 出力品質を「標準」から「最高品質」まで選択可能。用途に応じた最適なファイルサイズと画質のバランスを実現します。",
+      "ファイル容量の制限なし: 数百ページの大きなWordファイルでも変換可能。クラウドツールにありがちな10MB〜50MBの容量制限に悩まされることはありません。"
+    ]
+  }}
+  features={[
+    "画像やグラフィックのレイアウトを維持",
+    "複雑な表（テーブル）の構造と書式を保持",
+    "見出し、箇条書き、テキストスタイルをそのまま継承",
+    "用途に応じた2つの変換アルゴリズムを搭載",
+    "出力品質の3段階調整（標準 / 高 / 最高）",
+    "日本語を含む多言語文字（ユニコード）をフルサポート",
+    "保存前に変換結果を確認できるプレビュー機能"
+  ]}
+  steps={[
+    '上の「ツールを開く」ボタンをクリック',
+    "Wordファイル（.docx）をアップロード",
+    "変換モードを選択（書式維持がおすすめ）",
+    "必要に応じて品質レベルを調整",
+    "変換を実行し、プレビューで仕上がりを確認",
+    "完成したPDFをダウンロード"
+  ]}
+  lang="ja"
+  labels={UI_LABELS_JA}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

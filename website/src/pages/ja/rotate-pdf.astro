@@ -1,0 +1,92 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import { UI_LABELS_JA } from '../../data/tools_ja';
+
+const keywords = "pdf 回転, pdf ページ回転, pdf 向き修正, pdf ローテーター, pdf 縦横変更, 無料 pdf エディター";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "image": "https://localpdf.online/logos/icon-512.png",
+  "name": "PDFページを回転させる方法",
+  "description": "無料かつプライベートなLocalPDF回転ツールを使用して、特定のページまたはPDFドキュメント全体の向きを変更する手順ガイド。",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "ツールを開いてPDFをアップロード",
+      "text": "「ツールを開く」をクリックし、回転させたいページを含むPDFドキュメントをアップロードします。",
+      "url": "https://localpdf.online/ja/rotate-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "ページと回転角度の選択",
+      "text": "サムネイルをクリックして回転させるページを選択します。ツールバーから回転角度（90度、180度、または270度）を選びます。",
+      "image": "https://localpdf.online/screenshots/rotate-select.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "回転を適用",
+      "text": "「ページを回転」ボタンをクリックします。選択したページが即座に指定した向きに回転します。",
+      "image": "https://localpdf.online/screenshots/rotate-apply.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "回転したPDFをダウンロード",
+      "text": "プレビューが表示されます。確認後、「ダウンロード」をクリックして修正されたPDFファイルを保存します。",
+      "image": "https://localpdf.online/screenshots/rotate-download.png"
+    }
+  ],
+  "totalTime": "PT1M"
+};
+---
+
+<ToolPage
+  toolId="rotate-pdf"
+  title="PDFページをオンラインで回転 — 無料・高速"
+  metaDescription="PDFページを90度、180度、270度回転。100%プライベートなクライアントサイド処理。アップロード不要。即座に向きを修正。"
+  keywords={keywords}
+  description="PDFページの向きを修正します。個別のページ、またはドキュメント全体の向きを90度、180度、270度単位で自在に変更できます。すべてブラウザ内で安全に動作します。"
+  benefits={[
+    "⚡ 即座に完了 — もたつくアップロードなしで数秒で回転",
+    "🔒 プライベート — ドキュメントは常に手元に（送信なし）",
+    "🆓 無料 — ベータ期間中は回数制限なし"
+  ]}
+  relatedTools={[
+    { id: 'organize-pdf', icon: '📋', title: 'ページ整理', description: '順序の並び替えやページ管理' },
+    { id: 'compress-pdf', icon: '🗜️', title: 'PDF圧縮', description: '修正後のファイルサイズを削減' },
+    { id: 'merge-pdf', icon: '📑', title: 'PDF結合', description: '回転させたPDFを一つにまとめる' },
+    { id: 'pdf-to-images', icon: '📸', title: 'PDFから画像', description: '回転後のページを画像として保存' }
+  ]}
+  whyChoose={{
+    title: "当社のPDF回転ツールが選ばれる理由",
+    reasons: [
+      "本物のプライバシー保護: お客様のPDFがコンピュータの外に出ることは一切ありません。LocalPDFはブラウザ内で直接ページ操作を行うため、機密情報の流出リスクをゼロにします。",
+      "柔軟なページ選択: 特定のページ、複数の範囲、またはドキュメント全体の回転に対応。スキャンの向きがバラバラな書類も、これ一つで完璧に整えられます。",
+      "画質を落とさないロスレス処理: ページの回転はメタデータの修正として処理され、データの再構築は行われません。そのため、画質、フォント、ベクトル図形の美しさは維持されます。",
+      "待機時間ゼロの高速処理: アップロードや処理待ちの時間は必要ありません。ブラウザのパワーを活かし、通常1秒未満で回転結果が反映されます。",
+      "ダウンロード前の確認: 回転後の状態をプレビューで即座に確認できます。意図通りになっているか見てから保存できるので、失敗がありません。",
+      "大容量ファイルにも対応: 数百MBあるような大きなPDFも、ブラウザのメモリが許す限り制限なく回転できます。クラウドツールのような容量制限に悩まされることはありません。"
+    ]
+  }}
+  features={[
+    "特定のページだけ、または全ページを一括で回転",
+    "90度、180度、270度の回転オプション",
+    "時計回り・反時計回りの直感的な操作",
+    "高解像度サムネイルによる回転前の確認",
+    "同一角度でのバッチ（一括）回転機能",
+    "元のPDFファイルの品質を100%維持"
+  ]}
+  steps={[
+    '上の「ツールを開く」ボタンをクリック',
+    "向きを直したいPDFファイルを読み込み",
+    "回転させたいページをサムネイルから選択",
+    "希望の回転角度（90 / 180 / 270度）を指定",
+    "プレビューを確認して修正済みPDFを保存"
+  ]}
+  lang="ja"
+  labels={UI_LABELS_JA}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

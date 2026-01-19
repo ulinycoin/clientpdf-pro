@@ -31,11 +31,52 @@ interface Props {
     title: string;
     description: string;
   }>;
+  answerBox?: {
+    question: string;
+    answer: string;
+  };
+  lang?: string;
+  labels?: {
+    freeBadge?: string;
+    launchStudio?: string;
+    keyFeatures?: string;
+    howItWorks?: string;
+    privacyTitle?: string;
+    privacyDesc?: string;
+    faqHeader?: string;
+    techHeader?: string;
+    relatedHeader?: string;
+    viewAll?: string;
+    homeLabel?: string;
+    toolsLabel?: string;
+  };
 }
 
-const { toolId, title, description, metaDescription, image, benefits, steps, whyChoose, features, relatedTools, faqs, techInfo } = Astro.props;
+const { 
+  toolId, title, description, metaDescription, image, benefits, steps, 
+  whyChoose, features, relatedTools, faqs, techInfo, answerBox, lang = 'en',
+  labels = {}
+} = Astro.props;
 
-const canonicalURL = `https://localpdf.online/${toolId}`;
+const ui = {
+  freeBadge: labels.freeBadge || "Free Sandbox Beta",
+  launchStudio: labels.launchStudio || "Launch Studio 🚀",
+  keyFeatures: labels.keyFeatures || "Key Features",
+  howItWorks: labels.howItWorks || "How It Works",
+  privacyTitle: labels.privacyTitle || "100% Private Sandbox:",
+  privacyDesc: labels.privacyDesc || "Your files never leave your device. All processing happens locally in your browser's secure memory.",
+  faqHeader: labels.faqHeader || "Frequently Asked Questions",
+  techHeader: labels.techHeader || "Technical Architecture: How it Works",
+  relatedHeader: labels.relatedHeader || "Related PDF Tools",
+  viewAll: labels.viewAll || "View All Tools →",
+  homeLabel: labels.homeLabel || "Home",
+  toolsLabel: labels.toolsLabel || "Tools",
+  defaultFaqs: labels.defaultFaqs || null,
+  defaultTechInfo: labels.defaultTechInfo || null
+};
+
+const langPrefix = lang === 'en' ? '' : `/${lang}`;
+const canonicalURL = `https://localpdf.online${langPrefix}/${toolId}`;
 
 // Get tool data from centralized registry
 const currentTool = getToolById(toolId);
@@ -76,6 +117,24 @@ const structuredData = {
   "image": image || "https://localpdf.online/logos/icon-512.png"
 };
 
+const productSchema = {
+  "@context": "https://schema.org/",
+  "@type": "Product",
+  "name": title,
+  "description": metaDescription,
+  "brand": {
+    "@type": "Brand",
+    "name": "LocalPDF Sanctuary"
+  },
+  "offers": {
+    "@type": "Offer",
+    "url": canonicalURL,
+    "price": "0",
+    "priceCurrency": "USD",
+    "availability": "https://schema.org/InStock"
+  }
+};
+
 const defaultFaqs = [
   {
     question: "Are my files uploaded to a server?",
@@ -102,14 +161,15 @@ const defaultTechInfo = [
   }
 ];
 
-const displayedFaqs = faqs && faqs.length > 0 ? faqs : defaultFaqs;
-const displayedTechInfo = techInfo && techInfo.length > 0 ? techInfo : defaultTechInfo;
+const displayedFaqs = faqs && faqs.length > 0 ? faqs : (ui.defaultFaqs || defaultFaqs);
+const displayedTechInfo = techInfo && techInfo.length > 0 ? techInfo : (ui.defaultTechInfo || defaultTechInfo);
 ---
 
-<BaseLayout title={title} description={metaDescription} canonical={canonicalURL} image={image}>
+<BaseLayout title={title} description={metaDescription} canonical={canonicalURL} image={image} lang={lang}>
 
   <!-- Schema.org structured data -->
   <script type="application/ld+json" slot="head" set:html={JSON.stringify(structuredData)} />
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify(productSchema)} />
 
   <script define:vars={{ appURL }}>
     // Prefetch app for faster navigation
@@ -122,8 +182,8 @@ const displayedTechInfo = techInfo && techInfo.length > 0 ? techInfo : defaultTe
   </script>
 
   <Breadcrumbs items={[
-    { label: 'Home', href: '/' },
-    { label: 'Tools', href: '/' },
+    { label: ui.homeLabel, href: langPrefix || '/' },
+    { label: ui.toolsLabel, href: langPrefix || '/' },
     { label: title }
   ]} />
 
@@ -132,7 +192,7 @@ const displayedTechInfo = techInfo && techInfo.length > 0 ? techInfo : defaultTe
     <div class="hero-glow"></div>
     <div class="hero-badge">
       <span class="dot-live"></span>
-      Free Sandbox Beta
+      {ui.freeBadge}
     </div>
     <h1 class="tool-title">{title}</h1>
     <p class="tool-desc" set:html={description} />
@@ -148,9 +208,21 @@ const displayedTechInfo = techInfo && techInfo.length > 0 ? techInfo : defaultTe
     </div>
 
     <a class="cta-button" href={appURL}>
-      Launch Studio 🚀
+      {ui.launchStudio}
     </a>
   </section>
+
+  <!-- Answer Box Section for SEO/LLM -->
+  {answerBox && (
+    <section class="answer-box-section">
+      <div class="answer-box">
+        <div class="answer-box-inner">
+          <strong>{answerBox.question}</strong>
+          <p set:html={answerBox.answer}></p>
+        </div>
+      </div>
+    </section>
+  )}
 
   <!-- Content Container with Rounded Corner aesthetic -->
   <div class="sanctuary-container">
@@ -181,7 +253,7 @@ const displayedTechInfo = techInfo && techInfo.length > 0 ? techInfo : defaultTe
     <!-- Features Section -->
     {features && features.length > 0 && (
       <section class="features-section">
-        <h2 class="section-heading">Key Features</h2>
+        <h2 class="section-heading">{ui.keyFeatures}</h2>
         <div class="features-grid">
           {features.map((feature) => (
             <div class="feature-item">
@@ -195,7 +267,7 @@ const displayedTechInfo = techInfo && techInfo.length > 0 ? techInfo : defaultTe
 
     <!-- How It Works Section -->
     <section class="howto-section">
-      <h2 class="section-heading">How It Works</h2>
+      <h2 class="section-heading">{ui.howItWorks}</h2>
       <div class="steps-grid">
         {steps.map((step, idx) => {
           const isObject = typeof step !== 'string';
@@ -220,7 +292,7 @@ const displayedTechInfo = techInfo && techInfo.length > 0 ? techInfo : defaultTe
       <div class="privacy-note">
         <div class="privacy-icon">🔒</div>
         <p>
-          <strong>100% Private Sandbox:</strong> Your files never leave your device. All processing happens locally in your browser's secure memory.
+          <strong>{ui.privacyTitle}</strong> {ui.privacyDesc}
         </p>
       </div>
     </section>
@@ -229,7 +301,7 @@ const displayedTechInfo = techInfo && techInfo.length > 0 ? techInfo : defaultTe
     {displayedFaqs && displayedFaqs.length > 0 && (
       <section class="faq-section">
         <div class="faq-content">
-          <h2 class="faq-h2">Frequently Asked Questions</h2>
+          <h2 class="faq-h2">{ui.faqHeader}</h2>
           <div class="faq-grid">
             {displayedFaqs.map(item => (
               <div class="faq-item">
@@ -247,7 +319,7 @@ const displayedTechInfo = techInfo && techInfo.length > 0 ? techInfo : defaultTe
     {displayedTechInfo && displayedTechInfo.length > 0 && (
       <section class="technical-breakdown">
         <div class="tech-content">
-          <h2 class="tech-h2">Technical Architecture: How it Works</h2>
+          <h2 class="tech-h2">{ui.techHeader}</h2>
           <div class="tech-grid">
             {displayedTechInfo.map(item => (
               <div class="tech-card">
@@ -262,10 +334,10 @@ const displayedTechInfo = techInfo && techInfo.length > 0 ? techInfo : defaultTe
 
     <!-- Related Tools -->
     <section class="related-tools">
-      <h2 class="section-heading">Related PDF Tools</h2>
+      <h2 class="section-heading">{ui.relatedHeader}</h2>
       <div class="tools-grid">
         {finalRelatedTools.map((tool) => (
-          <a href={`/${tool.id}`} class="tool-card">
+          <a href={`${langPrefix}/${tool.id}`} class="tool-card">
             <div class="card-glass"></div>
             <div class="card-glow"></div>
             <span class="t-icon" set:html={tool.icon} />
@@ -277,7 +349,7 @@ const displayedTechInfo = techInfo && techInfo.length > 0 ? techInfo : defaultTe
         ))}
       </div>
       <div class="view-all">
-        <a href="/" class="view-all-link">View All Tools →</a>
+        <a href={langPrefix || "/"} class="view-all-link">{ui.viewAll}</a>
       </div>
     </section>
   </div>
@@ -516,6 +588,7 @@ const displayedTechInfo = techInfo && techInfo.length > 0 ? techInfo : defaultTe
     overflow: hidden;
     border: 1px solid var(--glass-border);
     background: rgba(0,0,0,0.2);
+    aspect-ratio: 16/9;
   }
 
   .step-image { width: 100%; display: block; filter: brightness(0.9); }
@@ -746,5 +819,50 @@ const displayedTechInfo = techInfo && techInfo.length > 0 ? techInfo : defaultTe
     .tool-title { font-size: 2.25rem; }
     .sanctuary-container { padding: 48px 5vw; }
     .step-card { flex-direction: column; gap: 16px; }
+  }
+
+  /* Answer Box Styles */
+  .answer-box-section {
+    padding: 0 7vw 40px;
+    margin-top: -40px; /* Pull up to hero */
+    position: relative;
+    z-index: 10;
+  }
+
+  .answer-box {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 1px; /* Border-gradient trick */
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.05));
+    border-radius: 24px;
+  }
+
+  .answer-box-inner {
+    background: rgba(10, 10, 12, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 23px;
+    padding: 32px 40px;
+    text-align: center;
+  }
+
+  .answer-box strong {
+    display: block;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.25rem;
+    color: var(--accent-light);
+    margin-bottom: 16px;
+    letter-spacing: -0.01em;
+  }
+
+  .answer-box p {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+    margin: 0;
+  }
+
+  @media (max-width: 600px) {
+    .answer-box-inner { padding: 24px; }
+    .answer-box strong { font-size: 1.15rem; }
   }
 </style>

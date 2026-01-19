@@ -1,0 +1,112 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import { UI_LABELS_DE } from '../../data/tools_de';
+
+const keywords = "pdf schützen, pdf passwort schutz, pdf verschlüsseln, pdf sicher machen, passwort zu pdf hinzufügen, pdf verschlüsselung";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "image": "https://localpdf.online/logos/icon-512.png",
+  "name": "So schützen Sie ein PDF mit einem Passwort",
+  "description": "Eine Schritt-für-Schritt-Anleitung, wie Sie ein Passwort hinzufügen и Verschlüsselungsberechtigungen für ein PDF-Dokument mit dem kostenlosen и privaten LocalPDF-Schutztool festlegen.",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Tool öffnen и PDF hochladen",
+      "text": "Klicken Sie auf 'Tool öffnen' и laden Sie das PDF-Dokument hoch, das Sie schützen möchten.",
+      "url": "https://localpdf.online/de/protect-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Passwort и Berechtigungen festlegen",
+      "text": "Geben Sie ein starkes Passwort ein. Optional können Sie ein Besitzerpasswort festlegen и Berechtigungen für Drucken, Kopieren и Bearbeiten konfigurieren.",
+      "image": "https://localpdf.online/screenshots/protect-settings.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Schutz anwenden",
+      "text": "Klicken Sie auf die Schaltfläche 'PDF schützen'. Das Tool verschlüsselt das Dokument sofort mit Ihren Einstellungen.",
+      "image": "https://localpdf.online/screenshots/protect-apply.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Sicheres PDF herunterladen",
+      "text": "Klicken Sie auf 'Herunterladen', um die neu verschlüsselte и passwortgeschützte PDF-Datei auf Ihrem Gerät zu speichern.",
+      "image": "https://localpdf.online/screenshots/protect-download.png"
+    }
+  ],
+  "totalTime": "PT1M"
+};
+
+const faqs = [
+  {
+    question: "Welcher Verschlüsselungsstandard wird verwendet?",
+    answer: "Wir verwenden **AES-256 Bit Verschlüsselung**, den aktuellen Standard für Hochsicherheitsanwendungen weltweit. Ihr Dokument wird direkt в Ihrem Browser mit nativen Krypto-APIs verschlüsselt."
+  },
+  {
+    question: "Was ist der Unterschied zwischen Benutzer- и Besitzerpasswort?",
+    answer: "Das **Benutzerpasswort** (Öffnen-Passwort) wird zum Ansehen des Dokuments benötigt. Das **Besitzerpasswort** (Berechtigungs-Passwort) wird benötigt, um Sicherheitseinstellungen zu ändern oder Einschränkungen wie Drucken oder Kopieren aufzuheben."
+  },
+  {
+    question: "Kann ich ein vergessenes Passwort wiederherstellen?",
+    answer: "Nein. Da LocalPDF vollständig lokal arbeitet и wir keine Passwörter oder Dokumente speichern, gibt es keine Möglichkeit zur Wiederherstellung. Bitte bewahren Sie Ihre Passwörter sicher auf."
+  },
+  {
+    question: "Werden meine Passwörter an einen Server gesendet?",
+    answer: "Nein. Ihre Passwörter verlassen nie Ihren Browser. Sie werden lokal verwendet, um die Verschlüsselungsschlüssel в Ihrem Arbeitsspeicher zu generieren."
+  }
+];
+---
+
+<ToolPage
+  toolId="protect-pdf"
+  title="PDF mit Passwort schützen online — Kostenlos & Sicher"
+  metaDescription="Passwortschutz zu PDF-Dateien hinzufügen. Verschlüsselung и Berechtigungen lokal festlegen. 100% privat, ohne Uploads."
+  keywords={keywords}
+  description="Fügen Sie Ihren PDFs eine Passwort-Verschlüsselung mit detaillierten Berechtigungen hinzu. Schützen Sie sensible Dokumente vor unbefugtem Zugriff — alles wird lokal в Ihrem Browser verarbeitet."
+  benefits={[
+    "⚡ Sofort — PDFs в Sekunden verschlüsseln",
+    "🔒 Privat — Keine Uploads, lokale Verschlüsselung",
+    "🆓 Kostenlos — Unbegrenzter Schutz während der Beta"
+  ]}
+  relatedTools={[
+    { id: 'add-form-fields-pdf', icon: '📋', title: 'Formularfelder hinzufügen', description: 'Ausfüllbare Formulare erstellen и schützen' },
+    { id: 'sign-pdf', icon: '✍️', title: 'PDF unterschreiben', description: 'Digitale Signaturen zu geschützten Dokumenten hinzufügen' },
+    { id: 'watermark-pdf', icon: '💧', title: 'Wasserzeichen', description: 'Wasserzeichen vor der Verschlüsselung hinzufügen' },
+    { id: 'compress-pdf', icon: '🗜️', title: 'PDF komprimieren', description: 'Größe vor dem sicheren Teilen reduzieren' }
+  ]}
+  whyChoose={{
+    title: "Warum unseren PDF-Passwortschutz wählen?",
+    reasons: [
+      "Maximale Sicherheit: Ihr ungeschütztes PDF verlässt nie Ihr Gerät. Cloud-basierte Tools bergen Sicherheitsrisiken durch Server-Uploads. LocalPDF verschlüsselt lokal.",
+      "Detaillierte Berechtigungen: Setzen Sie Benutzer- и Besitzerpasswörter separat. Steuern Sie Drucken, Kopieren, Bearbeiten и Kommentieren nach Industriestandard.",
+      "AES-256 Verschlüsselung: Nutzt den gleichen Standard wie Militär- и Bankanwendungen. Ihr geschütztes PDF ist sicher gegen Brute-Force-Angriffe.",
+      "Keine Passwort-Speicherung: Wir sehen или speichern Ihr Passwort niemals. Nur Sie kennen den Schlüssel für vollständige Vertraulichkeit.",
+      "Funktioniert offline: Einmal geladen, können Sie PDFs ohne Internet schützen. Ideal für hochvertrauliche Daten.",
+      "Sofortige Verschlüsselung: Keine Warteschlangen. Die Verschlüsselung erfolgt в nativer Geschwindigkeit в Ihrem Browser — meist в unter 2 Sekunden."
+    ]
+  }}
+  features={[
+    "Benutzerpasswort festlegen (zum Öffnen erforderlich)",
+    "Besitzerpasswort festlegen (für Berechtigungsänderungen)",
+    "Druckberechtigungen steuern",
+    "Kopieren von Text и Bildern einschränken",
+    "Bearbeiten и Modifizieren verhindern",
+    "Sicherer AES-256 Verschlüsselungsstandard"
+  ]}
+  steps={[
+    'Klicken Sie oben auf "Tool öffnen"',
+    "Laden Sie das PDF hoch, das Sie schützen möchten",
+    "Geben Sie ein starkes Passwort ein",
+    "Konfigurieren Sie optional die Berechtigungen",
+    "Laden Sie Ihr verschlüsseltes PDF sofort herunter"
+  ]}
+  faqs={faqs}
+  lang="de"
+  labels={UI_LABELS_DE}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

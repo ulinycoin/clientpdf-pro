@@ -1,0 +1,133 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import { UI_LABELS_DE } from '../../data/tools_de';
+
+const ICONS = {
+  pen: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>`,
+  style: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path></svg>`,
+  lock: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>`,
+  zap: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>`,
+  plus: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>`,
+  search: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>`,
+  shield: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>`,
+  table: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-7z"></path><path d="M3 9h18"></path><path d="M3 15h18"></path><path d="M9 3v18"></path></svg>`
+};
+
+const keywords = "pdf text bearbeiten, text in pdf ersetzen, pdf schwärzen, pdf text editor, kostenloser pdf editor, lokaler pdf editor";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "So bearbeiten Sie PDF-Text lokal",
+  "description": "Schritt-für-Schritt-Anleitung zum Ersetzen, Abdecken oder Schwärzen von Text in einem PDF mit dem privaten LocalPDF-Editor.",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Studio öffnen und PDF laden",
+      "text": "Klicken Sie auf 'Studio starten' und laden Sie Ihr PDF-Dokument hoch.",
+      "url": "https://localpdf.online/de/edit-text-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Text wählen и bearbeiten",
+      "text": "Klicken Sie auf einen Textblock zum Bearbeiten. Die Engine erkennt automatisch Schriftart и Position."
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Aktualisieren и Stylen",
+      "text": "Geben Sie neuen Text ein и nutzen Sie das Styling-Panel für Größe и Ausrichtung."
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Lokal speichern",
+      "text": "Klicken Sie auf 'Speichern' zum Download direkt auf Ihr Gerät."
+    }
+  ],
+  "totalTime": "PT3M"
+};
+
+const faqs = [
+  {
+    question: "Ist es sicher, sensible Dokumente hier zu bearbeiten?",
+    answer: "Absolut. LocalPDF nutzt WebAssembly, um Dokumente vollständig im RAM Ihres Browsers zu verarbeiten. Dateien werden nie hochgeladen, was maximale Sicherheit beim Schwärzen garantiert."
+  },
+  {
+    question: "Entspricht der bearbeitete Text der Original-Schriftart?",
+    answer: "Unser Editor erkennt den Originalstil. Während wir Standard-PDF-Schriften (Helvetica, Roboto etc.) unterstützen, werden spezielle Fonts durch hochwertige Alternativen bei gleicher Ausrichtung ersetzt."
+  },
+  {
+    question: "Kann ich Text schwärzen oder unkenntlich machen?",
+    answer: "Ja. Sie können den Editor nutzen, um sensible Daten komplett abzudecken. Da alles lokal passiert, bleiben keine versteckten Metadaten auf Servern zurück."
+  }
+];
+
+const techInfo = [
+  {
+    title: "Client-Side Rendering",
+    description: "Nutzung von PDF.js для präzise Anzeige и Interaktion mit PDF-Layern ohne jegliche Serverbeteiligung."
+  },
+  {
+    title: "Smart Text Injection",
+    description: "Berechnung von Position и Kerning für Ersatztexte, um ein professionelles Erscheinungsbild zu garantieren."
+  },
+  {
+    title: "WebWorker Security",
+    description: "Engine läuft в einem dedizierten Web Worker, der nach Abschluss gelöscht wird и alle RAM-Daten bereinigt."
+  }
+];
+---
+
+<ToolPage
+  toolId="edit-text-pdf"
+  title="PDF Text lokal bearbeiten | 100% privater PDF-Editor"
+  metaDescription="Professioneller PDF-Texteditor, der vollständig в Ihrem Browser funktioniert. Ersetzen, schwärzen oder fügen Sie Text hinzu. Sicher, sofort и privat."
+  keywords={keywords}
+  description="Bearbeiten и ersetzen Sie Text в PDF-Dokumenten direkt в Ihrem Browser. Unsere Engine ermöglicht nahtlose Ersetzungen, sicheres Schwärzen или das Hinzufügen neuer Inhalte — 100% privat."
+  benefits={[
+    "Intelligente Erkennung — Original-Text sofort ersetzen",
+    "Pro Styling — Kontrolle über Fonts и Ausrichtung",
+    "Absolute Privatsphäre — Dateien bleiben lokal",
+    "Sofortige Vorschau — Echtzeit-Verarbeitung"
+  ]}
+  relatedTools={[
+    { id: 'add-text-pdf', icon: ICONS.plus, title: 'Text Overlay', description: 'Neuen Text zu Seiten hinzufügen' },
+    { id: 'ocr-pdf', icon: ICONS.search, title: 'Smart OCR', description: 'Text aus Scans extrahieren' },
+    { id: 'protect-pdf', icon: ICONS.shield, title: 'PDF schützen', description: 'Dokumente sicher verschlüsseln' },
+    { id: 'tables-pdf', icon: ICONS.table, title: 'Tabellen Pro', description: 'Daten в PDF-Tabellen konvertieren' }
+  ]}
+  faqs={faqs}
+  techInfo={techInfo}
+  whyChoose={{
+    title: "Warum LocalPDF für die Bearbeitung wählen?",
+    reasons: [
+      "Datenschutz zuerst: LocalPDF verarbeitet alles в der sicheren Sandbox Ihres Browsers, nicht в der Cloud.",
+      "Pixelpräzision: Nahtlose Textersetzung durch exakte Positions- и Stilerkennung.",
+      "Keine Spuren: Dokumentdaten werden nach dem Schließen des Tabs sofort aus dem RAM gelöscht.",
+      "Professionelle Ausgabe: Hochauflösende PDF-Generierung für geschäftliche Unterlagen.",
+      "Entwickler-Grade: WebAssembly-Power für Desktop-Performance direkt im Webbrowser."
+    ]
+  }}
+  features={[
+    "Intelligente Texterkennung и visueller Austausch",
+    "Neue Textelemente auf jeder Seite hinzufügen",
+    "Präzise Steuerungen für Ausrichtung и Positionierung",
+    "Support für Standard-Schriftarten (Helvetica, Roboto etc.)",
+    "Benutzerdefinierte Farben für Text и Markierungen",
+    "Unterstützung mehrzeiliger Textblöcke",
+    "Sicheres Schwärzen sensibler Informationen",
+    "Hochauflösende Ausgabe в Profiqualität",
+    "100% private clientseitige Processing-Engine"
+  ]}
+  steps={[
+    { text: 'Starten Sie das Studio и laden Sie Ihr PDF hoch.' },
+    { text: 'Klicken Sie auf Text zum Bearbeiten oder "Text hinzufügen".' },
+    { text: 'Passen Sie Font, Größe и Ausrichtung an.' },
+    { text: 'Prüfen и klicken Sie auf "Speichern" zum Download.' }
+  ]}
+  lang="de"
+  labels={UI_LABELS_DE}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

@@ -1,0 +1,153 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import { UI_LABELS_DE } from '../../data/tools_de';
+
+const keywords = "bilder in pdf, jpg in pdf, png in pdf, bild in pdf converter, bilder in pdf umwandeln, kostenloser pdf converter, intelligenter bildfilter, ai bildeinteilung, duplikate erkennen";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "image": "https://localpdf.online/logos/icon-512.png",
+  "name": "So wandeln Sie Bilder в PDF um",
+  "description": "Eine Schritt-für-Schritt-Anleitung, wie Sie JPG- и PNG-Bilder mit dem kostenlosen и privaten LocalPDF-Konverter в ein einzelnes PDF-Dokument mit benutzerdefiniertem Layout umwandeln.",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Tool öffnen и Bilder hochladen",
+      "text": "Klicken Sie auf 'Tool öffnen' и laden Sie die JPG- oder PNG-Bilder hoch, die Sie konvertieren möchten.",
+      "url": "https://localpdf.online/de/images-to-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Intelligenten Bildfilter nutzen",
+      "text": "Der Filter kategorisiert Bilder automatisch в Fotos, Tabellen, Logos и Icons. Nutzen Sie Schnell-Filter wie 'Nützliche Bilder', um Müll zu entfernen. Duplikate werden via SHA-256 erkannt.",
+      "image": "https://localpdf.online/screenshots/images-to-pdf-smart-filter.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Anordnen и Konfigurieren",
+      "text": "Nutzen Sie Drag-and-Drop für die Reihenfolge. 'Auto-Ausrichtung' erkennt das beste Layout. Wählen Sie Seitengröße и Ränder в der Sidebar.",
+      "image": "https://localpdf.online/screenshots/images-to-pdf-config.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "In PDF umwandeln",
+      "text": "Klicken Sie auf 'In PDF konvertieren'. Die Bilder werden gemäß Ihren Einstellungen zu einem PDF kombiniert.",
+      "image": "https://localpdf.online/screenshots/images-to-pdf-convert.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "PDF herunterladen",
+      "text": "Eine Vorschau wird angezeigt. Klicken Sie auf 'Herunterladen', um die Datei zu speichern.",
+      "image": "https://localpdf.online/screenshots/images-to-pdf-download.png"
+    }
+  ],
+  "totalTime": "PT1M"
+};
+
+const faqs = [
+  {
+    question: "Was ist der Smart Image Filter и wie funktioniert er?",
+    answer: "Dies ist eine KI-Funktion, die Bilder automatisch в Fotos, Grafiken, Logos, Icons и Dekorationen einteilt. Sie analysiert Größe, Abmessungen и Dateiformat lokal в Ihrem Browser. Es werden keine Bilder zur Analyse hochgeladen."
+  },
+  {
+    question: "Wie funktioniert die Duplikaterkennung?",
+    answer: "Wir nutzen SHA-256 Hashing, um digitale Fingerabdrücke jedes Bildes zu erstellen. So finden wir identische Bilder auch dann, wenn sie umbenannt wurden. Mit einem Klick lassen sich alle Duplikate entfernen."
+  },
+  {
+    question: "Was sind die Schnell-Filter Presets?",
+    answer: "'Nützliche Bilder' zeigt nur Fotos и Grafiken. 'Nur Fotos' wählt hochwertige JPEGs aus. 'Keine Icons' schließt kleine Dekorationselemente aus. Dies hilft beim schnellen Aufräumen großer Bildmengen."
+  },
+  {
+    question: "Ändert die Auto-Ausrichtung meine Originaldateien?",
+    answer: "Nein, sie schlägt nur die optimale Seitenausrichtung (Hoch- oder Querformat) für das PDF basierend auf den Bildabmessungen vor. Ihre Bilder bleiben unverändert."
+  },
+  {
+    question: "Warum werden manche Fotos als Grafik klassifiziert?",
+    answer: "Wir priorisieren JPEGs > 100KB als Fotos. PNGs werden oft als grafische Inhalte eingestuft, da Screenshots meist dieses Format nutzen. Sie können die Kategorisierung jederzeit manuell anpassen oder alles einbeziehen."
+  },
+  {
+    question: "Kann я den Smart Image Filter deaktivieren?",
+    answer: "Ja. Es gibt einen Schalter im Panel. Wenn er aus ist, findet keine Analyse statt и alle hochgeladenen Bilder werden ohne Filterung für das PDF genutzt."
+  },
+  {
+    question: "Wie viele Bilder kann я gleichzeitig konvertieren?",
+    answer: "Sie können bis zu 50 Bilder gleichzeitig hochladen. Da alles lokal passiert, hängt das tatsächliche Limit vom Arbeitsspeicher Ihres Geräts ab."
+  },
+  {
+    question: "Welche Bildformate werden unterstützt?",
+    answer: "Aktuell unterstützen wir JPG/JPEG und PNG. Diese decken ca. 99% aller privaten и geschäftlichen Fotos и Grafiken ab."
+  },
+  {
+    question: "Ist meine Privatsphäre bei KI-Funktionen geschützt?",
+    answer: "Absolut! Die gesamte Analyse (Kategorisierung, Hashing, Ausrichtung) läuft zu 100% lokal в Ihrem Browser. Im Gegensatz zu Cloud-Konvertern verlassen Ihre Daten nie Ihr Gerät."
+  },
+  {
+    question: "Sehe я alle Seiten vor dem Download?",
+    answer: "Ja, nach der Konvertierung zeigen wir eine Grid-Vorschau aller Seiten. So können Sie das Ergebnis prüfen, bevor Sie das PDF endgültig speichern."
+  }
+];
+---
+
+<ToolPage
+  toolId="images-to-pdf"
+  title="Bilder в PDF umwandeln online — Kostenloser KI-gestützter Konverter"
+  metaDescription="JPG, PNG в PDF konvertieren mit KI-gestütztem Smart Image Filter. Fotos automatisch erkennen, Duplikate entfernen. 100% privat."
+  keywords={keywords}
+  description="Wandeln Sie Bilder (JPG, PNG) в PDF um. KI-Filter kategorisiert Fotos automatisch, erkennt Duplikate и entfernt Junk-Bilder wie Icons — alles lokal в Ihrem Browser."
+  benefits={[
+    "🎨 KI-gestützt — Kategorisiert Fotos, Diagramme, Logos и Icons",
+    "🗑️ Duplikatsuche — Findet identische Bilder selbst bei Umbenennung",
+    "🔄 Auto-Ausrichtung — Schlägt optimales Layout vor",
+    "⚡ Sofort — Umwandlung в Sekunden",
+    "🔒 Privat — Bilder werden nie hochgeladen",
+    "🆓 Kostenlos — Unbegrenzte Nutzung"
+  ]}
+  relatedTools={[
+    { id: 'pdf-to-images', icon: '📸', title: 'PDF zu Bildern', description: 'PDF wieder als Bilder speichern' },
+    { id: 'merge-pdf', icon: '📑', title: 'PDF zusammenfügen', description: 'Mit anderen PDFs kombinieren' },
+    { id: 'compress-pdf', icon: '🗜️', title: 'PDF komprimieren', description: 'Dateigröße nach Erstellung reduzieren' },
+    { id: 'organize-pdf', icon: '📋', title: 'Seiten organisieren', description: 'Reihenfolge nachträglich ändern' }
+  ]}
+  whyChoose={{
+    title: "Warum unseren KI-basierten Bild-Konverter wählen?",
+    reasons: [
+      "KI-Smart Filter: Automatische Sortierung в Fotos, Grafiken, Logos и mehr. Entfernen Sie Web-Müll wie Banner oder Icons mit einem Klick vor der Erstellung.",
+      "Duplikaterkennung: Fortschrittliches SHA-256 Hashing erkennt identische Inhalte. Spart Speicherplatz im PDF и verhindert doppelte Seiten.",
+      "Auto-Layout: Analysiert die Bilder и setzt automatisch Hoch- oder Querformat für das beste Ergebnis ohne manuelles Drehen.",
+      "Vollständiger Datenschutz: Alle KI-Algorithmen laufen privat в Ihrem Browser. Keine Server-Analyse Ihrer privaten Fotos.",
+      "Maximale Qualität: Verlustfreies Einbetten bewahrt die Originalauflösung Ihrer Fotos ohne zusätzliche Kompression.",
+      "Viele Bilder, eine Datei: Kombinieren Sie beliebig viele JPEGs и PNGs zu einem Album oder Dokument ohne Upload-Limits."
+    ]
+  }}
+  features={[
+    "🎨 KI Smart Image Filter — Auto-Kategorisierung",
+    "🗑️ Duplikaterkennung via SHA-256 Hashing",
+    "🔄 Auto-Ausrichtung (Portrait/Landscape)",
+    "⭐ Schnell-Filter für 'Nützliche Bilder' oder 'Nur Fotos'",
+    "📊 Analyse-Übersicht für Junk- vs. Nutzinhalte",
+    "Konvertierung von JPG, JPEG und PNG",
+    "Drag-and-Drop Sortierung der Bilder",
+    "Seitengrößen (A4, Letter, Legal) wählbar",
+    "Vollbild-Vorschau aller PDF-Seiten"
+  ]}
+  steps={[
+    'Klicken Sie oben auf "Tool öffnen"',
+    "Bilder (JPG, PNG) hochladen (bis zu 50 Stück)",
+    "Smart Image Filter analysiert die Inhalte automatisch",
+    "Kategorien prüfen: Fotos, Grafiken, Logos, Icons",
+    "Schnell-Filter nutzen, um Duplikate oder Icons zu löschen",
+    "Auto-Ausrichtung für das PDF aktivieren",
+    "Bilder per Drag-and-Drop в die richtige Folge bringen",
+    "Seitengröße и Ränder festlegen",
+    "Auf 'In PDF konvertieren' klicken",
+    "Das optimierte PDF herunterladen"
+  ]}
+  faqs={faqs}
+  lang="de"
+  labels={UI_LABELS_DE}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

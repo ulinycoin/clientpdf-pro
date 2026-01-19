@@ -1,0 +1,92 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import { UI_LABELS_DE } from '../../data/tools_de';
+
+const keywords = "wasserzeichen pdf, wasserzeichen zu pdf hinzufügen, text wasserzeichen, pdf schützen, kostenloser wasserzeichen tool";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "image": "https://localpdf.online/logos/icon-512.png",
+  "name": "So fügen Sie ein Wasserzeichen zu einem PDF hinzu",
+  "description": "Eine Schritt-für-Schritt-Anleitung, wie Sie ein benutzerdefiniertes Text-Wasserzeichen zu einem PDF-Dokument hinzufügen, mit Optionen für Position, Deckkraft и Rotation, mit dem kostenlosen и privaten LocalPDF-Tool.",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Tool öffnen и PDF hochladen",
+      "text": "Klicken Sie auf 'Tool öffnen' и laden Sie das PDF-Dokument hoch, das Sie mit einem Wasserzeichen versehen möchten.",
+      "url": "https://localpdf.online/de/watermark-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Wasserzeichen konfigurieren",
+      "text": "Geben Sie Ihren Wasserzeichen-Text ein. Nutzen Sie die Sidebar, um Position, Rotation, Deckkraft и Schriftgröße anzupassen.",
+      "image": "https://localpdf.online/screenshots/watermark-config.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Wasserzeichen anwenden",
+      "text": "Klicken Sie auf 'Wasserzeichen hinzufügen'. Der Text wird gemäß Ihren Einstellungen auf allen Seiten des PDFs angewendet.",
+      "image": "https://localpdf.online/screenshots/watermark-apply.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "PDF herunterladen",
+      "text": "Eine Vorschau des Dokuments wird angezeigt. Klicken Sie auf 'Herunterladen', um das geschützte PDF zu speichern.",
+      "image": "https://localpdf.online/screenshots/watermark-download.png"
+    }
+  ],
+  "totalTime": "PT1M"
+};
+---
+
+<ToolPage
+  toolId="watermark-pdf"
+  title="Wasserzeichen zu PDF hinzufügen online — Kostenloses Tool"
+  metaDescription="Text-Wasserzeichen zu PDF-Dateien hinzufügen. 100% private clientseitige Verarbeitung. Keine Uploads, Position и Transparenz anpassbar."
+  keywords={keywords}
+  description="Fügen Sie benutzerdefinierte Wasserzeichen zu PDF-Seiten hinzu. Schützen Sie Ihre Dokumente mit sichtbaren Text-Overlays — alles wird lokal в Ihrem Browser verarbeitet."
+  benefits={[
+    "⚡ Sofort — Wasserzeichen в Sekunden hinzufügen",
+    "🔒 Privat — Dateien bleiben auf Ihrem Gerät",
+    "🆓 Kostenlos — Unbegrenzt während der Beta"
+  ]}
+  relatedTools={[
+    { id: 'add-form-fields-pdf', icon: '📋', title: 'Formularfelder', description: 'Ausfüllbare Formulare mit Wasserzeichen erstellen' },
+    { id: 'add-text-pdf', icon: '📝', title: 'Text hinzufügen', description: 'Benutzerdefinierten Text an Positionen einfügen' },
+    { id: 'protect-pdf', icon: '🔒', title: 'PDF schützen', description: 'Passwortschutz zu Dokumenten hinzufügen' },
+    { id: 'sign-pdf', icon: '✍️', title: 'PDF unterschreiben', description: 'Digitale Signaturen hinzufügen' }
+  ]}
+  whyChoose={{
+    title: "Warum unser PDF-Wasserzeichen-Tool wählen?",
+    reasons: [
+      "Vollständiger Datenschutz: Ihr PDF verlässt nie Ihr Gerät. Herkömmliche Tools laden Dokumente auf Server hoch. LocalPDF fügt Wasserzeichen lokal hinzu.",
+      "Anpassbares Design: Volle Kontrolle über Text, Position, Deckkraft, Rotation и Größe. Erstellen Sie dezente Hintergrundmarken oder deutliche Overlays.",
+      "Keine Eigenwerbung: Im Gegensatz zu vielen kostenlosen Tools fügen wir niemals unser eigenes Logo oder unsere Website-URL zu Ihrem Dokument hinzu.",
+      "Sofortige Verarbeitung: Keine Upload-Wartezeiten. Wasserzeichen werden в nativer Geschwindigkeit в Ihrem Browser gerendert.",
+      "Originalqualität bewahren: Wasserzeichen werden als Overlay-Layer hinzugefügt, ohne das gesamte PDF neu zu kodieren. Die Struktur bleibt intakt.",
+      "Stapelverarbeitung: Wenden Sie das gleiche Wasserzeichen auf mehrere PDFs nacheinander an, ohne die Einstellungen neu konfigurieren zu müssen."
+    ]
+  }}
+  features={[
+    "Benutzerdefinierte Text-Wasserzeichen hinzufügen",
+    "Position steuern (Zentrum, Ecken, benutzerdefiniert)",
+    "Deckkraft anpassen (transparent bis deckend)",
+    "Wasserzeichen в beliebigem Winkel rotieren",
+    "Auf allen oder bestimmten Seiten anwenden",
+    "Live-Vorschau vor dem Speichern"
+  ]}
+  steps={[
+    'Klicken Sie oben auf "Tool öffnen"',
+    "Laden Sie das PDF hoch, das Sie markieren möchten",
+    "Geben Sie den Wasserzeichen-Text ein",
+    "Passen Sie Position, Deckkraft и Rotation an",
+    "Prüfen Sie die Vorschau и laden Sie das PDF herunter"
+  ]}
+  lang="de"
+  labels={UI_LABELS_DE}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

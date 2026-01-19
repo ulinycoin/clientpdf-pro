@@ -1,0 +1,92 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import { UI_LABELS_DE } from '../../data/tools_de';
+
+const keywords = "pdf seiten extrahieren, seiten aus pdf erhalten, pdf seiten extraktor, seiten aus pdf speichern, neues pdf aus seiten erstellen";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "image": "https://localpdf.online/logos/icon-512.png",
+  "name": "So extrahieren Sie Seiten aus einem PDF",
+  "description": "Eine Schritt-für-Schritt-Anleitung, wie Sie mit dem kostenlosen и privaten LocalPDF-Seitenextraktor spezifische Seiten aus einem PDF-Dokument auswählen и в eine neue Datei speichern.",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Tool öffnen и PDF hochladen",
+      "text": "Klicken Sie auf 'Tool öffnen' и laden Sie das PDF-Dokument hoch, aus dem Sie Seiten extrahieren möchten.",
+      "url": "https://localpdf.online/de/extract-pages-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Zu extrahierende Seiten wählen",
+      "text": "Eine Vorschau aller Seiten wird angezeigt. Klicken Sie auf die Thumbnails der Seiten, die Sie im neuen PDF haben möchten.",
+      "image": "https://localpdf.online/screenshots/extract-select.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Seiten extrahieren",
+      "text": "Klicken Sie auf 'Seiten extrahieren'. Ein neues PDF-Dokument wird erstellt, das nur die gewählten Seiten enthält.",
+      "image": "https://localpdf.online/screenshots/extract-apply.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Neues PDF herunterladen",
+      "text": "Eine Vorschau des neuen Dokuments wird angezeigt. Klicken Sie auf 'Herunterladen', um das PDF zu speichern.",
+      "image": "https://localpdf.online/screenshots/extract-download.png"
+    }
+  ],
+  "totalTime": "PT1M"
+};
+---
+
+<ToolPage
+  toolId="extract-pages-pdf"
+  title="PDF-Seiten online extrahieren — Kostenloses Tool"
+  metaDescription="Spezifische Seiten aus PDF-Dokumenten extrahieren. 100% private clientseitige Verarbeitung. Keine Uploads, keine Limits. Neues PDF sofort erstellen."
+  keywords={keywords}
+  description="Extrahieren Sie spezifische Seiten aus PDF-Dokumenten, um neue Dateien zu erstellen. Wählen Sie einzelne Seiten oder Bereiche — alles lokal в Ihrem Browser."
+  benefits={[
+    "⚡ Sofort — Seiten в Sekunden extrahieren",
+    "🔒 Privat — Keine Uploads auf Server",
+    "🆓 Kostenlos — Unbegrenzte Nutzung während der Beta"
+  ]}
+  relatedTools={[
+    { id: 'split-pdf', icon: '✂️', title: 'PDF teilen', description: 'In mehrere PDF-Dateien aufteilen' },
+    { id: 'delete-pages-pdf', icon: '🗑️', title: 'Seiten löschen', description: 'Unerwünschte Seiten entfernen' },
+    { id: 'organize-pdf', icon: '📋', title: 'Seiten organisieren', description: 'Vor dem Extrahieren umordnen' },
+    { id: 'merge-pdf', icon: '📑', title: 'PDF zusammenfügen', description: 'Extrahierte Seiten kombinieren' }
+  ]}
+  whyChoose={{
+    title: "Warum unseren PDF-Seiten-Extraktor wählen?",
+    reasons: [
+      "Vollständiger Datenschutz: Ihr PDF verlässt nie Ihr Gerät. Online-Extraktionstools laden ganze Dokumente hoch. LocalPDF verarbeitet alles lokal в Ihrem Browser.",
+      "Flexible Auswahl: Extrahieren Sie einzelne Seiten, Bereiche (z.B. 1-5, 10-15) oder mehrere nicht zusammenhängende Seiten. Erstellen Sie beliebig viele neue PDFs.",
+      "Qualität bewahren: Die extrahierten Seiten behalten die volle Originalauflösung, Schriften и Metadaten. Es findet kein Qualitätsverlust durch Kompression statt.",
+      "Sofortige Verarbeitung: Keine Upload-Wartezeiten. Die Extraktion erfolgt в nativer Geschwindigkeit в Ihrem Browser — meist в unter 2 Sekunden.",
+      "Quelldatei bleibt intakt: Das Original-PDF wird nicht verändert. Sie können beliebig viele verschiedene Seitenkombinationen aus einer Quelle extrahieren.",
+      "Keine Dateigrößenbeschränkung: Extrahieren Sie Seiten auch aus riesigen Bibliotheken ohne künstliche Upload-Limits von Server-Diensten."
+    ]
+  }}
+  features={[
+    "Einzelne Seiten gezielt extrahieren",
+    "Seitenbereiche definieren (z.B. 5-20)",
+    "Beliebige Seitenkombinationen zusammenstellen",
+    "Visuelle Thumbnails für jede Seite zur Orientierung",
+    "Mehrere Dokumente nacheinander aus einer Quelle erstellen",
+    "Originale Dateiqualität bleibt 1:1 erhalten"
+  ]}
+  steps={[
+    'Klicken Sie oben auf "Tool öffnen"',
+    "Laden Sie das PDF zum Extrahieren hoch",
+    "Wählen Sie die Seiten per Klick auf die Thumbnails aus",
+    "Prüfen Sie die Vorschau der gewählten Seiten",
+    "Laden Sie Ihr neu erstelltes PDF herunter"
+  ]}
+  lang="de"
+  labels={UI_LABELS_DE}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

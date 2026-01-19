@@ -36,11 +36,23 @@ Allow: /protect-pdf
 Allow: /ocr-pdf
 Allow: /watermark-pdf
 Allow: /add-text-pdf
+Allow: /edit-text-pdf
+Allow: /sign-pdf
+Allow: /organize-pdf
 Allow: /rotate-pdf
 Allow: /delete-pages-pdf
 Allow: /extract-pages-pdf
 Allow: /images-to-pdf
 Allow: /pdf-to-images
+Allow: /pdf-to-word
+Allow: /word-to-pdf
+Allow: /tables-pdf
+Allow: /add-form-fields-pdf
+Allow: /extract-images-pdf
+Allow: /flatten-pdf
+Allow: /legal-privacy-pdf
+Allow: /finance-privacy-pdf
+Allow: /medical-privacy-pdf
 
 # Allow informational pages
 Allow: /about

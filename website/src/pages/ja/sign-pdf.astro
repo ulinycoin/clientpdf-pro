@@ -1,0 +1,93 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import { UI_LABELS_JA } from '../../data/tools_ja';
+
+const keywords = "pdf 署名, デジタル署名, pdf 電子署名, pdf オンライン署名, pdf 手書き署名, 無料 署名ツール";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "image": "https://localpdf.online/logos/icon-512.png",
+  "name": "PDFドキュメントに署名する方法",
+  "description": "手書き、タイピング、または画像のアップロードにより、PDFにデジタル署名を追加する手順ガイド。無料かつプライベートなLocalPDF署名ツールを使用します。",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "ツールを開いてPDFをアップロード",
+      "text": "「ツールを開く」をクリックし、署名が必要なPDFドキュメントをアップロードします。",
+      "url": "https://localpdf.online/ja/sign-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "署名を作成または追加",
+      "text": "署名方法を選択します：マウスでの手書き、テキスト入力、または署名画像のアップロードが可能です。",
+      "image": "https://localpdf.online/screenshots/sign-create.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "署名を配置",
+      "text": "作成した署名をPDFページ上の希望する場所にドラッグ＆ドロップします。必要に応じてサイズを調整できます。",
+      "image": "https://localpdf.online/screenshots/sign-place.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "適用してダウンロード",
+      "text": "「署名を適用」をクリックしてドキュメントに埋め込みます。その後、「ダウンロード」をクリックして署名済みPDFを保存します。",
+      "image": "https://localpdf.online/screenshots/sign-download.png"
+    }
+  ],
+  "totalTime": "PT2M"
+};
+---
+
+<ToolPage
+  toolId="sign-pdf"
+  title="PDF 署名 オンライン — 無料デジタル署名ツール"
+  metaDescription="PDFファイルにデジタル署名を追加。手書き、画像アップロード、テキスト入力に対応。100%プライベートなクライアントサイド処理。無制限に無料で利用可能。"
+  keywords={keywords}
+  description="PDFドキュメントに安全にデジタル署名を追加します。手書き署名、画像の読み込み、またはテキスト署名に対応。すべての処理はブラウザ内でローカルに行われます。"
+  benefits={[
+    "⚡ 高速 — 数秒でPDF署名が完了",
+    "🔒 プライベート — サーバーへの送信なし",
+    "🆓 無料 — ベータ期間中は無制限"
+  ]}
+  relatedTools={[
+    { id: 'add-form-fields-pdf', icon: '📋', title: 'フォームフィールド追加', description: '署名前にフォームを作成' },
+    { id: 'protect-pdf', icon: '🔒', title: 'PDF保護', description: '署名後にパスワードを設定' },
+    { id: 'watermark-pdf', icon: '💧', title: '透かし追加', description: '署名済み文書にウォーターマークを挿入' },
+    { id: 'flatten-pdf', icon: '📏', title: 'PDFフラット化', description: '署名後に編集不可にする' }
+  ]}
+  whyChoose={{
+    title: "当社のPDF署名ツールが選ばれる理由",
+    reasons: [
+      "完全なプライバシー: お客様のPDFがデバイスから離れることはありません。クラウド型とは異なり、LocalPDFはすべてローカルで署名処理を行います。",
+      "多彩な署名方法: マウスやトラックパッドでの手書き、お手持ちの署名画像（PNG/JPG）の読み込み、またはフォントを使用したテキスト署名に対応しています。",
+      "アカウント登録不要: 面倒な会員登録やログインは一切不要。ベータ期間中は、署名の回数制限もありません。",
+      "法的有効性への配慮: デジタル署名は多くの国や地域で法的効力を持ちます（具体的な要件については、ご利用地域の法律をご確認ください）。",
+      "プロフェッショナルな仕上げ: 署名は高品質な状態で埋め込まれ、位置やサイズも自由自在。ぼやけることなく、美しい仕上がりを提供します。",
+      "連続署名に対応: 一度作成・アップロードした署名は、ページを閉じない限り何度でも連続して使用できます。大量の契約書処理に最適です。"
+    ]
+  }}
+  features={[
+    "マウス/トラックパッドによる手描き署名",
+    "署名画像（PNG, JPG）のアップロード機能",
+    "テキストベースのフォント署名追加",
+    "ページ内の自由な位置への配置",
+    "特定のページまたは全てのページへの適用",
+    "署名のサイズ自由調整"
+  ]}
+  steps={[
+    '上の「ツールを開く」ボタンをクリック',
+    "署名したいPDFドキュメントをアップロード",
+    "署名タイプ（手書き、画像、またはテキスト）を選択",
+    "署名を作成またはファイルを読み込み",
+    "ページ上の適切な位置に署名を配置",
+    "完成した署名済みPDFをダウンロード"
+  ]}
+  lang="ja"
+  labels={UI_LABELS_JA}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

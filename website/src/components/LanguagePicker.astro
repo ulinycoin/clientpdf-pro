@@ -1,0 +1,157 @@
+---
+const { lang = 'en' } = Astro.props;
+
+const pathname = Astro.url.pathname;
+// Remove any leading language prefix to get the base path
+const base = pathname.replace(/^\/(de|ja)/, '') || '/';
+
+// List of pages that are verified to have localized versions in de/ and ja/
+const localizedPages = [
+  '/', 
+  '/merge-pdf', '/ocr-pdf', '/compress-pdf', '/split-pdf', '/edit-text-pdf',
+  '/sign-pdf', '/protect-pdf', '/watermark-pdf', '/flatten-pdf',
+  '/word-to-pdf', '/pdf-to-word', '/images-to-pdf', '/pdf-to-images',
+  '/organize-pdf', '/rotate-pdf', '/delete-pages-pdf', '/extract-pages-pdf',
+  '/tables-pdf', '/add-form-fields-pdf', '/extract-images-pdf', '/add-text-pdf',
+  '/legal-privacy-pdf', '/finance-privacy-pdf', '/medical-privacy-pdf'
+];
+const isLocalized = localizedPages.includes(base);
+
+const languages = [
+  { code: 'en', label: '🇺🇸 EN', href: isLocalized ? base : (lang === 'en' ? pathname : '/') },
+  { code: 'de', label: '🇩🇪 DE', href: isLocalized ? `/de${base === '/' ? '' : base}` : '/de' },
+  { code: 'ja', label: '🇯🇵 JA', href: isLocalized ? `/ja${base === '/' ? '' : base}` : '/ja' },
+];
+
+const currentLang = languages.find(l => l.code === lang) || languages[0];
+---
+
+<div class="language-picker">
+  <button class="picker-btn" aria-label="Select Language" aria-expanded="false">
+    <span class="current-flag">{currentLang.label}</span>
+    <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+  
+  <div class="dropdown-menu">
+    {languages.map((l) => (
+      <a 
+        href={l.href} 
+        class={`lang-option ${l.code === lang ? 'active' : ''}`}
+        hreflang={l.code}
+      >
+        {l.label}
+      </a>
+    ))}
+  </div>
+</div>
+
+<script>
+  // Simple vanilla JS for dropdown toggling
+  const pickers = document.querySelectorAll('.language-picker');
+  
+  pickers.forEach(picker => {
+    const btn = picker.querySelector('.picker-btn');
+    const dropdown = picker.querySelector('.dropdown-menu');
+    
+    if (btn && dropdown) {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const expanded = btn.getAttribute('aria-expanded') === 'true';
+        btn.setAttribute('aria-expanded', !expanded ? 'true' : 'false');
+        dropdown.classList.toggle('show');
+      });
+
+      // Close on click outside
+      document.addEventListener('click', (e) => {
+        if (!picker.contains(e.target as Node)) {
+          btn.setAttribute('aria-expanded', 'false');
+          dropdown.classList.remove('show');
+        }
+      });
+    }
+  });
+</script>
+
+<style>
+  .language-picker {
+    position: relative;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .picker-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 6px 10px;
+    color: #fff;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+  }
+
+  .picker-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .chevron {
+    opacity: 0.7;
+    transition: transform 0.2s ease;
+  }
+
+  .picker-btn[aria-expanded="true"] .chevron {
+    transform: rotate(180deg);
+  }
+
+  .dropdown-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 120px;
+    background: #18181b; /* Zinc 900 */
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    padding: 4px;
+    display: none;
+    flex-direction: column;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+    z-index: 1100;
+  }
+
+  .dropdown-menu.show {
+    display: flex;
+    animation: fadeIn 0.15s ease-out;
+  }
+
+  .lang-option {
+    display: block;
+    padding: 8px 12px;
+    color: #a1a1aa; /* Zinc 400 */
+    text-decoration: none;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    transition: all 0.15s ease;
+  }
+
+  .lang-option:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+  }
+
+  .lang-option.active {
+    background: rgba(59, 130, 246, 0.15); /* Blue tint */
+    color: #60a5fa; /* Blue 400 */
+    font-weight: 600;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>

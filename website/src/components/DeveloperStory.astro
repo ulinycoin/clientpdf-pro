@@ -1,0 +1,180 @@
+---
+interface Props {
+  label?: string;
+  title?: string;
+  subtitle?: string;
+  text1?: string;
+  text2?: string;
+  signatureName?: string;
+  signatureRole?: string;
+}
+
+const {
+  label = "From the Developer",
+  title = "Built for Privacy,",
+  subtitle = "Not for Profit.",
+  text1 = "I built LocalPDF because I was tired of uploading my private contracts to unknown servers just to merge them. I believe your data belongs to you.",
+  text2 = "That's why LocalPDF runs <strong>100% in your browser</strong>—using WebAssembly to process files on your device, not ours. No servers, no tracking, just code.",
+  signatureName = "Aleksej",
+  signatureRole = "Founder & Developer"
+} = Astro.props;
+---
+
+<section class="dev-story-section">
+  <div class="dev-content">
+    <div class="dev-card">
+      <div class="dev-meta">
+        <span class="pill-label">{label}</span>
+        <h2>{title}<br/> <span class="accent-text">{subtitle}</span></h2>
+      </div>
+      
+      <div class="dev-text">
+        <p>{text1}</p>
+        <p set:html={text2} />
+        
+        <div class="dev-signature">
+          <div class="avatar-circle">A</div>
+          <div class="sig-info">
+            <strong>{signatureName}</strong>
+            <span>{signatureRole}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .dev-story-section {
+    padding: 0 7vw 100px;
+    position: relative;
+    z-index: 5;
+  }
+
+  .dev-content {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .dev-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 32px;
+    padding: 64px;
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 64px;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Glass Glow Effect */
+  .dev-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -20%;
+    width: 80%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .dev-meta {
+    position: relative;
+    z-index: 1;
+  }
+
+  .pill-label {
+    display: inline-block;
+    padding: 6px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 99px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+    font-weight: 500;
+  }
+
+  h2 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1.1;
+    color: #fff;
+    margin: 0;
+  }
+
+  .accent-text {
+    color: var(--accent-light);
+  }
+
+  .dev-text {
+    position: relative;
+    z-index: 1;
+  }
+
+  .dev-text p {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+  }
+
+  .dev-text strong {
+    color: #fff;
+    font-weight: 600;
+  }
+
+  .dev-signature {
+    margin-top: 40px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding-top: 32px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .avatar-circle {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 1.25rem;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .sig-info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sig-info strong {
+    color: #fff;
+    font-size: 1rem;
+    line-height: 1.2;
+  }
+
+  .sig-info span {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 900px) {
+    .dev-card {
+      grid-template-columns: 1fr;
+      gap: 32px;
+      padding: 40px;
+    }
+    
+    h2 { font-size: 2rem; }
+  }
+</style>

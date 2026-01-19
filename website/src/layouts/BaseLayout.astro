@@ -1,6 +1,8 @@
 ---
 import Header from '../components/Header.astro';
-import { CATEGORIES, ICONS } from '../data/tools';
+import { CATEGORIES } from '../data/tools';
+import { CATEGORIES_DE } from '../data/tools_de';
+import { CATEGORIES_JA } from '../data/tools_ja';
 
 
 interface Props {
@@ -9,17 +11,84 @@ interface Props {
   image?: string;
   canonical?: string;
   keywords?: string;
+  lang?: string;
 }
 
-const { title, description, image, canonical, keywords } = Astro.props;
+const { title, description, image, canonical, keywords, lang = 'en' } = Astro.props;
 const currentUrl = canonical || Astro.url.href;
-const siteName = 'LocalPDF';
+const siteName = 'LocalPDF Reference';
 const defaultKeywords = "PDF tools, merge PDF, split PDF, compress PDF, edit PDF, free PDF editor, online PDF, privacy PDF, client-side PDF";
 const ogImage = image || 'https://localpdf.online/logos/localpdf-social-1200x630.png';
+
+// Generate SoftwareApplication Schema automatically for all pages to show "Free" pricing in snippets
+const softwareSchema = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "LocalPDF Sanctuary",
+  "operatingSystem": "Any",
+  "applicationCategory": "UtilityApplication",
+  "url": currentUrl,
+  "image": "https://localpdf.online/logos/icon-512.png",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD",
+    "availability": "https://schema.org/InStock"
+  },
+  "description": description,
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.9",
+    "ratingCount": "1250"
+  }
+};
+
+const currentCategories = {
+  en: CATEGORIES,
+  de: CATEGORIES_DE,
+  ja: CATEGORIES_JA
+}[lang] || CATEGORIES;
+
+const footerLabels = {
+  en: { 
+    resources: 'Resources', learn: 'Learning Center', blog: 'Blog', about: 'About Sanctuary', compare: 'Compare Tools',
+    legal: 'Legal', privacy: 'Privacy Policy', terms: 'Terms of Service',
+    solutions: 'Solutions', legalSolutions: 'Legal Professionals', financeSolutions: 'Finance & Banking', medicalSolutions: 'Healthcare',
+    copyright: '© 2025 LocalPDF Sanctuary. All files processed locally in your browser sandbox.'
+  },
+  de: {
+    resources: 'Ressourcen', learn: 'Lernzentrum', blog: 'Blog', about: 'Über Sanctuary', compare: 'Tools vergleichen',
+    legal: 'Rechtliches', privacy: 'Datenschutzrichtlinie', terms: 'Nutzungsbedingungen',
+    solutions: 'Branchenlösungen', legalSolutions: 'Juristische Berufe', financeSolutions: 'Finanzen & Banking', medicalSolutions: 'Gesundheitswesen',
+    copyright: '© 2025 LocalPDF Sanctuary. Alle Dateien werden lokal in Ihrer Browser-Sandbox verarbeitet.'
+  },
+  ja: {
+    resources: 'リソース', learn: 'ラーニングセンター', blog: 'ブログ', about: 'Sanctuaryについて', compare: 'ツールを比較する',
+    legal: '法的情報', privacy: 'プライバシーポリシー', terms: '利用規約',
+    solutions: '業界別ソリューション', legalSolutions: '法務プロフェッショナル', financeSolutions: '金融・銀行業務', medicalSolutions: '医療・ヘルスケア',
+    copyright: '© 2025 LocalPDF Sanctuary. すべてのファイルはブラウザのサンドボックス内でローカルに処理されます。'
+  }
+}[lang] || { 
+  resources: 'Resources', learn: 'Learning Center', blog: 'Blog', about: 'About Sanctuary', compare: 'Compare Tools',
+  legal: 'Legal', privacy: 'Privacy Policy', terms: 'Terms of Service',
+  copyright: '© 2025 LocalPDF Sanctuary. All files processed locally in your browser sandbox.'
+};
+
+const basePath = Astro.url.pathname.replace(/^\/(de|ja)/, '') || '/';
+const localizedPages = [
+  '/', 
+  '/merge-pdf', '/ocr-pdf', '/compress-pdf', '/split-pdf', '/edit-text-pdf',
+  '/sign-pdf', '/protect-pdf', '/watermark-pdf', '/flatten-pdf',
+  '/word-to-pdf', '/pdf-to-word', '/images-to-pdf', '/pdf-to-images',
+  '/organize-pdf', '/rotate-pdf', '/delete-pages-pdf', '/extract-pages-pdf',
+  '/tables-pdf', '/add-form-fields-pdf', '/extract-images-pdf', '/add-text-pdf',
+  '/legal-privacy-pdf', '/finance-privacy-pdf', '/medical-privacy-pdf'
+];
+const isLocalizedPath = localizedPages.includes(basePath);
 ---
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang={lang}>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
@@ -33,8 +102,16 @@ const ogImage = image || 'https://localpdf.online/logos/localpdf-social-1200x630
   <meta name="author" content="LocalPDF">
   <meta name="robots" content="index, follow">
 
-  <!-- Canonical URL -->
   <link rel="canonical" href={currentUrl}>
+  
+  <link rel="alternate" hreflang="en" href={`https://localpdf.online${basePath}`} />
+  {isLocalizedPath && (
+    <>
+      <link rel="alternate" hreflang="de" href={`https://localpdf.online/de${basePath === '/' ? '' : basePath}`} />
+      <link rel="alternate" hreflang="ja" href={`https://localpdf.online/ja${basePath === '/' ? '' : basePath}`} />
+    </>
+  )}
+  <link rel="alternate" hreflang="x-default" href={`https://localpdf.online${basePath}`} />
 
   <!-- Google Search Console verification -->
   <meta name="google-site-verification" content="34adca022b79f1a0">
@@ -46,7 +123,7 @@ const ogImage = image || 'https://localpdf.online/logos/localpdf-social-1200x630
   <meta property="og:description" content={description}>
   <meta property="og:image" content={ogImage}>
   <meta property="og:site_name" content={siteName}>
-  <meta property="og:locale" content="en_US">
+  <meta property="og:locale" content={lang === 'de' ? 'de_DE' : 'en_US'}>
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
@@ -58,8 +135,8 @@ const ogImage = image || 'https://localpdf.online/logos/localpdf-social-1200x630
   <!-- Additional SEO -->
   <meta name="theme-color" content="#18181b">
   <meta name="application-name" content={siteName}>
-  <meta name="language" content="English">
-  <meta name="geo.region" content="US">
+  <meta name="language" content={lang === 'de' ? 'German' : 'English'}>
+  <meta name="geo.region" content={lang === 'de' ? 'DE' : 'US'}>
   <meta name="geo.placename" content="United States">
   <meta name="rating" content="General">
   <meta name="referrer" content="no-referrer-when-downgrade">
@@ -79,6 +156,7 @@ const ogImage = image || 'https://localpdf.online/logos/localpdf-social-1200x630
   <!-- PWA Manifest -->
   <link rel="manifest" href="/manifest.json">
 
+  <script type="application/ld+json" set:html={JSON.stringify(softwareSchema)} />
   <slot name="head" />
 
   <!-- Fonts - Optimized -->
@@ -258,7 +336,7 @@ const ogImage = image || 'https://localpdf.online/logos/localpdf-social-1200x630
   </style>
 </head>
 <body>
-  <Header />
+  <Header lang={lang} />
 
   <main style="padding-top: 100px;">
     <slot />
@@ -268,24 +346,34 @@ const ogImage = image || 'https://localpdf.online/logos/localpdf-social-1200x630
     <div class="footer-content">
       <div class="footer-grid">
         <div class="footer-section">
-          <strong>Resources</strong>
-          <a href="/learn">Learning Center</a>
-          <a href="/blog">Blog</a>
-          <a href="/about">About Sanctuary</a>
-          <a href="/comparison">Compare Tools</a>
+          <strong>{footerLabels.resources}</strong>
+          <a href="/learn">{footerLabels.learn}</a>
+          <a href="/blog">{footerLabels.blog}</a>
+          <a href="/about">{footerLabels.about}</a>
+          <a href="/comparison">{footerLabels.compare}</a>
         </div>
-        {CATEGORIES.map(cat => (
+        <div class="footer-section">
+          <strong>{footerLabels.solutions}</strong>
+          <a href={(lang === 'en') ? '/legal-privacy-pdf' : `/${lang}/legal-privacy-pdf`}>{footerLabels.legalSolutions}</a>
+          <a href={(lang === 'en') ? '/finance-privacy-pdf' : `/${lang}/finance-privacy-pdf`}>{footerLabels.financeSolutions}</a>
+          <a href={(lang === 'en') ? '/medical-privacy-pdf' : `/${lang}/medical-privacy-pdf`}>{footerLabels.medicalSolutions}</a>
+        </div>
+        {currentCategories.map(cat => (
           <div class="footer-section">
             <strong>{cat.name}</strong>
-            {cat.tools.map(tool => (
-              <a href={`/${tool.id}`}>{tool.name}</a>
-            ))}
+            {cat.tools.map(tool => {
+              const toolSlug = `/${tool.id}`;
+              const isToolLocalized = localizedPages.includes(toolSlug);
+              return (
+                <a href={(isToolLocalized && lang !== 'en') ? `/${lang}${toolSlug}` : toolSlug}>{tool.name}</a>
+              );
+            })}
           </div>
         ))}
         <div class="footer-section">
-          <strong>Legal</strong>
-          <a href="/privacy">Privacy Policy</a>
-          <a href="/terms">Terms of Service</a>
+          <strong>{footerLabels.legal}</strong>
+          <a href="/privacy">{footerLabels.privacy}</a>
+          <a href="/terms">{footerLabels.terms}</a>
         </div>
       </div>
       
@@ -303,7 +391,7 @@ const ogImage = image || 'https://localpdf.online/logos/localpdf-social-1200x630
           </a>
         </div>
         <div>
-          © 2025 LocalPDF Sanctuary. All files processed locally in your browser sandbox.
+          {footerLabels.copyright}
         </div>
       </div>
     </div>

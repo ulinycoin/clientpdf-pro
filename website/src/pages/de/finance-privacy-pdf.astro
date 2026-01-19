@@ -1,0 +1,398 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import DeveloperStory from '../../components/DeveloperStory.astro';
+import SecureToolsBlock from '../../components/SecureToolsBlock.astro';
+
+const title = "LocalPDF für Finanzen & Banking | Sichere, Browser-basierte PDF-Tools";
+const description = "Die private PDF-Lösung für Finanzberater, Buchhalter und Bankfachleute. Steuerformulare, Kontoauszüge und sensible Finanzdaten 100% lokal verarbeiten. Null Cloud-Risiko.";
+
+const benefits = [
+  {
+    icon: "🏦",
+    title: "Banken-Niveau Vertraulichkeit",
+    desc: "Verarbeiten Sie personenbezogene Daten (PII), ohne sie jemals an einen Cloud-Server zu senden. Ihre Daten bleiben im sicheren Speicher Ihres Browsers."
+  },
+  {
+    icon: "🛡️",
+    title: "Compliance-Konformität",
+    desc: "Durch den Verzicht auf Datenübertragung und Drittanbieterspeicherung vereinfachen Sie die Einhaltung strenger Anforderungen an die Datenresidenz."
+  },
+  {
+    icon: "🔒",
+    title: "Spurenlose Verarbeitung",
+    desc: "Sobald Sie den Tab schließen, wird die Verarbeitungs-Sandbox gelöscht. Keine permanenten Protokolle, kein Cloud-Cache, keine Restdaten im Web."
+  }
+];
+
+const financeTools = [
+  { label: "Kontoauszüge lokal zusammenführen", href: "/de/merge-pdf" },
+  { label: "Steuerformulare mit Passwort schützen", href: "/de/protect-pdf" },
+  { label: "Finanzbelege OCR (Offline)", href: "/de/ocr-pdf" },
+  { label: "Audit-Portfolios komprimieren", href: "/de/compress-pdf" },
+  { label: "Kreditverträge privat unterzeichnen", href: "/de/sign-pdf" },
+  { label: "Investmentberichte teilen", href: "/de/split-pdf" }
+];
+
+const faqs = [
+  {
+    question: "Ist es sicher, Kontoauszüge auf LocalPDF zu verarbeiten?",
+    answer: "<strong>Ja.</strong> Im Gegensatz zu herkömmlichen Online-PDF-Tools lädt LocalPDF Ihre Kontoauszüge niemals auf einen Server hoch. Die Verarbeitung erfolgt zu 100% auf Ihrem Gerät mittels WebAssembly. Ihre sensiblen Finanzzahlen sind für uns oder Dritte niemals sichtbar."
+  },
+  {
+    question: "Wie schneidet dies im Vergleich zu Enterprise-Software ab?",
+    answer: "LocalPDF bietet das gleiche Maß an 'Air-Gapped'-Sicherheit wie High-End-Enterprise-Software, da es für das Rendering oder Bearbeiten von PDFs nicht auf die Cloud angewiesen ist."
+  },
+  {
+    question: "Kann ich LocalPDF für DSGVO-konforme Finanzprüfungen nutzen?",
+    answer: "Absolut. LocalPDF ist die Standardwahl für datenschutzbewusste Auditoren, da es den 'Auftragsverarbeiter' (den Website-Besitzer) aus der Gleichung entfernt. Sie sind die einzige Person, die die Daten jemals handhabt."
+  }
+];
+---
+
+<BaseLayout title={title} description={description} lang="de">
+  
+  <div class="finance-hero">
+    <div class="finance-grid-bg"></div>
+    <div class="hero-content">
+      <div class="finance-badge">Hochsicherheits-Tool</div>
+      <h1>Cloud-freie PDF-Tools für <span class="accent-text">Finanzielle Exzellenz</span></h1>
+      <p>Sichere Dokumentenverarbeitung für Steuern, Banking und Vermögensverwaltung. 100% Client-seitig. 0% Server-Risiko.</p>
+      
+      <div class="hero-actions">
+        <a href="/app#" class="btn-primary">Finance Studio öffnen 🏦</a>
+        <a href="#benefits" class="btn-secondary">Sicherheitsarchitektur</a>
+      </div>
+    </div>
+  </div>
+
+  <section id="benefits" class="benefits-section">
+    <div class="section-container">
+      <div class="grid">
+        {benefits.map(benefit => (
+          <div class="benefit-card">
+            <div class="card-icon">{benefit.icon}</div>
+            <h3>{benefit.title}</h3>
+            <p>{benefit.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="security-focus">
+    <div class="section-container">
+      <div class="focus-grid">
+        <div class="focus-text">
+          <h2>Warum Finanzexperten LocalPDF wählen</h2>
+          <p>Finanzdaten sind hochsensibel. Ein einziger Server-Einbruch bei einer Online-PDF-Seite könnte Tausende von Steuer-IDs oder Kontonummern offenlegen. LocalPDF eliminiert diese Angriffsfläche vollständig.</p>
+          <div class="check-list">
+            <div class="check-item">✓ Keine API-Aufrufe mit Dokumentdaten</div>
+            <div class="check-item">✓ Keine persistenten Cookies oder Tracking</div>
+            <div class="check-item">✓ Kein KI-Training auf Ihren Dokumenten</div>
+            <div class="check-item">✓ DSGVO-Konformität durch Null-Speicherung</div>
+          </div>
+        </div>
+        <div class="focus-visual">
+          <div class="visual-box">
+            <div class="visual-label">Sichere Sandbox</div>
+            <div class="wasm-logo">WASM</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <SecureToolsBlock title="Finanzspezifische PDF-Workflows" links={financeTools} />
+
+  <DeveloperStory 
+    label="Ein Wort zur Datensouveränität"
+    title="Weil Ihre Bilanz,"
+    subtitle="Ihre Privatsache ist."
+    text1="Im Finanzwesen ist Datensouveränität nicht verhandelbar. Ich habe LocalPDF gebaut, weil ich erkannt habe, dass 'kostenlose' Online-Tools meist auf Kosten Ihrer Metadaten und Privatsphäre gehen."
+    text2="LocalPDF gibt Ihnen die Kontrolle zurück. Durch die Ausführung von Hochleistungs-C++-Code direkt in Ihrem Browser bieten wir die Leistung professioneller Tools ohne die Schwachstellen der Cloud."
+    signatureRole="Gründer & Entwickler"
+  />
+
+  <section class="finance-faq">
+    <div class="section-container">
+      <h2 class="faq-h2">Finanzsektor FAQ</h2>
+      <div class="faq-grid">
+        {faqs.map(faq => (
+          <div class="faq-item">
+            <h3>{faq.question}</h3>
+            <p set:html={faq.answer}></p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<style>
+  .finance-hero {
+    padding: 120px 7vw 80px;
+    position: relative;
+    text-align: center;
+    background: #000;
+  }
+
+  .finance-grid-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+      linear-gradient(rgba(59, 130, 246, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(59, 130, 246, 0.05) 1px, transparent 1px);
+    background-size: 50px 50px;
+    mask-image: radial-gradient(circle at center, black, transparent 80%);
+    pointer-events: none;
+  }
+
+  .hero-content {
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 10;
+  }
+
+  .finance-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    color: #10b981;
+    border-radius: 99px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+  }
+
+  h1 {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 24px;
+    letter-spacing: -0.02em;
+    color: #fff;
+  }
+
+  .accent-text {
+    background: linear-gradient(135deg, #fff 30%, #10b981 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero-content p {
+    font-size: 1.25rem;
+    color: var(--text-muted);
+    margin-bottom: 48px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    background: #fff;
+    color: #000;
+    padding: 16px 32px;
+    border-radius: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);
+  }
+
+  .btn-secondary {
+    background: rgba(255,255,255,0.05);
+    color: #fff;
+    padding: 16px 32px;
+    border-radius: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: all 0.2s;
+  }
+
+  .btn-secondary:hover { background: rgba(255,255,255,0.1); }
+
+  .section-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 80px 7vw;
+  }
+
+  /* Benefits Grid */
+  .benefits-section .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 32px;
+  }
+
+  .benefit-card {
+    padding: 40px;
+    background: rgba(255,255,255,0.01);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 24px;
+    text-align: center;
+    transition: all 0.3s;
+  }
+
+  .benefit-card:hover { 
+    background: rgba(16, 185, 129, 0.05);
+    border-color: rgba(16, 185, 129, 0.2);
+    transform: translateY(-5px); 
+  }
+
+  .card-icon {
+    font-size: 2.5rem;
+    margin-bottom: 24px;
+  }
+
+  .benefit-card h3 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.25rem;
+    margin-bottom: 16px;
+    color: #fff;
+  }
+
+  .benefit-card p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  /* Security Focus Section */
+  .security-focus {
+    background: #09090b;
+  }
+
+  .focus-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+
+  .focus-text h2 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2.25rem;
+    margin-bottom: 24px;
+    color: #fff;
+    line-height: 1.2;
+  }
+
+  .focus-text p {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    margin-bottom: 32px;
+  }
+
+  .check-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .check-item {
+    display: flex;
+    gap: 8px;
+    color: #10b981;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .focus-visual {
+    display: flex;
+    justify-content: center;
+  }
+
+  .visual-box {
+    width: 250px;
+    height: 250px;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(59, 130, 246, 0.1));
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow: 0 0 50px rgba(16, 185, 129, 0.1);
+  }
+
+  .visual-label {
+    position: absolute;
+    top: 24px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #fff;
+    opacity: 0.5;
+  }
+
+  .wasm-logo {
+    font-size: 3rem;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: -0.05em;
+    text-shadow: 0 0 20px rgba(255,255,255,0.3);
+  }
+
+  /* FAQ */
+  .faq-h2 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2rem;
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .faq-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .faq-item {
+    padding: 32px;
+    background: rgba(255,255,255,0.01);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+  }
+
+  .faq-item h3 {
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+    color: #fff;
+  }
+
+  .faq-item p {
+    color: var(--text-muted);
+    font-size: 1rem;
+  }
+
+  @media (max-width: 800px) {
+    .focus-grid { grid-template-columns: 1fr; gap: 40px; }
+    .check-list { grid-template-columns: 1fr; }
+    h1 { font-size: 2.5rem; }
+  }
+</style>

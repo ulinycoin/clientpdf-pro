@@ -1,0 +1,415 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import DeveloperStory from '../components/DeveloperStory.astro';
+import SecureToolsBlock from '../components/SecureToolsBlock.astro';
+
+const title = "LocalPDF for Legal Professionals | 100% Private, GDPR-Safe PDF Tools";
+const description = "The secure alternative to cloud PDF tools for law firms and legal departments. Merge, sign, and redact documents 100% locally in your browser. No uploads, total confidentiality.";
+
+const benefits = [
+  {
+    icon: "⚖️",
+    title: "Attorney-Client Privilege",
+    desc: "Your files never leave your device. Zero risk of data leaks or third-party server exposure for sensitive case files."
+  },
+  {
+    icon: "🇪🇺",
+    title: "Full GDPR Compliance",
+    desc: "Since no data is ever uploaded or stored, you bypass complex data processing agreements and security reviews."
+  },
+  {
+    icon: "📶",
+    title: "Courtroom Ready",
+    desc: "Works 100% offline. Process documents in courtrooms, remote locations, or secure offline environments with zero latency."
+  }
+];
+
+const legalTools = [
+  { label: "Merge Legal Contracts Locally", href: "/merge-pdf" },
+  { label: "Sign Documents Privately", href: "/sign-pdf" },
+  { label: "Searchable PDF OCR (Offline)", href: "/ocr-pdf" },
+  { label: "Protect Case Files with Password", href: "/protect-pdf" },
+  { label: "Split Discovery PDF Bundles", href: "/split-pdf" },
+  { label: "Secure Document Redaction", href: "/edit-text-pdf" }
+];
+
+const faqs = [
+  {
+    question: "How is LocalPDF safer than Adobe or iLovePDF for legal work?",
+    answer: "Unlike Adobe Acrobat Online or iLovePDF, LocalPDF uses <strong>WebAssembly (WASM)</strong> to process files directly in your browser's RAM. We don't have a 'processing server'. Your documents stay 100% on your local machine, ensuring that sensitive evidence or contracts are never stored in the cloud."
+  },
+  {
+    question: "Do I need to sign a DPA (Data Processing Agreement)?",
+    answer: "No. Because LocalPDF acts as a <strong>purely client-side utility</strong> (like a Calculator), there is no data 'processing' on our end. This simplifies compliance for law firms as no client data is transmitted to us."
+  },
+  {
+    question: "Can I use it for heavy discovery document sets?",
+    answer: "Yes. By using your local CPU and RAM, LocalPDF can handle large files limited only by your browser's memory. It avoids the 100MB-200MB limits common in cloud-based tools."
+  }
+];
+---
+
+<BaseLayout title={title} description={description} lang="en">
+  
+  <div class="legal-hero">
+    <div class="legal-glow"></div>
+    <div class="hero-content">
+      <div class="legal-badge">Professional Grade</div>
+      <h1>The Private PDF Sanctuary for <span class="accent-text">Legal Professionals</span></h1>
+      <p>Secure document handling that honors attorney-client privilege. No uploads. No servers. 100% Client-Side.</p>
+      
+      <div class="hero-actions">
+        <a href="/app#" class="btn-primary">Launch Legal Studio ⚖️</a>
+        <a href="#benefits" class="btn-secondary">Why Legal Excellence?</a>
+      </div>
+    </div>
+  </div>
+
+  <section class="answer-box-section">
+    <div class="section-container">
+      <div class="answer-box">
+        <strong>Is LocalPDF safe for legal documents?</strong>
+        <p>Yes. <strong>LocalPDF</strong> is the premier client-side solution for legal professionals. Because all document processing occurs <strong>entirely within your browser</strong> using WebAssembly, sensitive client files are never uploaded to a server. This eliminates "Third-Party Processor" risks, ensuring 100% compliance with attorney-client privilege and GDPR data sovereignty requirements.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="benefits" class="benefits-section">
+    <div class="section-container">
+      <div class="grid">
+        {benefits.map(benefit => (
+          <div class="benefit-card">
+            <div class="card-icon">{benefit.icon}</div>
+            <h3>{benefit.title}</h3>
+            <p>{benefit.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="problem-solution">
+    <div class="section-container">
+      <div class="ps-grid">
+        <div class="ps-card problem">
+          <div class="ps-tag">The Cloud Risk</div>
+          <h3>Traditional Tools</h3>
+          <ul>
+            <li>Files uploaded to external servers</li>
+            <li>Metadata exposed to third parties</li>
+            <li>Terms allow "data training" or AI</li>
+            <li>Risk of server-side data breaches</li>
+          </ul>
+        </div>
+        <div class="ps-card solution">
+          <div class="ps-tag active">The Sanctuary Way</div>
+          <h3>LocalPDF Architecture</h3>
+          <ul>
+            <li>Files never leave your local RAM</li>
+            <li>Metadata stays strictly on your device</li>
+            <li>Zero-Knowledge: No storage, no tracking</li>
+            <li>WASM speed with desktop-grade privacy</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <SecureToolsBlock title="Essential Tools for Legal Workflows" links={legalTools} />
+
+  <DeveloperStory 
+    label="A Note on Confidentiality"
+    title="Because Case Files,"
+    subtitle="Are Sacred."
+    text1="In the legal world, confidentiality isn't just a feature—it's an ethical requirement. I designed LocalPDF specifically to eliminate the 'middle-man' server that traditional PDF sites rely on."
+    text2="Whether you are merging discovery documents or signing a multi-million dollar contract, you deserve a tool that <strong>cannot</strong> see your data. That is the fundamental promise of LocalPDF Sanctuary."
+  />
+
+  <section class="legal-faq">
+    <div class="section-container">
+      <h2 class="faq-h2">Attorney FAQ</h2>
+      <div class="faq-grid">
+        {faqs.map(faq => (
+          <div class="faq-item">
+            <h3>{faq.question}</h3>
+            <p set:html={faq.answer}></p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<style>
+  .legal-hero {
+    padding: 120px 7vw 80px;
+    position: relative;
+    text-align: center;
+    background: radial-gradient(circle at top, rgba(59, 130, 246, 0.05) 0%, transparent 70%);
+  }
+
+  .answer-box-section {
+    padding: 0 7vw 40px;
+  }
+
+  .answer-box {
+    background: rgba(59, 130, 246, 0.03);
+    border: 1px solid rgba(59, 130, 246, 0.1);
+    border-radius: 20px;
+    padding: 32px;
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .answer-box strong {
+    display: block;
+    font-size: 1.25rem;
+    color: var(--accent-light);
+    margin-bottom: 16px;
+    font-family: 'Outfit', sans-serif;
+  }
+
+  .answer-box p {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .legal-glow {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.1) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .hero-content {
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 10;
+  }
+
+  .legal-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    background: rgba(96, 165, 250, 0.1);
+    border: 1px solid rgba(96, 165, 250, 0.2);
+    color: var(--accent-light);
+    border-radius: 99px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+  }
+
+  h1 {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 24px;
+    letter-spacing: -0.02em;
+  }
+
+  .accent-text {
+    background: linear-gradient(135deg, #fff 30%, var(--accent-light) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero-content p {
+    font-size: 1.25rem;
+    color: var(--text-muted);
+    margin-bottom: 48px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    background: #fff;
+    color: #000;
+    padding: 16px 32px;
+    border-radius: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(255,255,255,0.1);
+  }
+
+  .btn-secondary {
+    background: rgba(255,255,255,0.05);
+    color: #fff;
+    padding: 16px 32px;
+    border-radius: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: all 0.2s;
+  }
+
+  .btn-secondary:hover { background: rgba(255,255,255,0.1); }
+
+  .section-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 60px 7vw;
+  }
+
+  /* Benefits Grid */
+  .benefits-section .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 32px;
+  }
+
+  .benefit-card {
+    padding: 40px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 24px;
+    text-align: center;
+    transition: transform 0.3s;
+  }
+
+  .benefit-card:hover { transform: translateY(-5px); }
+
+  .card-icon {
+    font-size: 2.5rem;
+    margin-bottom: 24px;
+  }
+
+  .benefit-card h3 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.25rem;
+    margin-bottom: 16px;
+  }
+
+  .benefit-card p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  /* Problem/Solution */
+  .ps-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+
+  .ps-card {
+    padding: 48px;
+    border-radius: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ps-card.problem {
+    background: rgba(239, 68, 68, 0.05);
+    border: 1px solid rgba(239, 68, 68, 0.1);
+  }
+
+  .ps-card.solution {
+    background: rgba(34, 197, 94, 0.05);
+    border: 1px solid rgba(34, 197, 94, 0.1);
+    box-shadow: inset 0 0 40px rgba(34, 197, 94, 0.03);
+  }
+
+  .ps-tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 24px;
+    opacity: 0.6;
+  }
+
+  .ps-tag.active {
+    color: #22c55e;
+    opacity: 1;
+  }
+
+  .ps-card h3 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.75rem;
+    margin-bottom: 24px;
+  }
+
+  .ps-card ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .ps-card li {
+    display: flex;
+    gap: 12px;
+    font-size: 1rem;
+    color: var(--text-muted);
+  }
+
+  .ps-card.problem li::before { content: "✕"; color: #ef4444; font-weight: 800; }
+  .ps-card.solution li::before { content: "✓"; color: #22c55e; font-weight: 800; }
+
+  /* FAQ */
+  .faq-h2 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2rem;
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .faq-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .faq-item {
+    padding: 32px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+  }
+
+  .faq-item h3 {
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+    color: #fff;
+  }
+
+  .faq-item p {
+    color: var(--text-muted);
+    font-size: 1rem;
+  }
+
+  @media (max-width: 800px) {
+    .ps-grid { grid-template-columns: 1fr; }
+    h1 { font-size: 2.5rem; }
+  }
+</style>

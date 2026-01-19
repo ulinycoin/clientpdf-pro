@@ -1,0 +1,171 @@
+---
+const { lang = 'en' } = Astro.props;
+
+const solutions = {
+  en: [
+    {
+      title: "Legal Professionals",
+      desc: "Maintain attorney-client privilege. 100% private discovery and contract handling.",
+      icon: "⚖️",
+      link: "/legal-privacy-pdf"
+    },
+    {
+      title: "Finance & Banking",
+      desc: "Secure tax forms and bank statements in a browser-based, zero-trace sandbox.",
+      icon: "🏦",
+      link: "/finance-privacy-pdf"
+    },
+    {
+      title: "Modern Healthcare",
+      desc: "HIPAA-safe PHI processing. Keep patient data strictly local on your device.",
+      icon: "🏥",
+      link: "/medical-privacy-pdf"
+    }
+  ],
+  de: [
+    {
+      title: "Juristische Berufe",
+      desc: "Wahren Sie das Anwaltsgeheimnis. 100 % private Dokumentenverarbeitung.",
+      icon: "⚖️",
+      link: "/de/legal-privacy-pdf"
+    },
+    {
+      title: "Finanzen & Banken",
+      desc: "Sichern Sie Steuerformulare und Bankbelege in einer spurlosen Browser-Sandbox.",
+      icon: "🏦",
+      link: "/de/finance-privacy-pdf"
+    },
+    {
+      title: "Gesundheitswesen",
+      desc: "DSGVO-konforme Verarbeitung von Patientendaten. Bleibt alles lokal.",
+      icon: "🏥",
+      link: "/de/medical-privacy-pdf"
+    }
+  ],
+  ja: [
+    {
+      title: "法務プロフェッショナル",
+      desc: "秘匿特権を守ります。100%プライベートな証拠開示と契約処理。",
+      icon: "⚖️",
+      link: "/ja/legal-privacy-pdf"
+    },
+    {
+      title: "金融 & 銀行",
+      desc: "ブラウザベースのサンドボックスで、納税記録や銀行明細を安全に管理。",
+      icon: "🏦",
+      link: "/ja/finance-privacy-pdf"
+    },
+    {
+      title: "医療・ヘルスケア",
+      desc: "患者データの安全な処理。PHIを完全にデバイス内のローカルに保持。",
+      icon: "🏥",
+      link: "/ja/medical-privacy-pdf"
+    }
+  ]
+};
+
+const currentSolutions = solutions[lang] || solutions.en;
+const heading = {
+  en: "Tailored for Your Industry",
+  de: "Maßgeschneidert für Ihre Branche",
+  ja: "あなたの業界に最適化"
+};
+---
+
+<section class="industry-section">
+  <div class="container">
+    <h2 class="section-title">{heading[lang]}</h2>
+    <div class="solution-grid">
+      {currentSolutions.map(item => (
+        <a href={item.link} class="solution-card">
+          <div class="card-icon">{item.icon}</div>
+          <h3>{item.title}</h3>
+          <p>{item.desc}</p>
+          <span class="learn-more">Learn more →</span>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .industry-section {
+    padding: 100px 7vw;
+    background: radial-gradient(circle at bottom, rgba(59, 130, 246, 0.03) 0%, transparent 70%);
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .section-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2.25rem;
+    font-weight: 800;
+    margin-bottom: 60px;
+    color: #fff;
+  }
+
+  .solution-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 32px;
+  }
+
+  .solution-card {
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 24px;
+    text-align: left;
+    text-decoration: none;
+    transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .solution-card:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(59, 130, 246, 0.3);
+    transform: translateY(-8px);
+  }
+
+  .card-icon {
+    font-size: 2.5rem;
+    margin-bottom: 24px;
+  }
+
+  h3 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 16px;
+  }
+
+  p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+  }
+
+  .learn-more {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--accent-light);
+    opacity: 0.8;
+    transition: opacity 0.3s;
+  }
+
+  .solution-card:hover .learn-more {
+    opacity: 1;
+  }
+
+  @media (max-width: 768px) {
+    .section-title { font-size: 1.75rem; }
+    .solution-card { padding: 32px; }
+  }
+</style>

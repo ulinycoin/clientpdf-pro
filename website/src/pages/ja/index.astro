@@ -1,15 +1,16 @@
 ---
-import Header from '../components/Header.astro';
-import BaseLayout from '../layouts/BaseLayout.astro';
-import DeveloperStory from '../components/DeveloperStory.astro';
-import SecureToolsBlock from '../components/SecureToolsBlock.astro';
-import { CATEGORIES, ICONS } from '../data/tools';
-import IndustrySolutions from '../components/IndustrySolutions.astro';
+import Header from '../../components/Header.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import DeveloperStory from '../../components/DeveloperStory.astro';
+import SecureToolsBlock from '../../components/SecureToolsBlock.astro';
+import { CATEGORIES_JA } from '../../data/tools_ja';
+import { ICONS } from '../../data/tools';
+import IndustrySolutions from '../../components/IndustrySolutions.astro';
 
 // Redesigned Homepage - v2.0 "Private Sanctuary"
-const title = "LocalPDF Sanctuary | 100% Private PDF Tools (No Uploads)";
-const metaDescription = "Free privacy-first PDF tools. Merge, split, compress, and edit PDFs locally in your browser. No file uploads, no server processing. GDPR compliant & offline-ready.";
-const keywords = "private pdf tools, local pdf processing, no upload pdf editor, free online pdf tools, secure pdf editor, client-side pdf tools, localpdf sanctuary";
+const title = "LocalPDF Sanctuary | 100% プライベートなPDFツール (アップロードなし)";
+const metaDescription = "無料のプライバシー重視PDFツール。ブラウザ内でローカルにPDFの結合、分割、圧縮、編集が可能。ファイルアップロードなし、サーバー処理なし。GDPR準拠 & オフライン対応。";
+const keywords = "private pdf tools, local pdf processing, no upload pdf editor, free online pdf tools, secure pdf editor, client-side pdf tools, localpdf sanctuary, PDF 編集, PDF 結合, PDF 分割, オフライン PDF";
 
 // specific structured data removed as it is now in BaseLayout
 
@@ -18,34 +19,34 @@ const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
   "name": "LocalPDF Sanctuary",
-  "url": "https://localpdf.online",
+  "url": "https://localpdf.online/ja",
   "potentialAction": {
     "@type": "SearchAction",
-    "target": "https://localpdf.online/search?q={search_term_string}",
+    "target": "https://localpdf.online/ja/search?q={search_term_string}",
     "query-input": "required name=search_term_string"
   }
 };
 
 const faqData = [
   {
-    question: "Is LocalPDF safe for sensitive documents?",
-    answer: "Yes. **LocalPDF** is the only PDF toolkit that guarantees **100% privacy** because all processing (merging, joining, OCR) happens **locally in your browser** using WebAssembly. Your files are never uploaded to any server, ensuring a **zero-knowledge, GDPR-safe** workflow perfect for sensitive legal or financial documents."
+    question: "LocalPDFは機密文書に対して安全ですか？",
+    answer: "はい。**LocalPDF**は、WebAssemblyを使用して**ブラウザ内でローカルに**すべての処理（結合、分割、OCR）を行うため、**100%のプライバシー**を保証する唯一のPDFツールキットです。ファイルがサーバーにアップロードされることはなく、**ゼロ知識、GDPR準拠**のワークフローを保証し、機密性の高い法的文書や財務文書に最適です。"
   },
   {
-    question: "How is LocalPDF different from other online PDF editors?",
-    answer: "Most PDF tools upload your files to their servers for processing. LocalPDF works 100% client-side. This means zero upload time, zero latency, and absolute privacy as your data never leaves your machine."
+    question: "LocalPDFは他のオンラインPDFエディタとどう違いますか？",
+    answer: "多くのPDFツールは処理のためにファイルをサーバーにアップロードします。LocalPDFは100%クライアントサイドで動作します。つまり、アップロード時間ゼロ、レイテンシゼロ、そしてデータがデバイスから離れることがないため、絶対的なプライバシーが保たれます。"
   },
   {
-    question: "Does LocalPDF work without an internet connection?",
-    answer: "Yes. Once the LocalPDF application is loaded in your browser, the processing engine runs locally. You can disconnect from the internet and continue editing, merging, or splitting your PDFs securely."
+    question: "インターネット接続なしでLocalPDFを使用できますか？",
+    answer: "はい。一度ブラウザにLocalPDFアプリケーションが読み込まれれば、処理エンジンはローカルで動作します。インターネット接続を切断しても、安全にPDFの編集、結合、分割を続けることができます。"
   },
   {
-    question: "What technology powers LocalPDF?",
-    answer: "LocalPDF utilizes modern browser technologies including WebAssembly (WASM), Web Workers, and specialized client-side libraries like pdf-lib and Tesseract.js to achieve desktop-grade performance inside a web sandbox."
+    question: "どのような技術がLocalPDFを動かしていますか？",
+    answer: "LocalPDFは、WebAssembly (WASM)、Web Workers、およびpdf-libやTesseract.jsなどの専用クライアントサイドライブラリを含む最新のブラウザ技術を利用して、Webサンドボックス内でデスクトップ級のパフォーマンスを実現しています。"
   },
   {
-    question: "Is the service truly free and without watermarks?",
-    answer: "LocalPDF is currently free with no usage limits, no file size caps, and no watermarks. Since we don't have server costs for file processing, we can maintain high-quality tools without charging user fees."
+    question: "サービスは本当に無料で透かしもありませんか？",
+    answer: "LocalPDFは現在無料で、利用制限、ファイルサイズ制限、透かしはありません。ファイル処理のためのサーバーコストがかからないため、ユーザー料金を請求することなく高品質なツールを提供できます。"
   }
 ];
 
@@ -62,10 +63,10 @@ const faqSchema = {
   }))
 };
 
-const langPrefix = '';
+const langPrefix = '/ja';
 ---
 
-<BaseLayout title={title} description={metaDescription} keywords={keywords}>
+<BaseLayout title={title} description={metaDescription} keywords={keywords} lang="ja">
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
     <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
@@ -560,11 +561,11 @@ const langPrefix = '';
     <div class="hero-glow"></div>
     <div class="pill-info">
       <span class="dot-live"></span>
-      <span id="pill-text">Secure Browser Sandbox</span>
+      <span id="pill-text">セキュアなブラウザサンドボックス</span>
     </div>
     
     <script is:inline>
-      const texts = ["Secure Browser Sandbox", "GDPR Compliant by design", "Works Offline"];
+      const texts = ["セキュアなブラウザサンドボックス", "設計段階でのGDPR準拠", "オフラインで動作"];
       let index = 0;
       const el = document.getElementById('pill-text');
       if (el) {
@@ -582,40 +583,47 @@ const langPrefix = '';
     </script>
     
     <h1 class="hero-h1">
-      Your Private PDF Sanctuary.<br/> 
-      <span class="gradient-text">100% Offline. No Uploads.</span>
+      プライベートなPDFサンクチュアリ。<br/> 
+      <span class="gradient-text">100% オフライン。アップロードなし。</span>
     </h1>
     
     <p class="hero-p">
-      The only PDF toolkit that works 100% in your browser. No uploads, no servers, no traces. Just professional tools, powered by your device.
+      ブラウザ内で100%動作する唯一のPDFツールキット。アップロードなし、サーバーなし、痕跡なし。お使いのデバイスで動作するプロフェッショナルなツール。
     </p>
 
     <a href="/app#" class="btn-main">
-      Launch Studio 🚀
+      スタジオを起動 🚀
     </a>
 
     <div class="trust-viz">
       <div class="node">
         <div class="node-icon">📄</div>
-        <span>Import</span>
+        <span>インポート</span>
       </div>
       <div class="con-line"></div>
       <div class="node special">
         <div class="node-icon">🔒</div>
-        <span>Local RAM</span>
+        <span>ローカルメモリ</span>
       </div>
       <div class="con-line"></div>
       <div class="node">
         <div class="node-icon">💾</div>
-        <span>Pure Output</span>
+        <span>純粋な出力</span>
       </div>
     </div>
   </div>
 
-  <DeveloperStory />
+  <DeveloperStory 
+    label="開発者より"
+    title="プライバシーのために構築、"
+    subtitle="利益のためではなく。"
+    text1="私がLocalPDFを作ったのは、単にPDFを結合するためだけに、プライベートな契約書を未知のサーバーにアップロードすることにうんざりしていたからです。あなたのデータはあなたのものです。"
+    text2="だからこそ、LocalPDFは**100%ブラウザ内**で動作します。WebAssemblyを使用してデバイス上でファイルを処理し、サーバーは使用しません。サーバーなし、追跡なし、あるのはコードだけです。"
+    signatureRole="創設者 & 開発者"
+  />
 
   <section class="tools-section">
-    {CATEGORIES.map((category) => (
+    {CATEGORIES_JA.map((category) => (
       <div class="tool-group">
         <div class="group-header">
            <div class="group-label">
@@ -641,47 +649,47 @@ const langPrefix = '';
     ))}
   </section>
 
-  <IndustrySolutions />
+  <IndustrySolutions lang="ja" />
 
   <section class="seo-glass-section">
     <div class="faq-content">
-      <h2 class="seo-h2">Why Choose LocalPDF Sanctuary?</h2>
+      <h2 class="seo-h2">なぜ LocalPDF Sanctuary なのか？</h2>
       <div class="faq-grid">
         <div class="seo-item">
-          <h3>Absolute Privacy</h3>
-          <p>Unlike cloud tools, <strong>LocalPDF</strong> never sees your files. Everything is processed in a secure WebAssembly sandbox on your own device.</p>
+          <h3>絶対的なプライバシー</h3>
+          <p>クラウドツールとは異なり、<strong>LocalPDF</strong>はあなたのファイルを見ることはありません。すべてはお使いのデバイス上の安全なWebAssemblyサンドボックス内で処理されます。</p>
         </div>
         <div class="seo-item">
-          <h3>Unmatched Speed</h3>
-          <p>Zero upload time. Zero download wait. Processing happens at the speed of your local CPU, effectively instant for most documents.</p>
+          <h3>比類のない速度</h3>
+          <p>アップロード時間ゼロ。ダウンロード待ち時間ゼロ。処理はローカルCPUの速度で行われ、ほとんどのドキュメントで実質的に瞬時に完了します。</p>
         </div>
         <div class="seo-item">
-          <h3>100% Offline</h3>
-          <p>Once loaded, you can disconnect. Perfect for secure environments where data leakage is the primary concern.</p>
+          <h3>100% オフライン</h3>
+          <p>一度読み込めば、接続を切断できます。データ漏洩が主な懸念事項である安全な環境に最適です。</p>
         </div>
         <div class="seo-item">
-          <h3>GDPR by Design</h3>
-          <p>We don't need to comply because we never collect. No storage, no tracking, no risk of data breaches.</p>
+          <h3>GDPR準拠の設計</h3>
+          <p>収集しないため、準拠する必要もありません。保存なし、追跡なし、データ侵害のリスクなし。</p>
         </div>
       </div>
     </div>
   </section>
 
   <SecureToolsBlock 
-    title="Quick Access: Secure PDF Tools"
+    title="クイックアクセス: 安全なPDFツール"
     links={[
-      { label: "Merge PDF Files Without Uploading", href: `${langPrefix}/merge-pdf` },
-      { label: "Split PDF Locally in Browser", href: `${langPrefix}/split-pdf` },
-      { label: "Compress PDF GDPR Safe", href: `${langPrefix}/compress-pdf` },
-      { label: "Smart Edit PDF Privately", href: `${langPrefix}/edit-text-pdf` },
-      { label: "Secure PDF OCR (No Server)", href: `${langPrefix}/ocr-pdf` },
-      { label: "Extract Images Local Process", href: `${langPrefix}/extract-images-pdf` }
+      { label: "PDF 結合 (登録不要・安全)", href: `${langPrefix}/merge-pdf` },
+      { label: "PDF 分割 (ブラウザ内で完結)", href: `${langPrefix}/split-pdf` },
+      { label: "PDF 圧縮 (オフライン対応)", href: `${langPrefix}/compress-pdf` },
+      { label: "PDF 編集 (プライバシー重視)", href: `${langPrefix}/edit-text-pdf` },
+      { label: "PDF OCR (高速・セキュア)", href: `${langPrefix}/ocr-pdf` },
+      { label: "画像抽出 (クライアントサイド)", href: `${langPrefix}/extract-images-pdf` }
     ]}
   />
 
   <section class="faq-section">
     <div class="faq-content">
-      <h2 class="faq-h2">Frequently Asked Questions</h2>
+      <h2 class="faq-h2">よくある質問</h2>
       <div class="faq-grid">
         {faqData.map(item => (
           <div class="faq-item">
@@ -695,19 +703,19 @@ const langPrefix = '';
 
   <section class="technical-breakdown">
     <div class="tech-content">
-      <h2 class="tech-h2">Technical Architecture: How LocalPDF Works</h2>
+      <h2 class="tech-h2">技術アーキテクチャ: LocalPDFの仕組み</h2>
       <div class="tech-grid">
         <div class="tech-card">
           <h4>WebAssembly (WASM)</h4>
-          <p>We use high-performance C++ and Rust libraries compiled to WASM. This allows us to handle complex PDF operations like merging, OCR, and compression directly at near-native speeds.</p>
+          <p>WASMにコンパイルされた高性能なC++およびRustライブラリを使用しています。これにより、結合、OCR、圧縮などの複雑なPDF操作を、ネイティブに近い速度でブラウザ上で直接処理できます。</p>
         </div>
         <div class="tech-card">
-          <h4>Secure Sandboxing</h4>
-          <p>Each document is processed within a transient Web Worker. Once the worker is terminated, all document data is purged from your browser's RAM, leaving zero digital footprints.</p>
+          <h4>セキュア・サンドボックス</h4>
+          <p>各ドキュメントは一時的なWeb Worker内で処理されます。ワーカーが終了すると、すべてのドキュメントデータはブラウザのRAMから完全に消去され、デジタルの痕跡を残しません。</p>
         </div>
         <div class="tech-card">
-          <h4>Client-Side OCR</h4>
-          <p>For text recognition, we utilize Tesseract.js, running the entire neural network engine on your local CPU. Your scans never touch a remote server.</p>
+          <h4>クライアントサイドOCR</h4>
+          <p>テキスト認識にはTesseract.jsを利用し、ニューラルネットワークエンジン全体をローカルCPUで実行します。スキャンしたデータがリモートサーバーに送信されることはありません。</p>
         </div>
       </div>
     </div>

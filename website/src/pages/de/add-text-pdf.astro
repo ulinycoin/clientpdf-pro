@@ -1,0 +1,132 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import { UI_LABELS_DE } from '../../data/tools_de';
+
+const faqs = [
+  {
+    question: "Wie kann я kostenlos и ohne Registrierung Text zu einem PDF hinzufügen?",
+    answer: "Nutzen Sie einfach das 'Text hinzufügen' Tool von LocalPDF. Laden Sie Ihr Dokument hoch, klicken Sie auf den Button 'Text hinzufügen', tippen Sie Ihren Inhalt ein и laden Sie das geänderte PDF herunter. Es ist völlig kostenlos и Sie müssen kein Konto erstellen."
+  },
+  {
+    question: "Ist es sicher, online auf ein PDF zu schreiben?",
+    answer: "Die meisten Online-Editoren laden Ihre Dateien auf ihre Server hoch. LocalPDF ist anders — unsere Technologie verarbeitet Ihr Dokument vollständig в Ihrem Browser. Ihre Datei verlässt nie Ihr Gerät, was es zu 100% privat и sicher für sensible Daten macht."
+  },
+  {
+    question: "Kann я Schriftart и Farbe anpassen?",
+    answer: "Ja, LocalPDF bietet ein professionelles Styling-Panel. Sie können aus beliebten Schriftarten (Roboto, Helvetica, Courier) wählen, die Größe anpassen, Farben ändern и sogar die Ausrichtung (links, zentriert, rechts) festlegen."
+  },
+  {
+    question: "Funktioniert dieses Tool auf mobilen Geräten?",
+    answer: "Absolut. LocalPDF ist vollständig responsiv и funktioniert в jedem modernen Webbrowser auf iPhone, Android, Tablets и Desktop-Computern. Keine Installation erforderlich."
+  },
+  {
+    question: "Kann я Text auf mehreren Seiten eines PDFs hinzufügen?",
+    answer: "Ja, Sie können durch alle Seiten Ihres PDF-Dokuments navigieren и so viele separate Textfelder zu jeder Seite hinzufügen, wie Sie benötigen."
+  }
+];
+
+const keywords = "text zu pdf hinzufügen, auf pdf schreiben, pdf text editor, textfeld zu pdf hinzufügen, in pdf tippen, kostenloser pdf editor, pdf online annotieren, privater pdf editor";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "image": "https://localpdf.online/screenshots/edit-styles.png",
+  "name": "So fügen Sie Text zu einem PDF hinzu",
+  "description": "Eine Schritt-für-Schritt-Anleitung, wie Sie mit dem kostenlosen LocalPDF-Texttool benutzerdefinierten Text zu einem PDF-Dokument hinzufügen, formatieren и positionieren.",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Text-Tool starten",
+      "text": "Öffnen Sie das Tool 'Text zu PDF hinzufügen' и laden Sie Ihr Dokument hoch.",
+      "url": "https://localpdf.online/de/add-text-pdf#tool",
+      "image": "https://localpdf.online/screenshots/edit-welcome.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Textfeld einfügen",
+      "text": "Klicken Sie auf den Button 'Text hinzufügen'. Ein neues Textfeld erscheint auf Ihrem PDF. Sie können es an jede beliebige Stelle ziehen.",
+      "image": "https://localpdf.online/screenshots/edit-active.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Formatierung и Design",
+      "text": "Nutzen Sie die Seitenleiste, um Schriftart, Größe и Farbe zu ändern. Unser Editor unterstützt Fett- und Kursivschrift sowie Textausrichtung.",
+      "image": "https://localpdf.online/screenshots/edit-styles.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Geändertes PDF herunterladen",
+      "text": "Sobald Sie zufrieden sind, laden Sie Ihr neues PDF sofort herunter — ohne Wasserzeichen.",
+      "image": "https://localpdf.online/screenshots/edit-active.png"
+    }
+  ],
+  "totalTime": "PT2M"
+};
+---
+
+<ToolPage
+  toolId="add-text-pdf"
+  title="Text zu PDF online hinzufügen — Kostenloser & privater Editor"
+  metaDescription="Fügen Sie sofort benutzerdefinierten Text, Annotationen и Beschriftungen zu PDF-Dateien hinzu. 100% private clientseitige Verarbeitung. Keine Uploads."
+  image="https://localpdf.online/screenshots/edit-styles.png"
+  keywords={keywords}
+  description="Fügen Sie benutzerdefinierten Text zu PDF-Seiten mit professioneller Kontrolle über Typografie, Farben и Positionierung hinzu. Ideal für Notizen, Formulare oder Beschriftungen — alles 100% privat auf Ihrem Gerät."
+  benefits={[
+    "⚡ Schnell — Textfelder и Overlays sofort hinzufügen",
+    "🎨 Pro Schriftarten — Schriftart, Größe и Stil individuell anpassen",
+    "🔒 100% Privat — Dateien verlassen nie Ihren Webbrowser",
+    "🆓 Kostenlos — Unbegrenzte Nutzung ohne Wasserzeichen oder Anmeldung"
+  ]}
+  relatedTools={[
+    { id: 'edit-text-pdf', icon: '✏️', title: 'Text im PDF bearbeiten', description: 'Existierenden Text ersetzen oder schwärzen' },
+    { id: 'watermark-pdf', icon: '💧', title: 'PDF Wasserzeichen', description: 'Wasserzeichen zum Schutz hinzufügen' },
+    { id: 'sign-pdf', icon: '✍️', title: 'PDF unterschreiben', description: 'Digitale Signaturen ergänzen' },
+    { id: 'tables-pdf', icon: '📊', title: 'Tabellen в PDF', description: 'Excel/CSV в PDF-Tabellen umwandeln' }
+  ]}
+  faqs={faqs}
+  whyChoose={{
+    title: "Warum LocalPDF zum Hinzufügen von Text nutzen?",
+    reasons: [
+      "Datenschutz garantiert: Im Gegensatz zu anderen Editoren laden wir Ihre Dokumente nicht hoch. Ihre Daten werden vollständig im RAM Ihres Browsers verarbeitet.",
+      "Perfekte Positionierung: Verschieben Sie Textfelder mit pixelgenauer Präzision. Nutzen Sie Feinabstimmungs-Regler für die exakte X/Y-Position.",
+      "Ohne Branding: Wir fügen keine störenden Wasserzeichen hinzu. Ihre Dokumente bleiben professionell, sauber и neutral.",
+      "Mehrseiten-Support: Navigieren Sie mühelos durch Dokumente jeder Größe и fügen Sie Text genau dort ein, wo er benötigt wird.",
+      "Offline-Fähigkeit: Einmal geladen, funktioniert das Hinzufügen von Text auch ohne aktive Internetverbindung — ideal für unterwegs."
+    ]
+  }}
+  features={[
+    "Einfaches Hinzufügen mehrerer Textfelder auf jeder Seite",
+    "Drag-and-Drop Positionierung mit Schiebereglern zur Feinjustierung",
+    "Vollständige Typografie-Kontrolle: Größe, Schriftart и Stile",
+    "Anpassbare Text- und Hintergrundfarben",
+    "Live-Vorschau aller Änderungen in Echtzeit",
+    "Automatische Erhaltung des ursprünglichen Layouts",
+    "Hochwertiges PDF-Output-Rendering",
+    "Keine Registrierung oder Anmeldung erforderlich",
+    "100% privates, serverloses Processing"
+  ]}
+  steps={[
+    { 
+      text: 'Laden Sie Ihr PDF-Dokument в das "Text hinzufügen" Tool hoch.', 
+      image: '/screenshots/edit-welcome.png' 
+    },
+    { 
+      text: 'Klicken Sie auf "Text hinzufügen" и geben Sie Ihren Text ein.', 
+      image: '/screenshots/edit-active.png' 
+    },
+    { 
+      text: 'Passen Sie das Design über das professionelle Styling-Panel an.', 
+      image: '/screenshots/edit-styles.png' 
+    },
+    { 
+      text: 'Prüfen Sie die Platzierung и laden Sie das PDF sofort herunter.', 
+      image: '/screenshots/edit-active.png' 
+    }
+  ]}
+  lang="de"
+  labels={UI_LABELS_DE}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

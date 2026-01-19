@@ -1,0 +1,104 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import { UI_LABELS_DE } from '../../data/tools_de';
+
+const keywords = "ausfüllbares pdf erstellen, pdf formular builder, formularfelder zu pdf hinzufügen, interaktives pdf, pdf textfeld, pdf checkbox, pdf radio button, pdf dropdown";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "image": "https://localpdf.online/logos/icon-512.png",
+  "name": "So erstellen Sie ein ausfüllbares PDF-Formular",
+  "description": "Eine Schritt-für-Schritt-Anleitung zum Hinzufügen interaktiver Formularfelder wie Textboxen, Checkboxen и Dropdowns в ein PDF-Dokument mit LocalPDF.",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Tool öffnen и PDF hochladen",
+      "text": "Klicken Sie auf 'Tool öffnen' и laden Sie das PDF hoch, das Sie в ein ausfüllbares Formular verwandeln möchten.",
+      "url": "https://localpdf.online/de/add-form-fields-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Formularfelder hinzufügen",
+      "text": "Wählen Sie einen Feldtyp aus der Toolbar (z. B. Textfeld, Checkbox, Dropdown) и klicken Sie auf das PDF, um es zu platzieren.",
+      "image": "https://localpdf.online/screenshots/form-add-field.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Positionieren и Skalieren",
+      "text": "Ziehen Sie das Feld an die richtige Position и ändern Sie die Größe, indem Sie an den Ecken ziehen.",
+      "image": "https://localpdf.online/screenshots/form-resize.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Eigenschaften anpassen",
+      "text": "Nutzen Sie das Panel auf der rechten Seite, um Feldnamen, Standardwerte и Optionen für Dropdowns festzulegen.",
+      "image": "https://localpdf.online/screenshots/form-properties.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Formular herunterladen",
+      "text": "Sobald alle Felder platziert sind, klicken Sie auf 'Herunterladen', um Ihr neues interaktives PDF-Formular zu erhalten.",
+      "image": "https://localpdf.online/screenshots/form-download.png"
+    }
+  ],
+  "totalTime": "PT5M"
+};
+---
+
+<ToolPage
+  toolId="add-form-fields-pdf"
+  title="Ausfüllbare PDF-Formulare online erstellen — Kostenloser Formular-Builder"
+  metaDescription="Erstellen Sie ausfüllbare PDF-Formulare mit Textfeldern, Checkboxen, Radio-Buttons и Dropdowns. 100% private clientseitige Verarbeitung."
+  keywords={keywords}
+  description="Verwandeln Sie jedes PDF в ein interaktives, ausfüllbares Formular. Fügen Sie Textfelder, Checkboxen, Radio-Buttons и Dropdown-Menüs hinzu — alles lokal в Ihrem Browser."
+  benefits={[
+    "📋 Interaktiv — Professionelle ausfüllbare Formulare erstellen",
+    "🔒 Privat — Formulare lokal erstellt, keine Uploads",
+    "🆓 Kostenlos — Unbegrenzte Formularfelder während der Beta"
+  ]}
+  relatedTools={[
+    { id: 'add-text-pdf', icon: '📝', title: 'Text zu PDF hinzufügen', description: 'Benutzerdefinierte Textebenen ergänzen' },
+    { id: 'flatten-pdf', icon: '📏', title: 'PDF flachlegen', description: 'Formulare в statische Dokumente umwandeln' },
+    { id: 'protect-pdf', icon: '🔒', title: 'PDF schützen', description: 'Passwortschutz für Ihre Formulare' },
+    { id: 'sign-pdf', icon: '✍️', title: 'PDF unterschreiben', description: 'Digitale Signaturen hinzufügen' }
+  ]}
+  whyChoose={{
+    title: "Warum unseren PDF-Formular-Builder wählen?",
+    reasons: [
+      "Vollständiger Datenschutz: Ihr PDF verlässt nie Ihr Gerät. Cloud-basierte Formular-Builder laden Ihre Dateien hoch. LocalPDF arbeitet komplett offline в Ihrem Browser-Cache.",
+      "Professionelle Feldtypen: Fügen Sie einfache Textfelder, mehrzeilige Textbereiche, Checkboxen, Radio-Buttons и Dropdowns ein. Jedes Feld ist individuell konfigurierbar.",
+      "Kein Abonnement nötig: Während viele Anbieter hohe monatliche Gebühren verlangen, ist die Formularerstellung bei LocalPDF während der Beta-Phase völlig kostenlos.",
+      "Echtzeit-Bearbeitung: Sehen Sie sofort das Ergebnis. Verschieben и skalieren Sie die Felder per Maus, während Sie das Formular gestalten.",
+      "Standard-kompatibel: Wir erstellen standardkonforme AcroForm-Felder, die mit Adobe Acrobat, Chrome, macOS Vorschau и mobilen Apps perfekt funktionieren.",
+      "Höchste Qualität: Die Formularfelder werden als interaktive Schicht über das Dokument gelegt. Der ursprüngliche Text и die Bilder Ihres PDFs bleiben glasklar erhalten."
+    ]
+  }}
+  features={[
+    "Textfelder (einzeilig и mehrzeilig)",
+    "Checkboxen mit vordefinierten Zuständen",
+    "Gruppierte Radio-Buttons",
+    "Dropdown-Menüs mit eigenen Optionen",
+    "Intuitive Drag-and-Drop Platzierung",
+    "Größenanpassung mit visueller Hilfe",
+    "Option für Pflichtfelder (Required Fields)",
+    "Unterstützung für Read-only-Felder",
+    "Anpassbare Feldnamen für den Export",
+    "Bearbeitung mehrseitiger PDF-Formulare"
+  ]}
+  steps={[
+    'Klicken Sie oben auf "Tool öffnen"',
+    "Laden Sie das PDF hoch, das ein Formular werden soll",
+    "Wählen Sie den Feldtyp (Text, Checkbox, Radio, Dropdown)",
+    "Platzieren Sie die Felder per Klick auf den PDF-Seiten",
+    "Passen Sie die Feldnamen и Werte im rechten Panel an",
+    "Legen Sie Validierungsregeln и Standardwerte fest",
+    "Laden Sie Ihr fertiges ausfüllbares PDF herunter"
+  ]}
+  lang="de"
+  labels={UI_LABELS_DE}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

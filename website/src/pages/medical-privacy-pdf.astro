@@ -1,0 +1,418 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import DeveloperStory from '../components/DeveloperStory.astro';
+import SecureToolsBlock from '../components/SecureToolsBlock.astro';
+
+const title = "Medical-Grade PDF Security | HIPAA-Safe PDF Tools 100% Local";
+const description = "The private PDF solution for hospitals, clinics, and healthcare providers. Process patient records, lab results, and intake forms 100% locally in your browser. HIPAA & GDPR ready.";
+
+const benefits = [
+  {
+    icon: "🏥",
+    title: "HIPAA-Safe Architecture",
+    desc: "Since no data is ever uploaded or stored, there is no risk of exposing Protected Health Information (PHI) to a third party."
+  },
+  {
+    icon: "🧬",
+    title: "Clinical Trial Confidentiality",
+    desc: "Protect sensitive research and trial data by processing it entirely within your local hardware sandbox."
+  },
+  {
+    icon: "🩺",
+    title: "Zero-Knowledge Sandbox",
+    desc: "Every session is isolated. Once you close the browser tab, all patient data is permanently purged from RAM."
+  }
+];
+
+const medicalTools = [
+  { label: "Merge Patient Records Locally", href: "/merge-pdf" },
+  { label: "OCR Scanned Lab Results", href: "/ocr-pdf" },
+  { label: "Protect Medical Files with Password", href: "/protect-pdf" },
+  { label: "Redact Sensitive Patient Info", href: "/edit-text-pdf" },
+  { label: "Sign Medical Consent Forms", href: "/sign-pdf" },
+  { label: "Extract Pages from Diagnostic Files", href: "/extract-pages-pdf" }
+];
+
+const faqs = [
+  {
+    question: "Is LocalPDF truly HIPAA-compliant?",
+    answer: "<strong>Yes.</strong> HIPAA requirements focus on the protection of PHI. Because LocalPDF is a <strong>client-side utility</strong> that never transmits, stores, or accesses your data, it effectively removes the 'Data Processor' risk, helping your institution maintain strict compliance."
+  },
+  {
+    question: "Can I use it on hospital computers with strict firewalls?",
+    answer: "Yes. Once the initial website loads, LocalPDF can function even if the connection is cut. It doesn't need to 'call home' to process your PDFs, making it ideal for high-security medical networks."
+  },
+  {
+    question: "Does it work with legacy scanned records?",
+    answer: "Absolutely. Our <strong>offline OCR tool</strong> uses WebAssembly to recognize text in scanned medical documents locally, allowing you to make old records searchable without cloud exposure."
+  }
+];
+---
+
+<BaseLayout title={title} description={description} lang="en">
+  
+  <div class="medical-hero">
+    <div class="medical-pulse"></div>
+    <div class="hero-content">
+      <div class="medical-badge">Clinical Grade Security</div>
+      <h1>HIPAA-Safe PDF Tools for <span class="accent-text">Modern Healthcare</span></h1>
+      <p>Zero-Risk patient document handling. All processing happens in your browser. 100% Local. 0% Breach Risk.</p>
+      
+      <div class="hero-actions">
+        <a href="/app#" class="btn-primary">Launch Medical Studio 🏥</a>
+        <a href="#benefits" class="btn-secondary">Compliance Details</a>
+      </div>
+    </div>
+  </div>
+
+  <section class="answer-box-section">
+    <div class="section-container">
+      <div class="answer-box">
+        <strong>Is LocalPDF truly HIPAA-compliant?</strong>
+        <p>Yes. <strong>LocalPDF</strong> is a purely <strong>client-side utility</strong>. Because it never transmits, stores, or accesses Protected Health Information (PHI) in the cloud, it eliminates the "Data Processor" risk. This helps healthcare institutions maintain strict HIPAA and GDPR compliance by keeping all document data within the secure, local boundary of the browser sandbox.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="benefits" class="benefits-section">
+    <div class="section-container">
+      <div class="grid">
+        {benefits.map(benefit => (
+          <div class="benefit-card">
+            <div class="card-icon">{benefit.icon}</div>
+            <h3>{benefit.title}</h3>
+            <p>{benefit.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="compliance-focus">
+    <div class="section-container">
+      <div class="compliance-grid">
+        <div class="compliance-visual">
+          <div class="shield-container">
+            <div class="shield-main">
+              <svg viewBox="0 0 24 24" fill="none" class="shield-svg">
+                <path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" fill="currentColor" opacity="0.1"/>
+                <path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" stroke="currentColor" stroke-width="2"/>
+                <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="compliance-text">
+          <h2>Eliminating the "Third-Party" Processor</h2>
+          <p>Traditional PDF sites are "Data Processors" under GDPR and HIPAA. This requires complex Business Associate Agreements (BAA) and security audits. LocalPDF Sanctuary changes the game by never seeing your data.</p>
+          <div class="compliance-pills">
+            <span class="pill">GDPR Level 4</span>
+            <span class="pill">HIPAA Ready</span>
+            <span class="pill">Zero-Knowledge</span>
+            <span class="pill">Offline-First</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <SecureToolsBlock title="Medical Document Workflows" links={medicalTools} />
+
+  <DeveloperStory 
+    label="A Note on Human Privacy"
+    title="Because Medical Records,"
+    subtitle="Are Personal."
+    text1="When I built LocalPDF, I thought about the sensitive nature of health data. Scanned lab results, mental health records, and intake forms should never live on a random company's server."
+    text2="By leveraging the power of WebAssembly, we provide clinicians and researchers with professional tools that treat patient privacy with the same respect as a face-to-face consultation."
+  />
+
+  <section class="medical-faq">
+    <div class="section-container">
+      <h2 class="faq-h2">Healthcare FAQ</h2>
+      <div class="faq-grid">
+        {faqs.map(faq => (
+          <div class="faq-item">
+            <h3>{faq.question}</h3>
+            <p set:html={faq.answer}></p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<style>
+  .medical-hero {
+    padding: 120px 7vw 80px;
+    position: relative;
+    text-align: center;
+    background: #000;
+    overflow: hidden;
+  }
+
+  .answer-box-section {
+    padding: 0 7vw 40px;
+  }
+
+  .answer-box {
+    background: rgba(239, 68, 68, 0.03);
+    border: 1px solid rgba(239, 68, 68, 0.1);
+    border-radius: 20px;
+    padding: 32px;
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .answer-box strong {
+    display: block;
+    font-size: 1.25rem;
+    color: #ef4444;
+    margin-bottom: 16px;
+    font-family: 'Outfit', sans-serif;
+  }
+
+  .answer-box p {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .medical-pulse {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(96, 165, 250, 0.08) 0%, transparent 70%);
+    animation: pulse 8s infinite ease-in-out;
+    pointer-events: none;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+    50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+  }
+
+  .hero-content {
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 10;
+  }
+
+  .medical-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    border-radius: 99px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+  }
+
+  h1 {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 24px;
+    letter-spacing: -0.02em;
+    color: #fff;
+  }
+
+  .accent-text {
+    background: linear-gradient(135deg, #fff 30%, #ef4444 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero-content p {
+    font-size: 1.25rem;
+    color: var(--text-muted);
+    margin-bottom: 48px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    background: #fff;
+    color: #000;
+    padding: 16px 32px;
+    border-radius: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(255,255,255,0.1);
+  }
+
+  .btn-secondary {
+    background: rgba(255,255,255,0.05);
+    color: #fff;
+    padding: 16px 32px;
+    border-radius: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: all 0.2s;
+  }
+
+  .btn-secondary:hover { background: rgba(255,255,255,0.1); }
+
+  .section-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 80px 7vw;
+  }
+
+  /* Benefits Grid */
+  .benefits-section .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 32px;
+  }
+
+  .benefit-card {
+    padding: 40px;
+    background: rgba(255,255,255,0.01);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 24px;
+    text-align: center;
+    transition: all 0.3s;
+  }
+
+  .benefit-card:hover { 
+    background: rgba(239, 68, 68, 0.03);
+    border-color: rgba(239, 68, 68, 0.2);
+    transform: translateY(-5px); 
+  }
+
+  .card-icon {
+    font-size: 2.5rem;
+    margin-bottom: 24px;
+  }
+
+  .benefit-card h3 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.25rem;
+    margin-bottom: 16px;
+    color: #fff;
+  }
+
+  .benefit-card p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  /* Compliance Focus */
+  .compliance-focus {
+    background: #09090b;
+  }
+
+  .compliance-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 60px;
+    align-items: center;
+  }
+
+  .shield-container {
+    display: flex;
+    justify-content: center;
+  }
+
+  .shield-main {
+    color: #ef4444;
+    width: 200px;
+    height: 200px;
+    filter: drop-shadow(0 0 30px rgba(239, 68, 68, 0.2));
+  }
+
+  .compliance-text h2 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2.25rem;
+    margin-bottom: 24px;
+    color: #fff;
+  }
+
+  .compliance-text p {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    margin-bottom: 32px;
+  }
+
+  .compliance-pills {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .pill {
+    padding: 8px 16px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 99px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  /* FAQ */
+  .faq-h2 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2rem;
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .faq-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .faq-item {
+    padding: 32px;
+    background: rgba(255,255,255,0.01);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+  }
+
+  .faq-item h3 {
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+    color: #fff;
+  }
+
+  .faq-item p {
+    color: var(--text-muted);
+    font-size: 1rem;
+  }
+
+  @media (max-width: 800px) {
+    .compliance-grid { grid-template-columns: 1fr; gap: 40px; }
+    h1 { font-size: 2.5rem; }
+  }
+</style>

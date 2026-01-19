@@ -1,0 +1,89 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import { UI_LABELS_DE } from '../../data/tools_de';
+
+const keywords = "pdf flachrechnen, pdf formulare fixieren, pdf nicht bearbeitbar machen, pdf finalisieren, pdf formulare sperren, statisches pdf";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "image": "https://localpdf.online/logos/icon-512.png",
+  "name": "So rechnen Sie ein PDF flach (Flatten)",
+  "description": "Eine Schritt-für-Schritt-Anleitung, wie Sie PDF-Formulare и Anmerkungen mit dem kostenlosen и privaten LocalPDF-Flatten-Tool nicht mehr bearbeitbar machen.",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Tool öffnen и PDF hochladen",
+      "text": "Klicken Sie auf 'Tool öffnen' и laden Sie das PDF-Dokument mit Formularen oder Anmerkungen hoch, die Sie fixieren möchten.",
+      "url": "https://localpdf.online/de/flatten-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Automatisches Flachrechnen",
+      "text": "Das Tool startet automatisch mit dem Flachrechnen и konvertiert interaktive Elemente в statischen Inhalt."
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Flachgerechnetes Dokument prüfen",
+      "text": "Prüfen Sie nach Abschluss das Dokument, um sicherzustellen, dass alle interaktiven Elemente nun statisch sind."
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Finalisiertes PDF herunterladen",
+      "text": "Klicken Sie auf 'Herunterladen', um das nicht mehr bearbeitbare PDF-Dokument auf Ihrem Gerät zu speichern."
+    }
+  ],
+  "totalTime": "PT1M"
+};
+---
+
+<ToolPage
+  toolId="flatten-pdf"
+  title="PDF-Formulare online flachrechnen — Kostenlos & Privat"
+  metaDescription="PDF-Formulare и Anmerkungen dauerhaft machen. Interaktive Elemente в statischen Inhalt umwandeln. 100% privat, ohne Uploads."
+  keywords={keywords}
+  description="Konvertieren Sie bearbeitbare PDF-Formulare в dauerhafte, nicht bearbeitbare Inhalte. Schützen Sie ausgefüllte Formulare vor Manipulation — alles lokal в Ihrem Browser."
+  benefits={[
+    "⚡ Sofort — Flachrechnen в Sekunden",
+    "🔒 Privat — Dateien bleiben lokal",
+    "🆓 Kostenlos — Keine Limits während der Beta"
+  ]}
+  relatedTools={[
+    { id: 'add-form-fields-pdf', icon: '📋', title: 'Formularfelder', description: 'Formulare vor dem Fixieren erstellen' },
+    { id: 'sign-pdf', icon: '✍️', title: 'PDF unterschreiben', description: 'Vor dem Flachrechnen signieren' },
+    { id: 'protect-pdf', icon: '🔒', title: 'PDF schützen', description: 'Passwort nach dem Fixieren hinzufügen' },
+    { id: 'compress-pdf', icon: '🗜️', title: 'PDF komprimieren', description: 'Größe nach dem Finalisieren reduzieren' }
+  ]}
+  whyChoose={{
+    title: "Warum unser PDF-Flatten-Tool wählen?",
+    reasons: [
+      "Echte Privatsphäre: Ihre Formulare verlassen nie Ihr Gerät. Im Gegensatz zu Cloud-Tools verarbeitet LocalPDF alles lokal в Ihrem Browser.",
+      "Manipulation verhindern: Fixieren Sie ausgefüllte Daten dauerhaft, damit Empfänger Ihre Eingaben oder Anmerkungen nicht mehr ändern können.",
+      "Universelle Kompatibilität: Flachgerechnete PDFs sind statisch и werden auf allen PDF-Viewern и Betriebssystemen konsistent angezeigt.",
+      "Kein Datenverlust: Unser Tool bewahrt alle visuellen Inhalte, Texte и das Layout während des Prozesses exakt so, wie sie sind.",
+      "Sofortige Verarbeitung: Keine Upload-Verzögerungen. Das Flachrechnen erfolgt в nativer Geschwindigkeit direkt в Ihrem Browser.",
+      "Professionelle Ergebnisse: Erstellen Sie saubere, finalisierte Dokumente für offizielle Einreichungen oder die sichere Archivierung."
+    ]
+  }}
+  features={[
+    "Formularfelder flachrechnen (Text, Checkboxen, Dropdowns)",
+    "Anmerkungen und Kommentare fixieren",
+    "Signaturen dauerhaft einbetten",
+    "Interaktive Elemente sperren",
+    "Visuelles Erscheinungsbild beibehalten",
+    "Keine Qualitätsverschlechterung der Seiten"
+  ]}
+  steps={[
+    'Klicken Sie oben auf "Tool öffnen"',
+    "Laden Sie das PDF mit Formularen oder Anmerkungen hoch",
+    "Das Flachrechnen startet automatisch",
+    "Prüfen Sie das fixierte Dokument",
+    "Laden Sie Ihr finalisiertes PDF sofort herunter"
+  ]}
+  lang="de"
+  labels={UI_LABELS_DE}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

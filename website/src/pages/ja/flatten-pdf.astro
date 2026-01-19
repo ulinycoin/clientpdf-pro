@@ -1,0 +1,89 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import { UI_LABELS_JA } from '../../data/tools_ja';
+
+const keywords = "pdf フラット化, pdf フォーム固定, pdf 編集不可にする, pdf ファイナライズ, pdf フォームロック, 静的 pdf";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "image": "https://localpdf.online/logos/icon-512.png",
+  "name": "PDFファイルをフラット化する方法",
+  "description": "無料かつプライベートなLocalPDFフラット化ツールを使用して、PDFのフォームや注釈を編集不可にする手順ガイド。",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "ツールを開いてPDFをアップロード",
+      "text": "「ツールを開く」をクリックし、フラット化したいフォームや注釈を含むPDFドキュメントをアップロードします。",
+      "url": "https://localpdf.online/ja/flatten-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "自動フラット化処理",
+      "text": "ツールが自動的にPDFのフラット化を開始し、インタラクティブ（対話型）な要素を静的なコンテンツに変換します。"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "フラット化されたドキュメントを確認",
+      "text": "完了後、すべての対話型要素が静的に固定されていることを確認します。"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "ファイナライズされたPDFをダウンロード",
+      "text": "「ダウンロード」をクリックして、編集不可になった最終版のPDFファイルをデバイスに保存します。"
+    }
+  ],
+  "totalTime": "PT1M"
+};
+---
+
+<ToolPage
+  toolId="flatten-pdf"
+  title="PDFフォームをオンラインでフラット化 — 無料・安全"
+  metaDescription="PDFのフォームや注釈を恒久的なものに。インタラクティブな要素を静的なコンテンツに変換。100%プライベート、アップロード不要。即座にフォームをロック。"
+  keywords={keywords}
+  description="編集可能なPDFフォームを、恒久的で編集不可能なコンテンツに変換します。記入済みのフォームが改ざんされるのを防ぎ、ドキュメントの整合性を確保します。すべてブラウザ内で完結します。"
+  benefits={[
+    "⚡ 即座に完了 — 数秒でフラット化が終了",
+    "🔒 プライベート — サーバーへの送信なし",
+    "🆓 無料 — ベータ期間中は制限なし"
+  ]}
+  relatedTools={[
+    { id: 'add-form-fields-pdf', icon: '📋', title: 'フォーム作成', description: 'フラット化前に入力項目を作成' },
+    { id: 'sign-pdf', icon: '✍️', title: 'PDF署名', description: 'フラット化する前に署名を挿入' },
+    { id: 'protect-pdf', icon: '🔒', title: 'PDF保護', description: '固定した後にパスワードをかける' },
+    { id: 'compress-pdf', icon: '🗜️', title: 'PDF圧縮', description: '完成後のファイルサイズを最適化' }
+  ]}
+  whyChoose={{
+    title: "当社のPDFフラット化ツールが選ばれる理由",
+    reasons: [
+      "真のプライバシー: フォームの内容は常にお手元のデバイス内に留まります。機密性の高い文書を外部サーバーにアップロードするリスクをLocalPDFは排除します。",
+      "改ざんと編集の防止: 記入済みのデータや注釈を恒久的に固定（フラット化）し、受取人が内容を後から変更できないようにします。文書の証拠性を高めます。",
+      "抜群の互換性: フラット化されたPDFは完全な「静的ドキュメント」となるため、あらゆるPDF閲覧ソフトやOSでレイアウト崩れなく、一貫して正しく表示されます。",
+      "データ欠損の回避: 当社のツールはフラット化の過程で、すべての視覚的要素、テキスト、レイアウトを極めて正確に保持します。情報の欠落や歪みは発生しません。",
+      "即時に完了: アップロードによる遅延や長い待ち時間はありません。ブラウザのパワーを最大限に活かし、数秒でフラット化された結果が得られます。",
+      "プロフェッショナルな仕上げ: 正式な提出書類、デジタルアーカイブ、またはデータの整合性が最優先される情報共有に最適な、クリーンな最終版ファイルを作成できます。"
+    ]
+  }}
+  features={[
+    "フォームフィールド（テキスト、チェック、リスト等）の固定",
+    "注釈やコメントのレイヤー統合",
+    "デジタル署名の恒久的な埋め込み",
+    "インタラクティブ要素のロック機能",
+    "視覚的な美しさと配置の維持",
+    "PDFの画質を落とさないロスレス処理"
+  ]}
+  steps={[
+    '上の「ツールを開く」ボタンをクリック',
+    "フォームや注釈が含まれるPDFファイルを選択",
+    "フラット化（レイヤー統合）が自動で開始",
+    "固定された内容を確認（編集不可の状態）",
+    "ファイナライズされたPDFをすぐにダウンロード"
+  ]}
+  lang="ja"
+  labels={UI_LABELS_JA}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

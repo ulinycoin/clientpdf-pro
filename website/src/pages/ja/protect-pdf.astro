@@ -1,0 +1,112 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import { UI_LABELS_JA } from '../../data/tools_ja';
+
+const keywords = "pdf 保護, pdf パスワード 保護, pdf 暗号化, pdf セキュリティ, pdf パスワード 追加, pdf 暗号化規格";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "image": "https://localpdf.online/logos/icon-512.png",
+  "name": "PDFをパスワードで保護する方法",
+  "description": "無料かつプライベートなLocalPDF保護ツールを使用して、PDFドキュメントにパスワードを追加し、暗号化権限を設定する手順ガイド。",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "ツールを開いてPDFをアップロード",
+      "text": "「ツールを開く」をクリックし、保護したいPDFドキュメントをアップロードします。",
+      "url": "https://localpdf.online/ja/protect-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "パスワードと権限の設定",
+      "text": "強力なパスワードを入力します。必要に応じてオーナーパスワードを設定し、印刷、コピー、編集などのユーザー権限を構成できます。",
+      "image": "https://localpdf.online/screenshots/protect-settings.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "保護を適用",
+      "text": "「PDFを保護」ボタンをクリックします。ツールが選択された設定で即座にドキュメントを暗号化します。",
+      "image": "https://localpdf.online/screenshots/protect-apply.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "安全なPDFをダウンロード",
+      "text": "「ダウンロード」をクリックして、新しく暗号化されパスワード保護されたPDFファイルを保存します。",
+      "image": "https://localpdf.online/screenshots/protect-download.png"
+    }
+  ],
+  "totalTime": "PT1M"
+};
+
+const faqs = [
+  {
+    question: "どのような暗号化規格が使用されていますか？",
+    answer: "世界中の高セキュリティ・アプリケーションの標準である **AES-256ビット暗号化** を使用しています。ドキュメントはブラウザのネイティブ暗号化APIを使用して、ブラウザ内で直接暗号化されます。"
+  },
+  {
+    question: "ユーザーパスワードとオーナーパスワードの違いは何ですか？",
+    answer: "**ユーザーパスワード**（閲覧用）はドキュメントを表示するために必要です。**オーナーパスワード**（権限用）は、セキュリティ設定の変更や、印刷・テキストコピーなどの制限を解除するために必要です。"
+  },
+  {
+    question: "忘れたパスワードを復元することはできますか？",
+    answer: "いいえ。LocalPDFの処理は完全にローカルであり、パスワードやドキュメントを保存することはないため、忘れたパスワードを当社で復元することは不可能です。パスワードは安全に保管してください。"
+  },
+  {
+    question: "パスワードはサーバーに送信されますか？",
+    answer: "いいえ。お客様のパスワードがブラウザから離れることはありません。ブラウザ内でPDFを暗号化するためのキーを生成するためにのみローカルで使用されます。"
+  }
+];
+---
+
+<ToolPage
+  toolId="protect-pdf"
+  title="PDF パスワード保護 オンライン — 無料で安全"
+  metaDescription="PDFファイルにパスワード保護を追加。暗号化と権限をローカルで設定。100%プライベート、アップロード不要。"
+  keywords={keywords}
+  description="詳細な権限設定とともにPDFにパスワード暗号化を追加します。機密ドキュメントを不正アクセスから保護します。すべての処理はブラウザ内でローカルに行われます。"
+  benefits={[
+    "⚡ 即座に完了 — 数秒でPDFを暗号化",
+    "🔒 プライベート — サーバー送信なしのローカル暗号化",
+    "🆓 無料 — ベータ期間中は制限なし"
+  ]}
+  relatedTools={[
+    { id: 'add-form-fields-pdf', icon: '📋', title: 'フォーム作成', description: '入力可能なPDFフォームを作成して保護' },
+    { id: 'sign-pdf', icon: '✍️', title: 'PDF署名', description: '保護された文書にデジタル署名を追加' },
+    { id: 'watermark-pdf', icon: '💧', title: '透かし追加', description: '暗号化する前にウォーターマークを挿入' },
+    { id: 'compress-pdf', icon: '🗜️', title: 'PDF圧縮', description: '安全に共有する前にファイルサイズを削減' }
+  ]}
+  whyChoose={{
+    title: "当社のPDFパスワード保護が選ばれる理由",
+    reasons: [
+      "最高レベルのセキュリティ: 暗号化されていない状態のPDFがデバイス外に出ることは決してありません。クラウド型のリスクを排除し、LocalPDFは手元で安全に暗号化を行います。",
+      "柔軟な権限管理: ユーザー用と管理者（オーナー）用のパスワードを個別に設定可能。印刷、コピー、編集、注釈の許可を業界標準の暗号化技術で制御できます。",
+      "AES-256 暗号化の採用: 軍事や銀行業務で使用されるものと同じ最高強度の暗号化基準を採用。総当たり（ブルートフォース）攻撃に対しても非常に強力な耐性を持ちます。",
+      "パスワードの非保存: 当社がお客様のパスワードを見ることも保存することもありません。お客様だけが暗号化キーを保持するため、完全な機密性が約束されます。",
+      "オフライン環境での利用: 一度ツールを読み込めば、ネット接続なしでもドキュメントの保護が可能。外部転送を一切禁止したい極秘書類の扱いに最適です。",
+      "驚きのスピード: アップロード待ちやサーバーの混雑待ちとは無縁です。ブラウザのパワーを最大限に活かし、通常2秒以内に暗号化が完了します。"
+    ]
+  }}
+  features={[
+    "ユーザーパスワードの設定（閲覧制限）",
+    "オーナーパスワードの設定（権限変更制限）",
+    "印刷権限の細かな制御",
+    "テキストや画像のコピー禁止設定",
+    "ドキュメントの編集・改ざんの防止",
+    "AES-256 強力暗号化規格をフルサポート"
+  ]}
+  steps={[
+    '上の「ツールを開く」ボタンをクリック',
+    "保護したいPDFドキュメントを選択",
+    "強力なパスワードを入力（オーナー設定も可能）",
+    "必要に応じて詳細な権限を設定",
+    "暗号化されたPDFをすぐにダウンロード"
+  ]}
+  faqs={faqs}
+  lang="ja"
+  labels={UI_LABELS_JA}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

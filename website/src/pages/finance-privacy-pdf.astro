@@ -1,0 +1,435 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import DeveloperStory from '../components/DeveloperStory.astro';
+import SecureToolsBlock from '../components/SecureToolsBlock.astro';
+
+const title = "LocalPDF for Finance & Banking | Secure, Browser-Based PDF Tools";
+const description = "The private PDF solution for financial advisors, accountants, and banking professionals. Handle tax forms, bank statements, and sensitive financial data 100% locally. Zero cloud risk.";
+
+const benefits = [
+  {
+    icon: "🏦",
+    title: "Banking-Grade Confidentiality",
+    desc: "Process PII (Personally Identifiable Information) without ever sending it to a cloud server. Your data stays in your browser's secure memory."
+  },
+  {
+    icon: "🛡️",
+    title: "SEC & FINRA Alignment",
+    desc: "By eliminating data transmission and third-party storage, you simplify compliance with strict financial data residency requirements."
+  },
+  {
+    icon: "🔒",
+    title: "Zero-Trace Processing",
+    desc: "Once you close the tab, the processing 'sandbox' is wiped. No permanent logs, no cloud cache, no residual data on the web."
+  }
+];
+
+const financeTools = [
+  { label: "Merge Bank Statements Locally", href: "/merge-pdf" },
+  { label: "Protect Tax Forms with Password", href: "/protect-pdf" },
+  { label: "OCR Financial Receipts (Offline)", href: "/ocr-pdf" },
+  { label: "Compress Audit Portfolios", href: "/compress-pdf" },
+  { label: "Sign Loan Agreements Privately", href: "/sign-pdf" },
+  { label: "Split Investment Reports", href: "/split-pdf" }
+];
+
+const faqs = [
+  {
+    question: "Is it safe to process bank statements on LocalPDF?",
+    answer: "<strong>Yes.</strong> Unlike traditional online PDF tools, LocalPDF never uploads your bank statements to a server. The processing happens 100% on your device using WebAssembly. Your sensitive financial figures are never visible to us or any third party."
+  },
+  {
+    question: "How does this compare to enterprise software like Bloomberg or Reuters terminals?",
+    answer: "While those are data terminals, LocalPDF is a <strong>private utility</strong> for document manipulation. It provides the same level of 'air-gapped' security as high-end enterprise software because it doesn't rely on the cloud for PDF rendering or editing."
+  },
+  {
+    question: "Can I use LocalPDF for GDPR-compliant financial auditing?",
+    answer: "Absolutely. LocalPDF is the default choice for privacy-conscious auditors because it removes the 'Data Processor' (the website owner) from the equation. You are the only person who ever handles the data."
+  }
+];
+---
+
+<BaseLayout title={title} description={description} lang="en">
+  
+  <div class="finance-hero">
+    <div class="finance-grid-bg"></div>
+    <div class="hero-content">
+      <div class="finance-badge">High-Security Utility</div>
+      <h1>Zero-Cloud PDF Tools for <span class="accent-text">Financial Excellence</span></h1>
+      <p>Secure document handling for tax, banking, and wealth management. 100% Client-Side. 0% Server Risk.</p>
+      
+      <div class="hero-actions">
+        <a href="/app#" class="btn-primary">Open Finance Studio 🏦</a>
+        <a href="#benefits" class="btn-secondary">Security Architecture</a>
+      </div>
+    </div>
+  </div>
+
+  <section class="answer-box-section">
+    <div class="section-container">
+      <div class="answer-box">
+        <strong>Are LocalPDF tools SEC and FINRA compliant?</strong>
+        <p>Yes. <strong>LocalPDF</strong> facilitates compliance by ensuring that sensitive financial data and PII never leave the local environment. Because all processing happens <strong>client-side in your browser</strong>, there is no data residency risk or "Third-Party Storage" involvement, making it the ideal secure utility for handling tax forms, bank statements, and trade confirmations.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="benefits" class="benefits-section">
+    <div class="section-container">
+      <div class="grid">
+        {benefits.map(benefit => (
+          <div class="benefit-card">
+            <div class="card-icon">{benefit.icon}</div>
+            <h3>{benefit.title}</h3>
+            <p>{benefit.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="security-focus">
+    <div class="section-container">
+      <div class="focus-grid">
+        <div class="focus-text">
+          <h2>Why Financial Leaders Choose LocalPDF</h2>
+          <p>Financial data is high-stakes. A single server breach on an online PDF site could expose thousands of tax IDs or account numbers. LocalPDF eliminates this entire attack surface by removing the server from the processing chain.</p>
+          <div class="check-list">
+            <div class="check-item">✓ No API calls with document data</div>
+            <div class="check-item">✓ No persistent cookies or tracking</div>
+            <div class="check-item">✓ No AI training on your documents</div>
+            <div class="check-item">✓ SOC2/GDPR compliance through zero-storage</div>
+          </div>
+        </div>
+        <div class="focus-visual">
+          <div class="visual-box">
+            <div class="visual-label">Secure Sandbox</div>
+            <div class="wasm-logo">WASM</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <SecureToolsBlock title="Finance-Specific PDF Workflows" links={financeTools} />
+
+  <DeveloperStory 
+    label="A Note on Data Sovereignty"
+    title="Because Your Balance Sheet,"
+    subtitle="Is Your Business."
+    text1="In finance, data sovereignty is non-negotiable. I built LocalPDF because I realized that 'free' online tools usually come at the cost of your metadata and privacy."
+    text2="LocalPDF returns control to you. By running high-performance C++ code directly in your browser, we provide the power of professional tools without the vulnerability of the cloud."
+  />
+
+  <section class="finance-faq">
+    <div class="section-container">
+      <h2 class="faq-h2">Financial Sector FAQ</h2>
+      <div class="faq-grid">
+        {faqs.map(faq => (
+          <div class="faq-item">
+            <h3>{faq.question}</h3>
+            <p set:html={faq.answer}></p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<style>
+  .finance-hero {
+    padding: 120px 7vw 80px;
+    position: relative;
+    text-align: center;
+    background: #000;
+  }
+
+  .answer-box-section {
+    padding: 0 7vw 40px;
+  }
+
+  .answer-box {
+    background: rgba(16, 185, 129, 0.03);
+    border: 1px solid rgba(16, 185, 129, 0.1);
+    border-radius: 20px;
+    padding: 32px;
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .answer-box strong {
+    display: block;
+    font-size: 1.25rem;
+    color: #10b981;
+    margin-bottom: 16px;
+    font-family: 'Outfit', sans-serif;
+  }
+
+  .answer-box p {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .finance-grid-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+      linear-gradient(rgba(59, 130, 246, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(59, 130, 246, 0.05) 1px, transparent 1px);
+    background-size: 50px 50px;
+    mask-image: radial-gradient(circle at center, black, transparent 80%);
+    pointer-events: none;
+  }
+
+  .hero-content {
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 10;
+  }
+
+  .finance-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    color: #10b981;
+    border-radius: 99px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+  }
+
+  h1 {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 24px;
+    letter-spacing: -0.02em;
+    color: #fff;
+  }
+
+  .accent-text {
+    background: linear-gradient(135deg, #fff 30%, #10b981 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero-content p {
+    font-size: 1.25rem;
+    color: var(--text-muted);
+    margin-bottom: 48px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    background: #fff;
+    color: #000;
+    padding: 16px 32px;
+    border-radius: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);
+  }
+
+  .btn-secondary {
+    background: rgba(255,255,255,0.05);
+    color: #fff;
+    padding: 16px 32px;
+    border-radius: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: all 0.2s;
+  }
+
+  .btn-secondary:hover { background: rgba(255,255,255,0.1); }
+
+  .section-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 80px 7vw;
+  }
+
+  /* Benefits Grid */
+  .benefits-section .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 32px;
+  }
+
+  .benefit-card {
+    padding: 40px;
+    background: rgba(255,255,255,0.01);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 24px;
+    text-align: center;
+    transition: all 0.3s;
+  }
+
+  .benefit-card:hover { 
+    background: rgba(16, 185, 129, 0.05);
+    border-color: rgba(16, 185, 129, 0.2);
+    transform: translateY(-5px); 
+  }
+
+  .card-icon {
+    font-size: 2.5rem;
+    margin-bottom: 24px;
+  }
+
+  .benefit-card h3 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.25rem;
+    margin-bottom: 16px;
+    color: #fff;
+  }
+
+  .benefit-card p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  /* Security Focus Section */
+  .security-focus {
+    background: #09090b;
+  }
+
+  .focus-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+
+  .focus-text h2 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2.25rem;
+    margin-bottom: 24px;
+    color: #fff;
+    line-height: 1.2;
+  }
+
+  .focus-text p {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    margin-bottom: 32px;
+  }
+
+  .check-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .check-item {
+    display: flex;
+    gap: 8px;
+    color: #10b981;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .focus-visual {
+    display: flex;
+    justify-content: center;
+  }
+
+  .visual-box {
+    width: 250px;
+    height: 250px;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(59, 130, 246, 0.1));
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow: 0 0 50px rgba(16, 185, 129, 0.1);
+  }
+
+  .visual-label {
+    position: absolute;
+    top: 24px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #fff;
+    opacity: 0.5;
+  }
+
+  .wasm-logo {
+    font-size: 3rem;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: -0.05em;
+    text-shadow: 0 0 20px rgba(255,255,255,0.3);
+  }
+
+  /* FAQ */
+  .faq-h2 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2rem;
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .faq-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .faq-item {
+    padding: 32px;
+    background: rgba(255,255,255,0.01);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+  }
+
+  .faq-item h3 {
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+    color: #fff;
+  }
+
+  .faq-item p {
+    color: var(--text-muted);
+    font-size: 1rem;
+  }
+
+  @media (max-width: 800px) {
+    .focus-grid { grid-template-columns: 1fr; gap: 40px; }
+    .check-list { grid-template-columns: 1fr; }
+    h1 { font-size: 2.5rem; }
+  }
+</style>

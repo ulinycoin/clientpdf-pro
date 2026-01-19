@@ -1,0 +1,94 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import { UI_LABELS_JA } from '../../data/tools_ja';
+
+const keywords = "pdf word 変換, pdf ワード 変換, pdf docx 変換, pdf word コンバーター, 無料 pdf word, 編集可能 pdf";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "image": "https://localpdf.online/logos/icon-512.png",
+  "name": "PDFをWordに変換する方法",
+  "description": "無料かつプライベートなLocalPDFコンバーターを使用して、PDFドキュメントを編集可能なMicrosoft Word（.docx）ファイルに変換する手順ガイド。",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "ツールを開いてPDFをアップロード",
+      "text": "「ツールを開く」をクリックし、Wordに変換したいPDFドキュメントをアップロードします。",
+      "url": "https://localpdf.online/ja/pdf-to-word#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "変換を開始",
+      "text": "「Wordに変換」ボタンをクリックします。ツールがPDFからテキストと構造の抽出を開始します。",
+      "image": "https://localpdf.online/screenshots/pdf-to-word-convert.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "処理中",
+      "text": "ツールが1ページずつドキュメントを処理する間、数秒待ちます。通常は5〜10秒で完了します。",
+      "image": "https://localpdf.online/screenshots/pdf-to-word-progress.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Wordドキュメントをダウンロード",
+      "text": "完了後、「ダウンロード」をクリックして、生成された .docx ファイルをデバイスに保存します。",
+      "image": "https://localpdf.online/screenshots/pdf-to-word-download.png"
+    }
+  ],
+  "totalTime": "PT1M"
+};
+---
+
+<ToolPage
+  toolId="pdf-to-word"
+  title="PDFをWordに変換 オンライン — 無料のPDF DOCXコンバーター"
+  metaDescription="PDFを編集可能なWord（DOCX）に変換。テキストと画像を抽出。100%プライベートなクライアントサイド変換。アップロード不要、無制限。"
+  keywords={keywords}
+  description="PDFドキュメントを編集可能なMicrosoft Word（.docx）形式に変換します。テキストや画像の抽出、見出しの自動検出をすべてブラウザ内でプライベートに行えます。"
+  benefits={[
+    "📝 編集可能 — PDFの内容を抽出してWordで編集",
+    "🖼️ 画像抽出 — ドキュメント内の画像保持を選択可能",
+    "🔒 プライベート — ファイルがサーバーに送られることはありません"
+  ]}
+  relatedTools={[
+    { id: 'word-to-pdf', icon: '📄', title: 'WordからPDF', description: '再びPDF形式に保存' },
+    { id: 'ocr-pdf', icon: '🔍', title: 'OCR PDF', description: 'スキャン文書から文字を抽出' },
+    { id: 'extract-text-pdf', icon: '📋', title: 'テキスト抽出', description: 'プレーンテキストとして取得' },
+    { id: 'compress-pdf', icon: '🗜️', title: 'PDF圧縮', description: '変換前にサイズを最適化' }
+  ]}
+  whyChoose={{
+    title: "当社のPDF Wordコンバーターが選ばれる理由",
+    reasons: [
+      "完全なプライバシー: お客様のPDFファイルがデバイスの外に出ることは一切ありません。クラウド型とは異なり、LocalPDFはすべてお手元で安全に変換処理を行います。",
+      "テキストと画像の両方に対応: テキストデータだけでなく、埋め込まれた画像もセットで抽出可能。ニーズに合わせて抽出のオン/オフを切り替えられます。",
+      "スマートな見出し検出: 文字の大きさから見出しを自動的に判別し、Wordの適切な見出しスタイルを適用。構造の整った編集しやすい文書を作成します。",
+      "完璧なUnicodeサポート: 日本語はもちろん、世界中のあらゆる言語のテキスト抽出に対応。特殊文字や記号も正確に保持します。",
+      "技術的限界への誠実な対応: テキスト主体のPDFで最高の結果が得られます。非常に複雑なデザインや多段組みは一部再現が難しい場合がありますが、これは技術仕様上の標準的な挙動です。",
+      "待機時間ゼロ: アップロード時間やサーバーの混雑待ちとは無縁です。ブラウザのパワーを活かし、通常10秒以内に変換結果が得られます。"
+    ]
+  }}
+  features={[
+    "全ページからの高精度なテキスト抽出",
+    "埋め込み画像のオプション抽出機能",
+    "フォントサイズに基づく見出しレベルの自動検出",
+    "段落構造とレイアウトの維持",
+    "日本語を含む多言語文字（ユニコード）をフルサポート",
+    "ページ単位での正確な改ページ挿入",
+    "一度読み込めばオフライン環境でも動作"
+  ]}
+  steps={[
+    '上の「ツールを開く」ボタンをクリック',
+    "Wordに変換したいPDFファイルをアップロード",
+    "画像の抽出設定を任意に切り替え",
+    "必要に応じて「スマート見出し」を有効化",
+    "「Wordに変換」をクリックして処理を待機",
+    "完成したWordファイル（.docx）をダウンロード"
+  ]}
+  lang="ja"
+  labels={UI_LABELS_JA}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

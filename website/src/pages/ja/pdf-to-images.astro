@@ -1,0 +1,94 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import { UI_LABELS_JA } from '../../data/tools_ja';
+
+const keywords = "pdf 画像 変換, pdf png 変換, pdf jpg 変換, pdf 写真 変換, pdf jpeg コンバーター, pdf から画像抽出";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "image": "https://localpdf.online/logos/icon-512.png",
+  "name": "PDFを画像に変換する方法",
+  "description": "無料かつプライベートなLocalPDFコンバーターを使用して、PDFページを高画質なPNGまたはJPG画像に変換する手順ガイド。",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "ツールを開いてPDFをアップロード",
+      "text": "「ツールを開く」をクリックし、画像に変換したいPDFドキュメントをアップロードします。",
+      "url": "https://localpdf.online/ja/pdf-to-images#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "出力設定の構成",
+      "text": "出力形式（PNGまたはJPEG）を選択し、希望する品質/DPI、および変換するページを指定します。",
+      "image": "https://localpdf.online/screenshots/pdf-to-images-config.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "変換を開始",
+      "text": "「変換」ボタンをクリックします。ツールが選択された各ページを処理し、画像としてレンダリングします。",
+      "image": "https://localpdf.online/screenshots/pdf-to-images-convert.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "画像をダウンロード",
+      "text": "完了後、画像を個別に、または一つのZIPファイルとして一括ダウンロードできます。",
+      "image": "https://localpdf.online/screenshots/pdf-to-images-download.png"
+    }
+  ],
+  "totalTime": "PT1M"
+};
+---
+
+<ToolPage
+  toolId="pdf-to-images"
+  title="PDFを画像に変換 オンライン — 無料のPNG/JPEGコンバーター"
+  metaDescription="PDFページを即座にPNGまたはJPEG画像に変換。100%プライベートなクライアントサイド変換。アップロード不要、高品質出力。数秒でPDFを画像化。"
+  keywords={keywords}
+  description="PDFページを高画質な画像（PNG, JPEG）に変換します。すべてのページまたは特定のページを選択して抽出可能。ブラウザ内でローカルに処理されるため、プライバシーは完全に守られます。"
+  benefits={[
+    "⚡ 高速 — 数秒でPDFから画像への変換が完了",
+    "🔒 プライベート — ドキュメントは常に手元に（送信なし）",
+    "🆓 無料 — ベータ期間中は回数制限なし"
+  ]}
+  relatedTools={[
+    { id: 'images-to-pdf', icon: '🖼️', title: '画像からPDF', description: '画像を再びPDF形式にまとめる' },
+    { id: 'extract-images-pdf', icon: '🖼️', title: '画像抽出', description: 'PDF内蔵の画像ファイルを直接取得' },
+    { id: 'compress-pdf', icon: '🗜️', title: 'PDF圧縮', description: '変換前にPDFのサイズを最適化' },
+    { id: 'rotate-pdf', icon: '🔄', title: 'PDF回転', description: '変換前にページの向きを補正' }
+  ]}
+  whyChoose={{
+    title: "当社のPDF画像コンバーターが選ばれる理由",
+    reasons: [
+      "完全なプライバシー: お客様のPDFドキュメントがデバイス外に出ることはありません。LocalPDFはブラウザ内で処理を行うため、機密情報をサーバーへ送るリスクがありません。",
+      "プロ品質の出力: 72DPIから最高600DPIの高解像度まで選択可能。透過維持が可能なPNG、または汎用性の高いJPEGをお選びいただけます。資料作成やアーカイブに最適です。",
+      "自由なページ指定: 全ページの一括変換はもちろん、特定のページ範囲や個別のページのみの抽出にも柔軟に対応。不要なページの処理を省けます。",
+      "アップロードなしの爆速変換: ブラウザのレンダリングパワーを直接使用するため、巨大なPDFも1ページ1〜2秒程度の圧倒的なスピードで画像化できます。",
+      "ページ数・サイズ制限なし: ページ数の多い書類や大容量ファイルも問題ありません。クラウドサービスのような厳しい「アップロード容量制限」から解放されます。",
+      "選べる4段階の画質設定: Web用の「低(72 DPI)」から、印刷も可能な「最高(600 DPI)」まで。用途に応じた最適な鮮明さを選べます。"
+    ]
+  }}
+  features={[
+    "PDFページからPNGまたはJPEGへの高精度変換",
+    "全ページ、ページ範囲、個別ページ選択機能",
+    "4つの品質レベル（72〜600 DPI）から選択可能",
+    "透過背景を維持できるPNG形式のサポート",
+    "背景色を自由に指定できるJPEG形式オプション",
+    "大量ページも安心のZIPアーカイブダウンロード",
+    "ダウンロード前に仕上がりを確認できるプレビュー"
+  ]}
+  steps={[
+    '上の「ツールを開く」ボタンをクリック',
+    "画像化したいPDFファイルをアップロード",
+    "出力形式（PNGまたはJPEG）を選択",
+    "品質レベル（低〜最高）を指定",
+    "変換したいページ（すべて/範囲/個別）を選択",
+    "「変換」を実行し、画像をダウンロード"
+  ]}
+  lang="ja"
+  labels={UI_LABELS_JA}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

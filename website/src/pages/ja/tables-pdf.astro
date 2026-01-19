@@ -1,0 +1,137 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import { UI_LABELS_JA } from '../../data/tools_ja';
+
+const keywords = "excel pdf 変換, csv pdf 変換, 表 pdf 変換, excel を pdf に変換 オンライン, pdf 表作成, 無料 excel pdf コンバーター, プロフェッショナル pdf 表, プライベート pdf ツール";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "image": "https://localpdf.online/logos/icon-512.png",
+  "name": "ExcelやCSVをプロ仕様のPDF表に変換する方法",
+  "description": "LocalPDFのプライベートかつ無料のツールを使用して、データファイルから高品質なPDF表を作成する手順ガイド。",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "表作成ツールを開く",
+      "text": "サイドバーから「PDFの表作成」ツールを起動して開始します。",
+      "url": "https://localpdf.online/ja/tables-pdf#tool",
+      "image": "https://localpdf.online/screenshots/tables-welcome.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "データをインポート",
+      "text": "「Excel/CSVをインポート」をクリックしてデータファイルを選択します。.xlsx, .xls, .csv 形式をサポートしています。",
+      "image": "https://localpdf.online/screenshots/tables-welcome.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "シートを選択",
+      "text": "Excelファイルをアップロードした場合は、PDFに含めたいシート（タブ）を選択します。",
+    },
+    {
+      "@type": "HowToStep",
+      "name": "レイアウトをカスタマイズ",
+      "text": "ページの向き（縦または横）を選択し、プロフェッショナルな外観のために色、ストライプ、枠線の設定をカスタマイズします。",
+      "image": "https://localpdf.online/screenshots/tables-styles.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "生成してダウンロード",
+      "text": "「PDFを生成」をクリックします。プロ仕様の表が即座に作成され、ダウンロード可能になります。",
+      "image": "https://localpdf.online/screenshots/tables-preview.png"
+    }
+  ],
+  "totalTime": "PT1M"
+};
+
+const faqs = [
+  {
+    question: "表の作成にはどのファイル形式が対応していますか？",
+    answer: "LocalPDFはMicrosoft Excel（.xlsx, .xls）およびCSV（カンマ区切り）ファイルに対応しています。また、ツール内で手動で表を作成することも可能です。"
+  },
+  {
+    question: "非常に幅の広い表はどのように処理されますか？",
+    answer: "高度なレイアウトエンジンが列幅を自動計算します。極端に幅の広い表の場合は、水平ページ分割（タイル分割）を行い、すべてのページでコンテキストを維持するために第1列を繰り返して表示します。"
+  },
+  {
+    question: "PDF表の見た目をカスタマイズできますか？",
+    answer: "はい！ヘッダーの色、可読性を高めるゼブラストライプ（縞模様）、フォントサイズ、枠線の表示/非表示などを自由に設定できます。"
+  },
+  {
+    question: "アップロードしたExcel/CSVファイルは安全ですか？",
+    answer: "もちろんです。すべてのLocalPDFツールと同様に、処理は100%お客様のブラウザ内で行われます。データファイルがデバイスを離れたり、サーバーにアップロードされたりすることはありません。"
+  },
+  {
+    question: "複数のExcelシートを一度に変換できますか？",
+    answer: "はい。Excelワークブックをアップロードすると、含めたいシートを自由に組み合わせて選択できます。各シートは独立した表セクションとしてPDF内にレンダリングされます。"
+  },
+  {
+    question: "ソフトウェアのインストールは必要ですか？",
+    answer: "いいえ。LocalPDFはウェブベースのアプリケーションであり、プラグインやインストールなしでブラウザ上で直接動作します。"
+  }
+];
+---
+
+<ToolPage
+  toolId="tables-pdf"
+  title="PDFの表作成 — Excel/CSVをプロ仕様のPDFに変換"
+  metaDescription="ExcelやCSVデータを美しくプロフェッショナルなPDF表に即座に変換。100%プライベートなクライアントサイド処理。アップロード不要。"
+  image="https://localpdf.online/screenshots/tables-preview.png"
+  keywords={keywords}
+  description="スプレッドシートを読みやすくプロフェッショナルなPDFドキュメントに変換します。複雑なレイアウト、長い表、複数のシートも、データをデバイス外に出すことなく安全に処理します。"
+  benefits={[
+    "📊 プロ仕様 — 清潔で高品質なテーブルレイアウト",
+    "🎨 カスタマイズ可能 — 色、ストライプ、向きの自由な設定",
+    "🔒 100% プライベート — データはコンピュータ内に保持されます",
+    "⚡ インテリジェント — 自動レイアウトと水平ページ分割"
+  ]}
+  relatedTools={[
+    { id: 'merge-pdf', icon: '📄', title: 'PDF結合', description: '複数の資料を一つに' },
+    { id: 'edit-pdf', icon: '📝', title: 'PDF編集', description: 'ページ内容を修正' },
+    { id: 'compress-pdf', icon: '🗜️', title: 'PDF圧縮', description: 'ファイルサイズを最適化' },
+    { id: 'word-to-pdf', icon: '📘', title: 'WordからPDF', description: 'Docxファイルを変換' }
+  ]}
+  whyChoose={{
+    title: "表作成にLocalPDFが選ばれる理由",
+    reasons: [
+      "機密性（プライバシー）の確保: 財務データや社内報告書は非常にデリケートです。LocalPDFはデータがサーバーを一切経由しないことを保証し、最高水準のセキュリティを提供します。",
+      "スマートなレイアウトエンジン: 列が切れたり表が崩れたりする悩みは無用です。テキストの折り返しや幅の調整、幅広の表の水平分割により、常に読みやすいデータを維持します。",
+      "マルチシートへの対応: Excelワークブック全体を一度に処理可能。抽出したいシートだけを指定し、ツールに任せるだけで構造化されたPDFが出来上がります。",
+      "完全無料のプレミアム機能: サブスクリプション加入や隠れた追加費用なしで、高度な表生成機能を利用できます。高速で回数制限もありません。",
+      "オフラインで使用可能: 一度サイトを読み込めば、ネット環境がなくても表の生成が可能。移動中や高セキュリティなオフライン環境での作業に最適です。",
+      "フォント埋め込みによる美しさ: 高解像度出力とフォント自動埋め込みにより、作成した表はどんなデバイスで開いても、印刷しても非常に鮮明です。"
+    ]
+  }}
+  features={[
+    "Excel (.xlsx, .xls) および CSV 形式のフルサポート",
+    "最適な列幅を割り出す自動計算アルゴリズム",
+    "セルの大きさに合わせたテキストの自動折り返し",
+    "巨大なデータセット向けのインテリジェントな水平ページ分割",
+    "自分好みに変更できるヘッダーと縞（ストライプ）の色設定",
+    "ドキュメントに合わせた縦向き / 横向きの自動判別",
+    "日付や数値の書式を崩さない正確なデータ反映",
+    "ページ分割時も第1列目を各ページに自動反復表示",
+    "ワークブック内からの任意シートの一括選択"
+  ]}
+  steps={[
+    { 
+      text: '「PDFの表作成」ツールを開き、お手元のファイルを準備します。', 
+      image: '/screenshots/tables-welcome.png' 
+    },
+    'ExcelまたはCSVファイルを。安全なインポート機能で読み込みます。',
+    '含めたいシートを選択し、色やストライプなどのスタイルを調整します。',
+    '向きを指定するか、最適な配置のための「自動」モードを選択します。',
+    { 
+      text: 'プレビューで仕上がりを確認し、プロ品質のPDFをダウンロードします。', 
+      image: '/screenshots/tables-preview.png' 
+    }
+  ]}
+  faqs={faqs}
+  lang="ja"
+  labels={UI_LABELS_JA}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

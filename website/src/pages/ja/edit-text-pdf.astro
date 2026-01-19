@@ -1,0 +1,133 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import { UI_LABELS_JA } from '../../data/tools_ja';
+
+const ICONS = {
+  pen: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>`,
+  style: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path></svg>`,
+  lock: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>`,
+  zap: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>`,
+  plus: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>`,
+  search: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>`,
+  shield: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>`,
+  table: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-7z"></path><path d="M3 9h18"></path><path d="M3 15h18"></path><path d="M9 3v18"></path></svg>`
+};
+
+const keywords = "pdf テキスト編集, pdf テキスト置換, pdf 秘匿化, pdf 黒塗り, pdf テキストエディタ, 無料 pdf エディタ, ローカル pdf エディタ";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "PDFテキストをローカルで編集する方法",
+  "description": "ブラウザ内だけでPDFのテキストを置換、隠蔽、または黒塗りする手順ガイド。LocalPDFエディタを使用します。",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "ツールを起動してPDFを読み込む",
+      "text": "「Studioを起動」をクリックし、編集したいPDFドキュメントをアップロードします。",
+      "url": "https://localpdf.online/ja/edit-text-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "テキストを選択して編集",
+      "text": "テキストブロックをクリックして内容を編集します。フォントや位置は自動的に検出されます。"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "スタイルの調整",
+      "text": "新しいテキストを入力し、ツールバーでフォントサイズや配置を調整します。"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "ローカルに保存",
+      "text": "「保存」をクリックして、処理されたドキュメントをデバイスに直接ダウンロードします。"
+    }
+  ],
+  "totalTime": "PT3M"
+};
+
+const faqs = [
+  {
+    question: "機密性の高いドキュメントを編集しても安全ですか？",
+    answer: "はい。LocalPDFはWebAssemblyを使用して、ブラウザのRAM内だけで処理を行います。ファイルがサーバーにアップロードされることはないため、機密情報の秘匿化に最適です。"
+  },
+  {
+    question: "編集したテキストのフォントは元と同じですか？",
+    answer: "元のフォントスタイルを検出して再現を試みます。標準フォント以外の場合は、見たを維持しつつ高品質な代替フォントを使用して配置を維持します。"
+  },
+  {
+    question: "テキストを黒塗り（秘匿化）できますか？",
+    answer: "はい。エディタを使用して、機密情報を完全に隠したり削除したりできます。ローカル処理なので、隠れたデータがサーバーに漏れる心配はありません。"
+  }
+];
+
+const techInfo = [
+  {
+    title: "クライアントサイド・レンダリング",
+    description: "PDF.jsを使用して、サーバーを介さずにブラウザ上でPDFレイヤーを正確に表示・操作します。"
+  },
+  {
+    title: "スマート・テキスト・インジェクション",
+    description: "PDFのコンテンツストリームを分析し、置換テキストの正確な位置と文字間隔を計算してプロ級の仕上がりを実現します。"
+  },
+  {
+    title: "WebWorker型セキュリティ",
+    description: "編集エンジンは独立したWeb Workerで動作し、完了後に破棄されるため、デバイスのメモリからすべてのデータが消去されます。"
+  }
+];
+---
+
+<ToolPage
+  toolId="edit-text-pdf"
+  title="PDFテキストをローカルで編集 | 100% プライベートなPDFエディタ"
+  metaDescription="ブラウザ上で完結する本格的PDFテキストエディタ。ファイルをアップロードせずに置換、秘匿化、追加が可能。安全・即座・プライベート。"
+  keywords={keywords}
+  description="ブラウザ内で直接PDFドキュメントのテキストを編集・置換できます。高度なエンジンにより、元のテキストの置換、機密データの黒塗り、新しい内容の追加がすべてプライベートに行えます。"
+  benefits={[
+    "スマート検出 — オリジナルのテキストを即座に置換",
+    "プロ仕様の調整 — フォントや配置を自由自在に",
+    "絶対的な安心 — ドキュメントは常に手元に",
+    "リアルタイム — ローカル処理による即時プレビュー"
+  ]}
+  relatedTools={[
+    { id: 'add-text-pdf', icon: ICONS.plus, title: 'テキスト追加', description: '既存のページに新しい文字を重ねる' },
+    { id: 'ocr-pdf', icon: ICONS.search, title: 'スマートOCR', description: 'スキャン文書から文字をデジタル化' },
+    { id: 'protect-pdf', icon: ICONS.shield, title: 'PDF保護', description: '暗号化で機密性の高い文書を守る' },
+    { id: 'tables-pdf', icon: ICONS.table, title: 'テーブルPro', description: 'データを構造化されたPDF表に変換' }
+  ]}
+  faqs={faqs}
+  techInfo={techInfo}
+  whyChoose={{
+    title: "なぜLocalPDFでの編集が選ばれるのか？",
+    reasons: [
+      "プライバシー第一: 一般的なエディタはクラウドを利用しますが、LocalPDFはブラウザの安全な領域内ですべてを処理します。",
+      "ピクセル精度: 元のテキストの位置とスタイルをスマートに検出し、違和感のない完璧な置換を可能にします。",
+      "痕跡ゼロ: タブを閉じれば、ドキュメントデータはRAMから即座に消去されます。一時ファイルも残りません。",
+      "プロ品質: 高解像度のドキュメント生成に対応しており、印刷レベルの仕上がりを提供します。",
+      "最新テクノロジー: WebAssemblyとWeb Workersを駆使し、ブラウザ内でデスクトップ級の速度を実現しています。"
+    ]
+  }}
+  features={[
+    "スマートなテキスト検出と視覚的置換機能",
+    "任意のページへの新しいテキスト要素の追加",
+    "正確な配置と整列のコントロールパネル",
+    "標準フォント（Helvetica, Robotoなど）のフルサポート",
+    "カスタムテキストカラーとハイライトカラー機能",
+    "複数行のテキストブロックと書式維持",
+    "機密情報の安全な黒塗り（秘匿化）機能",
+    "プロフェッショナル用途の高解像度出力",
+    "100% プライベートなクライアントサイドエンジンを搭載"
+  ]}
+  steps={[
+    { text: 'Studioを起動して、編集したいPDFをアップロードします。' },
+    { text: '編集したい文字をクリックするか、「テキスト追加」を選択します。' },
+    { text: 'ツールバーを使用して、フォントや配置を調整します。' },
+    { text: '仕上がりを確認し、「保存」をクリックしてダウンロードします。' }
+  ]}
+  lang="ja"
+  labels={UI_LABELS_JA}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

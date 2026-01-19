@@ -1,0 +1,94 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import { UI_LABELS_DE } from '../../data/tools_de';
+
+const keywords = "pdf in bilder, pdf in png, pdf in jpg, pdf in bild umwandeln, pdf zu jpeg converter, bilder aus pdf extrahieren";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "image": "https://localpdf.online/logos/icon-512.png",
+  "name": "So wandeln Sie PDF в Bilder um",
+  "description": "Eine Schritt-für-Schritt-Anleitung, wie Sie PDF-Seiten mit dem kostenlosen и privaten LocalPDF-Konverter в hochwertige PNG- oder JPG-Bilder umwandeln.",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Tool öffnen и PDF hochladen",
+      "text": "Klicken Sie auf 'Tool öffnen' и laden Sie das PDF-Dokument hoch, das Sie konvertieren möchten.",
+      "url": "https://localpdf.online/de/pdf-to-images#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Ausgabe-Einstellungen konfigurieren",
+      "text": "Wählen Sie das Format (PNG oder JPEG), die gewünschte Qualität/DPI и geben Sie an, welche Seiten konvertiert werden sollen.",
+      "image": "https://localpdf.online/screenshots/pdf-to-images-config.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Konvertierung starten",
+      "text": "Klicken Sie auf 'Konvertieren'. Das Tool verarbeitet jede gewählte Seite и rendert sie als Bild.",
+      "image": "https://localpdf.online/screenshots/pdf-to-images-convert.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Bilder herunterladen",
+      "text": "Nach Abschluss können Sie die Bilder einzeln oder als gesamtes ZIP-Archiv speichern.",
+      "image": "https://localpdf.online/screenshots/pdf-to-images-download.png"
+    }
+  ],
+  "totalTime": "PT1M"
+};
+---
+
+<ToolPage
+  toolId="pdf-to-images"
+  title="PDF в Bilder umwandeln online — Kostenloser PNG/JPEG Converter"
+  metaDescription="PDF-Seiten sofort в PNG oder JPEG Bilder umwandeln. 100% private clientseitige Konvertierung. Keine Uploads, hohe Qualität."
+  keywords={keywords}
+  description="Wandeln Sie PDF-Seiten в hochwertige Bilder (PNG, JPEG) um. Extrahieren Sie alle Seiten oder wählen Sie gezielt Abschnitte aus — alles lokal в Ihrem Browser."
+  benefits={[
+    "⚡ Schnell — PDFs в Sekunden в Bilder umwandeln",
+    "🔒 Privat — PDFs verlassen niemals Ihr Gerät",
+    "🆓 Kostenlos — Unbegrenzte Nutzung während der Beta"
+  ]}
+  relatedTools={[
+    { id: 'images-to-pdf', icon: '🖼️', title: 'Bilder zu PDF', description: 'Bilder wieder в PDF konvertieren' },
+    { id: 'extract-images-pdf', icon: '🖼️', title: 'Bilder extrahieren', description: 'Eingebettete Bilder speichern' },
+    { id: 'compress-pdf', icon: '🗜️', title: 'PDF komprimieren', description: 'PDF vor der Konvertierung verkleinern' },
+    { id: 'rotate-pdf', icon: '🔄', title: 'PDF drehen', description: 'Ausrichtung vorab korrigieren' }
+  ]}
+  whyChoose={{
+    title: "Warum unseren PDF zu Bilder Konverter wählen?",
+    reasons: [
+      "Vollständiger Datenschutz: Ihre PDFs verlassen nie Ihr Gerät. Online-Konverter laden Dokumente auf Server hoch. LocalPDF konvertiert lokal für maximale Sicherheit.",
+      "Hohe Ausgabequalität: Export mit einer Auflösung von 72 bis 600 DPI. Wählen Sie PNG für verlustfreie Qualität oder JPEG für kleinere Dateien.",
+      "Flexible Seitenauswahl: Konvertieren Sie alle Seiten, Bereiche oder einzelne Seiten. Extrahieren Sie nur das, was Sie wirklich brauchen.",
+      "Sofortige Verarbeitung: Keine Upload-Wartezeiten. Die Konvertierung erfolgt в Ihrem Browser — meist в 1-2 Sekunden pro Seite.",
+      "Keine Größenbeschränkung: PDFs jeder Größe verarbeiten. Cloud-Tools begrenzen oft auf 50-100 Seiten oder wenige Megabyte.",
+      "Mehrere Qualitätsstufen: Wählen Sie zwischen Niedrig (72 DPI), Mittel (150 DPI), Hoch (300 DPI) oder Maximum (600 DPI) für das beste Ergebnis."
+    ]
+  }}
+  features={[
+    "PDF-Seiten в PNG oder JPEG konvertieren",
+    "Alle Seiten, Bereiche oder einzelne Seiten wählen",
+    "Mehrere Qualitätsstufen (72-600 DPI)",
+    "PNG-Format mit Unterstützung für Transparenz",
+    "JPEG mit anpassbarer Hintergrundfarbe",
+    "Download als ZIP-Archiv oder Einzelbilder",
+    "Bildvorschau vor dem endgültigen Speichern"
+  ]}
+  steps={[
+    'Klicken Sie oben auf "Tool öffnen"',
+    "Laden Sie Ihre PDF-Datei hoch",
+    "Ausgabeformat (PNG oder JPEG) wählen",
+    "Qualitätsstufe (Niedrig bis Maximum) bestimmen",
+    "Seiten für die Konvertierung auswählen",
+    "Auf 'Konvertieren' klicken и Bilder laden"
+  ]}
+  lang="de"
+  labels={UI_LABELS_DE}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

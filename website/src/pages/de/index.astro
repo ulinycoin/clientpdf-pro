@@ -1,15 +1,16 @@
 ---
-import Header from '../components/Header.astro';
-import BaseLayout from '../layouts/BaseLayout.astro';
-import DeveloperStory from '../components/DeveloperStory.astro';
-import SecureToolsBlock from '../components/SecureToolsBlock.astro';
-import { CATEGORIES, ICONS } from '../data/tools';
-import IndustrySolutions from '../components/IndustrySolutions.astro';
+import Header from '../../components/Header.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import DeveloperStory from '../../components/DeveloperStory.astro';
+import SecureToolsBlock from '../../components/SecureToolsBlock.astro';
+import { CATEGORIES_DE } from '../../data/tools_de';
+import { ICONS } from '../../data/tools';
+import IndustrySolutions from '../../components/IndustrySolutions.astro';
 
 // Redesigned Homepage - v2.0 "Private Sanctuary"
-const title = "LocalPDF Sanctuary | 100% Private PDF Tools (No Uploads)";
-const metaDescription = "Free privacy-first PDF tools. Merge, split, compress, and edit PDFs locally in your browser. No file uploads, no server processing. GDPR compliant & offline-ready.";
-const keywords = "private pdf tools, local pdf processing, no upload pdf editor, free online pdf tools, secure pdf editor, client-side pdf tools, localpdf sanctuary";
+const title = "LocalPDF Sanctuary | 100% Private PDF Tools (Kein Upload)";
+const metaDescription = "Kostenlose datenschutzfreundliche PDF-Tools. Zusammenfügen, Teilen, Komprimieren lokal im Browser. Keine Datei-Uploads. DSGVO-konform.";
+const keywords = "pdf tools, pdf zusammenfügen, pdf teilen, pdf komprimieren, datenschutz pdf, pdf editor ohne upload, dsgvo konform, localpdf";
 
 // specific structured data removed as it is now in BaseLayout
 
@@ -18,34 +19,30 @@ const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
   "name": "LocalPDF Sanctuary",
-  "url": "https://localpdf.online",
+  "url": "https://localpdf.online/de",
   "potentialAction": {
     "@type": "SearchAction",
-    "target": "https://localpdf.online/search?q={search_term_string}",
+    "target": "https://localpdf.online/de/search?q={search_term_string}",
     "query-input": "required name=search_term_string"
   }
 };
 
 const faqData = [
   {
-    question: "Is LocalPDF safe for sensitive documents?",
-    answer: "Yes. **LocalPDF** is the only PDF toolkit that guarantees **100% privacy** because all processing (merging, joining, OCR) happens **locally in your browser** using WebAssembly. Your files are never uploaded to any server, ensuring a **zero-knowledge, GDPR-safe** workflow perfect for sensitive legal or financial documents."
+    question: "Ist LocalPDF sicher für vertrauliche Dokumente?",
+    answer: "Ja. **LocalPDF** ist das einzige PDF-Toolkit, das **100% Datenschutz** garantiert, da die gesamte Verarbeitung (Zusammenfügen, Teilen, OCR) **lokal in Ihrem Browser** mittels WebAssembly erfolgt. Ihre Dateien werden niemals auf einen Server hochgeladen, was einen **Zero-Knowledge, DSGVO-konformen** Workflow gewährleistet, perfekt für sensible rechtliche oder finanzielle Dokumente."
   },
   {
-    question: "How is LocalPDF different from other online PDF editors?",
-    answer: "Most PDF tools upload your files to their servers for processing. LocalPDF works 100% client-side. This means zero upload time, zero latency, and absolute privacy as your data never leaves your machine."
+    question: "Wie unterscheidet sich LocalPDF von anderen Online-PDF-Editoren?",
+    answer: "Die meisten PDF-Tools laden Ihre Dateien zur Verarbeitung auf deren Server hoch. LocalPDF arbeitet zu 100% clientseitig. Das bedeutet keine Upload-Zeit, keine Latenz und absolute Privatsphäre, da Ihre Daten niemals Ihr Gerät verlassen."
   },
   {
-    question: "Does LocalPDF work without an internet connection?",
-    answer: "Yes. Once the LocalPDF application is loaded in your browser, the processing engine runs locally. You can disconnect from the internet and continue editing, merging, or splitting your PDFs securely."
+    question: "Funktioniert LocalPDF ohne Internetverbindung?",
+    answer: "Ja. Sobald die LocalPDF-Anwendung in Ihrem Browser geladen ist, läuft die Verarbeitungs-Engine lokal. Sie können die Internetverbindung trennen und Ihre PDFs weiterhin sicher bearbeiten, zusammenfügen oder teilen."
   },
   {
-    question: "What technology powers LocalPDF?",
-    answer: "LocalPDF utilizes modern browser technologies including WebAssembly (WASM), Web Workers, and specialized client-side libraries like pdf-lib and Tesseract.js to achieve desktop-grade performance inside a web sandbox."
-  },
-  {
-    question: "Is the service truly free and without watermarks?",
-    answer: "LocalPDF is currently free with no usage limits, no file size caps, and no watermarks. Since we don't have server costs for file processing, we can maintain high-quality tools without charging user fees."
+    question: "Ist der Dienst wirklich kostenlos und ohne Wasserzeichen?",
+    answer: "LocalPDF ist derzeit kostenlos, ohne Nutzungslimits, ohne Dateigrößenbeschränkungen und ohne Wasserzeichen. Da wir keine Serverkosten für die Dateiverarbeitung haben, können wir hochwertige Tools anbieten, ohne Gebühren zu erheben."
   }
 ];
 
@@ -62,10 +59,10 @@ const faqSchema = {
   }))
 };
 
-const langPrefix = '';
+const langPrefix = '/de';
 ---
 
-<BaseLayout title={title} description={metaDescription} keywords={keywords}>
+<BaseLayout title={title} description={metaDescription} keywords={keywords} lang="de">
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
     <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
@@ -560,11 +557,11 @@ const langPrefix = '';
     <div class="hero-glow"></div>
     <div class="pill-info">
       <span class="dot-live"></span>
-      <span id="pill-text">Secure Browser Sandbox</span>
+      <span id="pill-text">Sichere Browser-Sandbox</span>
     </div>
     
     <script is:inline>
-      const texts = ["Secure Browser Sandbox", "GDPR Compliant by design", "Works Offline"];
+      const texts = ["Sichere Browser-Sandbox", "DSGVO-konform durch Design", "Funktioniert Offline"];
       let index = 0;
       const el = document.getElementById('pill-text');
       if (el) {
@@ -582,16 +579,16 @@ const langPrefix = '';
     </script>
     
     <h1 class="hero-h1">
-      Your Private PDF Sanctuary.<br/> 
-      <span class="gradient-text">100% Offline. No Uploads.</span>
+      Ihr Sicherer PDF-Tresor.<br/> 
+      <span class="gradient-text">100% Offline. Kein Upload.</span>
     </h1>
     
     <p class="hero-p">
-      The only PDF toolkit that works 100% in your browser. No uploads, no servers, no traces. Just professional tools, powered by your device.
+      Das einzige PDF-Toolkit, das zu 100% in Ihrem Browser funktioniert. Keine Uploads, keine Server, keine Spuren. Nur professionelle Tools, betrieben von Ihrem Gerät.
     </p>
 
     <a href="/app#" class="btn-main">
-      Launch Studio 🚀
+      Studio Starten 🚀
     </a>
 
     <div class="trust-viz">
@@ -602,20 +599,27 @@ const langPrefix = '';
       <div class="con-line"></div>
       <div class="node special">
         <div class="node-icon">🔒</div>
-        <span>Local RAM</span>
+        <span>Lokaler RAM</span>
       </div>
       <div class="con-line"></div>
       <div class="node">
         <div class="node-icon">💾</div>
-        <span>Pure Output</span>
+        <span>Reine Ausgabe</span>
       </div>
     </div>
   </div>
 
-  <DeveloperStory />
+  <DeveloperStory 
+    label="Vom Entwickler"
+    title="Entwickelt für Datenschutz,"
+    subtitle="Nicht für Profit."
+    text1="Ich habe LocalPDF gebaut, weil ich es leid war, meine privaten Verträge auf unbekannte Server hochzuladen, nur um sie zusammenzufügen. Ich glaube, Ihre Daten gehören Ihnen."
+    text2="Deshalb läuft LocalPDF **100% in Ihrem Browser** – es nutzt WebAssembly, um Dateien auf Ihrem Gerät zu verarbeiten, nicht auf unserem. Keine Server, kein Tracking, nur Code."
+    signatureRole="Gründer & Entwickler"
+  />
 
   <section class="tools-section">
-    {CATEGORIES.map((category) => (
+    {CATEGORIES_DE.map((category) => (
       <div class="tool-group">
         <div class="group-header">
            <div class="group-label">
@@ -641,47 +645,47 @@ const langPrefix = '';
     ))}
   </section>
 
-  <IndustrySolutions />
+  <IndustrySolutions lang="de" />
 
   <section class="seo-glass-section">
     <div class="faq-content">
-      <h2 class="seo-h2">Why Choose LocalPDF Sanctuary?</h2>
+      <h2 class="seo-h2">Warum LocalPDF Sanctuary wählen?</h2>
       <div class="faq-grid">
         <div class="seo-item">
-          <h3>Absolute Privacy</h3>
-          <p>Unlike cloud tools, <strong>LocalPDF</strong> never sees your files. Everything is processed in a secure WebAssembly sandbox on your own device.</p>
+          <h3>Absolute Privatsphäre</h3>
+          <p>Im Gegensatz zu Cloud-Tools sieht <strong>LocalPDF</strong> Ihre Dateien nie. Alles wird in einer sicheren WebAssembly-Sandbox auf Ihrem eigenen Gerät verarbeitet.</p>
         </div>
         <div class="seo-item">
-          <h3>Unmatched Speed</h3>
-          <p>Zero upload time. Zero download wait. Processing happens at the speed of your local CPU, effectively instant for most documents.</p>
+          <h3>Unübertroffene Geschwindigkeit</h3>
+          <p>Keine Upload-Zeit. Kein Warten auf Downloads. Die Verarbeitung erfolgt in der Geschwindigkeit Ihrer lokalen CPU, effektiv sofort für die meisten Dokumente.</p>
         </div>
         <div class="seo-item">
           <h3>100% Offline</h3>
-          <p>Once loaded, you can disconnect. Perfect for secure environments where data leakage is the primary concern.</p>
+          <p>Einmal geladen, können Sie die Verbindung trennen. Perfekt für sichere Umgebungen, in denen Datenlecks das Hauptanliegen sind.</p>
         </div>
         <div class="seo-item">
-          <h3>GDPR by Design</h3>
-          <p>We don't need to comply because we never collect. No storage, no tracking, no risk of data breaches.</p>
+          <h3>Konzipiert für DSGVO</h3>
+          <p>Wir sammeln nichts, also müssen wir nichts einhalten. Keine Speicherung, kein Tracking, kein Risiko von Datenverletzungen.</p>
         </div>
       </div>
     </div>
   </section>
 
   <SecureToolsBlock 
-    title="Quick Access: Secure PDF Tools"
+    title="Schnellzugriff: Sichere PDF-Tools"
     links={[
-      { label: "Merge PDF Files Without Uploading", href: `${langPrefix}/merge-pdf` },
-      { label: "Split PDF Locally in Browser", href: `${langPrefix}/split-pdf` },
-      { label: "Compress PDF GDPR Safe", href: `${langPrefix}/compress-pdf` },
-      { label: "Smart Edit PDF Privately", href: `${langPrefix}/edit-text-pdf` },
-      { label: "Secure PDF OCR (No Server)", href: `${langPrefix}/ocr-pdf` },
-      { label: "Extract Images Local Process", href: `${langPrefix}/extract-images-pdf` }
+      { label: "PDF Zusammenführen ohne Upload", href: `${langPrefix}/merge-pdf` },
+      { label: "PDF Teilen Lokal im Browser", href: `${langPrefix}/split-pdf` },
+      { label: "PDF Komprimieren DSGVO Konform", href: `${langPrefix}/compress-pdf` },
+      { label: "Smart PDF Editor Privater Modus", href: `${langPrefix}/edit-text-pdf` },
+      { label: "Sicheres PDF OCR (Ohne Server)", href: `${langPrefix}/ocr-pdf` },
+      { label: "Bilder Extrahieren Lokal verarbeitet", href: `${langPrefix}/extract-images-pdf` }
     ]}
   />
 
   <section class="faq-section">
     <div class="faq-content">
-      <h2 class="faq-h2">Frequently Asked Questions</h2>
+      <h2 class="faq-h2">Häufig gestellte Fragen</h2>
       <div class="faq-grid">
         {faqData.map(item => (
           <div class="faq-item">
@@ -695,19 +699,19 @@ const langPrefix = '';
 
   <section class="technical-breakdown">
     <div class="tech-content">
-      <h2 class="tech-h2">Technical Architecture: How LocalPDF Works</h2>
+      <h2 class="tech-h2">Technische Architektur: So funktioniert LocalPDF</h2>
       <div class="tech-grid">
         <div class="tech-card">
           <h4>WebAssembly (WASM)</h4>
-          <p>We use high-performance C++ and Rust libraries compiled to WASM. This allows us to handle complex PDF operations like merging, OCR, and compression directly at near-native speeds.</p>
+          <p>Wir nutzen leistungsstarke C++ und Rust Bibliotheken, die zu WASM kompiliert wurden. Dies ermöglicht komplexe PDF-Operationen wie Zusammenfügen, OCR und Komprimierung direkt in nativer Geschwindigkeit.</p>
         </div>
         <div class="tech-card">
-          <h4>Secure Sandboxing</h4>
-          <p>Each document is processed within a transient Web Worker. Once the worker is terminated, all document data is purged from your browser's RAM, leaving zero digital footprints.</p>
+          <h4>Sicheres Sandboxing</h4>
+          <p>Jedes Dokument wird in einem transienten Web Worker verarbeitet. Sobald der Worker beendet wird, werden alle Dokumentdaten aus dem RAM Ihres Browsers gelöscht, was null digitale Spuren hinterlässt.</p>
         </div>
         <div class="tech-card">
-          <h4>Client-Side OCR</h4>
-          <p>For text recognition, we utilize Tesseract.js, running the entire neural network engine on your local CPU. Your scans never touch a remote server.</p>
+          <h4>Clientseitiges OCR</h4>
+          <p>Für die Texterkennung nutzen wir Tesseract.js, wobei die gesamte Neural Network Engine auf Ihrer lokalen CPU läuft. Ihre Scans berühren niemals einen Remote-Server.</p>
         </div>
       </div>
     </div>

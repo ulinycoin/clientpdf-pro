@@ -1,0 +1,146 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import { UI_LABELS_DE } from '../../data/tools_de';
+
+const keywords = "pdf zusammenfügen, pdf kombinieren, pdf verbinden, pdf merger, pdf dateien zusammenfügen online, kostenloser pdf merger, smart merge pdf, pdf nach datum sortieren, pdf duplikate finden";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "image": "https://localpdf.online/logos/icon-512.png",
+  "name": "So fügen Sie PDF-Dateien mit LocalPDF zusammen",
+  "description": "Eine Schritt-für-Schritt-Anleitung zum Kombinieren mehrerer PDF-Dateien in ein einziges Dokument mit dem kostenlosen und privaten LocalPDF-Tool mit KI-gestütztem Smart Merge.",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Werkzeug öffnen",
+      "text": "Klicken Sie auf die Schaltfläche 'Werzeug öffnen', um die PDF-Zusammenführungsoberfläche zu starten.",
+      "url": "https://localpdf.online/de/merge-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Dateien auswählen",
+      "text": "Wählen Sie mehrere PDF-Dateien von Ihrem Gerät aus, indem Sie auf die Schaltfläche 'Dateien auswählen' klicken oder sie in das Werkzeug ziehen.",
+      "image": "https://localpdf.online/screenshots/merge-select.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Smart Merge verwenden",
+      "text": "Die Smart Merge KI analysiert Ihre Dokumente und schlägt die optimale Sortierung vor. Klicken Sie auf 'Chronologisch', um nach Datum zu sortieren, 'Nach Dateiname' für nummerierte Dateien, oder überprüfen Sie Duplikatwarnungen.",
+      "image": "https://localpdf.online/screenshots/merge-smart.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Reihenfolge anpassen",
+      "text": "Passen Sie die Reihenfolge per Drag-and-Drop an. Sehen Sie sich die Vorschaubilder jeder PDF an, um die korrekte Sortierung sicherzustellen.",
+      "image": "https://localpdf.online/screenshots/merge-arrange.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Zusammenführen und Herunterladen",
+      "text": "Klicken Sie auf die Schaltfläche 'Zusammenführen'. Die Dateien werden sofort kombiniert und Sie können das fertige PDF herunterladen.",
+      "image": "https://localpdf.online/screenshots/merge-download.png"
+    }
+  ],
+  "totalTime": "PT1M"
+};
+
+const faqs = [
+  {
+    question: "Was ist Smart Merge und wie funktioniert es?",
+    answer: "Smart Merge ist unsere KI-gestützte Funktion, die Ihre PDF-Dokumente automatisch analysiert und optimale Sortieroptionen vorschlägt. Sie erkennt Daten in Dokumenten, Dateinamensmuster (wie teil1, teil2), identifiziert potenzielle Duplikate und bietet eine Sortierung mit einem Klick — alles lokal in Ihrem Browser für vollständigen Datenschutz verarbeitet."
+  },
+  {
+    question: "Kann ich passwortgeschützte PDFs zusammenfügen?",
+    answer: "Ja, aber Sie müssen das Benutzerpasswort für jedes geschützte PDF vor dem Zusammenfügen eingeben. Die ausgegebene Datei wird nicht passwortgeschützt sein, es sei denn, Sie verwenden danach unser <a href='/de/protect-pdf'>PDF schützen Werkzeug</a>."
+  },
+  {
+    question: "Gibt es ein Limit für die Anzahl der PDFs, die ich zusammenfügen kann?",
+    answer: "Kein Limit während der Beta! Sie können so viele PDF-Dateien zusammenfügen, wie Sie möchten. Die einzige Einschränkung ist der verfügbare Speicher Ihres Geräts. Die meisten modernen Geräte können Dutzende von PDFs problemlos verarbeiten."
+  },
+  {
+    question: "Behält das zusammengefügte PDF Lesezeichen und Links?",
+    answer: "Ja! Unser Zusammenführungstool bewahrt interne Lesezeichen, Hyperlinks und Dokumentmetadaten aus allen Quell-PDFs. Lesezeichen werden in der Reihenfolge kombiniert, in der Sie die Dateien anordnen."
+  },
+  {
+    question: "Reduziert das Zusammenfügen die PDF-Qualität?",
+    answer: "Kein Qualitätsverlust! Das Zusammenfügen ist eine <strong>verlustfreie Operation</strong> - alle Seiten, Bilder, Schriftarten und Formatierungen bleiben genau so erhalten, wie sie in den Originaldateien erscheinen. Keine Komprimierung oder Downsampling findet statt."
+  },
+  {
+    question: "Kann ich die Reihenfolge der PDFs vor dem Zusammenfügen ändern?",
+    answer: "Absolut! Bevor Sie auf 'Zusammenführen' klicken, können Sie Dateien per Drag-and-Drop in jede beliebige Reihenfolge verschieben. Sie können auch Smart Merge verwenden, um automatisch nach Datum, Dateiname oder Dateigröße zu sortieren. Sehen Sie sich die Vorschauseiten jeder PDF an, um die richtige Reihenfolge sicherzustellen."
+  },
+  {
+    question: "Wie funktioniert die Duplikaterkennung?",
+    answer: "Smart Merge analysiert den Textinhalt Ihrer PDFs und vergleicht Dateigrößen, um potenzielle Duplikate oder sehr ähnliche Dokumente zu identifizieren. Wenn welche gefunden werden, sehen Sie eine Warnung mit der Option, nur die erste Datei jeder Duplikatgruppe zu behalten."
+  },
+  {
+    question: "Was passiert, wenn PDFs unterschiedliche Seitengrößen haben?",
+    answer: "Das zusammengefügte PDF behält die ursprüngliche Seitengröße für jede Seite bei. Wenn Sie beispielsweise ein A4-Dokument mit einem Letter-Dokument zusammenfügen, enthält die Ausgabedatei beide Seitengrößen."
+  },
+  {
+    question: "Wie kann ich PDFs zusammenfügen, ohne die Datensicherheit zu gefährden?",
+    answer: "Verwenden Sie zur sicheren Zusammenführung von PDFs ein **clientseitiges Tool** wie LocalPDF. Der Zusammenführungsprozess wird **lokal im RAM Ihres Browsers** mittels WebAssembly ausgeführt, sodass Ihre Dateien Ihr Gerät nie verlassen. Dieser **No-Upload-Ansatz** bietet überlegene Datensouveränität im Vergleich zu Cloud-basierten Alternativen."
+  },
+  {
+    question: "Kann ich PDFs auf mobilen Geräten zusammenfügen?",
+    answer: "Ja! Unser Tool funktioniert auf iOS (Safari), Android (Chrome) und allen modernen mobilen Browsern. Die Benutzeroberfläche passt sich an Touchscreens an, um die Dateianordnung per Drag-and-Drop zu erleichtern."
+  }
+];
+---
+
+<ToolPage
+  toolId="merge-pdf"
+  title="PDF Zusammenführen Lokal: Ohne Upload, 100% Datenschutz"
+  lang="de"
+  labels={UI_LABELS_DE}
+  metaDescription="PDFs lokal zusammenfügen ohne Upload. 100% Datenschutz, DSGVO-konform. Dateien verlassen nie Ihr Gerät."
+  keywords={keywords}
+  description="Kombinieren Sie mehrere PDF-Dateien zu einem Dokument — sofort und sicher. Die gesamte Verarbeitung erfolgt in Ihrem Browser, was vollständige Privatsphäre gewährleistet. Keine Uploads, keine Registrierung, keine versteckten Gebühren."
+  benefits={[
+    "🧠 Smart Merge — KI-gestützte Sortierung & Duplikaterkennung",
+    "⚡ Sofort — Verarbeitung in unter 2 Sekunden",
+    "🔒 Privat — Dateien verlassen nie Ihr Gerät",
+    "🆓 Kostenlos — Keine Limits während der Betaphase"
+  ]}
+  relatedTools={[
+    { id: 'split-pdf', icon: '✂️', title: 'PDF Teilen', description: 'PDF in separate Dateien aufteilen' },
+    { id: 'organize-pdf', icon: '📋', title: 'Seiten Organisieren', description: 'Seiten neu anordnen und drehen' },
+    { id: 'compress-pdf', icon: '🗜️', title: 'PDF Komprimieren', description: 'Dateigröße reduzieren' },
+    { id: 'protect-pdf', icon: '🔒', title: 'PDF Schützen', description: 'Passwort hinzufügen' }
+  ]}
+  whyChoose={{
+    title: "Warum unseren PDF Merger wählen?",
+    reasons: [
+      "100% Clientseitige Verarbeitung: Im Gegensatz zu anderen Online-PDF-Merger, die Ihre Dateien auf Remote-Server hochladen, verarbeitet LocalPDF alles lokal in Ihrem Browser. Ihre Dokumente verlassen nie Ihr Gerät.",
+      "Blitzschnelle Leistung: Keine Upload-Verzögerungen. Das Zusammenfügen erfolgt sofort, da die Dateien auf Ihrem Computer bleiben.",
+      "Keine Dateigrößenbeschränkungen: Mit LocalPDF können Sie PDFs jeder Größe zusammenfügen — Ihr Browser ist das einzige Limit.",
+      "Keine Datensammlung: Wir verfolgen Sie nicht, speichern Ihre Dateien nicht und benötigen keine Konten. Nur reine Funktionalität.",
+      "Funktioniert Offline: Einmal geladen, funktioniert das Tool ohne Internetverbindung. Perfekt für sensible Dokumente.",
+      "Qualität Erhalten: Verlustfreies Zusammenfügen — Ihre PDFs behalten Originalauflösung, Formatierung und Metadaten."
+    ]
+  }}
+  features={[
+    "🧠 Smart Merge: KI-gestützte automatische Sortierung",
+    "🔍 Duplikaterkennung: Ähnliche Dateien identifizieren",
+    "📅 Datumsextraktion: Daten automatisch erkennen",
+    "Unbegrenzt viele PDF-Dateien zusammenfügen",
+    "Drag-and-Drop Neuanordnung",
+    "Vorschau der Seiten vor dem Kombinieren",
+    "Lesezeichen und Metadaten bewahren",
+    "Unterstützung für verschlüsselte PDFs",
+    "Plattformübergreifend: Windows, Mac, Linux, iOS, Android"
+  ]}
+  steps={[
+    'Klicken Sie auf "Werkzeug öffnen"',
+    "Wählen Sie mehrere PDF-Dateien aus",
+    "Nutzen Sie Smart Merge für Auto-Sortierung oder Drag-and-Drop",
+    "Überprüfen Sie Duplikatwarnungen",
+    "Klicken Sie auf \"Zusammenführen\" für sofortigen Download"
+  ]}
+  faqs={faqs}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

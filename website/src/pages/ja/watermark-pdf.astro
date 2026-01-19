@@ -1,0 +1,92 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import { UI_LABELS_JA } from '../../data/tools_ja';
+
+const keywords = "pdf 透かし, pdf ウォーターマーク 追加, テキスト 透かし, pdf 保護, 無料 透かしツール";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "image": "https://localpdf.online/logos/icon-512.png",
+  "name": "PDFに透かしを追加する方法",
+  "description": "無料かつプライベートなLocalPDFツールを使用して、PDFドキュメントにカスタムテキストの透かしを追加し、位置、不透明度、回転を調整する手順ガイド。",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "ツールを開いてPDFをアップロード",
+      "text": "「ツールを開く」をクリックし、透かしを入れたいPDFドキュメントをアップロードします。",
+      "url": "https://localpdf.online/ja/watermark-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "透かしを設定",
+      "text": "透かしとして入れたいテキストを入力します。サイドバーを使用して、位置、回転、不透明度、フォントサイズ、色を調整します。",
+      "image": "https://localpdf.online/screenshots/watermark-config.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "透かしを適用",
+      "text": "「透かしを追加」ボタンをクリックします。設定に従って全ページにテキストが適用されます。",
+      "image": "https://localpdf.online/screenshots/watermark-apply.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "透かし入りPDFをダウンロード",
+      "text": "プレビューが表示されます。内容を確認し、「ダウンロード」をクリックして保護されたPDFファイルを保存します。",
+      "image": "https://localpdf.online/screenshots/watermark-download.png"
+    }
+  ],
+  "totalTime": "PT1M"
+};
+---
+
+<ToolPage
+  toolId="watermark-pdf"
+  title="PDFに透かしを追加 オンライン — 無料ツール"
+  metaDescription="PDFファイルにテキストの透かしを追加。100%プライベートなクライアントサイド処理。アップロード不要。位置、不透明度、回転を自在にカスタマイズ。無制限に無料で利用可能。"
+  keywords={keywords}
+  description="PDFの各ページにカスタムの透かしを追加します。視覚的なテキストオーバーレイでドキュメントを保護。すべての処理はブラウザ内でローカルに行われます。"
+  benefits={[
+    "⚡ 即座に完了 — 数秒で透かしを追加可能",
+    "🔒 プライベート — ドキュメントはデバイス内に保持",
+    "🆓 無料 — ベータ期間中は制限なし"
+  ]}
+  relatedTools={[
+    { id: 'add-form-fields-pdf', icon: '📋', title: 'フォーム作成', description: '透かし入りの入力フォームを作成' },
+    { id: 'add-text-pdf', icon: '📝', title: 'テキスト追加', description: '任意の場所にテキストを挿入' },
+    { id: 'protect-pdf', icon: '🔒', title: 'PDF保護', description: 'パスワード保護で文書を強化' },
+    { id: 'sign-pdf', icon: '✍️', title: 'PDF署名', description: 'デジタル署名を追加可能' }
+  ]}
+  whyChoose={{
+    title: "当社のPDF透かしツールが選ばれる理由",
+    reasons: [
+      "完全なプライバシー: お客様のPDFがコンピュータから離れることはありません。LocalPDFはブラウザ内でお客様の手で透かし処理を完結させます。",
+      "高度なカスタマイズ: 透かしのテキスト内容はもちろん、位置、不透明度、回転角度、サイズまで詳細にコントロール可能。透かしの強弱も調整できます。",
+      "広告透かしなし: 多くの無料ツールは独自のロゴを強制的に入れますが、LocalPDFはお客様の許可なく当社のロゴやURLをドキュメントに追加しません。",
+      "超高速処理: アップロードによる遅延はありません。ブラウザのパワーを活用し、複数ページのドキュメントでも数秒でプレビューと生成が完了します。",
+      "オリジナル品質の維持: PDF全体を再構成するのではなく、透かしをオーバーレイとして追加するため、元の鮮明さや構造が損なわれることはありません。",
+      "一括処理に対応: 同一の透かし設定を維持したまま、複数のPDFを連続して処理できます。マニュアルや社内文書への一括適用に最適です。"
+    ]
+  }}
+  features={[
+    "カスタムテキストによる透かし作成機能",
+    "配置の自由な制御（中央、各コーナー、任意位置）",
+    "不透明度の細かな調整（0%〜100%）",
+    "任意の角度でのテキスト回転機能",
+    "全ページ適用または特定ページのみの選択",
+    "適用前のリアルタイムプレビュー"
+  ]}
+  steps={[
+    '上の「ツールを開く」ボタンをクリック',
+    "透かしを入れたいPDFファイルを読み込み",
+    "透かしのテキストを入力",
+    "位置、不透明度、回転などを調整",
+    "プレビューを確認してダウンロード"
+  ]}
+  lang="ja"
+  labels={UI_LABELS_JA}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

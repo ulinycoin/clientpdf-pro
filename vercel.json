@@ -111,6 +111,15 @@
       ]
     },
     {
+      "source": "/(de|ja)/(merge-pdf|split-pdf|compress-pdf|protect-pdf|ocr-pdf|watermark-pdf|rotate-pdf|delete-pages-pdf|extract-pages-pdf|add-text-pdf|images-to-pdf)/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, s-maxage=86400"
+        }
+      ]
+    },
+    {
       "source": "/blog/(.*)",
       "headers": [
         {

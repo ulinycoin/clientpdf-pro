@@ -1,0 +1,93 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import { UI_LABELS_DE } from '../../data/tools_de';
+
+const keywords = "pdf unterschreiben, digitale signatur, pdf e-signatur, pdf online unterschreiben, unterschrift auf pdf zeichnen, kostenlos unterschreiben";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "image": "https://localpdf.online/logos/icon-512.png",
+  "name": "So unterschreiben Sie ein PDF-Dokument",
+  "description": "Eine Schritt-für-Schritt-Anleitung, wie Sie eine digitale Unterschrift zu einem PDF hinzufügen — durch Zeichnen, Tippen oder Hochladen eines Bildes mit dem kostenlosen и privaten LocalPDF-Tool.",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Tool öffnen и PDF hochladen",
+      "text": "Klicken Sie auf 'Tool öffnen' и laden Sie das PDF-Dokument hoch, das Sie unterschreiben möchten.",
+      "url": "https://localpdf.online/de/sign-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Unterschrift erstellen oder hinzufügen",
+      "text": "Wählen Sie Ihre Methode: Zeichnen mit der Maus, Tippen oder Hochladen eines Bildes Ihrer Unterschrift.",
+      "image": "https://localpdf.online/screenshots/sign-create.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Unterschrift positionieren",
+      "text": "Ziehen Sie die erstellte Unterschrift an die gewünschte Stelle im PDF-Dokument. Sie können die Größe beliebig anpassen.",
+      "image": "https://localpdf.online/screenshots/sign-place.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Anwenden и Herunterladen",
+      "text": "Klicken Sie auf 'Signatur anwenden', um sie einzubetten. Klicken Sie dann auf 'Herunterladen', um das unterschriebene PDF zu speichern.",
+      "image": "https://localpdf.online/screenshots/sign-download.png"
+    }
+  ],
+  "totalTime": "PT2M"
+};
+---
+
+<ToolPage
+  toolId="sign-pdf"
+  title="PDF online unterschreiben — Kostenloses Tool для digitale Signaturen"
+  metaDescription="Digitale Signaturen zu PDF-Dateien hinzufügen. Zeichnen, hochladen oder tippen Sie Ihre Unterschrift. 100% private clientseitige Verarbeitung. Kostenlose unbegrenzte Nutzung."
+  keywords={keywords}
+  description="Fügen Sie Ihre digitale Unterschrift sicher zu PDF-Dokumenten hinzu. Zeichnen Sie Ihre Unterschrift, laden Sie ein Bild hoch oder nutzen Sie Text-Signaturen — alles lokal в Ihrem Browser verarbeitet."
+  benefits={[
+    "⚡ Schnell — PDFs в Sekunden unterschreiben",
+    "🔒 Privat — Dateien bleiben auf Ihrem Gerät",
+    "🆓 Kostenlos — Unbegrenzte Signaturen während der Beta"
+  ]}
+  relatedTools={[
+    { id: 'add-form-fields-pdf', icon: '📋', title: 'Formularfelder hinzufügen', description: 'Formulare vor der Unterzeichnung vorbereiten' },
+    { id: 'protect-pdf', icon: '🔒', title: 'PDF schützen', description: 'Passwortschutz nach Signatur hinzufügen' },
+    { id: 'watermark-pdf', icon: '💧', title: 'Wasserzeichen', description: 'Wasserzeichen zu unterschriebenen Dokumenten hinzufügen' },
+    { id: 'flatten-pdf', icon: '📏', title: 'PDF flachrechnen', description: 'Formulare nach Unterzeichnung fixieren' }
+  ]}
+  whyChoose={{
+    title: "Warum unser PDF-Signatur-Tool wählen?",
+    reasons: [
+      "Vollständiger Datenschutz: Ihr PDF verlässt nie Ihr Gerät. Herkömmliche Online-Signatur-Tools laden Dokumente auf Server hoch. LocalPDF signiert lokal.",
+      "Mehrere Signatur-Typen: Freihand-Unterschrift, Bild-Upload (PNG/JPG) oder getippte Text-Signatur für maximale Flexibilität.",
+      "Kein Konto erforderlich: Sofort nutzbar ohne Anmeldung. Wir begrenzen die Anzahl der Signaturen während der Beta-Phase nicht.",
+      "Rechtlich anerkannt: Digitale Signaturen sind в den meisten Rechtsordnungen für private и geschäftliche Zwecke gültig.",
+      "Professionelle Ausgabe: Signaturen werden hochwertig eingebettet, ohne Pixelbildung oder Qualitätsverlust.",
+      "Stapelverarbeitung: Nutzen Sie die gleiche Unterschrift für mehrere Dokumente nacheinander, ohne sie neu erstellen zu müssen."
+    ]
+  }}
+  features={[
+    "Unterschrift mit Maus/Trackpad zeichnen",
+    "Signatur-Bilder (PNG, JPG) hochladen",
+    "Textbasierte Signaturen hinzufügen",
+    "Signatur beliebig auf der Seite positionieren",
+    "Auf bestimmten oder allen Seiten anwenden",
+    "Anpassbare Signaturbild-Größe"
+  ]}
+  steps={[
+    'Klicken Sie oben auf "Tool öffnen"',
+    "Laden Sie das PDF hoch, das Sie unterschreiben möchten",
+    "Signatur-Typ wählen (Zeichnen, Bild oder Text)",
+    "Unterschrift erstellen oder hochladen",
+    "Unterschrift auf der Seite positionieren",
+    "Unterschriebenes PDF herunterladen"
+  ]}
+  lang="de"
+  labels={UI_LABELS_DE}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

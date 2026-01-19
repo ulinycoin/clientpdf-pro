@@ -1,0 +1,92 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import { UI_LABELS_JA } from '../../data/tools_ja';
+
+const keywords = "pdf ページ削除, pdf ページ除外, pdf ページ抜き取り, pdf ページ消去, 無料 pdf エディター";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "PDFからページを削除する方法",
+  "description": "無料かつプライベートなLocalPDFページ削除ツールを使用して、特定のページや範囲をPDFから取り除く手順ガイド。",
+  "image": "https://localpdf.online/logos/icon-512.png",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "ツールを開いてPDFをアップロード",
+      "text": "「ツールを開く」をクリックし、ページを削除したいPDFドキュメントをアップロードします。",
+      "url": "https://localpdf.online/ja/delete-pages-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "削除するページを選択",
+      "text": "全ページのプレビューが表示されます。削除したいページのサムネイルをクリックして選択（マーク）します。",
+      "image": "https://localpdf.online/screenshots/delete-select.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "削除を実行",
+      "text": "「ページを削除」ボタンをクリックします。選択したページが即座にドキュメントから取り除かれます。",
+      "image": "https://localpdf.online/screenshots/delete-apply.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "新しいPDFをダウンロード",
+      "text": "ページ削除後のドキュメントプレビューが表示されます。「ダウンロード」をクリックして保存します。",
+      "image": "https://localpdf.online/screenshots/delete-download.png"
+    }
+  ],
+  "totalTime": "PT1M"
+};
+---
+
+<ToolPage
+  toolId="delete-pages-pdf"
+  title="PDFページをオンラインで削除 — 無料ツール"
+  metaDescription="PDFファイルから不要なページを削除。100%プライベートなクライアントサイド処理。アップロード不要、無制限。即座にページを削除。"
+  keywords={keywords}
+  description="PDFドキュメントから不要なページを簡単に削除できます。特定のページや範囲を選択して除外。すべての処理はブラウザ内でローカルに行われます。"
+  benefits={[
+    "⚡ 即座に完了 — 指定したページを数秒で削除",
+    "🔒 プライベート — サーバーへの送信なしで安心",
+    "🆓 無料 — ベータ期間中は回数制限なし"
+  ]}
+  relatedTools={[
+    { id: 'extract-pages-pdf', icon: '📄', title: 'ページ抽出', description: '特定のページだけを保存する場合' },
+    { id: 'organize-pdf', icon: '📋', title: 'ページ整理', description: '並び替えや回転も行いたい場合' },
+    { id: 'split-pdf', icon: '✂️', title: 'PDF分割', description: '複数のファイルに切り分けたい場合' },
+    { id: 'compress-pdf', icon: '🗜️', title: 'PDF圧縮', description: '削除後にファイルサイズを最適化' }
+  ]}
+  whyChoose={{
+    title: "当社のPDFページ削除ツールが選ばれる理由",
+    reasons: [
+      "絶対的なプライバシー保護: お客様のPDFがデバイスの外へ出ることはありません。数ページを消すためだけに、ドキュメント全体をクラウドにアップロードするリスクをLocalPDFは排除します。",
+      "柔軟なページ選択機能: 1ページずつの選択はもちろん、範囲指定（例：3ページから8ページまで）や、離れた位置にある複数ページの一括削除にも対応。視覚的なサムネイルでミスを防げます。",
+      "オリジナル品質の維持: 削除対象外のページは元の品質を100%維持します。削除プロセスによって画像がぼやけたり、テキストが劣化したりすることはありません。",
+      "待機時間ゼロの快適さ: 面倒なアップロード待ちやサーバーの順番待ちはありません。お使いのブラウザで直接処理されるため、通常2秒以内に完了します。",
+      "保存前の最終確認: ページを削除した後の状態をプレビューで確認可能。間違えて必要なページを選択してしまっても、保存前ならすぐにやり直せます。",
+      "巨大なファイルもOK: ページ数の多い書類や大容量のPDFからでも制限なくページを削除可能。クラウドツールのようなファイルサイズ制限に縛られません。"
+    ]
+  }}
+  features={[
+    "不要なページをピンポイントで削除",
+    "ページ範囲指定による一括削除（例：1-5, 12-25）",
+    "ドキュメント内の離れた複数ページを同時に除外",
+    "全ページの内容を確認できるサムネイル表示",
+    "削除実行前の安全なプレビュー機能",
+    "残存ページの画質・レイアウト・フォントを完全保持"
+  ]}
+  steps={[
+    '上の「ツールを開く」ボタンをクリック',
+    "ページを削除したいPDFファイルを読み込み",
+    "削除したいページをサムネイルから選択",
+    "残るページに間違いがないかプレビューで確認",
+    "「ダウンロード」をクリックして保存完了"
+  ]}
+  lang="ja"
+  labels={UI_LABELS_JA}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

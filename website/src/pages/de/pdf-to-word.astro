@@ -1,0 +1,94 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import { UI_LABELS_DE } from '../../data/tools_de';
+
+const keywords = "pdf in word, pdf in word umwandeln, pdf zu docx, pdf zu word converter, kostenlos pdf zu word, bearbeitbares pdf";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "image": "https://localpdf.online/logos/icon-512.png",
+  "name": "So wandeln Sie PDF в Word um",
+  "description": "Eine Schritt-für-Schritt-Anleitung, wie Sie ein PDF-Dokument mit dem kostenlosen и privaten LocalPDF-Konverter в eine bearbeitbare Microsoft Word-Datei (.docx) umwandeln.",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Tool öffnen и PDF hochladen",
+      "text": "Klicken Sie auf 'Tool öffnen' и laden Sie das PDF-Dokument hoch, das Sie в Word konvertieren möchten.",
+      "url": "https://localpdf.online/de/pdf-to-word#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Konvertierung starten",
+      "text": "Klicken Sie auf 'In Word konvertieren'. Das Tool beginnt mit der Extraktion von Text и Struktur aus dem PDF.",
+      "image": "https://localpdf.online/screenshots/pdf-to-word-convert.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Verarbeitung",
+      "text": "Warten Sie einen Moment, während das Tool das Dokument Seite für Seite verarbeitet. Dies dauert meist 5-10 Sekunden.",
+      "image": "https://localpdf.online/screenshots/pdf-to-word-progress.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Word-Dokument herunterladen",
+      "text": "Klicken Sie nach Abschluss auf 'Herunterladen', um die .docx-Datei auf Ihrem Gerät zu speichern.",
+      "image": "https://localpdf.online/screenshots/pdf-to-word-download.png"
+    }
+  ],
+  "totalTime": "PT1M"
+};
+---
+
+<ToolPage
+  toolId="pdf-to-word"
+  title="PDF в Word umwandeln online — Kostenloser PDF zu DOCX Converter"
+  metaDescription="PDF в bearbeitbares Word (DOCX) konvertieren. Text и Bilder aus PDFs extrahieren. 100% private clientseitige Konvertierung."
+  keywords={keywords}
+  description="Konvertieren Sie PDF-Dokumente ins bearbeitbare Microsoft Word-Format (.docx). Extrahieren Sie Text и Bilder — alles direkt в Ihrem Browser mit vollständiger Privatsphäre."
+  benefits={[
+    "📝 Bearbeitbarer Text — Inhalte extrahieren и editieren",
+    "🖼️ Bild-Extraktion — Optionale Bild-Unterstützung",
+    "🔒 Privat — PDFs werden nie hochgeladen"
+  ]}
+  relatedTools={[
+    { id: 'word-to-pdf', icon: '📄', title: 'Word zu PDF', description: 'Wieder в PDF konvertieren' },
+    { id: 'ocr-pdf', icon: '🔍', title: 'OCR PDF', description: 'Text aus gescannten PDFs extrahieren' },
+    { id: 'extract-text-pdf', icon: '📋', title: 'Text extrahieren', description: 'Reinen Text als TXT erhalten' },
+    { id: 'compress-pdf', icon: '🗜️', title: 'PDF komprimieren', description: 'Dateigröße vorab reduzieren' }
+  ]}
+  whyChoose={{
+    title: "Warum unseren PDF zu Word Konverter wählen?",
+    reasons: [
+      "Vollständiger Datenschutz: Ihre PDF-Dateien verlassen nie Ihr Gerät. Online-Konverter laden sensible Dokumente auf Server hoch. LocalPDF konvertiert lokal.",
+      "Text + Bilder: Extrahieren Sie sowohl Textinhalte als auch eingebettete Bilder. Die Bildextraktion lässt sich nach Bedarf an- oder ausschalten.",
+      "Smart Heading Detection: Erkennt automatisch Überschriften basierend auf der Schriftgröße и weist korrekte Word-Styles für eine saubere Dokumentstruktur zu.",
+      "Unicode-Unterstützung: Extrahiert Text в jeder Sprache — Deutsch, Kyrillisch, Griechisch, Chinesisch, Arabisch. Voller internationaler Support.",
+      "Ehrliche Limits: Funktioniert am besten mit textbasierten PDFs. Sehr komplexe Layouts oder mehrspaltige Designs können technisch bedingt leicht abweichen.",
+      "Sofortige Verarbeitung: Keine Upload-Verzögerungen oder Warteschlangen. Die Konvertierung erfolgt в Ihrem Browser — meist в unter 10 Sekunden."
+    ]
+  }}
+  features={[
+    "Text von allen PDF-Seiten extrahieren",
+    "Optionale Bilderextraktion",
+    "Intelligente Überschriftenerkennung",
+    "Absatzstruktur beibehalten",
+    "Unterstützung für alle Sprachen и Unicode",
+    "Seitenumbrüche zwischen den PDF-Seiten",
+    "Funktioniert offline nach dem Laden der Seite"
+  ]}
+  steps={[
+    'Klicken Sie oben auf "Tool öffnen"',
+    "Laden Sie Ihr PDF-Dokument hoch",
+    "Bild-Extraktion ein/aus schalten",
+    "Smart Headings bei Bedarf aktivieren",
+    "Auf 'In Word konvertieren' klicken",
+    "Das generierte Word-Dokument (.docx) laden"
+  ]}
+  lang="de"
+  labels={UI_LABELS_DE}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

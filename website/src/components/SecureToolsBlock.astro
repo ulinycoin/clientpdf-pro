@@ -1,0 +1,111 @@
+---
+interface ToolLink {
+  label: string;
+  href: string;
+}
+
+interface Props {
+  title?: string;
+  links: ToolLink[];
+}
+
+const { 
+  title = "Quick Access: Secure PDF Tools", 
+  links = [] 
+} = Astro.props;
+---
+
+<section class="secure-tools-block">
+  <div class="block-content">
+    <h2 class="block-h2">{title}</h2>
+    <div class="links-grid">
+      {links.map(link => (
+        <a href={link.href} class="seo-link">
+          <span class="link-label">{link.label}</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="arrow-icon">
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .secure-tools-block {
+    padding: 0 7vw 100px;
+    position: relative;
+    z-index: 10;
+  }
+
+  .block-content {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .block-h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin: 0 0 32px;
+    text-align: left;
+    color: #fff;
+    font-family: 'Outfit', sans-serif;
+    opacity: 0.9;
+  }
+
+  .links-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+  }
+
+  .seo-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .seo-link:hover {
+    background: rgba(59, 130, 246, 0.08);
+    border-color: rgba(59, 130, 246, 0.3);
+    transform: translateX(5px);
+  }
+
+  .link-label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    transition: color 0.3s ease;
+  }
+
+  .seo-link:hover .link-label {
+    color: #60A5FA;
+  }
+
+  .arrow-icon {
+    width: 18px;
+    height: 18px;
+    color: var(--text-muted);
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: all 0.3s ease;
+  }
+
+  .seo-link:hover .arrow-icon {
+    opacity: 1;
+    transform: translateX(0);
+    color: #60A5FA;
+  }
+
+  @media (max-width: 768px) {
+    .links-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

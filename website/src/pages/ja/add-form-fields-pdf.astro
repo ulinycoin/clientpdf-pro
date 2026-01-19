@@ -1,0 +1,104 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import { UI_LABELS_JA } from '../../data/tools_ja';
+
+const keywords = "入力可能な pdf 作成, pdf フォーム作成, pdf フォームフィールド追加, インタラクティブ pdf, pdf テキストボックス, pdf チェックボックス, pdf ラジオボタン, pdf ドロップダウン";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "image": "https://localpdf.online/logos/icon-512.png",
+  "name": "入力可能なPDFフォームを作成する方法",
+  "description": "LocalPDFを使用して、テキストボックス、チェックボックス、ドロップダウンなどの対話型フォームフィールドをPDFドキュメントに追加する手順ガイド。",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "ツールを開いてPDFをアップロード",
+      "text": "「ツールを開く」をクリックし、入力可能フォームに変換したいPDFをアップロードします。",
+      "url": "https://localpdf.online/ja/add-form-fields-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "フォームフィールドの追加",
+      "text": "ツールバーからフィールドの種類（テキストフィールド、チェックボックス、ドロップダウンなど）を選択し、PDF上の配置したい場所をクリックします。",
+      "image": "https://localpdf.online/screenshots/form-add-field.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "位置とサイズの調整",
+      "text": "フィールドをドラッグして正しい位置に移動させ、角をドラッグしてサイズを調整します。",
+      "image": "https://localpdf.online/screenshots/form-resize.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "プロパティのカスタマイズ",
+      "text": "右側のパネルを使用して、フィールド名、初期値、選択肢（ドロップダウンの場合）などのプロパティを設定します。",
+      "image": "https://localpdf.online/screenshots/form-properties.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "フォームをダウンロード",
+      "text": "すべてのフィールドを追加し終えたら、「ダウンロード」をクリックして、新しい対話型の入力可能PDFフォームを保存します。",
+      "image": "https://localpdf.online/screenshots/form-download.png"
+    }
+  ],
+  "totalTime": "PT5M"
+};
+---
+
+<ToolPage
+  toolId="add-form-fields-pdf"
+  title="入力可能なPDFフォームをオンラインで作成 — 無料フォームビルダー"
+  metaDescription="テキストフィールド、チェックボックス、ラジオボタン、ドロップダウンを含む入力可能なPDFフォームを作成。100%プライベートなクライアントサイド処理。"
+  keywords={keywords}
+  description="あらゆるPDFを対話型の入力可能フォームに変換します。テキストフィールド、チェックボックス、ラジオボタン、ドロップダウンメニューを追加し、高度なカスタマイズが可能です。"
+  benefits={[
+    "📋 インタラクティブ — プロ仕様の入力フォームを簡単作成",
+    "🔒 プライベート — フォーム構築はローカルで。データ送信なし",
+    "🆓 無料 — 制限なしでフォームフィールドを配置可能"
+  ]}
+  relatedTools={[
+    { id: 'add-text-pdf', icon: '📝', title: 'PDFにテキスト追加', description: '任意の場所にテキストをオーバーレイ' },
+    { id: 'flatten-pdf', icon: '📏', title: 'PDFフラット化', description: '入力を固定して改ざんを防ぐ' },
+    { id: 'protect-pdf', icon: '🔒', title: 'PDF保護', description: 'フォームにパスワードをかける' },
+    { id: 'sign-pdf', icon: '✍️', title: 'PDF署名', description: 'フォームに電子署名を追加' }
+  ]}
+  whyChoose={{
+    title: "当社のPDFフォームビルダーが選ばれる理由",
+    reasons: [
+      "完全なプライバシー保護: お客様のPDFがデバイス外へ送信されることはありません。LocalPDFはブラウザ内で直接フォームを構築するため、機密情報が含まれる書類も安全に加工できます。",
+      "本格的なフォームフィールド: テキスト入力欄、複数行コメントエリア、チェックボックス、独立・連動ラジオボタン、ドロップダウンに対応。各フィールドは名前や制限事項を詳細に設定可能です。",
+      "サブスクリプション不要: 多くのオンライン制作ツールは月額課金が必要ですが、LocalPDFはベータ期間中すべてのフォーム作成機能を完全に無料で提供します。",
+      "リアルタイムの編集体験: 画面上で直接フィールドをドラッグ＆ドロップ。サイズ変更や位置調整の結果がすぐに反映されるため、レイアウト作業がスムーズです。",
+      "標準規格 AcroForm に準拠: 作成されたフォームは、Adobe Acrobat、Chrome、macOS プレビュー、各種モバイルアプリなど、標準的なPDFリーダーで正しく動作します。",
+      "オリジナル品質の維持: フォームフィールドは対話レイヤーとして追加されるため、元のPDFのテキストや画像データに一切影響を与えません。高精細なまま保存されます。"
+    ]
+  }}
+  features={[
+    "テキストフィールド（単一行・複数行対応）",
+    "初期状態を指定できるチェックボックス",
+    "グループ設定可能なラジオボタン",
+    "カスタム項目を設定できるドロップダウン",
+    "直感的なドラッグ＆ドロップによる配置",
+    "四隅のハンドルを使った視覚的なリサイズ",
+    "必須入力・任意入力の個別フラグ設定",
+    "編集不可（読み取り専用）フィールド設定",
+    "エクスポート用のカスタムフィールド名指定",
+    "複数ページにわたるドキュメントへの対応"
+  ]}
+  steps={[
+    '上の「ツールを開く」ボタンをクリック',
+    "フォーム化したいPDFファイルを読み込み",
+    "追加したいフィールドの種類を選択",
+    "PDFページ上の配置したい場所へドラッグ",
+    "右側パネルでフィールド名、初期値、選択肢などを設定",
+    "必要に応じて必須項目などの詳細ルールを適用",
+    "「ダウンロード」をクリックして入力可能PDFを保存"
+  ]}
+  lang="ja"
+  labels={UI_LABELS_JA}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

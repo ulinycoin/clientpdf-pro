@@ -1,0 +1,92 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import { UI_LABELS_DE } from '../../data/tools_de';
+
+const keywords = "pdf drehen, pdf seiten drehen, pdf ausrichtung korrigieren, pdf rotator, pdf orientierung ändern, kostenloser pdf editor";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "image": "https://localpdf.online/logos/icon-512.png",
+  "name": "So drehen Sie PDF-Seiten",
+  "description": "Eine Schritt-für-Schritt-Anleitung, wie Sie die Ausrichtung einzelner Seiten oder eines ganzen PDF-Dokuments mit dem kostenlosen и privaten LocalPDF-Rotationstool ändern.",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Tool öffnen и PDF hochladen",
+      "text": "Klicken Sie auf 'Tool öffnen' и laden Sie das PDF-Dokument hoch, das Seiten enthält, die Sie drehen möchten.",
+      "url": "https://localpdf.online/de/rotate-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Seiten и Winkel wählen",
+      "text": "Wählen Sie die Seiten durch Klicken auf die Thumbnails aus. Wählen Sie dann den Rotationswinkel (90°, 180° oder 270°) aus der Toolbar.",
+      "image": "https://localpdf.online/screenshots/rotate-select.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Rotation anwenden",
+      "text": "Klicken Sie auf 'Seiten drehen'. Die gewählten Seiten werden sofort в die neue Orientierung gedreht.",
+      "image": "https://localpdf.online/screenshots/rotate-apply.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "PDF herunterladen",
+      "text": "Eine Vorschau wird angezeigt. Klicken Sie auf 'Herunterladen', um das korrigierte PDF zu speichern.",
+      "image": "https://localpdf.online/screenshots/rotate-download.png"
+    }
+  ],
+  "totalTime": "PT1M"
+};
+---
+
+<ToolPage
+  toolId="rotate-pdf"
+  title="PDF-Seiten online drehen — Kostenlos & Schnell"
+  metaDescription="PDF-Seiten um 90, 180, 270 Grad drehen. 100% private clientseitige Verarbeitung. Keine Uploads. Orientierung sofort korrigieren."
+  keywords={keywords}
+  description="Drehen Sie PDF-Seiten, um Ausrichtungsprobleme zu beheben. Rotieren Sie einzelne Seiten oder ganze Dokumente um 90, 180 oder 270 Grad — alles lokal в Ihrem Browser."
+  benefits={[
+    "⚡ Sofort — Seiten в Sekunden drehen",
+    "🔒 Privat — Keine Uploads auf Server",
+    "🆓 Kostenlos — Unbegrenzte Rotationen während der Beta"
+  ]}
+  relatedTools={[
+    { id: 'organize-pdf', icon: '📋', title: 'Seiten organisieren', description: 'Seiten neu anordnen и verwalten' },
+    { id: 'compress-pdf', icon: '🗜️', title: 'PDF komprimieren', description: 'Dateigröße nach der Korrektur reduzieren' },
+    { id: 'merge-pdf', icon: '📑', title: 'PDF zusammenfügen', description: 'Gedrehte PDFs kombinieren' },
+    { id: 'pdf-to-images', icon: '📸', title: 'PDF zu Bildern', description: 'Gedrehte Seiten als Bild speichern' }
+  ]}
+  whyChoose={{
+    title: "Warum unser PDF-Rotationstool wählen?",
+    reasons: [
+      "Echte Privatsphäre: Ihr PDF verlässt nie Ihr Gerät. Im Gegensatz zu Online-Tools, die Dateien auf Server laden, dreht LocalPDF Seiten lokal lokal im Browser.",
+      "Gezielte Drehung: Drehen Sie nur einzelne Seiten, Seitenbereiche oder das ganze Dokument. Perfekt für Scans, bei denen manche Seiten 'auf dem Kopf' stehen.",
+      "Verlustfreie Operation: Die Rotation ändert nur die Metadaten. Die visuelle Qualität, eingebettete Schriften и Vektorgrafiken bleiben absolut identisch.",
+      "Sofortige Verarbeitung: Keine Upload-Wartezeiten. Die Drehung erfolgt в nativer Geschwindigkeit в Ihrem Browser — meist в unter 1 Sekunde.",
+      "Vorschau vor dem Export: Sehen Sie sofort, wie die Seite nach der Drehung aussieht, bevor Sie die Datei speichern.",
+      "Keine Größenlimits: Bearbeiten Sie PDFs jeder Komplexität и Größe. Die einzige Grenze ist der Arbeitsspeicher Ihres Browsers."
+    ]
+  }}
+  features={[
+    "Einzelne Seiten oder alle Seiten gleichzeitig drehen",
+    "Optionen für 90°, 180° und 270° Rotation",
+    "Drehen im и gegen den Uhrzeigersinn",
+    "Präzise Vorschau vor der Ausführung",
+    "Stapelverarbeitung für das gesamte Dokument",
+    "Erhalt der originalen Datei-Qualität"
+  ]}
+  steps={[
+    'Klicken Sie oben auf "Tool öffnen"',
+    "Laden Sie das PDF-Dokument hoch",
+    "Wählen Sie die zu drehenden Seiten aus",
+    "Bestimmen Sie den Winkel (90°, 180°, 270°)",
+    "Prüfen Sie das Ergebnis и laden Sie das PDF herunter"
+  ]}
+  lang="de"
+  labels={UI_LABELS_DE}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

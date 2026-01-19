@@ -1,0 +1,147 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import { UI_LABELS_DE } from '../../data/tools_de';
+
+const keywords = "bilder aus pdf extrahieren, bilder aus pdf entfernen, pdf bild extraktor, bilder aus pdf erhalten, pdf bilder speichern, pdf bilder herunterladen, bilder aus pdf löschen, kostenlos bilder extrahieren, smarter bildfilter, pdf bilder filtern, ai bildkategorisierung";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "image": "https://localpdf.online/logos/icon-512.png",
+  "name": "So extrahieren oder entfernen Sie Bilder aus einem PDF",
+  "description": "Eine Schritt-für-Schritt-Anleitung, wie Sie Bilder aus einem PDF-Dokument extrahieren, um sie einzeln zu speichern, oder Bilder entfernen, um die Dateigröße mit dem kostenlosen и privaten LocalPDF-Tool zu reduzieren.",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Tool öffnen и PDF hochladen",
+      "text": "Klicken Sie auf 'Tool öffnen' и laden Sie das PDF-Dokument hoch, das die Bilder enthält, die Sie extrahieren möchten.",
+      "url": "https://localpdf.online/de/extract-images-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Extrahieren- oder Entfernen-Modus wählen",
+      "text": "Wählen Sie 'Bilder extrahieren', um Bilder zu speichern, oder 'Bilder entfernen', um sie aus dem PDF zu löschen.",
+      "image": "https://localpdf.online/screenshots/extract-mode.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Vorschau и Bilder wählen",
+      "text": "Sehen Sie sich Thumbnails aller gefundenen Bilder an. Nutzen Sie den KI-gestützten Smart Filter, um Bilder zu kategorisieren и nützliche Bilder sofort auszuwählen.",
+      "image": "https://localpdf.online/screenshots/extract-preview.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Gewählte Bilder herunterladen",
+      "text": "Klicken Sie auf 'Herunterladen', um die gewählten Bilder als Einzeldateien oder als ZIP-Archiv zu speichern.",
+      "image": "https://localpdf.online/screenshots/extract-download.png"
+    }
+  ],
+  "totalTime": "PT1M"
+};
+
+const faqs = [
+  {
+    question: "Kann я Bilder aus passwortgeschützten PDFs extrahieren?",
+    answer: "Nein, Sie müssen das PDF zuerst mit unserem <a href='/de/unlock-pdf'>PDF entsperren Tool</a> freischalten, bevor Bilder extrahiert werden können."
+  },
+  {
+    question: "Welche Bildformate werden unterstützt?",
+    answer: "Das Tool extrahiert Bilder в ihrem Originalformat — meist <strong>JPEG</strong> oder <strong>PNG</strong>. Bilder werden ohne Re-Kompression gespeichert, um 100% Qualität zu erhalten."
+  },
+  {
+    question: "Wie funktioniert der Modus 'Bilder entfernen'?",
+    answer: "Im Entfernen-Modus können Sie Bilder löschen, während Text и Layout erhalten bleiben. Dies ist ideal, um die Dateigröße von PDFs massiv zu reduzieren."
+  },
+  {
+    question: "Warum sehe я manche Bilder aus meinem PDF nicht?",
+    answer: "Einige PDFs nutzen Vektorgrafiken (Code-basiert) statt eingebetteter Bilder. Unser Tool extrahiert nur <strong>Rastergrafiken</strong> (Pixel-Bilder wie JPEG oder PNG)."
+  },
+  {
+    question: "Gibt es Limits bei der Dateigröße oder Bildanzahl?",
+    answer: "Keine Limits während der Beta! Die Verarbeitung geschieht lokal в Ihrem Browser, daher ist nur der Arbeitsspeicher Ihres Geräts die Grenze."
+  },
+  {
+    question: "Verlieren extrahierte Bilder an Qualität?",
+    answer: "Nein! Bilder werden в ihrer ursprünglichen Auflösung extrahiert. Ein 300 DPI Bild im PDF bleibt ein 300 DPI Bild als Datei."
+  },
+  {
+    question: "Funktioniert das Extrahieren bei gescannten PDFs?",
+    answer: "Ja, sofern das eingescannte Bild als Bilddatei im PDF eingebettet ist. Bei reinen Bild-PDFs empfehlen wir stattdessen unser <a href='/de/pdf-to-images'>PDF zu Bildern Tool</a>."
+  },
+  {
+    question: "Werden meine Dateien auf einen Server hochgeladen?",
+    answer: "<strong>Niemals!</strong> Die gesamte Extraktion erfolgt lokal в Ihrem Browser. Ihr PDF verlässt nie Ihr Gerät."
+  },
+  {
+    question: "Wie funktioniert der Smart Image Filter?",
+    answer: "Unsere KI analysiert Maße, Auflösung и Dateigröße, um Bilder automatisch als Foto, Diagramm, Logo oder Icon zu klassifizieren. So filtern Sie hunderte kleine Website-Icons mit einem Klick aus."
+  },
+  {
+    question: "Was sind die Quick Filter?",
+    answer: "Quick Filter sind Voreinstellungen wie <strong>Nur Fotos</strong>, <strong>Nützliche Bilder</strong> (Fotos и Diagramme) oder <strong>Keine Icons</strong>. Das spart mühsames manuelles Abwählen."
+  }
+];
+---
+
+<ToolPage
+  toolId="extract-images-pdf"
+  title="Bilder aus PDF extrahieren oder entfernen — Kostenlos & Privat"
+  metaDescription="Extrahieren oder entfernen Sie Bilder aus PDF-Dateien mit KI-gestützter Filterung. Fotos, Icons, Diagramme automatisch kategorisieren. Müll-Bilder sofort ausfiltern."
+  keywords={keywords}
+  description="Extrahieren oder entfernen Sie Bilder aus PDF-Dokumenten mit voller Kontrolle. Prüfen Sie alle Bilder, wählen Sie aus, was gespeichert oder gelöscht werden soll — alles privat в Ihrem Browser."
+  benefits={[
+    "🖼️ Vorschau — Alle Bilder vor dem Extrahieren oder Entfernen sehen",
+    "✨ Smarter Filter — KI kategorisiert Fotos, Icons, Diagramme",
+    "✅ Selektiv — Wählen Sie, welche Bilder gespeichert oder gelöscht werden",
+    "🔒 Privat — Bilder verlassen nie Ihr Gerät",
+    "🆓 Kostenlos — Keine Limits bei Größe oder Bildanzahl"
+  ]}
+  relatedTools={[
+    { id: 'pdf-to-images', icon: '📷', title: 'PDF zu Bildern', description: 'PDF-Seiten в Bilder umwandeln' },
+    { id: 'images-to-pdf', icon: '🖼️', title: 'Bilder zu PDF', description: 'PDF aus Bildern erstellen' },
+    { id: 'compress-pdf', icon: '🗜️', title: 'PDF komprimieren', description: 'PDF nach dem Entfernen von Bildern verkleinern' },
+    { id: 'split-pdf', icon: '✂️', title: 'PDF teilen', description: 'Seiten vor dem Extrahieren trennen' }
+  ]}
+  whyChoose={{
+    title: "Warum unser PDF Bild-Extraktions- & Löschtool wählen?",
+    reasons: [
+      "Echte Privatsphäre: Ihr PDF и Ihre Bilder verarbeiten wir direkt auf Ihrem Computer. Cloud-Tools laden sensible Daten hoch — LocalPDF behält alles sicher lokal.",
+      "KI-gestützter Smart Filter: Kategorisieren Sie Bilder automatisch в Fotos, Diagramme, Logos и Icons. Nutzen Sie Presets wie 'Nur Fotos', um hunderte winzige Web-Elemente zu ignorieren.",
+      "Selektive Verarbeitung: Nutzen Sie die Thumbnail-Vorschau и entscheiden Sie genau, welche Bilder Sie benötigen. Das spart Zeit и Speicherplatz.",
+      "Originalqualität: Bilder werden im ursprünglichen Format (JPEG oder PNG) ohne erneute Kompression gespeichert. Was im PDF ist, kommt 1:1 raus.",
+      "Dualer Modus: Extrahieren Sie Bilder für andere Projekte oder löschen Sie diese, um die PDF-Dateigröße signifikant zu reduzieren, während der Text erhalten bleibt.",
+      "Smarter Download: Laden Sie Einzelbilder direkt oder lassen Sie sich automatisch ein ZIP-Archiv für größere Mengen erstellen.",
+      "Keine Grenzen: Verarbeiten Sie PDFs jeder Größe. Wo Cloud-Tools oft bei 50 MB begrenzen, nutzt LocalPDF einfach die Kapazität Ihres Browsers."
+    ]
+  }}
+  features={[
+    "Vorschau aller Bilder mit großen Thumbnails",
+    "✨ NEU: Smarte Kategorisierung — Fotos, Diagramme, Logos, Icons, Dekorationen",
+    "✨ NEU: Quick Filter — 'Nur Fotos', 'Nützliche Bilder', 'Keine Icons'",
+    "✨ NEU: Auto-Erkennung и Statistik für nützliche vs. Müll-Bilder",
+    "Extraktion im Originalformat (JPEG, PNG)",
+    "Filtern von Bildern nach Kategorie mit einem Klick",
+    "Gezielte Auswahl einzelner Bilder zum Speichern oder Löschen",
+    "Anzeige von Bildmaßen и Dateigrößen",
+    "Download als Einzelbilder oder ZIP-Paket",
+    "Bilder permanent entfernen zur PDF-Verkleinerung",
+    "Präzise Seitenangabe für jedes gefundene Bild",
+    "Stapelverarbeitung mit komfortabler 'Alle auswählen' Option"
+  ]}
+  steps={[
+    'Klicken Sie oben auf "Tool öffnen"',
+    "Laden Sie das PDF mit den Bildern hoch",
+    "Wählen Sie den Modus: Bilder extrahieren oder entfernen",
+    "KI analysiert и kategorisiert die Bilder automatisch",
+    "Nutzen Sie die Filter oder Kategorien zur schnellen Auswahl",
+    "Wählen Sie die gewünschten Bilder gezielt aus",
+    "Klicken Sie auf 'Herunterladen', um die Dateien zu speichern"
+  ]}
+  faqs={faqs}
+  lang="de"
+  labels={UI_LABELS_DE}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

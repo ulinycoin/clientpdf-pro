@@ -1,0 +1,137 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import { UI_LABELS_DE } from '../../data/tools_de';
+
+const keywords = "excel in pdf, csv in pdf, tabelle in pdf, excel online in pdf umwandeln, pdf tabellen erstellen, kostenloser excel zu pdf converter, professionelle pdf tabellen, privates pdf tool";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "image": "https://localpdf.online/logos/icon-512.png",
+  "name": "So wandeln Sie Excel и CSV в professionelle PDF-Tabellen um",
+  "description": "Eine Schritt-für-Schritt-Anleitung zur Erstellung hochwertiger PDF-Tabellen aus Ihren Datendateien mit dem privaten и kostenlosen Tool von LocalPDF.",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Tabellen-Tool öffnen",
+      "text": "Starten Sie das Tool 'Tabellen в PDF' aus der Seitenleiste, um zu beginnen.",
+      "url": "https://localpdf.online/de/tables-pdf#tool",
+      "image": "https://localpdf.online/screenshots/tables-welcome.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Daten importieren",
+      "text": "Klicken Sie auf 'Excel/CSV importieren', um Ihre Datei auszuwählen. Wir unterstützen .xlsx, .xls и .csv Formate.",
+      "image": "https://localpdf.online/screenshots/tables-welcome.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Blätter auswählen",
+      "text": "Wenn Sie eine Excel-Datei hochgeladen haben, wählen Sie aus, welche Blätter (Tabs) ins PDF aufgenommen werden sollen.",
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Layout anpassen",
+      "text": "Wählen Sie die Ausrichtung (Hoch- oder Querformat) и passen Sie Farben, Streifen и Rahmen für einen professionellen Look an.",
+      "image": "https://localpdf.online/screenshots/tables-styles.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Generieren и Downloaden",
+      "text": "Klicken Sie auf 'PDF generieren'. Ihre professionellen Tabellen werden sofort erstellt и stehen zum Download bereit.",
+      "image": "https://localpdf.online/screenshots/tables-preview.png"
+    }
+  ],
+  "totalTime": "PT1M"
+};
+
+const faqs = [
+  {
+    question: "Welche Dateiformate werden für die Tabellenerstellung unterstützt?",
+    answer: "LocalPDF unterstützt Microsoft Excel (.xlsx, .xls) и CSV-Dateien. Sie können Tabellen auch manuell im Tool erstellen."
+  },
+  {
+    question: "Wie geht das Tool mit sehr breiten Tabellen um?",
+    answer: "Unsere Layout-Engine berechnet Spaltenbreiten automatisch. Bei extrem breiten Tabellen nutzen wir horizontale Paginierung (Split-Tiling), um die Lesbarkeit zu garantieren, wobei die erste Spalte zur Orientierung auf jeder Seite wiederholt wird."
+  },
+  {
+    question: "Kann я das Aussehen meiner PDF-Tabellen anpassen?",
+    answer: "Ja! Sie können Header-Farben wählen, Zebra-Streifen für bessere Lesbarkeit aktivieren, Schriftgrößen anpassen и die Sichtbarkeit von Rahmen steuern."
+  },
+  {
+    question: "Sind meine Excel/CSV-Dateien sicher?",
+    answer: "Absolut. Wie bei allen LocalPDF-Tools findet die Verarbeitung zu 100% lokal в Ihrem Browser statt. Ihre Daten verlassen nie Ihr Gerät."
+  },
+  {
+    question: "Kann я mehrere Excel-Blätter gleichzeitig konvertieren?",
+    answer: "Ja, beim Upload einer Excel-Arbeitsmappe können Sie beliebig viele Blätter auswählen. Jedes Blatt wird als eigener Tabellenabschnitt im PDF gerendert."
+  },
+  {
+    question: "Muss я Software installieren?",
+    answer: "Nein. LocalPDF ist eine webbasierte Anwendung, die direkt в Ihrem Browser läuft — ohne Plugins oder Installationen."
+  }
+];
+---
+
+<ToolPage
+  toolId="tables-pdf"
+  title="Tabellen в PDF — Excel/CSV в professionelles PDF umwandeln"
+  metaDescription="Verwandeln Sie Excel- и CSV-Daten sofort в schöne, professionelle PDF-Tabellen. 100% privat, clientseitige Verarbeitung. Keine Uploads erforderlich."
+  image="https://localpdf.online/screenshots/tables-preview.png"
+  keywords={keywords}
+  description="Wandeln Sie Ihre Tabellenkalkulationen в professionelle, lesbare PDF-Dokumente um. Unser Tool beherrscht komplexe Layouts, lange Tabellen и mehrere Blätter mühelos — direkt lokal auf Ihrem Gerät."
+  benefits={[
+    "📊 Professionell — Saubere, hochwertige Tabellen-Layouts",
+    "🎨 Anpassbar — Farben, Streifen и Ausrichtungs-Optionen",
+    "🔒 100% Privat — Daten bleiben auf Ihrem Computer",
+    "⚡ Intelligent — Auto-Layout и horizontale Paginierung"
+  ]}
+  relatedTools={[
+    { id: 'merge-pdf', icon: '📄', title: 'PDF zusammenfügen', description: 'Mehrere Dokumente kombinieren' },
+    { id: 'edit-pdf', icon: '📝', title: 'PDF editieren', description: 'Seiteninhalte modifizieren' },
+    { id: 'compress-pdf', icon: '🗜️', title: 'PDF komprimieren', description: 'Dateigrößen reduzieren' },
+    { id: 'word-to-pdf', icon: '📘', title: 'Word zu PDF', description: 'Docx-Dateien konvertieren' }
+  ]}
+  whyChoose={{
+    title: "Warum LocalPDF für die Tabellenerstellung nutzen?",
+    reasons: [
+      "Privatsphäre zuerst: Finanzdaten и interne Berichte sind hochsensibel. LocalPDF garantiert, dass Ihre Daten niemals einen Server berühren, für höchste Sicherheit online.",
+      "Smart Layout Engine: Kein Abschneiden von Spalten mehr. Unsere Engine bricht Text в Zellen um, passt Breiten an и teilt breite Tabellen intelligent horizontal auf.",
+      "Multi-Tab Support: Konvertieren Sie ganze Excel-Arbeitsmappen в einem Rutsch. Wählen Sie genau die Blätter aus, die Sie benötigen.",
+      "Null Kosten: Genießen Sie Premium-Funktionen zur Tabellenerstellung ohne Abo oder versteckte Gebühren. Schnell, kostenlos и unbeschränkt.",
+      "Offline-bereit: Sobald die App geladen ist, können Sie Tabellen ohne Internetverbindung generieren, ideal für mobiles Arbeiten в gesicherten Umgebungen.",
+      "Verlustfreie Qualität: Hochauflösende Ausgabe mit eingebetteten Schriften sorgt dafür, dass Ihre Tabellen auf jedem Bildschirm и im Druck perfekt aussehen."
+    ]
+  }}
+  features={[
+    "Excel (.xlsx, .xls) und CSV Unterstützung",
+    "Automatische Berechnung der Spaltenbreiten",
+    "Textumbruch innerhalb von Zellen",
+    "Horizontale Paginierung für breite Tabellen",
+    "Anpassbare Header- und Streifenfarben",
+    "Auto-Erkennung für Hoch- oder Querformat",
+    "Unterstützung für Datums- und Zahlenformate",
+    "Wiederholung der ersten Spalte auf Split-Seiten",
+    "Multi-Sheet Auswahl aus Arbeitsmappen"
+  ]}
+  steps={[
+    { 
+      text: 'Öffnen Sie das Tool "Tabellen в PDF" und bereiten Sie Ihre Dateien vor.', 
+      image: '/screenshots/tables-welcome.png' 
+    },
+    'Laden Sie Ihre Excel- oder CSV-Datei sicher über unseren Import hoch.',
+    'Wählen Sie die Blätter aus и passen Sie Farben, Streifen и Layout an.',
+    'Wählen Sie die Seitenausrichtung oder nutzen Sie den Auto-Modus.',
+    { 
+      text: 'Prüfen Sie die Vorschau и laden Sie Ihr professionelles PDF-Dokument herunter.', 
+      image: '/screenshots/tables-preview.png' 
+    }
+  ]}
+  faqs={faqs}
+  lang="de"
+  labels={UI_LABELS_DE}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

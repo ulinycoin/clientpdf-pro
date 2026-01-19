@@ -1,0 +1,124 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import { UI_LABELS_DE } from '../../data/tools_de';
+
+const keywords = "pdf komprimieren, pdf größe reduzieren, pdf verkleinern, pdf optimieren, pdf kleiner machen, kostenlos pdf komprimieren";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "image": "https://localpdf.online/logos/icon-512.png",
+  "name": "So komprimieren Sie eine PDF-Datei",
+  "description": "Eine Schritt-für-Schritt-Anleitung, wie Sie die Dateigröße eines PDF-Dokuments ohne Qualitätsverlust mit dem kostenlosen und privaten LocalPDF-Komprimierungstool reduzieren.",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Tool öffnen und PDF hochladen",
+      "text": "Klicken Sie auf 'Tool öffnen' und laden Sie das PDF-Dokument hoch, das Sie komprimieren möchten.",
+      "url": "https://localpdf.online/de/compress-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Automatische Komprimierung",
+      "text": "Das Tool startet automatisch mit der Komprimierung. Es entfernt redundante Daten und optimiert die Dateistruktur.",
+      "image": "https://localpdf.online/screenshots/compress-progress.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Größenreduzierung prüfen",
+      "text": "Nach Abschluss zeigt Ihnen das Tool die Originalgröße, die neue Größe und den Prozentsatz der Reduzierung an.",
+      "image": "https://localpdf.online/screenshots/compress-stats.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Komprimiertes PDF herunterladen",
+      "text": "Klicken Sie auf 'Herunterladen', um die kleinere, optimierte PDF-Datei auf Ihrem Gerät zu speichern.",
+      "image": "https://localpdf.online/screenshots/compress-download.png"
+    }
+  ],
+  "totalTime": "PT1M"
+};
+
+const faqs = [
+  {
+    question: "Wie viel kleiner wird mein PDF?",
+    answer: "Die typische Reduzierung liegt bei <strong>30-70%</strong>, abhängig von der Originaldatei. PDFs mit vielen Metadaten oder redundanten Strukturen lassen sich besser komprimieren."
+  },
+  {
+    question: "Beeinflusst die Komprimierung die Qualität?",
+    answer: "Nein! Unsere Komprimierung entfernt redundante Daten и Metadaten, ohne den Seiteninhalt zu verändern. Text bleibt scharf, Bilder behalten ihre Auflösung. Wir führen <strong>keine</strong> aggressive Bildkomprimierung durch."
+  },
+  {
+    question: "Kann ich passwortgeschützte PDFs komprimieren?",
+    answer: "Unsere Optimierung entfernt Verschlüsselungen и Passwörter automatisch. Falls Sie das PDF wieder schützen möchten, nutzen Sie danach unser <a href='/de/protect-pdf'>PDF schützen Tool</a>."
+  },
+  {
+    question: "Warum wird mein PDF kaum kleiner?",
+    answer: "Wenn Ihr PDF bereits optimiert ist (z. B. durch moderne Software oder vorherige Komprimierung), gibt es weniger redundante Daten, die entfernt werden können."
+  },
+  {
+    question: "Welche Daten werden bei der Komprimierung entfernt?",
+    answer: "Wir entfernen: <ul><li>Verschlüsselung и Passwortschutz</li><li>Metadaten (Autor, Erstellungsdatum)</li><li>Versteckte eingebettete Daten</li><li>Redundante Strukturelemente</li></ul> Wir verändern <strong>niemals</strong> den eigentlichen Seiteninhalt."
+  },
+  {
+    question: "Gibt es ein Größenlimit für die Komprimierung?",
+    answer: "Keine Limits während der Beta-Phase! Sie können PDFs jeder Größe komprimieren. Da alles im Browser passiert, ist nur der Arbeitsspeicher Ihres Geräts die Grenze."
+  },
+  {
+    question: "Werden meine Dateien auf einen Server hochgeladen?",
+    answer: "<strong>Niemals!</strong> Die gesamte Komprimierung erfolgt zu 100% lokal in Ihrem Browser. Ihre PDF-Datei verlässt nie Ihr Gerät - vollständige Privatsphäre garantiert."
+  }
+];
+---
+
+<ToolPage
+  toolId="compress-pdf"
+  title="PDF online komprimieren — Kostenlos & Schnell"
+  metaDescription="PDF-Dateigröße ohne Qualitätsverlust reduzieren. 100% private clientseitige Komprimierung. Keine Uploads, keine Limits. PDFs sofort optimieren."
+  keywords={keywords}
+  description="Reduzieren Sie die Dateigröße Ihrer PDFs bei gleichbleibender Qualität. Optimieren Sie die Struktur и komprimieren Sie effizient — alles lokal in Ihrem Browser."
+  benefits={[
+    "⚡ Sofort — Komprimierung в Sekunden",
+    "🔒 Privat — Dateien bleiben lokal",
+    "🆓 Kostenlos — Keine Größenbeschränkungen"
+  ]}
+  relatedTools={[
+    { id: 'ocr-pdf', icon: '🔍', title: 'OCR PDF', description: 'Text aus Scans extrahieren' },
+    { id: 'merge-pdf', icon: '📑', title: 'PDF zusammenfügen', description: 'Kombinieren и dann komprimieren' },
+    { id: 'protect-pdf', icon: '🔒', title: 'PDF schützen', description: 'Passwort nach Komprimierung hinzufügen' },
+    { id: 'split-pdf', icon: '✂️', title: 'PDF teilen', description: 'Große PDFs in Teile zerlegen' }
+  ]}
+  whyChoose={{
+    title: "Warum unser PDF-Komprimierungstool wählen?",
+    reasons: [
+      "Echte Privatsphäre: Ihr PDF verlässt nie Ihren Computer. Cloud-basierte Dienste laden Ihre Dateien auf remote Server hoch. LocalPDF hält alles lokal.",
+      "Intelligente Komprimierung: Entfernt redundante Daten und optimiert die Struktur ohne Qualitätsverlust. Typische Reduzierung: 30-70%.",
+      "Keine Größenbeschränkung: Komprimieren Sie PDFs jeder Größe. Online-Tools begrenzen oft auf 50-100 MB. Hier ist nur Ihr RAM das Limit.",
+      "Kein Qualitätsverlust: Im Gegensatz zu aggressiven Server-Komprimierungen behält LocalPDF die Lesbarkeit и visuelle Treue bei.",
+      "Sofortige Verarbeitung: Keine Upload-Verzögerungen. Die Komprimierung erfolgt mit nativer Geschwindigkeit в Ihrem Browser.",
+      "Keine Wasserzeichen: Wir verändern Ihre Inhalte nicht. LocalPDF fügt niemals Wasserzeichen zu Ihren Dateien hinzu."
+    ]
+  }}
+  features={[
+    "Verschlüsselung и Passwortschutz entfernen",
+    "Metadaten и versteckte Daten bereinigen",
+    "PDF-Struktur für kleinere Dateigröße optimieren",
+    "Originale Seitenqualität beibehalten",
+    "Stapelverarbeitung mehrerer Dateien",
+    "Vergleich der Dateigrößen (Original vs. Komprimiert)"
+  ]}
+  steps={[
+    'Klicken Sie oben auf "Tool öffnen"',
+    "Laden Sie das PDF hoch, das Sie komprimieren möchten",
+    "Komprimierung startet automatisch",
+    "Prüfen Sie die Statistiken zur Größenreduzierung",
+    "Laden Sie Ihr optimiertes PDF sofort herunter"
+  ]}
+  faqs={faqs}
+  lang="de"
+  labels={UI_LABELS_DE}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

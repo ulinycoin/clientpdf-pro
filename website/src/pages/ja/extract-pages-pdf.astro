@@ -1,0 +1,92 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import { UI_LABELS_JA } from '../../data/tools_ja';
+
+const keywords = "pdf ページ抽出, pdf ページ取り出し, pdf ページ保存, pdf からページ抜き出し, ページ指定 pdf 作成";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "image": "https://localpdf.online/logos/icon-512.png",
+  "name": "PDFからページを抽出する方法",
+  "description": "無料かつプライベートなLocalPDFページ抽出ツールを使用して、PDFドキュメントから特定のページを選択して新しいファイルに保存する手順ガイド。",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "ツールを開いてPDFをアップロード",
+      "text": "「ツールを開く」をクリックし、ページを抽出したいPDFドキュメントをアップロードします。",
+      "url": "https://localpdf.online/ja/extract-pages-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "抽出するページを選択",
+      "text": "全ページのプレビューが表示されます。新しいPDFに含めたいページのサムネイルをクリックして選択します。選択されたページは強調表示されます。",
+      "image": "https://localpdf.online/screenshots/extract-select.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "ページを抽出",
+      "text": "「ページを抽出」ボタンをクリックします。選択したページのみを含む新しいPDFドキュメントが作成されます。",
+      "image": "https://localpdf.online/screenshots/extract-apply.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "新しいPDFをダウンロード",
+      "text": "新しいドキュメントのプレビューが表示されます。「ダウンロード」をクリックして、抽出されたPDFをデバイスに保存します。",
+      "image": "https://localpdf.online/screenshots/extract-download.png"
+    }
+  ],
+  "totalTime": "PT1M"
+};
+---
+
+<ToolPage
+  toolId="extract-pages-pdf"
+  title="PDFページをオンラインで抽出 — 無料ツール"
+  metaDescription="PDFドキュメントから特定のページを抽出。100%プライベートなクライアントサイド処理。アップロード不要、無制限。新しいPDFを即座に作成。"
+  keywords={keywords}
+  description="PDFドキュメントから特定のページを抽出して、新しいファイルを作成できます。個別のページや範囲を選択可能。すべての処理はブラウザ内でローカルに行われます。"
+  benefits={[
+    "⚡ 即座に完了 — 指定したページを数秒で抽出",
+    "🔒 プライベート — サーバーへの送信なしで安心",
+    "🆓 無料 — ベータ期間中は回数制限なし"
+  ]}
+  relatedTools={[
+    { id: 'split-pdf', icon: '✂️', title: 'PDF分割', description: '複数のファイルに切り分けたい場合' },
+    { id: 'delete-pages-pdf', icon: '🗑️', title: 'ページ削除', description: '不要なページを取り除きたい場合' },
+    { id: 'organize-pdf', icon: '📋', title: 'ページ整理', description: '抽出前に順番を並び替えたい場合' },
+    { id: 'merge-pdf', icon: '📑', title: 'PDF結合', description: '抽出したページを他のPDFとまとめたい場合' }
+  ]}
+  whyChoose={{
+    title: "当社のPDFページ抽出ツールが選ばれる理由",
+    reasons: [
+      "絶対的なプライバシー保護: お客様のPDFがデバイスの外に出ることは一切ありません。抽出のためだけにドキュメント全体をクラウドにアップロードするリスクをLocalPDFは排除します。",
+      "柔軟なページ選択機能: 1ページずつの選択はもちろん、範囲指定（例：1枚目から5枚目）や、離れた位置にある複数のページも同時に抽出可能。必要なページ構成を自在に作成できます。",
+      "オリジナル品質の維持: 抽出されたページは元の解像度、フォント、ベクトルデータ、メタデータを100%保持します。再圧縮による画質の低下はありません。",
+      "待機時間ゼロの爆速処理: 面倒なアップロード待ちやサーバーの順番待ちはありません。お使いのブラウザで直接処理されるため、通常2秒以内に完了します。",
+      "元のファイルはそのまま保持: 元のPDFドキュメント自体は書き換えられません。元のファイルを保護しながら、必要なページ抜き出しを何度でも繰り返せます。",
+      "容量制限なしの自由度: 数百ページに及ぶ重い書類からでも制限なくページを抽出可能。クラウドサービスのような厳しい「容量制限」に悩まされることはありません。"
+    ]
+  }}
+  features={[
+    "特定のページを個別に選択して抽出",
+    "範囲指定（例：5-20ページ）による一括抽出",
+    "ドキュメント内の離れた複数のページを同時に抜き出し",
+    "全内容を把握しやすい高画質サムネイルプレビュー",
+    "一つのソースファイルから何度でも別パターンの抽出が可能",
+    "元のページの画質、フォント、レイアウト情報を完全保持"
+  ]}
+  steps={[
+    '上の「ツールを開く」ボタンをクリック',
+    "ページを抽出したいPDFファイルを読み込み（高速処理）",
+    "抽出したいページをサムネイルから順に選択",
+    "選択したページの仕上がりをプレビューで確認",
+    "「ダウンロード」をクリックして新しいPDFとして保存"
+  ]}
+  lang="ja"
+  labels={UI_LABELS_JA}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

@@ -1,0 +1,117 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import { UI_LABELS_DE } from '../../data/tools_de';
+
+const keywords = "pdf teilen, pdf trennen, pdf seiten trennen, pdf splitter, pdf seiten extrahieren, kostenlos pdf splitter, pdf nach kapiteln teilen, ai pdf split, intelligenter pdf splitter";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "image": "https://localpdf.online/logos/icon-512.png",
+  "name": "So teilen Sie eine PDF-Datei",
+  "description": "Eine Schritt-für-Schritt-Anleitung, wie Sie ein PDF mit dem kostenlosen und privaten LocalPDF-Splitting-Tool nach Seiten oder Bereichen in mehrere Dateien aufteilen.",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Tool öffnen und PDF hochladen",
+      "text": "Klicken Sie auf 'Tool öffnen' und laden Sie das PDF-Dokument hoch, das Sie teilen möchten.",
+      "url": "https://localpdf.online/de/split-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Splitting-Modus wählen",
+      "text": "Wählen Sie den gewünschten Modus: nach einzelnen Seiten, nach Bereichen, nach Intervallen oder nutzen Sie den KI-Modus 'Nach Struktur', um Kapitel automatisch zu erkennen.",
+      "image": "https://localpdf.online/screenshots/split-mode.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Konfigurieren и Teilen",
+      "text": "Geben Sie die Seitenbereiche oder Intervalle ein und klicken Sie auf die Schaltfläche 'PDF teilen'.",
+      "image": "https://localpdf.online/screenshots/split-config.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Geteilte Dateien herunterladen",
+      "text": "Das Tool generiert die neuen PDF-Dateien. Laden Sie diese einzeln oder als ZIP-Archiv herunter.",
+      "image": "https://localpdf.online/screenshots/split-download.png"
+    }
+  ],
+  "totalTime": "PT1M"
+};
+
+const faqs = [
+  {
+    question: "Wie kann ich ein PDF nach benutzerdefinierten Seitenbereichen teilen?",
+    answer: "Wählen Sie den Modus 'Bereiche' и geben Sie die gewünschten Seiten ein (z. B. '1-5, 10, 15-20'). Das Tool erstellt separate Dokumente für diese Abschnitte — sofort в Ihrem Browser."
+  },
+  {
+    question: "Verringert das Teilen die Qualität des PDFs?",
+    answer: "Nein. LocalPDF nutzt verlustfreies Splitting. Die Seiten werden extrahiert, ohne Bilder neu zu kodieren. Die Qualität bleibt exakt wie im Original."
+  },
+  {
+    question: "Wie funktioniert das KI-gestützte Teilen nach Struktur?",
+    answer: "Unsere intelligente Engine analysiert Überschriften и Layouts, um logische Kapitel zu identifizieren. So können Sie lange Berichte einfach в sinnvolle Kapitel unterteilen, ohne Seitenzahlen manuell zu suchen."
+  },
+  {
+    question: "Kann ich passwortgeschützte Dokumente teilen?",
+    answer: "Ja. Sie werden lokal в Ihrem Browser nach dem Passwort gefragt, um die Datei freizuschalten. Wir speichern oder sehen Ihr Passwort niemals."
+  }
+];
+---
+
+<ToolPage
+  toolId="split-pdf"
+  title="PDF online teilen — Kostenlos & Sicher"
+  metaDescription="PDF-Dateien nach Seiten, Bereichen, Intervallen oder automatisch nach Kapiteln teilen. KI-gestütztes Splitting. 100% private clientseitige Verarbeitung."
+  keywords={keywords}
+  description="Unterteilen Sie PDF-Dokumente в separate Dateien oder extrahieren Sie bestimmte Seiten. Wählen Sie aus mehreren Splitting-Modi — alles sicher в Ihrem Browser."
+  benefits={[
+    "⚡ Sofort — PDFs в Sekunden teilen",
+    "🔒 Privat — Keine Server-Uploads",
+    "🆓 Kostenlos — Keine Limits während der Beta",
+    "✨ Intelligent — Mit KI-Kapitelerkennung"
+  ]}
+  relatedTools={[
+    { id: 'merge-pdf', icon: '📑', title: 'PDF zusammenfügen', description: 'Dateien wieder kombinieren' },
+    { id: 'extract-pages-pdf', icon: '📄', title: 'Seiten extrahieren', description: 'Einzelne Seiten speichern' },
+    { id: 'delete-pages-pdf', icon: '🗑️', title: 'Seiten löschen', description: 'Unerwünschte Seiten entfernen' },
+    { id: 'organize-pdf', icon: '📋', title: 'Seiten organisieren', description: 'Reihenfolge vorab anpassen' }
+  ]}
+  whyChoose={{
+    title: "Warum unser PDF-Splitting-Tool wählen?",
+    reasons: [
+      "Vollständiger Datenschutz: Ihre PDF-Dokumente verlassen nie Ihr Gerät. Wir verarbeiten alles lokal для maximale Sicherheit.",
+      "Vielseitige Modi: Teilen nach Seiten, Bereichen, Intervallen oder nutzen Sie das intelligente KI-Splitting nach Kapiteln.",
+      "KI-Kapitelerkennung: Identifiziert automatisch logische Abschnitte в Handbüchern и Berichten, ohne dass Sie Seiten zählen müssen.",
+      "Keine Größenbeschränkung: Verarbeiten Sie PDFs jeder Größe ohne Upload-Limits.",
+      "Sofortige Ergebnisse: Das Splitting erfolgt в Echtzeit direkt в Ihrem Browser — meist в unter 2 Sekunden.",
+      "Qualitätserhalt: Verlustfreies Splitting bewahrt die Originalauflösung и Formatierung jeder einzelnen Seite.",
+      "Stapelverarbeitung: Bearbeiten Sie mehrere Dokumente nacheinander, ohne die Seite zu verlassen."
+    ]
+  }}
+  features={[
+    "Nach einzelnen Seiten teilen (1 Seite pro PDF)",
+    "Nach Bereichen teilen (z. B. Seiten 1-5, 10-15)",
+    "Nach festen Intervallen teilen (alle N Seiten)",
+    "✨ NEU: KI-Strukturanalyse erkennt Kapitel automatisch",
+    "Bestimmte Seiten в ein neues Dokument extrahieren",
+    "Vorschau der Seiten vor dem Teilen",
+    "Automatische Benennung nach Kapiteltiteln",
+    "Individueller Download oder als ZIP-Archiv"
+  ]}
+  steps={[
+    'Klicken Sie oben auf "Tool öffnen"',
+    "Laden Sie das PDF hoch, das Sie teilen möchten",
+    "Wählen Sie den Splitting-Modus",
+    "Für KI-Struktur: Klicken Sie auf 'Analysieren'",
+    "Wählen Sie die Kapitel aus и klicken Sie auf 'Teilen'",
+    "Laden Sie die PDFs einzeln oder als ZIP herunter"
+  ]}
+  faqs={faqs}
+  lang="de"
+  labels={UI_LABELS_DE}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

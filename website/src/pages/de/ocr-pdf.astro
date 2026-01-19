@@ -1,0 +1,131 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import { UI_LABELS_DE } from '../../data/tools_de';
+
+const keywords = "ocr pdf, text aus pdf extrahieren, gescanntes pdf zu text, durchsuchbares pdf, pdf ocr, kostenlos ocr online, mehrsprachige ocr, automatische spracherkennung, hocr export";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "image": "https://localpdf.online/logos/icon-512.png",
+  "name": "So führen Sie OCR bei einem PDF mit automatischer Spracherkennung durch",
+  "description": "Eine Schritt-für-Schritt-Anleitung, wie Sie ein gescanntes PDF oder Bild in durchsuchbaren Text umwandeln, mit automatischer Spracherkennung für über 45 Sprachen mit dem kostenlosen und privaten LocalPDF OCR-Tool.",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Tool öffnen und Datei hochladen",
+      "text": "Klicken Sie auf 'Tool öffnen' und laden Sie das gescannte PDF oder das Bild (JPG, PNG) hoch. Das Tool unterstützt Dokumente in über 45 Sprachen.",
+      "url": "https://localpdf.online/de/ocr-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Automatische Spracherkennung",
+      "text": "Das Tool analysiert Ihr Dokument automatisch anhand von 6 Erkennungsmethoden. Sie können die Sprache auch manuell aus über 45 unterstützten Sprachen wählen.",
+      "image": "https://localpdf.online/screenshots/ocr-language.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Ausgabeformat wählen",
+      "text": "Wählen Sie Ihr bevorzugtes Format: Klartext (.txt), durchsuchbares PDF, hOCR (.html) oder TSV (.tsv).",
+      "image": "https://localpdf.online/screenshots/ocr-format.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "OCR-Prozess starten",
+      "text": "Der OCR-Prozess startet automatisch mit Tesseract.js. Mehrseitige Dokumente werden nacheinander verarbeitet.",
+      "image": "https://localpdf.online/screenshots/ocr-progress.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Extrahierten Text prüfen",
+      "text": "Nach Abschluss wird der Text angezeigt. Sie können ihn prüfen, bearbeiten и kopieren. Bei durchsuchbaren PDFs liegt der Text unsichtbar über dem Originalbild.",
+      "image": "https://localpdf.online/screenshots/ocr-review.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Ergebnis herunterladen",
+      "text": "Laden Sie das Ergebnis im gewählten Format herunter.",
+      "image": "https://localpdf.online/screenshots/ocr-download.png"
+    }
+  ],
+  "totalTime": "PT3M"
+};
+
+const faqs = [
+  {
+    question: "Wie genau ist die OCR-Texterkennung?",
+    answer: "Unser Tool nutzt die neueste Tesseract.js-Engine, die eine hohe Genauigkeit für Standard-Schriftarten bietet. Die Genauigkeit hängt von der Bildauflösung ab (wir empfehlen 300 DPI)."
+  },
+  {
+    question: "Welche Sprachen werden unterstützt?",
+    answer: "Wir unterstützen über 45 Sprachen, darunter Deutsch, Englisch, Russisch, Spanisch, Französisch, Chinesisch und Japanisch. Das System kann die Sprache auch automatisch erkennen."
+  },
+  {
+    question: "Ist die OCR-Verarbeitung privat?",
+    answer: "Ja. Im Gegensatz zu den meisten Online-OCR-Tools erfolgt unsere Verarbeitung vollständig in Ihrem Browser mittels Web Workern. Ihre Dokumente werden nie an einen Server gesendet."
+  },
+  {
+    question: "Was ist ein 'durchsuchbares PDF'?",
+    answer: "Ein durchsuchbares PDF enthält eine unsichtbare Textebene, die exakt über dem ursprünglichen gescannten Bild liegt. Dies ermöglicht das Suchen и Kopieren von Text, während das Aussehen erhalten bleibt."
+  }
+];
+---
+
+<ToolPage
+  toolId="ocr-pdf"
+  title="OCR PDF Online — Text aus gescannten PDFs extrahieren"
+  metaDescription="Fortgeschrittenes OCR-Tool mit automatischer Spracherkennung für 45+ Sprachen. Erstellen Sie durchsuchbare PDFs, exportieren Sie nach hOCR/TSV. 100% privat."
+  keywords={keywords}
+  description="Extrahieren Sie Text aus gescannten PDFs und Bildern mit fortschrittlicher OCR-Technologie. Konvertieren Sie Dokumente in durchsuchbare PDFs oder exportieren Sie sie als Text, hOCR oder TSV — alles lokal in Ihrem Browser."
+  benefits={[
+    "🌍 45+ Sprachen — Automatische Erkennung",
+    "🔍 Echtes durchsuchbares PDF — Unsichtbare Ebene",
+    "📊 Mehrere Formate — Text, PDF, hOCR, TSV",
+    "🔒 100% Privat — Kein serverbasierter Upload",
+    "🆓 Kostenlos — Unbegrenzt während der Beta"
+  ]}
+  relatedTools={[
+    { id: 'edit-text-pdf', icon: '✏️', title: 'Text in PDF bearbeiten', description: 'Bestehenden Text in PDFs ersetzen' },
+    { id: 'add-text-pdf', icon: '📝', title: 'Text zu PDF hinzufügen', description: 'Neue Text-Overlays hinzufügen' },
+    { id: 'merge-pdf', icon: '📄', title: 'PDF zusammenfügen', description: 'Mehrere PDFs sicher kombinieren' },
+    { id: 'compress-pdf', icon: '🗜️', title: 'PDF komprimieren', description: 'Dateigröße nach OCR reduzieren' }
+  ]}
+  whyChoose={{
+    title: "Warum unser PDF OCR Tool wählen?",
+    reasons: [
+      "Vollständiger Datenschutz: Ihre Dokumente verlassen nie Ihr Gerät. LocalPDF führt Tesseract.js lokal aus, um maximale Privatsphäre zu gewährleisten.",
+      "Intelligente Spracherkennung: Erkennt über 45 Sprachen automatisch, einschließlich Deutsch, Englisch, Französisch, Spanisch und viele mehr.",
+      "Echte durchsuchbare PDFs: Erzeugt echte PDFs mit einer unsichtbaren Textebene, sodass PDF-Reader den Text finden können, während das Bild erhalten bleibt.",
+      "Mehrere Exportformate: Klartext (.txt), durchsuchbares PDF, hOCR (.html) oder TSV (.tsv).",
+      "Kein Internet erforderlich: Einmal geladen, funktioniert das Tool offline. Ideal für hochvertrauliche Dokumente.",
+      "Keine Seitenbeschränkungen: Verarbeiten Sie PDFs jeder Länge ohne Einschränkungen.",
+      "Worker-Optimierung: Schnellere Verarbeitung durch intelligente Wiederverwendung von Sprachmodellen.",
+      "Dauerhaft kostenlos: Keine Bezahlmodelle, kein Kreditsystem. Nutzen Sie OCR so oft Sie möchten."
+    ]
+  }}
+  features={[
+    "Automatische Spracherkennung (45+ Sprachen)",
+    "Durchsuchbare PDFs mit unsichtbarer Textebene erstellen",
+    "Export in 4 Formate: Text, PDF, hOCR, TSV",
+    "Text aus gescannten PDFs und Bildern (JPG, PNG) extrahieren",
+    "Optimiertes Multi-Page Processing",
+    "Text direkt in die Zwischenablage kopieren",
+    "Extrahierten Text vor dem Export bearbeiten"
+  ]}
+  steps={[
+    'Klicken Sie oben auf "Tool öffnen"',
+    "Laden Sie Ihr gescanntes PDF oder Bild hoch",
+    "Sprache wird erkannt oder manuell gewählt",
+    "Wählen Sie das Exportformat: Text, PDF, hOCR oder TSV",
+    "Warten Sie auf die Verarbeitung (ca. 10-30 Sek. pro Seite)",
+    "Prüfen и bearbeiten Sie den Text bei Bedarf",
+    "Laden Sie Ihr Ergebnis herunter"
+  ]}
+  faqs={faqs}
+  lang="de"
+  labels={UI_LABELS_DE}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

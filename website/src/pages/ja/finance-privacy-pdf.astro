@@ -1,0 +1,398 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import DeveloperStory from '../../components/DeveloperStory.astro';
+import SecureToolsBlock from '../../components/SecureToolsBlock.astro';
+
+const title = "金融・銀行業務のための LocalPDF | 安全なブラウザベースのPDFツール";
+const description = "ファイナンシャルアドバイザー、会計士、銀行実務者のためのプライベートPDFソリューション。税務書類、銀行明細、機密性の高い財務データを100%ローカルで処理。クラウドのリスクをゼロに。";
+
+const benefits = [
+  {
+    icon: "🏦",
+    title: "銀行級の機密保持",
+    desc: "個人を特定できる情報（PII）をクラウドサーバーに送信することなく処理できます。データはお使いのブラウザの安全なメモリ内に留まります。"
+  },
+  {
+    icon: "🛡️",
+    title: "コンプライアンスへの適合",
+    desc: "データの送信や第三者による保存を排除することで、厳格なデータ所在規制への対応を簡略化できます。"
+  },
+  {
+    icon: "🔒",
+    title: "痕跡を残さない処理",
+    desc: "タブを閉じると、処理用の「サンドボックス」は消去されます。永続的なログもクラウドキャッシュも、Web上の残留データも残りません。"
+  }
+];
+
+const financeTools = [
+  { label: "銀行明細をローカルで結合", href: "/ja/merge-pdf" },
+  { label: "税務書類をパスワードで保護", href: "/ja/protect-pdf" },
+  { label: "財務領収書のOCR（オフライン）", href: "/ja/ocr-pdf" },
+  { label: "監査ポートフォリオの圧縮", href: "/ja/compress-pdf" },
+  { label: "ローン契約書に秘密裏に署名", href: "/ja/sign-pdf" },
+  { label: "投資レポートの分割", href: "/ja/split-pdf" }
+];
+
+const faqs = [
+  {
+    question: "LocalPDFで銀行明細を処理しても安全ですか？",
+    answer: "<strong>はい。</strong> 従来のオンラインPDFツールとは異なり、LocalPDFが銀行明細をサーバーにアップロードすることは決してありません。処理はWebAssemblyを使用してお使いのデバイス上で100%実行されます。"
+  },
+  {
+    question: "エンタープライズ向けの専門ソフトウェアと比較してどうですか？",
+    answer: "LocalPDFは、PDFのレンダリングや編集にクラウドを必要としないため、ハイエンドのエンタープライズソフトウェアと同等の「エアギャップ（物理的隔離）」環境に近いセキュリティを提供します。"
+  },
+  {
+    question: "GDPRに準拠した財務監査にLocalPDFを使用できますか？",
+    answer: "もちろんです。LocalPDFは、プライバシーを重視する監査人にとって標準的な選択肢となっています。なぜなら、データ処理ツール（ウェブサイト所有者）を介在させることなく、あなただけがデータを扱うからです。"
+  }
+];
+---
+
+<BaseLayout title={title} description={description} lang="ja">
+  
+  <div class="finance-hero">
+    <div class="finance-grid-bg"></div>
+    <div class="hero-content">
+      <div class="finance-badge">高セキュリティ・ユーティリティ</div>
+      <h1>金融プロフェッショナルのための <span class="accent-text">クラウド不要のPDFツール</span></h1>
+      <p>税務、銀行、資産管理のための安全なドキュメント処理。100% クライアントサイド。サーバーリスク 0%。</p>
+      
+      <div class="hero-actions">
+        <a href="/app#" class="btn-primary">金融スタジオを起動 🏦</a>
+        <a href="#benefits" class="btn-secondary">セキュリティ・アーキテクチャ</a>
+      </div>
+    </div>
+  </div>
+
+  <section id="benefits" class="benefits-section">
+    <div class="section-container">
+      <div class="grid">
+        {benefits.map(benefit => (
+          <div class="benefit-card">
+            <div class="card-icon">{benefit.icon}</div>
+            <h3>{benefit.title}</h3>
+            <p>{benefit.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="security-focus">
+    <div class="section-container">
+      <div class="focus-grid">
+        <div class="focus-text">
+          <h2>金融リーダーがLocalPDFを選ぶ理由</h2>
+          <p>金融データは非常に重要です。オンラインPDFサイトでのサーバー侵害が一度発生するだけで、数千もの納税者番号や口座番号が流出する可能性があります。LocalPDFはサーバーを処理チェーンから外すことで、この攻撃対象領域を完全に排除します。</p>
+          <div class="check-list">
+            <div class="check-item">✓ ドキュメントデータによるAPI呼び出しなし</div>
+            <div class="check-item">✓ 永続的なクッキーやトラッキングなし</div>
+            <div class="check-item">✓ ドキュメントによるAI学習なし</div>
+            <div class="check-item">✓ ゼロストレージによるGDPR準拠</div>
+          </div>
+        </div>
+        <div class="focus-visual">
+          <div class="visual-box">
+            <div class="visual-label">安全なサンドボックス</div>
+            <div class="wasm-logo">WASM</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <SecureToolsBlock title="金融特化のPDFワークフロー" links={financeTools} />
+
+  <DeveloperStory 
+    label="データの主権について"
+    title="あなたの貸借対照表は、"
+    subtitle="あなたのビジネスの根幹だから。"
+    text1="金融において、データの主権は譲れないものです。「無料」のオンラインツールは、多くの場合、あなたのメタデータやプライバシーと引き換えに提供されていることに気づき、LocalPDFを構築しました。"
+    text2="LocalPDFはあなたにコントロールを取り戻します。ブラウザ内で高性能なC++コードを直接実行することで、クラウドの脆弱性なしにプロフェッショナルツールのパワーを提供します。"
+    signatureRole="創設者 & 開発者"
+  />
+
+  <section class="finance-faq">
+    <div class="section-container">
+      <h2 class="faq-h2">金融セクター向けFAQ</h2>
+      <div class="faq-grid">
+        {faqs.map(faq => (
+          <div class="faq-item">
+            <h3>{faq.question}</h3>
+            <p set:html={faq.answer}></p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<style>
+  .finance-hero {
+    padding: 120px 7vw 80px;
+    position: relative;
+    text-align: center;
+    background: #000;
+  }
+
+  .finance-grid-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+      linear-gradient(rgba(59, 130, 246, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(59, 130, 246, 0.05) 1px, transparent 1px);
+    background-size: 50px 50px;
+    mask-image: radial-gradient(circle at center, black, transparent 80%);
+    pointer-events: none;
+  }
+
+  .hero-content {
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 10;
+  }
+
+  .finance-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    color: #10b981;
+    border-radius: 99px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+  }
+
+  h1 {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 24px;
+    letter-spacing: -0.02em;
+    color: #fff;
+  }
+
+  .accent-text {
+    background: linear-gradient(135deg, #fff 30%, #10b981 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero-content p {
+    font-size: 1.25rem;
+    color: var(--text-muted);
+    margin-bottom: 48px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    background: #fff;
+    color: #000;
+    padding: 16px 32px;
+    border-radius: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);
+  }
+
+  .btn-secondary {
+    background: rgba(255,255,255,0.05);
+    color: #fff;
+    padding: 16px 32px;
+    border-radius: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: all 0.2s;
+  }
+
+  .btn-secondary:hover { background: rgba(255,255,255,0.1); }
+
+  .section-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 80px 7vw;
+  }
+
+  /* Benefits Grid */
+  .benefits-section .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 32px;
+  }
+
+  .benefit-card {
+    padding: 40px;
+    background: rgba(255,255,255,0.01);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 24px;
+    text-align: center;
+    transition: all 0.3s;
+  }
+
+  .benefit-card:hover { 
+    background: rgba(16, 185, 129, 0.05);
+    border-color: rgba(16, 185, 129, 0.2);
+    transform: translateY(-5px); 
+  }
+
+  .card-icon {
+    font-size: 2.5rem;
+    margin-bottom: 24px;
+  }
+
+  .benefit-card h3 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.25rem;
+    margin-bottom: 16px;
+    color: #fff;
+  }
+
+  .benefit-card p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  /* Security Focus Section */
+  .security-focus {
+    background: #09090b;
+  }
+
+  .focus-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+
+  .focus-text h2 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2.25rem;
+    margin-bottom: 24px;
+    color: #fff;
+    line-height: 1.2;
+  }
+
+  .focus-text p {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    margin-bottom: 32px;
+  }
+
+  .check-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .check-item {
+    display: flex;
+    gap: 8px;
+    color: #10b981;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .focus-visual {
+    display: flex;
+    justify-content: center;
+  }
+
+  .visual-box {
+    width: 250px;
+    height: 250px;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(59, 130, 246, 0.1));
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow: 0 0 50px rgba(16, 185, 129, 0.1);
+  }
+
+  .visual-label {
+    position: absolute;
+    top: 24px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #fff;
+    opacity: 0.5;
+  }
+
+  .wasm-logo {
+    font-size: 3rem;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: -0.05em;
+    text-shadow: 0 0 20px rgba(255,255,255,0.3);
+  }
+
+  /* FAQ */
+  .faq-h2 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2rem;
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .faq-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .faq-item {
+    padding: 32px;
+    background: rgba(255,255,255,0.01);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+  }
+
+  .faq-item h3 {
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+    color: #fff;
+  }
+
+  .faq-item p {
+    color: var(--text-muted);
+    font-size: 1rem;
+  }
+
+  @media (max-width: 800px) {
+    .focus-grid { grid-template-columns: 1fr; gap: 40px; }
+    .check-list { grid-template-columns: 1fr; }
+    h1 { font-size: 2.5rem; }
+  }
+</style>

@@ -1,0 +1,94 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import { UI_LABELS_DE } from '../../data/tools_de';
+
+const keywords = "word in pdf, word in pdf umwandeln, docx in pdf, word zu pdf converter, kostenlos word zu pdf, word als pdf speichern";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "image": "https://localpdf.online/logos/icon-512.png",
+  "name": "So wandeln Sie Word в PDF um",
+  "description": "Eine Schritt-für-Schritt-Anleitung, wie Sie ein Microsoft Word-Dokument (.docx) mit dem kostenlosen и privaten LocalPDF-Konverter в eine PDF-Datei umwandeln.",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Tool öffnen и Dokument hochladen",
+      "text": "Klicken Sie auf 'Tool öffnen' и laden Sie das Word-Dokument (.docx) hoch, das Sie konvertieren möchten.",
+      "url": "https://localpdf.online/de/word-to-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Automatische Konvertierung",
+      "text": "Das Tool startet automatisch mit der Konvertierung, wobei Formatierung и Layout erhalten bleiben.",
+      "image": "https://localpdf.online/screenshots/word-to-pdf-convert.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "PDF-Vorschau",
+      "text": "Eine Vorschau des neu erstellten PDFs wird angezeigt, damit Sie das Ergebnis prüfen können.",
+      "image": "https://localpdf.online/screenshots/word-to-pdf-preview.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "PDF herunterladen",
+      "text": "Klicken Sie auf 'Herunterladen', um die konvertierte PDF-Datei auf Ihrem Gerät zu speichern.",
+      "image": "https://localpdf.online/screenshots/word-to-pdf-download.png"
+    }
+  ],
+  "totalTime": "PT1M"
+};
+---
+
+<ToolPage
+  toolId="word-to-pdf"
+  title="Word в PDF umwandeln online — Kostenloser DOCX zu PDF Converter"
+  metaDescription="Word-Dokumente (DOCX) в PDF konvertieren mit Bildern, Tabellen и Formatierung. 100% private clientseitige Konvertierung. Keine Uploads. Konvertierung в Sekunden."
+  keywords={keywords}
+  description="Konvertieren Sie Microsoft Word-Dokumente (.docx) ins PDF-Format. Alle Bilder, Tabellen, Überschriften и Textformatierungen bleiben erhalten — privat в Ihrem Browser."
+  benefits={[
+    "🖼️ Bilder & Tabellen — Volle Formatierung bleibt erhalten",
+    "🔒 Privat — Dokumente werden nie hochgeladen",
+    "🆓 Kostenlos — Unbegrenzte Konvertierungen während der Beta"
+  ]}
+  relatedTools={[
+    { id: 'pdf-to-word', icon: '📃', title: 'PDF zu Word', description: 'Wieder в Word konvertieren' },
+    { id: 'merge-pdf', icon: '📑', title: 'PDF zusammenfügen', description: 'Mehrere PDFs kombinieren' },
+    { id: 'protect-pdf', icon: '🔒', title: 'PDF schützen', description: 'Passwortschutz hinzufügen' },
+    { id: 'compress-pdf', icon: '🗜️', title: 'PDF komprimieren', description: 'Dateigröße reduzieren' }
+  ]}
+  whyChoose={{
+    title: "Warum unseren Word zu PDF Konverter wählen?",
+    reasons: [
+      "Vollständiger Datenschutz: Ihre Word-Dokumente verlassen nie Ihr Gerät. Online-Konverter laden Dateien auf Server hoch. LocalPDF konvertiert lokal.",
+      "Bilder & Tabellen bleiben erhalten: Im Gegensatz zu reinen Text-Konvertern behält LocalPDF eingebettete Grafiken, Tabellen и visuellen Stile bei.",
+      "Zwei Modi: Wählen Sie 'Mit Formatierung' für Layout-treue Dokumente oder 'Nur Text' für extrem schnelle Konvertierung и kleine Dateien.",
+      "Unicode-Unterstützung: Volle Unterstützung für Sonderzeichen, Umlaute (ä, ö, ü) и alle internationalen Zeichensätze.",
+      "Qualitätskontrolle: Wählen Sie die Ausgabequalität von Standard bis Maximum — Balance zwischen Dateigröße и Bildschärfe.",
+      "Keine Dateigrößenbeschränkung: Konvertieren Sie Word-Dokumente jeder Größe ohne lästige Upload-Limits von 10-50 MB."
+    ]
+  }}
+  features={[
+    "Bilder и Grafiken verlustfrei erhalten",
+    "Tabellen mit korrekter Formatierung behalten",
+    "Überschriften, Listen и Textstile bewahren",
+    "Zwei Modi: Formatiert oder Nur Text",
+    "Anpassbare Ausgabequalität (Standard/Hoch/Max)",
+    "Unterstützung für alle Sprachen (Unicode)",
+    "PDF-Vorschau vor dem endgültigen Download"
+  ]}
+  steps={[
+    'Klicken Sie oben auf "Tool öffnen"',
+    "Laden Sie das Word-Dokument (.docx) hoch",
+    "Konvertierungsmodus wählen (Formatiert empfohlen)",
+    "Optional die Qualitätseinstellungen anpassen",
+    "Konversion starten и Ergebnis prüfen",
+    "PDF herunterladen"
+  ]}
+  lang="de"
+  labels={UI_LABELS_DE}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

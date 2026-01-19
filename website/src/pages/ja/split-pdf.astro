@@ -1,0 +1,117 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import { UI_LABELS_JA } from '../../data/tools_ja';
+
+const keywords = "pdf 分割, pdf 切り出し, pdf ページ抽出, pdf スプリッター, 無料 pdf 分割, 章ごとに分割, ai pdf 分割, スマート pdf 分割";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "image": "https://localpdf.online/logos/icon-512.png",
+  "name": "PDFファイルを分割する方法",
+  "description": "ページ数や範囲を指定して、PDFを複数のファイルに分割する手順ガイド。無料かつプライベートなLocalPDF分割ツールを使用します。",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "ツールを開いてPDFをアップロード",
+      "text": "「ツールを開く」をクリックし、分割したいPDFドキュメントをアップロードします。",
+      "url": "https://localpdf.online/ja/split-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "分割モードを選択",
+      "text": "分割モードを選択します：各ページ、指定範囲、一定間隔、またはAI搭載の「構造で分割」モードで章を自動検出します。",
+      "image": "https://localpdf.online/screenshots/split-mode.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "設定して分割",
+      "text": "ページ範囲や間隔を入力し、「PDFを分割」ボタンをクリックします。",
+      "image": "https://localpdf.online/screenshots/split-config.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "分割されたファイルをダウンロード",
+      "text": "作成されたPDFファイルを、個別に、またはZIPアーカイブとしてダウンロードします。",
+      "image": "https://localpdf.online/screenshots/split-download.png"
+    }
+  ],
+  "totalTime": "PT1M"
+};
+
+const faqs = [
+  {
+    question: "カスタムページ範囲でPDFを分割するにはどうすればよいですか？",
+    answer: "「カスタム範囲」モードを選択し、希望するページを入力します。例えば「1-5, 10, 15-20」と入力すると、それらのセクションから3つの個別のドキュメントが作成されます。すべてブラウザ内で即座に計算されます。"
+  },
+  {
+    question: "分割によってPDFの品質は低下しますか？",
+    answer: "いいえ。LocalPDFはロスレス（無劣化）分割を使用し、画像やテキストの形式を変更せずに元のページを抽出します。出力ファイルの品質はソースと全く同じです。"
+  },
+  {
+    question: "AIによる「構造で分割」はどのように機能しますか？",
+    answer: "当社のスマートエンジンは、見出し、目次、レイアウトパターンを分析して、論理的な章やセクションを特定します。これにより、手動でページ数を確認することなく、書籍や長文レポートを意味のある単位で分割できます。"
+  },
+  {
+    question: "パスワード保護されたドキュメントを分割できますか？",
+    answer: "はい。保護されたPDFをアップロードすると、ブラウザ上でパスワードの入力を求められます。パスワードはローカルで処理され、当社が閲覧したり保存したりすることはありません。"
+  }
+];
+---
+
+<ToolPage
+  toolId="split-pdf"
+  title="PDF 分割 オンライン — 無料で安全"
+  metaDescription="PDFをページ、範囲、間隔、または章ごとに自動分割。AI搭載のスマート分割機能。100%プライベートなクライアントサイド処理。"
+  keywords={keywords}
+  description="PDFドキュメントを個別のファイルに分割したり、特定のページを抽出したりできます。複数の分割モードから選択可能。すべてブラウザ内で安全に処理されます。"
+  benefits={[
+    "⚡ 即座に完了 — 数秒で分割",
+    "🔒 プライベート — サーバーへの送信なし",
+    "🆓 無料 — ベータ期間中は制限なし",
+    "✨ スマート — AIによる章の自動抽出"
+  ]}
+  relatedTools={[
+    { id: 'merge-pdf', icon: '📑', title: 'PDFを結合', description: '分割したファイルを再び一つに' },
+    { id: 'extract-pages-pdf', icon: '📄', title: 'ページを抽出', description: '特定の範囲だけを保存' },
+    { id: 'delete-pages-pdf', icon: '🗑️', title: 'ページを削除', description: '不要なページを取り除く' },
+    { id: 'organize-pdf', icon: '📋', title: 'ページを整理', description: '分割前に並び替え' }
+  ]}
+  whyChoose={{
+    title: "当社のPDF分割ツールが選ばれる理由",
+    reasons: [
+      "完全なプライバシー: お客様のPDFがデバイスから離れることはありません。LocalPDFはすべてローカルで処理を行うため、セキュリティは万全です。",
+      "多彩な分割モード: 各ページごと、カスタム範囲、定期間隔、ページ抽出、またはAIによる章やセクションごとのスマート抽出など、あらゆるワークフローに対応します。",
+      "AIによる章検出: 教科書やマニュアル、レポートの章立てを自動的に特定。手動でページを数えたり確認したりする手間が大幅に削減されます。",
+      "ファイルサイズの制限なし: アップロード制限を気にせず、どんなに大きなPDFでも分割可能です。ブラウザのメモリが許す限り処理できます。",
+      "即座に完了: アップロード待ちも処理待ち列もありません。ブラウザのネイティブ速度で処理されるため、通常2秒以内に完了します。",
+      "品質をそのまま維持: ロスレス分割により、元の解像度、フォント、書式を完全に保持。すべてのページがソースと同一の仕上がりです。",
+      "一括処理: ページを離れることなく、複数のドキュメントを連続または同時に処理できます。"
+    ]
+  }}
+  features={[
+    "各ページ（1ページ1ファイル）での分割",
+    "カスタム範囲（例：1〜5ページ、10〜15ページ）指定",
+    "一定間隔（例：Nページごと）での分割",
+    "✨ 新機能：AI構造解析による章の自動分割",
+    "特定のページのみを新しいドキュメントとして抽出",
+    "分割前のページプレビュー",
+    "章のタイトルに基づいた自動ファイル命名",
+    "全ファイルをZIP形式で一括ダウンロード"
+  ]}
+  steps={[
+    '上の「ツールを開く」ボタンをクリック',
+    "分割したいPDFファイルをアップロード",
+    "分割モードを選択（ページ/範囲/間隔/構造）",
+    "「構造で分割」の場合：「分析」をクリックして章を検出",
+    "分割するセクションを選択して「分割」をクリック",
+    "スマートなファイル名の個別PDFまたはZIPをダウンロード"
+  ]}
+  faqs={faqs}
+  lang="ja"
+  labels={UI_LABELS_JA}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

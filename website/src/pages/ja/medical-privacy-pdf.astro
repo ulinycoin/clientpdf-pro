@@ -1,0 +1,381 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import DeveloperStory from '../../components/DeveloperStory.astro';
+import SecureToolsBlock from '../../components/SecureToolsBlock.astro';
+
+const title = "医療グレードのPDFセキュリティ | 100%ローカルな医療用PDFツール";
+const description = "病院、クリニック、医療提供者のためのプライバシー重視のPDFソリューション。患者記録、検査結果、問診票などをブラウザ内で100%ローカルに処理。";
+
+const benefits = [
+  {
+    icon: "🏥",
+    title: "医療機密を守るアーキテクチャ",
+    desc: "データのアップロードや保存が一切行われないため、保護対象保健情報（PHI）が第三者に漏洩するリスクを排除します。"
+  },
+  {
+    icon: "🧬",
+    title: "治験データの機密保持",
+    desc: "機密性の高い研究データや治験データを、完全にローカルなハードウェア・サンドボックス内で処理することで保護します。"
+  },
+  {
+    icon: "🩺",
+    title: "ゼロ知識サンドボックス",
+    desc: "すべてのセッションは隔離されています。ブラウザのタブを閉じると、すべての患者データはRAMから完全に消去されます。"
+  }
+];
+
+const medicalTools = [
+  { label: "患者記録をローカルで結合", href: "/ja/merge-pdf" },
+  { label: "スキャンした検査結果のOCR", href: "/ja/ocr-pdf" },
+  { label: "医療ファイルをパスワードで保護", href: "/ja/protect-pdf" },
+  { label: "患者の個人情報を墨消し", href: "/ja/edit-text-pdf" },
+  { label: "医療同意書に電子署名", href: "/ja/sign-pdf" },
+  { label: "診断ファイルからページを抽出", href: "/ja/extract-pages-pdf" }
+];
+
+const faqs = [
+  {
+    question: "LocalPDFは日本の医療現場でも安全に使えますか？",
+    answer: "<strong>はい。</strong> LocalPDFはサーバーにデータを送信・保存しない<strong>クライアントサイド・ユーティリティ</strong>です。厚生労働省のガイドライン等で求められる高度な情報セキュリティ管理を、データの外部流出リスクなしに実現できます。"
+  },
+  {
+    question: "ネットワークが制限された病院内でも使用できますか？",
+    answer: "はい。一度ウェブサイトを読み込めば、処理自体はオフラインでも可能です。PDF処理のために外部のサーバーと通信する必要がないため、高セキュリティな学内・院内ネットワークに最適です。"
+  },
+  {
+    question: "紙の資料をスキャンしたデータにも対応していますか？",
+    answer: "もちろんです。当社の<strong>オフラインOCRツール</strong>はWebAssemblyを使用しており、ブラウザ内でローカルにテキスト認識を行います。クラウドに公開することなく、古い記録を検索可能にできます。"
+  }
+];
+---
+
+<BaseLayout title={title} description={description} lang="ja">
+  
+  <div class="medical-hero">
+    <div class="medical-pulse"></div>
+    <div class="hero-content">
+      <div class="medical-badge">医療用セキュリティ基準</div>
+      <h1>次世代の医療現場のための <span class="accent-text">安全なPDFツール</span></h1>
+      <p>患者ドキュメントの処理におけるリスクをゼロに。すべてはブラウザ内で完結。100% ローカル。漏洩リスク 0%。</p>
+      
+      <div class="hero-actions">
+        <a href="/app#" class="btn-primary">メディカル・スタジオを起動 🏥</a>
+        <a href="#benefits" class="btn-secondary">セキュリティ詳細</a>
+      </div>
+    </div>
+  </div>
+
+  <section id="benefits" class="benefits-section">
+    <div class="section-container">
+      <div class="grid">
+        {benefits.map(benefit => (
+          <div class="benefit-card">
+            <div class="card-icon">{benefit.icon}</div>
+            <h3>{benefit.title}</h3>
+            <p>{benefit.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="compliance-focus">
+    <div class="section-container">
+      <div class="compliance-grid">
+        <div class="compliance-visual">
+          <div class="shield-container">
+            <div class="shield-main">
+              <svg viewBox="0 0 24 24" fill="none" class="shield-svg">
+                <path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" fill="currentColor" opacity="0.1"/>
+                <path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" stroke="currentColor" stroke-width="2"/>
+                <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="compliance-text">
+          <h2>「外部プロセッサ」のリスクを排除</h2>
+          <p>従来のPDFサイトは、個人情報の「委託先」となります。これには複雑な契約やセキュリティ監査が必要です。LocalPDF Sanctuaryは、データを一切見ないことで、この問題を根本から解決します。</p>
+          <div class="compliance-pills">
+            <span class="pill">GDPR Level 4</span>
+            <span class="pill">医療機関向け</span>
+            <span class="pill">ゼロ知識</span>
+            <span class="pill">オフライン第一</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <SecureToolsBlock title="医療ドキュメントのワークフロー" links={medicalTools} />
+
+  <DeveloperStory 
+    label="人間としてのプライバシーについて"
+    title="医療記録は非常に個人的な、"
+    subtitle="神聖なものであるべきだから。"
+    text1="LocalPDFを構築した際、私は健康データの機密性について考えました。検査結果や問診票が、どこの馬の骨ともわからない企業のサーバーに保存されるべきではありません。"
+    text2="WebAssemblyのパワーを活用することで、医療関係者や研究者の皆様に、患者のプライバシーを診察室での会話と同じように尊重するプロフェッショナルなツールを提供します。"
+    signatureRole="創設者 & 開発者"
+  />
+
+  <section class="medical-faq">
+    <div class="section-container">
+      <h2 class="faq-h2">医療セクター向けFAQ</h2>
+      <div class="faq-grid">
+        {faqs.map(faq => (
+          <div class="faq-item">
+            <h3>{faq.question}</h3>
+            <p set:html={faq.answer}></p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<style>
+  .medical-hero {
+    padding: 120px 7vw 80px;
+    position: relative;
+    text-align: center;
+    background: #000;
+    overflow: hidden;
+  }
+
+  .medical-pulse {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(96, 165, 250, 0.08) 0%, transparent 70%);
+    animation: pulse 8s infinite ease-in-out;
+    pointer-events: none;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+    50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+  }
+
+  .hero-content {
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 10;
+  }
+
+  .medical-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    border-radius: 99px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+  }
+
+  h1 {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 24px;
+    letter-spacing: -0.02em;
+    color: #fff;
+  }
+
+  .accent-text {
+    background: linear-gradient(135deg, #fff 30%, #ef4444 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero-content p {
+    font-size: 1.25rem;
+    color: var(--text-muted);
+    margin-bottom: 48px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    background: #fff;
+    color: #000;
+    padding: 16px 32px;
+    border-radius: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(255,255,255,0.1);
+  }
+
+  .btn-secondary {
+    background: rgba(255,255,255,0.05);
+    color: #fff;
+    padding: 16px 32px;
+    border-radius: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: all 0.2s;
+  }
+
+  .btn-secondary:hover { background: rgba(255,255,255,0.1); }
+
+  .section-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 80px 7vw;
+  }
+
+  /* Benefits Grid */
+  .benefits-section .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 32px;
+  }
+
+  .benefit-card {
+    padding: 40px;
+    background: rgba(255,255,255,0.01);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 24px;
+    text-align: center;
+    transition: all 0.3s;
+  }
+
+  .benefit-card:hover { 
+    background: rgba(239, 68, 68, 0.03);
+    border-color: rgba(239, 68, 68, 0.2);
+    transform: translateY(-5px); 
+  }
+
+  .card-icon {
+    font-size: 2.5rem;
+    margin-bottom: 24px;
+  }
+
+  .benefit-card h3 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.25rem;
+    margin-bottom: 16px;
+    color: #fff;
+  }
+
+  .benefit-card p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  /* Compliance Focus */
+  .compliance-focus {
+    background: #09090b;
+  }
+
+  .compliance-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 60px;
+    align-items: center;
+  }
+
+  .shield-container {
+    display: flex;
+    justify-content: center;
+  }
+
+  .shield-main {
+    color: #ef4444;
+    width: 200px;
+    height: 200px;
+    filter: drop-shadow(0 0 30px rgba(239, 68, 68, 0.2));
+  }
+
+  .compliance-text h2 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2.25rem;
+    margin-bottom: 24px;
+    color: #fff;
+  }
+
+  .compliance-text p {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    margin-bottom: 32px;
+  }
+
+  .compliance-pills {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .pill {
+    padding: 8px 16px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 99px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  /* FAQ */
+  .faq-h2 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2rem;
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .faq-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .faq-item {
+    padding: 32px;
+    background: rgba(255,255,255,0.01);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+  }
+
+  .faq-item h3 {
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+    color: #fff;
+  }
+
+  .faq-item p {
+    color: var(--text-muted);
+    font-size: 1rem;
+  }
+
+  @media (max-width: 800px) {
+    .compliance-grid { grid-template-columns: 1fr; gap: 40px; }
+    h1 { font-size: 2.5rem; }
+  }
+</style>

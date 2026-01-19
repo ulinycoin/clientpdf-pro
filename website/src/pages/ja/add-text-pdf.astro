@@ -1,0 +1,132 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import { UI_LABELS_JA } from '../../data/tools_ja';
+
+const faqs = [
+  {
+    question: "無料で登録なしにPDFにテキストを追加するにはどうすればよいですか？",
+    answer: "LocalPDFの「テキスト追加」ツールを使用するだけです。ドキュメントをアップロードし、「テキストを追加」ボタンをクリックして内容を入力し、修正されたPDFをダウンロードします。完全に無料で、アカウントを作成する必要もありません。"
+  },
+  {
+    question: "オンラインでPDFに書き込むのは安全ですか？",
+    answer: "ほとんどのオンラインエディターはファイルをサーバーにアップロードします。LocalPDFは異なります。当社のテクノロジーはドキュメントをお使いのブラウザ内で完全に処理します。ファイルがデバイスから離れることはないため、機密データに対しても100%プライベートで安全です。"
+  },
+  {
+    question: "テキストを追加する際にフォントや色をカスタマイズできますか？",
+    answer: "はい。LocalPDFにはプロフェッショナルなスタイリングパネルがあります。一般的なフォント（Roboto, Helvetica, Courier）の選択、フォントサイズの調整、色の変更、さらには配置（左揃え、中央、右揃え）や幅に合わせた調整も可能です。"
+  },
+  {
+    question: "このツールはモバイルデバイスでも動作しますか？",
+    answer: "もちろんです。LocalPDFは完全にレスポンシブで、iPhone、Android、タブレット、デスクトップコンピュータのあらゆる現代的なウェブブラウザで動作します。インストールは不要です。"
+  },
+  {
+    question: "PDFの複数のページにテキストを追加できますか？",
+    answer: "はい。PDFドキュメントのすべてのページを自由に移動し、各ページに必要なだけ個別のテキストボックスを追加できます。"
+  }
+];
+
+const keywords = "pdf テキスト追加, pdf 書き込み, pdf テキストエディター, pdf テキストボックス追加, pdf 記入, 無料 pdf エディター, pdf アノテーション オンライン, プライベート pdf エディター";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "image": "https://localpdf.online/screenshots/edit-styles.png",
+  "name": "PDFにテキストを追加する方法",
+  "description": "無料のLocalPDFテキストツールを使用して、PDFドキュメントにカスタムテキストを追加、フォーマット、および配置する手順ガイド。",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "テキスト追加ツールを起動",
+      "text": "「PDFにテキスト追加」ツールを開き、ドキュメントをアップロードします。",
+      "url": "https://localpdf.online/ja/add-text-pdf#tool",
+      "image": "https://localpdf.online/screenshots/edit-welcome.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "テキストボックスを挿入",
+      "text": "「テキストを追加」ボタンをクリックします。PDF上に新しいテキストボックスが表示されます。任意の位置にドラッグできます。",
+      "image": "https://localpdf.online/screenshots/edit-active.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "フォーマットとスタイル",
+      "text": "サイドバーを使用してフォント、サイズ、および色を変更します。太字、斜体、および完璧なテキスト配置をサポートしています。",
+      "image": "https://localpdf.online/screenshots/edit-styles.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "修正されたPDFをダウンロード",
+      "text": "結果に満足したら、ウォーターマークなしで新しいPDFをすぐにダウンロードできます。",
+      "image": "https://localpdf.online/screenshots/edit-active.png"
+    }
+  ],
+  "totalTime": "PT2M"
+};
+---
+
+<ToolPage
+  toolId="add-text-pdf"
+  title="PDFにテキストを追加 オンライン — 無料・プライベートなエディター"
+  metaDescription="PDFファイルにカスタムテキスト、注釈、ラベルを即座に追加。100%プライベートなクライアントサイド処理。アップロード不要、書式設定も自由。"
+  image="https://localpdf.online/screenshots/edit-styles.png"
+  keywords={keywords}
+  description="タイポグラフィ、色、配置を詳細に制御しながら、PDFページにテキストを追加できます。メモの追加、フォームの記入、ラベル付けなどに最適。ファイルはデバイス内で100%プライベートに保たれます。"
+  benefits={[
+    "⚡ 高速 — テキストボックスやオーバーレイを即座に追加",
+    "🎨 プロ仕様フォント — フォント名、サイズ、スタイルを自由にカスタマイズ",
+    "🔒 100% プライベート — ファイルがブラウザ外へ送信されることはありません",
+    "🆓 無料 — 透かしなし、登録不要で無制限に編集可能"
+  ]}
+  relatedTools={[
+    { id: 'edit-text-pdf', icon: '✏️', title: 'PDF内のテキスト編集', description: '既存のテキストを書き換え・修正' },
+    { id: 'watermark-pdf', icon: '💧', title: 'PDF透かし', description: '著作権保護のためのウォーターマーク追加' },
+    { id: 'sign-pdf', icon: '✍️', title: 'PDF署名', description: 'サインや電子署名をドキュメントに付与' },
+    { id: 'tables-pdf', icon: '📊', title: 'PDFの表作成', description: 'Excel/CSVをきれいなPDFテーブルに変換' }
+  ]}
+  faqs={faqs}
+  whyChoose={{
+    title: "テキスト追加にLocalPDFが選ばれる理由",
+    reasons: [
+      "プライバシーの完全保証: 他のエディターとは異なり、ドキュメントをアップロードしません。すべてお使いのブラウザのメモリ内（クライアントサイド）で処理されるため安全です。",
+      "完璧な位置合わせ: ピクセル単位の精度でテキストボックスをドラッグ＆ドロップ。微調整用のコントローラーを使用して、正確な座標に配置できます。",
+      "ブランディングなし: 「LocalPDFで作成」といった不要なロゴや透かしは一切入りません。あなたのドキュメントはプロフェッショナルでクリーンなままです。",
+      "複数ページへの対応: ページ間を自在に移動し、必要な場所にいくつでもテキストを追加可能。大容量のドキュメントでも軽快に動作します。",
+      "オフラインでも利用可能: 一度ツールを読み込めば、インターネット接続が不安定な場所やオフライン環境でもテキストの追加作業を行えます。"
+    ]
+  }}
+  features={[
+    "どのページにも複数のテキストボックスを簡単に追加可能",
+    "微調整用スライダーを備えた直感的な位置調整",
+    "タイポグラフィのフル制御：サイズ、フォントファミリー、スタイル",
+    "文字色および背景色の自由な色指定",
+    "変更内容が即座に反映されるリアルタイム・ライブプレビュー",
+    "元のPDFレイアウトを損なわないインテリジェントな合成",
+    "高精細なPDFグラフィックス出力レンダリング",
+    "ユーザー登録やアカウント作成の手間は一切なし",
+    "100%プライベートな純粋サーバーレス処理"
+  ]}
+  steps={[
+    { 
+      text: 'まず、PDFドキュメントを「テキスト追加」ツールにアップロードします。', 
+      image: '/screenshots/edit-welcome.png' 
+    },
+    { 
+      text: '「テキストを追加」をクリックし、作成されたボックスに内容を入力します。', 
+      image: '/screenshots/edit-active.png' 
+    },
+    { 
+      text: 'プロ仕様のスタイリングパネルを使って、フォントや色を整えます。', 
+      image: '/screenshots/edit-styles.png' 
+    },
+    { 
+      text: '配置を確認したら、修正済みのドキュメントをすぐに保存します。', 
+      image: '/screenshots/edit-active.png' 
+    }
+  ]}
+  lang="ja"
+  labels={UI_LABELS_JA}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

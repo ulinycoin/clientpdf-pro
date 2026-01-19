@@ -1,0 +1,139 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import { UI_LABELS_DE } from '../../data/tools_de';
+
+const keywords = "pdf seiten organisieren, pdf seiten sortieren, pdf seiten drehen, pdf seiten löschen, pdf umordnen, pdf seitenplaner, pdf editor, kostenlos pdf organisieren, intelligente pdf-organisation, ai pdf-organizer, leere seiten entfernen pdf, doppelte seiten erkennen";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "image": "https://localpdf.online/logos/icon-512.png",
+  "name": "So organisieren Sie PDF-Seiten mit LocalPDF",
+  "description": "Eine Schritt-für-Schritt-Anleitung zum Umordnen, Drehen и Löschen von PDF-Seiten mit dem kostenlosen и privaten LocalPDF-Tool.",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Tool öffnen и PDF hochladen",
+      "text": "Klicken Sie auf 'Tool öffnen' и laden Sie das PDF-Dokument hoch, das Sie organisieren möchten.",
+      "url": "https://localpdf.online/de/organize-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Thumbnails и KI-Analyse",
+      "text": "Das Tool generiert Thumbnails и die 'Smart Organize KI' analysiert Ihr Dokument automatisch auf leere Seiten, Duplikate и Kapitelstrukturen.",
+      "image": "https://localpdf.online/screenshots/organize-thumbnails.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Quick Actions oder manuelle Bearbeitung",
+      "text": "Nutzen Sie Quick Actions, um leere Seiten zu entfernen oder Duplikate zu bereinigen. Oder ziehen Sie Seiten manuell per Drag-and-Drop, um die Folge zu ändern.",
+      "image": "https://localpdf.online/screenshots/organize-edit.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Organisiertes PDF herunterladen",
+      "text": "Klicken Sie auf 'Organisiertes PDF herunterladen', um Ihr neu sortiertes Dokument sofort zu speichern.",
+      "image": "https://localpdf.online/screenshots/organize-download.png"
+    }
+  ],
+  "totalTime": "PT2M"
+};
+
+const faqs = [
+  {
+    question: "Was ist Smart Organize и wie hilft es mir?",
+    answer: "Smart Organize ist unsere KI-Funktion, die Ihr PDF lokal analysiert и Probleme wie leere Seiten, Duplikate oder falsche Rotationen erkennt. Mit einem Klick lassen sich diese Probleme sofort beheben."
+  },
+  {
+    question: "Wie funktioniert die Erkennung leerer Seiten?",
+    answer: "Das Tool scannt jede Seite nach Text и Bildern. Seiten ohne sinnvollen Inhalt (nur Seitenzahlen oder komplett leer) werden markiert. Seiten mit Bildern gelten nie als leer."
+  },
+  {
+    question: "Kann я doppelte Seiten erkennen?",
+    answer: "Ja! Smart Organize nutzt intelligentes Hashing, um Seiteninhalte zu vergleichen. Versehentlich doppelt gescannte Seiten werden erkannt и hervorgehoben."
+  },
+  {
+    question: "Kann я passwortgeschützte PDFs organisieren?",
+    answer: "Ja, Sie müssen aber zuerst das Passwort eingeben. Das Ergebnis ist dann ungeschützt, außer Sie nutzen danach unser <a href='/de/protect-pdf'>PDF schützen Tool</a>."
+  },
+  {
+    question: "Welche Operationen sind möglich?",
+    answer: "Sie können Seiten per <strong>Drag-and-Drop umordnen</strong>, в 90°-Schritten <strong>drehen</strong> und <strong>löschen</strong>. Smart Organize bietet zudem Quick Actions für leere Seiten и Duplikate."
+  },
+  {
+    question: "Beeinträchtigt das Organisieren die PDF-Qualität?",
+    answer: "Nein! Das Organisieren ist eine <strong>verlustfreie Operation</strong>. Alle Inhalte, Schriften и Layouts bleiben exakt erhalten. Es findet keine Kompression statt."
+  },
+  {
+    question: "Kann Smart Organize Kapitel erkennen?",
+    answer: "Ja! Es erkennt Kapitelüberschriften в mehreren Sprachen (Deutsch, Englisch, Französisch etc.). Die Struktur wird angezeigt, damit Sie schnell navigieren können."
+  },
+  {
+    question: "Kann я Änderungen rückgängig machen?",
+    answer: "Ja! Sie können Seiten mehrfach schieben oder gelöschte Seiten wiederherstellen, bevor Sie das finale PDF herunterladen."
+  },
+  {
+    question: "Werden meine Dateien hochgeladen?",
+    answer: "<strong>Niemals!</strong> Die gesamte Analyse и Bearbeitung findet zu 100% lokal в Ihrem Browser statt. Ihre Dateien verlassen nie Ihr Gerät."
+  },
+  {
+    question: "Funktioniert das Tool auch auf dem Handy?",
+    answer: "Ja! Unser Tool läuft auf iOS, Android и allen modernen mobilen Browsern. Das Interface ist für Touch-Bedienung optimiert."
+  }
+];
+---
+
+<ToolPage
+  toolId="organize-pdf"
+  title="PDF-Seiten online organisieren — Kostenlos & Sicher"
+  metaDescription="PDF-Seiten per Drag-and-Drop organisieren. Seiten sofort umordnen, drehen и löschen. 100% private clientseitige Verarbeitung."
+  keywords={keywords}
+  description="Ordnen, drehen и löschen Sie PDF-Seiten mit intuitiver Drag-and-Drop-Steuerung. Alle Prozesse laufen sicher в Ihrem Browser ab — direkt lokal auf Ihrem Gerät."
+  benefits={[
+    "🧠 Smart Organize — KI erkennt leere Seiten, Duplikate & Kapitel",
+    "⚡ Sofort — Seiten в Sekunden organisieren",
+    "🔒 Privat — Keine Uploads auf Server",
+    "🆓 Kostenlos — Ungrenzte Nutzung"
+  ]}
+  relatedTools={[
+    { id: 'merge-pdf', icon: '📑', title: 'PDF zusammenfügen', description: 'Mehrere PDFs kombinieren' },
+    { id: 'split-pdf', icon: '✂️', title: 'PDF teilen', description: 'In separate Dateien aufteilen' },
+    { id: 'rotate-pdf', icon: '🔄', title: 'PDF drehen', description: 'Seiten dauerhaft rotieren' },
+    { id: 'delete-pages-pdf', icon: '🗑️', title: 'Seiten löschen', description: 'Bestimmte Seiten entfernen' }
+  ]}
+  whyChoose={{
+    title: "Warum unseren PDF-Seitenplaner wählen?",
+    reasons: [
+      "AI Smart Organize: Findet automatisch leere Seiten, Dopplungen и navigierbare Kapitel. Beheben Sie Scan-Fehler mit einem Klick, ohne das Dokument zu verlassen.",
+      "Absolute Privatsphäre: Ihre PDF-Dateien verlassen nie Ihren Computer. Im Gegensatz zu Cloud-Anbietern verarbeitet LocalPDF alles lokal в Ihrem privaten Browser-Bereich.",
+      "Einfaches Drag-and-Drop: Ordnen Sie Seiten intuitiv neu an. Keine komplizierten Menüs — einfach Thumbnails greifen и an die richtige Stelle ziehen.",
+      "Visuelle Kontrolle: Kleine Thumbnails zeigen Ihnen jederzeit, was auf den Seiten steht. Keine Verwechslungsgefahr mehr beim Sortieren langer Dokumente.",
+      "Kombinierte Bearbeitung: Drehen, löschen и sortieren Sie Seiten в einer einzigen Sitzung. Speichern Sie das Ergebnis erst, wenn alles perfekt ist.",
+      "Keine Grenzen: Bearbeiten Sie auch extrem lange PDFs mit hunderten von Seiten. Wir begrenzen weder die Seitenzahl noch die Dateigröße beim Organisieren."
+    ]
+  }}
+  features={[
+    "Smart Organize KI — erkennt leere Seiten & Duplikate automatisch",
+    "Quick Actions — Müll mit einem Klick entfernen",
+    "Kapitelerkennung — Struktur в mehreren Sprachen automatisch scannen",
+    "Intuitives Drag-and-Drop für die Seitenfolge",
+    "Seiten einzeln oder im Block drehen (90° Schritte)",
+    "Ungenutzte Seiten löschen mit Papierkorb-Funktion",
+    "Große Thumbnails zur schnellen visuellen Orientierung",
+    "Beliebig viele Operationen vor dem Export ausführen"
+  ]}
+  steps={[
+    'Klicken Sie oben auf "Tool öffnen"',
+    "Wählen Sie die PDF-Datei aus, die Sie sortieren möchten",
+    "KI-Vorschläge prüfen — Duplikate oder leere Seiten finden",
+    "Nutzen Sie Quick Actions oder schieben Sie Seiten manuell",
+    "Auf 'Organisiertes PDF herunterladen' klicken"
+  ]}
+  faqs={faqs}
+  lang="de"
+  labels={UI_LABELS_DE}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

@@ -1,0 +1,124 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import { UI_LABELS_JA } from '../../data/tools_ja';
+
+const keywords = "pdf 圧縮, pdf サイズ削減, pdf 圧縮ツール, pdf 最適化, pdf 小さくする, 無料 pdf 圧縮";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "image": "https://localpdf.online/logos/icon-512.png",
+  "name": "PDFファイルを圧縮する方法",
+  "description": "品質を落とさずにPDFドキュメントのファイルサイズを削減する手順ガイド。無料かつプライベートなLocalPDF圧縮ツールを使用します。",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "ツールを開いてPDFをアップロード",
+      "text": "「ツールを開く」をクリックし、圧縮したいPDFドキュメントをアップロードします。",
+      "url": "https://localpdf.online/ja/compress-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "自動圧縮",
+      "text": "ツールが自動的に圧縮を開始します。不要なデータを削除し、ファイル構造を最適化します。",
+      "image": "https://localpdf.online/screenshots/compress-progress.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "削減サイズを確認",
+      "text": "完了後、元のサイズ、新しいサイズ、および削減率が表示されます。",
+      "image": "https://localpdf.online/screenshots/compress-stats.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "圧縮済みPDFをダウンロード",
+      "text": "「ダウンロード」をクリックして、最適化された小容量のPDFファイルをデバイスに保存します。",
+      "image": "https://localpdf.online/screenshots/compress-download.png"
+    }
+  ],
+  "totalTime": "PT1M"
+};
+
+const faqs = [
+  {
+    question: "どのくらいサイズが小さくなりますか？",
+    answer: "元のファイルによりますが、通常 <strong>30〜70%</strong> の削減が可能です。メタデータや冗長なデータが多いPDFほど、より高い圧縮率が得られます。"
+  },
+  {
+    question: "品質や読みやすさに影響はありますか？",
+    answer: "いいえ！当社の圧縮は、ページ内容には触れずに冗長なデータやメタデータのみを削除します。テキストは鮮明なままで、画像の解像度も維持されます。"
+  },
+  {
+    question: "パスワード保護されたPDFを圧縮できますか？",
+    answer: "圧縮プロセスの一環として、暗号化とパスワード保護が自動的に解除されます。再度保護が必要な場合は、圧縮後に <a href='/ja/protect-pdf'>PDF保護ツール</a> をご利用ください。"
+  },
+  {
+    question: "あまり小さくならないのはなぜですか？",
+    answer: "既に最適化されている場合（最新のソフトウェアで作成された場合や、既に圧縮済みの場合）、削除できる冗長なデータが少ないためです。"
+  },
+  {
+    question: "圧縮中にどのようなデータが削除されますか？",
+    answer: "以下のデータが削除対象となります： <ul><li>暗号化とパスワード保護</li><li>ドキュメントのメタデータ（作成者、作成日など）</li><li>隠し埋め込みデータ</li><li>冗長な構造要素</li></ul> ページ内容やテキストは<strong>決して</strong>変更されません。"
+  },
+  {
+    question: "ファイルサイズの制限はありますか？",
+    answer: "ベータ期間中は制限ありません！あらゆるサイズのPDFを圧縮できます。ブラウザ内で処理されるため、デバイスの空きメモリが唯一の制約となります。"
+  },
+  {
+    question: "ファイルはサーバーにアップロードされますか？",
+    answer: "<strong>いいえ、決してアップロードされません。</strong> すべての圧縮処理は、ブラウザ内で100%ローカルに行われます。プライバシーは完全に守られます。"
+  }
+];
+---
+
+<ToolPage
+  toolId="compress-pdf"
+  title="PDF 圧縮 オンライン — 無料で高速"
+  metaDescription="品質を落とさずにPDFのファイルサイズを削減。100%プライベートなクライアントサイド圧縮。アップロード不要、制限なし。即座にPDFを最適化。"
+  keywords={keywords}
+  description="品質を維持しながらPDFのファイルサイズを削減します。不要なデータを取り除き、構造を最適化し、効率的に圧縮します。すべてブラウザ内で完結します。"
+  benefits={[
+    "⚡ 即座に完了 — 数秒で圧縮",
+    "🔒 プライベート — 処理はローカルで完結",
+    "🆓 無料 — ベータ期間中は制限なし"
+  ]}
+  relatedTools={[
+    { id: 'ocr-pdf', icon: '🔍', title: 'OCR PDF', description: 'スキャンからテキストを抽出' },
+    { id: 'merge-pdf', icon: '📑', title: 'PDFを結合', description: '結合してから圧縮して最適化' },
+    { id: 'protect-pdf', icon: '🔒', title: 'PDFを保護', description: '圧縮後にパスワードを設定' },
+    { id: 'split-pdf', icon: '✂️', title: 'PDFを分割', description: '大きなファイルを分割して管理' }
+  ]}
+  whyChoose={{
+    title: "当社のPDF圧縮ツールが選ばれる理由",
+    reasons: [
+      "真のプライバシー: お客様のPDFがコンピュータから離れることはありません。クラウド型とは異なり、LocalPDFはすべてローカルで完結します。",
+      "スマートな圧縮: 品質を落とさずに冗長なデータを削除し、構造を最適化します。通常30〜70%のサイズ削減が可能です。",
+      "サイズ制限なし: オンラインツールに多い50〜100MBの制限はありません。ブラウザのメモリが許す限り、どんなサイズでも処理できます。",
+      "品質の維持: 画像を極端に劣化させるサーバー型圧縮とは異なり、読みやすさと視覚的な品質を損なうことなく圧縮します。",
+      "超高速処理: アップロードの待ち時間はありません。ブラウザの能力を最大に活かし、大容量ファイルも数秒で完了します。",
+      "透かし（ウォーターマーク）なし: 完全に無料で、出力ファイルに宣伝用の透かしが入ることはありません。"
+    ]
+  }}
+  features={[
+    "暗号化およびパスワード保護の解除",
+    "メタデータや隠しデータのクリーンアップ",
+    "スリム化のためのPDF構造の最適化",
+    "元ページの品質を最大限に維持",
+    "複数ファイルの一括（バッチ）圧縮",
+    "圧縮前後のファイルサイズ比較機能"
+  ]}
+  steps={[
+    '上の「ツールを開く」ボタンをクリック',
+    "圧縮したいPDFドキュメントを選択",
+    "圧縮が自動的に開始されます",
+    "削減されたファイルサイズの統計を確認",
+    "最適化されたPDFをすぐにダウンロード"
+  ]}
+  faqs={faqs}
+  lang="ja"
+  labels={UI_LABELS_JA}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

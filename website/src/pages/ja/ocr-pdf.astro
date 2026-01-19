@@ -1,0 +1,132 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import { UI_LABELS_JA } from '../../data/tools_ja';
+
+const keywords = "ocr pdf, pdf テキスト抽出, スキャン pdf テキスト化, 検索可能 pdf, pdf ocr, 無料 ocr オンライン, 多言語 ocr, 自動言語検出, hocr エクスポート";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "image": "https://localpdf.online/logos/icon-512.png",
+  "name": "自動言語検出機能付きでPDFをOCR処理する方法",
+  "description": "スキャンしたPDFや画像を、45カ国以上の言語から自動検出して検索可能なテキストに変換する手順ガイド。無料かつプライベートなLocalPDF OCRツールを使用します。",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "ツールを開いてファイルをアップロード",
+      "text": "「ツールを開く」をクリックし、処理したいスキャンPDFまたは画像ファイル（JPG, PNG）をアップロードします。45カ国以上の言語に対応しています。",
+      "url": "https://localpdf.online/ja/ocr-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "自動言語検出",
+      "text": "ツールがドキュメントを分析し、言語を自動的に特定します。必要に応じて45カ国以上の対応言語から手動で選択することも可能です。",
+      "image": "https://localpdf.online/screenshots/ocr-language.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "出力形式を選択",
+      "text": "プレーンテキスト (.txt)、検索可能PDF、hOCR (.html)、またはTSV (.tsv) からお好みの形式を選択してください。",
+      "image": "https://localpdf.online/screenshots/ocr-format.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "OCR処理を開始",
+      "text": "OCR処理が自動的に開始されます。Tesseract.jsを使用して、ブラウザ内でローカルに文字を認識します。",
+      "image": "https://localpdf.online/screenshots/ocr-progress.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "抽出テキストを確認・編集",
+      "text": "完了後、抽出されたテキストが表示されます。内容を確認し、必要に応じて編集やコピーが可能です。検索可能PDFの場合、テキストは画像の上に不可視レイヤーとして配置されます。",
+      "image": "https://localpdf.online/screenshots/ocr-review.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "結果をダウンロード",
+      "text": "選択した形式で結果をダウンロードします。",
+      "image": "https://localpdf.online/screenshots/ocr-download.png"
+    }
+  ],
+  "totalTime": "PT3M"
+};
+
+const faqs = [
+  {
+    question: "OCRの認識精度はどのくらいですか？",
+    answer: "最新のTesseract.jsエンジンを使用しており、標準的なフォントやクリアなスキャンに対して高い精度を発揮します。最良の結果を得るには、300 DPIでのスキャンを推奨します。"
+  },
+  {
+    question: "どの言語に対応していますか？",
+    answer: "日本語、英語、中国語、韓国語、ドイツ語、フランス語、ロシア語など45カ国以上の言語に対応しています。自動的にドキュメントの主要言語を検出することも可能です。"
+  },
+  {
+    question: "OCR処理はプライベートですか？",
+    answer: "はい。他の多くのオンラインOCRツールとは異なり、処理はすべてお客様のブラウザ内で行われます。ドキュメントがサーバーに送信されることはないため、機密データの処理に最適です。"
+  },
+  {
+    question: "「検索可能PDF」とは何ですか？",
+    answer: "検索可能PDFとは、元のスキャン画像の上に不可視のテキストレイヤーを正確に配置したPDFです。見た目を維持したまま、テキストの検索、ハイライト、コピーが可能になります。"
+  }
+];
+---
+
+<ToolPage
+  toolId="ocr-pdf"
+  title="OCR PDF オンライン — スキャンPDFからテキストを抽出"
+  metaDescription="45カ国以上の言語に対応した自動言語検出機能付き高度OCRツール。検索可能なPDF作成、hOCR/TSVエクスポート。100%プライベート、アップロード不要。"
+  keywords={keywords}
+  description="インテリジェントな言語検出機能を備えた高度なOCR技術を使用して、スキャンしたPDFや画像からテキストを抽出します。検索不可能なドキュメントを検索可能なPDFに変換したり、テキスト、hOCR、TSVとしてエクスポートしたりできます。"
+  benefits={[
+    "🌍 45カ国以上の言語に対応",
+    "🔍 真の検索可能PDF作成",
+    "📊 多彩な出力形式（Text, PDF, hOCR, TSV）",
+    "🔒 100% プライベート — サーバー送信なし",
+    "🆓 無料 — ベータ期間中は無制限"
+  ]}
+  relatedTools={[
+    { id: 'edit-text-pdf', icon: '✏️', title: 'PDFのテキストを編集', description: '既存のテキストを置換または秘匿化' },
+    { id: 'add-text-pdf', icon: '📝', title: 'PDFにテキストを追加', description: '新しいテキストをオーバーレイ' },
+    { id: 'merge-pdf', icon: '📄', title: 'PDFを結合', description: '複数のPDFを安全に一つに' },
+    { id: 'compress-pdf', icon: '🗜️', title: 'PDFを圧縮', description: 'OCR後のファイルサイズを削減' }
+  ]}
+  whyChoose={{
+    title: "当社のPDF OCRツールが選ばれる理由",
+    reasons: [
+      "完全なプライバシー: ドキュメントがデバイスから離れることはありません。LocalPDFはTesseract.jsをローカルで実行するため、最高のプライバシーが保証されます。",
+      "インテリジェントな言語検出: 日本語、英語、ドイツ語、フランス語、中国語、韓国語など45カ国以上の言語を自動的に識別します。",
+      "本物の検索可能PDF: 単なるテキスト抽出ではなく、元の画像の見た目を維持しながら、テキスト検索が可能なレイヤーを埋め込んだPDFを作成します。",
+      "多彩なエクスポート形式: プレーンテキスト (.txt)、検索可能PDF、hOCR (.html)、TSV (.tsv) の4つの形式に対応。",
+      "インターネット接続不要: 一度読み込めばオフラインで使用可能。社外秘ドキュメントや法的書類に最適です。",
+      "ページ数制限なし: ページ数に関係なく、大容量のドキュメントも制限なしで処理できます。",
+      "処理の最適化: 言語モデルの再利用により、複数ページの処理や言語切り替えが格段に高速です。",
+      "永久無料: 有料プランやクレジット制限はありません。必要なだけ何度でもOCR処理を行えます。"
+    ]
+  }}
+  features={[
+    "自動言語検出（45カ国以上の言語）",
+    "不可視テキストレイヤー付き検索可能PDFの作成",
+    "4つの形式（Text, PDF, hOCR, TSV）へのエクスポート",
+    "スキャンPDFおよび画像（JPG, PNG）からのテキスト抽出",
+    "日本語、中国語、韓国語、英語、欧州・中東言語への対応",
+    "ワーカーの最適化による高速な複数ページ処理",
+    "抽出テキストをクリップボードにコピー",
+    "保存前にテキストを修正可能"
+  ]}
+  steps={[
+    '上の「ツールを開く」ボタンをクリック',
+    "スキャンしたPDFまたは画像（JPG, PNG）を選択",
+    "言語が自動検出されるか、45カ国以上から選択",
+    "出力形式（Text, PDF, hOCR, TSV）を選択",
+    "OCR処理が完了するまで待機（1ページ10〜30秒）",
+    "必要に応じて抽出されたテキストを編集",
+    "選択した形式でダウンロード"
+  ]}
+  faqs={faqs}
+  lang="ja"
+  labels={UI_LABELS_JA}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>

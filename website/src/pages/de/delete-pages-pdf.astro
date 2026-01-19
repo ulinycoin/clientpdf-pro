@@ -1,0 +1,92 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import { UI_LABELS_DE } from '../../data/tools_de';
+
+const keywords = "pdf seiten löschen, seiten aus pdf entfernen, pdf seiten entferner, seiten in pdf löschen, kostenloser pdf editor";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "So löschen Sie Seiten aus einem PDF",
+  "description": "Eine Schritt-für-Schritt-Anleitung, wie Sie mit dem kostenlosen и privaten LocalPDF-Tool spezifische Seiten oder Bereiche aus einem PDF-Dokument entfernen.",
+  "image": "https://localpdf.online/logos/icon-512.png",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Tool öffnen и PDF hochladen",
+      "text": "Klicken Sie auf 'Tool öffnen' и laden Sie das PDF-Dokument hoch, aus dem Sie Seiten löschen möchten.",
+      "url": "https://localpdf.online/de/delete-pages-pdf#tool"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Zu löschende Seiten wählen",
+      "text": "Eine Vorschau aller Seiten wird angezeigt. Klicken Sie auf die Thumbnails der Seiten, die entfernt werden sollen.",
+      "image": "https://localpdf.online/screenshots/delete-select.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Löschen anwenden",
+      "text": "Klicken Sie auf den Button 'Seiten löschen'. Die gewählten Seiten werden sofort aus dem Dokument entfernt.",
+      "image": "https://localpdf.online/screenshots/delete-apply.png"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Neues PDF herunterladen",
+      "text": "Eine Vorschau des finalen Dokuments wird gezeigt. Klicken Sie auf 'Herunterladen', um das PDF ohne die gelöschten Seiten zu speichern.",
+      "image": "https://localpdf.online/screenshots/delete-download.png"
+    }
+  ],
+  "totalTime": "PT1M"
+};
+---
+
+<ToolPage
+  toolId="delete-pages-pdf"
+  title="PDF-Seiten online löschen — Kostenloses Tool"
+  metaDescription="Unerwünschte Seiten aus PDF-Dateien entfernen. 100% private clientseitige Verarbeitung. Keine Uploads. Seiten sofort löschen."
+  keywords={keywords}
+  description="Entfernen Sie unerwünschte Seiten aus PDF-Dokumenten. Wählen Sie spezifische Seiten oder Bereiche zum Löschen — alles lokal в Ihrem Browser."
+  benefits={[
+    "⚡ Sofort — Seiten в Sekunden löschen",
+    "🔒 Privat — Dateien werden nie hochgeladen",
+    "🆓 Kostenlos — Unbegrenzte Nutzung während der Beta"
+  ]}
+  relatedTools={[
+    { id: 'extract-pages-pdf', icon: '📄', title: 'Seiten extrahieren', description: 'Stattdessen nur bestimmte Seiten speichern' },
+    { id: 'organize-pdf', icon: '📋', title: 'Seiten organisieren', description: 'Umordnen и Drehen von Seiten' },
+    { id: 'split-pdf', icon: '✂️', title: 'PDF teilen', description: 'In mehrere PDF-Dateien aufteilen' },
+    { id: 'compress-pdf', icon: '🗜️', title: 'PDF komprimieren', description: 'Dateigröße nach dem Löschen reduzieren' }
+  ]}
+  whyChoose={{
+    title: "Warum unser PDF-Seiten-Löschtool wählen?",
+    reasons: [
+      "Maximaler Datenschutz: Ihr PDF verlässt nie Ihr Gerät. Online-Anbieter laden ganze Dokumente hoch, nur um ein paar Seiten zu löschen. LocalPDF arbeitet lokal.",
+      "Flexible Auswahl: Löschen Sie einzelne Seiten, Bereiche (z.B. 5-10) oder völlig separate Seiten. Visuelle Thumbnails verhindern Fehler.",
+      "Qualität bewahren: Die übrigen Seiten behalten ihre volle Originalqualität. Es findet kein neuer Render-Prozess mit Qualitätsverlust statt.",
+      "Sofortige Verarbeitung: Keine Upload-Wartezeiten. Das Löschen erfolgt в Ihrem Browser в Echtzeit — meist в unter 2 Sekunden.",
+      "Kontrolle vor dem Download: Prüfen Sie die Restseiten в der Vorschau. Falschen Thumbnail erwischt? Laden Sie einfach neu и korrigieren Sie die Auswahl.",
+      "Keine Größenbeschränkung: Entfernen Sie Seiten aus extrem großen PDF-Archiven ohne künstliche Upload-Limits von Web-Servern."
+    ]
+  }}
+  features={[
+    "Einzelne Seiten gezielt löschen",
+    "Seitenbereiche angeben (z.B. 1-5, 10-20)",
+    "Beliebige Kombination von Seiten entfernen",
+    "Visuelle Thumbnails für jede Seite",
+    "Sicherheitsabfrage vor dem finalen Löschvorgang",
+    "Erhalt der originalen Bild- и Textqualität"
+  ]}
+  steps={[
+    'Klicken Sie oben auf "Tool öffnen"',
+    "Laden Sie das PDF mit den zu löschenden Seiten hoch",
+    "Markieren Sie die Seiten durch Klick auf die Thumbnails",
+    "Prüfen Sie die verbleibende Dokumentstruktur",
+    "Laden Sie Ihr bereinigtes PDF sofort herunter"
+  ]}
+  lang="de"
+  labels={UI_LABELS_DE}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+  </Fragment>
+</ToolPage>
