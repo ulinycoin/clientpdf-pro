@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ToolLayout } from '@/components/common/ToolLayout';
 import { useI18n } from '@/hooks/useI18n';
+import { useSharedFile } from '@/hooks/useSharedFile';
 import pdfService from '@/services/pdfService';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -23,7 +24,8 @@ import {
   Maximize,
   ZoomIn,
   ZoomOut,
-  Scissors
+  Scissors,
+  PenTool
 } from 'lucide-react';
 
 type ConversionMode = 'formatted' | 'text';
@@ -50,6 +52,7 @@ interface FileStatus {
 
 export const WordToPDF: React.FC = () => {
   const { t } = useI18n();
+  const { setSharedFile } = useSharedFile();
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [files, setFiles] = useState<FileStatus[]>([]);
   const [isProcessingAll, setIsProcessingAll] = useState(false);
@@ -351,12 +354,12 @@ export const WordToPDF: React.FC = () => {
 
                 <div className="flex items-center justify-between mt-6">
                   <div className="flex-1 min-w-0 pr-4">
-                    <p className="text-xl font-bold truncate text-gray-900 dark:text-gray-100 flex items-center gap-3" title={file.file.name}>
+                    <div className="text-xl font-bold truncate text-gray-900 dark:text-gray-100 flex items-center gap-3" title={file.file.name}>
                       <Badge variant="secondary" className="bg-ocean-100 dark:bg-ocean-900/40 text-ocean-700 dark:text-ocean-300 text-base py-1 px-3 rounded-lg">
                         {index + 1}
                       </Badge>
                       {file.file.name}
-                    </p>
+                    </div>
                     <div className="flex items-center gap-4 mt-1">
                       <p className="text-sm text-ocean-600 dark:text-ocean-400 font-semibold flex items-center gap-2">
                         <FileText className="w-4 h-4" />
@@ -379,8 +382,9 @@ export const WordToPDF: React.FC = () => {
                           className="h-14 w-14 text-ocean-600 hover:bg-ocean-50 dark:hover:bg-ocean-900/20 rounded-2xl"
                           onClick={() => {
                             if (file.result?.blob) {
-                              const url = URL.createObjectURL(file.result.blob);
-                              window.location.hash = `#edit-pdf?url=${encodeURIComponent(url)}&name=${encodeURIComponent(file.file.name.replace(/\.docx$/i, '.pdf'))}`;
+                              const fileName = file.file.name.replace(/\.(docx|doc)$/i, '.pdf');
+                              setSharedFile(file.result.blob, fileName, 'word-to-pdf');
+                              window.location.hash = '#edit-pdf';
                             }
                           }}
                           title={t('wordToPdf.editResult')}
