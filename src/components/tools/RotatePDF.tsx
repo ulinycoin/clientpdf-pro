@@ -11,16 +11,21 @@ import { useI18n } from '@/hooks/useI18n';
 import { useSharedFile } from '@/hooks/useSharedFile';
 import pdfService from '@/services/pdfService';
 import type { UploadedFile } from '@/types/pdf';
-import { RotateCw, Repeat, FileStack, CheckCircle2, Files, Scissors, ZoomIn, ZoomOut, Maximize, Download } from 'lucide-react';
+import { RotateCw, Repeat, FileStack, CheckCircle2, Files, Scissors, ZoomIn, ZoomOut, Maximize, Download, ChevronLeft, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
 
-type RotationAngle = 90 | 180 | 270;
+type RotationAngle = 0 | 90 | 180 | 270;
 type PageSelection = 'all' | 'specific';
+
+interface RotateUploadedFile extends UploadedFile {
+  rotation: number;
+  previewPage: number;
+}
 
 export const RotatePDF: React.FC = () => {
   const { t } = useI18n();
   const { sharedFiles, clearSharedFiles, setSharedFile } = useSharedFile();
-  const [files, setFiles] = useState<UploadedFile[]>([]);
+  const [files, setFiles] = useState<RotateUploadedFile[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [progressMessage, setProgressMessage] = useState('');
@@ -35,12 +40,14 @@ export const RotatePDF: React.FC = () => {
   const [zoomScale, setZoomScale] = useState(1);
 
   const handleFilesSelected = useCallback(async (selectedFiles: File[], replaceExisting = false) => {
-    const uploadedFiles: UploadedFile[] = selectedFiles.map((file, index) => ({
+    const uploadedFiles: RotateUploadedFile[] = selectedFiles.map((file, index) => ({
       id: `${Date.now()}-${index}`,
       file,
       name: file.name,
       size: file.size,
       status: 'pending' as const,
+      rotation: 0,
+      previewPage: 1,
     }));
 
     setFiles((prev) => replaceExisting ? uploadedFiles : [...prev, ...uploadedFiles]);
@@ -88,6 +95,29 @@ export const RotatePDF: React.FC = () => {
     }
   }, [results, isProcessing, resultSaved, setSharedFile]);
 
+
+  const handleRotateFile = (id: string, direction: 'cw' | 'ccw') => {
+    setFiles((prev) =>
+      prev.map((f) => {
+        if (f.id !== id) return f;
+        const currentRotation = f.rotation || 0;
+        const nextRotation = direction === 'cw'
+          ? (currentRotation + 90) % 360
+          : (currentRotation - 90 + 360) % 360;
+        return { ...f, rotation: nextRotation };
+      })
+    );
+  };
+
+  const handlePageChange = (id: string, delta: number) => {
+    setFiles((prev) =>
+      prev.map((f) => {
+        if (f.id !== id || !f.info) return f;
+        const nextPage = Math.min(Math.max(1, f.previewPage + delta), f.info.pages);
+        return { ...f, previewPage: nextPage };
+      })
+    );
+  };
 
   const handleRemoveFile = (id: string) => {
     setFiles((prev) => prev.filter((f) => f.id !== id));
@@ -148,7 +178,7 @@ export const RotatePDF: React.FC = () => {
 
         const rotateResult = await pdfService.rotatePDF(
           file.file,
-          rotationAngle,
+          pageSelection === 'all' ? (file.rotation || rotationAngle) : rotationAngle,
           pagesToRotate,
           (prog) => {
             const overallProgress = (i / files.length) * 100 + (prog / files.length);
@@ -255,97 +285,142 @@ export const RotatePDF: React.FC = () => {
     }
 
     return (
-      <div className="space-y-6">
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="space-y-8">
+        <div className="flex flex-col gap-12 max-w-4xl mx-auto">
           {files.map((file, index) => (
-            <div key={file.id} className="relative group">
-              <Card className="p-4 hover:shadow-medium transition-all duration-200 relative h-full border-transparent hover:border-ocean-200 dark:hover:border-ocean-800 bg-white dark:bg-privacy-800">
-                <div className="mb-4 flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-900 rounded-lg p-4 relative overflow-hidden group/preview">
-                  <PDFPreview
-                    file={file.file}
-                    width={180 * zoomScale}
-                    height={240 * zoomScale}
-                    className="transition-transform duration-200"
-                  />
+            <div key={file.id} className="relative group w-full">
+              <Card className="p-8 hover:shadow-2xl transition-all duration-300 relative border-transparent hover:border-ocean-200 dark:hover:border-ocean-800 bg-white dark:bg-privacy-800 shadow-xl overflow-hidden">
+                <div className="mb-8 flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-900/50 rounded-2xl p-8 relative overflow-hidden group/preview min-h-[600px]">
+                  <div
+                    className="transition-transform duration-500 cubic-bezier(0.4, 0, 0.2, 1) origin-center shadow-2xl relative"
+                    style={{ transform: `rotate(${file.rotation}deg)` }}
+                  >
+                    <PDFPreview
+                      file={file.file}
+                      width={450 * zoomScale}
+                      height={600 * zoomScale}
+                      pageNumber={file.previewPage}
+                    />
+                  </div>
 
-                  {/* Zoom Controls Overlay */}
-                  <div className="absolute bottom-2 right-2 flex gap-1 opacity-0 group-hover/preview:opacity-100 transition-opacity bg-white/90 dark:bg-black/50 rounded-lg p-1 backdrop-blur-sm shadow-sm border border-gray-200 dark:border-gray-700">
+                  {/* Page Navigation Overlay */}
+                  {file.info && file.info.pages > 1 && (
+                    <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between px-4 pointer-events-none">
+                      <Button
+                        size="icon"
+                        variant="secondary"
+                        className="h-12 w-12 rounded-full shadow-lg pointer-events-auto bg-white/90 dark:bg-gray-800/90 backdrop-blur-md border hover:scale-110 transition-transform disabled:opacity-30"
+                        onClick={() => handlePageChange(file.id, -1)}
+                        disabled={file.previewPage <= 1}
+                        title={t('rotate.prevPage')}
+                      >
+                        <ChevronLeft className="h-6 w-6" />
+                      </Button>
+                      <Button
+                        size="icon"
+                        variant="secondary"
+                        className="h-12 w-12 rounded-full shadow-lg pointer-events-auto bg-white/90 dark:bg-gray-800/90 backdrop-blur-md border hover:scale-110 transition-transform disabled:opacity-30"
+                        onClick={() => handlePageChange(file.id, 1)}
+                        disabled={file.previewPage >= file.info.pages}
+                        title={t('rotate.nextPage')}
+                      >
+                        <ChevronRight className="h-6 w-6" />
+                      </Button>
+                    </div>
+                  )}
+
+                  {/* Individual Rotation Controls Overlay */}
+                  <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover/preview:opacity-100 transition-opacity bg-white/95 dark:bg-gray-800/95 rounded-2xl p-2 backdrop-blur-xl shadow-2xl border border-gray-100 dark:border-gray-700">
                     <Button
                       size="icon"
                       variant="ghost"
-                      className="h-7 w-7"
+                      className="h-10 w-10 text-ocean-600 dark:text-ocean-400 hover:bg-ocean-50 dark:hover:bg-ocean-900/40 rounded-xl"
+                      onClick={() => handleRotateFile(file.id, 'ccw')}
+                      title={t('rotate.counterClockwise')}
+                    >
+                      <RotateCw className="h-5 w-5 transform -scale-x-100" />
+                    </Button>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="h-10 w-10 text-ocean-600 dark:text-ocean-400 hover:bg-ocean-50 dark:hover:bg-ocean-900/40 rounded-xl"
+                      onClick={() => handleRotateFile(file.id, 'cw')}
+                      title={t('rotate.clockwise')}
+                    >
+                      <RotateCw className="h-5 w-5" />
+                    </Button>
+                  </div>
+
+                  {/* Zoom Controls Overlay */}
+                  <div className="absolute bottom-4 right-4 flex gap-2 opacity-0 group-hover/preview:opacity-100 transition-opacity bg-white/95 dark:bg-gray-800/95 rounded-2xl p-2 backdrop-blur-xl shadow-2xl border border-gray-100 dark:border-gray-700">
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="h-10 w-10 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl"
                       onClick={() => setZoomScale(prev => Math.max(0.5, prev - 0.25))}
                       title={t('common.zoomOut')}
                     >
-                      <ZoomOut className="h-4 w-4" />
+                      <ZoomOut className="h-5 w-5" />
                     </Button>
                     <Button
                       size="icon"
                       variant="ghost"
-                      className="h-7 w-7"
+                      className="h-10 w-10 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl"
                       onClick={() => setZoomScale(1)}
                       title={t('common.reset')}
                     >
-                      <Maximize className="h-4 w-4" />
+                      <Maximize className="h-5 w-5" />
                     </Button>
                     <Button
                       size="icon"
                       variant="ghost"
-                      className="h-7 w-7"
+                      className="h-10 w-10 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl"
                       onClick={() => setZoomScale(prev => Math.min(2, prev + 0.25))}
                       title={t('common.zoomIn')}
                     >
-                      <ZoomIn className="h-4 w-4" />
+                      <ZoomIn className="h-5 w-5" />
                     </Button>
                   </div>
+
+                  {/* Page Indicator Overlay */}
+                  {file.info && (
+                    <div className="absolute bottom-4 left-4 bg-ocean-600 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-lg backdrop-blur-md opacity-0 group-hover/preview:opacity-100 transition-opacity flex items-center gap-2">
+                      <FileStack className="w-4 h-4" />
+                      {file.previewPage} / {file.info.pages}
+                    </div>
+                  )}
                 </div>
 
-                <div className="space-y-3 font-private">
-                  <div className="flex items-center justify-between">
-                    <Badge variant="secondary" className="w-8 h-8 p-0 flex items-center justify-center bg-white dark:bg-gray-700 shadow-sm text-sm">
-                      {index + 1}
-                    </Badge>
+                <div className="flex items-center justify-between mt-6">
+                  <div className="flex-1 min-w-0 pr-4">
+                    <p className="text-xl font-bold truncate text-gray-900 dark:text-gray-100 flex items-center gap-3" title={file.name}>
+                      <Badge variant="secondary" className="bg-ocean-100 dark:bg-ocean-900/40 text-ocean-700 dark:text-ocean-300 text-base py-1 px-3 rounded-lg">
+                        {index + 1}
+                      </Badge>
+                      {file.name}
+                    </p>
                     {file.info && (
-                      <span className="text-xs text-ocean-500 font-medium">{file.info.pages} {t('common.pages')}</span>
+                      <p className="text-sm text-ocean-600 dark:text-ocean-400 font-semibold mt-1 flex items-center gap-2">
+                        <Files className="w-4 h-4" />
+                        {file.info.pages} {t('common.pages')} • {(file.size / 1024 / 1024).toFixed(2)} MB
+                      </p>
                     )}
                   </div>
-                  <p className="text-sm font-medium truncate text-gray-900 dark:text-gray-100" title={file.name}>
-                    {file.name}
-                  </p>
-                </div>
 
-                {!isProcessing && (
-                  <div className="absolute top-2 right-2 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity bg-white/90 dark:bg-black/50 rounded-lg p-1 backdrop-blur-sm shadow-sm">
+                  {!isProcessing && (
                     <Button
                       size="icon"
                       variant="ghost"
-                      className="h-6 w-6 text-red-500 hover:text-red-600"
+                      className="h-14 w-14 text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-2xl"
                       onClick={() => handleRemoveFile(file.id)}
                     >
-                      <Scissors className="h-3 w-3" />
+                      <Scissors className="h-6 w-6" />
                     </Button>
-                  </div>
-                )}
+                  )}
+                </div>
               </Card>
             </div>
           ))}
-
-          {/* Add More Button */}
-          <div className="h-full min-h-[280px]">
-            <label className="cursor-pointer h-full border-2 border-dashed border-gray-200 dark:border-privacy-700 hover:border-ocean-400 dark:hover:border-ocean-500 rounded-xl flex flex-col items-center justify-center p-4 transition-all hover:bg-ocean-50/50 dark:hover:bg-ocean-900/10 group">
-              <input
-                type="file"
-                multiple
-                accept=".pdf"
-                className="hidden"
-                onChange={(e) => e.target.files && handleFilesSelected(Array.from(e.target.files), false)}
-              />
-              <div className="w-12 h-12 rounded-full bg-ocean-100 dark:bg-ocean-900/50 flex items-center justify-center mb-2 text-ocean-600 dark:text-ocean-400 text-2xl group-hover:scale-110 transition-transform">
-                <Files className="h-6 w-6" />
-              </div>
-              <span className="text-sm font-medium text-gray-600 dark:text-gray-400">{t('common.addFiles')}</span>
-            </label>
-          </div>
         </div>
 
         {isProcessing && (
@@ -368,25 +443,30 @@ export const RotatePDF: React.FC = () => {
         {/* Rotation Angle */}
         <div className="space-y-3">
           <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-            {t('rotate.selectAngle')}
+            {pageSelection === 'all' ? t('rotate.applyToAll') : t('rotate.selectAngle')}
           </Label>
-          <div className="grid grid-cols-3 gap-2">
-            {[90, 180, 270].map((angle) => (
+          <div className="grid grid-cols-4 gap-2">
+            {[0, 90, 180, 270].map((angle) => (
               <button
                 key={angle}
-                onClick={() => setRotationAngle(angle as RotationAngle)}
+                onClick={() => {
+                  setRotationAngle(angle as RotationAngle);
+                  if (pageSelection === 'all') {
+                    setFiles(prev => prev.map(f => ({ ...f, rotation: angle })));
+                  }
+                }}
                 disabled={isProcessing}
                 className={`
-                  p-3 rounded-xl border-2 transition-all flex flex-col items-center justify-center gap-2
+                  p-2 rounded-xl border-2 transition-all flex flex-col items-center justify-center gap-1
                   ${rotationAngle === angle
                     ? 'border-ocean-500 bg-ocean-50 dark:bg-ocean-900/20 text-ocean-700 dark:text-ocean-300'
                     : 'border-gray-200 dark:border-gray-700 hover:border-ocean-200 dark:hover:border-ocean-800 text-gray-600 dark:text-gray-400'
                   }
                 `}
               >
-                <div className="text-xl font-bold">{angle}°</div>
-                <div className="text-[10px] uppercase tracking-wider font-medium opacity-70">
-                  {angle === 90 ? 'CW' : angle === 180 ? 'FLIP' : 'CCW'}
+                <div className="text-sm font-bold">{angle}°</div>
+                <div className="text-[8px] uppercase tracking-wider font-medium opacity-70">
+                  {angle === 0 ? 'RESET' : angle === 90 ? 'CW' : angle === 180 ? 'FLIP' : 'CCW'}
                 </div>
               </button>
             ))}

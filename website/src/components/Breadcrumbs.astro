@@ -9,17 +9,25 @@ interface Props {
 }
 
 const { items } = Astro.props;
+const currentUrl = Astro.url.href;
 
 // Schema.org BreadcrumbList for SEO
 const breadcrumbSchema = {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": items.map((item, index) => ({
-    "@type": "ListItem",
-    "position": index + 1,
-    "name": item.label,
-    ...(item.href && { "item": `https://localpdf.online${item.href}` })
-  }))
+  "itemListElement": items.map((item, index) => {
+    // If href is missing, it's usually the current page
+    const itemUrl = item.href
+      ? `https://localpdf.online${item.href.startsWith('/') ? '' : '/'}${item.href}`
+      : currentUrl;
+
+    return {
+      "@type": "ListItem",
+      "position": index + 1,
+      "name": item.label,
+      "item": itemUrl
+    };
+  })
 };
 ---
 

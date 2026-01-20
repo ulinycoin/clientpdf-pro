@@ -986,8 +986,8 @@ export class PDFService {
    * Rotate PDF pages
    */
   async rotatePDF(
-    file: File,
-    angle: 90 | 180 | 270,
+    file: File | Blob,
+    angle: 0 | 90 | 180 | 270,
     pages: number[],
     onProgress?: ProgressCallback
   ): Promise<PDFProcessingResult> {
