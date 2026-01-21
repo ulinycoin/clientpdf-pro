@@ -128,6 +128,7 @@
     "ratingRequired": "評価を選択してください",
     "comment": "コメント",
     "commentPlaceholder": "どのような改善が可能ですか？",
+    "email": "メールアドレス",
     "optional": "任意",
     "sendFeedback": "フィードバックを送信",
     "sending": "送信中...",

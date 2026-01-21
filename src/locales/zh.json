@@ -127,6 +127,7 @@
     "ratingRequired": "请选择评分",
     "comment": "反馈内容",
     "commentPlaceholder": "我们可以做哪些改进？",
+    "email": "电子邮件",
     "optional": "可选",
     "sendFeedback": "发送反馈",
     "sending": "正在发送...",

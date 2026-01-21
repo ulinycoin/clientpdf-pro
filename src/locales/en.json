@@ -127,6 +127,7 @@
     "ratingRequired": "Please select a rating",
     "comment": "Comment",
     "commentPlaceholder": "What can we improve?",
+    "email": "Email",
     "optional": "optional",
     "sendFeedback": "Send Feedback",
     "sending": "Sending...",
