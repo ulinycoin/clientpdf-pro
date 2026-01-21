@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CheckCircle2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 type SignatureType = 'draw' | 'upload' | 'text';
 
@@ -396,7 +397,7 @@ export const SignPDF: React.FC = () => {
       });
     } catch (e) {
       console.error(e);
-      alert('Failed to sign PDF');
+      toast.error(t('sign.errors.signFailed') || 'Failed to sign PDF');
     } finally {
       setIsProcessing(false);
     }

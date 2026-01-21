@@ -27,6 +27,7 @@ export interface PDFProcessingResult<T = Blob> {
     processingTime: number;
     compressionRatio?: number; // Percentage reduction
     filesCreated?: number; // For split operations
+    imagesExtracted?: number; // For image extraction
   };
 }
 
@@ -115,12 +116,15 @@ export interface TextOccurrence {
 
 export interface ExtractedImage {
   id: string;
-  blob: Blob;
+  blob?: Blob; // Optional if we have data
+  data?: Uint8Array; // Raw data
   filename: string;
   width: number;
   height: number;
   pageNumber: number;
   format: 'jpg' | 'png';
+  extension: string;
+  mimeType: string;
   size: number;
   previewUrl?: string;
 }

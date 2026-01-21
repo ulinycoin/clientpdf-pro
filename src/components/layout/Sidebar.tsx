@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import type { Tool, ToolGroup } from '@/types';
 import { TOOL_GROUPS } from '@/types';
 import { Button } from '@/components/ui/button';
@@ -22,9 +22,10 @@ import {
   Feather,
   Layers,
   FileOutput as ExtractIcon,
-  BookOpen,
-  Table
+  Table,
+  MessageSquare
 } from 'lucide-react';
+import { FeedbackDialog } from '@/components/common/FeedbackDialog';
 
 interface SidebarProps {
   currentTool: Tool | null;
@@ -70,6 +71,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
   selectedGroup,
 }) => {
   const { t } = useI18n();
+  const [supportId, setSupportId] = useState<string>('');
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
+
+  useEffect(() => {
+    let id = localStorage.getItem('support_id');
+    if (!id) {
+      id = `LP-${Math.random().toString(36).substring(2, 6).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+      localStorage.setItem('support_id', id);
+    }
+    setSupportId(id);
+  }, []);
 
   // Filter tools based on selected group
   const filteredTools = TOOLS.filter((tool) =>
@@ -122,7 +134,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       <Icon size={20} strokeWidth={isActive ? 2.5 : 1.5} />
                     </span>
                     {!collapsed && (
-                      <span className="relative z-10 text-sm truncate transition-colors duration-200">
+                      <span className="relative z-10 text-sm truncate transition-colors duration-200 flex-1 text-left">
                         {t(`tools.${tool.id}.name`)}
                       </span>
                     )}
@@ -135,41 +147,81 @@ export const Sidebar: React.FC<SidebarProps> = ({
             })}
           </ul>
 
-          {/* Blog Link */}
-          <div className="mt-4 pt-4 border-t border-white/10">
+          {/* Resources Footer */}
+          <div className="mt-8 pt-4 border-t border-white/10">
             {!collapsed && (
-              <div className="px-3 mb-2">
-                <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-500 uppercase tracking-wide">
+              <div className="px-3 space-y-4">
+                <h3 className="text-[10px] uppercase tracking-[0.2em] font-bold text-gray-500/80">
                   Resources
                 </h3>
-              </div>
-            )}
-            <ul className="space-y-1">
-              <li>
+
+                {/* Support ID Display */}
+                <div className="p-3 rounded-xl bg-white/5 border border-white/10 group/id relative overflow-hidden transition-all hover:bg-white/10">
+                  <div className="flex flex-col gap-1 relative z-10">
+                    <span className="text-[9px] uppercase tracking-wider font-bold text-gray-400/80">
+                      {t('common.supportId')}
+                    </span>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-mono text-ocean-400/90 font-bold tracking-tight">
+                        {supportId}
+                      </span>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6 rounded-md hover:bg-ocean-500/10 text-gray-500 hover:text-ocean-400 transition-colors"
+                        onClick={() => {
+                          navigator.clipboard.writeText(supportId);
+                        }}
+                        title="Copy ID"
+                      >
+                        <Files size={12} />
+                      </Button>
+                    </div>
+                  </div>
+                  {/* Subtle glow effect */}
+                  <div className="absolute -bottom-4 -right-4 w-12 h-12 bg-ocean-500/10 blur-xl rounded-full transition-all group-hover/id:scale-150"></div>
+                </div>
+
+                {/* Feedback Button */}
                 <Button
                   variant="ghost"
-                  asChild
-                  className="group w-full justify-start gap-3 px-3 py-2.5 h-auto transition-all duration-300 rounded-lg relative overflow-hidden text-gray-700 dark:text-gray-300"
-                  title={collapsed ? 'Blog' : undefined}
+                  onClick={() => setIsFeedbackOpen(true)}
+                  className="w-full justify-start gap-3 h-auto py-2.5 px-3 rounded-xl text-gray-500 hover:text-ocean-500 hover:bg-ocean-500/5 transition-all group"
                 >
-                  <a href="/blog">
-                    <div className="card-glass opacity-0 group-hover:opacity-100 group-hover:[filter:url(#liquid-refraction)]"></div>
-                    <div className="card-glow opacity-0 group-hover:opacity-100"></div>
-                    <span className="relative z-10 flex-shrink-0 transition-transform duration-300 group-hover:scale-110 text-gray-500 dark:text-gray-400 group-hover:text-ocean-600 dark:group-hover:text-ocean-400">
-                      <BookOpen size={20} strokeWidth={2} />
-                    </span>
-                    {!collapsed && (
-                      <span className="relative z-10 text-sm truncate transition-colors duration-200">
-                        Blog
-                      </span>
-                    )}
-                  </a>
+                  <MessageSquare size={16} className="transition-transform group-hover:scale-110" />
+                  <span className="text-sm font-medium">{t('common.feedback')}</span>
                 </Button>
-              </li>
-            </ul>
+              </div>
+            )}
+
+            {collapsed && (
+              <div className="flex flex-col items-center gap-4 py-2">
+                <div
+                  className="w-2 h-2 rounded-full bg-ocean-500 animate-pulse cursor-help"
+                  title={`${t('common.supportId')}: ${supportId}`}
+                  onClick={() => navigator.clipboard.writeText(supportId)}
+                />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setIsFeedbackOpen(true)}
+                  className="h-9 w-9 rounded-lg text-gray-500 hover:text-ocean-500 hover:bg-ocean-500/5"
+                  title={t('common.feedback')}
+                >
+                  <MessageSquare size={18} />
+                </Button>
+              </div>
+            )}
           </div>
         </nav>
       </div>
+
+      <FeedbackDialog
+        open={isFeedbackOpen}
+        onOpenChange={setIsFeedbackOpen}
+        supportId={supportId}
+        currentTool={currentTool || undefined}
+      />
     </aside>
   );
 };

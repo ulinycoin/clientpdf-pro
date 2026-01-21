@@ -1,47 +1,13 @@
 {
-  "name": "LocalPDF - Privacy-First PDF Tools",
+  "name": "LocalPDF Sanctuary",
   "short_name": "LocalPDF",
-  "description": "Free online PDF tools: merge, split, compress, protect, and edit PDFs in your browser. No uploads, 100% private, instant processing.",
+  "description": "100% Private Local PDF Tools. No uploads, total privacy.",
   "start_url": "/",
-  "display": "browser",
-  "background_color": "#FAFAFA",
-  "theme_color": "#2563EB",
+  "display": "standalone",
+  "background_color": "#18181b",
+  "theme_color": "#18181b",
   "orientation": "any",
-  "scope": "/",
-  "lang": "en",
-  "dir": "ltr",
-  "categories": ["productivity", "utilities"],
   "icons": [
-    {
-      "src": "/logos/localpdf-favicon-16x16.png",
-      "sizes": "16x16",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/logos/localpdf-header-32x32.png",
-      "sizes": "32x32",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/logos/localpdf-header-64x64.png",
-      "sizes": "64x64",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/logos/localpdf-header-96x96.png",
-      "sizes": "96x96",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/logos/localpdf-apple-180x180.png",
-      "sizes": "180x180",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
     {
       "src": "/logos/localpdf-pwa-192x192.png",
       "sizes": "192x192",
@@ -55,35 +21,30 @@
       "purpose": "any maskable"
     }
   ],
-  "screenshots": [
-    {
-      "src": "/logos/localpdf-social-1200x630.png",
-      "sizes": "1200x630",
-      "type": "image/png",
-      "form_factor": "wide"
-    }
+  "categories": [
+    "utilities",
+    "productivity"
   ],
   "shortcuts": [
     {
       "name": "Merge PDF",
-      "short_name": "Merge",
-      "description": "Combine multiple PDF files",
-      "url": "/merge-pdf",
-      "icons": [{ "src": "/logos/localpdf-header-96x96.png", "sizes": "96x96" }]
+      "url": "/app#merge-pdf",
+      "icons": [
+        {
+          "src": "/logos/localpdf-favicon-16x16.png",
+          "sizes": "16x16"
+        }
+      ]
     },
     {
       "name": "Split PDF",
-      "short_name": "Split",
-      "description": "Divide PDF into pages",
-      "url": "/split-pdf",
-      "icons": [{ "src": "/logos/localpdf-header-96x96.png", "sizes": "96x96" }]
-    },
-    {
-      "name": "Compress PDF",
-      "short_name": "Compress",
-      "description": "Reduce PDF file size",
-      "url": "/compress-pdf",
-      "icons": [{ "src": "/logos/localpdf-header-96x96.png", "sizes": "96x96" }]
+      "url": "/app#split-pdf",
+      "icons": [
+        {
+          "src": "/logos/localpdf-favicon-16x16.png",
+          "sizes": "16x16"
+        }
+      ]
     }
   ]
 }

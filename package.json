@@ -81,6 +81,7 @@
     "@types/papaparse": "^5.5.2",
     "@types/react": "^19.1.16",
     "@types/react-dom": "^19.1.9",
+    "@vercel/node": "^5.5.25",
     "autoprefixer": "^10.4.21",
     "concurrently": "^9.2.1",
     "eslint": "^9.36.0",

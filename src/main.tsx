@@ -107,10 +107,27 @@ if (typeof window !== 'undefined') {
   });
 }
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <I18nProvider>
-      <App />
-    </I18nProvider>
-  </StrictMode>,
-)
+const rootElement = document.getElementById('root');
+if (rootElement) {
+  createRoot(rootElement).render(
+    <StrictMode>
+      <I18nProvider>
+        <App />
+      </I18nProvider>
+    </StrictMode>
+  );
+}
+
+// Register Service Worker for PWA
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    // Note: In development with dev:web, sw.js is served by Astro on :4321
+    // but React app on :5173 might not see it unless we use the relative root /sw.js
+    // In production (Vercel), they are merged and it works from root /sw.js
+    navigator.serviceWorker.register('/sw.js').then(registration => {
+      console.log('SW registered: ', registration);
+    }).catch(registrationError => {
+      console.log('SW registration failed: ', registrationError);
+    });
+  });
+}

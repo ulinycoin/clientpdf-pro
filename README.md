@@ -54,7 +54,7 @@ npm run dev:web      # Website/SEO (Port 4321)
 
 ## 🔑 Key Features
 
-- **100% Zero-Knowledge** — Files never leave the browser. No telemetry, no logs, no servers.
+- **100% Zero-Knowledge** — Files never leave the browser. No telemetry, no logs, no servers. **Support ID is generated locally and is not sent anywhere automatically.**
 - **Smart Styles 2.0** — Automatic font fallback and style matching for seamless PDF editing.
 - **Liquid Glass UI** — Modern design system with Glassmorphism and SVG refraction (Backlit Liquid Glass).
 - **Multi-language (9 Voices)** — EN, RU, DE, FR, ES, JA, IT, PT, ZH with full i18n support.

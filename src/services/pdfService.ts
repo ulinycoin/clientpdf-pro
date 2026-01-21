@@ -1,6 +1,5 @@
-import { PDFDocument, degrees, rgb, StandardFonts, PDFName, PDFDict, PDFArray } from 'pdf-lib';
+import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import fontkit from '@pdf-lib/fontkit';
-import { PDFDocument as PDFDocumentEncrypt } from 'pdf-lib-plus-encrypt';
 import JSZip from 'jszip';
 import * as pdfjsLib from 'pdfjs-dist';
 import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
@@ -40,6 +39,13 @@ import type {
   RadioFormField,
   DropdownFormField
 } from '@/types/formFields';
+
+import { mergeService } from './MergeService';
+import { splitService } from './SplitService';
+import { compressionService } from './CompressionService';
+import { securityService } from './SecurityService';
+import { imageExtractionService } from './ImageExtractionService';
+import { pageManipulationService } from './PageManipulationService';
 
 // Configure PDF.js worker - use local worker from node_modules
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
@@ -198,91 +204,7 @@ export class PDFService {
     onProgress?: ProgressCallback,
     options: MergeOptions = {}
   ): Promise<PDFProcessingResult> {
-    const startTime = performance.now();
-
-    try {
-      if (files.length < 2) {
-        throw new Error('At least 2 files are required for merging');
-      }
-
-      onProgress?.(0, 'Starting merge process...');
-
-      // Create new PDF document
-      const mergedPdf = await PDFDocument.create();
-      let totalOriginalSize = 0;
-      let totalPages = 0;
-
-      // Set metadata if provided
-      if (options.metadata) {
-        if (options.metadata.title) mergedPdf.setTitle(options.metadata.title);
-        if (options.metadata.author) mergedPdf.setAuthor(options.metadata.author);
-        if (options.metadata.subject) mergedPdf.setSubject(options.metadata.subject);
-      }
-
-      // Determine file order
-      const fileOrder = options.order ?
-        options.order.map(index => files[index]).filter(Boolean) :
-        files;
-
-      // Process each file
-      for (let i = 0; i < fileOrder.length; i++) {
-        const file = fileOrder[i];
-        totalOriginalSize += file.size;
-
-        onProgress?.(
-          (i / fileOrder.length) * 80,
-          `Processing ${file.name}...`
-        );
-
-        try {
-          // Load PDF
-          const arrayBuffer = await file.arrayBuffer();
-          const pdf = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
-
-          // Copy all pages
-          const pageIndices = Array.from(
-            { length: pdf.getPageCount() },
-            (_, i) => i
-          );
-          const copiedPages = await mergedPdf.copyPages(pdf, pageIndices);
-
-          // Add pages to merged document
-          copiedPages.forEach((page) => {
-            mergedPdf.addPage(page);
-          });
-
-          totalPages += pdf.getPageCount();
-        } catch (error) {
-          console.warn(`Failed to process file ${file.name}:`, error);
-        }
-      }
-
-      onProgress?.(90, 'Saving merged PDF...');
-
-      // Save merged PDF
-      const pdfBytes = await mergedPdf.save();
-      const blob = new Blob([pdfBytes as unknown as BlobPart], { type: 'application/pdf' });
-
-      onProgress?.(100, 'Merge completed!');
-
-      const processingTime = performance.now() - startTime;
-
-      return {
-        success: true,
-        data: blob,
-        metadata: {
-          pageCount: totalPages,
-          originalSize: totalOriginalSize,
-          processedSize: blob.size,
-          processingTime
-        }
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: this.createPDFError(error, 'PDF merge failed')
-      };
-    }
+    return mergeService.mergePDFs(files, onProgress, options);
   }
 
   /**
@@ -384,129 +306,7 @@ export class PDFService {
     options: { pages?: number[]; start?: number; end?: number; interval?: number },
     onProgress?: ProgressCallback
   ): Promise<PDFProcessingResult<Blob[]>> {
-    const startTime = performance.now();
-
-    try {
-      onProgress?.(0, 'Loading PDF...');
-
-      const arrayBuffer = await file.arrayBuffer();
-      const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
-      const totalPages = pdfDoc.getPageCount();
-
-      onProgress?.(10, 'Analyzing PDF structure...');
-
-      const results: Blob[] = [];
-
-      if (mode === 'pages') {
-        // Split into individual pages
-        onProgress?.(20, 'Splitting into individual pages...');
-
-        for (let i = 0; i < totalPages; i++) {
-          const newPdf = await PDFDocument.create();
-          const [copiedPage] = await newPdf.copyPages(pdfDoc, [i]);
-          newPdf.addPage(copiedPage);
-
-          const pdfBytes = await newPdf.save();
-          results.push(new Blob([pdfBytes as unknown as BlobPart], { type: 'application/pdf' }));
-
-          onProgress?.(
-            20 + ((i + 1) / totalPages) * 70,
-            `Processing page ${i + 1} of ${totalPages}...`
-          );
-        }
-      } else if (mode === 'range' && options.start && options.end) {
-        // Extract page range
-        const start = Math.max(1, options.start);
-        const end = Math.min(totalPages, options.end);
-
-        onProgress?.(20, `Extracting pages ${start}-${end}...`);
-
-        const newPdf = await PDFDocument.create();
-        const pageIndices = Array.from(
-          { length: end - start + 1 },
-          (_, i) => start - 1 + i
-        );
-
-        const copiedPages = await newPdf.copyPages(pdfDoc, pageIndices);
-        copiedPages.forEach((page) => newPdf.addPage(page));
-
-        onProgress?.(80, 'Saving extracted pages...');
-
-        const pdfBytes = await newPdf.save();
-        results.push(new Blob([pdfBytes as unknown as BlobPart], { type: 'application/pdf' }));
-      } else if (mode === 'intervals' && options.interval) {
-        // Split by intervals
-        const interval = options.interval;
-        const numChunks = Math.ceil(totalPages / interval);
-
-        onProgress?.(20, `Splitting into ${numChunks} files...`);
-
-        for (let i = 0; i < numChunks; i++) {
-          const startPage = i * interval;
-          const endPage = Math.min((i + 1) * interval, totalPages);
-
-          const newPdf = await PDFDocument.create();
-          const pageIndices = Array.from(
-            { length: endPage - startPage },
-            (_, j) => startPage + j
-          );
-
-          const copiedPages = await newPdf.copyPages(pdfDoc, pageIndices);
-          copiedPages.forEach((page) => newPdf.addPage(page));
-
-          const pdfBytes = await newPdf.save();
-          results.push(new Blob([pdfBytes as unknown as BlobPart], { type: 'application/pdf' }));
-
-          onProgress?.(
-            20 + ((i + 1) / numChunks) * 70,
-            `Creating file ${i + 1} of ${numChunks}...`
-          );
-        }
-      } else if (mode === 'custom' && options.pages && options.pages.length > 0) {
-        // Extract specific pages
-        const pages = options.pages;
-        onProgress?.(20, `Extracting ${pages.length} specific pages...`);
-
-        for (let i = 0; i < pages.length; i++) {
-          const pageIndex = pages[i] - 1; // Convert to 0-based index
-
-          if (pageIndex >= 0 && pageIndex < totalPages) {
-            const newPdf = await PDFDocument.create();
-            const [copiedPage] = await newPdf.copyPages(pdfDoc, [pageIndex]);
-            newPdf.addPage(copiedPage);
-
-            const pdfBytes = await newPdf.save();
-            results.push(new Blob([pdfBytes as unknown as BlobPart], { type: 'application/pdf' }));
-          }
-
-          onProgress?.(
-            20 + ((i + 1) / pages.length) * 70,
-            `Extracting page ${pages[i]} (${i + 1} of ${pages.length})...`
-          );
-        }
-      }
-
-      onProgress?.(100, 'Split completed!');
-
-      const processingTime = performance.now() - startTime;
-
-      return {
-        success: true,
-        data: results,
-        metadata: {
-          pageCount: totalPages,
-          originalSize: file.size,
-          processedSize: results.reduce((sum, blob) => sum + blob.size, 0),
-          processingTime,
-          filesCreated: results.length,
-        }
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: this.createPDFError(error, 'PDF split failed')
-      };
-    }
+    return splitService.splitPDF(file, mode, options, onProgress);
   }
 
   /**
@@ -517,180 +317,14 @@ export class PDFService {
     quality: 'low' | 'medium' | 'high',
     onProgress?: ProgressCallback
   ): Promise<PDFProcessingResult> {
-    const startTime = performance.now();
-
-    try {
-      onProgress?.(0, 'Loading PDF...');
-
-      const arrayBuffer = await file.arrayBuffer();
-      const sourcePdf = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
-      const pageCount = sourcePdf.getPageCount();
-
-      onProgress?.(10, 'Analyzing PDF structure...');
-
-      // Create a new PDF to remove encryption and unneeded data
-      // For 'low' quality, we'll try more aggressive structural optimization
-      const pdfDoc = await PDFDocument.create();
-
-      onProgress?.(20, 'Remapping pages...');
-
-      // Copy all pages
-      const pages = await pdfDoc.copyPages(sourcePdf, Array.from({ length: pageCount }, (_, i) => i));
-      pages.forEach(page => pdfDoc.addPage(page));
-
-      onProgress?.(40, 'Cleaning metadata...');
-
-      // Remove metadata to reduce size
-      pdfDoc.setTitle('');
-      pdfDoc.setAuthor('');
-      pdfDoc.setSubject('');
-      pdfDoc.setKeywords([]);
-      pdfDoc.setProducer('');
-      pdfDoc.setCreator('');
-
-      // For medium and low quality, we can more aggressively strip structured data if needed
-      // but pdf-lib is limited here. We at least ensure Object Streams are used.
-
-      onProgress?.(70, 'Optimizing and saving PDF...');
-
-      // Save with optimization
-      // useObjectStreams: true significantly reduces size by compressing non-stream objects
-      const pdfBytes = await pdfDoc.save({
-        useObjectStreams: true,
-        addDefaultPage: false,
-        objectsPerTick: quality === 'low' ? 100 : 50,
-      });
-
-      onProgress?.(90, 'Calculating results...');
-
-      const blob = new Blob([pdfBytes as unknown as BlobPart], { type: 'application/pdf' });
-
-      // Calculate compression ratio more precisely
-      const ratioValue = (1 - blob.size / file.size) * 100;
-      const compressionRatio = ratioValue > 0 ? parseFloat(ratioValue.toFixed(1)) : 0;
-
-      onProgress?.(100, 'Compression completed!');
-
-      const processingTime = performance.now() - startTime;
-
-      return {
-        success: true,
-        data: blob,
-        metadata: {
-          pageCount,
-          originalSize: file.size,
-          processedSize: blob.size,
-          processingTime,
-          compressionRatio,
-        }
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: this.createPDFError(error, 'PDF compression failed')
-      };
-    }
+    return compressionService.compressPDF(file, quality, onProgress);
   }
 
   /**
    * Analyze PDF for compression potential
    */
   async analyzeCompression(file: File): Promise<import('@/types/pdf').CompressionAnalysis> {
-    try {
-      const arrayBuffer = await file.arrayBuffer();
-      const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
-      const pageCount = pdfDoc.getPageCount();
-      const fileSize = file.size;
-
-      let imageCount = 0;
-      // let totalImageArea = 0;
-
-      // Sample first 5 pages to guess content type (for performance)
-      const pagesToSample = Math.min(pageCount, 5);
-      const pages = pdfDoc.getPages();
-
-      for (let i = 0; i < pagesToSample; i++) {
-        const page = pages[i];
-        const resources = page.node.Resources();
-
-        if (resources instanceof PDFDict) {
-          const xObjects = resources.get(PDFName.of('XObject'));
-          if (xObjects instanceof PDFDict) {
-            const keys = xObjects.keys();
-            for (const key of keys) {
-              const ref = xObjects.get(key);
-              const obj = pdfDoc.context.lookup(ref);
-              if (!obj) continue;
-              if (obj instanceof PDFDict || (obj && 'dict' in obj && obj.dict instanceof PDFDict)) {
-                const dict = obj instanceof PDFDict ? obj : (obj as { dict: PDFDict }).dict;
-                if (dict && typeof dict.get === 'function') {
-                  const subtype = dict.get(PDFName.of('Subtype'));
-                  if (subtype && subtype.toString() === '/Image') {
-                    imageCount++;
-                    const width = dict.get(PDFName.of('Width'));
-                    const height = dict.get(PDFName.of('Height'));
-                    // Approximate area if dimensions found
-                    if (width && height) {
-                      // Just counting images, logic simplified
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-
-      // Pro-rate image items for total pages
-      const estimatedTotalImages = Math.round(imageCount * (pageCount / pagesToSample));
-      const avgFileSize = fileSize / pageCount;
-
-      const isImageHeavy = estimatedTotalImages > pageCount || (fileSize > 5 * 1024 * 1024 && estimatedTotalImages > 0);
-
-      const insights: Array<{ key: string; params?: Record<string, string | number> }> = [];
-      let recommendedQuality: 'low' | 'medium' | 'high' = 'medium';
-      let savingPotential: 'high' | 'medium' | 'low' = 'medium';
-
-      if (isImageHeavy) {
-        insights.push({ key: 'smartCompression.insights.imageCount', params: { count: estimatedTotalImages } });
-        if (fileSize > 10 * 1024 * 1024) { // > 10MB
-          recommendedQuality = 'low'; // Maximum compression
-          savingPotential = 'high';
-          insights.push({ key: 'smartCompression.insights.largeImages' });
-        } else {
-          recommendedQuality = 'medium';
-          savingPotential = 'medium';
-        }
-      } else {
-        // Text heavy
-        insights.push({ key: 'smartCompression.insights.mostlyText' });
-        if (avgFileSize > 500 * 1024) { // > 500KB per page
-          recommendedQuality = 'medium';
-          savingPotential = 'medium';
-          insights.push({ key: 'smartCompression.insights.highDensity' });
-        } else {
-          recommendedQuality = 'high'; // Minimal compression needed
-          savingPotential = 'low';
-          insights.push({ key: 'smartCompression.insights.efficient' });
-        }
-      }
-
-      return {
-        isImageHeavy,
-        recommendedQuality,
-        savingPotential,
-        insights
-      };
-
-    } catch (error) {
-      console.warn('Analysis failed, returning default', error);
-      return {
-        isImageHeavy: false,
-        recommendedQuality: 'medium',
-        savingPotential: 'medium',
-        insights: [{ key: 'smartCompression.insights.standard' }]
-      };
-    }
+    return compressionService.analyzeCompression(file);
   }
 
   /**
@@ -701,74 +335,7 @@ export class PDFService {
     settings: ProtectionSettings,
     onProgress?: (progress: ProtectionProgress) => void
   ): Promise<Uint8Array> {
-    try {
-      onProgress?.({
-        stage: 'analyzing',
-        progress: 10,
-        message: 'Loading PDF document...'
-      });
-
-      // Load the original PDF
-      const arrayBuffer = await file.arrayBuffer();
-      const pdfDoc = await PDFDocumentEncrypt.load(arrayBuffer);
-
-      onProgress?.({
-        stage: 'preparing',
-        progress: 30,
-        message: 'Preparing document for encryption...'
-      });
-
-      // Add metadata
-      pdfDoc.setTitle(pdfDoc.getTitle() || 'Protected Document');
-      pdfDoc.setSubject('Password Protected PDF created by LocalPDF');
-      pdfDoc.setCreator('LocalPDF - Privacy-First PDF Tools');
-      pdfDoc.setProducer('LocalPDF with pdf-lib-plus-encrypt');
-
-      onProgress?.({
-        stage: 'encrypting',
-        progress: 60,
-        message: 'Applying encryption and permissions...'
-      });
-
-      // Map printing permission to boolean (pdf-lib-plus-encrypt uses boolean)
-      const printingAllowed = settings.permissions.printing !== 'none';
-
-      // Encrypt the PDF with password and permissions
-      await pdfDoc.encrypt({
-        userPassword: settings.userPassword || '',
-        ownerPassword: settings.ownerPassword || settings.userPassword || '',
-        permissions: {
-          printing: printingAllowed,
-          modifying: settings.permissions.modifying || false,
-          copying: settings.permissions.copying || false,
-          annotating: settings.permissions.annotating || false,
-          fillingForms: settings.permissions.fillingForms || false,
-          contentAccessibility: settings.permissions.contentAccessibility !== false, // Default true
-          documentAssembly: settings.permissions.documentAssembly || false
-        }
-      });
-
-      onProgress?.({
-        stage: 'finalizing',
-        progress: 90,
-        message: 'Finalizing encrypted document...'
-      });
-
-      // Save the encrypted PDF (useObjectStreams must be false for encryption)
-      const pdfBytes = await pdfDoc.save({ useObjectStreams: false });
-
-      onProgress?.({
-        stage: 'complete',
-        progress: 100,
-        message: 'PDF encryption completed successfully!'
-      });
-
-      return new Uint8Array(pdfBytes);
-
-    } catch (error) {
-      console.error('Error encrypting PDF:', error);
-      throw new Error(`Failed to encrypt PDF: ${error instanceof Error ? error.message : 'Unknown error'}`);
-    }
+    return securityService.protectPDF(file, settings, onProgress);
   }
 
 
@@ -781,61 +348,7 @@ export class PDFService {
     pagesToExtract: number[],
     onProgress?: ProgressCallback
   ): Promise<PDFProcessingResult> {
-    const startTime = performance.now();
-
-    try {
-      onProgress?.(0, 'Loading PDF...');
-
-      const arrayBuffer = await file.arrayBuffer();
-      const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
-      const totalPages = pdfDoc.getPageCount();
-
-      // Validate page numbers
-      const validPages = pagesToExtract.filter(p => p >= 1 && p <= totalPages);
-      if (validPages.length === 0) {
-        throw new Error('No valid pages to extract');
-      }
-
-      onProgress?.(20, `Extracting ${validPages.length} pages...`);
-
-      // Create new document with extracted pages
-      const newPdfDoc = await PDFDocument.create();
-
-      let copiedCount = 0;
-      for (const pageNum of validPages) {
-        const [copiedPage] = await newPdfDoc.copyPages(pdfDoc, [pageNum - 1]);
-        newPdfDoc.addPage(copiedPage);
-
-        copiedCount++;
-        const progress = 20 + (copiedCount / validPages.length) * 60;
-        onProgress?.(progress, `Extracting page ${copiedCount}/${validPages.length}...`);
-      }
-
-      onProgress?.(80, 'Saving PDF...');
-
-      const pdfBytes = await newPdfDoc.save();
-      const blob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' });
-
-      const processingTime = performance.now() - startTime;
-      onProgress?.(100, 'Completed!');
-
-      return {
-        success: true,
-        data: blob,
-        metadata: {
-          pageCount: validPages.length,
-          originalSize: file.size,
-          processedSize: blob.size,
-          compressionRatio: blob.size / file.size,
-          processingTime
-        }
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: this.createPDFError(error, 'Extract pages failed')
-      };
-    }
+    return pageManipulationService.extractPDF(file, pagesToExtract, onProgress);
   }
 
   /**
@@ -846,63 +359,7 @@ export class PDFService {
     pagesToDelete: number[],
     onProgress?: ProgressCallback
   ): Promise<PDFProcessingResult> {
-    const startTime = performance.now();
-
-    try {
-      onProgress?.(0, 'Loading PDF...');
-
-      const arrayBuffer = await file.arrayBuffer();
-      const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
-      const totalPages = pdfDoc.getPageCount();
-
-      // Calculate pages to keep
-      const allPages = Array.from({ length: totalPages }, (_, i) => i + 1);
-      const pagesToKeep = allPages.filter(p => !pagesToDelete.includes(p));
-
-      if (pagesToKeep.length === 0) {
-        throw new Error('Cannot delete all pages');
-      }
-
-      onProgress?.(20, `Removing ${pagesToDelete.length} pages...`);
-
-      // Create new document with only pages to keep
-      const newPdfDoc = await PDFDocument.create();
-
-      let copiedCount = 0;
-      for (const pageNum of pagesToKeep) {
-        const [copiedPage] = await newPdfDoc.copyPages(pdfDoc, [pageNum - 1]);
-        newPdfDoc.addPage(copiedPage);
-
-        copiedCount++;
-        const progress = 20 + (copiedCount / pagesToKeep.length) * 60;
-        onProgress?.(progress, `Copying page ${copiedCount}/${pagesToKeep.length}...`);
-      }
-
-      onProgress?.(80, 'Saving PDF...');
-
-      const pdfBytes = await newPdfDoc.save();
-      const blob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' });
-
-      const processingTime = performance.now() - startTime;
-      onProgress?.(100, 'Completed!');
-
-      return {
-        success: true,
-        data: blob,
-        metadata: {
-          pageCount: pagesToKeep.length,
-          originalSize: file.size,
-          processedSize: blob.size,
-          compressionRatio: blob.size / file.size,
-          processingTime
-        }
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: this.createPDFError(error, 'Delete pages failed')
-      };
-    }
+    return pageManipulationService.deletePDF(file, pagesToDelete, onProgress);
   }
 
   /**
@@ -912,74 +369,7 @@ export class PDFService {
     file: File,
     onProgress?: ProgressCallback
   ): Promise<PDFProcessingResult<Blob>> {
-    const startTime = performance.now();
-
-    try {
-      onProgress?.(0, 'Loading PDF...');
-
-      const arrayBuffer = await file.arrayBuffer();
-      const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
-
-      onProgress?.(20, 'Flattening form fields...');
-
-      // Flatten form fields
-      const form = pdfDoc.getForm();
-      try {
-        form.flatten();
-      } catch {
-        console.warn('Could not flatten form fields, maybe no form exists.');
-      }
-
-      onProgress?.(50, 'Flattening annotations...');
-
-      // Flatten annotations on each page
-      const pages = pdfDoc.getPages();
-      for (let i = 0; i < pages.length; i++) {
-        const page = pages[i];
-        try {
-          // Cast to any to access flatten if it exists (it's a method on PDFPage in some versions/extensions)
-          // or just skip if not supported, but for now assuming user intent.
-          // Actually, pdf-lib standard PDFPage doesn't have flatten.
-          // The error says "Property 'flatten' does not exist".
-          // Use a safe check or comment out if not supported.
-          // Assuming this was intended to be form flattening which is done differently in pdf-lib usually (form.flatten()).
-          // Leaving as is but casting to avoid error strictly for this task.
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          if (typeof (page as any).flatten === 'function') {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (page as any).flatten();
-          }
-        } catch {
-          console.warn(`Could not flatten annotations on page ${i + 1}.`);
-        }
-        const progress = 50 + (i / pages.length) * 30;
-        onProgress?.(progress, `Processing page ${i + 1}/${pages.length}...`);
-      }
-
-      onProgress?.(80, 'Saving PDF...');
-
-      const pdfBytes = await pdfDoc.save();
-      const blob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' });
-
-      const processingTime = performance.now() - startTime;
-      onProgress?.(100, 'Completed!');
-
-      return {
-        success: true,
-        data: blob,
-        metadata: {
-          pageCount: pdfDoc.getPageCount(),
-          originalSize: file.size,
-          processedSize: blob.size,
-          processingTime
-        }
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: this.createPDFError(error, 'PDF flatten failed')
-      };
-    }
+    return securityService.flattenPDF(file, onProgress);
   }
 
   /**
@@ -991,62 +381,7 @@ export class PDFService {
     pages: number[],
     onProgress?: ProgressCallback
   ): Promise<PDFProcessingResult> {
-    const startTime = performance.now();
-
-    try {
-      onProgress?.(0, 'Loading PDF...');
-
-      const arrayBuffer = await file.arrayBuffer();
-      const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
-      const totalPages = pdfDoc.getPageCount();
-
-      // Validate page numbers
-      const validPages = pages.filter(p => p >= 1 && p <= totalPages);
-
-      if (validPages.length === 0) {
-        throw new Error('No valid pages to rotate');
-      }
-
-      onProgress?.(20, `Rotating ${validPages.length} pages...`);
-
-      // Rotate pages (pdf-lib uses degrees)
-      let rotatedCount = 0;
-      for (const pageNum of validPages) {
-        const page = pdfDoc.getPage(pageNum - 1); // 0-indexed
-        const currentRotation = page.getRotation().angle;
-        const newRotation = (currentRotation + angle) % 360;
-        page.setRotation(degrees(newRotation));
-
-        rotatedCount++;
-        const progress = 20 + (rotatedCount / validPages.length) * 60;
-        onProgress?.(progress, `Rotated ${rotatedCount}/${validPages.length} pages...`);
-      }
-
-      onProgress?.(80, 'Saving PDF...');
-
-      const pdfBytes = await pdfDoc.save();
-      const blob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' });
-
-      const processingTime = performance.now() - startTime;
-      onProgress?.(100, 'Completed!');
-
-      return {
-        success: true,
-        data: blob,
-        metadata: {
-          pageCount: totalPages,
-          originalSize: file.size,
-          processedSize: blob.size,
-          compressionRatio: blob.size / file.size,
-          processingTime
-        }
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: this.createPDFError(error, 'Rotate PDF failed')
-      };
-    }
+    return pageManipulationService.rotatePDF(file, angle, pages, onProgress);
   }
 
   /**
@@ -1056,250 +391,7 @@ export class PDFService {
     file: File,
     onProgress?: ProgressCallback
   ): Promise<PDFProcessingResult<import('@/types/pdf').ExtractedImage[]>> {
-    const startTime = performance.now();
-
-    try {
-      onProgress?.(0, 'Loading PDF...');
-
-      const arrayBuffer = await file.arrayBuffer();
-      const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
-      const pages = pdfDoc.getPages();
-      const totalPages = pages.length;
-
-      const images: import('@/types/pdf').ExtractedImage[] = [];
-      let imageCount = 0;
-
-      onProgress?.(10, 'Extracting images...');
-
-      for (let pageIndex = 0; pageIndex < totalPages; pageIndex++) {
-        const page = pages[pageIndex];
-        const resources = page.node.Resources();
-
-        if (resources && resources instanceof PDFDict) {
-          const xObjects = resources.get(PDFName.of('XObject'));
-
-          if (xObjects && xObjects instanceof PDFDict) {
-            const xObjectKeys = xObjects.keys();
-
-            for (const key of xObjectKeys) {
-              try {
-                const ref = xObjects.get(key);
-                const xObject = pdfDoc.context.lookup(ref);
-
-                if (xObject instanceof PDFDict || (xObject && 'dict' in xObject && xObject.dict instanceof PDFDict)) {
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  const dict = xObject instanceof PDFDict ? xObject : (xObject as any).dict;
-                  const subtype = dict.get(PDFName.of('Subtype'));
-
-                  // Check if it's an image
-                  if (subtype && subtype.toString() === '/Image') {
-                    // Get image properties
-                    const width = dict.get(PDFName.of('Width'));
-                    const height = dict.get(PDFName.of('Height'));
-                    const colorSpace = dict.get(PDFName.of('ColorSpace'));
-
-                    if (!width || !height) {
-                      continue;
-                    }
-
-                    // Extract numeric values - width/height can be PDFNumber objects
-                    let w = 0;
-                    let h = 0;
-
-                    // Try different ways to extract the number
-                    if (typeof width === 'number') {
-                      w = width;
-                    } else if (width && typeof (width as unknown as Record<string, unknown>).asNumber === 'function') {
-                      w = (width as unknown as { asNumber: () => number }).asNumber();
-                    } else if (width && typeof (width as unknown as Record<string, unknown>).numberValue === 'function') {
-                      w = (width as unknown as { numberValue: () => number }).numberValue();
-                    } else if (width && (width as unknown as { value: unknown }).value !== undefined) {
-                      w = Number((width as unknown as { value: unknown }).value);
-                    } else if (width && (width as unknown as { num: unknown }).num !== undefined) {
-                      w = Number((width as unknown as { num: unknown }).num);
-                    }
-
-                    if (typeof height === 'number') {
-                      h = height;
-                    } else if (height && typeof (height as unknown as Record<string, unknown>).asNumber === 'function') {
-                      h = (height as unknown as { asNumber: () => number }).asNumber();
-                    } else if (height && typeof (height as unknown as Record<string, unknown>).numberValue === 'function') {
-                      h = (height as unknown as { numberValue: () => number }).numberValue();
-                    } else if (height && (height as unknown as { value: unknown }).value !== undefined) {
-                      h = Number((height as unknown as { value: unknown }).value);
-                    } else if (height && (height as unknown as { num: unknown }).num !== undefined) {
-                      h = Number((height as unknown as { num: unknown }).num);
-                    }
-
-
-
-                    // Validate dimensions
-                    if (!w || !h || w <= 0 || h <= 0 || !Number.isFinite(w) || !Number.isFinite(h)) {
-                      continue;
-                    }
-
-                    // Skip unreasonably large images (likely errors)
-                    if (w > 10000 || h > 10000) {
-                      continue;
-                    }
-
-                    // Get raw image data
-                    let imageData: Uint8Array | null = null;
-
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    if ('stream' in xObject && (xObject as any).stream) {
-                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                      imageData = (xObject as any).stream.contents;
-                    } else if ('contents' in xObject) {
-                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                      imageData = (xObject as any).contents;
-                    }
-
-                    if (imageData && imageData.length > 0) {
-                      // Try to determine format
-                      const filter = dict.get(PDFName.of('Filter'));
-                      let mimeType = 'image/png';
-                      let ext = 'png';
-
-                      // Check if it's JPEG
-                      if (filter && filter.toString().includes('DCTDecode')) {
-                        mimeType = 'image/jpeg';
-                        ext = 'jpg';
-                        // For JPEG, we can use the raw data directly
-                        const blob = new Blob([imageData as unknown as BlobPart], { type: mimeType });
-                        imageCount++;
-                        const id = `img_${pageIndex + 1}_${imageCount}_${Date.now()}`;
-                        images.push({
-                          id,
-                          blob,
-                          filename: `page${pageIndex + 1}_img${imageCount}.${ext}`,
-                          width: w,
-                          height: h,
-                          pageNumber: pageIndex + 1,
-                          format: ext as 'jpg' | 'png',
-                          size: blob.size,
-                          previewUrl: URL.createObjectURL(blob)
-                        });
-                      } else {
-                        // For other formats, render to canvas
-                        try {
-                          // Validate dimensions again before canvas creation
-                          if (w <= 0 || h <= 0 || !Number.isFinite(w) || !Number.isFinite(h)) {
-                            continue;
-                          }
-
-                          const canvas = document.createElement('canvas');
-                          canvas.width = w;
-                          canvas.height = h;
-                          const ctx = canvas.getContext('2d');
-
-                          if (ctx) {
-                            // Determine color channels
-                            let channels = 4; // RGBA default
-                            if (colorSpace) {
-                              const csStr = colorSpace.toString();
-                              if (csStr.includes('DeviceGray')) channels = 1;
-                              else if (csStr.includes('DeviceRGB')) channels = 3;
-                              else if (csStr.includes('DeviceCMYK')) channels = 4;
-                            }
-
-                            // Validate we have enough data
-                            const expectedSize = w * h * channels;
-                            if (imageData.length < expectedSize) {
-                              continue;
-                            }
-
-                            // Create ImageData
-                            const imgDataArray = new Uint8ClampedArray(w * h * 4);
-
-                            // Simple conversion (this is basic, may not work for all color spaces)
-                            for (let i = 0; i < w * h; i++) {
-                              if (channels === 1) {
-                                // Grayscale
-                                const gray = imageData[i];
-                                imgDataArray[i * 4] = gray;
-                                imgDataArray[i * 4 + 1] = gray;
-                                imgDataArray[i * 4 + 2] = gray;
-                                imgDataArray[i * 4 + 3] = 255;
-                              } else if (channels === 3) {
-                                // RGB
-                                imgDataArray[i * 4] = imageData[i * 3];
-                                imgDataArray[i * 4 + 1] = imageData[i * 3 + 1];
-                                imgDataArray[i * 4 + 2] = imageData[i * 3 + 2];
-                                imgDataArray[i * 4 + 3] = 255;
-                              }
-                            }
-
-                            const imgData = new ImageData(imgDataArray, w, h);
-                            ctx.putImageData(imgData, 0, 0);
-
-                            const blob = await new Promise<Blob | null>(resolve =>
-                              canvas.toBlob(resolve, 'image/png')
-                            );
-
-                            if (blob) {
-                              imageCount++;
-                              const id = `img_${pageIndex + 1}_${imageCount}_${Date.now()}`;
-                              images.push({
-                                id,
-                                blob,
-                                filename: `page${pageIndex + 1}_img${imageCount}.${ext}`,
-                                width: w,
-                                height: h,
-                                pageNumber: pageIndex + 1,
-                                format: ext as 'jpg' | 'png',
-                                size: blob.size,
-                                previewUrl: URL.createObjectURL(blob)
-                              });
-                            }
-                          }
-                        } catch {
-                          // Silently skip - these are likely malformed or unsupported images
-                          continue;
-                        }
-                      }
-                    }
-                  }
-                }
-              } catch {
-                // Ignore annotation errors
-                continue;
-              }
-            }
-          }
-        }
-
-        onProgress?.(
-          10 + ((pageIndex + 1) / totalPages) * 70,
-          `Scanned page ${pageIndex + 1} of ${totalPages}...`
-        );
-      }
-
-      if (images.length === 0) {
-        throw new Error('No images found in the PDF');
-      }
-
-      const processingTime = performance.now() - startTime;
-      onProgress?.(100, 'Extraction completed!');
-
-      return {
-        success: true,
-        data: images,
-        metadata: {
-          pageCount: totalPages,
-          originalSize: file.size,
-          processedSize: images.reduce((sum, img) => sum + img.size, 0),
-          processingTime,
-          filesCreated: images.length
-        }
-      };
-
-    } catch (error) {
-      return {
-        success: false,
-        error: this.createPDFError(error, 'Image extraction failed')
-      };
-    }
+    return imageExtractionService.extractImages(file, onProgress);
   }
 
   /**
@@ -1311,119 +403,21 @@ export class PDFService {
     extractedImages: import('@/types/pdf').ExtractedImage[],
     onProgress?: ProgressCallback
   ): Promise<PDFProcessingResult<Blob>> {
-    const startTime = performance.now();
-
-    try {
-      onProgress?.(0, 'Loading PDF...');
-
-      const arrayBuffer = await file.arrayBuffer();
-      const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
-      const pages = pdfDoc.getPages();
-      const totalPages = pages.length;
-
-      onProgress?.(10, 'Processing pages...');
-
-      // Create a map of images to remove grouped by page
-      const imagesToRemoveByPage = new Map<number, Set<string>>();
-      extractedImages.forEach(img => {
-        if (imageIdsToRemove.includes(img.id)) {
-          if (!imagesToRemoveByPage.has(img.pageNumber)) {
-            imagesToRemoveByPage.set(img.pageNumber, new Set());
-          }
-          // Store filename as identifier since we can match it
-          imagesToRemoveByPage.get(img.pageNumber)!.add(img.filename);
+    const imagesToRemoveByPage = new Map<number, Set<string>>();
+    extractedImages.forEach(img => {
+      if (imageIdsToRemove.includes(img.id)) {
+        if (!imagesToRemoveByPage.has(img.pageNumber)) {
+          imagesToRemoveByPage.set(img.pageNumber, new Set());
         }
-      });
-
-
-      const imageCountByPage = new Map<number, number>();
-
-      for (let pageIndex = 0; pageIndex < totalPages; pageIndex++) {
-        const pageNumber = pageIndex + 1;
-        const page = pages[pageIndex];
-        const resources = page.node.Resources();
-
-        if (!imagesToRemoveByPage.has(pageNumber)) {
-          continue; // Skip pages with no images to remove
-        }
-
-        if (resources instanceof PDFDict) {
-          const xObjects = resources.get(PDFName.of('XObject'));
-
-          if (xObjects instanceof PDFDict) {
-            const keysToRemove: PDFName[] = [];
-            // let currentImageIndex = 0; // This variable is not used
-
-            const xObjectKeys = xObjects.keys();
-            for (const key of xObjectKeys) {
-              const ref = xObjects.get(key);
-              const obj = pdfDoc.context.lookup(ref);
-
-              const dict = obj instanceof PDFDict ? obj : (obj && 'dict' in obj && obj.dict instanceof PDFDict) ? obj.dict : null;
-
-              if (dict) {
-                const subtype = dict.get(PDFName.of('Subtype'));
-
-                if (subtype && subtype.toString() === '/Image') {
-                  // currentImageIndex++; // This variable is not used
-                  if (!imageCountByPage.has(pageNumber)) {
-                    imageCountByPage.set(pageNumber, 0);
-                  }
-                  const imgIndex = imageCountByPage.get(pageNumber)! + 1;
-                  imageCountByPage.set(pageNumber, imgIndex);
-
-                  const expectedFilename = `page${pageNumber}_img${imgIndex}.jpg`; // or .png
-                  const expectedFilenamePng = `page${pageNumber}_img${imgIndex}.png`;
-
-                  const shouldRemove = imagesToRemoveByPage.get(pageNumber)!.has(expectedFilename) ||
-                    imagesToRemoveByPage.get(pageNumber)!.has(expectedFilenamePng);
-
-                  if (shouldRemove) {
-                    keysToRemove.push(key);
-                  }
-                }
-              }
-            }
-
-            for (const key of keysToRemove) {
-              xObjects.delete(key);
-            }
-          }
-        }
-
-        onProgress?.(
-          10 + ((pageIndex + 1) / totalPages) * 80,
-          `Processed page ${pageNumber} of ${totalPages}...`
-        );
+        imagesToRemoveByPage.get(img.pageNumber)!.add(img.filename);
       }
+    });
 
-      onProgress?.(90, 'Saving PDF...');
-
-      const pdfBytes = await pdfDoc.save({ useObjectStreams: true });
-      const blob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' });
-
-      const processingTime = performance.now() - startTime;
-      onProgress?.(100, 'Removal completed!');
-
-      return {
-        success: true,
-        data: blob,
-        metadata: {
-          pageCount: totalPages,
-          originalSize: file.size,
-          processedSize: blob.size,
-          processingTime,
-          filesCreated: 1
-        }
-      };
-
-    } catch (error) {
-      return {
-        success: false,
-        error: this.createPDFError(error, 'Image removal failed')
-      };
-    }
+    return pageManipulationService.removeSelectedImages(file, imagesToRemoveByPage, onProgress);
   }
+
+
+
 
   /**
    * Remove ALL images from PDF
@@ -1432,91 +426,7 @@ export class PDFService {
     file: File,
     onProgress?: ProgressCallback
   ): Promise<PDFProcessingResult<Blob>> {
-    const startTime = performance.now();
-
-    try {
-      onProgress?.(0, 'Loading PDF...');
-
-      const arrayBuffer = await file.arrayBuffer();
-      const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
-      const pages = pdfDoc.getPages();
-      const totalPages = pages.length;
-
-      onProgress?.(10, 'Processing pages...');
-
-
-
-      for (let i = 0; i < totalPages; i++) {
-        const page = pages[i];
-        const resources = page.node.Resources();
-
-        if (resources instanceof PDFDict) {
-          const xObjects = resources.get(PDFName.of('XObject'));
-
-          if (xObjects instanceof PDFDict) {
-            const keysToRemove: PDFName[] = [];
-
-            const xObjectKeys = xObjects.keys();
-            for (const key of xObjectKeys) {
-              const ref = xObjects.get(key);
-              const obj = pdfDoc.context.lookup(ref);
-              if (!obj) continue;
-
-              if (obj instanceof PDFDict) {
-                const subtype = obj.get(PDFName.of('Subtype'));
-                if (subtype === PDFName.of('Image')) {
-                  keysToRemove.push(key);
-                }
-              } else if (obj instanceof PDFArray) {
-                // Unlikely
-              } else {
-                if (obj && 'dict' in obj && obj.dict instanceof PDFDict) {
-                  const subtype = obj.dict.get(PDFName.of('Subtype'));
-                  if (subtype === PDFName.of('Image')) {
-                    keysToRemove.push(key);
-                  }
-                }
-              }
-            }
-
-            for (const key of keysToRemove) {
-              xObjects.delete(key);
-            }
-          }
-        }
-
-        onProgress?.(
-          10 + ((i + 1) / totalPages) * 80,
-          `Processed page ${i + 1} of ${totalPages}...`
-        );
-      }
-
-      onProgress?.(90, 'Saving PDF...');
-
-      const pdfBytes = await pdfDoc.save({ useObjectStreams: true });
-      const blob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' });
-
-      const processingTime = performance.now() - startTime;
-      onProgress?.(100, 'Removal completed!');
-
-      return {
-        success: true,
-        data: blob,
-        metadata: {
-          pageCount: totalPages,
-          originalSize: file.size,
-          processedSize: blob.size,
-          processingTime,
-          filesCreated: 1
-        }
-      };
-
-    } catch (error) {
-      return {
-        success: false,
-        error: this.createPDFError(error, 'Image removal failed')
-      };
-    }
+    return pageManipulationService.removeImages(file, onProgress);
   }
 
   /**
@@ -3793,99 +2703,12 @@ export class PDFService {
     file: File,
     pageOperations: Array<{
       originalPageNumber: number;
+      newPosition: number;
       rotation: number;
-      sourceFile?: File; // Optional: if provided, page comes from this file
     }>,
     onProgress?: ProgressCallback
-  ): Promise<PDFProcessingResult<Blob>> {
-    try {
-      onProgress?.(10, 'Loading resources...');
-
-      // Map to store loaded source documents to avoid reloading
-      const sourceDocs = new Map<File, PDFDocument>();
-
-      // Helper to get or load a document
-      const getSourceDoc = async (f: File) => {
-        if (!sourceDocs.has(f)) {
-          const arrayBuffer = await f.arrayBuffer();
-          const doc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
-          sourceDocs.set(f, doc);
-        }
-        return sourceDocs.get(f)!;
-      };
-
-      // Load main source PDF first
-      await getSourceDoc(file);
-
-      onProgress?.(20, 'Creating new document...');
-
-      // Create new PDF document
-      const newPdf = await PDFDocument.create();
-
-      onProgress?.(30, 'Organizing pages...');
-
-      // Copy pages in new order with rotations
-      const totalOperations = pageOperations.length;
-      for (let i = 0; i < totalOperations; i++) {
-        const operation = pageOperations[i];
-
-        // Progress update
-        const progressPercent = 30 + Math.floor((i / totalOperations) * 50);
-        onProgress?.(
-          progressPercent,
-          `Processing page ${i + 1}/${totalOperations}...`
-        );
-
-        // Determine source file and document
-        const sourceFile = operation.sourceFile || file;
-        const sourcePdf = await getSourceDoc(sourceFile);
-
-        // Get source page (pdf-lib uses 0-based indexing)
-        const sourcePageIndex = operation.originalPageNumber - 1;
-
-        if (sourcePageIndex < 0 || sourcePageIndex >= sourcePdf.getPageCount()) {
-          console.warn(`Invalid page number: ${operation.originalPageNumber} for file ${sourceFile.name}`);
-          continue;
-        }
-
-        // Copy page to new document
-        const [copiedPage] = await newPdf.copyPages(sourcePdf, [sourcePageIndex]);
-
-        // Apply rotation if needed
-        if (operation.rotation !== 0) {
-          const currentRotation = copiedPage.getRotation().angle;
-          copiedPage.setRotation(degrees(currentRotation + operation.rotation));
-        }
-
-        // Add page to new document
-        newPdf.addPage(copiedPage);
-      }
-
-      onProgress?.(85, 'Finalizing document...');
-
-      // Save the new PDF
-      const pdfBytes = await newPdf.save();
-      const blob = new Blob([pdfBytes as unknown as BlobPart], { type: 'application/pdf' });
-
-      onProgress?.(100, 'Complete!');
-
-      return {
-        success: true,
-        data: blob,
-        metadata: {
-          pageCount: newPdf.getPageCount(),
-          originalSize: file.size, // Note: this might not be accurate if we added many files, but it's a baseline
-          processedSize: blob.size,
-          processingTime: 0,
-        },
-      };
-    } catch (error) {
-      console.error('Error organizing PDF:', error);
-      return {
-        success: false,
-        error: this.createPDFError(error, 'Failed to organize PDF')
-      };
-    }
+  ): Promise<PDFProcessingResult> {
+    return pageManipulationService.organizePDF(file, pageOperations, onProgress);
   }
 }
 

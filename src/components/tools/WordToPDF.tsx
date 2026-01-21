@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Progress } from '@/components/ui/progress';
+import { toast } from 'sonner';
 import JSZip from 'jszip';
 import { PDFPreview } from '@/components/common/PDFPreview';
 import { Card } from '@/components/ui/card';
@@ -77,7 +78,7 @@ export const WordToPDF: React.FC = () => {
       }));
 
     if (newFiles.length < selectedFiles.length) {
-      alert(t('wordToPdf.errors.invalidFormat'));
+      toast.error(t('wordToPdf.errors.invalidFormat'));
     }
 
     setFiles(prev => [...prev, ...newFiles]);

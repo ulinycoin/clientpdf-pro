@@ -119,6 +119,19 @@
     "selectFile": "Select file",
     "selectFiles": "Select files",
     "uploadFile": "Upload file",
+    "supportId": "Support ID",
+    "feedback": "Share Feedback",
+    "feedbackTitle": "We value your feedback",
+    "feedbackDescription": "Help us improve LocalPDF. Your feedback is anonymous unless you provide an email.",
+    "rating": "Rating",
+    "ratingRequired": "Please select a rating",
+    "comment": "Comment",
+    "commentPlaceholder": "What can we improve?",
+    "optional": "optional",
+    "sendFeedback": "Send Feedback",
+    "sending": "Sending...",
+    "feedbackSuccess": "Thank you for your feedback!",
+    "feedbackError": "Failed to send feedback. Please try again later.",
     "uploadDescription": "Drag and drop or click to upload",
     "download": "Download",
     "downloadAll": "Download All (ZIP)",
@@ -536,6 +549,17 @@
     }
   },
   "ocr": {
+    "errors": {
+      "limitReached": "OCR Limit Reached",
+      "limitReachedDesc": "You reached your monthly limit of {limit} pages for {plan} plan.",
+      "noFile": "Please select a file first",
+      "processingFailed": "OCR processing failed",
+      "unsupportedFileType": "OCR only supports PDF and image files (JPG, PNG). Your file type (.{ext}) is not supported.",
+      "hocrEmpty": "hOCR data is empty. Please try running OCR again.",
+      "tsvEmpty": "TSV data is empty. Please try running OCR again.",
+      "searchablePdfFailed": "Failed to create searchable PDF: {error}",
+      "downloadFailed": "Failed to generate file. Please try again."
+    },
     "filePreview": "File to process",
     "recognitionLanguage": "Recognition language",
     "languageHint": "Select the language of text in your document",
@@ -641,16 +665,7 @@
     "info1": "Supports PDF documents and images (JPG, PNG)",
     "info2": "Recognition in 5 languages: EN, RU, DE, FR, ES",
     "info3": "Multi-page PDF support with page range selection",
-    "info4": "All processing happens in your browser - files stay private",
-    "errors": {
-      "noFile": "Please select a file first",
-      "processingFailed": "OCR processing failed. Please try again.",
-      "unsupportedFileType": "OCR only supports PDF and image files (JPG, PNG). Your file type (.{ext}) is not supported.",
-      "hocrEmpty": "hOCR data is empty. Please try running OCR again.",
-      "tsvEmpty": "TSV data is empty. Please try running OCR again.",
-      "searchablePdfFailed": "Failed to create searchable PDF: {error}",
-      "downloadFailed": "Failed to generate file. Please try again."
-    }
+    "info4": "All processing happens in your browser - files stay private"
   },
   "watermark": {
     "filePreview": "File to watermark",
