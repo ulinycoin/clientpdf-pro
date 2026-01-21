@@ -40,7 +40,19 @@
       "destination": "/blog/:slug.html"
     },
     {
-      "source": "/(merge-pdf|split-pdf|compress-pdf|protect-pdf|ocr-pdf|watermark-pdf|rotate-pdf|delete-pages-pdf|extract-pages-pdf|add-text-pdf|images-to-pdf|unlock-pdf|pdf-to-images|pdf-to-word|word-to-pdf|sign-pdf|flatten-pdf)",
+      "source": "/(de|ja)",
+      "destination": "/$1.html"
+    },
+    {
+      "source": "/(de|ja)/:path",
+      "destination": "/$1/:path.html"
+    },
+    {
+      "source": "/learn/:slug",
+      "destination": "/learn/:slug.html"
+    },
+    {
+      "source": "/(add-form-fields-pdf|add-text-pdf|compress-pdf|delete-pages-pdf|edit-text-pdf|extract-images-pdf|extract-pages-pdf|finance-privacy-pdf|flatten-pdf|images-to-pdf|legal-privacy-pdf|medical-privacy-pdf|merge-pdf|ocr-pdf|organize-pdf|pdf-to-images|pdf-to-word|protect-pdf|rotate-pdf|sign-pdf|split-pdf|tables-pdf|watermark-pdf|word-to-pdf)",
       "destination": "/$1.html"
     },
     {
@@ -102,7 +114,7 @@
       ]
     },
     {
-      "source": "/(merge-pdf|split-pdf|compress-pdf|protect-pdf|ocr-pdf|watermark-pdf|rotate-pdf|delete-pages-pdf|extract-pages-pdf|add-text-pdf|images-to-pdf)/(.*)",
+      "source": "/(add-form-fields-pdf|add-text-pdf|compress-pdf|delete-pages-pdf|edit-text-pdf|extract-images-pdf|extract-pages-pdf|finance-privacy-pdf|flatten-pdf|images-to-pdf|legal-privacy-pdf|medical-privacy-pdf|merge-pdf|ocr-pdf|organize-pdf|pdf-to-images|pdf-to-word|protect-pdf|rotate-pdf|sign-pdf|split-pdf|tables-pdf|watermark-pdf|word-to-pdf)",
       "headers": [
         {
           "key": "Cache-Control",
@@ -111,7 +123,7 @@
       ]
     },
     {
-      "source": "/(de|ja)/(merge-pdf|split-pdf|compress-pdf|protect-pdf|ocr-pdf|watermark-pdf|rotate-pdf|delete-pages-pdf|extract-pages-pdf|add-text-pdf|images-to-pdf)/(.*)",
+      "source": "/(de|ja)/(add-form-fields-pdf|add-text-pdf|compress-pdf|delete-pages-pdf|edit-text-pdf|extract-images-pdf|extract-pages-pdf|finance-privacy-pdf|flatten-pdf|images-to-pdf|legal-privacy-pdf|medical-privacy-pdf|merge-pdf|ocr-pdf|organize-pdf|pdf-to-images|pdf-to-word|protect-pdf|rotate-pdf|sign-pdf|split-pdf|tables-pdf|watermark-pdf|word-to-pdf)",
       "headers": [
         {
           "key": "Cache-Control",

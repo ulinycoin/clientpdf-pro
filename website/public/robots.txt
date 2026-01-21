@@ -53,6 +53,10 @@ Allow: /flatten-pdf
 Allow: /legal-privacy-pdf
 Allow: /finance-privacy-pdf
 Allow: /medical-privacy-pdf
+Allow: /de
+Allow: /ja
+Allow: /de/
+Allow: /ja/
 
 # Allow informational pages
 Allow: /about
