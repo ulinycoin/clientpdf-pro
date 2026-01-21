@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import type { Tool, ToolGroup } from '@/types';
 import { TOOL_GROUPS } from '@/types';
 import { Button } from '@/components/ui/button';
 import { useI18n } from '@/hooks/useI18n';
+import { useSupportId } from '@/hooks/useSupportId';
 import {
   Files,
   Scissors,
@@ -25,7 +26,6 @@ import {
   Table,
   MessageSquare
 } from 'lucide-react';
-import { FeedbackDialog } from '@/components/common/FeedbackDialog';
 
 interface SidebarProps {
   currentTool: Tool | null;
@@ -33,6 +33,7 @@ interface SidebarProps {
   collapsed: boolean;
   onToggleCollapse: () => void;
   selectedGroup: ToolGroup;
+  onOpenFeedback: () => void;
 }
 
 // Tool definitions with icons
@@ -69,19 +70,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onToolSelect,
   collapsed,
   selectedGroup,
+  onOpenFeedback,
 }) => {
   const { t } = useI18n();
-  const [supportId, setSupportId] = useState<string>('');
-  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
-
-  useEffect(() => {
-    let id = localStorage.getItem('support_id');
-    if (!id) {
-      id = `LP-${Math.random().toString(36).substring(2, 6).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
-      localStorage.setItem('support_id', id);
-    }
-    setSupportId(id);
-  }, []);
+  const supportId = useSupportId();
 
   // Filter tools based on selected group
   const filteredTools = TOOLS.filter((tool) =>
@@ -185,7 +177,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 {/* Feedback Button */}
                 <Button
                   variant="ghost"
-                  onClick={() => setIsFeedbackOpen(true)}
+                  onClick={onOpenFeedback}
                   className="w-full justify-start gap-3 h-auto py-2.5 px-3 rounded-xl text-gray-500 hover:text-ocean-500 hover:bg-ocean-500/5 transition-all group"
                 >
                   <MessageSquare size={16} className="transition-transform group-hover:scale-110" />
@@ -204,7 +196,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={() => setIsFeedbackOpen(true)}
+                  onClick={onOpenFeedback}
                   className="h-9 w-9 rounded-lg text-gray-500 hover:text-ocean-500 hover:bg-ocean-500/5"
                   title={t('common.feedback')}
                 >
@@ -215,13 +207,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
         </nav>
       </div>
-
-      <FeedbackDialog
-        open={isFeedbackOpen}
-        onOpenChange={setIsFeedbackOpen}
-        supportId={supportId}
-        currentTool={currentTool || undefined}
-      />
     </aside>
   );
 };

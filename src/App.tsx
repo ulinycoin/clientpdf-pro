@@ -7,6 +7,9 @@ import { ToolGroupNav } from '@/components/layout/ToolGroupNav';
 import { LanguageSelector } from '@/components/LanguageSelector';
 import { Button } from '@/components/ui/button';
 import { Toaster } from '@/components/ui/sonner';
+import { useSupportId } from '@/hooks/useSupportId';
+import { FeedbackDialog } from '@/components/common/FeedbackDialog';
+import { MessageSquare } from 'lucide-react';
 import type { Theme, ToolGroup } from '@/types';
 
 // Lazy load tool components for better performance
@@ -46,6 +49,8 @@ function App() {
   // Routing
   const { currentTool, setCurrentTool, context } = useHashRouter();
   const { t } = useI18n();
+  const supportId = useSupportId();
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
 
   // Theme management
   const [theme, setTheme] = useState<Theme>(() => {
@@ -159,6 +164,17 @@ function App() {
               <span className="relative z-10">{t('common.supportDeveloper')}</span>
             </a>
 
+            {/* Feedback Button */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsFeedbackOpen(true)}
+              className="flex items-center gap-2 px-3 py-2 bg-ocean-500/10 hover:bg-ocean-500/20 text-ocean-600 dark:text-ocean-400 border border-ocean-500/20 hover:border-ocean-500/40 rounded-lg transition-all duration-300 font-medium text-sm group"
+            >
+              <MessageSquare size={16} className="transition-transform group-hover:scale-110" />
+              <span className="hidden md:inline">{t('common.feedback')}</span>
+            </Button>
+
             {/* Language Selector */}
             <LanguageSelector />
 
@@ -189,6 +205,7 @@ function App() {
         collapsed={sidebarCollapsed}
         onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
         selectedGroup={selectedGroup}
+        onOpenFeedback={() => setIsFeedbackOpen(true)}
       />
 
       {/* Main content */}
@@ -264,6 +281,12 @@ function App() {
         )}
       </main>
       <Toaster />
+      <FeedbackDialog
+        open={isFeedbackOpen}
+        onOpenChange={setIsFeedbackOpen}
+        supportId={supportId}
+        currentTool={currentTool || undefined}
+      />
     </div>
   );
 }
