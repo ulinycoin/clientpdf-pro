@@ -40,14 +40,45 @@ const softwareSchema = {
       "applicableCountry": "US",
       "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
       "merchantReturnDays": 30,
-      "returnFees": "https://schema.org/FreeReturn"
-    }
+      "returnFees": "https://schema.org/FreeReturn",
+      "returnMethod": "https://schema.org/ReturnByMail"
+    },
+    "shippingDetails": {
+      "@type": "OfferShippingDetails",
+      "shippingRate": {
+        "@type": "MonetaryAmount",
+        "value": "0",
+        "currency": "USD"
+      },
+      "shippingDestination": {
+        "@type": "DefinedRegion",
+        "addressCountry": "US"
+      },
+      "deliveryTime": {
+        "@type": "ShippingDeliveryTime",
+        "handlingTime": {
+          "@type": "QuantitativeValue",
+          "minValue": 0,
+          "maxValue": 0,
+          "unitCode": "DAY"
+        },
+        "transitTime": {
+          "@type": "QuantitativeValue",
+          "minValue": 0,
+          "maxValue": 0,
+          "unitCode": "DAY"
+        }
+      }
+    },
+    "itemCondition": "https://schema.org/NewCondition"
   },
   "description": description,
   "aggregateRating": {
     "@type": "AggregateRating",
     "ratingValue": "4.9",
-    "ratingCount": "1250"
+    "ratingCount": "1250",
+    "bestRating": "5",
+    "worstRating": "1"
   }
 };
 
