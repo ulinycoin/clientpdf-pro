@@ -92,3 +92,6 @@ tsc_output.txt
 # Brain/AI metadata
 .gemini/
 .agent/
+
+# Extension
+extension/

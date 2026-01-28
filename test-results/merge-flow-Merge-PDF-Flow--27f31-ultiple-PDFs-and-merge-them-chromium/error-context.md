@@ -1,0 +1,200 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - img
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - button "Collapse sidebar" [ref=e7] [cursor=pointer]:
+          - generic [ref=e8]: ☰
+        - link "LocalPDF LocalPDF Sanctuary" [ref=e9] [cursor=pointer]:
+          - /url: /
+          - img "LocalPDF" [ref=e10]
+          - generic [ref=e11]:
+            - generic [ref=e12]: LocalPDF
+            - generic [ref=e13]: Sanctuary
+      - generic [ref=e14]:
+        - link "Support Developer" [ref=e15] [cursor=pointer]:
+          - /url: https://www.buymeacoffee.com/localpdf
+          - generic [ref=e17]: ☕
+          - generic [ref=e18]: Support Developer
+        - button "Share Feedback" [ref=e19] [cursor=pointer]:
+          - img
+          - generic [ref=e20]: Share Feedback
+        - button "Select language" [ref=e21] [cursor=pointer]:
+          - generic [ref=e22]: 🇬🇧
+        - button "Toggle theme" [ref=e23] [cursor=pointer]:
+          - generic [ref=e24]: ☀️
+  - generic [ref=e26]:
+    - button "All Tools" [ref=e27] [cursor=pointer]:
+      - generic [ref=e28]:
+        - img
+      - generic [ref=e29]: All Tools
+    - button "Organize" [ref=e31] [cursor=pointer]:
+      - generic [ref=e32]:
+        - img
+      - generic [ref=e33]: Organize
+    - button "Edit" [ref=e34] [cursor=pointer]:
+      - generic [ref=e35]:
+        - img
+      - generic [ref=e36]: Edit
+    - button "Security" [ref=e37] [cursor=pointer]:
+      - generic [ref=e38]:
+        - img
+      - generic [ref=e39]: Security
+    - button "Convert" [ref=e40] [cursor=pointer]:
+      - generic [ref=e41]:
+        - img
+      - generic [ref=e42]: Convert
+  - complementary [ref=e43]:
+    - generic [ref=e44]:
+      - heading "Tools" [level=2] [ref=e46]
+      - navigation [ref=e47]:
+        - list [ref=e48]:
+          - listitem [ref=e49]:
+            - button "Organize Pages" [ref=e50] [cursor=pointer]:
+              - generic [ref=e51]:
+                - img
+              - generic [ref=e52]: Organize Pages
+          - listitem [ref=e53]:
+            - button "Merge PDF" [ref=e54] [cursor=pointer]:
+              - generic [ref=e55]:
+                - img
+              - generic [ref=e56]: Merge PDF
+          - listitem [ref=e58]:
+            - button "Split PDF" [ref=e59] [cursor=pointer]:
+              - generic [ref=e60]:
+                - img
+              - generic [ref=e61]: Split PDF
+          - listitem [ref=e62]:
+            - button "Compress PDF" [ref=e63] [cursor=pointer]:
+              - generic [ref=e64]:
+                - img
+              - generic [ref=e65]: Compress PDF
+          - listitem [ref=e66]:
+            - button "Protect PDF" [ref=e67] [cursor=pointer]:
+              - generic [ref=e68]:
+                - img
+              - generic [ref=e69]: Protect PDF
+          - listitem [ref=e70]:
+            - button "OCR PDF" [ref=e71] [cursor=pointer]:
+              - generic [ref=e72]:
+                - img
+              - generic [ref=e73]: OCR PDF
+          - listitem [ref=e74]:
+            - button "Watermark PDF" [ref=e75] [cursor=pointer]:
+              - generic [ref=e76]:
+                - img
+              - generic [ref=e77]: Watermark PDF
+          - listitem [ref=e78]:
+            - button "Edit PDF" [ref=e79] [cursor=pointer]:
+              - generic [ref=e80]:
+                - img
+              - generic [ref=e81]: Edit PDF
+          - listitem [ref=e82]:
+            - button "Add Form Fields" [ref=e83] [cursor=pointer]:
+              - generic [ref=e84]:
+                - img
+              - generic [ref=e85]: Add Form Fields
+          - listitem [ref=e86]:
+            - button "Rotate PDF" [ref=e87] [cursor=pointer]:
+              - generic [ref=e88]:
+                - img
+              - generic [ref=e89]: Rotate PDF
+          - listitem [ref=e90]:
+            - button "Delete Pages" [ref=e91] [cursor=pointer]:
+              - generic [ref=e92]:
+                - img
+              - generic [ref=e93]: Delete Pages
+          - listitem [ref=e94]:
+            - button "Extract Pages" [ref=e95] [cursor=pointer]:
+              - generic [ref=e96]:
+                - img
+              - generic [ref=e97]: Extract Pages
+          - listitem [ref=e98]:
+            - button "Images to PDF" [ref=e99] [cursor=pointer]:
+              - generic [ref=e100]:
+                - img
+              - generic [ref=e101]: Images to PDF
+          - listitem [ref=e102]:
+            - button "PDF to Images" [ref=e103] [cursor=pointer]:
+              - generic [ref=e104]:
+                - img
+              - generic [ref=e105]: PDF to Images
+          - listitem [ref=e106]:
+            - button "PDF to Word" [ref=e107] [cursor=pointer]:
+              - generic [ref=e108]:
+                - img
+              - generic [ref=e109]: PDF to Word
+          - listitem [ref=e110]:
+            - button "Word to PDF" [ref=e111] [cursor=pointer]:
+              - generic [ref=e112]:
+                - img
+              - generic [ref=e113]: Word to PDF
+          - listitem [ref=e114]:
+            - button "Sign PDF" [ref=e115] [cursor=pointer]:
+              - generic [ref=e116]:
+                - img
+              - generic [ref=e117]: Sign PDF
+          - listitem [ref=e118]:
+            - button "Flatten PDF" [ref=e119] [cursor=pointer]:
+              - generic [ref=e120]:
+                - img
+              - generic [ref=e121]: Flatten PDF
+          - listitem [ref=e122]:
+            - button "Extract/Remove Images" [ref=e123] [cursor=pointer]:
+              - generic [ref=e124]:
+                - img
+              - generic [ref=e125]: Extract/Remove Images
+          - listitem [ref=e126]:
+            - button "Tables in PDF" [ref=e127] [cursor=pointer]:
+              - generic [ref=e128]:
+                - img
+              - generic [ref=e129]: Tables in PDF
+        - generic [ref=e131]:
+          - heading "Resources" [level=3] [ref=e132]
+          - generic [ref=e134]:
+            - generic [ref=e135]: Support ID
+            - generic [ref=e136]:
+              - generic [ref=e137]: LP-LB6I-DG5X
+              - button "Copy ID" [ref=e138] [cursor=pointer]:
+                - img
+          - button "Share Feedback" [ref=e140] [cursor=pointer]:
+            - img
+            - generic [ref=e141]: Share Feedback
+  - main [ref=e142]:
+    - main [ref=e144]:
+      - generic [ref=e145]:
+        - heading "Merge PDF" [level=1] [ref=e146]
+        - paragraph [ref=e147]: Combine multiple PDFs into one
+      - generic [ref=e148]:
+        - generic [ref=e151]:
+          - generic [ref=e153]:
+            - generic [ref=e154]: ✅
+            - heading "PDFs merged successfully!" [level=2] [ref=e155]
+            - generic [ref=e156]:
+              - paragraph [ref=e157]: "Total pages: 0"
+              - paragraph [ref=e158]: "File size: 583 B"
+          - generic [ref=e159]:
+            - button "Compress PDF" [ref=e160] [cursor=pointer]:
+              - img
+              - generic [ref=e161]: Compress PDF
+            - button "Protect PDF" [ref=e162] [cursor=pointer]:
+              - img
+              - generic [ref=e163]: Protect PDF
+            - button "Watermark PDF" [ref=e164] [cursor=pointer]:
+              - img
+              - generic [ref=e165]: Watermark PDF
+            - button "Split PDF" [ref=e166] [cursor=pointer]:
+              - img
+              - generic [ref=e167]: Split PDF
+        - generic [ref=e171]:
+          - button "Download" [ref=e172] [cursor=pointer]
+          - button "Merge another" [ref=e173] [cursor=pointer]
+  - region "Notifications alt+T":
+    - list:
+      - listitem [ref=e174]:
+        - img [ref=e176]
+        - generic [ref=e180]: PDFs merged successfully!
+```

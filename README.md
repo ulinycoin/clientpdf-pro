@@ -113,6 +113,28 @@ Automated workflows are configured in `.github/workflows/`:
 - **CI**: Runs linting, type checking, and component builds on every push/PR.
 - **Build Verification**: Ensures the full merged build (`build:all`) completes successfully.
 
+## 🧪 Testing Strategy
+
+LocalPDF uses a multi-layered testing approach to ensure reliability of client-side PDF processing.
+
+### 1. Unit Tests (Vitest)
+Checks core logic in `src/services` (Merge, Split, etc.) in isolation.
+```bash
+npm run test:unit
+```
+
+### 2. End-to-End Tests (Playwright)
+Validates full user flows in real browser environments.
+```bash
+# Install browsers (first time only)
+npx playwright install
+
+# Run E2E tests
+npm run test:e2e
+```
+
+---
+
 ---
 
 **Last updated:** December 23, 2025
