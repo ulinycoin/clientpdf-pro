@@ -72,6 +72,8 @@ export const ImagesToPDF: React.FC = () => {
               height: img.height || 0,
               pageNumber: index + 1,
               format: img.file.type.includes('png') ? 'png' : 'jpg',
+              extension: img.name.split('.').pop() || '',
+              mimeType: img.file.type,
               size: img.size,
               previewUrl: img.preview,
             } as ExtractedImage;

@@ -18,7 +18,7 @@ type RotationAngle = 0 | 90 | 180 | 270;
 type PageSelection = 'all' | 'specific';
 
 interface RotateUploadedFile extends UploadedFile {
-  rotation: number;
+  rotation: RotationAngle;
   previewPage: number;
 }
 
@@ -101,9 +101,9 @@ export const RotatePDF: React.FC = () => {
       prev.map((f) => {
         if (f.id !== id) return f;
         const currentRotation = f.rotation || 0;
-        const nextRotation = direction === 'cw'
+        const nextRotation = (direction === 'cw'
           ? (currentRotation + 90) % 360
-          : (currentRotation - 90 + 360) % 360;
+          : (currentRotation - 90 + 360) % 360) as RotationAngle;
         return { ...f, rotation: nextRotation };
       })
     );
@@ -452,7 +452,7 @@ export const RotatePDF: React.FC = () => {
                 onClick={() => {
                   setRotationAngle(angle as RotationAngle);
                   if (pageSelection === 'all') {
-                    setFiles(prev => prev.map(f => ({ ...f, rotation: angle })));
+                    setFiles(prev => prev.map(f => ({ ...f, rotation: angle as RotationAngle })));
                   }
                 }}
                 disabled={isProcessing}

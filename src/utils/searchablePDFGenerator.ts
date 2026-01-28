@@ -88,7 +88,7 @@ async function extractImageFromPDF(
   canvas.height = viewport.height;
   canvas.width = viewport.width;
 
-  await page.render({
+  await (page as any).render({
     canvasContext: context,
     viewport: viewport,
   }).promise;
@@ -183,7 +183,7 @@ export async function createSearchablePDF(
     const { data } = await worker.recognize(canvas, {}, { hocr: true });
 
     // Parse hOCR to get word positions
-    const words = parseHOCR(data.hocr);
+    const words = data.hocr ? parseHOCR(data.hocr) : [];
 
     pageDataArray.push({
       pageNumber: pageNum,
@@ -234,7 +234,7 @@ export async function createSearchablePDF(
 
   onProgress?.(100, 'Searchable PDF created!');
 
-  return new Blob([pdfBytes], { type: 'application/pdf' });
+  return new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' });
 }
 
 /**
@@ -274,7 +274,7 @@ export async function createSearchablePDFFromImage(
   onProgress?.(60, 'Creating searchable PDF...');
 
   // Parse hOCR
-  const words = parseHOCR(data.hocr);
+  const words = data.hocr ? parseHOCR(data.hocr) : [];
 
   // Create PDF
   const pdfDoc = await PDFDocument.create();
@@ -308,5 +308,5 @@ export async function createSearchablePDFFromImage(
 
   onProgress?.(100, 'Searchable PDF created!');
 
-  return new Blob([pdfBytes], { type: 'application/pdf' });
+  return new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' });
 }
