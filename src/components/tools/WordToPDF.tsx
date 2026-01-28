@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ToolLayout } from '@/components/common/ToolLayout';
 import { useI18n } from '@/hooks/useI18n';
 import { useSharedFile } from '@/hooks/useSharedFile';
@@ -9,7 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Progress } from '@/components/ui/progress';
 import { toast } from 'sonner';
 import JSZip from 'jszip';
-import { PDFPreview } from '@/components/common/PDFPreview';
+import { PreviewFrame } from '@/components/common/preview/PreviewFrame';
+import { PreviewCanvas } from '@/components/common/preview/PreviewCanvas';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -43,6 +44,7 @@ interface FileStatus {
   rotation: number;
   previewPage: number;
   pages?: number;
+  previewGenerationKey?: string;
   result?: {
     blob: Blob;
     originalSize: number;
@@ -54,12 +56,34 @@ interface FileStatus {
 export const WordToPDF: React.FC = () => {
   const { t } = useI18n();
   const { setSharedFile } = useSharedFile();
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [files, setFiles] = useState<FileStatus[]>([]);
   const [isProcessingAll, setIsProcessingAll] = useState(false);
   const [conversionMode, setConversionMode] = useState<ConversionMode>('formatted');
   const [quality, setQuality] = useState<Quality>(2);
   const [zoomScale, setZoomScale] = useState(1);
+
+  useEffect(() => {
+    if (files.length === 0) return;
+    const previewKey = `${conversionMode}-1`;
+
+    files.forEach(async (fileStatus) => {
+      if (fileStatus.previewGenerationKey === previewKey) return;
+      try {
+        const result = await pdfService.wordToPDF(fileStatus.file, () => { }, { mode: conversionMode, quality: 1 });
+        if (result.success && result.data) {
+          setFiles(prev => prev.map(f => f.id === fileStatus.id ? {
+            ...f,
+            previewBlob: result.data,
+            pages: result.metadata?.pageCount || 1,
+            previewGenerationKey: previewKey
+          } : f));
+        }
+      } catch (err) {
+        console.error('Background preview regeneration failed:', err);
+      }
+    });
+  }, [conversionMode, files.length]);
 
   const handleFileSelected = (selectedFiles: File[]) => {
     const newFiles: FileStatus[] = selectedFiles
@@ -91,7 +115,8 @@ export const WordToPDF: React.FC = () => {
           setFiles(prev => prev.map(f => f.id === fileStatus.id ? {
             ...f,
             previewBlob: result.data,
-            pages: result.metadata?.pageCount || 1
+            pages: result.metadata?.pageCount || 1,
+            previewGenerationKey: `${conversionMode}-1`
           } : f));
         }
       } catch (err) {
@@ -242,106 +267,106 @@ export const WordToPDF: React.FC = () => {
           {files.map((file, index) => (
             <div key={file.id} className="relative group w-full">
               <Card className="p-8 hover:shadow-2xl transition-all duration-300 relative border-transparent hover:border-ocean-200 dark:hover:border-ocean-800 bg-white dark:bg-privacy-800 shadow-xl overflow-hidden">
-                <div className="mb-8 flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-900/50 rounded-2xl p-8 relative overflow-hidden group/preview min-h-[600px]">
-                  {file.previewBlob ? (
-                    <div
-                      className="transition-transform duration-500 cubic-bezier(0.4, 0, 0.2, 1) origin-center shadow-2xl relative"
-                      style={{ transform: `rotate(${file.rotation}deg)` }}
-                    >
-                      <PDFPreview
-                        blob={file.previewBlob}
-                        width={450 * zoomScale}
-                        height={600 * zoomScale}
-                        pageNumber={file.previewPage}
-                      />
-                    </div>
-                  ) : (
-                    <div className="flex flex-col items-center justify-center gap-4 text-gray-400">
-                      <Loader2 className="w-12 h-12 animate-spin text-ocean-500" />
-                      <p className="text-sm font-medium">{t('common.generatingPreview') || 'Generating visual preview...'}</p>
-                    </div>
-                  )}
-
-                  {file.pages && file.pages > 1 && (
-                    <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between px-4 pointer-events-none">
-                      <Button
-                        size="icon"
-                        variant="secondary"
-                        className="h-12 w-12 rounded-full shadow-lg pointer-events-auto bg-white/90 dark:bg-gray-800/90 backdrop-blur-md border hover:scale-110 transition-transform disabled:opacity-30"
-                        onClick={() => handlePageChange(file.id, -1)}
-                        disabled={file.previewPage <= 1}
-                        title={t('common.prevPage') || 'Previous page'}
+                <div className="mb-8 flex flex-col items-center justify-center group/preview relative">
+                  <PreviewFrame
+                    size="hero"
+                    className="mx-auto"
+                    overlayCenter={file.pages && file.pages > 1 ? (
+                      <div className="flex justify-between w-full px-4">
+                        <Button
+                          size="icon"
+                          variant="secondary"
+                          className="h-12 w-12 rounded-full shadow-lg pointer-events-auto bg-white/90 dark:bg-gray-800/90 backdrop-blur-md border hover:scale-110 transition-transform disabled:opacity-30"
+                          onClick={() => handlePageChange(file.id, -1)}
+                          disabled={file.previewPage <= 1}
+                          title={t('common.prevPage') || 'Previous page'}
+                        >
+                          <ChevronLeft className="h-6 w-6" />
+                        </Button>
+                        <Button
+                          size="icon"
+                          variant="secondary"
+                          className="h-12 w-12 rounded-full shadow-lg pointer-events-auto bg-white/90 dark:bg-gray-800/90 backdrop-blur-md border hover:scale-110 transition-transform disabled:opacity-30"
+                          onClick={() => handlePageChange(file.id, 1)}
+                          disabled={file.previewPage >= file.pages}
+                          title={t('common.nextPage') || 'Next page'}
+                        >
+                          <ChevronRight className="h-6 w-6" />
+                        </Button>
+                      </div>
+                    ) : null}
+                    overlayTopRight={(
+                      <div className="flex flex-col gap-2 opacity-0 group-hover/preview:opacity-100 transition-opacity glass-premium dark:glass-premium-dark rounded-2xl p-2">
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="h-10 w-10 text-ocean-600 dark:text-ocean-400 hover:bg-ocean-50 dark:hover:bg-ocean-900/40 rounded-xl"
+                          onClick={() => handleRotateFile(file.id, 'ccw')}
+                        >
+                          <RotateCw className="h-5 w-5 transform -scale-x-100" />
+                        </Button>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="h-10 w-10 text-ocean-600 dark:text-ocean-400 hover:bg-ocean-50 dark:hover:bg-ocean-900/40 rounded-xl"
+                          onClick={() => handleRotateFile(file.id, 'cw')}
+                        >
+                          <RotateCw className="h-5 w-5" />
+                        </Button>
+                      </div>
+                    )}
+                    overlayBottomRight={(
+                      <div className="flex gap-2 opacity-0 group-hover/preview:opacity-100 transition-opacity glass-premium dark:glass-premium-dark rounded-2xl p-2">
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="h-10 w-10 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl"
+                          onClick={() => setZoomScale(prev => Math.max(0.5, prev - 0.25))}
+                        >
+                          <ZoomOut className="h-5 w-5" />
+                        </Button>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="h-10 w-10 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl"
+                          onClick={() => setZoomScale(1)}
+                        >
+                          <Maximize className="h-5 w-5" />
+                        </Button>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="h-10 w-10 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl"
+                          onClick={() => setZoomScale(prev => Math.min(2, prev + 0.25))}
+                        >
+                          <ZoomIn className="h-5 w-5" />
+                        </Button>
+                      </div>
+                    )}
+                    overlayBottomLeft={file.pages ? (
+                      <div className="opacity-0 group-hover/preview:opacity-100 transition-opacity glass-premium dark:glass-premium-dark px-3 py-2 rounded-xl text-sm font-bold text-white flex items-center gap-2 bg-ocean-600">
+                        <FileStack className="w-4 h-4" />
+                        {file.previewPage} / {file.pages}
+                      </div>
+                    ) : null}
+                  >
+                    {file.previewBlob ? (
+                      <div
+                        className="w-full h-full flex items-center justify-center transition-transform duration-500 cubic-bezier(0.4, 0, 0.2, 1) origin-center shadow-2xl relative"
+                        style={{ transform: `rotate(${file.rotation}deg) scale(${zoomScale})` }}
                       >
-                        <ChevronLeft className="h-6 w-6" />
-                      </Button>
-                      <Button
-                        size="icon"
-                        variant="secondary"
-                        className="h-12 w-12 rounded-full shadow-lg pointer-events-auto bg-white/90 dark:bg-gray-800/90 backdrop-blur-md border hover:scale-110 transition-transform disabled:opacity-30"
-                        onClick={() => handlePageChange(file.id, 1)}
-                        disabled={file.previewPage >= file.pages}
-                        title={t('common.nextPage') || 'Next page'}
-                      >
-                        <ChevronRight className="h-6 w-6" />
-                      </Button>
-                    </div>
-                  )}
-
-                  <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover/preview:opacity-100 transition-opacity bg-white/95 dark:bg-gray-800/95 rounded-2xl p-2 backdrop-blur-xl shadow-2xl border border-gray-100 dark:border-gray-700">
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      className="h-10 w-10 text-ocean-600 dark:text-ocean-400 hover:bg-ocean-50 dark:hover:bg-ocean-900/40 rounded-xl"
-                      onClick={() => handleRotateFile(file.id, 'ccw')}
-                    >
-                      <RotateCw className="h-5 w-5 transform -scale-x-100" />
-                    </Button>
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      className="h-10 w-10 text-ocean-600 dark:text-ocean-400 hover:bg-ocean-50 dark:hover:bg-ocean-900/40 rounded-xl"
-                      onClick={() => handleRotateFile(file.id, 'cw')}
-                    >
-                      <RotateCw className="h-5 w-5" />
-                    </Button>
-                  </div>
-
-                  <div className="absolute bottom-4 right-4 flex gap-2 opacity-0 group-hover/preview:opacity-100 transition-opacity bg-white/95 dark:bg-gray-800/95 rounded-2xl p-2 backdrop-blur-xl shadow-2xl border border-gray-100 dark:border-gray-700">
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      className="h-10 w-10 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl"
-                      onClick={() => setZoomScale(prev => Math.max(0.5, prev - 0.25))}
-                    >
-                      <ZoomOut className="h-5 w-5" />
-                    </Button>
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      className="h-10 w-10 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl"
-                      onClick={() => setZoomScale(1)}
-                    >
-                      <Maximize className="h-5 w-5" />
-                    </Button>
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      className="h-10 w-10 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl"
-                      onClick={() => setZoomScale(prev => Math.min(2, prev + 0.25))}
-                    >
-                      <ZoomIn className="h-5 w-5" />
-                    </Button>
-                  </div>
-
-                  {file.pages && (
-                    <div className="absolute bottom-4 left-4 bg-ocean-600 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-lg backdrop-blur-md opacity-0 group-hover/preview:opacity-100 transition-opacity flex items-center gap-2">
-                      <FileStack className="w-4 h-4" />
-                      {file.previewPage} / {file.pages}
-                    </div>
-                  )}
+                        <PreviewCanvas blob={file.previewBlob} pageNumber={file.previewPage} />
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center gap-4 text-gray-400">
+                        <Loader2 className="w-12 h-12 animate-spin text-ocean-500" />
+                        <p className="text-sm font-medium">{t('common.generatingPreview') || 'Generating visual preview...'}</p>
+                      </div>
+                    )}
+                  </PreviewFrame>
 
                   {file.isProcessing && (
-                    <div className="absolute inset-0 bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm flex items-center justify-center z-50">
+                    <div className="absolute inset-0 bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm flex items-center justify-center z-50 rounded-2xl">
                       <div className="flex flex-col items-center gap-4 w-64">
                         <Loader2 className="w-12 h-12 animate-spin text-ocean-600" />
                         <Progress value={file.progress} className="h-2 w-full" />
@@ -518,7 +543,7 @@ export const WordToPDF: React.FC = () => {
       maxFiles={10}
       uploadTitle={t('common.selectFiles') || 'Select Word Files'}
       uploadDescription={t('upload.multipleFilesAllowed') || 'Supports up to 10 .docx files'}
-      acceptedTypes=".docx"
+      acceptedTypes=".doc,.docx"
       settings={files.length > 0 ? renderSettings() : null}
       actions={files.length > 0 ? renderActions() : null}
     >

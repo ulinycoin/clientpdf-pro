@@ -10,6 +10,92 @@ export interface LanguageDetectionResult {
   details: string;
 }
 
+const countMatches = (pattern: RegExp, text: string): number => {
+  const matches = text.match(pattern);
+  return matches ? matches.length : 0;
+};
+
+const detectFromContentSample = (contentSample: string): LanguageDetectionResult | null => {
+  const sample = contentSample
+    .replace(/[^\p{L}\s]/gu, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  if (sample.length < 10) return null;
+
+  const methods: string[] = [];
+
+  const cyrillicCount = countMatches(/[а-яёА-ЯЁ]/g, sample);
+  if (cyrillicCount >= 5) {
+    const ukrCount = countMatches(/[іїєґІЇЄҐ]/g, sample);
+    const belCount = countMatches(/[ўЎ]/g, sample);
+    const rusCount = countMatches(/[ёыъэЁЫЪЭ]/g, sample);
+
+    if (ukrCount > 0 && ukrCount >= rusCount && ukrCount >= belCount) {
+      return {
+        language: 'ukr',
+        confidence: 'high',
+        detectionMethods: ['content_cyrillic_ukr'],
+        details: `Detected Ukrainian-specific Cyrillic (${ukrCount} matches)`,
+      };
+    }
+    if (belCount > 0 && belCount >= rusCount) {
+      return {
+        language: 'bel',
+        confidence: 'high',
+        detectionMethods: ['content_cyrillic_bel'],
+        details: `Detected Belarusian-specific Cyrillic (${belCount} matches)`,
+      };
+    }
+    if (rusCount > 0) {
+      return {
+        language: 'rus',
+        confidence: 'high',
+        detectionMethods: ['content_cyrillic_rus'],
+        details: `Detected Russian-specific Cyrillic (${rusCount} matches)`,
+      };
+    }
+    return {
+      language: 'rus',
+      confidence: 'medium',
+      detectionMethods: ['content_cyrillic_generic'],
+      details: `Detected Cyrillic script (${cyrillicCount} matches)`,
+    };
+  }
+
+  const latvianCount = countMatches(/[āčēģīķļņšūžĀČĒĢĪĶĻŅŠŪŽ]/g, sample);
+  const lithuanianCount = countMatches(/[ąčęėįšųūžĄČĘĖĮŠŲŪŽ]/g, sample);
+  const estonianCount = countMatches(/[äõöšüžÄÕÖŠÜŽ]/g, sample);
+  const finnishCount = countMatches(/[äöÄÖ]/g, sample);
+  const swedishCount = countMatches(/[åäöÅÄÖ]/g, sample);
+
+  const latvianWords = countMatches(/\b(un|ir|es|viņš|viņa|mēs|jūs|kas|vai|bet|par|no|uz|ar|pie|pēc)\b/gi, sample);
+  const lithuanianWords = countMatches(/\b(ir|yra|kad|bet|su|iš|į|pas|nuo|apie|kaip|kas|kuris)\b/gi, sample);
+  const estonianWords = countMatches(/\b(on|ja|ei|või|kui|mis|kes|see|seda|kuid|ning|siis)\b/gi, sample);
+  const finnishWords = countMatches(/\b(ja|ei|on|että|joka|mikä|mutta|kanssa)\b/gi, sample);
+  const swedishWords = countMatches(/\b(och|att|det|som|för|med|inte)\b/gi, sample);
+
+  const candidates: Array<{ lang: string; score: number; details: string }> = [
+    { lang: 'lav', score: latvianCount * 2 + latvianWords, details: `Latvian diacritics/words (${latvianCount}/${latvianWords})` },
+    { lang: 'lit', score: lithuanianCount * 2 + lithuanianWords, details: `Lithuanian diacritics/words (${lithuanianCount}/${lithuanianWords})` },
+    { lang: 'est', score: estonianCount * 2 + estonianWords, details: `Estonian diacritics/words (${estonianCount}/${estonianWords})` },
+    { lang: 'fin', score: finnishCount * 2 + finnishWords, details: `Finnish diacritics/words (${finnishCount}/${finnishWords})` },
+    { lang: 'swe', score: swedishCount * 2 + swedishWords, details: `Swedish diacritics/words (${swedishCount}/${swedishWords})` },
+  ];
+
+  const top = candidates.sort((a, b) => b.score - a.score)[0];
+  if (top.score >= 2) {
+    return {
+      language: top.lang,
+      confidence: top.score >= 4 ? 'high' : 'medium',
+      detectionMethods: ['content_diacritics_words'],
+      details: top.details,
+    };
+  }
+
+  return null;
+};
+
 // Mapping from franc's ISO 639-3 codes to our Tesseract codes if they differ
 const francToTesseractMap: { [key: string]: string } = {
   cmn: 'chi_sim', // Mandarin -> Chinese Simplified
@@ -347,7 +433,20 @@ export const detectLanguageAdvanced = (filename: string, contentSample?: string)
     }
   }
 
-  // Method 5: Content analysis with Franc (high confidence)
+  // Method 5: Content analysis (script/diacritics) before Franc
+  if (contentSample && contentSample.trim().length > 10) {
+    const contentResult = detectFromContentSample(contentSample);
+    if (contentResult) {
+      if (confidence !== 'high' || contentResult.confidence === 'high') {
+        detectedLang = contentResult.language;
+        confidence = contentResult.confidence;
+        methods.push(...contentResult.detectionMethods);
+        details = contentResult.details;
+      }
+    }
+  }
+
+  // Method 6: Content analysis with Franc (high confidence)
   if (contentSample && contentSample.trim().length > 10) {
     // Clean content sample for better analysis
     const cleanedSample = contentSample

@@ -162,6 +162,7 @@ export class QuickOCR {
       let extractedText = '';
       let bestLanguage = 'eng';
       let bestConfidence = 0;
+      const ocrResults: Record<string, { text: string; confidence: number }> = {};
 
 
       // Strategy: Try up to 2 languages based on confidence
@@ -177,11 +178,18 @@ export class QuickOCR {
       } else {
         // Low/medium confidence or English - start with English
         languagesToTry.push('eng');
-        console.log('🎯 QuickOCR: Will try: eng (then analyze content)');
+        if (file.type.startsWith('image/')) {
+          languagesToTry.push('rus');
+          console.log('🎯 QuickOCR: Will try: eng, rus (image fallback), then analyze content');
+        } else {
+          console.log('🎯 QuickOCR: Will try: eng (then analyze content)');
+        }
       }
 
+      const uniqueLanguagesToTry = Array.from(new Set(languagesToTry));
+
       // Try each language
-      for (const lang of languagesToTry) {
+      for (const lang of uniqueLanguagesToTry) {
         console.log(`🔤 QuickOCR: Starting ${lang.toUpperCase()} OCR analysis`);
 
         try {
@@ -195,6 +203,8 @@ export class QuickOCR {
           console.log(`📝 QuickOCR: ${lang.toUpperCase()} text preview:`, text.substring(0, 100) + '...');
           console.log(`📊 QuickOCR: ${lang.toUpperCase()} confidence:`, confidence.toFixed(1) + '%');
 
+          ocrResults[lang] = { text, confidence };
+
           // Keep track of best result
           if (confidence > bestConfidence) {
             bestLanguage = lang;
@@ -206,13 +216,24 @@ export class QuickOCR {
         }
       }
 
+      // Cyrillic heuristic for image scans (fixes false Latin/Franc detection)
+      if (file.type.startsWith('image/') && ocrResults.rus?.text) {
+        const cyrillicMatches = ocrResults.rus.text.match(/[а-яёА-ЯЁ]/g) || [];
+        if (cyrillicMatches.length >= 5) {
+          bestLanguage = 'rus';
+          bestConfidence = ocrResults.rus.confidence;
+          extractedText = ocrResults.rus.text;
+          console.log(`✅ QuickOCR: Cyrillic detected, forcing RUS (chars: ${cyrillicMatches.length})`);
+        }
+      }
+
       console.log(`✅ QuickOCR: Best initial result: ${bestLanguage.toUpperCase()} (confidence: ${bestConfidence.toFixed(1)}%)`);
 
       // Ensure we're back on English for future operations
       await this.setLanguage('eng');
 
       // If we only tried English and confidence is low, use Franc to suggest another language
-      if (languagesToTry.length === 1 && bestConfidence < 80) {
+      if (uniqueLanguagesToTry.length === 1 && bestConfidence < 80) {
         console.log('⚠️ QuickOCR: Low confidence from English OCR - analyzing content with Franc');
 
         // Quick Franc analysis to suggest a better language
@@ -271,6 +292,11 @@ export class QuickOCR {
         finalResult.confidence = 'high';
         finalResult.detectionMethods.push('ocr_native_model');
         finalResult.details = `Detected ${bestLanguage} via OCR with native language model (confidence: ${bestConfidence.toFixed(1)}%)`;
+      } else if (bestLanguage === 'rus' && (ocrResults.rus?.text?.match(/[а-яёА-ЯЁ]/g) || []).length >= 5) {
+        finalResult.language = 'rus';
+        finalResult.confidence = 'high';
+        finalResult.detectionMethods.push('ocr_cyrillic_heuristic');
+        finalResult.details = 'Detected Cyrillic content from OCR sample';
       }
 
       console.log('🏁 QuickOCR: Final detection result:', finalResult);
