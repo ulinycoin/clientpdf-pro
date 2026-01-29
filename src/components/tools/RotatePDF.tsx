@@ -24,7 +24,7 @@ interface RotateUploadedFile extends UploadedFile {
 
 export const RotatePDF: React.FC = () => {
   const { t } = useI18n();
-  const { sharedFiles, clearSharedFiles, setSharedFile } = useSharedFile();
+  const { sharedFile, sharedFiles, clearSharedFile, clearSharedFiles, setSharedFile } = useSharedFile();
   const [files, setFiles] = useState<RotateUploadedFile[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -77,15 +77,30 @@ export const RotatePDF: React.FC = () => {
 
   // Auto-load shared files from WelcomeScreen or other tools
   useEffect(() => {
-    if (sharedFiles && sharedFiles.files.length > 0 && !hasLoadedSharedFiles) {
-      const loadedFiles = sharedFiles.files.map(sf =>
-        new File([sf.blob], sf.name, { type: sf.blob.type })
-      );
-      handleFilesSelected(loadedFiles, true);
+    if (hasLoadedSharedFiles) return;
+
+    if (sharedFiles && sharedFiles.files.length > 0) {
+      const loadedFiles = sharedFiles.files
+        .filter((sf) => sf.name.toLowerCase().endsWith('.pdf') || sf.blob.type === 'application/pdf')
+        .map(sf => new File([sf.blob], sf.name, { type: sf.blob.type }));
+      if (loadedFiles.length > 0) {
+        handleFilesSelected(loadedFiles, true);
+      }
       clearSharedFiles();
       setHasLoadedSharedFiles(true);
+      return;
     }
-  }, [sharedFiles, hasLoadedSharedFiles, clearSharedFiles, handleFilesSelected]);
+
+    if (sharedFile) {
+      const isPdf = sharedFile.name.toLowerCase().endsWith('.pdf') || sharedFile.blob.type === 'application/pdf';
+      if (isPdf) {
+        const file = new File([sharedFile.blob], sharedFile.name, { type: sharedFile.blob.type });
+        handleFilesSelected([file], true);
+      }
+      clearSharedFile();
+      setHasLoadedSharedFiles(true);
+    }
+  }, [sharedFiles, sharedFile, hasLoadedSharedFiles, clearSharedFiles, clearSharedFile, handleFilesSelected]);
 
   // Auto-save first result to sharedFile for quick actions
   useEffect(() => {

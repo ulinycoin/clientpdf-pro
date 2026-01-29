@@ -201,7 +201,7 @@
       "invalidFileType": "无效的文件类型。请仅选择 PDF 文件。",
       "fileTooLarge": "文件太大。最大大小：{max} MB"
     },
-    "readyToProcess": "准备开始",
+    "readyToProcess": "私人庇护所",
     "filesReadySingle": "{count} 个文件已就绪",
     "filesReadyPlural": "{count} 个文件已就绪"
   },

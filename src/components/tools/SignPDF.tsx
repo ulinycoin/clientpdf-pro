@@ -641,7 +641,7 @@ export const SignPDF: React.FC = () => {
     }
 
     return (
-      <div className="flex flex-col h-full bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden relative border shadow-inner">
+      <div className="flex flex-col h-full bg-gray-50 dark:bg-gray-900/50 rounded-2xl overflow-hidden relative border border-gray-200 dark:border-gray-800 shadow-inner min-h-[600px]">
         {/* Page Navigation Toolbar */}
         <div className="bg-white dark:bg-gray-900 border-b p-2 flex items-center justify-between sticky top-0 z-20">
           <div className="flex items-center gap-2">
@@ -664,14 +664,14 @@ export const SignPDF: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex-1 flex items-center justify-center p-4 relative overflow-auto"
+        <div className="flex-1 flex items-center justify-center p-6 relative overflow-auto"
           onMouseMove={handleDragMove} onTouchMove={handleDragMove} onMouseUp={handleDragEnd} onTouchEnd={handleDragEnd} onMouseLeave={handleDragEnd}>
           {previewUrl ? (
             <div id="signature-preview-container"
               ref={containerRef}
               style={{ transform: `scale(${zoom})`, transformOrigin: 'center center', transition: 'transform 0.1s ease-out' }}
-              className="relative shadow-lg bg-white leading-[0] w-fit mx-auto">
-              <img src={previewUrl} alt="PDF Preview" className="max-h-[60vh] w-auto object-contain pointer-events-none select-none" />
+              className="relative shadow-2xl bg-white leading-[0] w-fit mx-auto">
+              <img src={previewUrl} alt="PDF Preview" className="max-h-[550px] w-auto object-contain pointer-events-none select-none" />
               {renderSignaturePreviewOverlay()}
             </div>
           ) : (

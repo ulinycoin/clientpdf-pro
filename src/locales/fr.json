@@ -273,7 +273,7 @@
       "invalidFileType": "Type de fichier invalide. Veuillez sélectionner uniquement des fichiers PDF.",
       "fileTooLarge": "Fichier trop volumineux. Taille maximale : {max} MB"
     },
-    "readyToProcess": "Prêt à commencer",
+    "readyToProcess": "Sanctuaire privé",
     "filesReadySingle": "{count} fichier prêt",
     "filesReadyPlural": "{count} fichiers prêts"
   },

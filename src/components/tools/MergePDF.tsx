@@ -17,7 +17,7 @@ import { Files, Scissors, Minimize2, Shield, Stamp } from 'lucide-react';
 
 export const MergePDF: React.FC = () => {
   const { t } = useI18n();
-  const { setSharedFile, sharedFiles, clearSharedFiles } = useSharedFile();
+  const { setSharedFile, sharedFile, sharedFiles, clearSharedFile, clearSharedFiles } = useSharedFile();
   const [files, setFiles] = useState<UploadedFile[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -62,15 +62,30 @@ export const MergePDF: React.FC = () => {
 
   // Auto-load shared files from WelcomeScreen
   React.useEffect(() => {
-    if (sharedFiles && sharedFiles.files.length > 0 && !hasLoadedSharedFiles) {
-      const loadedFiles = sharedFiles.files.map(sf =>
-        new File([sf.blob], sf.name, { type: sf.blob.type })
-      );
-      handleFilesSelected(loadedFiles, true); // true = replace existing files
+    if (hasLoadedSharedFiles) return;
+
+    if (sharedFiles && sharedFiles.files.length > 0) {
+      const loadedFiles = sharedFiles.files
+        .filter((sf) => sf.name.toLowerCase().endsWith('.pdf') || sf.blob.type === 'application/pdf')
+        .map(sf => new File([sf.blob], sf.name, { type: sf.blob.type }));
+      if (loadedFiles.length > 0) {
+        handleFilesSelected(loadedFiles, true); // true = replace existing files
+      }
       clearSharedFiles();
       setHasLoadedSharedFiles(true);
+      return;
     }
-  }, [sharedFiles, hasLoadedSharedFiles, clearSharedFiles, handleFilesSelected]);
+
+    if (sharedFile) {
+      const isPdf = sharedFile.name.toLowerCase().endsWith('.pdf') || sharedFile.blob.type === 'application/pdf';
+      if (isPdf) {
+        const file = new File([sharedFile.blob], sharedFile.name, { type: sharedFile.blob.type });
+        handleFilesSelected([file], true);
+      }
+      clearSharedFile();
+      setHasLoadedSharedFiles(true);
+    }
+  }, [sharedFiles, sharedFile, hasLoadedSharedFiles, clearSharedFiles, clearSharedFile, handleFilesSelected]);
 
   // Auto-save result to sharedFile when processing is complete
   React.useEffect(() => {

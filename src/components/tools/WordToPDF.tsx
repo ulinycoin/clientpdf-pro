@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ToolLayout } from '@/components/common/ToolLayout';
 import { useI18n } from '@/hooks/useI18n';
 import { useSharedFile } from '@/hooks/useSharedFile';
@@ -55,7 +55,7 @@ interface FileStatus {
 
 export const WordToPDF: React.FC = () => {
   const { t } = useI18n();
-  const { setSharedFile } = useSharedFile();
+  const { setSharedFile, sharedFile, sharedFiles, clearSharedFile, clearSharedFiles } = useSharedFile();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [files, setFiles] = useState<FileStatus[]>([]);
   const [isProcessingAll, setIsProcessingAll] = useState(false);
@@ -85,7 +85,7 @@ export const WordToPDF: React.FC = () => {
     });
   }, [conversionMode, files.length]);
 
-  const handleFileSelected = (selectedFiles: File[]) => {
+  const handleFileSelected = useCallback((selectedFiles: File[]) => {
     const newFiles: FileStatus[] = selectedFiles
       .filter(file => {
         const name = file.name.toLowerCase();
@@ -123,7 +123,35 @@ export const WordToPDF: React.FC = () => {
         console.error('Background preview conversion failed:', err);
       }
     });
-  };
+  }, [conversionMode, t]);
+
+  useEffect(() => {
+    if (files.length > 0) return;
+
+    const isWordFile = (file: File) => {
+      const name = file.name.toLowerCase();
+      return name.endsWith('.docx') || name.endsWith('.doc');
+    };
+
+    const filesToLoad: File[] = [];
+
+    if (sharedFiles?.files?.length) {
+      sharedFiles.files.forEach((shared) => {
+        const file = new File([shared.blob], shared.name, { type: shared.blob.type });
+        if (isWordFile(file)) filesToLoad.push(file);
+      });
+    } else if (sharedFile) {
+      const file = new File([sharedFile.blob], sharedFile.name, { type: sharedFile.blob.type });
+      if (isWordFile(file)) filesToLoad.push(file);
+    }
+
+    if (filesToLoad.length > 0) {
+      handleFileSelected(filesToLoad);
+    }
+
+    if (sharedFile) clearSharedFile();
+    if (sharedFiles) clearSharedFiles();
+  }, [sharedFile, sharedFiles, files.length, clearSharedFile, clearSharedFiles, handleFileSelected]);
 
   const removeFile = (id: string) => {
     setFiles(prev => prev.filter(f => f.id !== id));

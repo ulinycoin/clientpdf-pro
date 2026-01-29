@@ -203,7 +203,7 @@
       "invalidFileType": "無効なファイルタイプです。PDFファイルのみを選択してください。",
       "fileTooLarge": "ファイルが大きすぎます。最大サイズ: {max} MB"
     },
-    "readyToProcess": "準備完了",
+    "readyToProcess": "プライベート・サンクチュアリ",
     "filesReadySingle": "{count} ファイル準備完了",
     "filesReadyPlural": "{count} ファイル準備完了"
   },

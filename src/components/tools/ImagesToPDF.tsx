@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { ToolLayout } from '@/components/common/ToolLayout';
 import { SmartImageFilterPanel } from '@/components/smart/SmartImageFilterPanel';
 import { useI18n } from '@/hooks/useI18n';
+import { useSharedFile } from '@/hooks/useSharedFile';
 
 import pdfService from '@/services/pdfService';
 import smartImageFilterService, { type SmartImageFilterAnalysis } from '@/services/smartImageFilterService';
@@ -28,7 +29,7 @@ type Orientation = 'portrait' | 'landscape';
 
 export const ImagesToPDF: React.FC = () => {
   const { t } = useI18n();
-  // const { setSharedFile: saveSharedFile } = useSharedFile();
+  const { sharedFile, sharedFiles, clearSharedFile, clearSharedFiles } = useSharedFile();
   const [images, setImages] = useState<ImageFile[]>([]);
   const [pageSize, setPageSize] = useState<PageSize>('fit');
   const [orientation, setOrientation] = useState<Orientation>('portrait');
@@ -46,6 +47,12 @@ export const ImagesToPDF: React.FC = () => {
   const [analysisResult, setAnalysisResult] = useState<SmartImageFilterAnalysis | null>(null);
   const [selectedCategories, setSelectedCategories] = useState<Set<string>>(new Set(['photo', 'chart', 'logo', 'other']));
   const [duplicateHashes, setDuplicateHashes] = useState<Map<string, string[]>>(new Map());
+
+  const isImageFile = (file: File) => {
+    if (file.type.startsWith('image/')) return true;
+    const ext = file.name.toLowerCase().split('.').pop();
+    return ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'tiff'].includes(ext || '');
+  };
 
   // Analyze images when they change
   useEffect(() => {
@@ -116,16 +123,16 @@ export const ImagesToPDF: React.FC = () => {
     return () => clearTimeout(timeoutId);
   }, [images, smartEnabled]);
 
-  const getImageDimensions = (file: File): Promise<{ width: number; height: number }> => {
+  const getImageDimensions = useCallback((file: File): Promise<{ width: number; height: number }> => {
     return new Promise((resolve) => {
       const img = new Image();
       img.onload = () => resolve({ width: img.width, height: img.height });
       img.onerror = () => resolve({ width: 0, height: 0 });
       img.src = URL.createObjectURL(file);
     });
-  };
+  }, []);
 
-  const handleFilesSelected = async (selectedFiles: File[]) => {
+  const handleFilesSelected = useCallback(async (selectedFiles: File[]) => {
     const newImages: ImageFile[] = [];
     for (let i = 0; i < selectedFiles.length; i++) {
       const file = selectedFiles[i];
@@ -144,7 +151,30 @@ export const ImagesToPDF: React.FC = () => {
     }
     setImages((prev) => [...prev, ...newImages]);
     setResult(null);
-  };
+  }, [getImageDimensions]);
+
+  useEffect(() => {
+    if (images.length > 0) return;
+
+    const filesToLoad: File[] = [];
+
+    if (sharedFiles?.files?.length) {
+      sharedFiles.files.forEach((shared) => {
+        const file = new File([shared.blob], shared.name, { type: shared.blob.type });
+        if (isImageFile(file)) filesToLoad.push(file);
+      });
+    } else if (sharedFile) {
+      const file = new File([sharedFile.blob], sharedFile.name, { type: sharedFile.blob.type });
+      if (isImageFile(file)) filesToLoad.push(file);
+    }
+
+    if (filesToLoad.length > 0) {
+      handleFilesSelected(filesToLoad);
+    }
+
+    if (sharedFile) clearSharedFile();
+    if (sharedFiles) clearSharedFiles();
+  }, [sharedFile, sharedFiles, images.length, clearSharedFile, clearSharedFiles, handleFilesSelected]);
 
   const handleRemoveImage = (id: string) => {
     setImages((prev) => {

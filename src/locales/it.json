@@ -201,7 +201,7 @@
       "invalidFileType": "Tipo di file non valido. Seleziona solo file PDF.",
       "fileTooLarge": "File troppo grande. Dimensione massima: {max} MB"
     },
-    "readyToProcess": "Pronto per iniziare",
+    "readyToProcess": "Santuario privato",
     "filesReadySingle": "{count} file pronto",
     "filesReadyPlural": "{count} file pronti"
   },

@@ -697,24 +697,24 @@ export const WatermarkPDF: React.FC = () => {
     return (
       <>
         {/* Preview Panel (Main Area) */}
-        <div className="relative bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden shadow-inner border border-gray-200 dark:border-gray-700" style={{ minHeight: '600px' }}>
-          {previewUrl ? (
-            <div
-              ref={containerRef}
-              className="w-full h-full flex items-center justify-center p-8 bg-dots-light dark:bg-dots-dark"
-              onMouseMove={handleDragMove}
-              onMouseUp={handleDragEnd}
-              onMouseLeave={handleDragEnd}
-              onTouchMove={handleDragMove}
-              onTouchEnd={handleDragEnd}
-            >
-              <div className="relative shadow-2xl rounded-sm overflow-hidden" style={{ maxHeight: '550px' }}>
-                <img
-                  ref={imageRef}
-                  src={previewUrl}
-                  alt="PDF Preview"
-                  className="max-h-[550px] w-auto object-contain"
-                />
+      <div className="relative bg-gray-50 dark:bg-gray-900/50 rounded-2xl overflow-hidden shadow-inner border border-gray-200 dark:border-gray-800" style={{ minHeight: '600px' }}>
+        {previewUrl ? (
+          <div
+            ref={containerRef}
+            className="w-full h-full flex items-center justify-center p-8 bg-dots-light dark:bg-dots-dark"
+            onMouseMove={handleDragMove}
+            onMouseUp={handleDragEnd}
+            onMouseLeave={handleDragEnd}
+            onTouchMove={handleDragMove}
+            onTouchEnd={handleDragEnd}
+          >
+            <div className="relative shadow-2xl rounded-sm overflow-hidden" style={{ maxHeight: '550px' }}>
+              <img
+                ref={imageRef}
+                src={previewUrl}
+                alt="PDF Preview"
+                className="max-h-[550px] w-auto object-contain"
+              />
                 {(settings.mode === 'text' ? settings.text : watermarkImagePreview) && (
                   <div
                     className="absolute watermark-element hover:ring-2 hover:ring-ocean-500/50 rounded px-2 transition-shadow flex items-center justify-center overflow-hidden"

@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import type { Tool, URLContext } from '@/types';
 import { useSharedFile } from '@/hooks/useSharedFile';
 import { useI18n } from '@/hooks/useI18n';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { FileText, Image as ImageIcon, FileType, UploadCloud, X, ArrowLeft, Shield, Sparkles } from 'lucide-react';
+import { PreviewFrame } from '@/components/common/preview/PreviewFrame';
+import { PreviewCanvas } from '@/components/common/preview/PreviewCanvas';
+import { PreviewImage } from '@/components/common/preview/PreviewImage';
+import pdfService from '@/services/pdfService';
+import { FileType, UploadCloud, X, ArrowLeft, Shield } from 'lucide-react';
 
 interface WelcomeScreenProps {
   context: URLContext | null; // Keep interface as is for now if needed, or remove param from destructuring
@@ -12,13 +16,18 @@ interface WelcomeScreenProps {
 }
 
 interface UploadedFile {
+  id: string;
   file: File;
-  preview?: string;
+  type: 'pdf' | 'image' | 'word' | 'unknown';
+  pages?: number;
+  previewUrl?: string;
+  previewHtml?: string;
+  previewState?: 'loading' | 'ready' | 'error' | 'empty';
 }
 
-export const WelcomeScreen: React.FC<WelcomeScreenProps> = () => {
+export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onToolSelect }) => {
   const { t } = useI18n();
-  const { setSharedFile, setSharedFiles } = useSharedFile();
+  const { setSharedFile, setSharedFiles, clearSharedFile, clearSharedFiles } = useSharedFile();
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [filesSaved, setFilesSaved] = useState(false);
@@ -41,7 +50,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = () => {
     }
   }, [uploadedFiles, filesSaved, setSharedFile, setSharedFiles]);
 
-  const detectFileType = (file: File): 'pdf' | 'image' | 'word' | 'unknown' => {
+  const detectFileType = (file: File): UploadedFile['type'] => {
     const ext = file.name.toLowerCase().split('.').pop();
     if (ext === 'pdf') return 'pdf';
     if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext || '')) return 'image';
@@ -49,20 +58,29 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = () => {
     return 'unknown';
   };
 
-  const getFileIcon = (type: 'pdf' | 'image' | 'word' | 'unknown') => {
-    switch (type) {
-      case 'pdf': return <FileText className="w-8 h-8 text-red-500" />;
-      case 'image': return <ImageIcon className="w-8 h-8 text-blue-500" />;
-      case 'word': return <FileType className="w-8 h-8 text-blue-700" />;
-      default: return <FileType className="w-8 h-8 text-gray-500" />;
-    }
-  };
-
   const handleFiles = (files: FileList) => {
-    const newFiles: UploadedFile[] = Array.from(files).map(file => ({
-      file,
-      preview: undefined,
-    }));
+    setUploadedFiles((prev) => {
+      prev.forEach((prevFile) => {
+        if (prevFile.previewUrl) URL.revokeObjectURL(prevFile.previewUrl);
+      });
+      return [];
+    });
+
+    const newFiles: UploadedFile[] = Array.from(files).map((file) => {
+      const type = detectFileType(file);
+      const previewState: UploadedFile['previewState'] =
+        type === 'unknown' ? 'empty' : type === 'word' ? 'loading' : 'ready';
+
+      return {
+        id: `${file.name}-${file.lastModified}-${file.size}`,
+        file,
+        type,
+        pages: undefined,
+        previewUrl: type === 'image' ? URL.createObjectURL(file) : undefined,
+        previewHtml: undefined,
+        previewState,
+      };
+    });
     setUploadedFiles(newFiles);
     setFilesSaved(false);
   };
@@ -92,7 +110,12 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = () => {
   };
 
   const clearFiles = () => {
-    setUploadedFiles([]);
+    setUploadedFiles((prev) => {
+      prev.forEach((prevFile) => {
+        if (prevFile.previewUrl) URL.revokeObjectURL(prevFile.previewUrl);
+      });
+      return [];
+    });
     setFilesSaved(false);
   };
 
@@ -102,6 +125,138 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = () => {
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+  };
+
+  const wordPreviewInFlightRef = useRef<Set<string>>(new Set());
+  const pdfInfoInFlightRef = useRef<Set<string>>(new Set());
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const pending = uploadedFiles.filter((file) =>
+      file.type === 'word' &&
+      !file.previewHtml &&
+      file.previewState !== 'error' &&
+      !wordPreviewInFlightRef.current.has(file.id)
+    );
+
+    if (pending.length === 0) {
+      return () => {
+        isMounted = false;
+      };
+    }
+
+    pending.forEach((file) => {
+      wordPreviewInFlightRef.current.add(file.id);
+      pdfService.getWordPreviewHTML(file.file)
+        .then((html) => {
+          if (!isMounted) return;
+          setUploadedFiles((prev) =>
+            prev.map((item) =>
+              item.id === file.id
+                ? { ...item, previewHtml: html, previewState: 'ready' }
+                : item
+            )
+          );
+        })
+        .catch((error) => {
+          console.error('Word preview generation failed:', error);
+          if (!isMounted) return;
+          setUploadedFiles((prev) =>
+            prev.map((item) =>
+              item.id === file.id
+                ? { ...item, previewState: 'error' }
+                : item
+            )
+          );
+        })
+        .finally(() => {
+          wordPreviewInFlightRef.current.delete(file.id);
+        });
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [uploadedFiles]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const pending = uploadedFiles.filter((file) =>
+      file.type === 'pdf' &&
+      typeof file.pages !== 'number' &&
+      !pdfInfoInFlightRef.current.has(file.id)
+    );
+
+    if (pending.length === 0) {
+      return () => {
+        isMounted = false;
+      };
+    }
+
+    pending.forEach((file) => {
+      pdfInfoInFlightRef.current.add(file.id);
+      pdfService.getPDFInfo(file.file)
+        .then((info) => {
+          if (!isMounted) return;
+          setUploadedFiles((prev) =>
+            prev.map((item) =>
+              item.id === file.id
+                ? { ...item, pages: info?.pages || info?.pageCount || undefined }
+                : item
+            )
+          );
+        })
+        .catch((error) => {
+          console.warn('Failed to read PDF info:', error);
+        })
+        .finally(() => {
+          pdfInfoInFlightRef.current.delete(file.id);
+        });
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [uploadedFiles]);
+
+  const availableTools = useMemo(() => {
+    const hasPDF = uploadedFiles.some((file) => file.type === 'pdf');
+    const hasImages = uploadedFiles.some((file) => file.type === 'image');
+    const hasWord = uploadedFiles.some((file) => file.type === 'word');
+    const pdfCount = uploadedFiles.filter((file) => file.type === 'pdf').length;
+
+    const tools: Array<{ tool: Tool; label: string; accepts: UploadedFile['type']; multi: boolean; visible: boolean }> = [
+      { tool: 'merge-pdf', label: t('tools.merge-pdf.name'), accepts: 'pdf', multi: true, visible: hasPDF && pdfCount > 1 },
+      { tool: 'compress-pdf', label: t('tools.compress-pdf.name'), accepts: 'pdf', multi: false, visible: hasPDF },
+      { tool: 'split-pdf', label: t('tools.split-pdf.name'), accepts: 'pdf', multi: false, visible: hasPDF },
+      { tool: 'edit-pdf', label: t('tools.edit-pdf.name'), accepts: 'pdf', multi: false, visible: hasPDF },
+      { tool: 'pdf-to-word', label: t('tools.pdf-to-word.name'), accepts: 'pdf', multi: false, visible: hasPDF },
+      { tool: 'images-to-pdf', label: t('tools.images-to-pdf.name'), accepts: 'image', multi: true, visible: hasImages },
+      { tool: 'word-to-pdf', label: t('tools.word-to-pdf.name'), accepts: 'word', multi: true, visible: hasWord },
+    ];
+
+    return tools.filter((tool) => tool.visible);
+  }, [t, uploadedFiles]);
+
+  const handleToolLaunch = (tool: Tool, accepts: UploadedFile['type'], multi: boolean) => {
+    const matchingFiles = uploadedFiles.filter((file) => file.type === accepts).map((item) => item.file);
+    if (matchingFiles.length === 0) return;
+
+    clearSharedFile();
+    clearSharedFiles();
+
+    if (multi || matchingFiles.length > 1) {
+      setSharedFiles(
+        matchingFiles.map((file) => ({ blob: file, name: file.name })),
+        'welcome-screen'
+      );
+    } else {
+      setSharedFile(matchingFiles[0], matchingFiles[0].name, 'welcome-screen');
+    }
+
+    onToolSelect(tool);
   };
 
   return (
@@ -195,18 +350,18 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = () => {
           ) : (
             /* File Preview / Ready State */
             <div className="relative w-full max-w-4xl mx-auto backdrop-blur-3xl rounded-[3rem] border border-white/20 dark:border-white/5 bg-white/40 dark:bg-[#1c1c1e]/60 shadow-2xl overflow-hidden p-8 md:p-12 animate-scale-in">
-              <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-8">
-                <div className="flex items-center gap-4">
-                  <div className="p-3 rounded-2xl bg-success-100 dark:bg-success-900/30 text-success-600 dark:text-success-400">
-                    <Sparkles className="w-8 h-8" />
-                  </div>
+              <div className="flex flex-col md:flex-row items-start justify-between gap-6 mb-8">
+                <div className="flex items-start gap-4">
                   <div>
-                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
-                      {t('upload.readyToProcess')}
-                    </h3>
-                    <p className="text-gray-500 dark:text-gray-400 font-medium">
-                      {t(uploadedFiles.length === 1 ? 'upload.filesReadySingle' : 'upload.filesReadyPlural', { count: uploadedFiles.length })}
-                    </p>
+                    {uploadedFiles.length === 1 ? (
+                      <p className="text-2xl font-semibold text-gray-900 dark:text-white break-all">
+                        {uploadedFiles[0].file.name}
+                      </p>
+                    ) : (
+                      <p className="text-gray-500 dark:text-gray-400 font-medium">
+                        {t(uploadedFiles.length === 1 ? 'upload.filesReadySingle' : 'upload.filesReadyPlural', { count: uploadedFiles.length })}
+                      </p>
+                    )}
                   </div>
                 </div>
                 <Button
@@ -219,42 +374,100 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = () => {
                 </Button>
               </div>
 
-              <div className="grid gap-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
-                {uploadedFiles.map((uploadedFile, index) => (
+              <div className="space-y-6 max-h-[640px] overflow-y-auto pr-2 custom-scrollbar">
+                {uploadedFiles.map((uploadedFile) => (
                   <div
-                    key={index}
-                    className="group relative flex items-center gap-6 p-4 rounded-2xl bg-white/50 dark:bg-white/5 border border-white/50 dark:border-white/10 hover:border-ocean-300 dark:hover:border-ocean-700 transition-all duration-300 hover:bg-white/80 dark:hover:bg-white/10"
+                    key={uploadedFile.id}
+                    className="group relative p-5 rounded-2xl bg-white/50 dark:bg-white/5 border border-white/50 dark:border-white/10 hover:border-ocean-300 dark:hover:border-ocean-700 transition-all duration-300 hover:bg-white/80 dark:hover:bg-white/10"
                   >
-                    <div className="flex-shrink-0 w-16 h-16 rounded-xl flex items-center justify-center bg-white dark:bg-black/40 shadow-sm group-hover:scale-105 transition-transform">
-                      {getFileIcon(detectFileType(uploadedFile.file))}
-                    </div>
-
-                    <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-gray-900 dark:text-white truncate text-lg">
-                        {uploadedFile.file.name}
-                      </p>
-                      <div className="flex items-center gap-3 mt-1.5">
-                        <Badge variant="outline" className="border-gray-200 dark:border-gray-700 text-gray-500">
-                          {formatFileSize(uploadedFile.file.size)}
-                        </Badge>
+                    <div className="w-full">
+                      <div className="bg-gray-50 dark:bg-gray-900/50 rounded-2xl p-6 min-h-[560px] flex items-center justify-center">
+                        <PreviewFrame
+                          size="fluid"
+                          className="mx-auto shadow-2xl max-w-[640px]"
+                          state={uploadedFile.type === 'unknown'
+                            ? 'empty'
+                            : uploadedFile.previewState === 'error'
+                              ? 'error'
+                              : uploadedFile.type === 'word' && !uploadedFile.previewHtml
+                                ? 'loading'
+                                : 'ready'}
+                        >
+                          {uploadedFile.type === 'pdf' && (
+                            <PreviewCanvas file={uploadedFile.file} />
+                          )}
+                          {uploadedFile.type === 'image' && (
+                            <PreviewImage src={uploadedFile.previewUrl} />
+                          )}
+                          {uploadedFile.type === 'word' && uploadedFile.previewHtml && (
+                            <div className="w-full h-full overflow-auto rounded-xl bg-white p-4 text-[11px] leading-snug text-gray-800 custom-scrollbar">
+                              <div
+                                className="prose prose-sm max-w-none"
+                                dangerouslySetInnerHTML={{ __html: uploadedFile.previewHtml }}
+                              />
+                            </div>
+                          )}
+                          {uploadedFile.type === 'word' && !uploadedFile.previewHtml && (
+                            <div className="flex flex-col items-center justify-center gap-2 text-gray-500">
+                              <div className="h-6 w-6 animate-spin rounded-full border-2 border-ocean-500 border-t-transparent" />
+                              <div className="text-xs font-medium">Loading preview...</div>
+                            </div>
+                          )}
+                          {uploadedFile.type === 'unknown' && (
+                            <div className="flex flex-col items-center gap-2 text-gray-400">
+                              <FileType className="w-6 h-6" />
+                              <span className="text-xs">No preview</span>
+                            </div>
+                          )}
+                        </PreviewFrame>
                       </div>
+                    </div>
+                    <div className="mt-4 flex flex-wrap items-center gap-3">
+                      <Badge variant="outline" className="border-gray-200 dark:border-gray-700 text-gray-500">
+                        {formatFileSize(uploadedFile.file.size)}
+                      </Badge>
+                      {typeof uploadedFile.pages === 'number' && (
+                        <Badge variant="secondary" className="bg-ocean-50 dark:bg-ocean-900/30 text-ocean-700 dark:text-ocean-300 border border-ocean-100 dark:border-ocean-800/40">
+                          {uploadedFile.pages} {uploadedFile.pages === 1 ? t('common.page') : t('common.pages')}
+                        </Badge>
+                      )}
+                      <Badge variant="secondary" className="bg-white/60 dark:bg-white/5 text-gray-600 dark:text-gray-300">
+                        {uploadedFile.type.toUpperCase()}
+                      </Badge>
                     </div>
                   </div>
                 ))}
               </div>
 
-              <div className="mt-10 p-6 rounded-2xl bg-ocean-50/50 dark:bg-ocean-900/10 border border-ocean-100 dark:border-ocean-800/30 flex items-center gap-6 animate-pulse-slow">
-                <div className="p-3 bg-ocean-500 rounded-full text-white shadow-lg shadow-ocean-500/30">
-                  <ArrowLeft className="w-6 h-6" />
+              <div className="mt-10 p-6 rounded-2xl bg-ocean-50/50 dark:bg-ocean-900/10 border border-ocean-100 dark:border-ocean-800/30 flex flex-col gap-6">
+                <div className="flex items-center gap-6">
+                  <div className="p-3 bg-ocean-500 rounded-full text-white shadow-lg shadow-ocean-500/30">
+                    <ArrowLeft className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-1">
+                      Select a tool to begin
+                    </h4>
+                    <p className="text-gray-600 dark:text-gray-300 text-lg">
+                      Choose a compatible tool and your files will transfer instantly.
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-1">
-                    Select a tool to begin
-                  </h4>
-                  <p className="text-gray-600 dark:text-gray-300 text-lg">
-                    Choose any tool from the sidebar to process your files immediately.
-                  </p>
-                </div>
+
+                {availableTools.length > 0 && (
+                  <div className="flex flex-wrap gap-3">
+                    {availableTools.map((toolOption) => (
+                      <Button
+                        key={toolOption.tool}
+                        variant="secondary"
+                        className="rounded-xl bg-white/80 dark:bg-white/10 border border-white/40 dark:border-white/10 hover:bg-white text-gray-800 dark:text-gray-100"
+                        onClick={() => handleToolLaunch(toolOption.tool, toolOption.accepts, toolOption.multi)}
+                      >
+                        {toolOption.label}
+                      </Button>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           )}

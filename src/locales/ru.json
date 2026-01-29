@@ -203,7 +203,7 @@
       "invalidFileType": "Неверный тип файла. Пожалуйста, выберите PDF или изображения (JPG, PNG).",
       "fileTooLarge": "Файл слишком большой. Максимальный размер: {max} МБ"
     },
-    "readyToProcess": "Готово к началу",
+    "readyToProcess": "Частное убежище",
     "filesReadySingle": "{count} файл готов",
     "filesReadyPlural": "{count} файлов готово"
   },

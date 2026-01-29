@@ -560,10 +560,10 @@ export const OCRPDF: React.FC = () => {
 
         {/* If NO Result: Show Preview */}
         {!result && file && (
-          <Card className="h-full border-2 border-dashed border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-black/20">
-            <CardContent className="p-8 flex items-center justify-center min-h-[400px]">
+          <Card className="h-full border-2 border-dashed border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/40">
+            <CardContent className="p-8 flex items-center justify-center min-h-[600px]">
               {previewUrl ? (
-                <img src={previewUrl} alt="Preview" className="max-w-full max-h-[500px] shadow-2xl rounded-lg transform transition-transform hover:scale-[1.01] duration-300" />
+                <img src={previewUrl} alt="Preview" className="max-w-full max-h-[550px] shadow-2xl rounded-lg transform transition-transform hover:scale-[1.01] duration-300" />
               ) : (
                 <div className="text-center text-gray-400">
                   <FileText className="w-24 h-24 mx-auto mb-4 opacity-50" />

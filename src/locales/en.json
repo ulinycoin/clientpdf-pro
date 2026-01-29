@@ -203,7 +203,7 @@
       "invalidFileType": "Invalid file type. Please select PDF or images (JPG, PNG).",
       "fileTooLarge": "File too large. Maximum size: {max} MB"
     },
-    "readyToProcess": "Ready to Start",
+    "readyToProcess": "Private Sanctuary",
     "filesReadySingle": "{count} file ready",
     "filesReadyPlural": "{count} files ready"
   },

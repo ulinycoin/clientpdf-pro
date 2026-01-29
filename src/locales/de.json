@@ -273,7 +273,7 @@
       "invalidFileType": "Ungültiger Dateityp. Bitte wählen Sie nur PDF-Dateien.",
       "fileTooLarge": "Datei zu groß. Maximale Größe: {max} MB"
     },
-    "readyToProcess": "Bereit zum Starten",
+    "readyToProcess": "Privates Refugium",
     "filesReadySingle": "{count} Datei bereit",
     "filesReadyPlural": "{count} Dateien bereit"
   },
