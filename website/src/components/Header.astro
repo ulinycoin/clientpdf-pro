@@ -28,9 +28,14 @@ const navLabels = {
     <LanguagePicker lang={lang} />
   </nav>
   
-  <!-- Mobile Language Picker (Visible only on mobile) -->
-  <div class="mobile-lang-picker">
-     <LanguagePicker lang={lang} />
+  <!-- Mobile actions (Visible only on mobile) -->
+  <div class="mobile-actions">
+    <a href={(langPrefix || "") + "/extension"} class="mobile-extension-cta">
+      {navLabels.extension}
+    </a>
+    <div class="mobile-lang-picker">
+       <LanguagePicker lang={lang} />
+    </div>
   </div>
 </header>
 
@@ -92,7 +97,22 @@ const navLabels = {
 
   nav { display: flex; gap: 24px; align-items: center; }
   
+  .mobile-actions { display: none; align-items: center; gap: 12px; }
   .mobile-lang-picker { display: none; }
+  .mobile-extension-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #3b82f6, #60a5fa);
+    color: #fff;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-decoration: none;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    white-space: nowrap;
+  }
   nav a {
     color: var(--text-muted);
     text-decoration: none;
@@ -119,6 +139,7 @@ const navLabels = {
     header { padding: 16px 5vw; }
     nav { display: none; }
     .logo-subtitle { display: none; }
+    .mobile-actions { display: flex; }
     .mobile-lang-picker { display: block; }
   }
 </style>
