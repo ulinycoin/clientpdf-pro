@@ -90,25 +90,25 @@ const currentCategories = {
 
 const footerLabels = {
   en: { 
-    resources: 'Resources', learn: 'Learning Center', blog: 'Blog', about: 'About Sanctuary', compare: 'Compare Tools',
+    resources: 'Resources', learn: 'Learning Center', blog: 'Blog', about: 'About Sanctuary', compare: 'Compare Tools', extension: 'Extension',
     legal: 'Legal', privacy: 'Privacy Policy', terms: 'Terms of Service',
     solutions: 'Solutions', legalSolutions: 'Legal Professionals', financeSolutions: 'Finance & Banking', medicalSolutions: 'Healthcare',
     copyright: '© 2025 LocalPDF Sanctuary. All files processed locally in your browser sandbox.'
   },
   de: {
-    resources: 'Ressourcen', learn: 'Lernzentrum', blog: 'Blog', about: 'Über Sanctuary', compare: 'Tools vergleichen',
+    resources: 'Ressourcen', learn: 'Lernzentrum', blog: 'Blog', about: 'Über Sanctuary', compare: 'Tools vergleichen', extension: 'Erweiterung',
     legal: 'Rechtliches', privacy: 'Datenschutzrichtlinie', terms: 'Nutzungsbedingungen',
     solutions: 'Branchenlösungen', legalSolutions: 'Juristische Berufe', financeSolutions: 'Finanzen & Banking', medicalSolutions: 'Gesundheitswesen',
     copyright: '© 2025 LocalPDF Sanctuary. Alle Dateien werden lokal in Ihrer Browser-Sandbox verarbeitet.'
   },
   ja: {
-    resources: 'リソース', learn: 'ラーニングセンター', blog: 'ブログ', about: 'Sanctuaryについて', compare: 'ツールを比較する',
+    resources: 'リソース', learn: 'ラーニングセンター', blog: 'ブログ', about: 'Sanctuaryについて', compare: 'ツールを比較する', extension: '拡張機能',
     legal: '法的情報', privacy: 'プライバシーポリシー', terms: '利用規約',
     solutions: '業界別ソリューション', legalSolutions: '法務プロフェッショナル', financeSolutions: '金融・銀行業務', medicalSolutions: '医療・ヘルスケア',
     copyright: '© 2025 LocalPDF Sanctuary. すべてのファイルはブラウザのサンドボックス内でローカルに処理されます。'
   }
 }[lang] || { 
-  resources: 'Resources', learn: 'Learning Center', blog: 'Blog', about: 'About Sanctuary', compare: 'Compare Tools',
+  resources: 'Resources', learn: 'Learning Center', blog: 'Blog', about: 'About Sanctuary', compare: 'Compare Tools', extension: 'Extension',
   legal: 'Legal', privacy: 'Privacy Policy', terms: 'Terms of Service',
   copyright: '© 2025 LocalPDF Sanctuary. All files processed locally in your browser sandbox.'
 };
@@ -121,7 +121,7 @@ const localizedPages = [
   '/word-to-pdf', '/pdf-to-word', '/images-to-pdf', '/pdf-to-images',
   '/organize-pdf', '/rotate-pdf', '/delete-pages-pdf', '/extract-pages-pdf',
   '/tables-pdf', '/add-form-fields-pdf', '/extract-images-pdf', '/add-text-pdf',
-  '/legal-privacy-pdf', '/finance-privacy-pdf', '/medical-privacy-pdf'
+  '/legal-privacy-pdf', '/finance-privacy-pdf', '/medical-privacy-pdf', '/extension'
 ];
 const isLocalizedPath = localizedPages.includes(basePath);
 ---
@@ -401,6 +401,7 @@ const isLocalizedPath = localizedPages.includes(basePath);
           <a href="/blog">{footerLabels.blog}</a>
           <a href="/about">{footerLabels.about}</a>
           <a href="/comparison">{footerLabels.compare}</a>
+          <a href={(lang === 'en') ? '/extension' : `/${lang}/extension`}>{footerLabels.extension}</a>
         </div>
         <div class="footer-section">
           <strong>{footerLabels.solutions}</strong>

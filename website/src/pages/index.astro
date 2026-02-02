@@ -528,11 +528,57 @@ const langPrefix = '';
         line-height: 1.6;
         margin: 0;
       }
+
+      .extension-cta {
+        margin: 48px auto 64px;
+        max-width: 980px;
+        padding: 28px 32px;
+        border-radius: 24px;
+        border: 1px solid var(--glass-border);
+        background: rgba(255, 255, 255, 0.03);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        backdrop-filter: blur(12px);
+      }
+
+      .extension-cta-title {
+        font-family: 'Outfit', sans-serif;
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 6px;
+      }
+
+      .extension-cta-text p {
+        color: var(--text-muted);
+        margin: 0;
+      }
+
+      .extension-cta-button {
+        flex-shrink: 0;
+        padding: 12px 20px;
+        border-radius: 999px;
+        background: linear-gradient(135deg, #3b82f6, #60a5fa);
+        color: #fff;
+        font-weight: 700;
+        text-decoration: none;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .extension-cta-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 24px rgba(59, 130, 246, 0.25);
+      }
   
       @media (max-width: 768px) {
         .hero-h1 { font-size: 3rem; }
         .trust-viz { display: none; }
         .tools-grid { grid-template-columns: 1fr; }
+        .extension-cta { flex-direction: column; align-items: flex-start; }
+        .extension-cta-button { width: 100%; text-align: center; }
       }
     </style>
   </Fragment>
@@ -605,6 +651,14 @@ const langPrefix = '';
         <span>Pure Output</span>
       </div>
     </div>
+  </div>
+
+  <div class="extension-cta">
+    <div class="extension-cta-text">
+      <div class="extension-cta-title">Get the Chrome Extension</div>
+      <p>Open LocalPDF instantly after downloads. Privacy-first, no uploads.</p>
+    </div>
+    <a class="extension-cta-button" href={`${langPrefix}/extension`}>Get Chrome Extension</a>
   </div>
 
   <DeveloperStory />

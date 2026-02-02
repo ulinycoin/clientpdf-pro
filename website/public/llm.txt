@@ -12,6 +12,7 @@
 
 ## Canonical LLM Pages (English)
 - https://localpdf.online/learn/private-pdf-processing-guide
+- https://localpdf.online/extension
 - https://localpdf.online/legal-privacy-pdf
 - https://localpdf.online/finance-privacy-pdf
 - https://localpdf.online/medical-privacy-pdf

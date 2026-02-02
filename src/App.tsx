@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Toaster } from '@/components/ui/sonner';
 import { useSupportId } from '@/hooks/useSupportId';
 import { FeedbackDialog } from '@/components/common/FeedbackDialog';
+import { ExtensionPromptBanner } from '@/components/common/ExtensionPromptBanner';
 import { MessageSquare } from 'lucide-react';
 import type { Theme, ToolGroup } from '@/types';
 
@@ -94,6 +95,21 @@ function App() {
   useEffect(() => {
     localStorage.setItem('selected_tool_group', selectedGroup);
   }, [selectedGroup]);
+
+  useEffect(() => {
+    const handleDownloadClick = (event: MouseEvent) => {
+      const target = event.target as HTMLElement | null;
+      const anchor = target?.closest('a');
+      if (!anchor) return;
+      if (!anchor.hasAttribute('download')) return;
+      window.dispatchEvent(new CustomEvent('localpdf:download', {
+        detail: { filename: anchor.getAttribute('download') || undefined }
+      }));
+    };
+
+    document.addEventListener('click', handleDownloadClick, true);
+    return () => document.removeEventListener('click', handleDownloadClick, true);
+  }, []);
 
 
   const toggleTheme = () => {
@@ -280,6 +296,7 @@ function App() {
           </div>
         )}
       </main>
+      <ExtensionPromptBanner />
       <Toaster />
       <FeedbackDialog
         open={isFeedbackOpen}

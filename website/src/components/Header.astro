@@ -5,10 +5,10 @@ const { lang = 'en' } = Astro.props; // Receive lang prop from Layout -> Header
 const langPrefix = lang === 'en' ? '' : `/${lang}`;
 
 const navLabels = {
-  en: { tools: 'Tools', blog: 'Blog', learn: 'Learn', compare: 'Compare', about: 'About' },
-  de: { tools: 'Tools', blog: 'Blog', learn: 'Lernen', compare: 'Vergleichen', about: 'Über uns' },
-  ja: { tools: 'ツール', blog: 'ブログ', learn: '学ぶ', compare: '比較', about: 'ツールについて' }
-}[lang] || { tools: 'Tools', blog: 'Blog', learn: 'Learn', compare: 'Compare', about: 'About' };
+  en: { tools: 'Tools', blog: 'Blog', learn: 'Learn', compare: 'Compare', about: 'About', extension: 'Extension' },
+  de: { tools: 'Tools', blog: 'Blog', learn: 'Lernen', compare: 'Vergleichen', about: 'Über uns', extension: 'Erweiterung' },
+  ja: { tools: 'ツール', blog: 'ブログ', learn: '学ぶ', compare: '比較', about: 'ツールについて', extension: '拡張機能' }
+}[lang] || { tools: 'Tools', blog: 'Blog', learn: 'Learn', compare: 'Compare', about: 'About', extension: 'Extension' };
 ---
 <header>
   <a href={langPrefix || "/"} class="logo">
@@ -24,6 +24,7 @@ const navLabels = {
     <a href="/learn">{navLabels.learn}</a>
     <a href="/comparison">{navLabels.compare}</a>
     <a href="/about">{navLabels.about}</a>
+    <a href={(langPrefix || "") + "/extension"}>{navLabels.extension}</a>
     <LanguagePicker lang={lang} />
   </nav>
   

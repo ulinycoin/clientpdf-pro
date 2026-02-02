@@ -1,0 +1,139 @@
+---
+import ContentPage from '../../components/ContentPage.astro';
+
+const keywords = [
+  'LocalPDF Chrome-Erweiterung',
+  'privates PDF-Tool',
+  'PDF lokal verarbeiten',
+  'offline PDF Erweiterung',
+  'sichere PDF Tools',
+  'LocalPDF Erweiterung Download'
+].join(', ');
+
+const softwareSchema = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "LocalPDF Chrome-Erweiterung",
+  "applicationCategory": "BrowserApplication",
+  "operatingSystem": "Chrome, Edge, Brave",
+  "url": "https://localpdf.online/de/extension",
+  "downloadUrl": "https://chromewebstore.google.com/detail/localpdf-private-pdf-comp/mjidkeobnlijdjmioniboflmoelmckfl",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "EUR"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "LocalPDF"
+  },
+  "inLanguage": "de",
+  "description": "Installieren Sie die LocalPDF Chrome-Erweiterung für schnellen Zugriff auf private PDF-Tools mit lokaler Verarbeitung."
+};
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Ist LocalPDF wirklich privat?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ja. Alle Verarbeitung passiert lokal im Browser. Dateien werden nicht hochgeladen."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Welche Browser werden unterstützt?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Die Erweiterung funktioniert in Chrome und Chromium-Browsern wie Edge und Brave."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Ist die Erweiterung kostenlos?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ja, die Erweiterung ist kostenlos."
+      }
+    }
+  ]
+};
+---
+
+<ContentPage
+  title="LocalPDF Chrome-Erweiterung — Private PDF-Tools mit einem Klick"
+  description="Installieren Sie die LocalPDF Chrome-Erweiterung, um schneller auf privacy-first PDF-Tools zuzugreifen. Ein Klick, volle lokale Verarbeitung."
+  keywords={keywords}
+  heading="LocalPDF Chrome-Erweiterung installieren"
+  canonical="https://localpdf.online/de/extension"
+  breadcrumbs={[
+    { label: 'Startseite', href: '/de' },
+    { label: 'Erweiterung' }
+  ]}
+>
+  <script type="application/ld+json">
+    {JSON.stringify(softwareSchema)}
+  </script>
+  <script type="application/ld+json">
+    {JSON.stringify(faqSchema)}
+  </script>
+
+  <p>
+    Installieren Sie die offizielle LocalPDF Chrome-Erweiterung, um schneller auf Ihre PDF-Tools zuzugreifen
+    und privat zu arbeiten. Ihre Dateien werden weiterhin lokal im Browser verarbeitet — ohne Uploads, ohne Tracking.
+  </p>
+
+  <div class="info-box">
+    <strong>In einem Klick installieren:</strong>
+    <p>
+      <a
+        href="https://chromewebstore.google.com/detail/localpdf-private-pdf-comp/mjidkeobnlijdjmioniboflmoelmckfl"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Chrome-Erweiterung holen →
+      </a>
+    </p>
+  </div>
+
+  <h2>Warum installieren?</h2>
+  <ul>
+    <li><strong>Schneller Zugriff:</strong> Öffnen Sie LocalPDF sofort nach dem Download.</li>
+    <li><strong>Datenschutz:</strong> Alles bleibt lokal im Browser, ohne Server.</li>
+    <li><strong>Kompatibel:</strong> Chrome, Edge, Brave und andere Chromium-Browser.</li>
+  </ul>
+
+  <h2>Für wen ist es gedacht?</h2>
+  <ul>
+    <li><strong>Sensible Dokumente:</strong> Verarbeitung bleibt lokal ohne Datenabfluss.</li>
+    <li><strong>Wiederkehrende Workflows:</strong> Schnellzugriff direkt nach dem Download.</li>
+    <li><strong>Privacy‑First Nutzer:</strong> Keine Uploads, keine Konten, kein Tracking.</li>
+  </ul>
+
+  <h2>Datenschutz &amp; Compliance</h2>
+  <p>
+    LocalPDF läuft vollständig im Browser mit WebAssembly. Dateien bleiben im lokalen Speicher und werden
+    beim Schließen des Tabs entfernt. Mehr Infos in der <a href="/privacy">Datenschutzerklärung</a> und im
+    <a href="/learn/private-pdf-processing-guide"> Guide zur privaten PDF-Verarbeitung</a>.
+  </p>
+
+  <h2>Installation in 3 Schritten</h2>
+  <ol>
+    <li>Öffnen Sie den Chrome Web Store Eintrag.</li>
+    <li>Klicken Sie auf „Hinzufügen“.</li>
+    <li>Pinnen Sie LocalPDF für den Schnellzugriff.</li>
+  </ol>
+
+  <h2>FAQ</h2>
+  <p><strong>Funktioniert es außerhalb Deutschlands?</strong> Ja, weltweit überall, wo Chrome verfügbar ist.</p>
+  <p><strong>Werden Dateien hochgeladen?</strong> Nein, alles bleibt lokal.</p>
+  <p><strong>Kostet es etwas?</strong> Nein, die Erweiterung ist kostenlos.</p>
+
+  <h2>Fragen?</h2>
+  <p>
+    Schreiben Sie uns an <a href="mailto:support@localpdf.online">support@localpdf.online</a>.
+  </p>
+</ContentPage>

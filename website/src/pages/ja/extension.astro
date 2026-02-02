@@ -1,0 +1,139 @@
+---
+import ContentPage from '../../components/ContentPage.astro';
+
+const keywords = [
+  'LocalPDF Chrome 拡張機能',
+  'プライベート PDF ツール',
+  'オフライン PDF',
+  'ブラウザ内 PDF 処理',
+  '安全な PDF 拡張機能',
+  'LocalPDF 拡張機能 ダウンロード'
+].join(', ');
+
+const softwareSchema = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "LocalPDF Chrome 拡張機能",
+  "applicationCategory": "BrowserApplication",
+  "operatingSystem": "Chrome, Edge, Brave",
+  "url": "https://localpdf.online/ja/extension",
+  "downloadUrl": "https://chromewebstore.google.com/detail/localpdf-private-pdf-comp/mjidkeobnlijdjmioniboflmoelmckfl",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "JPY"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "LocalPDF"
+  },
+  "inLanguage": "ja",
+  "description": "LocalPDF Chrome 拡張機能をインストールすると、プライバシー重視のPDFツールに素早くアクセスできます。"
+};
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "LocalPDF は本当に安全ですか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "はい。すべての処理はブラウザ内で行われ、ファイルはサーバーにアップロードされません。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "対応ブラウザは？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Chrome と、Edge / Brave などの Chromium 系ブラウザに対応しています。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "無料ですか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "はい、拡張機能は無料で利用できます。"
+      }
+    }
+  ]
+};
+---
+
+<ContentPage
+  title="LocalPDF Chrome 拡張機能 — 1クリックでプライベートなPDFツール"
+  description="LocalPDF Chrome 拡張機能をインストールして、プライバシー重視のPDFツールへ素早くアクセス。処理はすべてブラウザ内で完結します。"
+  keywords={keywords}
+  heading="LocalPDF Chrome 拡張機能を入手"
+  canonical="https://localpdf.online/ja/extension"
+  breadcrumbs={[
+    { label: 'ホーム', href: '/ja' },
+    { label: '拡張機能' }
+  ]}
+>
+  <script type="application/ld+json">
+    {JSON.stringify(softwareSchema)}
+  </script>
+  <script type="application/ld+json">
+    {JSON.stringify(faqSchema)}
+  </script>
+
+  <p>
+    公式の LocalPDF Chrome 拡張機能を入れると、PDFツールへすぐアクセスできます。
+    もちろん処理はすべてブラウザ内で実行され、アップロードや追跡はありません。
+  </p>
+
+  <div class="info-box">
+    <strong>1クリックでインストール:</strong>
+    <p>
+      <a
+        href="https://chromewebstore.google.com/detail/localpdf-private-pdf-comp/mjidkeobnlijdjmioniboflmoelmckfl"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Chrome 拡張機能を取得 →
+      </a>
+    </p>
+  </div>
+
+  <h2>インストールする理由</h2>
+  <ul>
+    <li><strong>素早い起動:</strong> ダウンロード後にすぐ LocalPDF を開けます。</li>
+    <li><strong>プライバシー重視:</strong> ファイルはローカルで処理されます。</li>
+    <li><strong>対応ブラウザ:</strong> Chrome / Edge / Brave など。</li>
+  </ul>
+
+  <h2>おすすめのユーザー</h2>
+  <ul>
+    <li><strong>機密文書の作業:</strong> データを外部に出さず安全に編集。</li>
+    <li><strong>頻繁なPDF作業:</strong> 1クリックで素早く起動。</li>
+    <li><strong>プライバシー重視の方:</strong> アップロードやアカウント不要。</li>
+  </ul>
+
+  <h2>プライバシーとコンプライアンス</h2>
+  <p>
+    LocalPDF は WebAssembly によってブラウザ内で完結します。ファイルはローカルメモリに保持され、
+    タブを閉じると自動的に消去されます。詳しくは <a href="/privacy">プライバシーポリシー</a> と
+    <a href="/learn/private-pdf-processing-guide"> プライベート処理ガイド</a> をご覧ください。
+  </p>
+
+  <h2>インストール手順</h2>
+  <ol>
+    <li>Chrome ウェブストアのページを開く。</li>
+    <li>「Chrome に追加」をクリック。</li>
+    <li>ツールバーにピン留めしてすぐ使えるようにする。</li>
+  </ol>
+
+  <h2>FAQ</h2>
+  <p><strong>海外でも使えますか？</strong> はい、Chrome が使える地域ならどこでも使えます。</p>
+  <p><strong>ファイルはアップロードされますか？</strong> いいえ、すべてローカル処理です。</p>
+  <p><strong>無料ですか？</strong> はい、無料で利用できます。</p>
+
+  <h2>お問い合わせ</h2>
+  <p>
+    ご質問は <a href="mailto:support@localpdf.online">support@localpdf.online</a> までご連絡ください。
+  </p>
+</ContentPage>
