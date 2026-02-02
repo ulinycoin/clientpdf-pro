@@ -56,7 +56,7 @@
       "destination": "/$1.html"
     },
     {
-      "source": "/(about|privacy|terms|comparison|learn)",
+      "source": "/(about|privacy|terms|comparison|learn|extension)",
       "destination": "/$1.html"
     }
   ],
@@ -114,7 +114,7 @@
       ]
     },
     {
-      "source": "/(add-form-fields-pdf|add-text-pdf|compress-pdf|delete-pages-pdf|edit-text-pdf|extract-images-pdf|extract-pages-pdf|finance-privacy-pdf|flatten-pdf|images-to-pdf|legal-privacy-pdf|medical-privacy-pdf|merge-pdf|ocr-pdf|organize-pdf|pdf-to-images|pdf-to-word|protect-pdf|rotate-pdf|sign-pdf|split-pdf|tables-pdf|watermark-pdf|word-to-pdf)",
+      "source": "/(add-form-fields-pdf|add-text-pdf|compress-pdf|delete-pages-pdf|edit-text-pdf|extract-images-pdf|extract-pages-pdf|finance-privacy-pdf|flatten-pdf|images-to-pdf|legal-privacy-pdf|medical-privacy-pdf|merge-pdf|ocr-pdf|organize-pdf|pdf-to-images|pdf-to-word|protect-pdf|rotate-pdf|sign-pdf|split-pdf|tables-pdf|watermark-pdf|word-to-pdf|extension)",
       "headers": [
         {
           "key": "Cache-Control",
