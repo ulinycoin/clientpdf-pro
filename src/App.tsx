@@ -10,7 +10,7 @@ import { Toaster } from '@/components/ui/sonner';
 import { useSupportId } from '@/hooks/useSupportId';
 import { FeedbackDialog } from '@/components/common/FeedbackDialog';
 import { ExtensionPromptBanner } from '@/components/common/ExtensionPromptBanner';
-import { MessageSquare } from 'lucide-react';
+import { MessageSquare, Puzzle } from 'lucide-react';
 import type { Theme, ToolGroup } from '@/types';
 
 // Lazy load tool components for better performance
@@ -192,6 +192,22 @@ function App() {
             </Button>
 
             {/* Language Selector */}
+            <a
+              href="https://chromewebstore.google.com/detail/localpdf-private-pdf-comp/mjidkeobnlijdjmioniboflmoelmckfl"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden sm:inline-flex"
+              aria-label={t('common.extensionPromptCta')}
+              title={t('common.extensionPromptCta')}
+            >
+              <Button
+                variant="ghost"
+                size="icon"
+                className="hover:bg-black/5 dark:hover:bg-white/10"
+              >
+                <Puzzle size={18} />
+              </Button>
+            </a>
             <LanguageSelector />
 
             {/* Theme toggle */}
