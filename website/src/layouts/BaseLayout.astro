@@ -181,18 +181,13 @@ const footerLabels = {
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
 
   <AnalyticsScripts />
-  <script define:vars={{ enableServiceWorker: import.meta.env.PROD }}>
+  <script>
     window.addEventListener('load', () => {
       if (!('serviceWorker' in navigator)) return;
 
-      if (!enableServiceWorker) {
-        navigator.serviceWorker.getRegistrations()
-          .then((registrations) => Promise.all(registrations.map((registration) => registration.unregister())))
-          .catch(() => {});
-        return;
-      }
-
-      navigator.serviceWorker.register('/sw.js').catch(() => {});
+      navigator.serviceWorker.getRegistrations()
+        .then((registrations) => Promise.all(registrations.map((registration) => registration.unregister())))
+        .catch(() => {});
     });
   </script>
 
