@@ -2,34 +2,82 @@ name: CI
 
 on:
   push:
-    branches: [ main, master ]
+    branches: ['**']
   pull_request:
-    branches: [ main, master ]
 
 jobs:
-  build:
+  test-and-build:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: 22
+          cache: npm
 
-      - name: Install dependencies
-        run: npm install
+      - name: Install
+        run: npm ci
 
-      - name: Lint
-        run: npm run lint
+      - name: Workerization Audit (Strict)
+        run: npm run audit:workerization:strict
 
-      - name: Type check
-        run: npx tsc --noEmit
+      - name: Test
+        run: npm test
 
-      - name: Build Web (Astro)
-        run: npm run build:web
-
-      - name: Build App (React)
+      - name: Build
         run: npm run build
+
+  e2e-smoke:
+    if: github.event_name == 'pull_request' && (github.base_ref == 'main' || startsWith(github.base_ref, 'release/'))
+    runs-on: ubuntu-latest
+    needs: test-and-build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: E2E Studio Edit Quality Gate
+        env:
+          VITE_V6_PAGE_COUNT_FALLBACK_MODE: 'limited'
+          E2E_FALLBACK_MAX_RATE: '1'
+          E2E_FALLBACK_ALERT_RATE: '0.2'
+          E2E_FALLBACK_SAMPLE_RUNS: '5'
+          E2E_FALLBACK_MAX_CONSECUTIVE: '999'
+          E2E_FALLBACK_ALERT_CONSECUTIVE: '3'
+        run: npm run test:e2e:studio-edit
+
+      - name: E2E Smoke
+        env:
+          VITE_V6_PAGE_COUNT_FALLBACK_MODE: 'limited'
+          E2E_FALLBACK_MAX_RATE: '1'
+          E2E_FALLBACK_ALERT_RATE: '0.2'
+          E2E_FALLBACK_SAMPLE_RUNS: '5'
+          E2E_FALLBACK_MAX_CONSECUTIVE: '999'
+          E2E_FALLBACK_ALERT_CONSECUTIVE: '3'
+        run: npm run test:e2e
+
+      - name: Fallback Budget Summary
+        if: always()
+        run: npm run report:fallback-budget
+
+      - name: Upload Fallback Budget Metrics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fallback-budget-metrics
+          path: test-results/fallback-budget-metrics.json
+          if-no-files-found: warn

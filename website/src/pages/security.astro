@@ -1,0 +1,256 @@
+---
+import MarketingLayout from '../layouts/MarketingLayout.astro';
+import { getAppUrl } from '../utils/app-url';
+
+const title = 'Security | LocalPDF';
+const description = 'Security and privacy details for LocalPDF: local-first workflows, practical trust boundaries, and clear expectations before you open the app.';
+const canonical = 'https://localpdf.online/security';
+const image = 'https://localpdf.online/og/home.svg';
+const appUrl = getAppUrl();
+
+const securitySchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: 'LocalPDF Security',
+  description,
+  url: canonical,
+};
+
+const pillars = [
+  {
+    title: 'Local-first workflow',
+    body: 'PDF work is meant to start on the user device, especially when the document is sensitive, internal, or operationally important.',
+  },
+  {
+    title: 'Claim discipline',
+    body: 'LocalPDF keeps privacy messaging specific to the workflow so users can understand what the product does without vague or inflated claims.',
+  },
+  {
+    title: 'Honest trust model',
+    body: 'Trust improves when the product explains where local handling matters, what happens before the app opens, and where the workflow has clear boundaries.',
+  },
+];
+
+const rules = [
+  ['What LocalPDF is built for', 'Sensitive documents, practical PDF tasks, and workflows that should begin on the user device instead of in an upload queue.'],
+  ['What this page avoids', 'Broad absolutes, vague trust theater, and promises that go beyond what the product can explain clearly.'],
+  ['What users should expect', 'A local-first workflow, practical explanations, and an easy path into the app once the trust questions are answered.'],
+];
+
+const boundaryItems = [
+  'The local-first workflow is explained before the user is asked to act.',
+  'Trust pages describe product behavior in plain language.',
+  'Security positioning supports the app instead of replacing it with abstract branding.',
+  'Website and app boundaries are easier to trust when they are explained directly.',
+];
+---
+
+<MarketingLayout
+  title={title}
+  description={description}
+  canonical={canonical}
+  image={image}
+  schema={securitySchema}
+>
+  <div class="page-shell">
+    <section class="section intro">
+      <div class="intro-grid">
+        <div>
+          <span class="eyebrow">Security</span>
+          <h1>How LocalPDF handles privacy for sensitive PDF work</h1>
+          <p class="section-intro">
+            This page explains where local processing matters, how LocalPDF frames privacy in practical
+            terms, and what users should understand before they open the app.
+          </p>
+          <div class="cta-row">
+            <a class="btn-primary" href={appUrl}>Open LocalPDF</a>
+            <a class="btn-secondary" href="/faq">Read FAQ</a>
+          </div>
+        </div>
+
+        <div class="boundary-panel">
+          <small>What you can verify here</small>
+          <ul class="bullet-list">
+            <li>How local-first handling fits into the workflow</li>
+            <li>What privacy claims LocalPDF does and does not make</li>
+            <li>Where trust questions matter before the click</li>
+            <li>What to verify before opening the app</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section pillar-grid">
+      {pillars.map((item) => (
+        <article class="card pillar-card">
+          <h2>{item.title}</h2>
+          <p>{item.body}</p>
+        </article>
+      ))}
+    </section>
+
+    <section class="section split-layout">
+      <div>
+        <span class="eyebrow">Trust boundary</span>
+        <h2 class="section-title">A practical trust model</h2>
+        <p class="section-intro">
+          Security is useful when it helps users understand the workflow clearly. The goal is simple:
+          explain where local handling matters and give users enough confidence to choose the right tool.
+        </p>
+        <ul class="bullet-list boundary-list">
+          {boundaryItems.map((item) => <li>{item}</li>)}
+        </ul>
+      </div>
+
+      <div class="boundary-box">
+        <strong>What matters most before the click</strong>
+        <p>
+          Users need to know what LocalPDF is for, why local handling matters for sensitive files,
+          and what they can expect before they start working on a document.
+        </p>
+        <div class="cta-row">
+          <a class="btn-primary" href={appUrl}>Open LocalPDF</a>
+          <a class="btn-secondary" href="/faq">See Common Questions</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">What you can expect from LocalPDF</h2>
+      <div class="rules">
+        {rules.map(([label, body]) => (
+          <div class="rule">
+            <strong>{label}</strong>
+            <p>{body}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section class="section final-band">
+      <div>
+        <span class="eyebrow">Decision point</span>
+        <h2 class="section-title">A clear trust model makes the next step easier</h2>
+        <p class="section-intro">
+          A clear workflow and a believable trust story make the decision easier. The next step should
+          feel simple once the user understands how LocalPDF fits the job.
+        </p>
+      </div>
+      <div class="cta-row">
+        <a class="btn-primary" href={appUrl}>Open LocalPDF</a>
+        <a class="btn-secondary" href="/faq">Read FAQ</a>
+      </div>
+    </section>
+  </div>
+</MarketingLayout>
+
+<style>
+  .intro h1 {
+    font-size: clamp(3rem, 5vw, 5rem);
+    margin-top: 18px;
+    margin-bottom: 18px;
+    max-width: 11ch;
+  }
+
+  .intro-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 22px;
+    align-items: start;
+  }
+
+  .boundary-panel,
+  .boundary-box {
+    padding: 24px;
+    border: 1px solid var(--line);
+    border-radius: 24px;
+  }
+
+  .boundary-panel {
+    background: linear-gradient(180deg, rgba(217, 235, 225, 0.72), rgba(255, 253, 249, 0.98));
+  }
+
+  .boundary-box {
+    background: linear-gradient(180deg, rgba(243, 201, 146, 0.24), rgba(255, 253, 249, 0.98));
+  }
+
+  .boundary-panel small {
+    display: block;
+    margin-bottom: 12px;
+    color: #8a572d;
+    font-size: 0.82rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .pillar-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  .pillar-card h2 {
+    font-size: 1.45rem;
+    margin-bottom: 12px;
+  }
+
+  .split-layout {
+    display: grid;
+    grid-template-columns: 1fr 0.95fr;
+    gap: 22px;
+    align-items: start;
+  }
+
+  .boundary-list {
+    max-width: 760px;
+  }
+
+  .boundary-box strong {
+    display: block;
+    margin-bottom: 12px;
+    font-size: 1.08rem;
+    color: var(--text);
+  }
+
+  .boundary-box p {
+    margin-bottom: 18px;
+  }
+
+  .rules {
+    display: grid;
+    gap: 14px;
+  }
+
+  .rule {
+    padding: 18px 20px;
+    border-radius: 20px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+  }
+
+  .rule strong {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #8a572d;
+  }
+
+  .final-band {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  @media (max-width: 900px) {
+    .intro-grid,
+    .pillar-grid,
+    .split-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

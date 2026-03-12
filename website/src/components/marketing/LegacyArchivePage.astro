@@ -1,0 +1,52 @@
+---
+import MarketingLayout from '../../layouts/MarketingLayout.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  canonical: string;
+  eyebrow?: string;
+  heading: string;
+  body: string;
+  primaryHref?: string;
+  primaryLabel?: string;
+  secondaryHref?: string;
+  secondaryLabel?: string;
+}
+
+const {
+  title,
+  description,
+  canonical,
+  eyebrow = 'Archive',
+  heading,
+  body,
+  primaryHref = '/',
+  primaryLabel = 'Go to Homepage',
+  secondaryHref = '/faq',
+  secondaryLabel = 'Read FAQ',
+} = Astro.props;
+---
+
+<MarketingLayout title={title} description={description} canonical={canonical} noindex={true}>
+  <div class="page-shell">
+    <section class="section intro">
+      <span class="eyebrow">{eyebrow}</span>
+      <h1>{heading}</h1>
+      <p class="section-intro">{body}</p>
+      <div class="cta-row">
+        <a class="btn-primary" href={primaryHref}>{primaryLabel}</a>
+        <a class="btn-secondary" href={secondaryHref}>{secondaryLabel}</a>
+      </div>
+    </section>
+  </div>
+</MarketingLayout>
+
+<style>
+  .intro h1 {
+    font-size: clamp(3rem, 5vw, 5rem);
+    margin-top: 18px;
+    margin-bottom: 18px;
+    max-width: 11ch;
+  }
+</style>

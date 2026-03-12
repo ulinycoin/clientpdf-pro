@@ -1,26 +1,31 @@
-import { getCollection } from 'astro:content';
-import type { APIRoute } from 'astro';
+export async function GET() {
+  type BlogModule = {
+    frontmatter: {
+      title: string;
+      description: string;
+      draft?: boolean;
+      tags: string[];
+      category: string;
+    };
+  };
 
-export const GET: APIRoute = async () => {
-  const blog = await getCollection('blog', ({ data }) => {
-    return data.draft !== true;
-  });
+  const postModules = import.meta.glob('../../content/blog/*.mdx', { eager: true }) as Record<string, BlogModule>;
+  const posts = Object.entries(postModules)
+    .map(([path, module]) => ({
+      title: module.frontmatter.title,
+      description: module.frontmatter.description,
+      slug: path.split('/').pop()?.replace(/\.mdx$/, '') ?? '',
+      tags: module.frontmatter.tags,
+      category: module.frontmatter.category,
+      draft: module.frontmatter.draft,
+    }))
+    .filter((post) => !post.draft)
+    .map(({ draft, ...post }) => post);
 
-  const searchIndex = blog.map((post) => ({
-    title: post.data.title,
-    description: post.data.description,
-    slug: post.slug,
-    tags: post.data.tags,
-    category: post.data.category,
-    pubDate: post.data.pubDate.toISOString(),
-    keywords: post.data.keywords || [],
-  }));
-
-  return new Response(JSON.stringify(searchIndex), {
-    status: 200,
+  return new Response(JSON.stringify(posts), {
     headers: {
-      'Content-Type': 'application/json',
-      'Cache-Control': 'public, max-age=3600', // Cache for 1 hour
+      'Content-Type': 'application/json; charset=utf-8',
+      'Cache-Control': 'public, max-age=3600',
     },
   });
-};
+}

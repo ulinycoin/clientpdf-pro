@@ -4,7 +4,7 @@
 User-agent: *
 Allow: /
 
-# AI Bots - Explicit Allow for Generative Engine Optimization
+# AI bots
 User-agent: OAI-SearchBot
 Allow: /
 
@@ -28,42 +28,20 @@ Crawl-delay: 1
 # Disallow app routes (hash-based SPA)
 Disallow: /app
 
-# Allow all tool pages
-Allow: /merge-pdf
-Allow: /split-pdf
-Allow: /compress-pdf
-Allow: /protect-pdf
-Allow: /ocr-pdf
-Allow: /watermark-pdf
-Allow: /add-text-pdf
-Allow: /edit-text-pdf
-Allow: /sign-pdf
-Allow: /organize-pdf
-Allow: /rotate-pdf
-Allow: /delete-pages-pdf
-Allow: /extract-pages-pdf
-Allow: /images-to-pdf
-Allow: /pdf-to-images
-Allow: /pdf-to-word
-Allow: /word-to-pdf
-Allow: /tables-pdf
-Allow: /add-form-fields-pdf
-Allow: /extract-images-pdf
-Allow: /flatten-pdf
-Allow: /legal-privacy-pdf
-Allow: /finance-privacy-pdf
-Allow: /medical-privacy-pdf
-Allow: /de
-Allow: /ja
-Allow: /de/
-Allow: /ja/
-
-# Allow informational pages
+# Allow canonical marketing pages
+Allow: /
 Allow: /about
+Allow: /faq
+Allow: /security
 Allow: /privacy
 Allow: /terms
-Allow: /learn
-Allow: /comparison
+Allow: /features/edit-pdf
+Allow: /features/merge-pdf
+Allow: /features/ocr-pdf
+Allow: /features/compress-pdf
+Allow: /features/split-pdf
+Allow: /features/sign-pdf
+Allow: /features/convert-pdf
 
 # Allow blog pages
 Allow: /blog

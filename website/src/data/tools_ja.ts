@@ -49,11 +49,11 @@ export const CATEGORIES_JA: Category[] = [
 ];
 export const UI_LABELS_JA = {
     freeBadge: "無料サンドボックス Beta",
-    launchStudio: "スタジオを起動 🚀",
+    launchStudio: "LocalPDFを開く",
     keyFeatures: "主な機能",
     howItWorks: "利用手順",
-    privacyTitle: "100% プライバシー保護:",
-    privacyDesc: "ファイルがデバイス外に送信されることはありません。すべての処理はブラウザの安全なメモリ内で行われます。",
+    privacyTitle: "ローカルなプライベート処理:",
+    privacyDesc: "処理中もファイルはデバイス上に留まります。LocalPDFは主要なPDF作業でアップロード前提のフローを避けます。",
     faqHeader: "よくある質問",
     techHeader: "技術アーキテクチャ: 仕組みについて",
     relatedHeader: "関連するPDFツール",
@@ -71,7 +71,7 @@ export const UI_LABELS_JA = {
         },
         {
             question: "モバイルデバイスでも動作しますか？",
-            answer: "はい！LocalPDF Sanctuaryは完全にレスポンシブで、iOS、Android、タブレット上のあらゆる最新Webブラウザで動作します。"
+            answer: "はい。LocalPDFはモダンなデスクトップ/モバイルブラウザで動作しますが、大きなファイルでは端末のメモリやCPU性能に依存します。"
         }
     ],
     defaultTechInfo: [

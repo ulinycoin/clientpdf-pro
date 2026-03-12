@@ -1,175 +1,178 @@
 ---
-import { getCollection } from 'astro:content';
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import BlogCard from '../../components/blog/BlogCard.astro';
-import TagFilter from '../../components/blog/TagFilter.astro';
-import SearchBar from '../../components/blog/SearchBar.astro';
+import MarketingLayout from '../../layouts/MarketingLayout.astro';
 
-// Get all blog posts (excluding drafts)
-const allPosts = await getCollection('blog', ({ data }) => {
-  return data.draft !== true;
-});
+type BlogModule = {
+  frontmatter: {
+    title: string;
+    description: string;
+    pubDate: Date;
+    draft?: boolean;
+    featured?: boolean;
+    category: string;
+  };
+};
 
-// Sort by date (newest first)
-const sortedPosts = allPosts.sort((a, b) =>
-  b.data.pubDate.getTime() - a.data.pubDate.getTime()
-);
+const postModules = import.meta.glob('../../content/blog/*.mdx', { eager: true }) as Record<string, BlogModule>;
+const allPosts = Object.entries(postModules)
+  .map(([path, module]) => ({
+    slug: path.split('/').pop()?.replace(/\.mdx$/, '') ?? '',
+    data: {
+      ...module.frontmatter,
+      pubDate: new Date(module.frontmatter.pubDate),
+    },
+  }))
+  .filter((post) => !post.data.draft)
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
 
-// Get featured posts
-const featuredPosts = sortedPosts.filter(post => post.data.featured);
+const featuredPosts = allPosts.filter((post) => post.data.featured).slice(0, 6);
+const recentPosts = allPosts.slice(0, 12);
+const title = 'PDF Guides and Workflow Articles | LocalPDF Blog';
+const description = 'Guides for editing, merging, OCR, compression, splitting, signing, conversion, and PDF privacy workflows.';
+const canonical = 'https://localpdf.online/blog';
+const image = 'https://localpdf.online/og/home.svg';
 
-// Get selected tag from URL
-const selectedTag = Astro.url.searchParams.get('tag');
-
-// Filter posts by tag if selected
-const filteredPosts = selectedTag
-  ? sortedPosts.filter(post => post.data.tags.includes(selectedTag))
-  : sortedPosts;
-
-// Get all unique tags
-const allTags = [...new Set(allPosts.flatMap(post => post.data.tags))];
-
-// Calculate reading time (simple estimation: 200 words per minute)
-function calculateReadingTime(content: string): number {
-  const words = content.split(/\s+/).length;
-  return Math.ceil(words / 200);
-}
-
-// Add reading time to posts
-const postsWithReadingTime = filteredPosts.map(post => ({
-  ...post,
-  readingTime: calculateReadingTime(post.body)
-}));
-
-const title = selectedTag
-  ? `Blog - ${selectedTag} | LocalPDF`
-  : 'Blog - PDF Tips, Tutorials & Best Practices | LocalPDF';
-
-const description = selectedTag
-  ? `Articles about ${selectedTag} and PDF tools. Learn tips, tricks, and best practices.`
-  : 'Learn everything about PDF tools, privacy, productivity tips, and best practices. Expert guides and tutorials for working with PDFs.';
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Blog',
+    name: 'LocalPDF Blog',
+    description,
+    url: canonical,
+    publisher: {
+      '@type': 'Organization',
+      name: 'LocalPDF',
+      logo: 'https://localpdf.online/logos/localpdf-header-96x96.png',
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: 'https://localpdf.online/',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Blog',
+        item: canonical,
+      },
+    ],
+  },
+];
 ---
 
-<BaseLayout title={title} description={description} canonical="https://localpdf.online/blog">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <!-- Header -->
-    <header class="text-center mb-16">
-      <h1 class="text-4xl sm:text-6xl font-extrabold text-main mb-6 leading-tight font-outfit">
-        {selectedTag ? `Articles about #${selectedTag}` : 'LocalPDF Blog'}
-      </h1>
-      <p class="text-xl text-muted max-w-3xl mx-auto leading-relaxed">
-        {selectedTag
-          ? `Explore our ${filteredPosts.length} articles about ${selectedTag}`
-          : 'Learn tips, tricks, and best practices for working with PDFs'
-        }
+<MarketingLayout title={title} description={description} canonical={canonical} image={image} schema={schema}>
+  <div class="page-shell">
+    <section class="section intro">
+      <span class="eyebrow">Blog</span>
+      <h1>Guides for practical PDF work</h1>
+      <p class="section-intro">
+        Read guides on editing, merging, OCR, compression, splitting, signing, conversion, and PDF privacy workflows.
+        Then move into the product when you are ready to finish the job.
       </p>
-    </header>
-
-    <!-- Search Bar -->
-    <SearchBar />
-
-    <!-- Tag Filter -->
-    <TagFilter allTags={allTags} selectedTag={selectedTag || undefined} />
-
-    <!-- Featured Posts -->
-    {!selectedTag && featuredPosts.length > 0 && (
-      <section class="mb-12">
-        <h2 class="text-2xl font-bold text-gray-900 mb-6">Featured Articles</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {featuredPosts.slice(0, 3).map(post => (
-            <BlogCard
-              title={post.data.title}
-              description={post.data.description}
-              pubDate={post.data.pubDate}
-              slug={post.slug}
-              coverImage={post.data.coverImage}
-              coverImageAlt={post.data.coverImageAlt}
-              tags={post.data.tags}
-              category={post.data.category}
-              readingTime={calculateReadingTime(post.body)}
-              featured={true}
-            />
-          ))}
-        </div>
-      </section>
-    )}
-
-    <!-- All Posts -->
-    <section>
-      <h2 class="text-3xl font-bold text-main mb-8 font-outfit">
-        {selectedTag ? 'Filtered Articles' : 'Recent Updates'}
-        <span class="text-muted font-normal text-lg ml-2 opacity-60">
-          ({postsWithReadingTime.length})
-        </span>
-      </h2>
-
-      {postsWithReadingTime.length > 0 ? (
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {postsWithReadingTime.map(post => (
-            <BlogCard
-              title={post.data.title}
-              description={post.data.description}
-              pubDate={post.data.pubDate}
-              slug={post.slug}
-              coverImage={post.data.coverImage}
-              coverImageAlt={post.data.coverImageAlt}
-              tags={post.data.tags}
-              category={post.data.category}
-              readingTime={post.readingTime}
-              featured={false}
-            />
-          ))}
-        </div>
-      ) : (
-          <div class="text-center py-16 px-8 bg-glass border border-glass-border rounded-[2rem]">
-            <svg class="mx-auto h-16 w-16 text-muted mb-6 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            <h3 class="text-2xl font-bold text-main mb-3">No articles found</h3>
-            <p class="text-muted mb-8 text-lg">
-              {selectedTag
-                ? `We don't have any articles about "${selectedTag}" yet.`
-                : 'No articles available at the moment.'
-              }
-            </p>
-            {selectedTag && (
-              <a href="/blog" class="inline-block px-8 py-3.5 bg-accent-blue text-white font-bold rounded-xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-900/20">
-                View All Articles
-              </a>
-            )}
-          </div>
-      )}
     </section>
 
-    <!-- Categories Overview -->
-    {!selectedTag && (
-      <section class="mt-20 pt-16 border-t border-glass-border">
-        <h2 class="text-3xl font-bold text-main mb-10 font-outfit">Explore by Category</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[
-            'PDF Basics',
-            'Advanced Features',
-            'Security & Privacy',
-            'Productivity Tips',
-            'Tutorials',
-            'Comparisons',
-            'Use Cases'
-          ].map(category => {
-            const count = sortedPosts.filter(post => post.data.category === category).length;
-            return count > 0 ? (
-              <a
-                href={`/blog?category=${encodeURIComponent(category)}`}
-                class="p-6 bg-glass border border-glass-border rounded-2xl hover:border-white/20 transition-all group"
-              >
-                <h3 class="text-lg font-bold text-main mb-2 group-hover:text-accent-light transition-colors">
-                  {category}
-                </h3>
-                <p class="text-sm text-muted opacity-80">{count} article{count !== 1 ? 's' : ''}</p>
-              </a>
-            ) : null;
-          })}
-        </div>
-      </section>
-    )}
+    <section class="section">
+      <h2 class="section-title">Featured guides</h2>
+      <div class="card-grid blog-grid">
+        {featuredPosts.map((post) => (
+          <a class="feature-card" href={`/blog/${post.slug}`}>
+            <span class="feature-label">{post.data.category}</span>
+            <h3>{post.data.title}</h3>
+            <p>{post.data.description}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">Recent articles</h2>
+      <div class="list-grid">
+        {recentPosts.map((post) => (
+          <a class="list-card" href={`/blog/${post.slug}`}>
+            <div>
+              <strong>{post.data.title}</strong>
+              <p>{post.data.description}</p>
+            </div>
+            <span>{post.data.pubDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+          </a>
+        ))}
+      </div>
+    </section>
   </div>
-</BaseLayout>
+</MarketingLayout>
+
+<style>
+  .intro h1 {
+    font-size: clamp(3rem, 5vw, 5rem);
+    margin-top: 18px;
+    margin-bottom: 18px;
+    max-width: 11ch;
+  }
+
+  .blog-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .feature-card,
+  .list-card {
+    display: block;
+    padding: 22px;
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    background: var(--surface);
+    text-decoration: none;
+  }
+
+  .feature-label {
+    display: inline-block;
+    margin-bottom: 12px;
+    color: #8a572d;
+    font-weight: 800;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .feature-card h3,
+  .list-card strong {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 1.28rem;
+    color: var(--text);
+  }
+
+  .list-grid {
+    display: grid;
+    gap: 14px;
+  }
+
+  .list-card {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+  }
+
+  .list-card span {
+    white-space: nowrap;
+    color: #536674;
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 900px) {
+    .blog-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .list-card {
+      flex-direction: column;
+    }
+  }
+</style>

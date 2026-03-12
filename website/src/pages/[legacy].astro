@@ -1,0 +1,247 @@
+---
+import LegacyArchivePage from '../components/marketing/LegacyArchivePage.astro';
+
+function getLegacyRoutes() {
+  return {
+  'add-form-fields-pdf': {
+    title: 'Add Form Fields PDF Archive | LocalPDF',
+    description: 'This legacy route has been replaced. Use the current LocalPDF workflow instead.',
+    heading: 'This workflow moved',
+    body: 'The old Add Form Fields route is no longer published as a standalone page. Use the current LocalPDF editing workflow instead.',
+    primaryHref: '/features/edit-pdf',
+    primaryLabel: 'Open Edit PDF',
+    secondaryHref: '/blog/create-fillable-pdf-forms-guide',
+    secondaryLabel: 'Read the form guide',
+  },
+  'add-text-pdf': {
+    title: 'Add Text PDF Archive | LocalPDF',
+    description: 'This legacy route has been replaced. Use the current LocalPDF workflow instead.',
+    heading: 'This workflow moved',
+    body: 'The old Add Text route is no longer published as a standalone page. Use the current LocalPDF editing workflow instead.',
+    primaryHref: '/features/edit-pdf',
+    primaryLabel: 'Open Edit PDF',
+    secondaryHref: '/blog/edit-text-in-pdf-guide',
+    secondaryLabel: 'Read the edit guide',
+  },
+  'compress-pdf': {
+    title: 'Compress PDF Archive | LocalPDF',
+    description: 'This legacy route now lives under the current feature page.',
+    heading: 'This workflow moved',
+    body: 'The old Compress PDF route has been replaced by the current feature page.',
+    primaryHref: '/features/compress-pdf',
+    primaryLabel: 'Open Compress PDF',
+    secondaryHref: '/blog/compress-pdf-without-losing-quality',
+    secondaryLabel: 'Read the compression guide',
+  },
+  'delete-pages-pdf': {
+    title: 'Delete Pages PDF Archive | LocalPDF',
+    description: 'This legacy route has been replaced. Use the current page-management workflow instead.',
+    heading: 'This workflow moved',
+    body: 'The old Delete Pages route is no longer published as a standalone page. Use the current split workflow for page-level document changes.',
+    primaryHref: '/features/split-pdf',
+    primaryLabel: 'Open Split PDF',
+    secondaryHref: '/blog/how-to-split-pdf-files',
+    secondaryLabel: 'Read the split guide',
+  },
+  'extract-pages-pdf': {
+    title: 'Extract Pages PDF Archive | LocalPDF',
+    description: 'This legacy route has been replaced. Use the current page-management workflow instead.',
+    heading: 'This workflow moved',
+    body: 'The old Extract Pages route is no longer published as a standalone page. Use the current split workflow for page-level document changes.',
+    primaryHref: '/features/split-pdf',
+    primaryLabel: 'Open Split PDF',
+    secondaryHref: '/blog/how-to-split-pdf-files',
+    secondaryLabel: 'Read the split guide',
+  },
+  'flatten-pdf': {
+    title: 'Flatten PDF Archive | LocalPDF',
+    description: 'This legacy route has been replaced. Use the current LocalPDF workflow instead.',
+    heading: 'This workflow moved',
+    body: 'The old Flatten PDF route is no longer published as a standalone page. Use the current editing workflow or form guide instead.',
+    primaryHref: '/features/edit-pdf',
+    primaryLabel: 'Open Edit PDF',
+    secondaryHref: '/blog/create-fillable-pdf-forms-guide',
+    secondaryLabel: 'Read the form guide',
+  },
+  'images-to-pdf': {
+    title: 'Images to PDF Archive | LocalPDF',
+    description: 'This legacy route now lives under the current conversion feature page.',
+    heading: 'This workflow moved',
+    body: 'The old Images to PDF route has been replaced by the current conversion workflow.',
+    primaryHref: '/features/convert-pdf',
+    primaryLabel: 'Open Convert PDF',
+    secondaryHref: '/blog/convert-pdf-to-images-guide',
+    secondaryLabel: 'Read the conversion guide',
+  },
+  'merge-pdf': {
+    title: 'Merge PDF Archive | LocalPDF',
+    description: 'This legacy route now lives under the current feature page.',
+    heading: 'This workflow moved',
+    body: 'The old Merge PDF route has been replaced by the current feature page.',
+    primaryHref: '/features/merge-pdf',
+    primaryLabel: 'Open Merge PDF',
+    secondaryHref: '/blog/how-to-merge-pdf-files',
+    secondaryLabel: 'Read the merge guide',
+  },
+  'ocr-pdf': {
+    title: 'OCR PDF Archive | LocalPDF',
+    description: 'This legacy route now lives under the current feature page.',
+    heading: 'This workflow moved',
+    body: 'The old OCR PDF route has been replaced by the current feature page.',
+    primaryHref: '/features/ocr-pdf',
+    primaryLabel: 'Open OCR PDF',
+    secondaryHref: '/blog/ocr-pdf-extract-text',
+    secondaryLabel: 'Read the OCR guide',
+  },
+  'organize-pdf': {
+    title: 'Organize PDF Archive | LocalPDF',
+    description: 'This legacy route has been replaced. Use the current page-management workflow instead.',
+    heading: 'This workflow moved',
+    body: 'The old Organize PDF route is no longer published as a standalone page. Use the current split workflow for page-level document changes.',
+    primaryHref: '/features/split-pdf',
+    primaryLabel: 'Open Split PDF',
+    secondaryHref: '/blog/smart-organize-ai-page-analysis',
+    secondaryLabel: 'Read the Smart Organize guide',
+  },
+  'pdf-to-images': {
+    title: 'PDF to Images Archive | LocalPDF',
+    description: 'This legacy route now lives under the current conversion feature page.',
+    heading: 'This workflow moved',
+    body: 'The old PDF to Images route has been replaced by the current conversion workflow.',
+    primaryHref: '/features/convert-pdf',
+    primaryLabel: 'Open Convert PDF',
+    secondaryHref: '/blog/convert-pdf-to-images-guide',
+    secondaryLabel: 'Read the conversion guide',
+  },
+  'pdf-to-word': {
+    title: 'PDF to Word Archive | LocalPDF',
+    description: 'This legacy route now lives under the current conversion feature page.',
+    heading: 'This workflow moved',
+    body: 'The old PDF to Word route has been replaced by the current conversion workflow.',
+    primaryHref: '/features/convert-pdf',
+    primaryLabel: 'Open Convert PDF',
+    secondaryHref: '/blog/convert-word-pdf-guide',
+    secondaryLabel: 'Read the conversion guide',
+  },
+  'protect-pdf': {
+    title: 'Protect PDF Archive | LocalPDF',
+    description: 'This legacy route has been replaced. Use the current security documentation instead.',
+    heading: 'This workflow moved',
+    body: 'The old Protect PDF route is no longer published as a standalone page. Review LocalPDF security guidance for the current privacy model.',
+    primaryHref: '/security',
+    primaryLabel: 'Read Security',
+    secondaryHref: '/blog/pdf-security-best-practices',
+    secondaryLabel: 'Read the security guide',
+  },
+  'rotate-pdf': {
+    title: 'Rotate PDF Archive | LocalPDF',
+    description: 'This legacy route has been replaced. Use the current page-management workflow instead.',
+    heading: 'This workflow moved',
+    body: 'The old Rotate PDF route is no longer published as a standalone page. Use the current split workflow for page-level document changes.',
+    primaryHref: '/features/split-pdf',
+    primaryLabel: 'Open Split PDF',
+    secondaryHref: '/blog/how-to-split-pdf-files',
+    secondaryLabel: 'Read the split guide',
+  },
+  'sign-pdf': {
+    title: 'Sign PDF Archive | LocalPDF',
+    description: 'This legacy route now lives under the current feature page.',
+    heading: 'This workflow moved',
+    body: 'The old Sign PDF route has been replaced by the current feature page.',
+    primaryHref: '/features/sign-pdf',
+    primaryLabel: 'Open Sign PDF',
+    secondaryHref: '/blog/how-to-sign-pdf-digitally',
+    secondaryLabel: 'Read the signing guide',
+  },
+  'split-pdf': {
+    title: 'Split PDF Archive | LocalPDF',
+    description: 'This legacy route now lives under the current feature page.',
+    heading: 'This workflow moved',
+    body: 'The old Split PDF route has been replaced by the current feature page.',
+    primaryHref: '/features/split-pdf',
+    primaryLabel: 'Open Split PDF',
+    secondaryHref: '/blog/how-to-split-pdf-files',
+    secondaryLabel: 'Read the split guide',
+  },
+  'unlock-pdf': {
+    title: 'Unlock PDF Archive | LocalPDF',
+    description: 'This legacy route has been replaced. Use the current security documentation instead.',
+    heading: 'This workflow moved',
+    body: 'The old Unlock PDF route is no longer published as a standalone page. Review LocalPDF security guidance for the current privacy model.',
+    primaryHref: '/security',
+    primaryLabel: 'Read Security',
+    secondaryHref: '/faq',
+    secondaryLabel: 'Read FAQ',
+  },
+  'watermark-pdf': {
+    title: 'Watermark PDF Archive | LocalPDF',
+    description: 'This legacy route has been replaced. Use the current LocalPDF workflow instead.',
+    heading: 'This workflow moved',
+    body: 'The old Watermark PDF route is no longer published as a standalone page. Use the current editing workflow instead.',
+    primaryHref: '/features/edit-pdf',
+    primaryLabel: 'Open Edit PDF',
+    secondaryHref: '/blog/add-watermark-to-pdf',
+    secondaryLabel: 'Read the watermark guide',
+  },
+  'word-to-pdf': {
+    title: 'Word to PDF Archive | LocalPDF',
+    description: 'This legacy route now lives under the current conversion feature page.',
+    heading: 'This workflow moved',
+    body: 'The old Word to PDF route has been replaced by the current conversion workflow.',
+    primaryHref: '/features/convert-pdf',
+    primaryLabel: 'Open Convert PDF',
+    secondaryHref: '/blog/convert-word-pdf-guide',
+    secondaryLabel: 'Read the conversion guide',
+  },
+  } as const;
+}
+
+const legacyRoutes = getLegacyRoutes();
+type LegacySlug = keyof ReturnType<typeof getLegacyRoutes>;
+
+export function getStaticPaths() {
+  const legacyRoutes = {
+    'add-form-fields-pdf': true,
+    'add-text-pdf': true,
+    'compress-pdf': true,
+    'delete-pages-pdf': true,
+    'extract-pages-pdf': true,
+    'flatten-pdf': true,
+    'images-to-pdf': true,
+    'merge-pdf': true,
+    'ocr-pdf': true,
+    'organize-pdf': true,
+    'pdf-to-images': true,
+    'pdf-to-word': true,
+    'protect-pdf': true,
+    'rotate-pdf': true,
+    'sign-pdf': true,
+    'split-pdf': true,
+    'unlock-pdf': true,
+    'watermark-pdf': true,
+    'word-to-pdf': true,
+  } as const;
+
+  return Object.keys(legacyRoutes).map((slug) => ({
+    params: { legacy: slug },
+    props: {
+      slug,
+    },
+  }));
+}
+
+const { slug } = Astro.props as { slug: LegacySlug };
+const page = legacyRoutes[slug];
+---
+
+<LegacyArchivePage
+  title={page.title}
+  description={page.description}
+  canonical={`https://localpdf.online/${slug}`}
+  heading={page.heading}
+  body={page.body}
+  primaryHref={page.primaryHref}
+  primaryLabel={page.primaryLabel}
+  secondaryHref={page.secondaryHref}
+  secondaryLabel={page.secondaryLabel}
+/>

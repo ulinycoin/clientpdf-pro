@@ -1,0 +1,59 @@
+import { __awaiter } from "tslib";
+import { PNG } from "../../utils/png";
+/**
+ * A note of thanks to the developers of https://github.com/foliojs/pdfkit, as
+ * this class borrows from:
+ *   https://github.com/devongovett/pdfkit/blob/e71edab0dd4657b5a767804ba86c94c58d01fbca/lib/image/png.coffee
+ */
+class PngEmbedder {
+    constructor(png) {
+        this.image = png;
+        this.bitsPerComponent = png.bitsPerComponent;
+        this.width = png.width;
+        this.height = png.height;
+        this.colorSpace = 'DeviceRGB';
+    }
+    static for(imageData) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const png = PNG.load(imageData);
+            return new PngEmbedder(png);
+        });
+    }
+    embedIntoContext(context, ref) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const SMask = this.embedAlphaChannel(context);
+            const xObject = context.flateStream(this.image.rgbChannel, {
+                Type: 'XObject',
+                Subtype: 'Image',
+                BitsPerComponent: this.image.bitsPerComponent,
+                Width: this.image.width,
+                Height: this.image.height,
+                ColorSpace: this.colorSpace,
+                SMask,
+            });
+            if (ref) {
+                context.assign(ref, xObject);
+                return ref;
+            }
+            else {
+                return context.register(xObject);
+            }
+        });
+    }
+    embedAlphaChannel(context) {
+        if (!this.image.alphaChannel)
+            return undefined;
+        const xObject = context.flateStream(this.image.alphaChannel, {
+            Type: 'XObject',
+            Subtype: 'Image',
+            Height: this.image.height,
+            Width: this.image.width,
+            BitsPerComponent: this.image.bitsPerComponent,
+            ColorSpace: 'DeviceGray',
+            Decode: [0, 1],
+        });
+        return context.register(xObject);
+    }
+}
+export default PngEmbedder;
+//# sourceMappingURL=PngEmbedder.js.map

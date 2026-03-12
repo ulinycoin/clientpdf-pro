@@ -1,0 +1,97 @@
+import PDFDict from "../objects/PDFDict";
+import PDFName from "../objects/PDFName";
+import PDFRef from "../objects/PDFRef";
+import PDFString from "../objects/PDFString";
+import PDFHexString from "../objects/PDFHexString";
+import BorderStyle from "./BorderStyle";
+import PDFAnnotation from "./PDFAnnotation";
+import AppearanceCharacteristics from "./AppearanceCharacteristics";
+class PDFWidgetAnnotation extends PDFAnnotation {
+    MK() {
+        const MK = this.dict.lookup(PDFName.of('MK'));
+        if (MK instanceof PDFDict)
+            return MK;
+        return undefined;
+    }
+    BS() {
+        const BS = this.dict.lookup(PDFName.of('BS'));
+        if (BS instanceof PDFDict)
+            return BS;
+        return undefined;
+    }
+    DA() {
+        const da = this.dict.lookup(PDFName.of('DA'));
+        if (da instanceof PDFString || da instanceof PDFHexString)
+            return da;
+        return undefined;
+    }
+    P() {
+        const P = this.dict.get(PDFName.of('P'));
+        if (P instanceof PDFRef)
+            return P;
+        return undefined;
+    }
+    setDefaultAppearance(appearance) {
+        this.dict.set(PDFName.of('DA'), PDFString.of(appearance));
+    }
+    getDefaultAppearance() {
+        const DA = this.DA();
+        if (DA instanceof PDFHexString) {
+            return DA.decodeText();
+        }
+        return DA === null || DA === void 0 ? void 0 : DA.asString();
+    }
+    getAppearanceCharacteristics() {
+        const MK = this.MK();
+        if (MK)
+            return AppearanceCharacteristics.fromDict(MK);
+        return undefined;
+    }
+    getOrCreateAppearanceCharacteristics() {
+        const MK = this.MK();
+        if (MK)
+            return AppearanceCharacteristics.fromDict(MK);
+        const ac = AppearanceCharacteristics.fromDict(this.dict.context.obj({}));
+        this.dict.set(PDFName.of('MK'), ac.dict);
+        return ac;
+    }
+    getBorderStyle() {
+        const BS = this.BS();
+        if (BS)
+            return BorderStyle.fromDict(BS);
+        return undefined;
+    }
+    getOrCreateBorderStyle() {
+        const BS = this.BS();
+        if (BS)
+            return BorderStyle.fromDict(BS);
+        const bs = BorderStyle.fromDict(this.dict.context.obj({}));
+        this.dict.set(PDFName.of('BS'), bs.dict);
+        return bs;
+    }
+    getOnValue() {
+        var _a;
+        const normal = (_a = this.getAppearances()) === null || _a === void 0 ? void 0 : _a.normal;
+        if (normal instanceof PDFDict) {
+            const keys = normal.keys();
+            for (let idx = 0, len = keys.length; idx < len; idx++) {
+                const key = keys[idx];
+                if (key !== PDFName.of('Off'))
+                    return key;
+            }
+        }
+        return undefined;
+    }
+}
+PDFWidgetAnnotation.fromDict = (dict) => new PDFWidgetAnnotation(dict);
+PDFWidgetAnnotation.create = (context, parent) => {
+    const dict = context.obj({
+        Type: 'Annot',
+        Subtype: 'Widget',
+        Rect: [0, 0, 0, 0],
+        Parent: parent,
+    });
+    return new PDFWidgetAnnotation(dict);
+};
+export default PDFWidgetAnnotation;
+//# sourceMappingURL=PDFWidgetAnnotation.js.map

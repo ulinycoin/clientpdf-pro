@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Breadcrumbs from './Breadcrumbs.astro';
 import FAQSchema from './FAQSchema.astro';
 import { ALL_TOOLS, getToolById, getRelatedTools, ICONS } from '../data/tools';
+import { getAppUrl } from '../utils/app-url';
 
 interface Props {
   toolId: string;
@@ -60,11 +61,11 @@ const {
 
 const ui = {
   freeBadge: labels.freeBadge || "Free Sandbox Beta",
-  launchStudio: labels.launchStudio || "Launch Studio 🚀",
+  launchStudio: labels.launchStudio || "Open LocalPDF",
   keyFeatures: labels.keyFeatures || "Key Features",
   howItWorks: labels.howItWorks || "How It Works",
-  privacyTitle: labels.privacyTitle || "100% Private Sandbox:",
-  privacyDesc: labels.privacyDesc || "Your files never leave your device. All processing happens locally in your browser's secure memory.",
+  privacyTitle: labels.privacyTitle || "Private local processing:",
+  privacyDesc: labels.privacyDesc || "Your files stay on your device during in-browser processing. LocalPDF avoids an upload-first workflow for core document jobs.",
   faqHeader: labels.faqHeader || "Frequently Asked Questions",
   techHeader: labels.techHeader || "Technical Architecture: How it Works",
   relatedHeader: labels.relatedHeader || "Related PDF Tools",
@@ -80,7 +81,7 @@ const canonicalURL = `https://localpdf.online${langPrefix}/${toolId}`;
 
 // Get tool data from centralized registry
 const currentTool = getToolById(toolId);
-const appURL = `/app#${currentTool?.hash || toolId}`;
+const appURL = getAppUrl(currentTool?.id || toolId);
 
 // Smart Related Tools Logic
 const finalRelatedTools = relatedTools && relatedTools.length > 0
@@ -164,7 +165,7 @@ const productSchema = {
   "description": metaDescription,
   "brand": {
     "@type": "Brand",
-    "name": "LocalPDF Sanctuary"
+    "name": "LocalPDF"
   },
   "image": image || "https://localpdf.online/logos/icon-512.png",
   "offers": {
@@ -245,7 +246,7 @@ const defaultFaqs = [
   },
   {
     question: "Does it work on mobile devices?",
-    answer: "Yes! LocalPDF Sanctuary is fully responsive and works on iOS, Android, and tablets through any modern web browser."
+    answer: "Yes. LocalPDF works on desktop and mobile browsers, though heavier workflows depend on device memory and CPU."
   }
 ];
 

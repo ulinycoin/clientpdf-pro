@@ -1,0 +1,39 @@
+import CharCodes from "../syntax/CharCodes";
+import { charFromCode, copyStringIntoBuffer } from "../../utils";
+class PDFHeader {
+    constructor(major, minor) {
+        this.major = String(major);
+        this.minor = String(minor);
+    }
+    getVersion() {
+        return `${this.major}.${this.minor}`;
+    }
+    toString() {
+        const bc = charFromCode(129);
+        return `%PDF-${this.major}.${this.minor}\n%${bc}${bc}${bc}${bc}`;
+    }
+    sizeInBytes() {
+        return 12 + this.major.length + this.minor.length;
+    }
+    copyBytesInto(buffer, offset) {
+        const initialOffset = offset;
+        buffer[offset++] = CharCodes.Percent;
+        buffer[offset++] = CharCodes.P;
+        buffer[offset++] = CharCodes.D;
+        buffer[offset++] = CharCodes.F;
+        buffer[offset++] = CharCodes.Dash;
+        offset += copyStringIntoBuffer(this.major, buffer, offset);
+        buffer[offset++] = CharCodes.Period;
+        offset += copyStringIntoBuffer(this.minor, buffer, offset);
+        buffer[offset++] = CharCodes.Newline;
+        buffer[offset++] = CharCodes.Percent;
+        buffer[offset++] = 129;
+        buffer[offset++] = 129;
+        buffer[offset++] = 129;
+        buffer[offset++] = 129;
+        return offset - initialOffset;
+    }
+}
+PDFHeader.forVersion = (major, minor) => new PDFHeader(major, minor);
+export default PDFHeader;
+//# sourceMappingURL=PDFHeader.js.map

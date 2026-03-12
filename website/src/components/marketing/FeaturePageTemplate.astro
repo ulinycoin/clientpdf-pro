@@ -1,0 +1,515 @@
+---
+import MarketingLayout from '../../layouts/MarketingLayout.astro';
+import { featurePages, type FeaturePageData } from '../../data/featurePages';
+import { getAppUrl } from '../../utils/app-url';
+
+interface Props {
+  page: FeaturePageData;
+}
+
+const { page } = Astro.props;
+const canonical = `https://localpdf.online/features/${page.slug}`;
+const appUrl = getAppUrl(page.appHash);
+const relatedPages = featurePages.filter((item) => item.slug !== page.slug).slice(0, 3);
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'LocalPDF',
+    applicationCategory: 'BusinessApplication',
+    operatingSystem: 'Web',
+    description: page.metaDescription,
+    url: canonical,
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'USD',
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: page.metaTitle,
+    description: page.metaDescription,
+    url: canonical,
+    isPartOf: {
+      '@type': 'WebSite',
+      name: 'LocalPDF',
+      url: 'https://localpdf.online/',
+    },
+    about: {
+      '@type': 'Thing',
+      name: page.eyebrow,
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: 'https://localpdf.online/',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Features',
+        item: 'https://localpdf.online/',
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: page.eyebrow,
+        item: canonical,
+      },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: page.quickAnswers.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.answer,
+      },
+    })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'HowTo',
+    name: `${page.eyebrow} with LocalPDF`,
+    description: page.metaDescription,
+    step: page.howItWorks.map((step, index) => ({
+      '@type': 'HowToStep',
+      position: index + 1,
+      name: step,
+      text: step,
+    })),
+  },
+];
+---
+
+<MarketingLayout
+  title={page.metaTitle}
+  description={page.metaDescription}
+  canonical={canonical}
+  image={page.socialImage}
+  schema={schema}
+>
+  <div class="page-shell">
+    <section class="feature-hero section">
+      <span class="eyebrow">{page.eyebrow}</span>
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <h1>{page.title}</h1>
+          <p class="hero-intro">{page.intro}</p>
+          <div class="cta-row">
+            <a class="btn-primary" href={appUrl}>Open LocalPDF</a>
+            <a class="btn-secondary" href="/security">Read Security Details</a>
+          </div>
+          <div class="hero-tags">
+            <span>{page.eyebrow}</span>
+            <span>Local workflow</span>
+            <span>Export result</span>
+          </div>
+        </div>
+
+        <div class="hero-proof">
+          <div class="proof-card">
+            <div class="proof-matrix" aria-hidden="true">
+              <span class="proof-pill">Local workflow</span>
+              <span class="proof-pill">PDF task</span>
+              <span class="proof-pill">Open app</span>
+              <span class="proof-pill">Export result</span>
+            </div>
+            <strong>{page.proofTitle}</strong>
+            <p>{page.proofBody}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">What you can do here</h2>
+      <p class="section-intro">
+        See what this workflow does, why local handling matters, and where it fits into practical PDF work.
+      </p>
+      <div class="card-grid">
+        <div class="card">
+          <h3>Capabilities</h3>
+          <ul class="bullet-list">
+            {page.capabilities.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Why local matters</h3>
+          <ul class="bullet-list">
+            {page.whyLocal.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Use cases</h3>
+          <ul class="bullet-list">
+            {page.useCases.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section outcome-section">
+      <div class="outcome-card">
+        <small>Best fit</small>
+        <strong>{page.eyebrow} works best when the file stays closer to the user</strong>
+        <p>{page.proofBody}</p>
+      </div>
+      <div class="outcome-card soft">
+        <small>Why people use it</small>
+        <strong>Open LocalPDF when this is the job you actually need to finish</strong>
+        <p>{page.ctaNote}</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">How it works</h2>
+      <div class="steps">
+        {page.howItWorks.map((step, index) => (
+          <div class="step">
+            <span>{index + 1}</span>
+            <p>{step}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">Questions users ask before they open this workflow</h2>
+      <div class="faq-grid">
+        {page.quickAnswers.map((item) => (
+          <div class="faq-card">
+            <h3>{item.question}</h3>
+            <p>{item.answer}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    {page.blogLinks && page.blogLinks.length > 0 && (
+      <section class="section">
+        <h2 class="section-title">Guides related to this workflow</h2>
+        <p class="section-intro">
+          Use these guides to compare approaches, understand the workflow faster, and move into the app with more confidence.
+        </p>
+        <div class="card-grid related-grid">
+          {page.blogLinks.map((item) => (
+            <a class="related-card" href={item.href}>
+              <span class="related-label">Guide</span>
+              <h3>{item.title}</h3>
+              <p>Read the guide, then open LocalPDF when you are ready to finish the job.</p>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <section class="section objection-section">
+      <div class="objection-copy">
+        <h2 class="section-title">{page.objectionTitle}</h2>
+        <p class="section-intro">{page.objectionBody}</p>
+      </div>
+      <div class="objection-box">
+        <strong>Open LocalPDF when this is the real job</strong>
+        <p>{page.ctaNote}</p>
+        <div class="cta-row">
+          <a class="btn-primary" href={appUrl}>Open LocalPDF</a>
+          <a class="btn-secondary" href="/security">Why local matters</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section final-section">
+      <div>
+        <h2 class="section-title">{page.proofTitle}</h2>
+        <p class="section-intro">{page.proofBody}</p>
+      </div>
+      <div class="cta-row">
+        <a class="btn-primary" href={appUrl}>Open LocalPDF</a>
+        <a class="btn-secondary" href="/faq">Read FAQ</a>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">Related PDF workflows</h2>
+      <p class="section-intro">
+        Move between related PDF jobs without starting over. These workflows are part of the same product path.
+      </p>
+      <div class="card-grid related-grid">
+        {relatedPages.map((item) => (
+          <a class="related-card" href={`/features/${item.slug}`}>
+            <span class="related-label">{item.eyebrow}</span>
+            <h3>{item.title}</h3>
+            <p>{item.metaDescription}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+  </div>
+</MarketingLayout>
+
+<style>
+  .feature-hero h1 {
+    font-size: clamp(2.8rem, 5vw, 4.8rem);
+    margin-top: 18px;
+    margin-bottom: 18px;
+    max-width: 10ch;
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 24px;
+    align-items: stretch;
+  }
+
+  .hero-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .hero-intro {
+    max-width: 680px;
+    font-size: 1.08rem;
+  }
+
+  .hero-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .hero-tags span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 34px;
+    padding: 0 12px;
+    border-radius: 999px;
+    background: rgba(255, 253, 249, 0.9);
+    border: 1px solid rgba(20, 32, 40, 0.08);
+    color: #344450;
+    font-size: 0.82rem;
+    font-weight: 700;
+  }
+
+  .hero-proof {
+    min-height: 100%;
+  }
+
+  .proof-card {
+    height: 100%;
+    min-height: 280px;
+    border-radius: 28px;
+    border: 1px solid var(--line);
+    background:
+      radial-gradient(circle at top left, rgba(243, 201, 146, 0.42), transparent 32%),
+      linear-gradient(180deg, rgba(217, 235, 225, 0.75), rgba(255, 253, 249, 0.98));
+    box-shadow: var(--shadow);
+  }
+
+  .proof-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 14px;
+    padding: 24px;
+  }
+
+  .proof-matrix {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: auto;
+  }
+
+  .proof-pill {
+    display: inline-flex;
+    align-items: center;
+    min-height: 34px;
+    padding: 0 12px;
+    border-radius: 999px;
+    background: rgba(255, 253, 249, 0.78);
+    border: 1px solid rgba(20, 32, 40, 0.08);
+    color: #364753;
+    font-size: 0.82rem;
+    font-weight: 700;
+  }
+
+  .proof-card strong {
+    font-size: 1.15rem;
+    color: var(--text);
+  }
+
+  .steps {
+    display: grid;
+    gap: 14px;
+  }
+
+  .faq-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  .faq-card {
+    padding: 22px;
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    background: var(--surface);
+  }
+
+  .faq-card h3 {
+    margin-bottom: 12px;
+    font-size: 1.2rem;
+  }
+
+  .outcome-section {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  .outcome-card {
+    padding: 24px;
+    border-radius: 24px;
+    border: 1px solid var(--line);
+    background: linear-gradient(180deg, rgba(217, 235, 225, 0.72), rgba(255, 253, 249, 0.98));
+  }
+
+  .outcome-card.soft {
+    background: linear-gradient(180deg, rgba(243, 201, 146, 0.28), rgba(255, 253, 249, 0.98));
+  }
+
+  .outcome-card small {
+    display: block;
+    margin-bottom: 12px;
+    color: #6d7d88;
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .outcome-card strong {
+    display: block;
+    margin-bottom: 12px;
+    color: var(--text);
+    font-size: 1.2rem;
+    line-height: 1.2;
+  }
+
+  .step {
+    display: grid;
+    grid-template-columns: 52px 1fr;
+    gap: 14px;
+    align-items: center;
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    background: var(--surface);
+  }
+
+  .step span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    background: #142028;
+    color: #f9f5ee;
+    font-weight: 800;
+  }
+
+  .final-section {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .objection-section {
+    display: grid;
+    grid-template-columns: 1fr 0.95fr;
+    gap: 20px;
+    align-items: stretch;
+  }
+
+  .objection-box {
+    padding: 24px;
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    background: linear-gradient(180deg, rgba(243, 201, 146, 0.22), rgba(255, 253, 249, 0.98));
+  }
+
+  .objection-box strong {
+    display: block;
+    margin-bottom: 12px;
+    font-size: 1.1rem;
+    color: var(--text);
+  }
+
+  .objection-box p {
+    margin-bottom: 18px;
+  }
+
+  .related-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .related-card {
+    display: block;
+    padding: 22px;
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    background: var(--surface);
+    text-decoration: none;
+  }
+
+  .related-card:hover,
+  .related-card:focus-visible {
+    border-color: rgba(20, 32, 40, 0.18);
+    transform: translateY(-2px);
+  }
+
+  .related-label {
+    display: inline-block;
+    margin-bottom: 12px;
+    color: #8a572d;
+    font-weight: 800;
+    font-size: 0.84rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .related-card h3 {
+    font-size: 1.4rem;
+    margin-bottom: 12px;
+  }
+
+  @media (max-width: 900px) {
+    .hero-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .faq-grid,
+    .outcome-section,
+    .objection-section,
+    .related-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

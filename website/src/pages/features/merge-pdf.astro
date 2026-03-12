@@ -1,0 +1,11 @@
+---
+import FeaturePageTemplate from '../../components/marketing/FeaturePageTemplate.astro';
+import { getFeaturePage } from '../../data/featurePages';
+
+const page = getFeaturePage('merge-pdf');
+if (!page) {
+  throw new Error('Missing feature page data for merge-pdf');
+}
+---
+
+<FeaturePageTemplate page={page} />

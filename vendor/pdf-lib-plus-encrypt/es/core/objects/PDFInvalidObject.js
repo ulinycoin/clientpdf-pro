@@ -1,0 +1,26 @@
+import PDFObject from "./PDFObject";
+class PDFInvalidObject extends PDFObject {
+    constructor(data) {
+        super();
+        this.data = data;
+    }
+    clone() {
+        return PDFInvalidObject.of(this.data.slice());
+    }
+    toString() {
+        return `PDFInvalidObject(${this.data.length} bytes)`;
+    }
+    sizeInBytes() {
+        return this.data.length;
+    }
+    copyBytesInto(buffer, offset) {
+        const length = this.data.length;
+        for (let idx = 0; idx < length; idx++) {
+            buffer[offset++] = this.data[idx];
+        }
+        return length;
+    }
+}
+PDFInvalidObject.of = (data) => new PDFInvalidObject(data);
+export default PDFInvalidObject;
+//# sourceMappingURL=PDFInvalidObject.js.map

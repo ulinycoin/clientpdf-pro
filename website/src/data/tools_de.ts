@@ -49,11 +49,11 @@ export const CATEGORIES_DE: Category[] = [
 ];
 export const UI_LABELS_DE = {
     freeBadge: "Kostenlose Sandbox Beta",
-    launchStudio: "Studio Starten 🚀",
+    launchStudio: "LocalPDF öffnen",
     keyFeatures: "Hauptmerkmale",
     howItWorks: "So funktioniert es",
-    privacyTitle: "100% Privater Sandbox:",
-    privacyDesc: "Ihre Dateien verlassen niemals Ihr Gerät. Die gesamte Verarbeitung erfolgt lokal im sicheren Speicher Ihres Browsers.",
+    privacyTitle: "Lokale private Verarbeitung:",
+    privacyDesc: "Ihre Dateien bleiben während der Verarbeitung auf Ihrem Gerät. LocalPDF vermeidet einen upload-zentrierten Ablauf für zentrale PDF-Aufgaben.",
     faqHeader: "Häufig gestellte Fragen",
     techHeader: "Technische Architektur: So funktioniert es",
     relatedHeader: "Ähnliche PDF-Tools",
@@ -71,7 +71,7 @@ export const UI_LABELS_DE = {
         },
         {
             question: "Funktioniert es auf mobilen Geräten?",
-            answer: "Ja! LocalPDF Sanctuary ist vollständig responsiv и funktioniert auf iOS, Android и Tablets über jeden modernen Webbrowser."
+            answer: "Ja. LocalPDF funktioniert auf Desktop- und Mobilgeräten in modernen Browsern. Bei großen Dateien hängen Leistung und Grenzen von Arbeitsspeicher und CPU des Geräts ab."
         }
     ],
     defaultTechInfo: [

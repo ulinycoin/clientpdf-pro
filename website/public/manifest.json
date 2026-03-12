@@ -1,7 +1,7 @@
 {
-  "name": "LocalPDF Sanctuary",
+  "name": "LocalPDF",
   "short_name": "LocalPDF",
-  "description": "100% Private Local PDF Tools. No uploads, total privacy.",
+  "description": "Local-first PDF workflows for editing, merging, OCR, conversion, and review.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#18181b",
@@ -28,7 +28,7 @@
   "shortcuts": [
     {
       "name": "Merge PDF",
-      "url": "/app#merge-pdf",
+      "url": "/app/merge-pdf",
       "icons": [
         {
           "src": "/logos/localpdf-favicon-16x16.png",
@@ -38,7 +38,7 @@
     },
     {
       "name": "Split PDF",
-      "url": "/app#split-pdf",
+      "url": "/app/studio",
       "icons": [
         {
           "src": "/logos/localpdf-favicon-16x16.png",

@@ -1,0 +1,235 @@
+---
+import MarketingLayout from '../layouts/MarketingLayout.astro';
+import { getAppUrl } from '../utils/app-url';
+
+const title = 'FAQ | LocalPDF';
+const description = 'Clear answers about LocalPDF, local processing, uploads, privacy, supported workflows, and what to expect before opening the app.';
+const canonical = 'https://localpdf.online/faq';
+const image = 'https://localpdf.online/og/home.svg';
+const appUrl = getAppUrl();
+
+const faqGroups = [
+  {
+    title: 'Before you open the app',
+    intro: 'These are the questions people usually ask before they decide to open LocalPDF.',
+    items: [
+      ['What is LocalPDF?', 'LocalPDF is a privacy-first PDF app for editing, merging, OCR, compression, splitting, signing, and conversion in one product workflow.'],
+      ['What is LocalPDF built for?', 'The core workflows are editing, merging, OCR, compression, splitting, signing, and conversion. These are the main jobs LocalPDF is built to support clearly.'],
+      ['Who is it for?', 'Users who handle internal, sensitive, operational, or simply important PDF documents and want a workflow that starts closer to the file instead of with an upload-first assumption.'],
+    ],
+  },
+  {
+    title: 'Local processing and uploads',
+    intro: 'This is usually the first trust question: how the workflow starts and why that matters.',
+    items: [
+      ['Do I have to upload my PDF before using LocalPDF?', 'No. LocalPDF is built around local-first handling so practical PDF work can begin on your device instead of in an upload-first tool.'],
+      ['Why is “local-first” important here?', 'Because many PDF jobs involve contracts, invoices, scans, drafts, forms, or records that users do not want to treat as disposable uploads. Local-first handling reduces friction and is easier to justify operationally.'],
+      ['Does the site promise “zero risk”?', 'No. LocalPDF explains how it approaches trust and local handling, but it does not make broad security claims it cannot support.'],
+    ],
+  },
+  {
+    title: 'Product boundaries',
+    intro: 'These answers help explain how LocalPDF is structured and why the site stays compact.',
+    items: [
+      ['Is this a product or just a set of marketing pages?', 'It is a product. The site explains the workflows, and the app is where the work happens.'],
+      ['What are the main workflows?', 'The core workflows are edit, merge, OCR, compress, split, sign, and convert. These are the main jobs the product is designed to support clearly.'],
+      ['Where should I start if I need conversion?', 'Start on the Convert PDF page if the job is moving a document into the right format before the next step in your workflow.'],
+    ],
+  },
+  {
+    title: 'Trust, privacy, and proof',
+    intro: 'These are the trust questions that matter most before someone commits to the workflow.',
+    items: [
+      ['Why does LocalPDF have a separate security page?', 'Because privacy and trust questions matter before someone opens the app. The security page explains how LocalPDF handles local workflows and where trust boundaries matter.'],
+      ['Does LocalPDF promise absolute privacy or zero risk?', 'No. LocalPDF explains the workflow in practical terms and avoids broad claims it cannot support.'],
+      ['Why are FAQ and Security so visible?', 'Because trust matters before the click. These pages are part of the main experience, not hidden footer content.'],
+    ],
+  },
+];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqGroups.flatMap((group) =>
+    group.items.map(([question, answer]) => ({
+      '@type': 'Question',
+      name: question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: answer,
+      },
+    })),
+  ),
+};
+---
+
+<MarketingLayout
+  title={title}
+  description={description}
+  canonical={canonical}
+  image={image}
+  schema={faqSchema}
+>
+  <div class="page-shell">
+    <section class="section intro">
+      <div class="intro-grid">
+        <div>
+          <span class="eyebrow">FAQ</span>
+          <h1>Questions people ask before they open LocalPDF</h1>
+          <p class="section-intro">
+            Find clear answers about the product, the core workflows, and the trust questions that come up
+            before someone decides to open the app.
+          </p>
+          <div class="cta-row">
+            <a class="btn-primary" href={appUrl}>Open LocalPDF</a>
+            <a class="btn-secondary" href="/security">Read Security Details</a>
+          </div>
+        </div>
+
+        <div class="intro-panel">
+          <small>What you can verify here</small>
+          <ul class="bullet-list">
+            <li>What LocalPDF does and when to use it</li>
+            <li>Why local-first handling matters for practical PDF work</li>
+            <li>What to expect before opening the app</li>
+            <li>Where to check privacy and trust details</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section trust-summary">
+      <div class="summary-card">
+        <strong>Local-first by intent</strong>
+        <p>Trust starts with how the workflow begins. For this product, the value is in keeping the first step close to the file.</p>
+      </div>
+      <div class="summary-card">
+        <strong>Product first</strong>
+        <p>The app is the center of the experience. Feature pages explain the workflows, and FAQ plus Security remove uncertainty before the click.</p>
+      </div>
+      <div class="summary-card">
+        <strong>Practical trust language</strong>
+        <p>Privacy questions are answered in plain terms so users can understand how the workflow starts and what LocalPDF is designed for.</p>
+      </div>
+    </section>
+
+    {faqGroups.map((group) => (
+      <section class="section">
+        <div class="group-head">
+          <h2 class="section-title">{group.title}</h2>
+          <p class="section-intro">{group.intro}</p>
+        </div>
+        <div class="faq-list">
+          {group.items.map(([question, answer]) => (
+            <article class="faq-item">
+              <h3>{question}</h3>
+              <p>{answer}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+    ))}
+
+    <section class="section final-band">
+      <div>
+        <span class="eyebrow">Next step</span>
+        <h2 class="section-title">If the fit is clear, the next step is simple</h2>
+        <p class="section-intro">
+          Open the app when LocalPDF matches the job. Read Security first if you want a closer look at how local handling fits into the product.
+        </p>
+      </div>
+      <div class="cta-row">
+        <a class="btn-primary" href={appUrl}>Open LocalPDF</a>
+        <a class="btn-secondary" href="/security">Read Security</a>
+      </div>
+    </section>
+  </div>
+</MarketingLayout>
+
+<style>
+  .intro h1 {
+    font-size: clamp(3rem, 5vw, 5.2rem);
+    margin-top: 18px;
+    margin-bottom: 18px;
+    max-width: 11ch;
+  }
+
+  .intro-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 22px;
+    align-items: start;
+  }
+
+  .intro-panel {
+    padding: 24px;
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    background: linear-gradient(180deg, rgba(243, 201, 146, 0.24), rgba(255, 253, 249, 0.98));
+  }
+
+  .intro-panel small {
+    display: block;
+    margin-bottom: 12px;
+    color: #8a572d;
+    font-size: 0.82rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .trust-summary {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  .summary-card {
+    padding: 22px;
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    background: var(--surface);
+  }
+
+  .summary-card strong {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 1.08rem;
+  }
+
+  .group-head {
+    margin-bottom: 8px;
+  }
+
+  .faq-list {
+    display: grid;
+    gap: 16px;
+  }
+
+  .faq-item {
+    padding: 22px;
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    background: var(--surface);
+  }
+
+  .faq-item h3 {
+    font-size: 1.35rem;
+    margin-bottom: 12px;
+  }
+
+  .final-band {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  @media (max-width: 900px) {
+    .intro-grid,
+    .trust-summary {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

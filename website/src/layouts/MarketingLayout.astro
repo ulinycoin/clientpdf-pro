@@ -1,0 +1,232 @@
+---
+import SEOHead from '../components/marketing/SEOHead.astro';
+import SiteHeader from '../components/marketing/SiteHeader.astro';
+import SiteFooter from '../components/marketing/SiteFooter.astro';
+import AnalyticsScripts from '../components/AnalyticsScripts.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  canonical?: string;
+  image?: string;
+  imageAlt?: string;
+  schema?: Record<string, unknown> | Array<Record<string, unknown>>;
+  noindex?: boolean;
+}
+
+const { title, description, canonical, image, imageAlt, schema, noindex = false } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <SEOHead
+      title={title}
+      description={description}
+      canonical={canonical}
+      image={image}
+      imageAlt={imageAlt}
+      schema={schema}
+      noindex={noindex}
+    />
+    <AnalyticsScripts />
+    <slot name="head" />
+    <style is:global>
+      :root {
+        color-scheme: light;
+        --bg: #f6f3ee;
+        --surface: #fffdf9;
+        --surface-strong: #fffaf2;
+        --text: #142028;
+        --text-soft: #52606b;
+        --line: rgba(20, 32, 40, 0.09);
+        --accent: #de7a2d;
+        --accent-soft: #f3c992;
+        --mint: #d9ebe1;
+        --shadow: 0 16px 40px rgba(26, 34, 39, 0.08);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Avenir Next", "Segoe UI", "Helvetica Neue", sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at top left, rgba(243, 201, 146, 0.32), transparent 26%),
+          radial-gradient(circle at top right, rgba(217, 235, 225, 0.5), transparent 22%),
+          linear-gradient(180deg, #f6f3ee 0%, #f7f4ef 48%, #f1ede6 100%);
+      }
+
+      ::selection {
+        background: rgba(222, 122, 45, 0.22);
+        color: var(--text);
+      }
+
+      h1, h2, h3, h4 {
+        margin: 0;
+        font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+        letter-spacing: -0.03em;
+        line-height: 1;
+      }
+
+      p {
+        margin: 0;
+        line-height: 1.65;
+        color: var(--text-soft);
+      }
+
+      a {
+        color: inherit;
+      }
+
+      img {
+        max-width: 100%;
+        display: block;
+      }
+
+      main {
+        min-height: 70vh;
+        padding-top: 12px;
+      }
+
+      .page-shell {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px 72px;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        min-height: 36px;
+        padding: 0 14px;
+        border: 1px solid rgba(20, 32, 40, 0.08);
+        border-radius: 999px;
+        background: rgba(255, 253, 249, 0.76);
+        color: #30414e;
+        font-weight: 700;
+        font-size: 0.82rem;
+      }
+
+      .section {
+        margin-top: 28px;
+        padding: 28px;
+        border: 1px solid var(--line);
+        border-radius: 32px;
+        background: rgba(255, 253, 249, 0.88);
+        box-shadow: var(--shadow);
+      }
+
+      .section-title {
+        font-size: clamp(2rem, 3.2vw, 3rem);
+        margin-bottom: 16px;
+      }
+
+      .section-intro {
+        max-width: 760px;
+        margin-bottom: 28px;
+        font-size: 1.02rem;
+      }
+
+      .card-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .card {
+        padding: 22px;
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        background: var(--surface);
+      }
+
+      .card h3 {
+        font-size: 1.3rem;
+        margin-bottom: 12px;
+      }
+
+      .cta-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .btn-primary,
+      .btn-secondary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 48px;
+        padding: 0 20px;
+        border-radius: 999px;
+        text-decoration: none;
+        font-weight: 800;
+      }
+
+      .btn-primary {
+        background: #142028;
+        color: #f9f5ee;
+      }
+
+      .btn-secondary {
+        border: 1px solid var(--line);
+        background: rgba(255, 253, 249, 0.9);
+        color: var(--text);
+      }
+
+      .btn-primary:hover,
+      .btn-primary:focus-visible,
+      .btn-secondary:hover,
+      .btn-secondary:focus-visible {
+        transform: translateY(-1px);
+      }
+
+      .bullet-list {
+        margin: 0;
+        padding-left: 20px;
+        color: var(--text-soft);
+      }
+
+      .bullet-list li + li {
+        margin-top: 10px;
+      }
+
+      @media (max-width: 900px) {
+        .card-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 640px) {
+        main {
+          padding-top: 8px;
+        }
+
+        .page-shell {
+          padding: 0 12px 48px;
+        }
+
+        .section {
+          padding: 22px;
+          border-radius: 24px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <SiteHeader />
+    <main>
+      <slot />
+    </main>
+    <SiteFooter />
+  </body>
+</html>

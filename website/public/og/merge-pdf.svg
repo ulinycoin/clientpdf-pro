@@ -1,0 +1,23 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#F6F3EE"/>
+  <rect x="36" y="36" width="1128" height="558" rx="36" fill="#FFF9F1"/>
+  <text x="86" y="126" fill="#8A572D" font-family="Arial, sans-serif" font-size="24" font-weight="700" letter-spacing="2">MERGE PDF</text>
+  <text x="86" y="208" fill="#142028" font-family="Georgia, serif" font-size="70" font-weight="700">Merge PDF files</text>
+  <text x="86" y="280" fill="#142028" font-family="Georgia, serif" font-size="70" font-weight="700">locally and keep</text>
+  <text x="86" y="352" fill="#142028" font-family="Georgia, serif" font-size="70" font-weight="700">ordering work fast</text>
+  <text x="86" y="420" fill="#52606B" font-family="Arial, sans-serif" font-size="28">Bundle documents inside one LocalPDF workflow</text>
+  <text x="86" y="458" fill="#52606B" font-family="Arial, sans-serif" font-size="28">instead of re-uploading files into a queue.</text>
+  <rect x="730" y="88" width="360" height="454" rx="30" fill="#142028"/>
+  <rect x="760" y="126" width="118" height="44" rx="22" fill="#D9EBE1"/>
+  <rect x="898" y="126" width="158" height="44" rx="22" fill="#F3C992"/>
+  <text x="790" y="154" fill="#244153" font-family="Arial, sans-serif" font-size="16" font-weight="700">ADD FILES</text>
+  <text x="930" y="154" fill="#6A431F" font-family="Arial, sans-serif" font-size="16" font-weight="700">SET ORDER</text>
+  <rect x="770" y="206" width="280" height="66" rx="18" fill="#203039"/>
+  <rect x="770" y="288" width="280" height="66" rx="18" fill="#203039"/>
+  <rect x="770" y="370" width="280" height="66" rx="18" fill="#FFFCF8"/>
+  <text x="804" y="246" fill="#F9F5EE" font-family="Arial, sans-serif" font-size="26" font-weight="700">Appendix.pdf</text>
+  <text x="804" y="328" fill="#F9F5EE" font-family="Arial, sans-serif" font-size="26" font-weight="700">Contract.pdf</text>
+  <text x="804" y="410" fill="#142028" font-family="Arial, sans-serif" font-size="26" font-weight="700">Merged output</text>
+  <rect x="874" y="466" width="176" height="42" rx="21" fill="#D9EBE1"/>
+  <text x="905" y="492" fill="#244153" font-family="Arial, sans-serif" font-size="16" font-weight="700">EXPORT RESULT</text>
+</svg>

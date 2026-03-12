@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "root": "test/fixtures/pdfs",
+  "groups": {
+    "invoices": [
+      "simple-invoice.pdf",
+      "multi-page-invoice.pdf",
+      "tax-invoice.pdf",
+      "international-invoice.pdf"
+    ],
+    "forms": [
+      "w2-form.pdf",
+      "job-application.pdf",
+      "medical-form.pdf",
+      "registration-form.pdf"
+    ],
+    "documents": [
+      "simple-letter.pdf",
+      "two-column-article.pdf",
+      "mixed-fonts.pdf",
+      "multi-line-paragraph.pdf"
+    ],
+    "scanned": [
+      "scanned-ocr-receipt.pdf",
+      "image-only.pdf"
+    ],
+    "edge-cases": [
+      "duplicate-labels.pdf",
+      "minimal-positioning.pdf",
+      "rotated-text.pdf",
+      "complex-table.pdf"
+    ]
+  }
+}

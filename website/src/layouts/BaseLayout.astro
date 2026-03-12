@@ -1,9 +1,7 @@
 ---
 import Header from '../components/Header.astro';
-import { CATEGORIES } from '../data/tools';
-import { CATEGORIES_DE } from '../data/tools_de';
-import { CATEGORIES_JA } from '../data/tools_ja';
-
+import AnalyticsScripts from '../components/AnalyticsScripts.astro';
+import { getAppUrl } from '../utils/app-url';
 
 interface Props {
   title: string;
@@ -12,11 +10,13 @@ interface Props {
   canonical?: string;
   keywords?: string;
   lang?: string;
+  noindex?: boolean;
 }
 
-const { title, description, image, canonical, keywords, lang = 'en' } = Astro.props;
+const { title, description, image, canonical, keywords, lang = 'en', noindex = true } = Astro.props;
 const currentUrl = canonical || Astro.url.href;
-const siteName = 'LocalPDF Reference';
+const appUrl = getAppUrl();
+const siteName = 'LocalPDF';
 const defaultKeywords = "PDF tools, merge PDF, split PDF, compress PDF, edit PDF, free PDF editor, online PDF, privacy PDF, client-side PDF";
 const ogImage = image || 'https://localpdf.online/logos/localpdf-social-1200x630.png';
 
@@ -24,9 +24,9 @@ const ogImage = image || 'https://localpdf.online/logos/localpdf-social-1200x630
 const softwareSchema = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  "name": "LocalPDF Sanctuary",
+  "name": "LocalPDF",
   "operatingSystem": "Any",
-  "applicationCategory": "UtilityApplication",
+  "applicationCategory": "BusinessApplication",
   "url": currentUrl,
   "image": "https://localpdf.online/logos/icon-512.png",
   "offers": {
@@ -82,48 +82,32 @@ const softwareSchema = {
   }
 };
 
-const currentCategories = {
-  en: CATEGORIES,
-  de: CATEGORIES_DE,
-  ja: CATEGORIES_JA
-}[lang] || CATEGORIES;
-
 const footerLabels = {
   en: { 
-    resources: 'Resources', learn: 'Learning Center', blog: 'Blog', about: 'About Sanctuary', compare: 'Compare Tools', extension: 'Extension',
-    legal: 'Legal', privacy: 'Privacy Policy', terms: 'Terms of Service',
-    solutions: 'Solutions', legalSolutions: 'Legal Professionals', financeSolutions: 'Finance & Banking', medicalSolutions: 'Healthcare',
-    copyright: '© 2025 LocalPDF Sanctuary. All files processed locally in your browser sandbox.'
+    product: 'Product', edit: 'Edit PDF', merge: 'Merge PDF', ocr: 'OCR PDF', convert: 'Convert PDF',
+    trust: 'Trust', faq: 'FAQ', security: 'Security', privacy: 'Privacy', terms: 'Terms',
+    company: 'Company', about: 'About', open: 'Open LocalPDF',
+    copyright: '© 2026 LocalPDF. Private PDF workflows with a local-first product surface.'
   },
   de: {
-    resources: 'Ressourcen', learn: 'Lernzentrum', blog: 'Blog', about: 'Über Sanctuary', compare: 'Tools vergleichen', extension: 'Erweiterung',
-    legal: 'Rechtliches', privacy: 'Datenschutzrichtlinie', terms: 'Nutzungsbedingungen',
-    solutions: 'Branchenlösungen', legalSolutions: 'Juristische Berufe', financeSolutions: 'Finanzen & Banking', medicalSolutions: 'Gesundheitswesen',
-    copyright: '© 2025 LocalPDF Sanctuary. Alle Dateien werden lokal in Ihrer Browser-Sandbox verarbeitet.'
+    product: 'Product', edit: 'Edit PDF', merge: 'Merge PDF', ocr: 'OCR PDF', convert: 'Convert PDF',
+    trust: 'Trust', faq: 'FAQ', security: 'Security', privacy: 'Privacy', terms: 'Terms',
+    company: 'Company', about: 'About', open: 'Open LocalPDF',
+    copyright: '© 2026 LocalPDF. Private PDF workflows with a local-first product surface.'
   },
   ja: {
-    resources: 'リソース', learn: 'ラーニングセンター', blog: 'ブログ', about: 'Sanctuaryについて', compare: 'ツールを比較する', extension: '拡張機能',
-    legal: '法的情報', privacy: 'プライバシーポリシー', terms: '利用規約',
-    solutions: '業界別ソリューション', legalSolutions: '法務プロフェッショナル', financeSolutions: '金融・銀行業務', medicalSolutions: '医療・ヘルスケア',
-    copyright: '© 2025 LocalPDF Sanctuary. すべてのファイルはブラウザのサンドボックス内でローカルに処理されます。'
+    product: 'Product', edit: 'Edit PDF', merge: 'Merge PDF', ocr: 'OCR PDF', convert: 'Convert PDF',
+    trust: 'Trust', faq: 'FAQ', security: 'Security', privacy: 'Privacy', terms: 'Terms',
+    company: 'Company', about: 'About', open: 'Open LocalPDF',
+    copyright: '© 2026 LocalPDF. Private PDF workflows with a local-first product surface.'
   }
 }[lang] || { 
-  resources: 'Resources', learn: 'Learning Center', blog: 'Blog', about: 'About Sanctuary', compare: 'Compare Tools', extension: 'Extension',
-  legal: 'Legal', privacy: 'Privacy Policy', terms: 'Terms of Service',
-  copyright: '© 2025 LocalPDF Sanctuary. All files processed locally in your browser sandbox.'
+  product: 'Product', edit: 'Edit PDF', merge: 'Merge PDF', ocr: 'OCR PDF', convert: 'Convert PDF',
+  trust: 'Trust', faq: 'FAQ', security: 'Security', privacy: 'Privacy', terms: 'Terms',
+  company: 'Company', about: 'About', open: 'Open LocalPDF',
+  copyright: '© 2026 LocalPDF. Private PDF workflows with a local-first product surface.'
 };
 
-const basePath = Astro.url.pathname.replace(/^\/(de|ja)/, '') || '/';
-const localizedPages = [
-  '/', 
-  '/merge-pdf', '/ocr-pdf', '/compress-pdf', '/split-pdf', '/edit-text-pdf',
-  '/sign-pdf', '/protect-pdf', '/watermark-pdf', '/flatten-pdf',
-  '/word-to-pdf', '/pdf-to-word', '/images-to-pdf', '/pdf-to-images',
-  '/organize-pdf', '/rotate-pdf', '/delete-pages-pdf', '/extract-pages-pdf',
-  '/tables-pdf', '/add-form-fields-pdf', '/extract-images-pdf', '/add-text-pdf',
-  '/legal-privacy-pdf', '/finance-privacy-pdf', '/medical-privacy-pdf', '/extension'
-];
-const isLocalizedPath = localizedPages.includes(basePath);
 ---
 
 <!DOCTYPE html>
@@ -139,18 +123,9 @@ const isLocalizedPath = localizedPages.includes(basePath);
   <meta name="description" content={description}>
   <meta name="keywords" content={keywords || defaultKeywords}>
   <meta name="author" content="LocalPDF">
-  <meta name="robots" content="index, follow">
+  <meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow'}>
 
   <link rel="canonical" href={currentUrl}>
-  
-  <link rel="alternate" hreflang="en" href={`https://localpdf.online${basePath}`} />
-  {isLocalizedPath && (
-    <>
-      <link rel="alternate" hreflang="de" href={`https://localpdf.online/de${basePath === '/' ? '' : basePath}`} />
-      <link rel="alternate" hreflang="ja" href={`https://localpdf.online/ja${basePath === '/' ? '' : basePath}`} />
-    </>
-  )}
-  <link rel="alternate" hreflang="x-default" href={`https://localpdf.online${basePath}`} />
 
   <!-- Google Search Console verification -->
   <meta name="google-site-verification" content="34adca022b79f1a0">
@@ -166,6 +141,8 @@ const isLocalizedPath = localizedPages.includes(basePath);
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@LocalPDF">
+  <meta name="twitter:creator" content="@LocalPDF">
   <meta name="twitter:url" content={currentUrl}>
   <meta name="twitter:title" content={title}>
   <meta name="twitter:description" content={description}>
@@ -203,75 +180,20 @@ const isLocalizedPath = localizedPages.includes(basePath);
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
 
-  <!-- Google Analytics - Ultra-deferred loading (after page is idle) -->
-  <link rel="dns-prefetch" href="https://www.googletagmanager.com">
-  <link rel="dns-prefetch" href="https://www.google-analytics.com">
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-MS36WTHPCZ', {
-      anonymize_ip: true,
-      allow_google_signals: false,
-      allow_ad_personalization_signals: false
+  <AnalyticsScripts />
+  <script define:vars={{ enableServiceWorker: import.meta.env.PROD }}>
+    window.addEventListener('load', () => {
+      if (!('serviceWorker' in navigator)) return;
+
+      if (!enableServiceWorker) {
+        navigator.serviceWorker.getRegistrations()
+          .then((registrations) => Promise.all(registrations.map((registration) => registration.unregister())))
+          .catch(() => {});
+        return;
+      }
+
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
     });
-
-    // Ultra-deferred: Load GA only after page is fully idle (requestIdleCallback)
-    // This ensures GA doesn't compete with LCP/FCP rendering
-    function loadGA() {
-      var script = document.createElement('script');
-      script.async = true;
-      script.src = 'https://www.googletagmanager.com/gtag/js?id=G-MS36WTHPCZ';
-      document.head.appendChild(script);
-    }
-
-    if ('requestIdleCallback' in window) {
-      // Modern browsers - load when browser is idle
-      requestIdleCallback(loadGA, { timeout: 3000 });
-    } else {
-      // Fallback - load after 3 seconds
-      setTimeout(loadGA, 3000);
-    }
-
-    // Register Service Worker for PWA
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').then(registration => {
-          console.log('SW registered: ', registration);
-        }).catch(registrationError => {
-          console.log('SW registration failed: ', registrationError);
-        });
-      });
-    }
-  </script>
-
-  <!-- Vercel Analytics -->
-  <script is:inline>
-    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-  </script>
-  <script is:inline async src="/_vercel/insights/script.js"></script>
-
-  <!-- PostHog Analytics -->
-  <script is:inline>
-    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getGroups get_group_property set_group_property get_distinct_id getGroups get_session_id".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
-    
-    // Using current origin + /ingest for reverse proxy to bypass adblockers
-    const host = window.location.origin + '/ingest';
-    
-    if ("phc_6iTpA8vFIxlQ8HxmPsoMmtj4sqgCUWiZQMOpfSfyvxe") {
-      posthog.init('phc_6iTpA8vFIxlQ8HxmPsoMmtj4sqgCUWiZQMOpfSfyvxe', {
-        api_host: host,
-        ui_host: 'https://eu.posthog.com',
-        autocapture: false, // Leaner production configuration
-        capture_pageview: true,
-        debug: false, // Disable debug logs in production
-        session_recording: {
-          maskAllInputs: true,
-          maskTextSelector: ".ph-no-capture",
-          blockSelector: ".ph-no-capture, canvas"
-        }
-      });
-    }
   </script>
 
   <style is:global>
@@ -302,7 +224,7 @@ const isLocalizedPath = localizedPages.includes(basePath);
     }
 
 
-    /* Footer - Sanctuary Modern */
+    /* Footer */
     footer {
       padding: 80px 7vw 40px;
       background: #000000;
@@ -396,45 +318,28 @@ const isLocalizedPath = localizedPages.includes(basePath);
     <div class="footer-content">
       <div class="footer-grid">
         <div class="footer-section">
-          <strong>{footerLabels.resources}</strong>
-          <a href="/learn">{footerLabels.learn}</a>
-          <a href="/blog">{footerLabels.blog}</a>
-          <a href="/about">{footerLabels.about}</a>
-          <a href="/comparison">{footerLabels.compare}</a>
-          <a href={(lang === 'en') ? '/extension' : `/${lang}/extension`}>{footerLabels.extension}</a>
+          <strong>{footerLabels.product}</strong>
+          <a href="/features/edit-pdf">{footerLabels.edit}</a>
+          <a href="/features/merge-pdf">{footerLabels.merge}</a>
+          <a href="/features/ocr-pdf">{footerLabels.ocr}</a>
+          <a href="/features/convert-pdf">{footerLabels.convert}</a>
         </div>
         <div class="footer-section">
-          <strong>{footerLabels.solutions}</strong>
-          <a href={(lang === 'en') ? '/legal-privacy-pdf' : `/${lang}/legal-privacy-pdf`}>{footerLabels.legalSolutions}</a>
-          <a href={(lang === 'en') ? '/finance-privacy-pdf' : `/${lang}/finance-privacy-pdf`}>{footerLabels.financeSolutions}</a>
-          <a href={(lang === 'en') ? '/medical-privacy-pdf' : `/${lang}/medical-privacy-pdf`}>{footerLabels.medicalSolutions}</a>
-        </div>
-        {currentCategories.map(cat => (
-          <div class="footer-section">
-            <strong>{cat.name}</strong>
-            {cat.tools.map(tool => {
-              const toolSlug = `/${tool.id}`;
-              const isToolLocalized = localizedPages.includes(toolSlug);
-              return (
-                <a href={(isToolLocalized && lang !== 'en') ? `/${lang}${toolSlug}` : toolSlug}>{tool.name}</a>
-              );
-            })}
-          </div>
-        ))}
-        <div class="footer-section">
-          <strong>{footerLabels.legal}</strong>
+          <strong>{footerLabels.trust}</strong>
+          <a href="/faq">{footerLabels.faq}</a>
+          <a href="/security">{footerLabels.security}</a>
           <a href="/privacy">{footerLabels.privacy}</a>
           <a href="/terms">{footerLabels.terms}</a>
+        </div>
+        <div class="footer-section">
+          <strong>{footerLabels.company}</strong>
+          <a href="/about">{footerLabels.about}</a>
+          <a href={appUrl}>{footerLabels.open}</a>
         </div>
       </div>
       
       <div class="footer-bottom">
         <div class="social-links">
-          <a href="https://github.com/ulinycoin/clientpdf-pro" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="GitHub">
-            <svg viewBox="0 0 24 24" fill="currentColor" style="width: 24px; height: 24px;">
-              <path d="M12,2A10,10 0 0,0 2,12C2,16.42 4.87,20.17 8.84,21.5C9.34,21.58 9.5,21.27 9.5,21C9.5,20.77 9.5,20.14 9.5,19.31C6.73,19.91 6.14,17.97 6.14,17.97C5.68,16.81 5.03,16.5 5.03,16.5C4.12,15.88 5.1,15.9 5.1,15.9C6.1,15.97 6.63,16.93 6.63,16.93C7.5,18.45 8.97,18 9.54,17.76C9.63,17.11 9.89,16.67 10.17,16.42C7.95,16.17 5.62,15.31 5.62,11.5C5.62,10.39 6,9.5 6.65,8.79C6.55,8.54 6.2,7.5 6.75,6.15C6.75,6.15 7.59,5.88 9.5,7.17C10.29,6.95 11.15,6.84 12,6.84C12.85,6.84 13.71,6.95 14.5,7.17C16.41,5.88 17.25,6.15 17.25,6.15C17.8,7.5 17.45,8.54 17.35,8.79C18,9.5 18.38,10.39 18.38,11.5C18.38,15.32 16.04,16.16 13.81,16.41C14.17,16.72 14.5,17.33 14.5,18.26C14.5,19.6 14.5,20.68 14.5,21C14.5,21.27 14.66,21.59 15.17,21.5C19.14,20.16 22,16.42 22,12A10,10 0 0,0 12,2Z" />
-            </svg>
-          </a>
           <a href="https://x.com/LocalPDF" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Twitter/X">
             <svg viewBox="0 0 24 24" fill="currentColor" style="width: 20px; height: 20px;">
               <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/>

@@ -1,69 +1,57 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import path from 'path'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import { APP_BASE_PATH } from './shared/app-routes';
 
-// https://vite.dev/config/
 export default defineConfig({
-  root: '.',
+  base: `${APP_BASE_PATH}/`,
   plugins: [react()],
   server: {
     port: 3000,
-    open: true,
-  },
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
-      '@/components': path.resolve(__dirname, './src/components'),
-      '@/hooks': path.resolve(__dirname, './src/hooks'),
-      '@/utils': path.resolve(__dirname, './src/utils'),
-      '@/types': path.resolve(__dirname, './src/types'),
-      '@/services': path.resolve(__dirname, './src/services'),
-      '@/locales': path.resolve(__dirname, './src/locales'),
-      '@/lib': path.resolve(__dirname, './src/lib'),
-    },
+    strictPort: true,
   },
   build: {
-    target: 'es2020',
-    minify: 'esbuild',
-    sourcemap: false,
-    chunkSizeWarningLimit: 500,
-    cssCodeSplit: true, // Split CSS per route for faster initial load
+    chunkSizeWarningLimit: 550,
     rollupOptions: {
       output: {
-        // CRITICAL: Aggressive code splitting for mobile performance
-        manualChunks: {
-          // Core React libraries (always needed)
-          'vendor-react': ['react', 'react-dom'],
-
-          // PDF Core libraries (shared by all tools)
-          'vendor-pdf-lib': ['pdf-lib', '@pdf-lib/fontkit'],
-
-          // PDF.js for rendering (used by OCR, Split, Watermark)
-          'vendor-pdfjs': ['pdfjs-dist'],
-
-          // Tesseract for OCR (large library - separate chunk)
-          'vendor-ocr': ['tesseract.js'],
-
-          // Word conversion libraries (mammoth for DOCX→PDF, docx for PDF→DOCX)
-          'vendor-word': ['mammoth', 'docx'],
-
-          // NOTE: Tool components are lazy-loaded via React.lazy() - not in manualChunks
+        manualChunks(id) {
+          if (!id.includes('node_modules')) {
+            return;
+          }
+          if (id.includes('/react/') || id.includes('/react-dom/') || id.includes('/react-router')) {
+            return 'vendor-react';
+          }
+          if (id.includes('/lucide-react/')) {
+            return 'vendor-icons';
+          }
+          if (id.includes('/konva/') || id.includes('/react-konva/') || id.includes('/use-image/')) {
+            return 'vendor-konva';
+          }
+          if (id.includes('/pdfjs-dist/')) {
+            return 'vendor-pdfjs';
+          }
+          if (id.includes('/pdf-lib/')) {
+            return 'vendor-pdflib';
+          }
+          if (id.includes('/tesseract.js') || id.includes('/tesseract.js-core/')) {
+            return 'vendor-ocr';
+          }
+          if (id.includes('/exceljs/')) {
+            return 'vendor-excel';
+          }
+          if (id.includes('/jspdf/') || id.includes('/jspdf-autotable/')) {
+            return 'vendor-jspdf';
+          }
+          if (id.includes('/mammoth/')) {
+            return 'vendor-mammoth';
+          }
+          if (id.includes('/html2canvas/') || id.includes('/canvg/')) {
+            return 'vendor-canvas';
+          }
         },
-
-        // Optimize chunk naming for better caching
-        chunkFileNames: 'assets/js/[name]-[hash].js',
-        entryFileNames: 'assets/js/[name]-[hash].js',
-        assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',
       },
     },
   },
-  css: {
-    devSourcemap: false,
-    preprocessorOptions: {
-      css: {
-        // Ensure CSS is minified
-        charset: false,
-      },
-    },
+  worker: {
+    format: 'es',
   },
-})
+});

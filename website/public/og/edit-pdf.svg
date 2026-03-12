@@ -1,0 +1,23 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#F6F3EE"/>
+  <rect x="36" y="36" width="1128" height="558" rx="36" fill="#FFF9F1"/>
+  <text x="86" y="126" fill="#8A572D" font-family="Arial, sans-serif" font-size="24" font-weight="700" letter-spacing="2">EDIT PDF</text>
+  <text x="86" y="208" fill="#142028" font-family="Georgia, serif" font-size="70" font-weight="700">Edit PDF locally</text>
+  <text x="86" y="280" fill="#142028" font-family="Georgia, serif" font-size="70" font-weight="700">without handing</text>
+  <text x="86" y="352" fill="#142028" font-family="Georgia, serif" font-size="70" font-weight="700">the file away</text>
+  <text x="86" y="420" fill="#52606B" font-family="Arial, sans-serif" font-size="28">Change text, add overlays, and work on sensitive PDFs</text>
+  <text x="86" y="458" fill="#52606B" font-family="Arial, sans-serif" font-size="28">inside one LocalPDF workflow.</text>
+  <rect x="760" y="96" width="330" height="438" rx="28" fill="#142028"/>
+  <rect x="794" y="132" width="168" height="24" rx="12" fill="#D9EBE1"/>
+  <rect x="974" y="132" width="84" height="24" rx="12" fill="#F3C992"/>
+  <rect x="794" y="188" width="264" height="16" rx="8" fill="#536674"/>
+  <rect x="794" y="216" width="220" height="16" rx="8" fill="#536674"/>
+  <rect x="794" y="260" width="240" height="108" rx="18" fill="#FFFCF8"/>
+  <rect x="818" y="286" width="168" height="14" rx="7" fill="#D8DDE0"/>
+  <rect x="818" y="314" width="130" height="14" rx="7" fill="#D8DDE0"/>
+  <rect x="818" y="342" width="104" height="14" rx="7" fill="#F3C992"/>
+  <rect x="794" y="392" width="124" height="42" rx="21" fill="#D9EBE1"/>
+  <rect x="932" y="392" width="126" height="42" rx="21" fill="#203039"/>
+  <text x="820" y="418" fill="#244153" font-family="Arial, sans-serif" font-size="16" font-weight="700">LOCAL EDIT</text>
+  <text x="966" y="418" fill="#F9F5EE" font-family="Arial, sans-serif" font-size="16" font-weight="700">EXPORT PDF</text>
+</svg>

@@ -1,0 +1,60 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  canonical?: string;
+  image?: string;
+  imageAlt?: string;
+  noindex?: boolean;
+  type?: 'website' | 'article';
+  schema?: Record<string, unknown> | Array<Record<string, unknown>>;
+}
+
+const {
+  title,
+  description,
+  canonical = Astro.url.href,
+  image = 'https://localpdf.online/logos/localpdf-social-1200x630.png',
+  imageAlt = title,
+  noindex = false,
+  type = 'website',
+  schema,
+} = Astro.props;
+
+const robots = noindex ? 'noindex, nofollow' : 'index, follow';
+const schemaItems = schema ? (Array.isArray(schema) ? schema : [schema]) : [];
+---
+
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>{title}</title>
+<meta name="description" content={description} />
+<meta name="robots" content={robots} />
+<meta name="application-name" content="LocalPDF" />
+<meta name="apple-mobile-web-app-title" content="LocalPDF" />
+<link rel="canonical" href={canonical} />
+
+<meta property="og:type" content={type} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={image} />
+<meta property="og:image:alt" content={imageAlt} />
+<meta property="og:site_name" content="LocalPDF" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={image} />
+<meta name="twitter:image:alt" content={imageAlt} />
+
+<meta name="theme-color" content="#f6f3ee" />
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="icon" type="image/png" sizes="16x16" href="/logos/localpdf-favicon-16x16.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="/logos/localpdf-header-32x32.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/logos/localpdf-apple-180x180.png" />
+
+{schemaItems.map((item) => (
+  <script type="application/ld+json" set:html={JSON.stringify(item)} />
+))}

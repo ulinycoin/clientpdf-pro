@@ -11,7 +11,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-console.log('🚀 Building LocalPDF v3 for Vercel');
+console.log('🚀 Building LocalPDF for Vercel');
 console.log('====================================');
 console.log('');
 
@@ -165,12 +165,26 @@ try {
     console.error('✗ React app MISSING!');
   }
 
-  // Check SEO tool pages
-  const seoPages = ['merge-pdf', 'split-pdf', 'compress-pdf'];
-  seoPages.forEach(page => {
+  // Check canonical website routes
+  const websitePages = [
+    'about',
+    'faq',
+    'privacy',
+    'security',
+    'terms',
+    path.join('features', 'edit-pdf'),
+    path.join('features', 'merge-pdf'),
+    path.join('features', 'ocr-pdf'),
+    path.join('features', 'compress-pdf'),
+    path.join('features', 'split-pdf'),
+    path.join('features', 'sign-pdf'),
+    path.join('features', 'convert-pdf'),
+  ];
+
+  websitePages.forEach((page) => {
     const pagePath = path.join(appDistPath, `${page}.html`);
     if (fs.existsSync(pagePath)) {
-      console.log(`✓ /${page} → SEO page`);
+      console.log(`✓ /${page} → Canonical page`);
     } else {
       console.error(`✗ /${page} MISSING!`);
     }

@@ -1,0 +1,119 @@
+<footer class="site-footer">
+  <div class="footer-shell">
+    <div class="footer-brand">
+      <div class="footer-title">LocalPDF</div>
+      <p>
+        Privacy-first PDF work that stays on your device. Edit, merge, OCR, compress,
+        sign, and convert without an upload workflow for sensitive documents.
+      </p>
+    </div>
+
+    <div class="footer-links">
+      <div>
+        <strong>Product</strong>
+        <a href="/features/edit-pdf">Edit PDF</a>
+        <a href="/features/merge-pdf">Merge PDF</a>
+        <a href="/features/ocr-pdf">OCR PDF</a>
+        <a href="/features/compress-pdf">Compress PDF</a>
+        <a href="/features/split-pdf">Split PDF</a>
+        <a href="/features/sign-pdf">Sign PDF</a>
+        <a href="/features/convert-pdf">Convert PDF</a>
+      </div>
+      <div>
+        <strong>Trust</strong>
+        <a href="/faq">FAQ</a>
+        <a href="/security">Security</a>
+        <a href="/privacy">Privacy</a>
+        <a href="/terms">Terms</a>
+      </div>
+      <div>
+        <strong>Company</strong>
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+        <a href="/blog">Blog</a>
+        <a href="/security">How Local Processing Works</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    padding: 48px 20px 56px;
+  }
+
+  .footer-shell {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 40px;
+    padding: 28px;
+    border-radius: 28px;
+    background: #142028;
+    color: #eef1eb;
+  }
+
+  .footer-title {
+    font-size: 1.2rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 10px;
+  }
+
+  .footer-brand p {
+    margin: 0;
+    max-width: 560px;
+    color: rgba(238, 241, 235, 0.76);
+  }
+
+  .footer-links {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+  }
+
+  .footer-links div {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .footer-links strong {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(238, 241, 235, 0.58);
+  }
+
+  .footer-links a {
+    color: #eef1eb;
+    text-decoration: none;
+  }
+
+  .footer-links a:hover,
+  .footer-links a:focus-visible {
+    color: #f3c992;
+  }
+
+  @media (max-width: 900px) {
+    .footer-shell {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .site-footer {
+      padding: 32px 12px 40px;
+    }
+
+    .footer-shell {
+      padding: 22px;
+      border-radius: 22px;
+    }
+
+    .footer-links {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

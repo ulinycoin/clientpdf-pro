@@ -1,764 +1,605 @@
 ---
-import Header from '../components/Header.astro';
-import BaseLayout from '../layouts/BaseLayout.astro';
-import DeveloperStory from '../components/DeveloperStory.astro';
-import SecureToolsBlock from '../components/SecureToolsBlock.astro';
-import { CATEGORIES, ICONS } from '../data/tools';
-import IndustrySolutions from '../components/IndustrySolutions.astro';
+import MarketingLayout from '../layouts/MarketingLayout.astro';
+import { featurePages } from '../data/featurePages';
+import { getAppUrl } from '../utils/app-url';
 
-// Redesigned Homepage - v2.0 "Private Sanctuary"
-const title = "LocalPDF Sanctuary | 100% Private PDF Tools (No Uploads)";
-const metaDescription = "Free privacy-first PDF tools. Merge, split, compress, and edit PDFs locally in your browser. No file uploads, no server processing. GDPR compliant & offline-ready.";
-const keywords = "private pdf tools, local pdf processing, no upload pdf editor, free online pdf tools, secure pdf editor, client-side pdf tools, localpdf sanctuary";
+const title = 'Private PDF workflows that stay on your device | LocalPDF';
+const description = 'LocalPDF helps you edit, merge, OCR, compress, split, sign, and convert PDFs in one local-first workflow without an upload-first handoff.';
+const canonical = 'https://localpdf.online/';
+const image = 'https://localpdf.online/screenshots/v6-workspace-1.png';
+const imageAlt = 'LocalPDF workspace showing local PDF editing and document workflow tools';
+const appUrl = getAppUrl();
 
-// specific structured data removed as it is now in BaseLayout
-
-
-const websiteSchema = {
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "name": "LocalPDF Sanctuary",
-  "url": "https://localpdf.online"
-};
-
-const faqData = [
+const websiteSchema = [
   {
-    question: "Is LocalPDF safe for sensitive documents?",
-    answer: "Yes. **LocalPDF** is the only PDF toolkit that guarantees **100% privacy** because all processing (merging, joining, OCR) happens **locally in your browser** using WebAssembly. Your files are never uploaded to any server, ensuring a **zero-knowledge, GDPR-safe** workflow perfect for sensitive legal or financial documents."
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'LocalPDF',
+    url: canonical,
+    description,
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: 'https://localpdf.online/features/{feature}',
+      'query-input': 'required name=feature',
+    },
   },
   {
-    question: "How is LocalPDF different from other online PDF editors?",
-    answer: "Most PDF tools upload your files to their servers for processing. LocalPDF works 100% client-side. This means zero upload time, zero latency, and absolute privacy as your data never leaves your machine."
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'LocalPDF',
+    url: canonical,
+    logo: 'https://localpdf.online/logos/localpdf-header-96x96.png',
   },
   {
-    question: "Does LocalPDF work without an internet connection?",
-    answer: "Yes. Once the LocalPDF application is loaded in your browser, the processing engine runs locally. You can disconnect from the internet and continue editing, merging, or splitting your PDFs securely."
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'LocalPDF',
+    applicationCategory: 'BusinessApplication',
+    operatingSystem: 'Web',
+    url: canonical,
+    description,
+    featureList: [
+      'Edit PDF locally',
+      'Merge PDF locally',
+      'Run OCR on scanned PDFs',
+      'Compress PDF files',
+      'Split PDF pages',
+      'Sign PDF documents',
+      'Convert PDF and document formats',
+    ],
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'USD',
+    },
+    screenshot: [
+      'https://localpdf.online/screenshots/v6-workspace-1.png',
+      'https://localpdf.online/screenshots/v6-workspace-2.png',
+    ],
   },
-  {
-    question: "What technology powers LocalPDF?",
-    answer: "LocalPDF utilizes modern browser technologies including WebAssembly (WASM), Web Workers, and specialized client-side libraries like pdf-lib and Tesseract.js to achieve desktop-grade performance inside a web sandbox."
-  },
-  {
-    question: "Is the service truly free and without watermarks?",
-    answer: "LocalPDF is currently free with no usage limits, no file size caps, and no watermarks. Since we don't have server costs for file processing, we can maintain high-quality tools without charging user fees."
-  }
 ];
 
-const faqSchema = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": faqData.map(item => ({
-    "@type": "Question",
-    "name": item.question,
-    "acceptedAnswer": {
-      "@type": "Answer",
-      "text": item.answer
-    }
-  }))
-};
+const primaryFeatures = featurePages.filter((page) => [
+  'edit-pdf',
+  'merge-pdf',
+  'ocr-pdf',
+  'compress-pdf',
+  'split-pdf',
+  'convert-pdf',
+].includes(page.slug));
 
-const langPrefix = '';
+const popularGuides = [
+  {
+    href: '/blog/how-to-merge-pdf-files',
+    title: 'How to Merge PDF Files',
+    description: 'A practical guide to combining PDFs, keeping order under control, and exporting one clean file.',
+  },
+  {
+    href: '/blog/edit-text-in-pdf-guide',
+    title: 'How to Edit Text in PDF Files',
+    description: 'Learn when to replace text, cover sensitive sections, and handle direct PDF edits with more control.',
+  },
+  {
+    href: '/blog/ocr-pdf-extract-text',
+    title: 'OCR PDF: Extract Text from Scanned Documents',
+    description: 'Turn scanned PDFs into searchable files and understand when OCR should be the next step in the workflow.',
+  },
+];
 ---
 
-<BaseLayout title={title} description={metaDescription} keywords={keywords}>
-  <Fragment slot="head">
-    <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
-    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
-    <style>
-      .hero {
-        position: relative;
-        padding: 60px 7vw 100px;
-        text-align: center;
-        min-height: 80vh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-      }
-  
-      .hero-glow {
-        position: absolute;
-        top: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 100vw;
-        height: 100vh;
-        background: radial-gradient(circle at 50% 30%, rgba(59, 130, 246, 0.12) 0%, transparent 60%);
-        pointer-events: none;
-        z-index: 0;
-      }
-  
-      .pill-info {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        padding: 8px 16px;
-        background: rgba(59, 130, 246, 0.08);
-        border: 1px solid rgba(59, 130, 246, 0.2);
-        border-radius: 99px;
-        font-size: 0.85rem;
-        color: var(--accent-light);
-        margin-bottom: 32px;
-        backdrop-filter: blur(10px);
-        position: relative;
-        z-index: 1;
-      }
-  
-      .dot-live {
-        width: 8px;
-        height: 8px;
-        background: #10B981;
-        border-radius: 50%;
-        box-shadow: 0 0 10px #10B981;
-        animation: pulse 2s infinite;
-      }
-  
-      @keyframes pulse {
-        0% { transform: scale(1); opacity: 1; }
-        50% { transform: scale(1.4); opacity: 0.4; }
-        100% { transform: scale(1); opacity: 1; }
-      }
-  
-      .hero-h1 {
-        font-family: 'Outfit', sans-serif;
-        font-size: clamp(3rem, 8vw, 5.5rem);
-        font-weight: 800;
-        line-height: 1;
-        letter-spacing: -0.02em;
-        margin: 0 0 24px;
-        position: relative;
-        z-index: 1;
-        color: #fff;
-      }
-  
-      .gradient-text {
-        background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-      }
-  
-      .hero-p {
-        font-size: clamp(1rem, 2vw, 1.4rem);
-        color: var(--text-muted);
-        max-width: 650px;
-        margin: 0 0 48px;
-        position: relative;
-        z-index: 1;
-      }
-  
-      .btn-main {
-        padding: 18px 48px;
-        background: var(--accent-blue);
-        color: #fff;
-        text-decoration: none;
-        border-radius: 14px;
-        font-weight: 700;
-        font-size: 1.15rem;
-        box-shadow: 0 12px 30px rgba(59, 130, 246, 0.3);
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        position: relative;
-        z-index: 1;
-      }
-  
-      .btn-main:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 15px 45px rgba(59, 130, 246, 0.45);
-      }
-  
-      .trust-viz {
-        margin-top: 60px;
-        width: 100%;
-        max-width: 800px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        position: relative;
-        z-index: 1;
-      }
-  
-      .node {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 20px;
-        position: relative;
-        z-index: 2;
-      }
-  
-      .node-icon {
-        width: 96px;
-        height: 96px;
-        background: linear-gradient(145deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-top: 1px solid rgba(255, 255, 255, 0.2);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        border-radius: 30px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #fff;
-        font-size: 2.5rem;
-        box-shadow: 0 20px 40px -10px rgba(0,0,0,0.3);
-        backdrop-filter: blur(20px);
-        transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-      }
-  
-      .node:hover .node-icon {
-        transform: translateY(-8px);
-      }
-  
-      .node.special .node-icon {
-        width: 120px;
-        height: 120px;
-        font-size: 3.5rem;
-        background: linear-gradient(145deg, rgba(37, 99, 235, 0.15) 0%, rgba(37, 99, 235, 0.05) 100%);
-        border: 1px solid rgba(96, 165, 250, 0.3);
-        box-shadow: 0 30px 60px -12px rgba(59, 130, 246, 0.4);
-      }
-  
-      .node span {
-        font-size: 0.95rem;
-        font-weight: 500;
-        color: #9CA3AF;
-      }
-  
-      .node.special span {
-        color: #fff;
-        font-weight: 600;
-      }
-  
-      .con-line {
-        flex: 1;
-        height: 1px;
-        background: linear-gradient(90deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.05) 100%);
-        margin: 0 32px;
-        position: relative;
-      }
-  
-      .con-line::after {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 0;
-        width: 40%;
-        height: 3px;
-        background: linear-gradient(90deg, transparent, #3B82F6, transparent);
-        transform: translateY(-50%);
-        opacity: 0.6;
-        filter: blur(4px);
-        animation: elegant-flow 4s infinite ease-in-out;
-      }
-  
-      @keyframes elegant-flow {
-        0% { left: 0%; opacity: 0; }
-        20% { opacity: 0.8; }
-        80% { opacity: 0.8; }
-        100% { left: 60%; opacity: 0; }
-      }
-  
-      .tools-section {
-        padding: 100px 7vw;
-      }
-  
-      .tools-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-        gap: 24px;
-        max-width: 1200px;
-        margin: 64px auto 0;
-      }
-  
-      .tool-group {
-        margin-bottom: 80px;
-      }
-  
-      .group-header {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-        margin-bottom: 40px;
-      }
-  
-      .group-label {
-        padding: 10px 24px;
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 99px;
-        font-family: 'Outfit', sans-serif;
-        font-size: 1rem;
-        font-weight: 700;
-        color: #fff;
-        backdrop-filter: blur(12px);
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        display: inline-flex;
-        align-items: center;
-        gap: 12px;
-        white-space: nowrap;
-        letter-spacing: 0.02em;
-      }
-  
-      .group-line {
-        flex: 1;
-        height: 1px;
-        background: linear-gradient(90deg, rgba(255, 255, 255, 0.2) 0%, transparent 100%);
-      }
-  
-      .g-icon {
-        color: var(--accent-light);
-        display: flex;
-        align-items: center;
-        filter: drop-shadow(0 0 4px rgba(59, 130, 246, 0.5));
-      }
-  
-      .tool-card {
-        position: relative;
-        padding: 24px;
-        border-radius: var(--ios-radius);
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        gap: 20px;
-        overflow: hidden;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-top: 1px solid rgba(255, 255, 255, 0.15);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.5s;
-      }
-  
-      .card-glass {
-        position: absolute;
-        inset: 0;
-        background: rgba(255, 255, 255, 0.03);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        z-index: 1;
-        transition: all 0.5s ease;
-        pointer-events: none;
-      }
-  
-      .card-glow {
-        position: absolute;
-        inset: 0;
-        background: radial-gradient(circle at center, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
-        opacity: 0;
-        z-index: 2;
-        transition: opacity 0.5s ease;
-        pointer-events: none;
-      }
-  
-      .tool-card:hover {
-        transform: scale(1.02);
-        border-color: rgba(255, 255, 255, 0.4);
-      }
-  
-      .tool-card:hover .card-glass {
-        filter: url('#liquid-refraction');
-      }
-  
-      .tool-card:hover .card-glow {
-        opacity: 1;
-      }
-  
-      .t-icon, .t-meta {
-        position: relative;
-        z-index: 3;
-      }
-  
-      .t-icon {
-        font-size: 2.2rem;
-        background: rgba(255, 255, 255, 0.02);
-        padding: 12px;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border: 1px solid rgba(255, 255, 255, 0.03);
-        transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
-      }
-  
-      .tool-card:hover .t-icon {
-        transform: scale(1.1);
-        background: rgba(255, 255, 255, 0.08);
-        border-color: #fff;
-        box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
-      }
-  
-      .t-meta h4 { margin: 0 0 4px; font-size: 1.1rem; color: #fff; text-align: left; }
-      .t-meta p { margin: 0; font-size: 0.9rem; color: var(--text-muted); line-height: 1.4; text-align: left; }
-  
-      .seo-glass-section { padding: 0 7vw 100px; position: relative; z-index: 10; }
-  
-      .seo-h2 {
-        font-size: 2rem;
-        font-weight: 800;
-        margin: 0 0 48px;
-        text-align: center;
-        color: #fff;
-        font-family: 'Outfit', sans-serif;
-      }
-  
-      .seo-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 40px;
-        margin-bottom: 64px;
-      }
-  
-      .seo-item {
-        padding: 32px;
-        background: rgba(255, 255, 255, 0.02);
-        border: 1px solid rgba(255, 255, 255, 0.05);
-        border-radius: 20px;
-        transition: all 0.3s ease;
-      }
-  
-      .seo-item:hover {
-        background: rgba(255, 255, 255, 0.04);
-        border-color: rgba(59, 130, 246, 0.3);
-        transform: translateY(-5px);
-      }
-  
-      .seo-item h3 { font-size: 1.25rem; color: #60A5FA; margin: 0 0 16px; }
-      .seo-item p { color: var(--text-muted); font-size: 1rem; line-height: 1.7; margin: 0; }
-      .seo-item strong { color: #60A5FA; }
-  
-      .faq-section {
-        padding: 0 7vw 100px;
-      }
-  
-      .faq-content {
-        max-width: 1000px;
-        margin: 0 auto;
-      }
-  
-      .faq-h2 {
-        font-size: 2rem;
-        font-weight: 800;
-        margin-bottom: 48px;
-        text-align: center;
-        color: #fff;
-        font-family: 'Outfit', sans-serif;
-      }
-  
-      .faq-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 32px;
-      }
-  
-      .faq-item {
-        padding: 32px;
-        background: rgba(255, 255, 255, 0.02);
-        border: 1px solid rgba(255, 255, 255, 0.05);
-        border-radius: 20px;
-        transition: all 0.3s ease;
-      }
-  
-      .faq-item:hover {
-        background: rgba(255, 255, 255, 0.04);
-        border-color: rgba(59, 130, 246, 0.3);
-      }
-  
-      .faq-q {
-        font-size: 1.1rem;
-        font-weight: 700;
-        color: #60A5FA;
-        margin: 0 0 16px;
-        line-height: 1.4;
-      }
-  
-      .faq-a {
-        color: var(--text-muted);
-        font-size: 0.95rem;
-        line-height: 1.6;
-        margin: 0;
-      }
-  
-      .technical-breakdown {
-        padding: 0 7vw 100px;
-      }
-  
-      .tech-content {
-        max-width: 1000px;
-        margin: 0 auto;
-        text-align: center;
-      }
-  
-      .tech-h2 {
-        font-size: 2rem;
-        font-weight: 800;
-        margin-bottom: 48px;
-        color: #fff;
-        font-family: 'Outfit', sans-serif;
-      }
-  
-      .tech-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 32px;
-      }
-  
-      .tech-card {
-        padding: 32px;
-        background: rgba(255, 255, 255, 0.02);
-        border: 1px solid rgba(255, 255, 255, 0.05);
-        border-radius: 20px;
-        text-align: left;
-        transition: all 0.3s ease;
-      }
-  
-      .tech-card:hover {
-        background: rgba(255, 255, 255, 0.04);
-        border-color: rgba(59, 130, 246, 0.3);
-        transform: translateY(-5px);
-      }
-  
-      .tech-card h4 {
-        font-size: 1.1rem;
-        color: #60A5FA;
-        margin: 0 0 16px;
-      }
-  
-      .tech-card p {
-        color: var(--text-muted);
-        font-size: 0.95rem;
-        line-height: 1.6;
-        margin: 0;
-      }
-
-      .extension-cta {
-        margin: 48px auto 64px;
-        max-width: 980px;
-        padding: 28px 32px;
-        border-radius: 24px;
-        border: 1px solid var(--glass-border);
-        background: rgba(255, 255, 255, 0.03);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 24px;
-        backdrop-filter: blur(12px);
-      }
-
-      .extension-cta-title {
-        font-family: 'Outfit', sans-serif;
-        font-size: 1.4rem;
-        font-weight: 700;
-        color: #fff;
-        margin-bottom: 6px;
-      }
-
-      .extension-cta-text p {
-        color: var(--text-muted);
-        margin: 0;
-      }
-
-      .extension-cta-button {
-        flex-shrink: 0;
-        padding: 12px 20px;
-        border-radius: 999px;
-        background: linear-gradient(135deg, #3b82f6, #60a5fa);
-        color: #fff;
-        font-weight: 700;
-        text-decoration: none;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-      }
-
-      .extension-cta-button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 12px 24px rgba(59, 130, 246, 0.25);
-      }
-  
-      @media (max-width: 768px) {
-        .hero-h1 { font-size: 3rem; }
-        .trust-viz { display: none; }
-        .tools-grid { grid-template-columns: 1fr; }
-        .extension-cta { flex-direction: column; align-items: flex-start; }
-        .extension-cta-button { width: 100%; text-align: center; }
-      }
-    </style>
-  </Fragment>
-
-  <svg style="position: fixed; top: -100%; left: -100%; width: 0; height: 0;">
-    <filter id="liquid-refraction" x="-10%" y="-10%" width="120%" height="120%">
-      <feTurbulence type="turbulence" baseFrequency="0.003" numOctaves="2" result="noise" seed="2" />
-      <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G" result="distorted" />
-      <feColorMatrix in="distorted" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="red" />
-      <feOffset in="red" dx="0.6" dy="0" result="red_offset" />
-      <feColorMatrix in="distorted" type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="green" />
-      <feColorMatrix in="distorted" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="blue" />
-      <feOffset in="blue" dx="-0.6" dy="0" result="blue_offset" />
-      <feBlend in="red_offset" in2="green" mode="screen" result="rg" />
-      <feBlend in="rg" in2="blue_offset" mode="screen" />
-    </filter>
-  </svg>
-
-  <div class="hero">
-    <div class="hero-glow"></div>
-    <div class="pill-info">
-      <span class="dot-live"></span>
-      <span id="pill-text">Secure Browser Sandbox</span>
-    </div>
-    
-    <script is:inline>
-      const texts = ["Secure Browser Sandbox", "GDPR Compliant by design", "Works Offline"];
-      let index = 0;
-      const el = document.getElementById('pill-text');
-      if (el) {
-        setInterval(() => {
-          el.style.opacity = '0';
-          el.style.transform = 'translateY(5px)';
-          setTimeout(() => {
-            index = (index + 1) % texts.length;
-            el.textContent = texts[index];
-            el.style.opacity = '1';
-            el.style.transform = 'translateY(0)';
-          }, 300);
-        }, 3000);
-      }
-    </script>
-    
-    <h1 class="hero-h1">
-      Your Private PDF Sanctuary.<br/> 
-      <span class="gradient-text">100% Offline. No Uploads.</span>
-    </h1>
-    
-    <p class="hero-p">
-      The only PDF toolkit that works 100% in your browser. No uploads, no servers, no traces. Just professional tools, powered by your device.
-    </p>
-
-    <a href="/app#" class="btn-main">
-      Launch Studio 🚀
-    </a>
-
-    <div class="trust-viz">
-      <div class="node">
-        <div class="node-icon">📄</div>
-        <span>Import</span>
-      </div>
-      <div class="con-line"></div>
-      <div class="node special">
-        <div class="node-icon">🔒</div>
-        <span>Local RAM</span>
-      </div>
-      <div class="con-line"></div>
-      <div class="node">
-        <div class="node-icon">💾</div>
-        <span>Pure Output</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="extension-cta">
-    <div class="extension-cta-text">
-      <div class="extension-cta-title">Get the Chrome Extension</div>
-      <p>Open LocalPDF instantly after downloads. Privacy-first, no uploads.</p>
-    </div>
-    <a class="extension-cta-button" href={`${langPrefix}/extension`}>Get Chrome Extension</a>
-  </div>
-
-  <DeveloperStory />
-
-  <section class="tools-section">
-    {CATEGORIES.map((category) => (
-      <div class="tool-group">
-        <div class="group-header">
-           <div class="group-label">
-             <span class="g-icon" set:html={ICONS[category.icon]} />
-             {category.name}
-           </div>
-           <div class="group-line"></div>
+<MarketingLayout
+  title={title}
+  description={description}
+  canonical={canonical}
+  image={image}
+  imageAlt={imageAlt}
+  schema={websiteSchema}
+>
+  <div class="page-shell">
+    <section class="hero section">
+      <div class="hero-copy">
+        <span class="eyebrow">Privacy-first PDF app</span>
+        <h1>Private PDF workflows that stay on your device</h1>
+        <p class="hero-text">
+          Edit, merge, OCR, compress, split, sign, and convert PDFs in one place without
+          turning every document into an upload-first workflow.
+        </p>
+        <div class="cta-row">
+          <a class="btn-primary" href={appUrl}>Open LocalPDF</a>
+          <a class="btn-secondary" href="/security">See How Local Processing Works</a>
         </div>
-        <div class="tools-grid">
-          {category.tools.map((tool) => (
-            <a href={`${langPrefix}/${tool.id}`} class="tool-card">
-              <div class="card-glass"></div>
-              <div class="card-glow"></div>
-              <div class="t-icon" set:html={ICONS[tool.icon]} />
-              <div class="t-meta">
-                <h4>{tool.name}</h4>
-                <p>{tool.desc}</p>
-              </div>
-            </a>
-          ))}
+        <div class="hero-notes">
+          <span>Local-first handling for sensitive files</span>
+          <span>One workspace for real PDF jobs</span>
+          <span>Clear path from file to finished result</span>
         </div>
       </div>
-    ))}
-  </section>
 
-  <IndustrySolutions />
-
-  <section class="seo-glass-section">
-    <div class="faq-content">
-      <h2 class="seo-h2">Why Choose LocalPDF Sanctuary?</h2>
-      <div class="faq-grid">
-        <div class="seo-item">
-          <h3>Absolute Privacy</h3>
-          <p>Unlike cloud tools, <strong>LocalPDF</strong> never sees your files. Everything is processed in a secure WebAssembly sandbox on your own device.</p>
+      <div class="hero-panel">
+        <div class="panel-top">
+          <span>Workspace</span>
+          <strong>LocalPDF</strong>
         </div>
-        <div class="seo-item">
-          <h3>Unmatched Speed</h3>
-          <p>Zero upload time. Zero download wait. Processing happens at the speed of your local CPU, effectively instant for most documents.</p>
-        </div>
-        <div class="seo-item">
-          <h3>100% Offline</h3>
-          <p>Once loaded, you can disconnect. Perfect for secure environments where data leakage is the primary concern.</p>
-        </div>
-        <div class="seo-item">
-          <h3>GDPR by Design</h3>
-          <p>We don't need to comply because we never collect. No storage, no tracking, no risk of data breaches.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <SecureToolsBlock 
-    title="Quick Access: Secure PDF Tools"
-    links={[
-      { label: "Merge PDF Files Without Uploading", href: `${langPrefix}/merge-pdf` },
-      { label: "Split PDF Locally in Browser", href: `${langPrefix}/split-pdf` },
-      { label: "Compress PDF GDPR Safe", href: `${langPrefix}/compress-pdf` },
-      { label: "Smart Edit PDF Privately", href: `${langPrefix}/edit-text-pdf` },
-      { label: "Secure PDF OCR (No Server)", href: `${langPrefix}/ocr-pdf` },
-      { label: "Extract Images Local Process", href: `${langPrefix}/extract-images-pdf` }
-    ]}
-  />
-
-  <section class="faq-section">
-    <div class="faq-content">
-      <h2 class="faq-h2">Frequently Asked Questions</h2>
-      <div class="faq-grid">
-        {faqData.map(item => (
-          <div class="faq-item">
-            <h3 class="faq-q">{item.question}</h3>
-            <p class="faq-a">{item.answer}</p>
+        <div class="panel-body">
+          <div class="metric-row">
+            <div>
+              <small>Primary jobs</small>
+              <strong>Edit, Merge, OCR, Convert</strong>
+            </div>
+            <div>
+              <small>Why it exists</small>
+              <strong>Keep PDF work close to the file</strong>
+            </div>
           </div>
+          <div class="app-screenshot-wrapper">
+            <img 
+              src="/screenshots/v6-workspace-1.png" 
+              alt="LocalPDF Studio Workspace V6" 
+              class="app-screenshot"
+              loading="eager"
+              decoding="async"
+              width="1800"
+              height="1125"
+            />
+          </div>
+          <p class="panel-caption">Studio keeps document work in one local-first workspace instead of splitting it across utility pages.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section trust-strip">
+      <div class="trust-item">
+        <strong>No upload workflow</strong>
+        <p>Built for jobs where documents need to stay close to the user.</p>
+      </div>
+      <div class="trust-item">
+        <strong>One workspace</strong>
+        <p>Open the app and continue the job instead of bouncing across utility pages.</p>
+      </div>
+      <div class="trust-item">
+        <strong>Trust up front</strong>
+        <p>Security and FAQ are easy to find because trust matters before the first click.</p>
+      </div>
+    </section>
+
+    <section class="section decision-strip">
+      <div class="decision-copy">
+        <h2 class="section-title">When LocalPDF is the better fit</h2>
+        <p class="section-intro">
+          LocalPDF is a better fit when the document matters, the task is clear, and you want to
+          start working on the file immediately instead of sending it into an upload queue.
+        </p>
+      </div>
+      <div class="decision-box">
+        <strong>Use LocalPDF when</strong>
+        <ul class="bullet-list">
+          <li>You want one workspace instead of many disconnected utility pages</li>
+          <li>The document is internal, sensitive, or operationally important</li>
+          <li>The task is editing, merging, OCR, splitting, signing, compression, or conversion</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">Core workflows inside the app</h2>
+      <p class="section-intro">
+        These are the main PDF jobs people come to LocalPDF to finish.
+      </p>
+      <div class="card-grid feature-grid">
+        {primaryFeatures.map((feature) => (
+          <a class="feature-card" href={`/features/${feature.slug}`}>
+            <span class="feature-label">{feature.eyebrow}</span>
+            <h3>{feature.title}</h3>
+            <p>{feature.metaDescription}</p>
+          </a>
         ))}
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="technical-breakdown">
-    <div class="tech-content">
-      <h2 class="tech-h2">Technical Architecture: How LocalPDF Works</h2>
-      <div class="tech-grid">
-        <div class="tech-card">
-          <h4>WebAssembly (WASM)</h4>
-          <p>We use high-performance C++ and Rust libraries compiled to WASM. This allows us to handle complex PDF operations like merging, OCR, and compression directly at near-native speeds.</p>
+    <section class="section split-layout">
+      <div>
+        <h2 class="section-title">Why local processing changes the decision</h2>
+        <p class="section-intro">
+          Local processing matters most when the document is sensitive, operational, or simply too
+          important for an upload-first flow. The value is practical: less exposure, less waiting,
+          and a faster path to the result.
+        </p>
+      </div>
+      <div class="callout-list">
+        <div class="callout">
+          <strong>Less exposure by default</strong>
+          <p>Keeping the first step local is easier to justify for contracts, scans, invoices, and internal files.</p>
         </div>
-        <div class="tech-card">
-          <h4>Secure Sandboxing</h4>
-          <p>Each document is processed within a transient Web Worker. Once the worker is terminated, all document data is purged from your browser's RAM, leaving zero digital footprints.</p>
+        <div class="callout">
+          <strong>Less friction before action</strong>
+          <p>Open the app, load the document, finish the job, and export the result without extra waiting loops.</p>
         </div>
-        <div class="tech-card">
-          <h4>Client-Side OCR</h4>
-          <p>For text recognition, we utilize Tesseract.js, running the entire neural network engine on your local CPU. Your scans never touch a remote server.</p>
+        <div class="callout">
+          <strong>Less route sprawl</strong>
+          <p>Core workflows are easy to understand, compare, and open without digging through dozens of lookalike tool pages.</p>
         </div>
       </div>
-    </div>
-  </section>
-</BaseLayout>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">What LocalPDF is built for</h2>
+      <div class="card-grid">
+        <div class="card">
+          <h3>Sensitive internal documents</h3>
+          <p>Contracts, invoices, records, and drafts that users do not want to treat as disposable uploads.</p>
+        </div>
+        <div class="card">
+          <h3>Fast operational PDF work</h3>
+          <p>Merging, splitting, compressing, and preparing files without waiting for remote processing loops.</p>
+        </div>
+        <div class="card">
+          <h3>One product surface</h3>
+          <p>A PDF app that feels like a workspace, not a list of unrelated online tools.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">A better fit for sensitive and practical PDF work</h2>
+      <div class="card-grid comparison-grid">
+        <div class="card">
+          <h3>What you get</h3>
+          <ul class="bullet-list">
+            <li>A PDF app built around core document workflows</li>
+            <li>A privacy-first product for users who want processing closer to the file</li>
+            <li>Clear routes into editing, merging, OCR, compression, signing, splitting, and conversion</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>What you avoid</h3>
+          <ul class="bullet-list">
+            <li>No maze of disconnected one-purpose tool pages</li>
+            <li>No privacy messaging without a usable product behind it</li>
+            <li>No assumption that every file should be uploaded first</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Why people choose it</h3>
+          <ul class="bullet-list">
+            <li>The app is central to the experience</li>
+            <li>The trust story is concrete and easy to verify</li>
+            <li>The next step is clear before you have to commit</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">Popular guides before you open the app</h2>
+      <p class="section-intro">
+        Start with a guide if you want to compare approaches first, then move into LocalPDF when the workflow is clear.
+      </p>
+      <div class="card-grid feature-grid">
+        {popularGuides.map((guide) => (
+          <a class="feature-card" href={guide.href}>
+            <span class="feature-label">Guide</span>
+            <h3>{guide.title}</h3>
+            <p>{guide.description}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="section faq-preview">
+      <div>
+        <span class="eyebrow">Trust and clarity</span>
+        <h2 class="section-title">Questions users ask before opening the app</h2>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item">
+          <strong>Do I have to upload my PDF first?</strong>
+          <p>No. LocalPDF is built around local-first handling for practical PDF work.</p>
+        </div>
+        <div class="faq-item">
+          <strong>What jobs does LocalPDF actually cover?</strong>
+          <p>Edit, merge, OCR, compress, split, sign, and conversion workflows are the current core jobs.</p>
+        </div>
+        <div class="faq-item">
+          <strong>Where should I verify the trust model?</strong>
+          <p>Start with Security and FAQ. They explain how LocalPDF handles local processing and privacy in practical terms.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section final-band">
+      <div>
+        <span class="eyebrow">Next step</span>
+        <h2 class="section-title">Open the app, then judge the workflow directly</h2>
+        <p class="section-intro">
+          If LocalPDF is the right fit, the value is already clear: practical PDF work, a faster path
+          to the result, and local-first handling for important documents.
+        </p>
+      </div>
+      <div class="cta-row">
+        <a class="btn-primary" href={appUrl}>Open LocalPDF</a>
+        <a class="btn-secondary" href="/faq">Read FAQ</a>
+      </div>
+    </section>
+  </div>
+
+</MarketingLayout>
+
+<style>
+  .hero {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 24px;
+    align-items: stretch;
+    margin-top: 12px;
+  }
+
+  .hero-copy {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 18px;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.8rem, 5.8vw, 5rem);
+    max-width: 9ch;
+    line-height: 0.92;
+  }
+
+  .hero-text {
+    max-width: 700px;
+    font-size: 1.08rem;
+  }
+
+  .hero-notes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 4px;
+  }
+
+  .hero-notes span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    padding: 0 14px;
+    border-radius: 999px;
+    background: rgba(217, 235, 225, 0.85);
+    color: #24353f;
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+
+  .hero-panel {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--line);
+    border-radius: 30px;
+    background: linear-gradient(180deg, rgba(255, 253, 249, 0.96), rgba(247, 244, 239, 0.8));
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  .panel-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--line);
+    font-size: 0.92rem;
+    color: #536674;
+  }
+
+  .panel-body {
+    padding: 20px;
+    display: grid;
+    gap: 18px;
+  }
+
+  .panel-caption {
+    font-size: 0.96rem;
+    color: #536674;
+  }
+
+  .metric-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .metric-row div {
+    padding: 14px;
+    border-radius: 18px;
+    background: rgba(217, 235, 225, 0.5);
+  }
+
+  .metric-row small {
+    display: block;
+    margin-bottom: 8px;
+    color: #536674;
+  }
+
+  .metric-row strong {
+    color: var(--text);
+  }
+
+
+  .app-screenshot-wrapper {
+    margin-top: 4px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(24, 32, 40, 0.08);
+    box-shadow: 0 12px 32px rgba(26, 34, 39, 0.08);
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+  }
+
+  .app-screenshot {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    object-position: top;
+    display: block;
+  }
+
+  .trust-strip {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .trust-item {
+    padding: 10px 8px;
+  }
+
+  .trust-item strong {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 1rem;
+  }
+
+  .feature-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .decision-strip {
+    display: grid;
+    grid-template-columns: 1fr 0.9fr;
+    gap: 20px;
+    align-items: start;
+  }
+
+  .decision-box {
+    padding: 22px;
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    background: linear-gradient(180deg, rgba(243, 201, 146, 0.24), rgba(255, 253, 249, 0.95));
+  }
+
+  .decision-box strong {
+    display: block;
+    margin-bottom: 12px;
+    font-size: 1.05rem;
+  }
+
+  .feature-card {
+    display: block;
+    padding: 22px;
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    background: var(--surface);
+    text-decoration: none;
+    box-shadow: 0 10px 24px rgba(26, 34, 39, 0.04);
+  }
+
+  .feature-card:hover,
+  .feature-card:focus-visible {
+    border-color: rgba(20, 32, 40, 0.18);
+    transform: translateY(-2px);
+  }
+
+  .feature-label {
+    display: inline-block;
+    margin-bottom: 12px;
+    color: #8a572d;
+    font-weight: 800;
+    font-size: 0.84rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .feature-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 12px;
+  }
+
+  .comparison-grid .card {
+    min-height: 100%;
+  }
+
+  .split-layout {
+    display: grid;
+    grid-template-columns: 1fr 0.95fr;
+    gap: 20px;
+    align-items: start;
+  }
+
+  .callout-list {
+    display: grid;
+    gap: 14px;
+  }
+
+  .callout {
+    padding: 18px 20px;
+    border-radius: 20px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+  }
+
+  .callout strong {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 1.05rem;
+  }
+
+  .final-band {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .faq-preview {
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: 20px;
+    align-items: start;
+  }
+
+  .faq-list {
+    display: grid;
+    gap: 14px;
+  }
+
+  .faq-item {
+    padding: 18px 20px;
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    background: var(--surface);
+  }
+
+  .faq-item strong {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 1.05rem;
+    color: var(--text);
+  }
+
+  @media (max-width: 960px) {
+    .hero,
+    .split-layout,
+    .trust-strip,
+    .decision-strip,
+    .feature-grid,
+    .faq-preview {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .hero {
+      margin-top: 16px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.4rem, 11vw, 3.6rem);
+    }
+
+    .metric-row {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

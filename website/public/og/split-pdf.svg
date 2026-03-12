@@ -1,0 +1,23 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#F6F3EE"/>
+  <rect x="36" y="36" width="1128" height="558" rx="36" fill="#FFF9F1"/>
+  <text x="86" y="126" fill="#8A572D" font-family="Arial, sans-serif" font-size="24" font-weight="700" letter-spacing="2">SPLIT PDF</text>
+  <text x="86" y="208" fill="#142028" font-family="Georgia, serif" font-size="68" font-weight="700">Split PDFs</text>
+  <text x="86" y="280" fill="#142028" font-family="Georgia, serif" font-size="68" font-weight="700">before they leave</text>
+  <text x="86" y="352" fill="#142028" font-family="Georgia, serif" font-size="68" font-weight="700">your machine</text>
+  <text x="86" y="420" fill="#52606B" font-family="Arial, sans-serif" font-size="28">Extract only the pages you need and keep the rest of the</text>
+  <text x="86" y="458" fill="#52606B" font-family="Arial, sans-serif" font-size="28">document under your control.</text>
+  <rect x="742" y="88" width="348" height="454" rx="30" fill="#142028"/>
+  <rect x="782" y="124" width="270" height="124" rx="20" fill="#FFFCF8"/>
+  <rect x="808" y="150" width="70" height="72" rx="12" fill="#D9EBE1"/>
+  <rect x="892" y="150" width="70" height="72" rx="12" fill="#F3C992"/>
+  <rect x="976" y="150" width="50" height="72" rx="12" fill="#E3E7EA"/>
+  <rect x="782" y="288" width="126" height="40" rx="20" fill="#D9EBE1"/>
+  <rect x="924" y="288" width="126" height="40" rx="20" fill="#203039"/>
+  <text x="819" y="314" fill="#244153" font-family="Arial, sans-serif" font-size="15" font-weight="700">KEEP</text>
+  <text x="960" y="314" fill="#F9F5EE" font-family="Arial, sans-serif" font-size="15" font-weight="700">EXPORT</text>
+  <rect x="782" y="356" width="270" height="138" rx="20" fill="#203039"/>
+  <rect x="808" y="388" width="200" height="14" rx="7" fill="#D9EBE1"/>
+  <rect x="808" y="416" width="156" height="14" rx="7" fill="#D9EBE1"/>
+  <rect x="808" y="444" width="110" height="14" rx="7" fill="#F3C992"/>
+</svg>

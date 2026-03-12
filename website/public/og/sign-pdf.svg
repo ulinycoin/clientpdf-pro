@@ -1,0 +1,19 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#F6F3EE"/>
+  <rect x="36" y="36" width="1128" height="558" rx="36" fill="#FFF9F1"/>
+  <text x="86" y="126" fill="#8A572D" font-family="Arial, sans-serif" font-size="24" font-weight="700" letter-spacing="2">SIGN PDF</text>
+  <text x="86" y="208" fill="#142028" font-family="Georgia, serif" font-size="68" font-weight="700">Sign PDFs locally</text>
+  <text x="86" y="280" fill="#142028" font-family="Georgia, serif" font-size="68" font-weight="700">and keep approvals</text>
+  <text x="86" y="352" fill="#142028" font-family="Georgia, serif" font-size="68" font-weight="700">simple</text>
+  <text x="86" y="420" fill="#52606B" font-family="Arial, sans-serif" font-size="28">Place a signature and export the result without bouncing</text>
+  <text x="86" y="458" fill="#52606B" font-family="Arial, sans-serif" font-size="28">through unrelated PDF tools.</text>
+  <rect x="748" y="88" width="342" height="454" rx="30" fill="#142028"/>
+  <rect x="788" y="126" width="262" height="318" rx="20" fill="#FFFCF8"/>
+  <rect x="816" y="168" width="188" height="14" rx="7" fill="#D8DDE0"/>
+  <rect x="816" y="196" width="144" height="14" rx="7" fill="#D8DDE0"/>
+  <path d="M826 336C848 326 862 324 880 328C894 332 906 344 932 338C953 334 971 314 995 316C1014 318 1022 330 1022 330" stroke="#DE7A2D" stroke-width="7" stroke-linecap="round"/>
+  <rect x="932" y="394" width="118" height="38" rx="19" fill="#D9EBE1"/>
+  <text x="966" y="418" fill="#244153" font-family="Arial, sans-serif" font-size="15" font-weight="700">SIGNED</text>
+  <rect x="850" y="470" width="200" height="42" rx="21" fill="#D9EBE1"/>
+  <text x="884" y="496" fill="#244153" font-family="Arial, sans-serif" font-size="16" font-weight="700">EXPORT RESULT</text>
+</svg>

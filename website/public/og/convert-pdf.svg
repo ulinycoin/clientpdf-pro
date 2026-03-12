@@ -1,0 +1,21 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#F6F3EE"/>
+  <rect x="36" y="36" width="1128" height="558" rx="36" fill="#FFF9F1"/>
+  <text x="86" y="126" fill="#8A572D" font-family="Arial, sans-serif" font-size="24" font-weight="700" letter-spacing="2">CONVERT PDF</text>
+  <text x="86" y="208" fill="#142028" font-family="Georgia, serif" font-size="68" font-weight="700">One local hub</text>
+  <text x="86" y="280" fill="#142028" font-family="Georgia, serif" font-size="68" font-weight="700">for PDF conversion</text>
+  <text x="86" y="352" fill="#142028" font-family="Georgia, serif" font-size="68" font-weight="700">workflows</text>
+  <text x="86" y="420" fill="#52606B" font-family="Arial, sans-serif" font-size="28">Use one product path instead of jumping between weak</text>
+  <text x="86" y="458" fill="#52606B" font-family="Arial, sans-serif" font-size="28">one-off conversion pages.</text>
+  <rect x="734" y="88" width="356" height="454" rx="30" fill="#142028"/>
+  <rect x="770" y="128" width="130" height="46" rx="23" fill="#D9EBE1"/>
+  <rect x="924" y="128" width="130" height="46" rx="23" fill="#F3C992"/>
+  <text x="810" y="157" fill="#244153" font-family="Arial, sans-serif" font-size="15" font-weight="700">PDF</text>
+  <text x="958" y="157" fill="#6A431F" font-family="Arial, sans-serif" font-size="15" font-weight="700">DOCX</text>
+  <rect x="770" y="226" width="284" height="94" rx="20" fill="#203039"/>
+  <rect x="770" y="344" width="284" height="94" rx="20" fill="#FFFCF8"/>
+  <rect x="802" y="258" width="168" height="14" rx="7" fill="#D9EBE1"/>
+  <rect x="802" y="286" width="132" height="14" rx="7" fill="#D9EBE1"/>
+  <rect x="802" y="376" width="168" height="14" rx="7" fill="#D8DDE0"/>
+  <rect x="802" y="404" width="132" height="14" rx="7" fill="#F3C992"/>
+</svg>

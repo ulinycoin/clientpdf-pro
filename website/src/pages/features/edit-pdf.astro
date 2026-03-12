@@ -1,0 +1,11 @@
+---
+import FeaturePageTemplate from '../../components/marketing/FeaturePageTemplate.astro';
+import { getFeaturePage } from '../../data/featurePages';
+
+const page = getFeaturePage('edit-pdf');
+if (!page) {
+  throw new Error('Missing feature page data for edit-pdf');
+}
+---
+
+<FeaturePageTemplate page={page} />

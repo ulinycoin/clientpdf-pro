@@ -16,6 +16,181 @@
       ],
       "destination": "https://localpdf.online/:path*",
       "statusCode": 301
+    },
+    {
+      "source": "/edit-text-pdf",
+      "destination": "/features/edit-pdf",
+      "statusCode": 308
+    },
+    {
+      "source": "/add-text-pdf",
+      "destination": "/features/edit-pdf",
+      "statusCode": 308
+    },
+    {
+      "source": "/merge-pdf",
+      "destination": "/features/merge-pdf",
+      "statusCode": 308
+    },
+    {
+      "source": "/ocr-pdf",
+      "destination": "/features/ocr-pdf",
+      "statusCode": 308
+    },
+    {
+      "source": "/compress-pdf",
+      "destination": "/features/compress-pdf",
+      "statusCode": 308
+    },
+    {
+      "source": "/split-pdf",
+      "destination": "/features/split-pdf",
+      "statusCode": 308
+    },
+    {
+      "source": "/sign-pdf",
+      "destination": "/features/sign-pdf",
+      "statusCode": 308
+    },
+    {
+      "source": "/pdf-to-word",
+      "destination": "/features/convert-pdf",
+      "statusCode": 308
+    },
+    {
+      "source": "/word-to-pdf",
+      "destination": "/features/convert-pdf",
+      "statusCode": 308
+    },
+    {
+      "source": "/images-to-pdf",
+      "destination": "/features/convert-pdf",
+      "statusCode": 308
+    },
+    {
+      "source": "/pdf-to-images",
+      "destination": "/features/convert-pdf",
+      "statusCode": 308
+    },
+    {
+      "source": "/add-form-fields-pdf",
+      "destination": "/features/edit-pdf",
+      "statusCode": 308
+    },
+    {
+      "source": "/delete-pages-pdf",
+      "destination": "/features/split-pdf",
+      "statusCode": 308
+    },
+    {
+      "source": "/extract-pages-pdf",
+      "destination": "/features/split-pdf",
+      "statusCode": 308
+    },
+    {
+      "source": "/extract-images-pdf",
+      "destination": "/features/convert-pdf",
+      "statusCode": 308
+    },
+    {
+      "source": "/organize-pdf",
+      "destination": "/features/edit-pdf",
+      "statusCode": 308
+    },
+    {
+      "source": "/rotate-pdf",
+      "destination": "/features/edit-pdf",
+      "statusCode": 308
+    },
+    {
+      "source": "/watermark-pdf",
+      "destination": "/features/edit-pdf",
+      "statusCode": 308
+    },
+    {
+      "source": "/protect-pdf",
+      "destination": "/security",
+      "statusCode": 308
+    },
+    {
+      "source": "/flatten-pdf",
+      "destination": "/features/edit-pdf",
+      "statusCode": 308
+    },
+    {
+      "source": "/tables-pdf",
+      "destination": "/features/convert-pdf",
+      "statusCode": 308
+    },
+    {
+      "source": "/comparison",
+      "destination": "/faq",
+      "statusCode": 308
+    },
+    {
+      "source": "/learn",
+      "destination": "/faq",
+      "statusCode": 308
+    },
+    {
+      "source": "/learn/:slug",
+      "destination": "/faq",
+      "statusCode": 308
+    },
+    {
+      "source": "/extension",
+      "destination": "/",
+      "statusCode": 308
+    },
+    {
+      "source": "/(legal-privacy-pdf|finance-privacy-pdf|medical-privacy-pdf)",
+      "destination": "/security",
+      "statusCode": 308
+    },
+    {
+      "source": "/(de|ja)",
+      "destination": "/",
+      "statusCode": 308
+    },
+    {
+      "source": "/(de|ja)/(edit-text-pdf|add-text-pdf)",
+      "destination": "/features/edit-pdf",
+      "statusCode": 308
+    },
+    {
+      "source": "/(de|ja)/merge-pdf",
+      "destination": "/features/merge-pdf",
+      "statusCode": 308
+    },
+    {
+      "source": "/(de|ja)/ocr-pdf",
+      "destination": "/features/ocr-pdf",
+      "statusCode": 308
+    },
+    {
+      "source": "/(de|ja)/compress-pdf",
+      "destination": "/features/compress-pdf",
+      "statusCode": 308
+    },
+    {
+      "source": "/(de|ja)/split-pdf",
+      "destination": "/features/split-pdf",
+      "statusCode": 308
+    },
+    {
+      "source": "/(de|ja)/sign-pdf",
+      "destination": "/features/sign-pdf",
+      "statusCode": 308
+    },
+    {
+      "source": "/(de|ja)/(pdf-to-word|word-to-pdf|images-to-pdf|pdf-to-images)",
+      "destination": "/features/convert-pdf",
+      "statusCode": 308
+    },
+    {
+      "source": "/(de|ja)/:path*",
+      "destination": "/",
+      "statusCode": 308
     }
   ],
   "rewrites": [
@@ -32,31 +207,11 @@
       "destination": "/app/index.html"
     },
     {
-      "source": "/blog",
-      "destination": "/blog.html"
+      "source": "/app/:path*",
+      "destination": "/app/index.html"
     },
     {
-      "source": "/blog/:slug",
-      "destination": "/blog/:slug.html"
-    },
-    {
-      "source": "/(de|ja)",
-      "destination": "/$1.html"
-    },
-    {
-      "source": "/(de|ja)/:path",
-      "destination": "/$1/:path.html"
-    },
-    {
-      "source": "/learn/:slug",
-      "destination": "/learn/:slug.html"
-    },
-    {
-      "source": "/(add-form-fields-pdf|add-text-pdf|compress-pdf|delete-pages-pdf|edit-text-pdf|extract-images-pdf|extract-pages-pdf|finance-privacy-pdf|flatten-pdf|images-to-pdf|legal-privacy-pdf|medical-privacy-pdf|merge-pdf|ocr-pdf|organize-pdf|pdf-to-images|pdf-to-word|protect-pdf|rotate-pdf|sign-pdf|split-pdf|tables-pdf|watermark-pdf|word-to-pdf)",
-      "destination": "/$1.html"
-    },
-    {
-      "source": "/(about|privacy|terms|comparison|learn|extension)",
+      "source": "/(about|privacy|terms|faq|security)",
       "destination": "/$1.html"
     }
   ],
@@ -110,33 +265,6 @@
         {
           "key": "Cache-Control",
           "value": "public, max-age=31536000, immutable"
-        }
-      ]
-    },
-    {
-      "source": "/(add-form-fields-pdf|add-text-pdf|compress-pdf|delete-pages-pdf|edit-text-pdf|extract-images-pdf|extract-pages-pdf|finance-privacy-pdf|flatten-pdf|images-to-pdf|legal-privacy-pdf|medical-privacy-pdf|merge-pdf|ocr-pdf|organize-pdf|pdf-to-images|pdf-to-word|protect-pdf|rotate-pdf|sign-pdf|split-pdf|tables-pdf|watermark-pdf|word-to-pdf|extension)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=3600, s-maxage=86400"
-        }
-      ]
-    },
-    {
-      "source": "/(de|ja)/(add-form-fields-pdf|add-text-pdf|compress-pdf|delete-pages-pdf|edit-text-pdf|extract-images-pdf|extract-pages-pdf|finance-privacy-pdf|flatten-pdf|images-to-pdf|legal-privacy-pdf|medical-privacy-pdf|merge-pdf|ocr-pdf|organize-pdf|pdf-to-images|pdf-to-word|protect-pdf|rotate-pdf|sign-pdf|split-pdf|tables-pdf|watermark-pdf|word-to-pdf)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=3600, s-maxage=86400"
-        }
-      ]
-    },
-    {
-      "source": "/blog/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=3600, s-maxage=86400"
         }
       ]
     },

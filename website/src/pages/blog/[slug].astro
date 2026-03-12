@@ -1,49 +1,387 @@
 ---
-import { getCollection } from 'astro:content';
-import BlogLayout from '../../layouts/BlogLayout.astro';
+import LegacyArchivePage from '../../components/marketing/LegacyArchivePage.astro';
+import MarketingLayout from '../../layouts/MarketingLayout.astro';
 
-export async function getStaticPaths() {
-  const blogPosts = await getCollection('blog', ({ data }) => {
-    return data.draft !== true;
-  });
-
-  return blogPosts.map(post => ({
-    params: { slug: post.slug },
-    props: { post }
-  }));
-}
-
-const { post } = Astro.props;
-const { Content } = await post.render();
-
-// Calculate reading time
-function calculateReadingTime(content: string): number {
-  const words = content.split(/\s+/).length;
-  return Math.ceil(words / 200);
-}
-
-const readingTime = calculateReadingTime(post.body);
-
-// Generate canonical URL
-const canonicalURL = post.data.canonicalURL || `https://localpdf.online/blog/${post.slug}`;
-
-// Prepare props for BlogLayout
-const layoutProps = {
-  title: post.data.title,
-  description: post.data.description,
-  pubDate: post.data.pubDate,
-  coverImage: post.data.coverImage,
-  coverImageAlt: post.data.coverImageAlt,
-  tags: post.data.tags,
-  category: post.data.category,
-  author: post.data.author,
-  readingTime,
-  difficulty: post.data.difficulty,
-  relatedTools: post.data.relatedTools,
-  canonicalURL
+const toolRouteMap: Record<string, { href: string; label: string }> = {
+  'merge-pdf': { href: '/features/merge-pdf', label: 'Merge PDF' },
+  'split-pdf': { href: '/features/split-pdf', label: 'Split PDF' },
+  'compress-pdf': { href: '/features/compress-pdf', label: 'Compress PDF' },
+  'ocr-pdf': { href: '/features/ocr-pdf', label: 'OCR PDF' },
+  'sign-pdf': { href: '/features/sign-pdf', label: 'Sign PDF' },
+  'pdf-to-word': { href: '/features/convert-pdf', label: 'Convert PDF' },
+  'word-to-pdf': { href: '/features/convert-pdf', label: 'Convert PDF' },
 };
+
+function getLegacyBlogRoutes() {
+  return {
+  'add-text-to-pdf-guide': {
+    title: 'Add Text to PDF Guide Archive | LocalPDF',
+    description: 'This legacy article has been replaced by a current guide.',
+    heading: 'This article moved',
+    body: 'That older guide is no longer published. Use the current PDF editing guide instead.',
+    primaryHref: '/blog/edit-text-in-pdf-guide',
+    primaryLabel: 'Read the edit guide',
+    secondaryHref: '/features/edit-pdf',
+    secondaryLabel: 'Open Edit PDF',
+  },
+  'email-pdf-attachments': {
+    title: 'Email PDF Attachments Archive | LocalPDF',
+    description: 'This legacy article has been replaced by current PDF workflow guides.',
+    heading: 'This article moved',
+    body: 'That older guide is no longer published. Use the current compression guide or browse the blog hub for updated workflows.',
+    primaryHref: '/blog/compress-pdf-without-losing-quality',
+    primaryLabel: 'Read the compression guide',
+    secondaryHref: '/blog',
+    secondaryLabel: 'Browse the blog',
+  },
+  'flatten-pdf-forms': {
+    title: 'Flatten PDF Forms Archive | LocalPDF',
+    description: 'This legacy article has been replaced by a current guide.',
+    heading: 'This article moved',
+    body: 'That older guide is no longer published. Use the current fillable forms guide instead.',
+    primaryHref: '/blog/create-fillable-pdf-forms-guide',
+    primaryLabel: 'Read the form guide',
+    secondaryHref: '/features/edit-pdf',
+    secondaryLabel: 'Open Edit PDF',
+  },
+  'pdf-optimization-guide': {
+    title: 'PDF Optimization Guide Archive | LocalPDF',
+    description: 'This legacy article has been replaced by a current guide.',
+    heading: 'This article moved',
+    body: 'That older guide is no longer published. Use the current compression guide instead.',
+    primaryHref: '/blog/compress-pdf-without-losing-quality',
+    primaryLabel: 'Read the compression guide',
+    secondaryHref: '/features/compress-pdf',
+    secondaryLabel: 'Open Compress PDF',
+  },
+  'protect-pdf-with-password': {
+    title: 'Protect PDF With Password Archive | LocalPDF',
+    description: 'This legacy article has been replaced by a current guide.',
+    heading: 'This article moved',
+    body: 'That older guide is no longer published. Use the current PDF security guide instead.',
+    primaryHref: '/blog/pdf-security-best-practices',
+    primaryLabel: 'Read the security guide',
+    secondaryHref: '/security',
+    secondaryLabel: 'Read Security',
+  },
+  } as const;
+}
+
+const legacyBlogRoutes = getLegacyBlogRoutes();
+
+type BlogModule = {
+  frontmatter: {
+    title: string;
+    description: string;
+    pubDate: Date;
+    draft?: boolean;
+    tags: string[];
+    category: string;
+    author: string;
+    canonicalURL?: string;
+    ogImage?: string;
+    relatedTools?: string[];
+  };
+  default: unknown;
+};
+
+type LegacyBlogSlug = keyof ReturnType<typeof getLegacyBlogRoutes>;
+type BlogPost = {
+  slug: string;
+  data: BlogModule['frontmatter'] & { pubDate: Date };
+  Content: unknown;
+};
+
+export function getStaticPaths() {
+  const legacyBlogRoutes = {
+    'add-text-to-pdf-guide': true,
+    'email-pdf-attachments': true,
+    'flatten-pdf-forms': true,
+    'pdf-optimization-guide': true,
+    'protect-pdf-with-password': true,
+  } as const;
+  const postModules = import.meta.glob('../../content/blog/*.mdx', { eager: true }) as Record<string, BlogModule>;
+  const allPosts = Object.entries(postModules)
+    .map(([path, module]) => ({
+      slug: path.split('/').pop()?.replace(/\.mdx$/, '') ?? '',
+      data: {
+        ...module.frontmatter,
+        pubDate: new Date(module.frontmatter.pubDate),
+      },
+      Content: module.default,
+    }))
+    .filter((post) => !post.data.draft)
+    .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+
+  return [
+    ...allPosts.map((post) => ({
+      params: { slug: post.slug },
+      props: { post },
+    })),
+    ...Object.keys(legacyBlogRoutes).map((slug) => ({
+      params: { slug },
+      props: {
+        legacySlug: slug,
+      },
+    })),
+  ];
+}
+
+const { post, legacySlug } = Astro.props as {
+  post?: BlogPost;
+  legacySlug?: LegacyBlogSlug;
+};
+const legacy = legacySlug ? { slug: legacySlug, ...legacyBlogRoutes[legacySlug] } : undefined;
+
+const postModules = import.meta.glob('../../content/blog/*.mdx', { eager: true }) as Record<string, BlogModule>;
+const allPosts = Object.entries(postModules)
+  .map(([path, module]) => ({
+    slug: path.split('/').pop()?.replace(/\.mdx$/, '') ?? '',
+    data: {
+      ...module.frontmatter,
+      pubDate: new Date(module.frontmatter.pubDate),
+    },
+    Content: module.default,
+  }))
+  .filter((item) => !item.data.draft)
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+
+const relatedPosts = post
+  ? allPosts
+      .filter((candidate) => candidate.slug !== post.slug)
+      .filter((candidate) => candidate.data.tags.some((tag) => post.data.tags.includes(tag)))
+      .slice(0, 3)
+  : [];
+
+const relatedFeatureLinks = (post?.data.relatedTools ?? [])
+  .map((tool) => toolRouteMap[tool])
+  .filter((item, index, array): item is { href: string; label: string } => Boolean(item) && array.findIndex((entry) => entry?.href === item?.href) === index)
+  .slice(0, 3);
+
+const canonical = legacy
+  ? `https://localpdf.online/blog/${legacy.slug}`
+  : (post?.data.canonicalURL || `https://localpdf.online/blog/${post?.slug}`);
+const title = legacy ? legacy.title : `${post?.data.title} | LocalPDF Blog`;
+const description = legacy ? legacy.description : (post?.data.description ?? '');
+const image = post?.data.ogImage || 'https://localpdf.online/logos/localpdf-social-1200x630.png';
+const readingTimeSource = post
+  ? JSON.stringify(post.data.title) + JSON.stringify(post.data.description) + post.data.tags.join(' ')
+  : '';
+const readingTime = post ? Math.max(3, Math.ceil(readingTimeSource.split(/\s+/).length / 220)) : 0;
+
+const schema = legacy ? [] : [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post?.data.title,
+    description,
+    datePublished: post?.data.pubDate.toISOString(),
+    author: {
+      '@type': 'Organization',
+      name: post?.data.author,
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'LocalPDF',
+      logo: 'https://localpdf.online/logos/localpdf-header-96x96.png',
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': canonical,
+    },
+    image,
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://localpdf.online/' },
+      { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://localpdf.online/blog' },
+      { '@type': 'ListItem', position: 3, name: post?.data.title, item: canonical },
+    ],
+  },
+];
 ---
 
-<BlogLayout {...layoutProps}>
-  <Content />
-</BlogLayout>
+{legacy ? (
+  <LegacyArchivePage
+    title={legacy.title}
+    description={legacy.description}
+    canonical={canonical}
+    heading={legacy.heading}
+    body={legacy.body}
+    primaryHref={legacy.primaryHref}
+    primaryLabel={legacy.primaryLabel}
+    secondaryHref={legacy.secondaryHref}
+    secondaryLabel={legacy.secondaryLabel}
+  />
+) : (
+  <MarketingLayout title={title} description={description} canonical={canonical} image={image} schema={schema}>
+    <div class="page-shell">
+      <article class="section article-shell">
+        <div class="breadcrumbs">
+          <a href="/">Home</a>
+          <span>/</span>
+          <a href="/blog">Blog</a>
+          <span>/</span>
+          <span>{post?.data.title}</span>
+        </div>
+
+        <div class="article-meta">
+          <span class="eyebrow">{post?.data.category}</span>
+          <div class="meta-row">
+            <time datetime={post?.data.pubDate.toISOString()}>
+              {post?.data.pubDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+            </time>
+            <span>{readingTime} min read</span>
+          </div>
+        </div>
+
+        <h1>{post?.data.title}</h1>
+        <p class="lead">{post?.data.description}</p>
+
+        {relatedFeatureLinks.length > 0 && (
+          <div class="cta-strip">
+            <strong>Related workflows in LocalPDF</strong>
+            <div class="cta-row">
+              {relatedFeatureLinks.map((item) => (
+                <a class="btn-secondary" href={item.href}>{item.label}</a>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div class="content">
+          {post && <post.Content />}
+        </div>
+      </article>
+
+      {relatedPosts.length > 0 && (
+        <section class="section">
+          <h2 class="section-title">Related articles</h2>
+          <div class="card-grid related-grid">
+            {relatedPosts.map((item) => (
+              <a class="related-card" href={`/blog/${item.slug}`}>
+                <span class="related-label">{item.data.category}</span>
+                <h3>{item.data.title}</h3>
+                <p>{item.data.description}</p>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+    </div>
+  </MarketingLayout>
+)}
+
+<style>
+  .article-shell h1 {
+    font-size: clamp(2.8rem, 4.8vw, 4.8rem);
+    margin-top: 18px;
+    margin-bottom: 18px;
+    max-width: 14ch;
+  }
+
+  .breadcrumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 0.92rem;
+    color: #536674;
+    margin-bottom: 20px;
+  }
+
+  .breadcrumbs a {
+    text-decoration: none;
+  }
+
+  .article-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    color: #536674;
+    font-size: 0.95rem;
+  }
+
+  .lead {
+    max-width: 760px;
+    margin-bottom: 24px;
+    font-size: 1.08rem;
+  }
+
+  .cta-strip {
+    margin-bottom: 28px;
+    padding: 20px;
+    border-radius: 22px;
+    background: linear-gradient(180deg, rgba(243, 201, 146, 0.2), rgba(255, 253, 249, 0.98));
+    border: 1px solid var(--line);
+  }
+
+  .cta-strip strong {
+    display: block;
+    margin-bottom: 12px;
+    font-size: 1.05rem;
+  }
+
+  .content :global(h2),
+  .content :global(h3),
+  .content :global(h4) {
+    margin-top: 32px;
+    margin-bottom: 14px;
+    line-height: 1.1;
+  }
+
+  .content :global(h2) {
+    font-size: 2rem;
+  }
+
+  .content :global(h3) {
+    font-size: 1.5rem;
+  }
+
+  .content :global(p),
+  .content :global(li) {
+    font-size: 1.02rem;
+    line-height: 1.75;
+    color: #31434f;
+  }
+
+  .content :global(ul),
+  .content :global(ol) {
+    padding-left: 22px;
+  }
+
+  .content :global(a) {
+    color: var(--accent);
+  }
+
+  .related-grid {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  }
+
+  .related-card {
+    padding: 22px;
+    border-radius: 24px;
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    color: inherit;
+    display: grid;
+    gap: 10px;
+  }
+
+  .related-label {
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+</style>
