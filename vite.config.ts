@@ -1,9 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import { APP_BASE_PATH } from './shared/app-routes';
-
 export default defineConfig({
-  base: `${APP_BASE_PATH}/`,
+  base: '/',
   plugins: [react()],
   server: {
     port: 3000,
