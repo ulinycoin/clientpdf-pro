@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { PlatformProvider } from './platform-context';
 import { ToolRoutes } from './tool-routes';
+import { AppAnalytics } from './app-analytics';
 import { UxFeedbackOverlay } from './ux-feedback-overlay';
 import { TelemetryPanel } from './telemetry-panel';
 import { StudioTopNav } from './studio-top-nav';
@@ -14,6 +15,7 @@ export function StudioPlatformShell() {
   return (
     <BrowserRouter basename={APP_BASE_PATH} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <PlatformProvider>
+        <AppAnalytics />
         <UxFeedbackOverlay />
         <div className="studio-app-layout">
           <StudioTopNav
